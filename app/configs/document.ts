@@ -22,28 +22,25 @@ export const faviconLinks = [
   //   rel: "shortcut icon",
   //   href: "https://fav.farm/⏪",
   // },
-  {
-    rel: "shortcut icon",
-    href: "/favicon.ico",
-  },
+
   // Design and use your own favicon, or get some initial image from:
   // https://emojipedia.org
   {
     rel: "icon",
-    type: "image/png",
+    type: "image/svg",
     sizes: "32x32",
-    href: "/favicons/favicon-32x32.png",
+    href: "/money24.svg",
   },
   {
     rel: "icon",
-    type: "image/png",
+    type: "image/svg",
     sizes: "16x16",
-    href: "/favicons/favicon-16x16.png",
+    href: "/money16.svg",
   },
   {
     rel: "apple-touch-icon",
     sizes: "180x180",
-    href: "/favicons/apple-touch-icon.png",
+    href: "/money180.svg",
   },
 ];
 

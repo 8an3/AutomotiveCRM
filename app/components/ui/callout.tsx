@@ -20,7 +20,7 @@ export const calloutVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-surface-50 text-surface-950 dark:bg-surface-950 dark:text-surface-50",
+          " text-surface-950 dark:bg-surface-950 dark:text-surface-50",
         destructive:
           "border-red-700/50 text-red-700 dark:border-red-700 [&>svg]:text-red-700",
       },

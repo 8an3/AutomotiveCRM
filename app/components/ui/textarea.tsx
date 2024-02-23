@@ -1,32 +1,24 @@
-import { forwardRef } from "react";
+import * as React from "react"
 
-import { cn } from "~/utils";
-
-/**
- * Textarea
- *
- * Displays a form textarea or a component that looks like a textarea.
- */
+import { cn } from "~/components/ui/utils"
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
-export const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
+const TextArea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, ...props }, ref) => {
     return (
       <textarea
         className={cn(
-          "bg-white dark:bg-surface-950",
-          "rounded-md border-2 border-surface-100 focus-visible:border-surface-100 dark:border-surface-800",
-          "focus-visible:ring-brand-600 dark:focus-visible:ring-brand-400",
-          "flex w-full px-3 py-2 text-sm placeholder:text-surface-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:text-surface-50 dark:placeholder:text-surface-700 dark:focus-visible:ring-offset-surface-900",
+          "flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         ref={ref}
-        spellCheck="false"
         {...props}
       />
-    );
+    )
   }
-);
-TextArea.displayName = "TextArea";
+)
+TextArea.displayName = "TextArea"
+
+export { TextArea }

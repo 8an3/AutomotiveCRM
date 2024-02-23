@@ -13,8 +13,9 @@ import {
 import { configDev } from "~/configs";
 import { requireUserRole, requireUserSession } from "~/helpers";
 import { Plus, Trash } from "~/icons";
-import { model } from "~/models";
 import { createSitemap, formatPluralItems } from "~/utils";
+import { requireAuthCookie } from '~/utils/misc.user.server';
+import { model } from "~/models";
 
 import type { ActionArgs } from "@remix-run/node";
 
@@ -46,7 +47,8 @@ export default function Route() {
   const { userCount } = useLoaderData<typeof loader>();
 
   return (
-    <div>
+    <div className='max-w-xl  mx-auto justify-center text-white'>
+
       <PageAdminHeader size="xs">
         <RemixLink to=".">
           <h1>User Roles</h1>

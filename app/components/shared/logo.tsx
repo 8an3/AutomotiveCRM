@@ -14,7 +14,7 @@ export const logoVariants = cva("flex items-center font-brand font-semibold", {
       lg: "gap-2 text-xl sm:gap-3 sm:text-3xl",
     },
     accent: {
-      default: "text-black dark:text-white",
+      default: "text-black dark:text-slate1",
       brand: "text-brand-600",
       muted: "text-surface-600 grayscale dark:text-surface-100",
     },
@@ -41,7 +41,7 @@ export const logoImageVariants = cva("", {
 
 interface LogoProps
   extends React.HTMLAttributes<HTMLElement>,
-    VariantProps<typeof logoVariants> {
+  VariantProps<typeof logoVariants> {
   text: string;
 }
 
@@ -56,7 +56,7 @@ export function Logo({
     <div className={cn(logoVariants({ size, accent, className }))} {...props}>
       <span className={cn(logoVariants({ size, accent, className }))}>
         <img
-          src="/favicons/apple-touch-icon.png"
+          src="/money.svg"
           alt="Logo"
           width={20}
           height={20}

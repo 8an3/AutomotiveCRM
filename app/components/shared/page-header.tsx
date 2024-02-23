@@ -51,7 +51,7 @@ export function PageHeader({
   isTextCentered = false,
   withMarginBottom = true,
   withBackground = true,
-  withContainer = true,
+  withContainer = false,
   className,
   children,
   ...props

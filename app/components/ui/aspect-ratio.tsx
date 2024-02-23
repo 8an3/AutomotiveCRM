@@ -1,9 +1,7 @@
-import * as AspectRatioPrimitive from "@radix-ui/react-aspect-ratio";
+"use client"
 
-/**
- * Aspect Ratio
- *
- * Displays content within a desired ratio.
- */
+import * as AspectRatioPrimitive from "@radix-ui/react-aspect-ratio"
 
-export const AspectRatio = AspectRatioPrimitive.Root;
+const AspectRatio = AspectRatioPrimitive.Root
+
+export { AspectRatio }

@@ -16,6 +16,9 @@ export const fields = {
     id: true,
     name: true,
     username: true,
+    subscriptionId: true,
+    customerId: true,
+    returning: true,
     role: { select: { symbol: true, name: true, description: true } },
     profile: { select: { headline: true, bio: true } },
   },
@@ -44,14 +47,18 @@ export const query = {
       },
     });
   },
-  getForSession({ id }: Pick<User, "id">) {
+  getForSession({ email }: Pick<User, "email">) {
     return prisma.user.findUnique({
-      where: { id },
+      where: { email: email },
       select: {
         id: true,
         name: true,
         username: true,
         email: true,
+        subscriptionId: true,
+        customerId: true,
+        returning: true,
+        phone: true,
         role: { select: { symbol: true, name: true } },
         profile: {
           select: {
@@ -70,6 +77,7 @@ export const query = {
         role: true,
         profile: true,
         notes: true,
+
       },
     });
   },

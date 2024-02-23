@@ -1,13 +1,19 @@
 import { model } from "~/models";
-import { authenticator } from "~/services";
-import { getSession } from "~/sessions";
+import { authenticator } from "~/services/auth.server";
+import { getSession } from "~/sessions/auth-session.server";
 import { invariant } from "~/utils";
+import { prisma } from "~/libs";
+import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
+
+
 
 import type { Prisma, UserRole } from "@prisma/client";
 
 // User Sesson is a limited user data stored in the auth cookie
 export type UserSession = {
   id: string;
+  email: string;
+
 };
 
 // User Data is a more complete user data that can be retrieved,
@@ -24,16 +30,22 @@ export async function requireUserSession(
   expectedRoleSymbols?: UserRole["symbol"][]
 ) {
   // Get user session from app cookie
-  const userSession = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
+  //const userSession = await authenticator.isAuthenticated(request, {
+  // failureRedirect: "/login",
+  //});
+  const userSession = await sessionGet(request.headers.get("Cookie"));
+
+
+
   if (!userSession) {
     await authenticator.logout(request, { redirectTo: "/login" });
   }
   invariant(userSession, "User Session is not available");
 
   // Get user data from database
-  const user = await model.user.query.getForSession({ id: userSession.id });
+  //const user = await model.user.query.getForSession({ id: userSession.id });
+  const email = userSession.get("email")
+  const user = await getUserByEmail(email)
   if (!user) {
     await authenticator.logout(request, { redirectTo: "/login" });
   }

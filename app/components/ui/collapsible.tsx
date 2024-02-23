@@ -1,13 +1,11 @@
-import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
+"use client"
 
-/**
- * Collapsible
- *
- * An interactive component which expands/collapses a panel.
- */
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
 
-export const Collapsible = CollapsiblePrimitive.Root;
+const Collapsible = CollapsiblePrimitive.Root
 
-export const CollapsibleTrigger = CollapsiblePrimitive.CollapsibleTrigger;
+const CollapsibleTrigger = CollapsiblePrimitive.CollapsibleTrigger
 
-export const CollapsibleContent = CollapsiblePrimitive.CollapsibleContent;
+const CollapsibleContent = CollapsiblePrimitive.CollapsibleContent
+
+export { Collapsible, CollapsibleTrigger, CollapsibleContent }

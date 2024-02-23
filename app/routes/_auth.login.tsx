@@ -1,47 +1,192 @@
-import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json } from "@remix-run/node";
-import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
-import { useId } from "react";
-import { badRequest, forbidden } from "remix-utils";
+import type { LoaderArgs, DataFunctionArgs } from "@remix-run/node";
 
-import {
-  Alert,
-  ButtonLoading,
-  Debug,
-  Input,
-  InputPassword,
-  Label,
-  Layout,
-  PageHeader,
-  RemixForm,
-  RemixLinkText,
-} from "~/components";
+import { Form, Link, useParams, useMatches, useNavigation, useLocation, useLoaderData } from "@remix-run/react";
+import React, { useId } from "react";
+import { badRequest, forbidden } from "remix-utils";
+import { Alert, ButtonLoading, Debug, InputPassword, Layout, PageHeader, emixForm, RemixLinkText, } from "~/components";
 import { configSite } from "~/configs";
 import { model } from "~/models";
 import { schemaUserLogin } from "~/schemas";
-import { authenticator } from "~/services";
-import {
-  createMetaData,
-  getRandomText,
-  getRedirectTo,
-  useRedirectTo,
-} from "~/utils";
+import { createMetaData, getRandomText, getRedirectTo, useRedirectTo, } from "~/utils";
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card"
+import { Toaster, toast } from 'sonner'
+import { redirectIfLoggedInLoader, setAuthOnResponse } from "~/utils/misc.user.server";
+import { FcGoogle } from "react-icons/fc";
 
-import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import type { z } from "zod";
 
-export const meta: V2_MetaFunction = () => {
-  return createMetaData({
-    title: "Login",
-    description: `Continue with your ${configSite.name} account`,
-  });
-};
 
 export async function loader({ request }: LoaderArgs) {
-  await authenticator.isAuthenticated(request, {
-    successRedirect: "/user/dashboard",
+  const domain = request.headers.get('host');
+  console.log(domain, 'url url')
+
+  const headerHeadingText = getRandomText([
+    "Hello again!",
+    "Welcome back!",
+    "Glad to see you!",
+  ]);
+
+  const headerDescriptionText = getRandomText([
+    `Continue to ${configSite.name}`,
+    `Continue with your ${configSite.name} account`,
+    `Use your ${configSite.name} account to continue`,
+  ]);
+
+  return json({
+    domain,
+    redirectIfLoggedInLoader,
+    headerHeadingText,
+    headerDescriptionText,
   });
+
+}
+export async function action({ request }: DataFunctionArgs) {
+  const clonedRequest = request.clone();
+
+  const formData = await clonedRequest.formData();
+  const submission = parse(formData, { schema: schemaUserLogin });
+  if (!submission.value || submission.intent !== "submit") {
+    return badRequest(submission);
+  }
+
+  // Check user email and password
+  const result = await model.user.mutation.login(submission.value);
+
+  // Use custom error for Conform submission
+  if (result.error) {
+    return forbidden({ ...submission, error: result.error });
+  }
+  await authenticator.authenticate("user-pass", request, {
+    successRedirect: getRedirectTo(request) || "/user/dashboard",
+    failureRedirect: "/login",
+  });
+  return json(submission);
+}
+
+
+
+export default function Route() {
+  const navigation = useNavigation();
+  const { domain } = useLoaderData()
+  // const isSubmitting = navigation.state === "submitting";
+  const isSubmitting = navigation.formAction === "/login";
+  function BusyIndicator() {
+    const promise = () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Sonner' }), 2000));
+    React.useEffect(() => {
+      toast.promise(promise, {
+        loading: 'Loading...',
+        success: (data) => {
+          return `Welcome back!`;
+        },
+        error: 'Error',
+      });
+    }, []);
+
+    return null; // Return null because this component doesn't render anything
+  }
+  return (
+    <div className="w-full  grid grid-cols-2">
+      <div className="w-[50%]">
+        <p className="left-[25px] top-[50px]">DSA</p>
+      </div>
+      <div className="w-[50%]">
+        <div className='flex items-center justify-center text-center'>
+          <Form action="/google" method="post">
+            <div className=" fixed top-[50%] left-[70%] translate-x-[-50%] translate-y-[-50%]">
+              <h1 className="text-white">Login to your account</h1>
+              <p className="text-white mt-5">Continue with your google account to login</p>
+              <Button variant='outline' className='w-auto rounded-xl mt-5 border border-white px-8 py-5 text-xl text-white '>
+                <p className='mr-1'> Login with </p>
+                <FcGoogle className='text-[28px]' /><p>oogle</p>
+              </Button>
+              <hr className="solid mt-5 text-white" />
+              <p className="mt-5 text-white">If you need to register and subscribe follow this</p><Link to='/subscribe'><p className="text-white"> link</p></Link>
+            </div>
+          </Form>
+        </div>
+      </div>
+    </div >
+
+  );
+}
+/**    <Form method='post' >
+
+          <div className="space-y-1">
+            <Label htmlFor="email">
+              Email address{" "}
+              {actionResult?.errors?.email && (
+                <span id="email-error" className="text-brand-red">
+                  {actionResult.errors.email}
+                </span>
+              )}
+            </Label>
+            <Input
+              name='email'
+              type="email"
+              placeholder="you@email.com"
+              autoComplete="email"
+              autoFocus
+              required
+            />
+
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="password">
+              Password{" "}
+              {actionResult?.errors?.password && (
+                <span id="password-error" className="text-brand-red">
+                  {actionResult.errors.password}
+                </span>
+              )}
+            </Label>
+            <InputPassword
+              name='password'
+              placeholder="Enter password"
+              autoComplete="current-password"
+              required
+            />
+
+            <p className="text-xs text-surface-500">At least 8 characters</p>
+          </div>
+
+
+
+
+            <ButtonLoading
+            size="lg"
+            type="submit"
+            className="w-auto cursor-pointer"
+            name="intent"
+            value="submit"
+            isSubmitting={isSubmitting}
+            loadingText="Logging in..."
+          >
+            Login
+          </ButtonLoading>
+
+          <p className="text-center">
+            <RemixLinkText to='/register'   >
+              New to {configSite.name}? Register for free
+            </RemixLinkText>
+          </p>
+
+          {isSubmitting ? <BusyIndicator /> : null}
+        </Form> */
+/*(**
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  const userSession = await sessionGet(request.headers.get("Cookie"));
+
+  if (!userSession) { return json({ status: 302, redirect: '/login' }); };
+
+  const email = userSession.get("email")
+  const user = await getUserByEmail(email)
+  console.log(user, 'email')
+  //await authenticator.isAuthenticated(request, {
+  ///  successRedirect: "/checksubscription",
+  //});
 
   const headerHeadingText = getRandomText([
     "Hello again!",
@@ -60,151 +205,5 @@ export async function loader({ request }: LoaderArgs) {
     headerDescriptionText,
   });
 }
-
-/**
- * This also applicable in the _auth.register route action function
- */
-export async function action({ request }: ActionArgs) {
-  // Clone Request/ReadableStream to prevent the stream being locked
-  // Because we're using the request later too for Remix-Auth Authenticator
-  const clonedRequest = request.clone();
-
-  const formData = await clonedRequest.formData();
-  const submission = parse(formData, { schema: schemaUserLogin });
-  if (!submission.value || submission.intent !== "submit") {
-    return badRequest(submission);
-  }
-
-  // Check user email and password
-  const result = await model.user.mutation.login(submission.value);
-
-  // Use custom error for Conform submission
-  if (result.error) {
-    return forbidden({ ...submission, error: result.error });
-  }
-
-  /**
-   * Remix-Auth Authenticator
-   *
-   * Call the method with the name of the strategy we want to use and the
-   * request object, optionally we pass an object with the URLs we want the user
-   * to be redirected to after a success or a failure
-   *
-   * Login via services/auth-service.server + models/user.server
-   * But this won't check the email and password again
-   */
-  await authenticator.authenticate("user-pass", request, {
-    successRedirect: getRedirectTo(request) || "/user/dashboard",
-    failureRedirect: "/login",
-  });
-  return json(submission);
-}
-
-export default function Route() {
-  const { headerHeadingText, headerDescriptionText } =
-    useLoaderData<typeof loader>();
-  const { searchParams, redirectTo } = useRedirectTo();
-
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
-
-  const actionData = useActionData<typeof action>();
-
-  const id = useId();
-  const [form, fields] = useForm<z.infer<typeof schemaUserLogin>>({
-    id,
-    shouldValidate: "onSubmit",
-    lastSubmission: actionData,
-    constraint: getFieldsetConstraint(schemaUserLogin),
-    onValidate({ formData }) {
-      return parse(formData, { schema: schemaUserLogin });
-    },
-  });
-  const { email, password } = fields;
-
-  return (
-    <Layout
-      isSpaced
-      layoutHeader={
-        <PageHeader size="xs" isTextCentered>
-          <h1>{headerHeadingText}</h1>
-          <p>{headerDescriptionText}</p>
-        </PageHeader>
-      }
-    >
-      <div className="mx-auto w-full max-w-sm">
-        <RemixForm {...form.props} method="POST" className="space-y-4">
-          <fieldset
-            className="space-y-2 disabled:opacity-80"
-            disabled={isSubmitting}
-          >
-            <div className="space-y-1">
-              <Label htmlFor={email.id}>Email address</Label>
-              <Input
-                {...conform.input(email)}
-                type="email"
-                placeholder="you@email.com"
-                autoComplete="email"
-                autoFocus
-                required
-              />
-              {email.error && (
-                <Alert variant="danger" id={email.errorId}>
-                  {email.error}
-                </Alert>
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor={password.id}>Password</Label>
-              <InputPassword
-                {...conform.input(password)}
-                placeholder="Enter password"
-                autoComplete="current-password"
-                required
-              />
-              {password.error && (
-                <Alert variant="danger" id={password.errorId}>
-                  {password.error}
-                </Alert>
-              )}
-              <p className="text-xs text-surface-500">At least 8 characters</p>
-            </div>
-
-            {/* TODO: Implement remember checkbox */}
-            {/* <div className="flex gap-1">
-              <Checkbox {...conform.input(remember)} name="remember" />
-              <Label htmlFor="remember" className="cursor-pointer">
-                Remember me
-              </Label>
-            </div> */}
-
-            <Input type="hidden" name="redirectTo" value={redirectTo} />
-
-            <ButtonLoading
-              size="lg"
-              type="submit"
-              className="w-full"
-              name="intent"
-              value="submit"
-              isSubmitting={isSubmitting}
-              loadingText="Logging in..."
-            >
-              Login
-            </ButtonLoading>
-          </fieldset>
-
-          <p className="text-center">
-            <RemixLinkText
-              to={{ pathname: "/register", search: searchParams.toString() }}
-            >
-              New to {configSite.name}? Register for free
-            </RemixLinkText>
-          </p>
-        </RemixForm>
-
-        <Debug name="form">{{ actionData, fields }}</Debug>
-      </div>
-    </Layout>
-  );
-}
+)
+*/

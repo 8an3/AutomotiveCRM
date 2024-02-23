@@ -1,25 +1,15 @@
-import { cn } from "~/utils";
+import { cn } from "~/components/ui/utils"
 
-/**
- * Skeleton
- *
- * Use to show a placeholder while content is loading.
- *
- * Docs:
- * - https://ui.shadcn.com/docs/components/skeleton
- */
-
-export function Skeleton({
+function Skeleton({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn(
-        "animate-pulse rounded-md bg-surface-100 dark:bg-surface-800",
-        className
-      )}
+      className={cn("animate-pulse rounded-md bg-primary/10", className)}
       {...props}
     />
-  );
+  )
 }
+
+export { Skeleton }

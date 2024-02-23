@@ -1,36 +1,80 @@
-import { redirect } from "@remix-run/node";
 import { isRouteErrorResponse, Outlet, useRouteError } from "@remix-run/react";
 
 import {
   buttonVariants,
   Debug,
-  HeaderUserMenu,
+
   Icon,
   Logo,
   PageAdminHeader,
   RemixNavLink,
   SearchForm,
-  ThemeToggleButton,
+  Button
 } from "~/components";
 import { configAdmin, configSite } from "~/configs";
 import { requireUserSession } from "~/helpers";
 import { RootDocumentBoundary } from "~/root";
 import { cn, createSitemap } from "~/utils";
-
+import { redirect, json } from "@remix-run/node";
+import { prisma } from "~/libs";
+import Sidebar from "~/components/shared/sidebar";
+// <Sidebar />
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { HeaderUserMenu } from "~/components/shared/userNav";
+import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+
+import { model } from "~/models";
 
 export const handle = createSitemap();
 
-export async function loader({ request }: LoaderArgs) {
-  const { userIsAllowed } = await requireUserSession(request, [
-    "ADMIN",
-    "MANAGER",
-    "EDITOR",
-  ]);
-  if (!userIsAllowed) {
-    return redirect(`/`);
+export const loader = async ({ request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+
+  let user = await prisma.user.findUnique({
+    where: {
+      email: email
+    }
+  });
+  /// console.log(user, account, 'wquiote loadert')
+  if (!user) {
+    redirect('/login')
   }
-  return null;
+  if (email) {
+    try {
+      user = await prisma.user.findUnique({
+        where: { email },
+        select: {
+          id: true,
+          name: true,
+          username: true,
+          email: true,
+          subscriptionId: true,
+          customerId: true,
+          returning: true,
+          phone: true,
+          role: { select: { symbol: true, name: true } },
+          profile: {
+            select: {
+              id: true,
+              headline: true,
+              bio: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  }
+  const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
+  if (!user) { return json({ status: 302, redirect: '/login' }); };
+  const symbol = user.role.symbol
+  if (symbol !== 'ADMIN' && symbol !== 'MANAGER' && symbol !== 'EDITOR') {
+    return redirect(`/`);
+  } else {
+    return json({ user, notifications });
+  }
 }
 
 export async function action({ request }: ActionArgs) {
@@ -42,16 +86,18 @@ export async function action({ request }: ActionArgs) {
   if (!userIsAllowed) {
     return redirect(`/`);
   }
-  return null;
 }
 
 // Admin doesn't need separated Layout component
 // Becaus this is already the Layout route for all admin routes
 export default function Route() {
   return (
-    <AdminLayout>
-      <Outlet />
-    </AdminLayout>
+    <>
+      <Sidebar />
+      <AdminLayout>
+        <Outlet />
+      </AdminLayout>
+    </>
   );
 }
 
@@ -69,81 +115,81 @@ export function AdminSidebar() {
     <aside
       className={cn(
         "hidden sm:block",
-        "sticky top-0 h-screen", // sticky sidebar
-        "min-w-fit space-y-4 p-2 sm:flex sm:flex-col sm:p-4",
-        "border-r-2 border-surface-200 bg-white dark:border-surface-700 dark:bg-surface-900"
+        "sticky top-0 h-screen ", // sticky sidebar
+        "w-[200px] space-y-4 p-2 sm:flex sm:flex-col sm:p-4",
+        "border-r-2 border-surface-200 bg-[#1c2024] dark:border-surface-700 dark:bg-surface-900"
       )}
     >
       <div className="queue-center justify-between">
         <RemixNavLink
           prefetch="intent"
           to="/admin"
-          className="block min-w-fit transition-opacity hover:opacity-80"
+          className="block min-w-fit transition-opacity hover:opacity-80 text-white"
         >
-          <Logo text="Admin" />
+          <Logo className='text-white' text="Admin" />
         </RemixNavLink>
-        <div className="queue-center">
-          <ThemeToggleButton />
-          <HeaderUserMenu align="start" />
-        </div>
+
       </div>
 
-      <ul className="grow space-y-2">
+      <div className="grow space-y-2 mx-auto">
         <SearchForm action="/admin/search" />
-        {configAdmin.navItems.map((navItem) => {
-          return (
-            <li key={navItem.name} className="space-y-1">
-              <RemixNavLink
-                key={navItem.name}
-                to={navItem.to}
-                prefetch="intent"
-                end={navItem.end}
-                className={({ isActive }) =>
-                  cn(
-                    "w-full",
-                    buttonVariants({
-                      variant: "navlink",
-                      align: "left",
-                      isActive,
-                    })
-                  )
-                }
-              >
-                <Icon name={navItem.icon} />
-                <span>{navItem.name}</span>
-              </RemixNavLink>
-              {navItem.items.length > 0 && (
-                <ul className="ms-4 space-y-1">
-                  {navItem.items.map((item) => {
-                    return (
-                      <li key={item.name}>
-                        <RemixNavLink
-                          key={item.name}
-                          to={item.to}
-                          prefetch="intent"
-                          className={({ isActive }) =>
-                            cn(
-                              "w-full",
-                              buttonVariants({
-                                variant: "navlink",
-                                align: "left",
-                                isActive,
-                              })
-                            )
-                          }
-                        >
-                          <Icon name={item.icon} />
-                          <span>{item.name}</span>
-                        </RemixNavLink>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+        <RemixNavLink to='/admin' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Overview
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='users' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Users
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='images' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Images
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='import/motorcycle' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Import / Export Motor
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='import/parts' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Import / Export Parts
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='import/accs' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Import / Export Accs
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='import/leads' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Import / Export Leads
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='notes' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Notes
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='/leads' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Search Leads
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='/admin/search' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Search on Admin
+          </Button>
+        </RemixNavLink>
+        <RemixNavLink to='/' >
+          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
+            Go to site
+          </Button>
+        </RemixNavLink>
+
+      </div>
     </aside>
   );
 }
@@ -168,13 +214,13 @@ export function ErrorBoundary() {
       <RootDocumentBoundary title={message}>
         <AdminLayout>
           <PageAdminHeader size="sm">
-            <h1>Error {error.status}</h1>
+            <h1 className='text-white'>Error {error.status}</h1>
             {error.statusText && <h2>{error.statusText}</h2>}
-            <p>{message}</p>
+            <p className='text-white'>{message}</p>
           </PageAdminHeader>
           <section className="px-layout space-y-2">
-            <p>Here's the error information that can be informed to Rewinds.</p>
-            <Debug name="error.data" isAlwaysShow isCollapsibleOpen>
+            <p className='text-white'>Here's the error information that can be informed to Rewinds.</p>
+            <Debug className='text-white' name="error.data" isAlwaysShow isCollapsibleOpen>
               {error.data}
             </Debug>
           </section>
@@ -186,18 +232,18 @@ export function ErrorBoundary() {
       <RootDocumentBoundary title="Sorry, unexpected error occured.">
         <AdminLayout>
           <PageAdminHeader size="sm">
-            <h1>Error from {configSite.name}</h1>
+            <h1 className='text-white'>Error from {configSite.name}</h1>
           </PageAdminHeader>
           <section className="px-layout space-y-2">
-            <p>Here's the error information that can be informed to Rewinds.</p>
+            <p className='text-white'>Here's the error information that can be informed to Rewinds.</p>
 
-            <pre>{error.message}</pre>
+            <pre className='text-white'>{error.message}</pre>
             <Debug name="error" isAlwaysShow isCollapsibleOpen>
               {error}
             </Debug>
 
-            <p>The stack trace is:</p>
-            <Debug name="error.stack" isAlwaysShow isCollapsibleOpen>
+            <p className='text-white'>The stack trace is:</p>
+            <Debug className='text-white' name="error.stack" isAlwaysShow isCollapsibleOpen>
               {error.stack}
             </Debug>
           </section>
@@ -207,7 +253,7 @@ export function ErrorBoundary() {
   } else {
     return (
       <AdminLayout>
-        <h1>Unknown Error</h1>
+        <h1 className='text-white'>Unknown Error</h1>
       </AdminLayout>
     );
   }

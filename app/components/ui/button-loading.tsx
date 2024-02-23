@@ -24,7 +24,7 @@ export const ButtonLoading = forwardRef<HTMLButtonElement, ButtonLoadingProps>(
   (
     {
       type = "button",
-      variant = "default",
+      variant = "outline",
       accent = "default",
       size = "default",
       weight = "default",

@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'bmwHelvetica';
+  /*  font-family: "Consolas", "Courier New", monospace;*/
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+    url('~/styles/BMWHelvetica.ttf') format('woff2'),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+
+}

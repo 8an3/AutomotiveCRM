@@ -1,61 +1,28 @@
-import * as ProgressPrimitive from "@radix-ui/react-progress";
-import { cva } from "class-variance-authority";
+"use client"
 
-import { cn } from "~/utils";
+import * as React from "react"
+import * as ProgressPrimitive from "@radix-ui/react-progress"
 
-import type { VariantProps } from "class-variance-authority";
+import { cn } from "~/components/ui/utils"
 
-/**
- * Progress
- *
- * Displays an indicator showing the completion progress of a task,
- * typically displayed as a progress bar.
- */
+const Progress = React.forwardRef<
+  React.ElementRef<typeof ProgressPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
+>(({ className, value, ...props }, ref) => (
+  <ProgressPrimitive.Root
+    ref={ref}
+    className={cn(
+      "relative h-2 w-full overflow-hidden rounded-full bg-primary/20",
+      className
+    )}
+    {...props}
+  >
+    <ProgressPrimitive.Indicator
+      className="h-full w-full flex-1 bg-primary transition-all"
+      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+    />
+  </ProgressPrimitive.Root>
+))
+Progress.displayName = ProgressPrimitive.Root.displayName
 
-export const progressVariants = cva(
-  "relative w-full overflow-hidden rounded-full bg-surface-200 dark:bg-surface-800",
-  {
-    variants: {
-      size: {
-        sm: "h-2",
-        default: "h-4",
-        lg: "h-6",
-      },
-    },
-    defaultVariants: {
-      size: "default",
-    },
-  }
-);
-
-interface ProgressProps
-  extends ProgressPrimitive.ProgressProps,
-    VariantProps<typeof progressVariants> {
-  hasGradient?: boolean;
-}
-
-export function Progress({
-  value = 0,
-  size = "default",
-  hasGradient = false,
-  className,
-  ...props
-}: ProgressProps) {
-  return (
-    <ProgressPrimitive.Root
-      className={cn(progressVariants({ size, className }))}
-      {...props}
-    >
-      <ProgressPrimitive.Indicator
-        className={cn(
-          "h-full w-full flex-1 transition-all",
-          !hasGradient && "bg-surface-600 dark:bg-surface-400",
-          hasGradient &&
-            "bg-gradient-to-r from-surface-500 from-10% via-brand-500 via-30% to-teal-500 to-60%"
-        )}
-        style={{ transform: `translateX(-${100 - Number(value)}%)` }}
-      />
-    </ProgressPrimitive.Root>
-  );
-}
-Progress.displayName = ProgressPrimitive.Root.displayName;
+export { Progress }

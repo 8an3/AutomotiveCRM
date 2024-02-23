@@ -1,16 +1,11 @@
-/* eslint-disable tailwindcss/no-arbitrary-value */
-import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
-import { forwardRef } from "react";
+"use client"
 
-import { cn } from "~/utils";
+import * as React from "react"
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
 
-/**
- * Scroll Area
- *
- * Augments native scroll functionality for custom, cross-browser styling.
- */
+import { cn } from "~/components/ui/utils"
 
-export const ScrollArea = forwardRef<
+const ScrollArea = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
 >(({ className, children, ...props }, ref) => (
@@ -25,10 +20,10 @@ export const ScrollArea = forwardRef<
     <ScrollBar />
     <ScrollAreaPrimitive.Corner />
   </ScrollAreaPrimitive.Root>
-));
-ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
+))
+ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName
 
-export const ScrollBar = forwardRef<
+const ScrollBar = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
   React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
 >(({ className, orientation = "vertical", ...props }, ref) => (
@@ -45,7 +40,14 @@ export const ScrollBar = forwardRef<
     )}
     {...props}
   >
-    <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-surface-300 dark:bg-surface-700" />
+    <ScrollAreaPrimitive.ScrollAreaThumb
+      className={cn(
+        "relative rounded-full bg-border",
+        orientation === "vertical" && "flex-1"
+      )}
+    />
   </ScrollAreaPrimitive.ScrollAreaScrollbar>
-));
-ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
+))
+ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName
+
+export { ScrollArea, ScrollBar }

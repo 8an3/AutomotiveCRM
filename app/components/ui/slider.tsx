@@ -1,15 +1,11 @@
-import * as SliderPrimitive from "@radix-ui/react-slider";
-import { forwardRef } from "react";
+"use client"
 
-import { cn } from "~/utils";
+import * as React from "react"
+import * as SliderPrimitive from "@radix-ui/react-slider"
 
-/**
- * Slider
- *
- * An input where the user selects a value from within a given range.
- */
+import { cn } from "~/components/ui/utils"
 
-export const Slider = forwardRef<
+const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
 >(({ className, ...props }, ref) => (
@@ -21,11 +17,12 @@ export const Slider = forwardRef<
     )}
     {...props}
   >
-    <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-surface-200 dark:bg-surface-800">
-      <SliderPrimitive.Range className="absolute h-full bg-surface-900  dark:bg-surface-400" />
+    <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-primary/20">
+      <SliderPrimitive.Range className="absolute h-full bg-primary" />
     </SliderPrimitive.Track>
-
-    <SliderPrimitive.Thumb className="size-md block rounded-full border-2 border-surface-900 bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:border-surface-100 dark:bg-surface-400 dark:focus-visible:ring-surface-400 dark:focus-visible:ring-offset-surface-900" />
+    <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border border-primary/50 bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50" />
   </SliderPrimitive.Root>
-));
-Slider.displayName = SliderPrimitive.Root.displayName;
+))
+Slider.displayName = SliderPrimitive.Root.displayName
+
+export { Slider }

@@ -34,11 +34,11 @@ export function ComboboxExample() {
     query === ""
       ? items
       : items.filter((item) =>
-          item.name
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, ""))
-        );
+        item.name
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .includes(query.toLowerCase().replace(/\s+/g, ""))
+      );
 
   return (
     <div className="fixed top-16 w-72">
@@ -74,8 +74,7 @@ export function ComboboxExample() {
                   <Combobox.Option
                     key={item.id}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pe-4 ps-10 ${
-                        active ? "bg-teal-600 text-white" : "text-gray-900"
+                      `relative cursor-default select-none py-2 pe-4 ps-10 ${active ? "bg-teal-600 text-slate1" : "text-gray-900"
                       }`
                     }
                     value={item}
@@ -92,9 +91,8 @@ export function ComboboxExample() {
                         </span>
                         {selected && (
                           <span
-                            className={`absolute inset-y-0 left-0 flex items-center ps-3 ${
-                              active ? "text-white" : "text-teal-600"
-                            }`}
+                            className={`absolute inset-y-0 left-0 flex items-center ps-3 ${active ? "text-slate1" : "text-teal-600"
+                              }`}
                           >
                             <Check className="h-5 w-5" aria-hidden="true" />
                           </span>

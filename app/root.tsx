@@ -1,50 +1,42 @@
-// https://remix.run/docs/en/main/file-conventions/route-files-v2#md-root-route
 import { json, redirect } from "@remix-run/node";
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData,
-  useNavigation,
-  isRouteErrorResponse,
-  useRouteError,
-} from "@remix-run/react";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useNavigation, isRouteErrorResponse, useRouteError, useParams, Form, useLocation, useFetcher, useSubmit, } from "@remix-run/react";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
-import { IconoirProvider } from "iconoir-react";
-import NProgress from "nprogress";
-import { useEffect } from "react";
-import {
-  PreventFlashOnWrongTheme,
-  Theme,
-  ThemeProvider,
-  useTheme,
-} from "remix-themes";
-
-import {
-  Debug,
-  Layout,
-  PageHeader,
-  TailwindIndicator,
-  Toaster,
-  TooltipProvider,
-} from "~/components";
-import { configDev, configDocumentLinks, configSite } from "~/configs";
+import { IconoirProvider, } from "iconoir-react";
+import React, { useEffect, useState } from "react";
+import { Debug, Layout, PageHeader, TailwindIndicator, TooltipProvider, } from "~/components"; // Toaster goes here
+import { configDev, configSite } from "~/configs";
 import { model } from "~/models";
-import { authenticator } from "~/services";
-import { themeSessionResolver } from "~/sessions";
+//import { authenticator } from "~/services";
 import { cn, createCacheHeaders, createMetaData, getEnv } from "~/utils";
+import type { HeadersFunction, LinksFunction, LoaderArgs, V2_MetaDescriptor, V2_MetaFunction, } from "@remix-run/node";
+import { type RootLoaderData } from "~/hooks";
+import { Theme } from '@radix-ui/themes';
+import FinanceIdContext from '~/other/financeIdContext';
+import tailwind from '~/styles/tailwind.css';
+import font from '~/styles/font.css'
 
-import type {
-  HeadersFunction,
-  LinksFunction,
-  LoaderArgs,
-  V2_MetaDescriptor,
-  V2_MetaFunction,
-} from "@remix-run/node";
-import type { RootLoaderData } from "~/hooks";
+import slider from '~/styles/slider.css'
+import { Toaster, toast } from 'sonner'
+import { getUserByEmail } from '~/utils/user/get'
+import { getSession } from "./sessions/auth-session.server";
+import { prisma } from "./libs";
+import { Loader2 } from "~/icons";
+import { GlobalLoading } from "./components/ui/globalLoading";
+import NProgress from "nprogress";
+import nProgressStyles from "~/styles/loader.css";
+import rbc from '~/styles/rbc.css'
+
+export const links: LinksFunction = () => [
+  // { rel: "stylesheet", href: styles },
+  { rel: "stylesheet", href: tailwind },
+  { rel: "stylesheet", href: font },
+  { rel: "stylesheet", href: rbc },
+  { rel: "stylesheet", href: slider },
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
+  { rel: "apple-touch-icon", sizes: "180x180", href: "/money180.svg", },
+  { rel: "stylesheet", href: nProgressStyles },
+];
 
 export const meta: V2_MetaFunction = () => {
   return createMetaData() satisfies V2_MetaDescriptor[];
@@ -56,119 +48,73 @@ export const headers: HeadersFunction = () => {
   };
 };
 
-export const links: LinksFunction = () => {
-  return configDocumentLinks;
-};
-
 export async function loader({ request }: LoaderArgs) {
-  // Get ENV data from server
   const ENV = getEnv();
-
-  // Get theme function and data from cookie via remix-themes
-  const { getTheme } = await themeSessionResolver(request);
-  const theme = getTheme();
-
-  // Get user data from database, not from session
-  // But don't redirect if not authenticated
-  const userSession = await authenticator.isAuthenticated(request);
-
-  // Don't do anything extra when not logged in
-  if (!userSession) {
+  // const userSession = await authenticator.isAuthenticated(request);
+  const userSession = await getSession(request.headers.get("Cookie"));
+  const email = userSession.get("email")
+  if (!email) {
     return json({
       ENV,
-      theme,
     });
   }
-
-  // Put user and its profile data
-  const user = await model.user.query.getForSession({ id: userSession.id });
-
-  // But if the user session is no longer valid, log it out
+  const user = await model.user.query.getForSession({ email: email });
   if (!user) {
     return redirect(`/logout`);
   }
 
-  // Finally, put the active user data to the root loader data
   const loaderData = {
     ENV,
-    theme,
     userSession,
     user,
   } satisfies RootLoaderData;
+  // console.log(user, userSession, 'user and userSession root loader')
 
-  return json(loaderData, { headers: createCacheHeaders(request, 15) });
+  return json({ loaderData, })
+
 }
 
-/**
- * Remix Themes
- * Wrap your App with ThemeProvider.
- * `specifiedTheme` is the stored theme in the session storage.
- * `themeAction` is the action name that's used to change the theme
- * in the session storage.
- */
-export default function Route() {
-  const data = useLoaderData();
-
-  return (
-    <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
-      <App />
-    </ThemeProvider>
-  );
-}
-
-/**
- * If the theme is missing in session storage, PreventFlashOnWrongTheme will
- * get the browser theme before hydration and will prevent a flash in browser.
- * The client code runs conditionally, it won't be rendered if we have a theme
- * in session storage.
- */
-function App() {
-  const data = useLoaderData();
+export default function App() {
+  const location = useLocation()
   const navigation = useNavigation();
-  const [theme] = useTheme();
-  const defaultTheme = theme ? theme : "dark";
+  const [financeId, setFinanceId] = useState(null);
 
-  /**
-   * NProgress loading bar
-   * Alternative: https://sergiodxa.com/articles/use-nprogress-in-a-remix-app
-   */
   useEffect(() => {
+    if (navigation.state === "loading") NProgress.done();
     if (navigation.state === "idle") NProgress.done();
     else NProgress.start();
   }, [navigation.state]);
 
   return (
-    <html lang="en" data-theme={defaultTheme}>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
-        <PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
         <Links />
       </head>
+      <body id="__remix" >
+        <FinanceIdContext.Provider value={financeId}>
+          <TooltipProvider>
+            <IconoirProvider iconProps={{ strokeWidth: 2, width: "1.5em", height: "1.5em" }}  >
+              <>
+                <Outlet />
+                <Toaster richColors />
+                {configDev.isDevelopment && configDev.features.debugScreens && (
+                  <TailwindIndicator />
+                )}
+              </>
+            </IconoirProvider>
+          </TooltipProvider>
+          <VercelAnalytics />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+          <GlobalLoading />
 
-      <body id="__remix" className={cn(defaultTheme)}>
-        <TooltipProvider>
-          <IconoirProvider
-            iconProps={{ strokeWidth: 2, width: "1.5em", height: "1.5em" }}
-          >
-            <>
-              <Outlet />
-              <Toaster />
-              {configDev.isDevelopment && configDev.features.debugScreens && (
-                <TailwindIndicator />
-              )}
-            </>
-          </IconoirProvider>
-        </TooltipProvider>
-
-        <VercelAnalytics />
-
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+        </FinanceIdContext.Provider>
+      </body >
+    </html >
   );
 }
 
@@ -189,11 +135,9 @@ export function RootDocumentBoundary({
         {title && <title>{title}</title>}
         <Links />
       </head>
-      <body id="__remix">
+      <body >
         {children}
-
         <VercelAnalytics />
-
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
@@ -204,7 +148,6 @@ export function RootDocumentBoundary({
 
 export function ErrorBoundary() {
   const error = useRouteError();
-
   if (isRouteErrorResponse(error)) {
     let message;
     switch (error.status) {
@@ -217,11 +160,9 @@ export function ErrorBoundary() {
       default:
         throw new Error(error.data || error.statusText);
     }
-
     return (
       <RootDocumentBoundary title={message}>
         <Layout
-          noThemeToggle
           isSpaced
           layoutHeader={
             <PageHeader size="sm">
@@ -244,7 +185,6 @@ export function ErrorBoundary() {
     return (
       <RootDocumentBoundary title="Sorry, unexpected error occured.">
         <Layout
-          noThemeToggle
           isSpaced
           layoutHeader={
             <PageHeader size="sm">
@@ -276,3 +216,645 @@ export function ErrorBoundary() {
     );
   }
 }
+
+
+/***
+ *              <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">
+// https://remix.run/docs/en/main/file-conventions/route-files-v2#md-root-route
+import { json, redirect } from "@remix-run/node";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useNavigation, isRouteErrorResponse, useRouteError, useParams, Form, useLocation, useFetcher, useSubmit, Link, useNavigate } from "@remix-run/react";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
+import { DashboardSpeed, IconoirProvider, LogOut, Settings, User } from "iconoir-react";
+import React, { useEffect, useState } from "react";
+import { Debug, DropdownMenu, DropdownMenuSeparator, DropdownMenuTrigger, Layout, PageHeader, TailwindIndicator, TooltipProvider, } from "~/components"; // Toaster goes here
+import financeFormSchema from '~/routes/overviewUtils/financeFormSchema';
+import { configDev, configDocumentLinks, configSite } from "~/configs";
+import { model } from "~/models";
+//import { authenticator } from "~/services";
+import { cn, createCacheHeaders, createMetaData, formatRelativeTime, getEnv } from "~/utils";
+import type { ActionArgs, ActionFunction, HeadersFunction, LinksFunction, LoaderArgs, V2_MetaDescriptor, V2_MetaFunction, } from "@remix-run/node";
+import { useRootLoaderData, type RootLoaderData } from "~/hooks";
+import GlobalSearch from "./routes/globalSearch";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "~/components/ui/tabs"
+import { Flex, Text, Button, TextArea, TextField, Heading, Select, Theme, ThemePanel, Inset } from '@radix-ui/themes';
+import FinanceIdContext from '~/other/financeIdContext';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover"
+import tailwind from '~/styles/tailwind.css';
+import font from '~/styles/font.css'
+import rbc from '~/styles/rbc.css'
+import slider from '~/styles/slider.css'
+import { Toaster, toast } from 'sonner'
+import { prisma } from "./libs";
+import Sidebar from "./components/shared/sidebar";
+import { Bell, BellRing, BookOpenCheck, MessageSquare, Milestone, X, } from 'lucide-react';
+
+
+export const links: LinksFunction = () => [
+  // { rel: "stylesheet", href: styles },
+  { rel: "stylesheet", href: tailwind },
+  { rel: "stylesheet", href: font },
+  { rel: "stylesheet", href: rbc },
+  { rel: "stylesheet", href: slider },
+
+  {
+    rel: "icon",
+    type: "image/svg",
+    sizes: "32x32",
+    href: "/money24.svg",
+  },
+  {
+    rel: "icon",
+    type: "image/svg",
+    sizes: "16x16",
+    href: "/money16.svg",
+  },
+  {
+    rel: "apple-touch-icon",
+    sizes: "180x180",
+    href: "/money180.svg",
+  },
+];
+
+export const meta: V2_MetaFunction = () => {
+  return createMetaData() satisfies V2_MetaDescriptor[];
+};
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Accept-CH": "Sec-CH-Prefers-Color-Scheme",
+  };
+};
+
+
+
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  const ENV = getEnv();
+  const userSession = await authenticator.isAuthenticated(request);
+  const user = await model.user.query.getForSession({ id: userSession?.id });
+  const readNot = await prisma.notificationsUser.findMany({
+    where: {
+      userId: user?.id,
+      read: false,
+      type: 'Note'
+      //dimiss: true,
+    },
+    take: 20,
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+  const newLeads = await prisma.notificationsUser.findMany({
+    where: {
+      userId: user?.id,
+      read: false,
+      type: 'New Lead'
+      //dimiss: true,
+    },
+    take: 20,
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+  console.log(readNot)
+  // Don't do anything extra when not logged in
+  if (!userSession) {
+    return json({
+      ENV,
+    });
+  }
+
+  // Put user and its profile data
+
+  // But if the user session is no longer valid, log it out
+  if (!user) {
+    return redirect(`/logout`);
+  }
+
+  // Finally, put the active user data to the root loader data
+  const loaderData = {
+    ENV,
+    userSession,
+    user,
+  } satisfies RootLoaderData;
+  return json({ loaderData, readNot, newLeads }, { headers: createCacheHeaders(request, 15) });
+}
+
+
+export async function action({ request, params }: ActionArgs) {
+  const formPayload = Object.fromEntries(await request.formData());
+      let account = await requireAuthCookie(request);
+    const user = await model.user.query.getForSession({ email: account.email });
+  const formData = financeFormSchema.parse(formPayload)
+  const intent = formData.intent
+
+  console.log(formData.pathname, 'inaction')
+  if (intent === 'read') {
+    await prisma.notificationsUser.update({
+      where: {
+        id: formData.id,
+      },
+      data: {
+        userId: formData.userId,
+        read: true
+      }
+    })
+    return redirect(`${formData.pathname}`);
+
+  }
+  if (intent === 'dimiss') {
+    await prisma.notificationsUser.update({
+      where: {
+        id: formData.id,
+      },
+      data: {
+        userId: formData.userId,
+
+      }
+    })
+    return redirect(`${formData.pathname}`);
+
+  }
+
+
+}
+
+export default function App() {
+  const { user, finance, readNot, newLeads, newMsgs } = useLoaderData()
+  const location = useLocation()
+  const pathname = location.pathname
+  const submit = useSubmit();
+  const [financeId, setFinanceId] = useState(null);
+  const navigate = useNavigate();
+
+  const askPermission = async () => {
+    const permission = await window.Notification.requestPermission();
+
+    if (permission !== 'granted') {
+      throw new Error('Permission not granted for Notification');
+    }
+  };
+
+  const showNotification = () => {
+    readNot.forEach(notification => {
+      new Notification('New message', {
+        body: `${notification.title} left a note: ${notification.content}`,
+        // Include any other notification options you want
+      });
+    });
+  };
+
+  const handleVisibilityChange = () => {
+    if (!document.hidden) {
+      showNotification();
+    }
+  };
+
+  useEffect(() => {
+    askPermission().then(() => {
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    });
+
+    // Clean up the effect
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    newLeads
+      .filter(notification => notification.read === false)
+      .forEach(notification => {
+        toast.message(`${notification.title}`, {
+          description: `${new Date(notification.createdAt).toLocaleString()}`,
+          duration: Infinity,
+          cancel: {
+            label: 'Read',
+            onClick: () => {
+              const formData = new FormData();
+              formData.append("financeId", notification.financeId);
+              formData.append("clientfileId", notification.clientfileId);
+              formData.append("id", notification.id);
+              formData.append("userId", notification.userId);
+              formData.append("pathname", pathname);
+              formData.append("intent", 'read');
+              submit(formData, { method: "post" })
+
+            },
+          },
+          action: {
+            label: 'Client File',
+            onClick: () => {
+              navigate(`/customer/${notification.clientfileId}/${notification.financeId}`);
+            }
+          },
+        });
+      });
+  }, [newLeads]);
+
+  useEffect(() => {
+    readNot
+      .filter(notification => notification.read === false)
+      .forEach(notification => {
+        toast.message(`${notification.title}`, { //: ${notification.content}
+          description: `${new Date(notification.createdAt).toLocaleString()}`,
+          duration: Infinity,
+          cancel: {
+            label: 'Read',
+            onClick: () => {
+              const formData = new FormData();
+              formData.append("financeId", notification.financeId);
+              formData.append("clientfileId", notification.clientfileId);
+              formData.append("id", notification.id);
+              formData.append("userId", notification.userId);
+              formData.append("pathname", pathname);
+              formData.append("intent", 'read');
+              submit(formData, { method: "post" });
+            },
+          },
+          action: {
+            label: 'Client File',
+            onClick: () => {
+              navigate(`/customer/${notification.clientfileId}/${notification.financeId}`);
+            }
+          },
+        });
+      });
+  }, [readNot, pathname, submit]);
+
+
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body id="__remix" className="bg-slate12" >
+        <FinanceIdContext.Provider value={financeId}>
+          {user?.subscriptionId === 'active' || user?.subscriptionId === 'trialing' && (
+            pathname !== '/dealer/api/fileUpload' && <>  <Sidebar />  </>)}
+
+          <TooltipProvider>
+            <IconoirProvider iconProps={{ strokeWidth: 2, width: "1.5em", height: "1.5em" }}  >
+              <>
+
+                <Outlet />
+                <Toaster richColors />
+                {configDev.isDevelopment && configDev.features.debugScreens && (
+                  <TailwindIndicator />
+                )}
+              </>
+            </IconoirProvider>
+          </TooltipProvider>
+          <VercelAnalytics />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </FinanceIdContext.Provider>
+      </body>
+    </html>
+  );
+}
+
+export function RootDocumentBoundary({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title?: string;
+}) {
+  // Cannot use useLoaderData in catch/error boundary
+  return (
+    <html lang="en" data-theme={Theme.DARK}>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <Meta />
+        {title && <title>{title}</title>}
+        <Links />
+      </head>
+      <body >
+        {children}
+        <VercelAnalytics />
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  if (isRouteErrorResponse(error)) {
+    let message;
+    switch (error.status) {
+      case 401:
+        message = `Sorry, you can't access this page.`;
+        break;
+      case 404:
+        message = `Sorry, this page is not available.`;
+        break;
+      default:
+
+
+        throw new Error(error.data || error.statusText);
+    }
+    return (
+      <RootDocumentBoundary title={message}>
+        <Layout
+
+          isSpaced
+          layoutHeader={
+            <PageHeader size="sm">
+              <h1>Error {error.status}</h1>
+              {error.statusText && <h2>{error.statusText}</h2>}
+              <p>{message}</p>
+            </PageHeader>
+          }
+        >
+          <div>
+            <p>Here's the error information that can be informed to Rewinds.</p>
+            <Debug name="error.data" isAlwaysShow isCollapsibleOpen>
+              {error.data}
+            </Debug>
+          </div>
+        </Layout>
+      </RootDocumentBoundary>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <RootDocumentBoundary title="Sorry, unexpected error occured.">
+        <Layout
+          isSpaced
+          layoutHeader={
+            <PageHeader size="sm">
+              <h1>Error from {configSite.name}</h1>
+            </PageHeader>
+          }
+        >
+          <div>
+            <p>Here's the error information that can be informed to Rewinds.</p>
+
+            <p>{error.message}</p>
+            <Debug name="error" isAlwaysShow isCollapsibleOpen>
+              {error}
+            </Debug>
+
+            <p>The stack trace is:</p>
+            <Debug name="error.stack" isAlwaysShow isCollapsibleOpen>
+              {error.stack}
+            </Debug>
+          </div>
+        </Layout>
+      </RootDocumentBoundary>
+    );
+  } else {
+    return (
+      <Layout>
+        <h1>Unknown Error</h1>
+      </Layout>
+    );
+  }
+}
+
+
+/***
+ *
+ *  function PopoverMenu() {
+    const location = useLocation()
+    const pathname = location.pathname
+    console.log()
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" className="mr-10 border-none">
+            {readNot.some(notification => notification.read === false) ? (
+              <BellRing color="#02a9ff" strokeWidth={1.5} />
+            ) : (
+              <Bell color="#02a9ff" strokeWidth={1.5} />
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[450px] bg-[#17181c]">
+          <Tabs defaultValue="Msgs" className="w-[420px] mx-auto">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="Msgs" className="text-sm">Msgs</TabsTrigger>
+              <TabsTrigger value="Updates" className="text-sm">Updates</TabsTrigger>
+              <TabsTrigger value="NewLeads" className="text-sm">New Leads</TabsTrigger>
+            </TabsList>
+            <TabsContent value="Msgs">
+              <ul>
+                {newMsgs && newMsgs.length > 0 ? (
+                  newMsgs.map((notification) => (
+                    <li key={notification.id} className="rounded-md shadow bg-[#454954] mt-2">
+                      <div className="grid grid-cols-10 p-2">
+                        <div className="grid-span-9 ">
+                          <h2 className='text-[#fff]'>{notification.title}</h2>
+                          <p className='text-[#fff]'>{notification.content}</p>
+                          <p className='text-[#fff] text-sm mt-auto'>{new Date(notification.createdAt).toLocaleString()}</p>
+                        </div>
+                        <div className="grid-span-1">
+                          <fetcher.Form method='post' className=" justify-end items-end">
+                            <input type='hidden' name='financeId' value={notification.financeId} />
+                            <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                            <input type='hidden' name='id' value={notification.id} />
+                            <input type='hidden' name='path' value={pathname} />
+                            <input type='hidden' name='intent' value='dimiss' />
+
+                            <input type='hidden' name='userId' value={notification.userId} />
+                            <Button className='text-[#fff] '>
+                              <X color="#02a9ff" size={20} strokeWidth={1.5} />
+                            </Button>
+                          </fetcher.Form>
+                          <fetcher.Form method='post'>
+                            <input type='hidden' name='financeId' value={notification.financeId} />
+                            <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                            <input type='hidden' name='id' value={notification.id} />
+                            <input type='hidden' name='userId' value={notification.userId} />
+                            <input type='hidden' name='path' value={pathname} />
+                            <input type='hidden' name='intent' value='read' />
+                            <Button className='text-[#fff] justify-center  items-center'>
+                              <BookOpenCheck size={20} color="#02a9ff" strokeWidth={1.5} />
+                            </Button>
+                          </fetcher.Form>
+                          <Link to={`/customer/${notification.clientfileId}/${notification.financeId}`} >
+                            <Button className='text-[#fff] justify-center  items-center'>
+                              <Milestone size={20} color="#02a9ff" strokeWidth={1.5} />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </li>
+                  ))
+                ) : (
+                  <p className='tezxt-[#fff]'>No notifications</p>
+                )}
+              </ul>
+            </TabsContent>
+            <TabsContent value="Updates">
+              <ul>
+                {readNot && readNot.length > 0 ? (
+                  readNot.map((notification) => (
+                    <li key={notification.id} className="rounded-md shadow bg-[#454954] mt-2">
+                      <div className="grid grid-cols-10 p-2">
+                        <div className="grid-span-9 ">
+                          <h2 className='text-[#fff]'>{notification.title}</h2>
+                          <p className='text-[#fff]'>{notification.content}</p>
+                          <p className='text-[#fff] text-sm mt-auto'>{new Date(notification.createdAt).toLocaleString()}</p>
+                        </div>
+                        <div className="grid-span-1">
+                          <fetcher.Form method='post' className=" justify-end items-end">
+                            <input type='hidden' name='financeId' value={notification.financeId} />
+                            <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                            <input type='hidden' name='id' value={notification.id} />
+                            <input type='hidden' name='path' value={pathname} />
+                            <input type='hidden' name='intent' value='dimiss' />
+
+                            <input type='hidden' name='userId' value={notification.userId} />
+                            <Button className='text-[#fff] '>
+                              <X color="#02a9ff" size={20} strokeWidth={1.5} />
+                            </Button>
+                          </fetcher.Form>
+                          <fetcher.Form method='post'>
+                            <input type='hidden' name='financeId' value={notification.financeId} />
+                            <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                            <input type='hidden' name='id' value={notification.id} />
+                            <input type='hidden' name='userId' value={notification.userId} />
+                            <input type='hidden' name='path' value={pathname} />
+                            <input type='hidden' name='intent' value='read' />
+                            <Button className='text-[#fff] justify-center  items-center'>
+                              <BookOpenCheck size={20} color="#02a9ff" strokeWidth={1.5} />
+                            </Button>
+                          </fetcher.Form>
+                          <Link to={`/customer/${notification.clientfileId}/${notification.financeId}`} >
+                            <Button className='text-[#fff] justify-center  items-center'>
+                              <Milestone size={20} color="#02a9ff" strokeWidth={1.5} />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </li>
+                  ))
+                ) : (
+                  <p className='tezxt-[#fff]'>No notifications</p>
+                )}
+              </ul>
+            </TabsContent>
+            <TabsContent value="NewLeads">
+              <ul>
+                {newLeads && newLeads.length > 0 ? (
+                  newLeads.map((notification) => (
+                    <li key={notification.id} className="rounded-md shadow bg-[#454954] mt-2">
+                      <div className="grid grid-cols-10 p-2">
+                        <div className="col-span-9 ">
+                          <h2 className='text-[#fff]'>{notification.title}</h2>
+                          <p className='text-[#fff]'>{notification.content}</p>
+                          <p className='text-[#fff] text-sm mt-auto'>{new Date(notification.createdAt).toLocaleString()}</p>
+                        </div>
+                        <div className="col-span-1">
+                          <fetcher.Form method='post' className=" justify-end items-end">
+                            <input type='hidden' name='financeId' value={notification.financeId} />
+                            <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                            <input type='hidden' name='id' value={notification.id} />
+                            <input type='hidden' name='path' value={pathname} />
+                            <input type='hidden' name='intent' value='dimiss' />
+
+                            <input type='hidden' name='userId' value={notification.userId} />
+                            <Button className='text-[#fff] '>
+                              <X color="#02a9ff" size={20} strokeWidth={1.5} />
+                            </Button>
+                          </fetcher.Form>
+                          <fetcher.Form method='post'>
+                            <input type='hidden' name='financeId' value={notification.financeId} />
+                            <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                            <input type='hidden' name='id' value={notification.id} />
+                            <input type='hidden' name='userId' value={notification.userId} />
+                            <input type='hidden' name='path' value={pathname} />
+                            <input type='hidden' name='intent' value='read' />
+                            <Button className='text-[#fff] justify-center  items-center'>
+                              <BookOpenCheck size={20} color="#02a9ff" strokeWidth={1.5} />
+                            </Button>
+                          </fetcher.Form>
+                          <Link to={`/customer/${notification.clientfileId}/${notification.financeId}`} >
+                            <Button className='text-[#fff] justify-center  items-center'>
+                              <Milestone size={20} color="#02a9ff" strokeWidth={1.5} />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </li>
+                  ))
+                ) : (
+                  <p className='tezxt-[#fff]'>No notifications</p>
+                )}
+              </ul>
+            </TabsContent>
+          </Tabs>
+        </PopoverContent>
+      </Popover>
+    )
+  }
+
+
+ * function App({ noThemeToggle }: Props) {
+  const data = useLoaderData();
+  const [theme] = useTheme();
+  const defaultTheme = theme ? theme : "dark";
+  const { user } = useLoaderData()
+  /**
+   * NProgress loading bar
+   * Alternative: https://sergiodxa.com/articles/use-nprogress-in-a-remix-app
+
+  noThemeToggle = false
+
+  return (
+    <html lang="en" data-theme={defaultTheme}>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <Meta />
+        <PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
+        <Links />
+      </head>
+      <body id="__remix" className={cn(defaultTheme)}>
+        <Sidebar />
+        <HeaderUserMenu />
+        <HeaderMainLogo noThemeToggle={noThemeToggle} />
+        <TooltipProvider>
+          <IconoirProvider
+            iconProps={{ strokeWidth: 2, width: "1.5em", height: "1.5em" }}
+          >
+            <>
+              <Outlet />
+              <Toaster />
+              {configDev.isDevelopment && configDev.features.debugScreens && (
+                <TailwindIndicator />
+              )}
+            </>
+          </IconoirProvider>
+        </TooltipProvider>
+        <VercelAnalytics />
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
+}
+interface Props {
+  noThemeToggle?: boolean;
+}
+
+*/

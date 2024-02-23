@@ -1,7 +1,6 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
-
-import type { Theme } from "remix-themes";
+import { NewLeadsNot } from '~/helpers/notifications'
 import type { UserData, UserSession } from "~/helpers";
 import type { getEnv } from "~/utils";
 
@@ -34,9 +33,9 @@ export function safeRedirect(
 
 export type RootLoaderData = {
   ENV: ReturnType<typeof getEnv>;
-  theme: Theme | undefined | null;
   userSession: UserSession | undefined;
   user: UserData | undefined;
+  notificationsNewLead: any;
 };
 
 export function useMatchesData(
@@ -47,6 +46,7 @@ export function useMatchesData(
     () => matchingRoutes.find((route) => route.id === routeId),
     [matchingRoutes, routeId]
   );
+
   return route?.data;
 }
 
@@ -55,12 +55,12 @@ export function useMatchesData(
  */
 export function useRootLoaderData() {
   const data = useMatchesData("root") as RootLoaderData;
+  const NewLeadsNotifications = NewLeadsNot()
 
   return {
     ENV: data?.ENV,
-    theme: data?.theme,
     userSession: data?.userSession,
     user: data?.user,
-    notifications: [],
+    notifications: NewLeadsNotifications,
   };
 }

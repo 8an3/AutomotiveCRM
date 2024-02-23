@@ -60,7 +60,7 @@ export function Debug({
           <pre
             className={cn(
               "my-1 overflow-scroll rounded border p-1 text-xs",
-              "border-surface-200 bg-white dark:border-surface-800 dark:bg-black",
+              "border-surface-200 bg-white  dark:bg-black",
               "whitespace-pre-wrap", // alternative: break-spaces
               className
             )}

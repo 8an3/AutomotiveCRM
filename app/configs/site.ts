@@ -8,32 +8,13 @@ import { configDev } from "~/configs";
 
 // For general
 export const configSite = {
-  domain: configDev.isDevelopment
-    ? "localhost:3000"
-    : "rewinds.mhaidarhanif.com",
+  domain: configDev.isDevelopment ? "localhost:3000" : "skylerzanth@gmail.com",
 
-  slug: "rewinds",
-  name: "Rewinds",
-  title: "Rewinds: Remix Tailwind Starter Kit",
+  slug: "Dealer Sales Assistant",
+  name: "Dealer Sales Assistant",
+  title: "Dealer Sales Assistant",
   description:
-    "Rewinds is a web app starter kit with Remix, Tailwind CSS, Radix UI, and their ecosystem. Made by @mhaidarhanif.",
-
-  links: {
-    website: "https://mhaidarhanif.com",
-    github: "https://github.com/mhaidarhanif/rewinds",
-    twitter: "https://twitter.com/mhaidarhanif",
-    youtube: "https://youtube.com/mhaidarhanif",
-    facebook: "https://facebook.com/mhaidarhanif",
-    instagram: "https://instagram.com/mhaidarhanif_",
-    devTo: "https://dev.to/mhaidarhanif",
-    hashnode: "https://hashnode.com/mhaidarhanif",
-    showwcase: "https://showwcase.com/mhaidarhanif",
-  },
-
-  twitter: {
-    site: "@mhaidarhanif",
-    creator: "@mhaidarhanif",
-  },
+    "Garaunteed to increase the effeicieny of the sales process for any sales person.",
 
   navItems: [
     { to: "/", name: "Home", icon: "home" },
@@ -56,24 +37,17 @@ export const configMeta = {
     ? "http://localhost:3000"
     : `https://${configSite?.domain}`,
   canonicalPath: "/",
-  color: "#3399cc", // EDITME
+  color: "#1f1f1f", // EDITME
   ogType: "website",
   ogImageAlt: configSite?.title,
-  ogImageType: "image/png",
-  ogImagePath: "/assets/opengraph/rewinds-og.png",
-  twitterImagePath: "/assets/opengraph/rewinds-og.png",
+  ogImageType: "money32/svg",
+  ogImagePath: "/money32.svg",
+  twitterImagePath: "/money16.svg",
   fbAppId: "",
 
   author: {
-    name: "M Haidar Hanif",
-    handle: "@mhaidarhanif",
-    url: "https://mhaidarhanif.com",
-    company: {
-      name: "Catamyst",
-      handle: "@catamyst",
-      url: "https://catamyst.com",
-    },
+    name: "D S A",
+    handle: "@dsa",
+    url: "dealersalesassistant.ca",
   },
-
-  mailingListName: "Rewind and Catalyze",
 };

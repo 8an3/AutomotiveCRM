@@ -6,13 +6,21 @@ import { requireUserRole, requireUserSession } from "~/helpers";
 import { LayoutDashboard } from "~/icons";
 import { model } from "~/models";
 import { cn, createCacheHeaders, createSitemap, invariant } from "~/utils";
+import { requireAuthCookie } from '~/utils/misc.user.server';
 
-import type { LoaderArgs } from "@remix-run/node";
+import { getSession } from "~/sessions/auth-session.server";
 
 export const handle = createSitemap();
 
-export async function loader({ request }: LoaderArgs) {
-  const { userSession, user } = await requireUserSession(request);
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+
+  const user = await model.user.query.getForSession({ email: email });
+  /// console.log(user, account, 'wquiote loadert')
+  if (!user) {
+    redirect('/login')
+  }
 
   const metrics = await model.user.query.getMetrics({ id: userSession.id });
   invariant(metrics, "User metrics not available");

@@ -2,7 +2,7 @@ import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json } from "@remix-run/node";
 import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
-import { useId } from "react";
+import React, { useId } from "react";
 import { badRequest, forbidden } from "remix-utils";
 
 import {
@@ -40,7 +40,7 @@ export const meta: V2_MetaFunction = () => {
 
 export async function loader({ request }: LoaderArgs) {
   await authenticator.isAuthenticated(request, {
-    successRedirect: "/user/dashboard",
+    successRedirect: "/checksubscription",
   });
 
   const headerHeadingText = getRandomText([
@@ -80,7 +80,7 @@ export async function action({ request }: ActionArgs) {
   }
 
   await authenticator.authenticate("user-pass", request, {
-    successRedirect: getRedirectTo(request) || "/user/dashboard",
+    successRedirect: getRedirectTo(request) || "/checksubscription",
     failureRedirect: "/register",
   });
   return json(submission);
@@ -109,121 +109,130 @@ export default function Route() {
   const { name, username, email, password } = fields;
 
   return (
-    <Layout
-      isSpaced
-      layoutHeader={
-        <PageHeader size="xs" isTextCentered>
-          <h1>{headerHeadingText}</h1>
-          <p>{headerDescriptionText}</p>
-        </PageHeader>
-      }
-    >
-      <div className="mx-auto w-full max-w-sm">
-        <RemixForm {...form.props} method="POST" className="space-y-4">
-          <fieldset
-            className="space-y-2 disabled:opacity-80"
-            disabled={isSubmitting}
-          >
-            <div className="space-y-1">
-              <Label htmlFor={name.id}>Full Name</Label>
-              <Input
-                {...conform.input(name)}
-                type="text"
-                placeholder="Your Full Name"
-                autoComplete="name"
-                autoFocus
-                required
-              />
-              {name.error && (
-                <Alert variant="danger" id={name.errorId}>
-                  {name.error}
-                </Alert>
-              )}
-            </div>
+    <div >
 
-            <div className="space-y-1">
-              <Label htmlFor={username.id}>Username</Label>
-              <Input
-                {...conform.input(username)}
-                type="text"
-                placeholder="yourname"
-                autoComplete="username"
-                required
-              />
-              {username.error && (
-                <Alert variant="danger" id={username.errorId}>
-                  {username.error}
-                </Alert>
-              )}
-              <p className="text-xs text-surface-500">
-                4 to 20 characters (letters, numbers, dot, underscore)
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor={email.id}>Email address</Label>
-              <Input
-                {...conform.input(email)}
-                type="email"
-                placeholder="you@email.com"
-                autoComplete="email"
-                required
-              />
-              {email.error && (
-                <Alert variant="danger" id={email.errorId}>
-                  {email.error}
-                </Alert>
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor={password.id}>Password</Label>
-              <InputPassword
-                {...conform.input(password)}
-                placeholder="Password (at least 8 characters)"
-                autoComplete="current-password"
-                required
-              />
-              {password.error && (
-                <Alert variant="danger" id={password.errorId}>
-                  {password.error}
-                </Alert>
-              )}
-              <p className="text-xs text-surface-500">8 characters or more</p>
-            </div>
-
-            <input type="hidden" name="redirectTo" value={redirectTo} />
-
-            <ButtonLoading
-              size="lg"
-              type="submit"
-              name="intent"
-              value="submit"
-              isSubmitting={isSubmitting}
-              loadingText="Creating account..."
-              className="w-full"
+      <Layout
+        isSpaced
+        layoutHeader={
+          <PageHeader size="xs" isTextCentered>
+            <h1>{headerHeadingText}</h1>
+            <p>{headerDescriptionText}</p>
+          </PageHeader>
+        }
+      >
+        <div className="mx-auto w-full max-w-sm">
+          <RemixForm {...form.props} method="POST" className="space-y-4">
+            <fieldset
+              className="space-y-2 disabled:opacity-80"
+              disabled={isSubmitting}
             >
-              Join {configSite.name}
-            </ButtonLoading>
-          </fieldset>
+              <div className="space-y-1">
+                <Label htmlFor={name.id}>Full Name</Label>
+                <Input
+                  {...conform.input(name)}
+                  type="text"
+                  placeholder="Your Full Name"
+                  autoComplete="name"
+                  autoFocus
+                  required
+                />
+                {name.error && (
+                  <Alert variant="danger" id={name.errorId}>
+                    {name.error}
+                  </Alert>
+                )}
+              </div>
 
-          {/* <div>
+              <div className="space-y-1">
+                <Label htmlFor={username.id}>Username</Label>
+                <Input
+                  {...conform.input(username)}
+                  type="text"
+                  placeholder="yourname"
+                  autoComplete="username"
+                  required
+                />
+                {username.error && (
+                  <Alert variant="danger" id={username.errorId}>
+                    {username.error}
+                  </Alert>
+                )}
+                <p className="text-xs text-surface-500">
+                  4 to 20 characters (letters, numbers, dot, underscore)
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor={email.id}>Email address</Label>
+                <Input
+                  {...conform.input(email)}
+                  type="email"
+                  placeholder="you@email.com"
+                  autoComplete="email"
+                  required
+                />
+                {email.error && (
+                  <Alert variant="danger" id={email.errorId}>
+                    {email.error}
+                  </Alert>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor={password.id}>Password</Label>
+                <InputPassword
+                  {...conform.input(password)}
+                  placeholder="Password (at least 8 characters)"
+                  autoComplete="current-password"
+                  required
+                />
+                {password.error && (
+                  <Alert variant="danger" id={password.errorId}>
+                    {password.error}
+                  </Alert>
+                )}
+                <p className="text-xs text-surface-500">8 characters or more</p>
+              </div>
+
+              <input type="hidden" name="redirectTo" value={redirectTo} />
+
+              <ButtonLoading
+                size="lg"
+                type="submit"
+                name="intent"
+                value="submit"
+                isSubmitting={isSubmitting}
+                loadingText="Creating account..."
+                className="w-full"
+              >
+                Join {configSite.name}
+              </ButtonLoading>
+            </fieldset>
+
+            {/* <div>
             <p>By clicking "Create {configSite.name}" you agree to our Code of Conduct, Terms of Service and Privacy Policy.</p>
           </div> */}
 
-          <div>
-            <p className="text-center">
-              <RemixLinkText
-                to={{ pathname: "/login", search: searchParams.toString() }}
-              >
-                Have an account? Login
-              </RemixLinkText>
-            </p>
-          </div>
-        </RemixForm>
+            <div>
+              <p className="text-center">
+                <RemixLinkText
+                  to={{ pathname: "/login", search: searchParams.toString() }}
+                >
+                  Have an account? Login
+                </RemixLinkText>
+              </p>
+            </div>
+          </RemixForm>
 
-        <Debug name="form">{{ actionData, fields }}</Debug>
+          <Debug name="form">{{ actionData, fields }}</Debug>
+        </div>
+      </Layout>
+
+      <div className='text-center my-auto items-center text-white  top-[50vh] '>
+        <h1>
+          The single best step in enhancing your sales strategy, I would confidently compare it against any other sales product or tool on the market to demonstrate its effectiveness.</h1>
+        <p >Guaranteed improvement in sales, regardless of your current level in the game. Are you brand new? Our intuitive, user-friendly interface will drastically reduce your training time. Are you a seasoned salesperson? We'll remove inefficiencies in your process, allowing you to spend more time closing deals rather than managing CRM tasks and processes.</p>
       </div>
-    </Layout>
+    </div>
   );
 }

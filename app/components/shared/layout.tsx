@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 
-import { SiteHeader, SiteFooter } from "~/components";
+import {  SiteFooter } from "~/components";
 import { cn } from "~/utils";
 
 import type { VariantProps } from "class-variance-authority";
@@ -30,7 +30,7 @@ export const layoutVariants = cva("", {
 
 interface Props
   extends React.HTMLAttributes<HTMLElement>,
-    VariantProps<typeof layoutVariants> {
+  VariantProps<typeof layoutVariants> {
   layoutHeader?: React.ReactNode;
   noThemeToggle?: boolean;
 }
@@ -51,7 +51,6 @@ export function Layout({
 }: Props) {
   return (
     <div className={cn("flex min-h-screen flex-col")}>
-      <SiteHeader noThemeToggle={noThemeToggle} />
 
       {layoutHeader}
 

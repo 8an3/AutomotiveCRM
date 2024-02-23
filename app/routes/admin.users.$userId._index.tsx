@@ -2,6 +2,7 @@ import { parse } from "@conform-to/react";
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { serverError } from "remix-utils";
+import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
 
 import {
   Anchor,
@@ -25,18 +26,50 @@ import {
   formatRelativeTime,
   invariant,
 } from "~/utils";
+import { prisma } from "~/libs";
+import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
+import { requireAuthCookie } from '~/utils/misc.user.server';
+
+
 
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 
 export const handle = createSitemap();
 
 export async function loader({ request, params }: LoaderArgs) {
-  invariant(params.userId, "userId not found");
-  const { user: userData } = await requireUserSession(request);
-  const isActionAllowed = requireUserRole(userData, ["ADMIN", "MANAGER"]);
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
 
-  const user = await model.adminUser.query.getById({ id: params.userId });
-  return json({ user, isActionAllowed });
+  let user = await model.user.query.getForSession({ email: email });
+  user = await prisma.user.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      role: { select: { symbol: true, name: true } },
+      profile: {
+        select: {
+          id: true,
+          headline: true,
+          bio: true,
+        },
+      },
+    },
+  });
+  if (!user) { return json({ status: 302, redirect: '/login' }); };
+  const symbol = user.role.symbol
+  if (symbol !== 'ADMIN' && symbol !== 'MANAGER' && symbol !== 'EDITOR') {
+    return redirect(`/`);
+  } else {
+    const isActionAllowed = true;
+    return isActionAllowed;
+  }
 }
 
 export async function action({ request }: ActionArgs) {
@@ -74,19 +107,17 @@ export default function Route() {
   const userImagesCount = user.images.length;
 
   return (
-    <div className="stack-lg">
+    <div className='max-w-xl  stack-lg m-5 text-white'>
       <header>
-        <div className="queue-center">
-          <span>View User</span>
+        <div className="flex space-x-3">
 
-          <ButtonLink to={`/${user.username}`} size="xs" variant="info">
-            <Eye className="size-xs" />
+          <ButtonLink to={`/${user.username}`} variant="outline">
             <span>View on Site</span>
           </ButtonLink>
 
           {isActionAllowed && (
             <>
-              <ButtonLink to="edit" size="xs" variant="warning">
+              <ButtonLink to="edit" variant="outline">
                 <EditPencil className="size-xs" />
                 <span>Edit</span>
               </ButtonLink>
@@ -94,8 +125,7 @@ export default function Route() {
               <RemixForm method="delete">
                 <input type="hidden" name="userId" value={user.id} />
                 <Button
-                  size="xs"
-                  variant="danger"
+                  variant="outline"
                   name="intent"
                   value="delete-user"
                 >
@@ -110,15 +140,15 @@ export default function Route() {
 
       <section className="card space-y-4">
         <header>
-          <div className="queue-center text-xs">
+          <div className="queue-center">
             <span>
               ID: <code>{user.id}</code>
             </span>
-            <span>•</span>
-            <span className="queue-center-sm">
-              Role: <Badge size="xs">{user.role.name}</Badge>
-            </span>
+
           </div>
+          <span className="queue-center-sm">
+            Role: <Badge>{user.role.name}</Badge>
+          </span>
 
           <div className="queue-center text-xs">
             <TooltipAuto content={<b>{formatDateTime(user.createdAt)}</b>}>
@@ -134,7 +164,6 @@ export default function Route() {
         </header>
 
         <section className="queue-center">
-          <AvatarAuto user={user} className="size-3xl" />
           <div>
             <h2>
               {user.name} (@{user.username})

@@ -14,6 +14,9 @@ import { requireUserSession } from "~/helpers";
 import { Plus, Trash } from "~/icons";
 import { model } from "~/models";
 import { createSitemap, formatPluralItems } from "~/utils";
+import { getSession } from '~/sessions/auth-session.server';
+import { prisma } from "~/libs";
+import { requireAuthCookie } from '~/utils/misc.user.server';
 
 import type { ActionArgs } from "@remix-run/node";
 
@@ -25,7 +28,15 @@ export async function loader() {
 }
 
 export async function action({ request }: ActionArgs) {
-  await requireUserSession(request);
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+
+  const user = await model.user.query.getForSession({ email: email });
+  /// console.log(user, account, 'wquiote loadert')
+  if (!user) {
+    redirect('/login')
+  }
+  if (!user) { return json({ status: 302, redirect: '/login' }); };
 
   const formData = await request.formData();
   const submission = parse(formData, {});
@@ -42,7 +53,8 @@ export default function Route() {
   const { notesCount } = useLoaderData<typeof loader>();
 
   return (
-    <div>
+    <div className='max-w-xl   mx-auto justify-center text-white'>
+
       <PageAdminHeader size="xs">
         <RemixLink to=".">
           <h1>Notes</h1>

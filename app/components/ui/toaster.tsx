@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Toast,
   ToastClose,
@@ -5,20 +7,11 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "~/components";
-import { useToast } from "~/hooks";
-
-/**
- * Toaster
- *
- * To manage the Toast component instances.
- *
- * Alternatives:
- * - React Hot Toast: https://react-hot-toast.com
- */
+} from "~/components//ui/toast"
+import { useToast } from "~/components//ui/use-toast"
 
 export function Toaster() {
-  const { toasts } = useToast();
+  const { toasts } = useToast()
 
   return (
     <ToastProvider>
@@ -34,9 +27,9 @@ export function Toaster() {
             {action}
             <ToastClose />
           </Toast>
-        );
+        )
       })}
       <ToastViewport />
     </ToastProvider>
-  );
+  )
 }

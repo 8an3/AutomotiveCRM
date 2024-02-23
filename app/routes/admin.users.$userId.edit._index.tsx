@@ -25,14 +25,27 @@ import { createSitemap, invariant } from "~/utils";
 
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { z } from "zod";
+import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
+import { requireAuthCookie } from '~/utils/misc.user.server';
+
+
 
 export const handle = createSitemap();
 
 export async function loader({ params }: LoaderArgs) {
-  invariant(params.userId, `User with id ${params.userId} not found`);
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
 
-  const [user, userRoles] = await prisma.$transaction([
-    model.adminUser.query.getById({ id: params.userId }),
+  const user = await model.user.query.getForSession({ email: email });
+  /// console.log(user, account, 'wquiote loadert')
+  if (!user) {
+    redirect('/login')
+  }
+
+  if (!user) { return json({ status: 302, redirect: '/login' }); };
+  const id = user1.id
+  const [, userRoles] = await prisma.$transaction([
+    model.adminUser.query.getById({ id: id }),
     model.userRole.query.getAll(),
   ]);
 
@@ -79,7 +92,7 @@ export default function Route() {
   }
 
   return (
-    <div className="stack">
+    <div className='max-w-xl  stack mx-auto justify-center text-white'>
       <header>
         <span>Edit User</span>
       </header>
