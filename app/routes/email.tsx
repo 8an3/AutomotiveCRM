@@ -18,37 +18,25 @@ import { google } from 'googleapis';
 import axios from "axios";
 import { RefreshToken } from "~/services/google-auth.server";
 import Sidebar from "~/components/shared/sidebar";
-import { ensureClient, getLabel, sendEmail, setToUnread, setToRead } from "./email.server";
+import { ensureClient, GetLabel, sendEmail, SetToUnread, SetToRead, GetUserEmails, MoveEmail, MoveToInbox, SetToTrash2, SaveDraft, SendEmail } from "~/routes/email.server";
 
 export async function loader({ params, request }: DataFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
   const user = await model.user.query.getForSession({ email: email });
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) { redirect('/login') }
 
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
   const tokens = session.get("accessToken")
   let refreshToken
   refreshToken = session.get("refreshToken")
   if (!refreshToken) {
-    const newUser = await prisma.user.findUnique({
-      where: {
-        email: user.email
-      }
-    })
+    const newUser = await prisma.user.findUnique({ where: { email: user.email } })
     refreshToken = newUser.refreshToken
   }
 
-
-  const oauth2Client = await ensureClient(email, tokens);
-  // const res2 = await getUserEmails(oauth2Client);
-  //const res = await sendEmail(oauth2Client);
-  //console.log('test', res, 'test')
-
-
+  const oauth2Client = await ensureClient(refreshToken, request);
 
   const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
     headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
@@ -70,19 +58,11 @@ export async function loader({ params, request }: DataFunctionArgs) {
       body: new URLSearchParams(data)
     })
     console.log(NewToken)
-  } else {
-    console.log('Authorized');
-  }
-  // Log user email and tokens
-  //console.log(userRes.data.emailAddress);
-  // console.log(tokens);
+  } else { console.log('Authorized'); }
   let fetchedEmails;
   async function GetEmailsFromFolder(labelName: any) {
     const getNewListData = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages?labelIds=${labelName.toUpperCase()}&maxResults=2&key=${API_KEY}`, {
-      headers: {
-        Authorization: 'Bearer ' + tokens,
-        Accept: 'application/json',
-      }
+      headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json', }
     });
 
     const GetEmailDetails = async (emailId, user, tokens) => {
@@ -93,7 +73,6 @@ export async function loader({ params, request }: DataFunctionArgs) {
         const emailDetails = await response.json();
         return emailDetails;
       } else {
-        // Handle error or return a default value
         console.error('Failed to fetch email details:', response.status);
         return null;
       }
@@ -188,79 +167,8 @@ export async function loader({ params, request }: DataFunctionArgs) {
 export async function action({ params, request }: DataFunctionArgs) {
 
 }
-async function refreshAccessTokenIfNeeded(user, tokens, refreshToken) {
-  // Check if the access token is valid
-  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
-    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
-  });
 
-  // If the access token is not valid, refresh it
-  if (userRes.status === 401) {
-    console.log('Unauthorized');
 
-    const data = {
-      client_id: "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
-      client_secret: "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",
-      refresh_token: refreshToken,
-      grant_type: 'refresh_token'
-    };
-
-    const response = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams(data)
-    });
-
-    if (response.ok) {
-      const responseData = await response.json();
-      return responseData.access_token;
-    } else {
-      console.error('Failed to refresh access token:', response.status);
-      return null;
-    }
-  } else {
-    console.log('Authorized');
-    return tokens;
-  }
-}
-
-// Use the function
-//const newAccessToken = await refreshAccessTokenIfNeeded(user, tokens, refreshToken);
-/** const nameMatch = senderName.match(/"([^"]+)"/);
-    const nameWithoutQuotes = nameMatch ? nameMatch[1] : senderName;
-    const emailWithoutQuotes = senderName.match(/<([^>]+)>/);
-    const emailValue = emailWithoutQuotes ? emailWithoutQuotes[1] : '';
-    const emailHeaderValue = emailDetails.payload.headers[1].value;
-    const dateRegex = /\b(\d{1,2} [a-zA-Z]+ \d{4} \d{2}:\d{2}:\d{2} [-+]\d{4})\b/;
-    const match = emailHeaderValue.match(dateRegex);
-    const extractedName = nameWithoutQuotes.replace(/<[^>]+>/, '').trim();
-
-    function getBodyData(emailDetails: any) {
-      if (emailDetails.payload.parts) {
-        const bodyData1 = emailDetails.payload.parts[1]?.body?.data;
-        if (bodyData1) { return bodyData1; }
-        const bodyData0 = emailDetails.payload.parts[0]?.body?.data;
-        if (bodyData0) { return bodyData0; }
-      }
-      return emailDetails.payload.body?.data;
-    }
-    const bodyData = getBodyData(emailDetails);
-    const body = atob(bodyData.replace(/-/g, '+').replace(/_/g, '/'))
-    console.log('Email Body:', body);
-
-    return {
-      id: emailDetails.id,
-      name: extractedName,
-      secondName: senderName,
-      subject: emailDetails.payload.headers.find(header => header.name === 'Subject').value,
-      date: match[1],
-      labels: emailDetails.labelIds,
-      email: emailValue.trim(),
-      snippet: emailDetails.snippet,
-      body: body,
-    }; */
 export default function EmailClient() {
   const { labelData, unreadEmails, tokens, user, API_KEY, getTemplates, emailDetails, oauth2Client } = useLoaderData()
 
@@ -309,13 +217,11 @@ export default function EmailClient() {
   // console.log(emails[0], 'emails')
   const EmailList = ({ emails, loading }) => {
     const navigation = useNavigation();
-
     const isSubmitting = navigation.state === "submitting";
-
     return (
       <div className="">
         {emails.map((email, index) => (
-          <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(email)}>
+          <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => { console.log(email); handleEmailClick(oauth2Client, email) }}>
             <div className="m-2 flex items-center justify-between">
               <p className="text-lg font-bold text-[#fff]">
                 {email.name}
@@ -382,18 +288,18 @@ export default function EmailClient() {
   }
 
   const GetEmailDetails = (emailId) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/${emailId}?format=full&key=${API_KEY}`, 'GET');
-  const MoveEmail = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/${email.id}/modify?key=${API_KEY}`, 'PUT', { "addLabelIds": label })
-  const MoveToInbox = (email) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/${email.id}/modify?key=${API_KEY}`, 'PUT', { "addLabelIds": 'INBOX' })
+  //const MoveEmail = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/${email.id}/modify?key=${API_KEY}`, 'PUT', { "addLabelIds": label })
+  // const MoveToInbox = (email) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/${email.id}/modify?key=${API_KEY}`, 'PUT', { "addLabelIds": 'INBOX' })
   const SetToTrash = (email) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/${email.id}/trash?key=${API_KEY}`, 'POST');
-  const SaveDraft = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/drafts?key=${API_KEY}`, 'POST', { "message": { "raw": text, } });
+  // const SaveDraft = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/drafts?key=${API_KEY}`, 'POST', { "message": { "raw": text, } });
   const DeleteDraft = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/drafts/${email.id}?key=${API_KEY}`, 'DELETE', { "message": { "raw": text, } });
   const GetDraft = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/drafts/${email.id}?key=${API_KEY}`, 'GET', { "message": { "raw": text, } });
   const SendDraft = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/drafts/send?key=${API_KEY}`, 'POST', { "id": id, "payload": { "body": { "data": text } } });
   const UpdateDraft = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/drafts/${email.id}?key=${API_KEY}`, 'POST', { "message": { "raw": text, } });
 
 
-  const CreateLabel = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/send?key=${API_KEY}`, 'POST', { "id": id, "payload": { "body": { "data": text } } });
-  const DeleteLabel = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/send?key=${API_KEY}`, 'DELETE',);
+  const CreateLabel = (id) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/send?key=${API_KEY}`, 'POST', { "id": id, "payload": { "body": { "data": text } } });
+  const DeleteLabel = (label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/send?key=${API_KEY}`, 'DELETE',);
   const UpdateLabel = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/labels/${email.id}?key=${API_KEY}`, 'POST', { "name": renameLabel, });
   const CreateLabel2 = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/labels?key=${API_KEY}`, 'POST', { "name": renameLabel, });
   const RenameLabel1 = (email, label) => fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/labels/${email.id}?key=${API_KEY}`, 'POST', { "name": renameLabel, });
@@ -413,28 +319,33 @@ export default function EmailClient() {
     //const res = await sendEmail(oauth2Client);
     //console.log('test', res, 'test')
 
-    const labelData = await getLabel(oauth2Client, label)
+    const labelData = await GetLabel(oauth2Client, label)
     return labelData
 
   }
-  const HandleSendEmail = async (oauth2Client: oauth2_v2.Oauth2, user, to, subjectLine, body) => {
+  const HandleSendEmail = async (oauth2Client, user, to, subjectLine, body) => {
     // const res2 = await getUserEmails(oauth2Client);
     //const res = await sendEmail(oauth2Client);
     //console.log('test', res, 'test')
 
-    const labelData = await getLabel(oauth2Client, user, to, subjectLine, body)
+    const labelData = await GetLabel(oauth2Client, label)
     return labelData
 
   }
   const handleEmailClick = async (email) => {
+
+
     setSelectedEmail(email);
-    // console.log(email)
+
+    console.log('email set to read', email.id)
     setReply(false)
     setOpenReply(true)
-    const emailRead = await setToRead(oauth2Client, email.id)
+    const messageId = email.id
+    console.log(messageId, 'messageid')
+    //SetToRead(messageId)
+    const setUNREAD = await fetchGmailAPI(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/${email.id}/modify?key=${API_KEY}`, 'PUT', { removeLabelIds: "UNREAD" });
 
-    return emailRead
-    console.log(selectedEmail)
+    return json({ ok: true, MoveEmail })
   };
   const HandleSetEmails = (fetchedEmails) => {
     setTimeout(() => {
@@ -642,7 +553,7 @@ export default function EmailClient() {
 
                                 <ContextMenuItem className='cursor-pointer' inset
                                   onClick={() => {
-                                    DeleteLabel(id)
+                                    DeleteLabel(email, label)
                                     toast.success(`Folder deleted.`)
                                   }} >
                                   Delete Folder
@@ -776,7 +687,7 @@ export default function EmailClient() {
   };
   const handlesetToUnread = async (email) => {
     //  console.log(email)
-    const unreadEmail = await setToUnread(oauth2Client, email.id)
+    const unreadEmail = await SetToUnread(oauth2Client, email.id)
     toast.success(`Email moved to trash.`)
     await GetEmailsFromFolder(label);
     //  setEmails(emails);

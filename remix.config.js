@@ -21,7 +21,9 @@ module.exports = {
   // assetsBuildDirectory: "public/build",
   // publicPath: "/build/",
   serverModuleFormat: "cjs",
-
+  serverDependenciesToBundle: [
+    "axios",
+  ],
   tailwind: true,
 
   future: {

@@ -7,7 +7,7 @@ import { prisma } from '../libs'
 import { createCookieSessionStorage } from '@remix-run/node'
 import axios from 'axios'
 
-export async function RefreshToken(refreshToken) {
+export async function RefreshToken(refreshTokens) {
   console.log()
   const response = await axios.post('https://oauth2.googleapis.com/token', {
     client_id: "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",

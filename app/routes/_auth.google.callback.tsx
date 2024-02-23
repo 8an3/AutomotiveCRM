@@ -34,6 +34,7 @@ export async function loader({ request, params, req }: LoaderFunction) {
   console.log(url, 'url auth google callback', url.hostname)
 
   const { tokens } = await oauth2Client.getToken(code23);
+  console.log('tokens', tokens)
   oauth2Client.setCredentials(tokens);
   const userRes = await gmail.users.getProfile({ userId: 'me' });
 
