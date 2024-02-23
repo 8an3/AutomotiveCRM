@@ -26,7 +26,7 @@ import ClientStatusCard from '../components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '../components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '../components/dashboard/calls/2DaysFromNow';
 import { dashboardAction, dashboardLoader } from "../components/actions/dashboardCalls";
-import { DocumentInputs } from '../routes/dashboard.customer.$custId'
+import { DocumentInputs } from '~/dashboard.customer.$custId'
 import IndeterminateCheckbox from "../components/dashboard/calls/InderterminateCheckbox"
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
 import { ListSelection2 } from './quoteUtils/listSelection'
