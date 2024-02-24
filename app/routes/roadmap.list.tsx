@@ -39,8 +39,8 @@ export default function Roadmap() {
 		{ type: "issue", desc: "API file upload does not work in production folder API is already in use by platfo procidor move API/file upload to dealerapi/fileupload - wip" },
 		{ type: "issue", desc: "sms messenger" },
 		{ type: "issue", desc: "extra testing on staff chat" },
-		{ type: "issue", desc: "email refresh token use revalidateOnFocus from swr to refresh tokens https://swr.vercel.app/docs/revalidation" },
 		{ type: "issue", desc: "lien payout" },
+		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins" },
 		{ type: "issue", desc: "last note column" },
 
 		{ type: "admin", desc: "export customers" },
@@ -144,6 +144,7 @@ export default function Roadmap() {
 	const DoneRoadMap = [
 		{ type: "sales process", desc: "update finance mgr lock so that the sales person can have a in queue timer" },
 		{ type: "issue", desc: "calendar - complete appointment" },
+		{ type: "issue", desc: "email refresh token use revalidateOnFocus from swr to refresh tokens https://swr.vercel.app/docs/revalidation" },
 		{ type: "Automation", desc: "integration with vercel app - wip" },
 		{ type: "user", desc: "fields to add - triggerFieldList in automations" },
 		{ type: "customer", desc: "add api to import new leads" },
