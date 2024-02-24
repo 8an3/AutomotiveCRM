@@ -23,7 +23,12 @@ import Sidebar from "~/components/shared/sidebar";
 import getAccessToken, { ensureClient, GetLabel, SetToUnread, SendEmail, MoveEmail, MoveToInbox, SetToTrash2, SaveDraft, Unauthorized } from "~/routes/email.server";
 import { templateServer } from "~/utils/emailTemplates/template.server";
 import { Cross2Icon } from '@radix-ui/react-icons';
-
+import financeFormSchema from "./overviewUtils/financeFormSchema";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "~/components/ui/hover-card"
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
 ];
@@ -186,23 +191,25 @@ export async function action({ params, request }: DataFunctionArgs) {
 
 
   if (intent === "createTemplate") {
-    const data = {
-      name: formData.name,
-      body: formData.body,
-      date: date,
-      title: formData.title,
-      category: formData.category,
-      userEmail: formData.userEmail,
-      review: formData.review,
-      attachments: formData.attachments,
-      label: formData.label,
-      dept: formData.dept,
-      type: formData.type,
-      subject: formData.subject,
-      cc: formData.cc,
-      bcc: formData.bcc,
-    };
-    const template = await templateServer(id, data, intent,);
+
+    const template = await prisma.emailTemplates.create({
+      data: {
+        name: formData.name,
+        body: formData.body,
+        date: date,
+        title: formData.title,
+        category: formData.category,
+        userEmail: formData.userEmail,
+        review: formData.review,
+        attachments: formData.attachments,
+        label: formData.label,
+        dept: formData.dept,
+        type: formData.type,
+        subject: formData.subject,
+        cc: formData.cc,
+        bcc: formData.bcc,
+      }
+    })
     console.log('create template')
 
     return json({ template, user });
@@ -251,42 +258,87 @@ export default function EmailClient() {
     const isSubmitting = navigation.state === "submitting";
     return (
       <div className="">
+
         {emails.map((email, index) => (
-          <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => {
-            console.log(email, 'emailemail');
-            async function SetTest() {
-              await handleEmailClick(email)
-            }
-            SetTest()
-          }}>
-            <div className="m-2 flex items-center justify-between">
-              <p className="text-lg font-bold text-[#fff]">
-                {email.name}
-              </p>
-              <p className="text-sm text-[#ffffff7c] ">
-                {new Date(email.date).toLocaleString()}
-              </p>
-            </div>
-            <p className="my-2 ml-2 text-sm text-[#ffffffdd]">
-              {email.subject}
-            </p>
-            <p className="my-2 ml-2 text-sm text-[#ffffff7e]">
-              {email.snippet ? email.snippet.split(' ').slice(0, 12).join(' ') + '...' : ''}
-            </p>
-            {email.labels && email.labels.map((label, index) => {
-              // Check if label.name is defined before applying replace
-              const displayLabelName = label ? label.replace('CATEGORY_', '') : '';
+          <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(email)}>
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                {/* All the content inside HoverCardTrigger should be wrapped in a single element */}
+                <div>
+                  <div className="m-2 flex items-center justify-between">
+                    <p className="text-lg font-bold text-[#fff]">
+                      {email.name}
+                    </p>
+                    <p className="text-sm text-[#ffffff7c] ">
+                      {new Date(email.date).toLocaleString()}
+                    </p>
+                  </div>
+                  <p className="my-2 ml-2 text-sm text-[#ffffffdd]">
+                    {email.subject}
+                  </p>
+                  <p className="my-2 ml-2 text-sm text-[#ffffff7e]">
+                    {email.snippet ? email.snippet.split(' ').slice(0, 12).join(' ') + '...' : ''}
+                  </p>
+                  <div className="flex justify-between">
+                    <div>
+                      {email.labels && email.labels.map((label, labelIndex) => {
+                        const displayLabelName = label ? label.replace('CATEGORY_', '') : '';
 
-              return (
-                <Badge key={index} className="m-2 border-[#fff] text-[#fff]">
-                  {displayLabelName}
-                </Badge>
-              );
-            })}
+                        return (
+                          <Badge key={labelIndex} className="m-2 border-[#fff] text-[#fff]">
+                            {displayLabelName}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                    <div></div>
+                  </div>
+                </div>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-80 bg-black">
+                <div className="flex ml-2 space-x-4">
+                  {/* ... rest of the content ... */}
+                  <Button
+                    onClick={() => {
+                      async function SetTest() {
+                        await handleEmailClick(email)
+                      }
+                      SetTest()
+                      handleReply(email)
+                      HandleGewtLabel(label)
+                      setReply(true)
+                    }}
+                    className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                    <Reply size={16} color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleReplyAll(selectedEmail)
 
-            {/* Add more fields as needed */}
+                    }}
+                    className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                    <ReplyAll size={16} color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleForward(selectedEmail)
+                    }}
+                    className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                    <Forward size={16} color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
+                  </Button>
+                  <Button onClick={() => {
+                    handleDeleteClick(selectedEmail)
+                  }}
+                    className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                    <Trash size={16} color="#ffffff" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
+                  </Button>
+                </div>
+              </HoverCardContent>
+            </HoverCard>
           </div>
         ))}
+
+
         {/*emails.map((mail) => (
           <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(mail)}>
             <div className="m-2 flex items-center justify-between">
@@ -463,7 +515,7 @@ export default function EmailClient() {
           <Button
             onClick={() => {
               GetEmailsFromFolder('DRAFT')
-              setLabel('Draft')
+
               setComposeEmail(true)
               setReply(false)
               selectedEmail(null)
@@ -498,7 +550,12 @@ export default function EmailClient() {
                                   value="newLead"
                                   type="submit"
                                   onClick={() => {
-                                    handleButtonClick(item)
+                                    //handleButtonClick(item)
+                                    HandleGewtLabel(displayLabelName)
+                                    setLabel(displayLabelName)
+                                    console.log(displayLabelName, 'ddisplayLabelName')
+
+
                                   }}
                                   className={`flex cursor-pointer items-center text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] focus:outline-none`}
                                 >
@@ -1097,59 +1154,59 @@ export default function EmailClient() {
                   onClick={() => {
                     handleReply(selectedEmail)
                   }}
-                  className={`cursor-pointer text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] focus:outline-none `}>
-                  <Reply color="#f5f4f4" strokeWidth={1.5} />
+                  className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                  <Reply color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
                 </Button>
                 <Button
                   onClick={() => {
                     handleReplyAll(selectedEmail)
 
                   }}
-                  name='intent' value='newLead' type='submit' className={`cursor-pointer text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] focus:outline-none `}>
-                  <ReplyAll color="#f5f4f4" strokeWidth={1.5} />
+                  className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                  <ReplyAll color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
                 </Button>
                 <Button
                   onClick={() => {
                     handleForward(selectedEmail)
                   }}
-                  name='intent' value='newLead' type='submit' className={`cursor-pointer text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] focus:outline-none `}>
-                  <Forward color="#f5f4f4" strokeWidth={1.5} />
+                  className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                  <Forward color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
                 </Button>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild className='mx-auto my-auto cursor-pointer mr-4'>
-                    <MoreVertical color="#f5f4f4" strokeWidth={1.5} />
+                    <MoreVertical color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56 bg-white">
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
 
-                      <DropdownMenuItem className='cursor-pointer' onClick={() => {
+                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]' onClick={() => {
                         handleReply(selectedEmail)
                       }}  >
                         Reply
                       </DropdownMenuItem>
-                      <DropdownMenuItem className='cursor-pointer'
+                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
                         onClick={() => {
                           handleReplyAll(selectedEmail)
                         }}  >
                         Reply All
                       </DropdownMenuItem>
-                      <DropdownMenuItem className='cursor-pointer'
+                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
                         onClick={() => {
                           handleReply(selectedEmail)
                         }}
                       >
                         Forward
                       </DropdownMenuItem>
-                      <DropdownMenuItem className='cursor-pointer'
+                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
                         onClick={() => {
                           SetToTrash(selectedEmail)
                           toast.success(`Email deleted!`)
                         }}  >
                         Delete
                       </DropdownMenuItem>
-                      <DropdownMenuItem className='cursor-pointer'
+                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
                         onClick={() => {
                           SetToUnread(selectedEmail)
                           toast.success(`Set to unread.`)
@@ -1161,7 +1218,7 @@ export default function EmailClient() {
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                       <DropdownMenuSub>
-                        <DropdownMenuSubTrigger className='cursor-pointer' >
+                        <DropdownMenuSubTrigger className='cursor-pointer hover:text-[#02a9ff]' >
                           Move
                         </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
@@ -1169,7 +1226,7 @@ export default function EmailClient() {
                             {labelData.labels.map((item, index) => {
                               return (
                                 <DropdownMenuItem
-                                  className='cursor-pointer'
+                                  className='cursor-pointer hover:text-[#02a9ff]'
                                   key={index}
                                   onClick={() => {
                                     MoveEmail(selectedEmail, labelName)
@@ -1255,16 +1312,21 @@ export default function EmailClient() {
 
                       <input type='hidden' name='name' defaultValue="New Template" />
                       <input type='hidden' name='title' defaultValue="New Template" />
+                      <input type='hidden' name='category' defaultValue="New Template" />
+                      <input type='hidden' name='label' defaultValue="New Template" />
+                      <input type='hidden' name='dept' defaultValue="New Template" />
+                      <input type='hidden' name='type' defaultValue="New Template" />
                       <input type='hidden' name='body' defaultValue={text} />
                       <input type='hidden' name='subject' defaultValue={subject} />
                       <input type='hidden' name='userEmail' defaultValue={user.email} />
-                      <Button onClick={() => { toast.success(`Template saved!`) }} name='intent' value='newLead' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                      <input type='hidden' name='name' defaultValue={user.name} />
+                      <Button onClick={() => { toast.success(`Template saved!`) }} name='intent' value='createTemplate' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
                         Save Template
                       </Button>
                     </Form>
                     <Button onClick={() => {
                       toast.success(`Email saved!`)
-                      SaveDraft(selectedEmail.id)
+                      SaveDraft(user, text)
                     }} name='intent' value='newLead' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
                       Save Draft
                     </Button>
@@ -1294,7 +1356,7 @@ export default function EmailClient() {
             <div className="flex justify-between border-b border-[#3b3b3b]">
               <div className="my-2 flex">
                 <select
-                  className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start ml-2 mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                   onChange={handleChange}>
                   <option value="">Select a Template</option>
                   {templates && templates.filter(template => template.type === 'email').map((template, index) => (
@@ -1306,16 +1368,21 @@ export default function EmailClient() {
                 <Form method="post" >
                   <input type='hidden' name='name' defaultValue="New Template" />
                   <input type='hidden' name='title' defaultValue="New Template" />
+                  <input type='hidden' name='category' defaultValue="New Template" />
+                  <input type='hidden' name='label' defaultValue="New Template" />
+                  <input type='hidden' name='dept' defaultValue="New Template" />
+                  <input type='hidden' name='type' defaultValue="New Template" />
                   <input type='hidden' name='body' defaultValue={text} />
                   <input type='hidden' name='subject' defaultValue={subject} />
                   <input type='hidden' name='userEmail' defaultValue={user.email} />
-                  <Button onClick={() => { toast.success(`Template saved!`) }} name='intent' value='newLead' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                  <input type='hidden' name='name' defaultValue={user.name} />
+                  <Button onClick={() => { toast.success(`Template saved!`) }} name='intent' value='createTemplate' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
                     Save Template
                   </Button>
                 </Form>
                 <Button onClick={() => {
                   toast.success(`Email saved!`)
-                  SaveDraft(selectedEmail.id)
+                  SaveDraft(selectedEmail)
                 }}
                   className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
                   Save Draft
@@ -1331,6 +1398,14 @@ export default function EmailClient() {
 
                   <Cross2Icon />
                 </Button>
+              </div>
+            </div>
+            <div className=" justify-center border-b border-[#3b3b3b]">
+              <Input placeholder='To' name='to' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-white' />
+              <Input placeholder='Subject' name='subject' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-white' />
+              <div className='mx-auto mt-2 flex w-[98%]' >
+                <Input name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-[#1c2024]  text-white' />
+                <Input name='bcc' placeholder='bcc' className='text-right mx-auto ml-1 bg-[#1c2024]  text-white' />
               </div>
             </div>
             <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#3b3b3b]">

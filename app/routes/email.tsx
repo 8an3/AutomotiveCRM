@@ -8,9 +8,11 @@ import Sidebar from "~/components/shared/sidebar";
 import { LinksFunction, json } from "@remix-run/node";
 import NotificationSystem from "./notifications";
 import slider from '~/styles/slider.css'
+import secondary from '~/styles/secondary.css'
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
+  { rel: "stylesheet", href: secondary },
 ];
 
 export const loader = async ({ request }) => {
@@ -43,8 +45,11 @@ export default function Quote() {
   return (
     <html lang="en" className="bg-black" >
       <head className="bg-black">
+
       </head>
-      <body id="__remix" className="bg-black h-full" >
+
+      <body id="__remix" className="m-0 p-0 h-[100vh] bg-black" style={{ background: '#000', margin: 0, padding: 0 }}>
+
         <Sidebar />
         <NotificationSystem />
         <Outlet />

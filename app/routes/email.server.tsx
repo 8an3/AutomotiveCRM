@@ -142,18 +142,21 @@ export async function SetToTrash2(message) {
   console.log(res.data);
   return res;
 }
-export async function SaveDraft(message, text) {
-  const modifyRequest = {
-    userId: 'me',
-    id: message.id,
-    key: API_KEY,
-    message: {
-      raw: text
-    }
+export async function SaveDraft(user, text) {
+  try {
+    const Draft = await axios.post(
+      `https://gmail.googleapis.com/gmail/v1/users/${user.id}/drafts?key=${API_KEY}`,
+      {
+        "message": {
+          "raw": text
+        }
+      }
+    );
+
+    return Draft
+  } catch (err) {
+    console.log(err);
   }
-  const res = await gmail.users.messages.modify(modifyRequest);
-  console.log(res.data);
-  return res;
 }
 
 export async function SetToRead(email, user, tokens) {
