@@ -261,80 +261,89 @@ export default function EmailClient() {
 
         {emails.map((email, index) => (
           <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(email)}>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                {/* All the content inside HoverCardTrigger should be wrapped in a single element */}
+            {/* All the content inside HoverCardTrigger should be wrapped in a single element */}
+            <div>
+              <div className="m-2 flex items-center justify-between">
+                <p className="text-lg font-bold text-[#fff]">
+                  {email.name}
+                </p>
+                <p className="text-sm text-[#ffffff7c] ">
+                  {new Date(email.date).toLocaleString()}
+                </p>
+              </div>
+              <p className="my-2 ml-2 text-sm text-[#ffffffdd]">
+                {email.subject}
+              </p>
+              <p className="my-2 ml-2 text-sm text-[#ffffff7e]">
+                {email.snippet ? email.snippet.split(' ').slice(0, 12).join(' ') + '...' : ''}
+              </p>
+              <div className="flex justify-between">
                 <div>
-                  <div className="m-2 flex items-center justify-between">
-                    <p className="text-lg font-bold text-[#fff]">
-                      {email.name}
-                    </p>
-                    <p className="text-sm text-[#ffffff7c] ">
-                      {new Date(email.date).toLocaleString()}
-                    </p>
-                  </div>
-                  <p className="my-2 ml-2 text-sm text-[#ffffffdd]">
-                    {email.subject}
-                  </p>
-                  <p className="my-2 ml-2 text-sm text-[#ffffff7e]">
-                    {email.snippet ? email.snippet.split(' ').slice(0, 12).join(' ') + '...' : ''}
-                  </p>
-                  <div className="flex justify-between">
-                    <div>
-                      {email.labels && email.labels.map((label, labelIndex) => {
-                        const displayLabelName = label ? label.replace('CATEGORY_', '') : '';
+                  {email.labels && email.labels.map((label, labelIndex) => {
+                    const displayLabelName = label ? label.replace('CATEGORY_', '') : '';
 
-                        return (
-                          <Badge key={labelIndex} className="m-2 border-[#fff] text-[#fff]">
-                            {displayLabelName}
-                          </Badge>
-                        );
-                      })}
-                    </div>
-                    <div></div>
-                  </div>
+                    return (
+                      <Badge key={labelIndex} className="m-2 border-[#fff] text-[#fff]">
+                        {displayLabelName}
+                      </Badge>
+                    );
+                  })}
                 </div>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-80 bg-black">
-                <div className="flex ml-2 space-x-4">
-                  {/* ... rest of the content ... */}
+                <div className="flex ml-2 space-x-1">
                   <Button
                     onClick={() => {
-                      async function SetTest() {
-                        await handleEmailClick(email)
-                      }
-                      SetTest()
-                      handleReply(email)
-                      HandleGewtLabel(label)
-                      setReply(true)
+                      setSelectedEmail(email);
+                      setTimeout(() => {
+                        handleReply(selectedEmail)
+                      }, 5);
+                      SetToRead(email)
                     }}
-                    className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                    className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
                     <Reply size={16} color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
                   </Button>
                   <Button
                     onClick={() => {
-                      handleReplyAll(selectedEmail)
-
+                      setSelectedEmail(email);
+                      setTimeout(() => {
+                        handleReplyAll(selectedEmail)
+                      }, 5);
+                      SetToRead(email)
                     }}
-                    className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                    className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
                     <ReplyAll size={16} color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
                   </Button>
                   <Button
                     onClick={() => {
-                      handleForward(selectedEmail)
+                      setSelectedEmail(email);
+                      setTimeout(() => {
+                        handleForward(selectedEmail)
+                      }, 5);
+                      SetToRead(email)
                     }}
-                    className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                    className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
                     <Forward size={16} color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
                   </Button>
                   <Button onClick={() => {
-                    handleDeleteClick(selectedEmail)
+                    // handleDeleteClick(selectedEmail)
+                    //  console.log(email)
+                    SetToTrash(email)
+                    toast.success(`Email moved to trash.`)
+                    //  setEmails(emails);
+                    setTimeout(() => {
+                      GetEmailsFromFolder(label);
+                    }, 5);
+                    setTimeout(() => {
+                      setSelectedEmail(emails[1]);
+                      setReply(false)
+                    }, 10);
                   }}
-                    className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                    className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
                     <Trash size={16} color="#ffffff" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
                   </Button>
                 </div>
-              </HoverCardContent>
-            </HoverCard>
+              </div>
+            </div>
+
           </div>
         ))}
 
@@ -454,7 +463,7 @@ export default function EmailClient() {
     // Make your API call to get more entries
     // Update the 'emails' state with the new entries
     // setLoading(false) when the data is fetched
-    const getNewListData = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages?labelIds=${folderNameState}&maxResults=8&pageToken=${nextPageToken}&key=${API_KEY}`, {
+    const getNewListData = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages?labelIds=${label}&maxResults=8&pageToken=${nextPageToken}&key=${API_KEY}`, {
       headers: {
         Authorization: 'Bearer ' + tokens,
         Accept: 'application/json',
@@ -805,15 +814,15 @@ export default function EmailClient() {
     setWhich('replyAll')
     setReply(true)
     setTo(null)
-    // setSubject(null)
+    setSubject(null)
     setCC(null)
     setBcc(null)
     setTimeout(() => {
       setTo(selectedEmail.email)
-      //  setSubject(selectedEmail.subject)
+      setSubject(selectedEmail.subject)
       setCC(selectedEmail.cc)
       setBcc(selectedEmail.bcc)
-    }, 0);
+    }, 5);
   };
   const handleInboxClick = async (email) => {
     //  console.log(email)
@@ -923,72 +932,6 @@ export default function EmailClient() {
     fetchAndRenderEmails();
   }, [label]);
 
-  /* something to do with templates
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log('Fetching emails...');
-      try {
-        const fetchedEmails = await Promise.all(unreadData.messages.map(async (email) => {
-          const emailDetails = await GetEmailDetails(email.id, user, tokens);
-
-          const senderName = emailDetails.payload.headers.find(header => header.name === 'From').value;
-          const nameMatch = senderName.match(/"([^"]+)"/);
-          const nameWithoutQuotes = nameMatch ? nameMatch[1] : senderName;
-          const emailWithoutQuotes = senderName.match(/<([^>]+)>/);
-          const emailValue = emailWithoutQuotes ? emailWithoutQuotes[1] : '';
-          const emailHeaderValue = emailDetails.payload.headers[1].value;
-          const dateRegex = /\b(\d{1,2} [a-zA-Z]+ \d{4} \d{2}:\d{2}:\d{2} [-+]\d{4})\b/;
-          const match = emailHeaderValue.match(dateRegex);
-          const extractedName = nameWithoutQuotes.replace(/<[^>]+>/, '').trim();
-
-          function getBodyData(emailDetails: any) {
-            if (emailDetails.payload.parts) {
-              const bodyData1 = emailDetails.payload.parts[1]?.body?.data;
-              if (bodyData1) {   return bodyData1;  }
-              const bodyData0 = emailDetails.payload.parts[0]?.body?.data;
-              if (bodyData0) { return bodyData0;  }
-            }
-            return emailDetails.payload.body?.data;
-          }
-          const bodyData = getBodyData(emailDetails);
-          const body = atob(bodyData.replace(/-/g, '+').replace(/_/g, '/'))
-          console.log('Email Body:', body);
-
-          return {
-            id: emailDetails.id,
-            name: extractedName,
-            secondName: senderName,
-            subject: emailDetails.payload.headers.find(header => header.name === 'Subject').value,
-            date: match[1],
-            labels: emailDetails.labelIds,
-            email: emailValue.trim(),
-            snippet: emailDetails.snippet,
-            body: body,
-          };
-        }));
-
-        console.log('Fetched emails before batched updates', fetchedEmails);
-        unstable_batchedUpdates(() => {
-          setEmails((prevEmails) => [...prevEmails, ...fetchedEmails.filter(Boolean)]);
-          if (selectedTemplate) {
-            setText(selectedTemplate.body);
-            setSubject(selectedTemplate.subject);
-          }
-        });
-      } catch (error) {
-        console.error('Error in fetchData:', error);
-      }
-    };
-
-    if (unreadData?.messages.length > 0) {
-      fetchData();
-    }
-  }, [unreadData, user, tokens, selectedTemplate]);
-
-*/
-
-
-
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
   const MyIFrameComponent = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -1039,15 +982,13 @@ export default function EmailClient() {
       window.localStorage.setItem("selectedEmail", serializedEmail);
     }
   }, [selectedEmail]);
-
-
-
-
-  //   <div className='p-2 prose' dangerouslySetInnerHTML={{ __html: selectedEmail.body }} />
-
+  /** {templates && templates.filter(template => template.type === 'email').map((template, index) => (
+                        <option key={index} value={template.title}>
+                          {template.title}
+                        </option>
+                      ))} */
   return (
     <>
-
       <div className="!border-1 !mx-auto !bg-black flex !w-[95%] !h-[90vh] !border !border-[#3b3b3b] mt-[60px]">
         <div className="sidebar w-[10%] border-r !border-[#3b3b3b]">
           <div className="border-b !border-[#3b3b3b]">
@@ -1056,7 +997,6 @@ export default function EmailClient() {
         </div>
         <div className="emailList !w-[35%] !border-r !border-[#3b3b3b]">
           <div className="flex items-center justify-center border-b border-[#3b3b3b]">
-
             <Tabs defaultValue="Unread" className="m-2 w-[95%]">
               <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger onClick={() => {
@@ -1123,23 +1063,25 @@ export default function EmailClient() {
                     setReply(false)
                     setOpenReply(false)
                   }}
-                  className={` ml-2 cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-
+                  className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
                   <Cross2Icon />
                 </Button>
-                <Button
-                  onClick={() => {
-                    handlesetToUnread(selectedEmail)
-                  }}
-                  variant='outline' className='text-white border-white hover:text-[#02a9ff]'>
-                  Unread
-                </Button>
+
                 <Button onClick={() => {
                   handleDeleteClick(selectedEmail)
                 }}
                   className={`cursor-pointer text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] focus:outline-none `}>
                   <Trash color="#f5f4f4" strokeWidth={1.5} className="hover:text-[#02a9ff]" />
                 </Button>
+                {label !== 'Trash' && (
+                  <Button
+                    onClick={() => {
+                      handlesetToUnread(selectedEmail)
+                    }}
+                    variant='outline' className='text-white border-white hover:text-[#02a9ff]'>
+                    Unread
+                  </Button>
+                )}
                 {label === 'Trash' && (
                   <Button onClick={() => {
                     handleInboxClick(selectedEmail)
@@ -1253,7 +1195,6 @@ export default function EmailClient() {
               </div>
             </div>
             {!reply && (
-
               <div className="m-2 rounded-md border border-[#3b3b3b]">
                 <div className="m-2 flex items-center justify-between">
                   <p className="text-bold  text-lg text-[#fff]">
@@ -1266,10 +1207,9 @@ export default function EmailClient() {
                 <p className="text-bold ml-2 text-sm text-[#fff]">
                   {selectedEmail.email}
                 </p>
-
                 <div className="m-2 flex ">
-                  <p className="mr-2 text-[#fff]">cc</p>
-                  <p className="text-[#fff]">bcc</p>
+                  {cc && (<p className="mr-2 text-[#fff]">cc</p>)}
+                  {bcc && (<p className="text-[#fff]">bcc</p>)}
                 </div>
               </div>
             )}
@@ -1288,7 +1228,6 @@ export default function EmailClient() {
                 <p className="  !text-sm  ">
                   <div className="parent-container">
                     <MyIFrameComponent />
-
                   </div>
                 </p>
               </div>
@@ -1302,7 +1241,7 @@ export default function EmailClient() {
                       className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                       onChange={handleChange}>
                       <option value="">Select a Template</option>
-                      {templates && templates.filter(template => template.type === 'email').map((template, index) => (
+                      {templates.map((template, index) => (
                         <option key={index} value={template.title}>
                           {template.title}
                         </option>

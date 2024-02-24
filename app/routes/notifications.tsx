@@ -29,23 +29,14 @@ export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   const user = await model.user.query.getForSession({ email: email });
-
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) { redirect('/login') }
   const notifications = await prisma.notificationsUser.findMany()
-
-
-  console.log(notifications, 'notifcaitoins')
-
-
   return json({ user, notifications });
 }
 
 export async function action({ request }: LoaderArgs) {
   const formData = await request.formData();
   console.log('hit action', formData)
-
   const lastMessage = formData.get("lastMessage")
   const title = formData.get('title')
   const userId = formData.get('userId')
@@ -82,17 +73,13 @@ export async function action({ request }: LoaderArgs) {
 function NotificationSkeleton() {
   return (
     <p className='text-[#fff]'>No notifications</p>
-
   )
 }
 
-
-
+let url4 = '/notifications/email'
 let url3 = '/notifications/newLead'
 let url2 = '/notifications/updates'
 let url1 = '/notifications/messages'
-
-
 
 export default function NotificationSystem() {
 
@@ -119,15 +106,19 @@ export default function NotificationSystem() {
     { refreshInterval: 180000 }
   );
 
-  const { data: notificationsNewLead, mutate } = useSWR(
+  const { data: notificationsNewLead } = useSWR(
     url3,
     (url) => fetch(url).then((res) => res.json()),
     { refreshInterval: 180000 }
   );
 
-  console.log(userMessages, 'usermsgh')
-  console.log(newUpdates, 'newUpdates')
-  console.log(notificationsNewLead, 'usermsgh')
+  const { data: notificationsEmail } = useSWR(
+    url4,
+    (url) => fetch(url).then((res) => res.json()),
+    { refreshInterval: 300000 }
+  );
+
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -429,6 +420,20 @@ export async function getStaticProps3() {
     props: {
       fallback: {
         [url3]: post,
+      },
+    },
+    revalidate: 120,
+  };
+}
+
+
+export async function getStaticProps4() {
+  const res = await fetch(url4);
+  const post = await res.json();
+  return {
+    props: {
+      fallback: {
+        [url4]: post,
       },
     },
     revalidate: 120,

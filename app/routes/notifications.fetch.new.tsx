@@ -34,6 +34,7 @@ export async function loader({ request, params }: LoaderFunction) {
           },
         });
 
+
         // Send new notifications to the client
         for (const notification of notifications) {
           send({ event: 'notification', data: JSON.stringify(notification) });

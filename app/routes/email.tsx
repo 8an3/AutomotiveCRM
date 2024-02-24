@@ -45,11 +45,8 @@ export default function Quote() {
   return (
     <html lang="en" className="bg-black" >
       <head className="bg-black">
-
       </head>
-
       <body id="__remix" className="m-0 p-0 h-[100vh] bg-black" style={{ background: '#000', margin: 0, padding: 0 }}>
-
         <Sidebar />
         <NotificationSystem />
         <Outlet />

@@ -673,6 +673,18 @@ model Communications {
   @@index([financeId])
 }
 
+model CheckLatestEmail {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userEmail     String   @unique
+  emailId       String?
+  lastEmailSent String?
+  subject       String?
+  sender        String?
+  isRead        String?
+}
+
 model CommunicationsOverview {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -809,7 +821,7 @@ model Finance {
   financeManager      String?
   email               String?
   firstName           String?
-  mileage String?
+  mileage             String?
   lastName            String?
   phone               String?
   name                String?
