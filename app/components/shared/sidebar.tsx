@@ -149,7 +149,7 @@ export default function Sidebar() {
 
             {/* MY23 */}
             <Tabs.Content
-              className="grow p-5 bg-white2 rounded-b-md outline-none focus:shadow-[0_0_0_2px] focus:shadow-black text-white"
+              className="grow p-5 bg-white2 rounded-b-md outline-none   text-white"
               value="MY23"
             >
               <h3 className='text-white '>
@@ -331,7 +331,7 @@ export default function Sidebar() {
 
             {/* MY24 */}
             <Tabs.Content
-              className="grow p-5 bg-white2 rounded-b-md outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
+              className="grow p-5 bg-white2 rounded-b-md outline-none   "
               value="MY24"
             >
               <h3 className='text-white'>
@@ -377,7 +377,7 @@ export default function Sidebar() {
 
             {/* User */}
             <Tabs.Content
-              className="grow p-5 bg-white2 rounded-b-md outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
+              className="grow p-5  rounded-b-md outline-none border-transparent   "
               value="UserNav"
             >
               <div className="flex flex-col items-start">
@@ -599,7 +599,7 @@ export default function Sidebar() {
             </Tabs.Content>
             {/* notes */}
             <Tabs.Content
-              className="grow p-5 text-white bg-white2 rounded-b-md outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
+              className="grow p-5 text-white   rounded-b-md outline-none   "
               value="Notes"
             >
               <Chat />

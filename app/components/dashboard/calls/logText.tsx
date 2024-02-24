@@ -30,7 +30,7 @@ import {
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles },];
 
-type ValuePiece = Date  | null;
+type ValuePiece = Date | null;
 // test
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
@@ -78,7 +78,6 @@ export default function LogText({ data }) {
 
   const [resultOfcall, setresultOfcall] = useState('Left Message')
   const [direction, setdirection] = useState('Outgoing')
-  const [note, setnote] = useState()
   const [title, settitle] = useState(`F/U on ${data.unit}`)
   const [contactMethod, setcontactMethod] = useState('SMS')
   //const [followUpDay] = useState(value)
@@ -120,6 +119,7 @@ export default function LogText({ data }) {
   const findNoteByCustomerId = (customerId) => {
     return latestNotes.find((note) => note && note.customerId === customerId);
   };
+  const [note, setNote] = useState()
 
   // This useEffect ensures that setNote is called only once during the component mount
   useEffect(() => {

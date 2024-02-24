@@ -22,60 +22,77 @@ const gmail = google.gmail({
 const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
 
 
-export async function ensureClient(refreshTokens, request) {
+
+const getAccessToken = async (refreshToken) => {
   try {
-    const refreshToken = await refreshAccessToken(refreshTokens)
+    const accessTokenObj = await axios.post(
+      'https://www.googleapis.com/oauth2/v4/token',
+      {
+        refresh_token: refreshToken,
+        client_id: "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
+        client_secret: "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",
+        grant_type: 'refresh_token'
+      }
+    );
 
-    const { tokens } = refreshToken;
-    console.log(refreshToken, 'refreshToken');
-    console.log(tokens.access_token, 'access_token');
+    return accessTokenObj.data.access_token;
+  } catch (err) {
+    console.log(err);
+  }
+};
+export default getAccessToken
+export function Unauthorized(refreshToken) {
+  console.log('Unauthorized');
+  const newAccessToken = getAccessToken(refreshToken)
 
+  console.log(newAccessToken, 'newAccessToken', refreshToken, 'refreshToken')
 
-    let session = await getSession(request.headers.get("Cookie"));
-    session.set("accessToken", tokens.access_token);
-    const userRes = await gmail.users.getProfile({ userId: 'me' });
-    console.log(userRes)
-    if (!userRes) { console.log('no userRes') }
+  oauth2Client.setCredentials({
+    //  refresh_token: refreshToken,
+    access_token: newAccessToken,
+  });
+  google.options({ auth: oauth2Client });
+  //  const userRes = await gmail.users.getProfile({ userId: 'me' });
+  //console.log(userRes, 'userRes')
 
-    oauth2Client.setCredentials({
-      access_token: tokens?.access_token,
-      refresh_token: refreshTokens
+  const tokens = newAccessToken
+  return tokens
+}
+export async function SendEmail(user, to, subject, text, tokens) {
+  const emailLines = [
+    `From: ${user.firstName} ${user.lastName} ${user.email}`,
+    `To: ${to}`,
+    'Content-type: text/html;charset=iso-8859-1',
+    'MIME-Version: 1.0',
+    `Subject: ${subject}`,
+    '',
+    `${text}`
+  ];
+
+  const email = emailLines.join('\r\n').trim();
+  const base64Email = btoa(unescape(encodeURIComponent(email)));
+
+  const url = `https://gmail.googleapis.com/gmail/v1/users/${encodeURIComponent(user.email)}/messages/send?key=${API_KEY}`;
+
+  try {
+    const response = await axios.post(url, {
+      raw: base64Email
+    }, {
+      headers: {
+        Authorization: `Bearer ${tokens}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
     });
 
-    return { oauth2Client, headers: { "Set-Cookie": await commitSession(session) } };
-
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.error(error);
-  } finally {
-    // Add any cleanup or finalization logic here
+    // Handle the error
   }
 }
-
-
-async function refreshAccessToken(refreshToken) {
-  try {
-    const response = await axios.post('https://oauth2.googleapis.com/token', {
-      client_id: "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
-      client_secret: "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",
-      refresh_token: refreshToken,
-      grant_type: 'refresh_token',
-    });
-
-    // Assuming the response contains the new access token
-    const accessToken = response.data.access_token;
-
-    // Log or handle the new access token as needed
-    console.log('New Access Token:', accessToken);
-
-    return { success: true, tokens: { access_token: accessToken } };
-  } catch (error) {
-    console.error('Error refreshing access token:', error.message);
-    return { success: false, error: 'Error refreshing access token' };
-  }
-}
-
-
-export async function GetUserEmails(oauth2Client: oauth2_v2.Oauth2) {
+export async function GetUserEmails() {
   const res = await gmail.users.messages.list({ userId: 'me' });
   console.log(res.data);
   return res;
@@ -92,7 +109,7 @@ export async function SetToUnread(messageId: string) {
   console.log(res.data);
   return res;
 }
-export async function MoveEmail(oauth2Client: oauth2_v2.Oauth2, message, label: string) {
+export async function MoveEmail(message, label: string) {
   const modifyRequest = {
     userId: 'me',
     id: message.id,
@@ -104,7 +121,7 @@ export async function MoveEmail(oauth2Client: oauth2_v2.Oauth2, message, label: 
   console.log(res.data);
   return res;
 }
-export async function MoveToInbox(oauth2Client: oauth2_v2.Oauth2, message) {
+export async function MoveToInbox(message) {
   const modifyRequest = {
     userId: 'me',
     id: message.id,
@@ -116,7 +133,7 @@ export async function MoveToInbox(oauth2Client: oauth2_v2.Oauth2, message) {
   console.log(res.data);
   return res;
 }
-export async function SetToTrash2(oauth2Client: oauth2_v2.Oauth2, message) {
+export async function SetToTrash2(message) {
   const modifyRequest = {
     userId: 'me',
     id: message.id,
@@ -125,7 +142,7 @@ export async function SetToTrash2(oauth2Client: oauth2_v2.Oauth2, message) {
   console.log(res.data);
   return res;
 }
-export async function SaveDraft(oauth2Client: oauth2_v2.Oauth2, message, text) {
+export async function SaveDraft(message, text) {
   const modifyRequest = {
     userId: 'me',
     id: message.id,
@@ -139,21 +156,22 @@ export async function SaveDraft(oauth2Client: oauth2_v2.Oauth2, message, text) {
   return res;
 }
 
-export async function SetToRead(messageId: any) {
-  console.log('set to read')
-  const res = await gmail.users.messages.modify({
-    userId: 'me',
-    id: messageId,
-    requestBody: {
-      "removeLabelIds": [
-        "UNREAD"
-      ]
+export async function SetToRead(email, user, tokens) {
+  const id = email.id
+  console.log(id)
+  const modifyId = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/messages/${id}/modify?key=${API_KEY}`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + tokens,
+      Accept: 'application/json',
     },
+    body: JSON.stringify({
+      removeLabelIds: "UNREAD"
+    })
   });
-  console.log(res.data);
-  return res;
+  return json({ modifyId })
 }
-export async function GetLabel(oauth2Client: any, label: string) {
+export async function GetLabel(label: string) {
   console.log(label, 'label')
   try {
     const res = await gmail.users.messages.list({
@@ -167,7 +185,7 @@ export async function GetLabel(oauth2Client: any, label: string) {
   }
 }
 
-export async function SendEmail(oauth2Client: any, user, to, subjectLine, body) {
+/**export async function SendEmail(user, to, subjectLine, body) {
   const subject = subjectLine;
   const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString('base64')}?=`;
   const messageParts = [
@@ -194,7 +212,7 @@ export async function SendEmail(oauth2Client: any, user, to, subjectLine, body) 
   console.log(res.data);
   return res.data;
 }
-
+ */
 export async function GetEmailDetails(oauth2Client: any, emailId: string) {
   const messages = await gmail.users.messages.get({
     userId: 'me',
@@ -370,4 +388,7 @@ export async function action({ params, request }: DataFunctionArgs) {
   }
 
 }
+ */
+/**
+ *
  */

@@ -17,14 +17,8 @@ interface CleanupFunction {
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
   const user = await model.user.query.getForSession({ email: email });
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
-
-  if (!user) { return json({ status: 302, redirect: '/login' }); };
+  if (!user) { redirect('/login') }
 
   return eventStream(request.signal, function setup(send) {
     async function run() {

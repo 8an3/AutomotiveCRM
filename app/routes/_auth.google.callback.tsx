@@ -24,6 +24,7 @@ const scopes = [
 ];
 
 
+
 export async function loader({ request, params, req }: LoaderFunction) {
   const queryParams23 = new URL(request.url).searchParams;
   const code23 = queryParams23.get('code')
@@ -51,6 +52,7 @@ export async function loader({ request, params, req }: LoaderFunction) {
   session.set("email", email);
   // console.log(userRes.data.emailAddress)
   let user = await prisma.user.findUnique({ where: { email: email } })
+
 
   if (user) {
     await prisma.user.update({ where: { email: email }, data: { expires_in: tokens.expires_in, refreshToken: tokens.refresh_token } })

@@ -7,3 +7,12 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.parent-container {
+  height: 100%;
+}
+
+.iframe-container {
+  margin: 0;
+  padding: 0;
+}

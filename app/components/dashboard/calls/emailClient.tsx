@@ -204,7 +204,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
   // This useEffect ensures that setNote is called only once during the component mount
   useEffect(() => {
     const foundNote = findNoteByCustomerId(data.financeId);
-    //console.log(foundNote, 'foundNote');
+    //console.log(foundNote, 'found Note');
     setNote(foundNote);
   }, [data.financeId]);
 
