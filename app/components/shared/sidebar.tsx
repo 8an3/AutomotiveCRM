@@ -382,7 +382,7 @@ export default function Sidebar() {
             >
               <div className="flex flex-col items-start">
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/email`}>
+                  <RemixNavLink to={`/email/googleClient`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"

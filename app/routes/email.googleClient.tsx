@@ -29,6 +29,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "~/components/ui/hover-card"
+import axios from "axios";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
 ];
@@ -1263,12 +1264,7 @@ export default function EmailClient() {
                         Save Template
                       </Button>
                     </Form>
-                    <Button onClick={() => {
-                      toast.success(`Email saved!`)
-                      SaveDraft(user, text)
-                    }} name='intent' value='newLead' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                      Save Draft
-                    </Button>
+
                   </div>
                   <Button
                     onClick={() => {

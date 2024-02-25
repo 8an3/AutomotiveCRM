@@ -144,15 +144,14 @@ export async function SetToTrash2(message) {
 }
 export async function SaveDraft(user, text) {
   try {
-    const Draft = await axios.post(
-      `https://gmail.googleapis.com/gmail/v1/users/${user.id}/drafts?key=${API_KEY}`,
-      {
-        "message": {
-          "raw": text
-        }
-      }
-    );
+    const Draft = await axios.post(`https://gmail.googleapis.com/gmail/v1/users/${user.id}/drafts?key=${API_KEY}`, {
+      "message": {
+        "raw": btoa(text),
 
+      }
+    }
+    );
+    console.log(Draft)
     return Draft
   } catch (err) {
     console.log(err);
