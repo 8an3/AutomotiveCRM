@@ -459,6 +459,11 @@ model Image {
   @@index([userId])
 }
 
+model GetConversation {
+  id       Int  @id @default(autoincrement())
+  jsonData Json
+}
+
 // -----------------------------------------------------------------------------
 // scripts / templates
 // -----------------------------------------------------------------------------
@@ -589,6 +594,21 @@ model UploadDocs {
   category  String?
   fileName  String?
   userId    String?
+}
+
+model TwilioSMSDetails {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  conversationSid String?
+  participantSid  String?
+  userSid         String?
+  username        String?
+  userEmail       String? @unique
+  passClient      String?
+  myPhone         String?
+  proxyPhone      String?
 }
 
 // -----------------------------------------------------------------------------

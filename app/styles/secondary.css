@@ -1,7 +1,12 @@
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
+  height: 100vh;
   background-color: #000;
+  overflow-y: hidden;
   /* Set the background color to black */
+}
+
+.socials {
+  height: 98%;
 }

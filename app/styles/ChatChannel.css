@@ -1,0 +1,166 @@
+.Dropzone {
+  width: 90%;
+  margin: auto;
+  height: 5em;
+  background-color: #fff;
+  border: 2px dashed grey;
+  border-radius: 2em;
+  opacity: 0.3;
+  visibility: visible;
+  display: block;
+  text-align: center;
+  font-size: 16px;
+  line-height: 5em;
+}
+
+.drop {
+  width: 100%;
+  height: 100%;
+  background: rgba(46, 141, 238, 0.48);
+  z-index: 130;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.active:after {
+  width: 100%;
+  height: 100%;
+  background: red;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+}
+
+.Dropzone p {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+.Highlight {
+  border: 5px dashed green;
+}
+
+input#type-a-message {
+  display: inline-block;
+  width: 500px;
+}
+
+
+
+
+.chat-channels-list {
+  border-right-width: 2px;
+  border-radius: 0 0 0 3px;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+
+
+
+#ChatWindow {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fff;
+}
+
+#SelectedChannel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#participants {
+  font-family: Monaco;
+  size: 12pt;
+}
+
+#participants,
+#messages {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  height: 100%;
+  overflow: scroll;
+}
+
+#OpenChannel {
+  display: flex;
+  flex-basis: 100%;
+  flex-direction: column;
+}
+
+.nav-pills .nav-item {
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+}
+
+
+.chat-channel-section {
+  background-color: white;
+  border-bottom: 1px solid #d9d9d9;
+  border-right: 1px solid #d9d9d9;
+  height: 100%;
+}
+
+
+.channel-item {
+
+  &:hover,
+  &.channel-item--active {
+    background-color: #008CFF;
+    cursor: pointer;
+
+
+    .channel-item-text {
+      color: white;
+    }
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.hidden {
+  display: none;
+}
+
+#root {
+  height: 100vh;
+}
+
+.chat-window-wrapper {
+  height: inherit;
+}
+
+.chat-window-container {
+  position: relative;
+  max-width: 1268px;
+  height: calc(100% - 16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto 8px auto;
+}

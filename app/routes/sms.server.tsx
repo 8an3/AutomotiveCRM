@@ -1,4 +1,5 @@
-import { json, type LoaderFunction } from '@remix-run/node';
+
+/**import { json, type LoaderFunction } from '@remix-run/node';
 
 export async function loader({ request, params }: LoaderFunction) {
   const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'
@@ -13,11 +14,8 @@ export async function loader({ request, params }: LoaderFunction) {
   return json({ response })
 }
 
-/**
  *
- *  const response = await client.conversations.v1.conversations
-    .create({ friendlyName: 'My First Conversation' })
-    .then(conversation => console.log(conversation.sid))
+ *
 
 
     const response = await client.conversations.v1.conversations('CH3435b240ad4a4515ab9525a885bfdb0b')
@@ -48,4 +46,47 @@ twilio token:chat --identity skylerzanth --chat-service-sid IS6b1701e976754278a2
     MBc2ab8623256a464b992ae13a5b4ef718
 
 
+
+
+    await client.conversations.v1.conversations.create({ friendlyName: 'My test' }).then(conversation => {
+      conversationSid = conversation.sid
+      console.log(conversation.sid)
+    })
+
+    setTimeout(async (conversationSid) => {
+      try {
+        const conversation = await client.conversations.v1.conversations(conversationSid).fetch();
+        conversationChatServiceSid = conversation.chatServiceSid;
+        console.log(conversation.chatServiceSid);
+      } catch (error) { console.error('Error fetching conversation:', error); }
+    }, 5);
+
+    setTimeout(async (conversationSid) => {
+      try {
+        const participant = await client.conversations.v1.conversations(conversationSid).participants.create({
+          'messagingBinding.address': `+1${user?.phone}`,
+          'messagingBinding.proxyAddress': proxyPhone,
+        });
+        participantSid = participant.sid;
+        console.log(participant.sid);
+      } catch (error) { console.error('Error creating participant:', error); }
+    }, 10);
+
+
+    setTimeout(async () => {
+      try {
+        const user = await client.conversations.v1.users.create({ identity: `${username}` });
+        userSid = user.sid;
+        console.log(user.sid);
+      } catch (error) {
+        console.error('Error creating user:', error);
+      }
+    }, 15);
+
+    await client.conversations.v1.conversations(conversationSid)
+      .participants
+      .create({ identity: `${username}` })
+      .then(participant => console.log(participant.sid));
+
+    convoList = await client.conversations.v1.users(userSid).userConversations.list({ limit: 20 }).then(userConversations => userConversations.forEach(u => console.log(u.friendlyName)));
  */

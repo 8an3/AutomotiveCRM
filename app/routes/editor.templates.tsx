@@ -340,7 +340,7 @@ export function Example() {
     <>
       <div className=" mx-auto mb-[5px] mt-10">
         <div className="flex h-[98vh] w-[98w] mx-auto  justify-center ">
-          <div className="w-1/3 h-[100&] border border-[#ffffff4d] grid grid-cols-1 space-y-2">
+          <div className="w-1/3 h-[100%] border border-[#ffffff4d] grid grid-cols-1 space-y-2">
             <p>{searchTemplates}</p>
             <div className="flex w-[full] items-start justify-start space-x-2 p-2">
               <DebouncedInput

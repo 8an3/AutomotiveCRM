@@ -1572,7 +1572,7 @@ export default function Shight() {
   const isSubmitting = navigation.formAction === "/user/dashboard/scripts";
   return (
     <>
-      <div className="border-1 mx-auto flex h-[85%] w-[95%] border border-[#3b3b3b]">
+      <div className=" mx-auto flex h-[85%] w-[95%] border border-[#3b3b3b]">
         <div className="sidebar w-[25%] border-r border-[#3b3b3b]">
           <div className="border-b border-[#3b3b3b]">
             <p className="text-bold  p-2 text-lg text-[#fff]">

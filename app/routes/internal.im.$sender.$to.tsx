@@ -135,7 +135,6 @@ export default function Component() {
     emitter.emit("notification", message);
   }, []);
 
-  console.log(user)
   return (
     <>
       <div className="border-1 mx-auto flex w-[95%] h-[90vh] border border-[#3b3b3b] ">

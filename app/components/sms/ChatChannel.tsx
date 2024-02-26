@@ -1,7 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
+import styles from './ChatChannel.css'
+import { Form, useLoaderData, useLocation } from '@remix-run/react';
+import { TextArea } from '../ui/textarea';
+import ChatMessages from './ChatMessage';
 
-function ChatChannel(props) {
+function ChatChannel(props, messages) {
+  const { getTemplates, user, conversations, latestNotes } = useLoaderData();
+  const [templates, setTemplates] = useState(getTemplates);
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const handleChange = (event) => {
+    const selectedTemplate = templates.find(template => template.title === event.target.value);
+    setSelectedTemplate(selectedTemplate);
+  };
+  useEffect(() => {
+    if (selectedTemplate) {
+      // Assuming you want to update the newMessage state
+      setState((prev) => ({ ...prev, newMessage: selectedTemplate.body }));
+    }
+  }, [selectedTemplate]);
+
   const [state, setState] = useState({
     newMessage: '',
     channelProxy: props.channelProxy,
@@ -24,6 +43,10 @@ function ChatChannel(props) {
         });
     }
   };
+  useEffect(() => {
+    setState((prev) => ({ ...prev, messages: messages }));
+  }, [messages]);
+
 
   useEffect(() => {
     if (state.channelProxy) {
@@ -69,8 +92,46 @@ function ChatChannel(props) {
     state.channelProxy.sendMessage({ contentType: acceptedFiles[0].type, media: acceptedFiles[0] });
   };
 
+  const $form = useRef<HTMLFormElement>(null);
+  const { key } = useLocation();
+  useEffect(
+    function clearFormOnSubmit() {
+      $form.current?.reset();
+    },
+    [key],
+  );
+  console.log(messages, 'messagaef33r3w23')
   return (
-    <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }}>
+    <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }} className='text-white'>
+      <div >
+        <div style={{ flexBasis: "100%", flexGrow: 2, flexShrink: 1, overflowY: "scroll" }}>
+          <ChatMessages identity={user.username} messages={messages} />
+        </div>
+        <div>
+          <Form ref={$form} method="post" onSubmit={sendMessage}>
+
+            <div style={{ width: "100%", display: "flex", flexDirection: "row" }}>
+              <TextArea
+                style={{ flexBasis: "100%" }}
+                placeholder="Message..."
+                name="message"
+                autoComplete="off"
+                className='bg-myColor-900 text-white rounded-d p-3 m-2 align-bottom'
+                onChange={onMessageChanged}
+                value={state.newMessage}
+                ref={textareaRef}
+              />
+
+            </div>
+          </Form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ChatChannel;
+/**  <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }}>
       <div className={styles.messages} style={{ filter: `blur(${isDragActive ? 4 : 0}px)` }}>
         <input id="files" {...getInputProps()} />
         <div style={{ flexBasis: "100%", flexGrow: 2, flexShrink: 1, overflowY: "scroll" }}>
@@ -89,7 +150,7 @@ function ChatChannel(props) {
                 autoComplete="off"
                 disabled={state.loadingState !== 'ready'}
                 onChange={onMessageChanged}
-                value={state.newMessage}
+                value={newMessage}
               />
               <button type="submit">Send</button>
             </div>
@@ -101,3 +162,4 @@ function ChatChannel(props) {
 }
 
 export default ChatChannel;
+ */
