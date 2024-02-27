@@ -25,6 +25,8 @@ import { GlobalLoading } from "./components/ui/globalLoading";
 import NProgress from "nprogress";
 import nProgressStyles from "~/styles/loader.css";
 import rbc from '~/styles/rbc.css'
+import { Provider } from 'react-redux';
+import store from './store'; // Import the Redux store
 
 export const links: LinksFunction = () => [
   // { rel: "stylesheet", href: styles },
@@ -94,25 +96,28 @@ export default function App() {
         <Links />
       </head>
       <body id="__remix" >
-        <FinanceIdContext.Provider value={financeId}>
-          <TooltipProvider>
-            <IconoirProvider iconProps={{ strokeWidth: 2, width: "1.5em", height: "1.5em" }}  >
-              <>
-                <Outlet />
-                <Toaster richColors />
-                {configDev.isDevelopment && configDev.features.debugScreens && (
-                  <TailwindIndicator />
-                )}
-              </>
-            </IconoirProvider>
-          </TooltipProvider>
-          <VercelAnalytics />
-          <ScrollRestoration />
-          <Scripts />
-          <LiveReload />
-          <GlobalLoading />
+        <Provider store={store}>
+          <FinanceIdContext.Provider value={financeId}>
+            <TooltipProvider>
+              <IconoirProvider iconProps={{ strokeWidth: 2, width: "1.5em", height: "1.5em" }}  >
+                <>
+                  <Outlet />
+                  <Toaster richColors />
+                  {configDev.isDevelopment && configDev.features.debugScreens && (
+                    <TailwindIndicator />
+                  )}
+                </>
+              </IconoirProvider>
+            </TooltipProvider>
+            <VercelAnalytics />
+            <ScrollRestoration />
+            <Scripts />
+            <LiveReload />
+            <GlobalLoading />
 
-        </FinanceIdContext.Provider>
+          </FinanceIdContext.Provider>
+        </Provider>
+
       </body >
     </html >
   );

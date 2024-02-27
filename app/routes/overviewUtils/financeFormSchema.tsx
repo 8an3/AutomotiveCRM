@@ -13,6 +13,7 @@ const financeFormSchema = z.object({
   customterState: zfd.text(z.string().optional()),
   timeOfDay: zfd.text(z.string().optional()),
   liceningDone: zfd.text(z.string().optional()),
+  conversationSid: zfd.text(z.string().optional()),
   name: zfd.text(z.string().optional()),
   partNumbers: zfd.text(z.string().optional()),
   orderNumber: zfd.text(z.string().optional()),

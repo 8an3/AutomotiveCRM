@@ -34,7 +34,6 @@ export async function loader({ request, params }: LoaderFunction) {
   if (username.length > 0 && password.length > 0) {
     callToken = await getToken(username, password)
       .then((token) => {
-        console.log(token)
         newToken = token
       })
       .catch(() => {

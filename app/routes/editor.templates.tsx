@@ -1108,8 +1108,10 @@ export function Example() {
 
 
 
-                            <div className=" p-1">
-                              <div className="mr-auto px-2">
+                            <div className="p-1">
+                              <div className="mr-auto px-2 align-content-end place-items-end place-content-end  flex mt-auto justify-self-end justify-items-end justify-end
+                              flex-wrap-reverse
+                              ">
                                 {/*  <RichTextExample /> */}
                                 <Textarea
                                   defaultValue={text}

@@ -4,7 +4,7 @@ import styles from './ChatChannel.css'
 import { Form, useLoaderData, useLocation } from '@remix-run/react';
 import { TextArea } from '../ui/textarea';
 import ChatMessages from './ChatMessage';
-
+import { twilio } from 'twilio'
 function ChatChannel(props, messages) {
   const { getTemplates, user, conversations, latestNotes } = useLoaderData();
   const [templates, setTemplates] = useState(getTemplates);
@@ -110,13 +110,13 @@ function ChatChannel(props, messages) {
         <div>
           <Form ref={$form} method="post" onSubmit={sendMessage}>
 
-            <div style={{ width: "100%", display: "flex", flexDirection: "row" }}>
+            <div className='content-end' style={{ width: "100%", display: "flex", flexDirection: "row" }}>
               <TextArea
                 style={{ flexBasis: "100%" }}
                 placeholder="Message..."
                 name="message"
                 autoComplete="off"
-                className='bg-myColor-900 text-white rounded-d p-3 m-2 align-bottom'
+                className='bg-myColor-900 text-white rounded-d p-3 m-2 align-bottom mt-auto'
                 onChange={onMessageChanged}
                 value={state.newMessage}
                 ref={textareaRef}
@@ -129,8 +129,10 @@ function ChatChannel(props, messages) {
     </div>
   );
 }
-
 export default ChatChannel;
+
+
+
 /**  <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }}>
       <div className={styles.messages} style={{ filter: `blur(${isDragActive ? 4 : 0}px)` }}>
         <input id="files" {...getInputProps()} />

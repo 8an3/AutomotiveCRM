@@ -6,7 +6,7 @@ import Sidebar from "~/components/shared/sidebar";
 import { type LinksFunction, json, type LoaderFunction } from "@remix-run/node";
 import NotificationSystem from "./notifications";
 
-import ChatApp from "../components/sms/ChatApp";
+import ChatApp from "../components/sms/bkdonotuse";
 import { useEffect } from 'react'
 import axios from "axios";
 import slider from '~/styles/slider.css'
@@ -88,14 +88,12 @@ export async function loader({ request, params }: LoaderFunction) {
         // Create a conversation
         const conversation = await client.conversations.v1.conversations.create({ friendlyName: 'My test' });
         const conversationSid = conversation.sid;
-        console.log(conversationSid, 'conversationSid');
 
         // Fetch conversation details
         await delay(50);
         try {
           const fetchedConversation = await client.conversations.v1.conversations(conversationSid).fetch();
           conversationChatServiceSid = fetchedConversation.chatServiceSid;
-          console.log(fetchedConversation.chatServiceSid, 'fetchedConversation.chatServiceSid');
         } catch (error) { console.error('Error fetching conversation:', error); }
 
         // Create a participant/customer
@@ -106,7 +104,6 @@ export async function loader({ request, params }: LoaderFunction) {
             'messagingBinding.proxyAddress': proxyPhone,
           });
           participantSid = participant.sid;
-          console.log(participant.sid, 'participant.sid');
         } catch (error) { console.error('Error creating participant:', error); }
 
         // Create a user // need tog et rid of this when when wqe use this to create convos
@@ -114,7 +111,6 @@ export async function loader({ request, params }: LoaderFunction) {
         try {
           const createdUser = await client.conversations.v1.users.create({ identity: `${username}` });
           userSid = createdUser.sid;
-          console.log(createdUser.sid, 'createdUser.sid');
         } catch (error) { console.error('Error creating user:', error); }
 
         // Create a participant for the user/employee
@@ -123,7 +119,6 @@ export async function loader({ request, params }: LoaderFunction) {
           const userParticipant = await client.conversations.v1.conversations(conversationSid)
             .participants
             .create({ identity: `${username}` });
-          console.log(userParticipant.sid);
           userSid = userParticipant.sid
         } catch (error) { console.error('Error creating user:', error); }
 
@@ -167,7 +162,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const getTexts = await client.conversations.v1.conversations('CH4f08622d81c34b4ea947f8ea233148a5')
     .messages
     .list({ limit: 200 })
-  console.log(getTexts, 'getextsa')
+
   return json({ convoList, callToken, username, newToken, user, password, getTexts })
 }
 
@@ -188,7 +183,7 @@ export default function Quote() {
       <div className="socials">
         <Sidebar />
         <NotificationSystem />
-        <ChatApp />
+        <Outlet />
       </div>
     </>
   );

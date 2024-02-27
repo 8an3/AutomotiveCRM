@@ -378,6 +378,11 @@ export async function FollowUpApt(formData, user, userId) {
     resultOfcall: 'Attempted',
     userId,
   };
+  setTimeout(() => {
+    if (selectedChannel) {
+
+    }
+  }, []);
 
   const nextAppointment = newDate
   const followUpDay = newDate
@@ -446,6 +451,8 @@ export async function ConvertDynamic(finance) {
   const emailBody = replaceTemplateValues(template, values);
   return emailBody
 }
+
+
 export const dashboardAction: ActionFunction = async ({ req, request, params, }) => {
   const formPayload = Object.fromEntries(await request.formData())
   const formData = financeFormSchema.parse(formPayload);

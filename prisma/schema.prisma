@@ -460,8 +460,11 @@ model Image {
 }
 
 model GetConversation {
-  id       Int  @id @default(autoincrement())
-  jsonData Json
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  jsonData  Json
+  userEmail String?
 }
 
 // -----------------------------------------------------------------------------
