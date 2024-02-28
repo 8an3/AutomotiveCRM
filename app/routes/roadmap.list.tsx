@@ -42,6 +42,7 @@ export default function Roadmap() {
 		{ type: "issue", desc: "lien payout" },
 		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins" },
 		{ type: "issue", desc: "last note column" },
+		{ type: "issue", desc: "put customer coms in cuterom file not bike file" },
 
 		{ type: "admin", desc: "export customers" },
 		{ type: "admin", desc: "export parts" },

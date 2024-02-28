@@ -391,6 +391,16 @@ export default function Sidebar() {
                     </Button>
                   </RemixNavLink>
                 </Dialog.Close>
+                <Dialog.Close asChild>
+                  <RemixNavLink to={`/sms/app`}>
+                    <Button
+                      variant="link"
+                      className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
+                    >
+                      SMS Client
+                    </Button>
+                  </RemixNavLink>
+                </Dialog.Close>
 
                 <Dialog.Close asChild>
                   <RemixNavLink to={`/leads/sales`}>

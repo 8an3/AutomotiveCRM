@@ -76,6 +76,7 @@ const financeFormSchema = z.object({
   tradeDesc: zfd.text(z.string().optional()),
   financeId: zfd.text(z.string().optional()),
   iRate: zfd.text(z.string().optional()),
+  message: zfd.text(z.string().optional()),
   tradeValue: zfd.text(z.string().optional()),
   messageContent: zfd.text(z.string().optional()),
   messageTitle: zfd.text(z.string().optional()),

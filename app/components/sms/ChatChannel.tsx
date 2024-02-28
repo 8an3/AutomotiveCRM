@@ -5,6 +5,7 @@ import { Form, useLoaderData, useLocation } from '@remix-run/react';
 import { TextArea } from '../ui/textarea';
 import ChatMessages from './ChatMessage';
 import { twilio } from 'twilio'
+
 function ChatChannel(props, messages) {
   const { getTemplates, user, conversations, latestNotes } = useLoaderData();
   const [templates, setTemplates] = useState(getTemplates);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import slider from '~/styles/slider.css'
 import secondary from '~/styles/secondary.css'
 import ChatChannel from '~/styles/ChatChannel.css'
@@ -16,7 +16,7 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: messageBubble },
 ];
 
-function ChannelsList({ channels, selectedChannelSid, onChannelClick, messages }) {
+function ChannelsList({ channels, selectedChannel, onChannelClick, messages }) {
   if (!Array.isArray(channels) || channels.length === 0) {
     // If channels is not an array or doesn't exist, handle it accordingly
     return <p>No channels available.</p>;
@@ -28,7 +28,7 @@ function ChannelsList({ channels, selectedChannelSid, onChannelClick, messages }
 
       <ul>
         {channels.map((item, index) => {
-          const activeChannel = item.conversationSid === selectedChannelSid;
+          const activeChannel = item.conversationSid === selectedChannel;
           const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
           console.log(item)
           const currentDate = new Date();

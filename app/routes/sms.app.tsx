@@ -1,8 +1,8 @@
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, RefObject } from "react";
 import { Loader2 } from "../icons";
 import { Outlet, useFetcher, useLoaderData, useActionData, Form, useLocation, useSubmit } from '@remix-run/react';
-import { Textarea } from '../ui/Textarea';
+import { Textarea } from '../ui/textarea';
 import { setMessages, setSelectedChannel } from '~/actions/actions';
 import axios from "axios";
 import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
@@ -19,6 +19,7 @@ import { MessageSquarePlus } from 'lucide-react';
 import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, ButtonLoading } from "~/components/ui";
 import financeFormSchema from "./overviewUtils/financeFormSchema";
 import { useDispatch, connect, useSelector } from 'react-redux';
+import { toast } from "sonner"
 
 
 export const links: LinksFunction = () => [
@@ -132,7 +133,7 @@ export async function loader({ request, params }: LoaderFunction) {
         try {
           const userConversations = await client.conversations.v1.users(userSid).userConversations.list({ limit: 20 });
           convoList = userConversations; // Update convoList with the fetched conversations
-          userConversations.forEach(u => console.log(u.friendlyName));
+          //   userConversations.forEach(u => console.log(u.friendlyName));
         } catch (error) { console.error('Error creating user:', error); }
 
 
@@ -165,25 +166,27 @@ export async function loader({ request, params }: LoaderFunction) {
   const conversation = await prisma.getConversation.findFirst({
     where: { userEmail: user.email }
   });
-  let getTexts
+  let getText
   if (conversation) {
     const storeObject = JSON.parse(conversation.jsonData);
-    console.log(storeObject);
+    // console.log(storeObject);
 
     // Extract conversationSid from the first object in the array
     const conversationSid = storeObject[0].conversationSid;
 
     if (conversationSid) {
-      console.log(conversationSid, 'channels');
-      getTexts = await client.conversations.v1.conversations(conversationSid)
+      //  console.log(conversationSid, 'channels');
+      getText = await client.conversations.v1.conversations(conversationSid)
         .messages
         .list({ limit: 200 });
     } else {
       console.log('conversationSid is undefined');
     }
   }
+  const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user?.email, }, });
 
-  return json({ convoList, callToken, username, newToken, user, password, getTexts })
+
+  return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates })
 }
 
 export async function action({ request, }: ActionFunction) {
@@ -203,7 +206,7 @@ export async function action({ request, }: ActionFunction) {
     const GetConvo = await client.conversations.v1.conversations(convoId).messages.list({ limit: 20 })
 
 
-    console.log(GetConvo, email, 'what isa this ')
+    // console.log(GetConvo, email, 'what isa this ')
     const result = await prisma.getConversation.create({
       data: {
         jsonData: JSON.stringify(GetConvo),
@@ -212,63 +215,71 @@ export async function action({ request, }: ActionFunction) {
     });
     return json({ result });
   }
+  if (intent === 'sendMessage') {
+    const sid = formData.conversationSid
+    const message = formData.message
+    const convoId = sid
+    const phone = formData.phone
+    await client.conversations.v1.conversations(convoId)
+      .messages
+      .create({ author: phone, body: message })
+      .then(message => console.log(message.sid));
+    return null
+  }
 
   return null
 }
 
-async function LetsTry(selectedChannelSid) {
-  const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'
-  const authToken = 'd38e2fd884be4196d0f6feb0b970f63f'
-  const client = require('twilio')(accountSid, authToken);
-  const saveMessages = await client.conversations.v1.conversations(selectedChannelSid).messages.list({ limit: 30 });
-  // .then(messages => messages.forEach(m => console.log(m.sid)));
-  console.log(saveMessages, 'messages')
-  return saveMessages
-}
 
-const ChatApp = () => {
-  const { convoList, callToken, username, newToken, user, getTexts, } = useLoaderData()
-  const { getTemplates, conversations, latestNotes } = useLoaderData();
+const ChatApp = (item) => {
+  const { convoList, callToken, username, newToken, user, getText, getTemplates, conversations, latestNotes, } = useLoaderData()
   const [templates, setTemplates] = useState(getTemplates);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const data = useActionData<typeof action>();
-  const messages2 = useSelector((state) => state.messages);
-  const selectedChannelSid2 = useSelector((state) => state.selectedChannelSid);
+  const [text, setText] = useState('');
+
   const fetcher = useFetcher()
   const submit = useSubmit();
-  const TextareaRef = React.useRef<HTMLTextareaElement>(null);
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const handleChange = (event) => {
     const selectedTemplate = templates.find(template => template.title === event.target.value);
     setSelectedTemplate(selectedTemplate);
   };
 
-  useEffect(() => {
+
+
+  React.useEffect(() => {
     if (selectedTemplate) {
-      // Assuming you want to update the newMessage state
-      setState((prev) => ({ ...prev, newMessage: selectedTemplate.body }));
+      setText(selectedTemplate.body);
     }
   }, [selectedTemplate]);
-  const [name, setName] = useState(username);
   const [loggedIn, setLoggedIn] = useState(user.email);
-  const [token, setToken] = useState(newToken);
   const [statusString, setStatusString] = useState("Fetching credentials…");
+  let multipliedConvoList = [];
+  for (let i = 0; i < 30; i++) {
+    multipliedConvoList = multipliedConvoList.concat(convoList);
+  }
+  const [channels, setChannels] = useState(multipliedConvoList);
+  const [selectedChannelSid, setSelectedChannelSid] = useState([]);
+  const [currentConversation, setCurrentConversation] = useState(null);
+  const [messages, setMessages] = useState(getText);
+  const [messagesConvo, setMessagesConvo] = useState([]);
+  const [message, setMessage] = useState(messages || null);
   const [chatReady, setChatReady] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState('');
-  const [channels, setChannels] = useState(Array.from({ length: 20 }, (_, index) => convoList[index % convoList.length]));
-  const [selectedChannelSid, setSelectedChannelSid] = useState(selectedChannelSid2 || null);
-  const [newMessage, setNewMessage] = useState("");
-  const [client, setClient] = useState();
-  const [currentConversation, setCurrentConversation] = useState(null);
-  const [isTyping, setIsTyping] = useState(false);
-  const [messages, setMessages] = useState(getTexts);
-  const [message, setMessage] = useState(messages2 || null);
-  const [messagedB, setMessagedB] = useState(getTexts);
-
-
-
   const $form = useRef<HTMLFormElement>(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [client, setClient] = useState();
+  const [newMessage, setNewMessage] = useState("");
+  const [token, setToken] = useState(newToken);
+  const [name, setName] = useState(username);
+  const [to, setTo] = useState('');
+  const [from, setFrom] = useState('');
+  const [conversation_sid, setConversation_sid] = useState('');
+
   const { key } = useLocation();
   useEffect(
     function clearFormOnSubmit() {
@@ -292,40 +303,6 @@ const ChatApp = () => {
 
   const selectedChannel = Array.isArray(channels) ? channels.find((it) => it.sid === selectedChannelSid) : null;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Assuming LetsTry returns a Promise
-        const result = await LetsTry(selectedChannelSid);
-        // Assuming the result is an array, otherwise adjust accordingly
-        const filteredResults = result.filter(message => message.conversationSid === selectedChannelSid);
-        setMessages(filteredResults);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    if (selectedChannelSid) {
-      fetchData();
-    }
-  }, [selectedChannelSid]);
-
-
-  useEffect(() => {
-    if (selectedChannel) {
-      const handleMessagesUpdate = (newMessages) => {
-        dispatch(setMessages(newMessages));
-      };
-
-      const handleSelectedChannelUpdate = (channelSid) => {
-        dispatch(setSelectedChannel(channelSid));
-      };
-      handleSelectedChannelUpdate()
-      handleMessagesUpdate()
-    }
-  }, []);
-
-  console.log(token, 'tokenteokejkoer')
   useEffect(() => {
 
     const initConversations = async () => {
@@ -424,41 +401,53 @@ const ChatApp = () => {
     boundChannels: new Set(),
   });
 
-  const sendMessage = event => {
-    event.preventDefault();
-    const message = state.newMessage;
-    setState(prevState => ({ ...prevState, newMessage: '' }));
-    state.channelProxy.sendMessage(message);
-  };
 
-  const onMessageChanged = event => {
-    setState(prevState => ({ ...prevState, newMessage: event.target.value }));
-  };
+
+
   if (selectedChannelSid) {
     channelContent = (
-      <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }} className='text-white'>
-        <div >
-          <div style={{ flexBasis: "100%", flexGrow: 2, flexShrink: 1, overflowY: "scroll" }}>
-            <ChatMessages identity={user.username} messages={messages} />
+      <div onClick={() => { }} id="OpenChannel" className='text-white'>
+        <div className='messagesFieldSZ w-[100%]' style={{ overflowY: "scroll" }}>
+          <ChatMessages identity={`+1${user.phone}`} messages={messagesConvo} />
+        </div>
+        <div className="mb-auto   rounded-md  border-[#3b3b3b]">
+          <div className="flex">
+            <select
+              className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+              onChange={handleChange}>
+              <option value="">Select a Template</option>
+              {templates.map((template, index) => (
+                <option key={index} value={template.title}>
+                  {template.title}
+                </option>
+              ))}
+            </select>
           </div>
-          <div>
-            <Form ref={$form} method="post" onSubmit={sendMessage}>
 
-              <div style={{ width: "100%", display: "flex", flexDirection: "row" }}>
-                <Textarea
-                  style={{ flexBasis: "100%" }}
-                  placeholder="Message..."
-                  name="message"
-                  autoComplete="off"
-                  className='bg-myColor-900 text-white rounded-d p-3 m-2 align-bottom content-end'
-                  onChange={onMessageChanged}
-                  value={state.newMessage}
-                  ref={TextareaRef}
-                />
+          <fetcher.Form ref={$form} method="post"  >
+            <input className='w-full p-2' type="hidden" name='phone' defaultValue={`+1${user.phone}`} />
+            <input className='w-full p-2' type="hidden" name='intent' defaultValue='sendMessage' />
+            <input className='w-full p-2' type="hidden" name='conversationSid' defaultValue={conversation_sid} />
 
-              </div>
-            </Form>
-          </div>
+            <Input
+              placeholder="Message..."
+              name="message"
+              autoComplete="off"
+              className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-white  mb-2'
+              value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)}
+              onClick={() => {
+                toast.success(`Email sent!`)
+                if (selectedChannelSid) {
+                  setConversation_sid(selectedChannelSid)
+
+                }
+                setTimeout(() => {
+                  SendMessage(item, user)
+                }, 5);
+              }}
+            />
+            <Button type='submit' variant='outline'>Send</Button>
+          </fetcher.Form>
         </div>
       </div>
     );
@@ -469,28 +458,6 @@ const ChatApp = () => {
     channelContent = "";
   }
 
-  const filterdMessages = [
-    {
-      accountSid: 'AC9b5b398f427c9c925f18f3f1e204a8e2',
-      conversationSid: 'CH4f08622d81c34b4ea947f8ea233148a5',
-      sid: 'IM9eea9b7285c14f008bbb6f84cf84026c',
-      index: 0,
-      author: '+16138980992',
-      body: 'Yo',
-      media: null,
-      attributes: '{}',
-      participantSid: 'MB36eb650fefb04c1d806c4d31c3396a02',
-      dateCreated: '2024-02 - 26T00:00: 23.000Z',
-      dateUpdated: '2024-02 - 26T00:00: 23.000Z',
-      url: 'https://conversations.twilio.com/v1/Conversations/CH4f08622d81c34b4ea947f8ea233148a5/Messages/IM9eea9b7285c14f008bbb6f84cf84026c',
-      delivery: null,
-      links: {
-        delivery_receipts: 'https://conversations.twilio.com/v1/Conversations/CH4f08622d81c34b4ea947f8ea233148a5/Messages/IM9eea9b7285c14f008bbb6f84cf84026c/Receipts',
-        channel_metadata: 'https://conversations.twilio.com/v1/Conversations/CH4f08622d81c34b4ea947f8ea233148a5/Messages/IM9eea9b7285c14f008bbb6f84cf84026c/ChannelMetadata'
-      },
-      contentSid: null
-    }
-  ]
   if (!Array.isArray(channels) || channels.length === 0) {
     // If channels is not an array or doesn't exist, handle it accordingly
     return <p>No channels available.</p>;
@@ -498,119 +465,169 @@ const ChatApp = () => {
   if (loggedIn) {
     return (
       <div className="mx-auto mt-[65px] flex h-[93%] w-[95%] border border-[#3b3b3b] bg-black">
-        <div className="grid h-[100%] w-1/4 max-w-[25%] grid-cols-1 space-y-2 border border-[#ffffff4d]">
-          <div className="flex justify-center border-b border-r border-[#3b3b3b] ">
+        <div className="flex flex-col w-[25%] max-w-[25%] space-y-2 border border-[#ffffff4d]">
+          <div className="tabListSZ mx-auto flex w-full border-b border-[#3b3b3b]">
+            <Tabs defaultValue="New Chat" className="m-2 mx-auto w-[95%] justify-start">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger onClick={() => {
 
-            <div className="flex items-center justify-center border-b border-[#3b3b3b]">
-              <Tabs defaultValue="New Chat" className="m-2 w-[95%]">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger onClick={() => {
+                }} value="New Chat">
+                  <p className=" text-[#fff]">
+                    New Chat
+                  </p>
+                </TabsTrigger>
+                <TabsTrigger
+                  onClick={() => {
 
-                  }} value="New Chat">
-                    <p className=" text-[#fff]">
-                      New Chat
+                  }}
+                  value="SMS">
+                  SMS
+                </TabsTrigger>
+                <TabsTrigger
+                  onClick={() => {
+
+                  }}
+                  value="Staff Chat">
+                  Staff Chat
+                </TabsTrigger>
+                <TabsTrigger
+                  onClick={() => {
+
+                  }}
+                  value="Facebook">
+                  Facebook
+                </TabsTrigger>
+
+              </TabsList>
+            </Tabs>
+          </div>
+          <ul className="top-0 overflow-y-scroll grow" >
+            {channels.map((item, index) => {
+              const currentDate = new Date();
+
+              const activeChannel = item.conversationSid === selectedChannelSid;
+              const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
+
+              const itemDate = new Date(item.dateUpdated);
+              let formattedDate;
+              if (
+                itemDate.getDate() === currentDate.getDate() &&
+                itemDate.getMonth() === currentDate.getMonth() &&
+                itemDate.getFullYear() === currentDate.getFullYear()
+              ) {
+                formattedDate = itemDate.toLocaleTimeString();
+              } else {
+                formattedDate = itemDate.toLocaleDateString();
+              }
+
+              return (
+                <li
+                  key={index}
+                  onClick={async (event) => {
+                    /*
+                    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+                    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+                    const conversationSid = item.conversationSid
+
+                    const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}`;
+                    const credentials = `${accountSid}:${authToken}`;
+                    const base64Credentials = btoa(credentials);
+
+                    const andThennn = fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
+                    console.log(andThennn, 'and then? no and then!!! and thennnn???')
+                          */
+                    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+                    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+                    const conversationSid = item.conversationSid; // Replace with the actual conversationSid
+                    const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
+                    const credentials = `${accountSid}:${authToken}`;
+                    const base64Credentials = btoa(credentials);
+
+                    fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
+                      .then(response => response.json())
+                      .then(data => {
+                        setMessagesConvo(data.messages);
+                      })
+                      .catch(error => console.error('Error:', error));
+                    setSelectedChannelSid(item.conversationSid);
+                    console.log(selectedChannelSid)
+                  }}
+                  className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
+                  <div className=' w-[95%] '>
+                    <input type='hidden' name='conversationSid' defaultValue={item} />
+                    <input type='hidden' name='intent' defaultValue='getConversation' />
+                    <div className="m-2 flex items-center justify-between">
+                      <span className="text-lg font-bold text-white">
+                        <strong>{item.friendlyName || item.sid}</strong>
+                      </span>
+                      <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                        {formattedDate}
+                      </p>
+                    </div>
+                    <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                      {messages && messages.length > 0 && messages[0].body
+                        ? messages[0].body.split(' ').slice(0, 12).join(' ') + '...'
+                        : ''}
                     </p>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    onClick={() => {
-
-                    }}
-                    value="SMS">
-                    SMS
-                  </TabsTrigger>
-                  <TabsTrigger
-                    onClick={() => {
-
-                    }}
-                    value="Staff Chat">
-                    Staff Chat
-                  </TabsTrigger>
-                  <TabsTrigger
-                    onClick={() => {
-
-                    }}
-                    value="Facebook">
-                    Facebook
-                  </TabsTrigger>
-
-                </TabsList>
-              </Tabs>
-            </div>
-          </div>
-          <div className="overflow-y-scroll h-[95%] " >
-            <div>
-
-              <ul>
-                {channels.map((item, index) => {
-                  const activeChannel = item.conversationSid === selectedChannelSid;
-                  const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
-                  console.log(item)
-                  const currentDate = new Date();
-                  const itemDate = new Date(item.dateUpdated);
-                  let formattedDate;
-                  if (
-                    itemDate.getDate() === currentDate.getDate() &&
-                    itemDate.getMonth() === currentDate.getMonth() &&
-                    itemDate.getFullYear() === currentDate.getFullYear()
-                  ) {
-                    formattedDate = itemDate.toLocaleTimeString();
-                  } else { formattedDate = itemDate.toLocaleDateString(); }
-                  return (
-                    <li
-                      key={index}
-                      onClick={async (event) => {
-                        event.preventDefault(); // Prevent the default form submission behavior
-                        console.log(item, 'before everything');
-                        setSelectedChannelSid(item.conversationSid);
-
-                        // Optionally, you can submit the form data here
-                        const formData = new FormData();
-                        formData.append("intent", "getConversation");
-                        formData.append("conversationSid", item.conversationSid);
-                        // Submit the form data or handle it as needed
-                        submit(formData, { method: "post" });
-                        // If you want to log the form data
-                        console.log("Form Data:", formData);
-                      }}
-                      className={`channel-item m-2 mx-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}
-                    >
-                      <fetcher.Form method='post' >
-                        <div type='button'>
-                          <input type='hidden' name='conversationSid' defaultValue={item} />
-                          <input type='hidden' name='intent' defaultValue='getConversation' />
-                          <div className="m-2 flex items-center justify-between">
-                            <span className="text-lg font-bold text-white">
-                              <strong>{item.friendlyName || item.sid}</strong>
-                            </span>
-                            <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
-                              {formattedDate}
-                            </p>
-                          </div>
-                          <p className={`text-sm m-2 text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
-                            {messages && messages.length > 0 && messages[0].body
-                              ? messages[0].body.split(' ').slice(0, 12).join(' ') + '...'
-                              : ''}
-                          </p>
-                        </div>
-                      </fetcher.Form>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </div>
         <div className="grid h-[100%] w-[75%] max-w-[75%] grid-cols-1 space-y-2 border border-[#ffffff4d]">
-          <div >{channelContent}</div>
-
+          {channelContent}
         </div>
-      </div>
+      </div >
     );
   }
 
   return <Loader2 className="animate-spin" />;
 }
 
+
+function SendMessage(item, user) {
+  const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+  const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+  const conversationSid = item.conversationSid
+
+  const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
+  const credentials = `${accountSid}:${authToken}`;
+  const base64Credentials = btoa(credentials);
+
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${base64Credentials}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      author: `+1${user.phone}`,
+      body: text,
+    }),
+  })
+    .then(response => response.json())
+    .then(message => console.log(message.sid))
+    .catch(error => console.error('Error:', error));
+
+}
+
+/**
+ *
+  useEffect(() => {
+    const testRedux = 'testReduxSuccessful'
+    if (selectedChannelSid) {
+      const handleMessagesUpdate = (newMessages) => {
+        dispatch(setMessages(newMessages));
+      };
+
+      const handleSelectedChannelUpdate = (selectedChannelSid) => {
+        dispatch(setSelectedChannel(selectedChannelSid));
+      };
+      handleSelectedChannelUpdate(testRedux)
+      handleMessagesUpdate(testRedux)
+    }
+  }, []);
 
 const mapStateToProps = (state) => ({
   messages: state.myReducer.messages,
@@ -621,9 +638,10 @@ const mapDispatchToProps = (dispatch) => ({
   setMessages: (messages) => dispatch({ type: 'SET_MESSAGES', payload: messages }),
   setSelectedChannel: (channelSid) => dispatch({ type: 'SET_SELECTED_CHANNEL', payload: channelSid }),
 });
+ */
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChatApp);
+//export default connect(mapStateToProps, mapDispatchToProps)(ChatApp);
+export default ChatApp
 
 
 /** <div className="bg-black border border-[#3b3b3b] mt-[60px]">

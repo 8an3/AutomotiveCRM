@@ -1,7 +1,7 @@
 // app/reducers/myReducer.js
 const initialState = {
   messages: [],
-  selectedChannelSid: null,
+  selectedChannel: null,
 };
 
 const myReducer = (state = initialState, action) => {
@@ -9,7 +9,7 @@ const myReducer = (state = initialState, action) => {
     case 'SET_MESSAGES':
       return { ...state, messages: action.payload };
     case 'SET_SELECTED_CHANNEL':
-      return { ...state, selectedChannelSid: action.payload };
+      return { ...state, selectedChannel: action.payload };
     default:
       return state;
   }

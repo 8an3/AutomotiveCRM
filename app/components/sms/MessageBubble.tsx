@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from 'prop-types';
 import slider from '~/styles/slider.css'
 import secondary from '~/styles/secondary.css'
 import ChatChannel from '~/styles/ChatChannel.css'
 import messageBubblew from '~/styles/messageBubble.css'
 import { type LinksFunction } from '@remix-run/node';
+import styles from '~/styles/messageBubble.css';  // Make sure to import your styles
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
@@ -15,50 +16,64 @@ export const links: LinksFunction = () => [
 
 const MessageBubble = ({ message, direction }) => {
   const [hasMedia, setHasMedia] = useState(message.type === 'media');
-  const [mediaDownloadFailed, setMediaDownloadFailed] = useState(false);
+  const [mediaDownloadFailed] = useState(false);
   const [mediaUrl, setMediaUrl] = useState(null);
   const [type, setType] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setType((await message.getMember()).type);
+  /**  useEffect(() => {
+      const fetchData = async () => {
+        setType((await message.getMember()).type);
 
-      if (hasMedia) {
-        try {
-          const url = await message.media.getContentUrl();
-          setMediaUrl(url);
-        } catch (e) {
-          setMediaDownloadFailed(true);
+        if (hasMedia) {
+          try {
+            const url = await message.media.getContentUrl();
+            setMediaUrl(url);
+          } catch (e) {
+            setMediaDownloadFailed(true);
+          }
         }
-      }
 
-      document.getElementById(message.conversationSid).scrollIntoView({ behavior: 'smooth' });
-    };
+        document.getElementById(message.conversationSid).scrollIntoView({ behavior: 'smooth' });
+      };
 
-    fetchData();
-  }, [message, hasMedia]);
+      fetchData();
+    }, [message, hasMedia]); */
 
   const { itemStyle, divStyle } = direction === 'incoming'
-    ? { itemStyle: styles.received_msg, divStyle: styles.received_withd_msg }
-    : { itemStyle: styles.outgoing_msg, divStyle: styles.sent_msg };
+    ? { itemStyle: "inline-block px-0 py-0 pl-5 align-bottom w-[55%] my-1", divStyle: "bg-myColor-500 my-1 rounded-lg text-white m-0 p-5 pl-12 w-full" }
+    : { itemStyle: "flex justify-end overflow-hidden pr-5 my-26 w-[55%]", divStyle: "bg-myColor-900 my-1 rounded-lg  text-right w-full p-5 pr-12" };
 
+
+  const currentDate = new Date();
+  const itemDate = new Date(message.dateCreated);
+  let formattedDate;
+
+  if (
+    itemDate.getDate() === currentDate.getDate() &&
+    itemDate.getMonth() === currentDate.getMonth() &&
+    itemDate.getFullYear() === currentDate.getFullYear()
+  ) {
+    formattedDate = itemDate.toLocaleTimeString();
+  } else {
+    formattedDate = itemDate.toLocaleDateString();
+  }
   return (
     <li id={message.conversationSid} className={itemStyle}>
       <div className={divStyle}>
         <div>
           <strong>
-            {type === 'whatsapp' && <span role="img" aria-label="whatsapp icon">📱</span>}
-            {type === 'chat' && <span role="img" aria-label="chat icon">💬</span>}
-            {type === 'sms' && <span role="img" aria-label="sms icon">📲</span>}
-            {` ${message.author}`}
+            {message.type === 'whatsapp' && <span role="img" aria-label="whatsapp icon">📱</span>}
+            {message.type === 'chat' && <span role="img" aria-label="chat icon">💬</span>}
+            {message.type === 'sms' && <span role="img" aria-label="sms icon">📲</span>}
+            {` ${message.author} `}
           </strong>
           <br />
-          <div className={styles.medias}>
+          <div className="flex justify-start items-center flex-wrap">
             {hasMedia && <Media hasFailed={mediaDownloadFailed} url={mediaUrl} />}
           </div>
           {message.body}
         </div>
-        <span className={styles.time_date}>{message.timestamp.toLocaleString()}</span>
+        <span className="text-[#747474] block text-[12px] mt-4">   {formattedDate}</span>
       </div>
     </li>
   );
@@ -67,7 +82,7 @@ const MessageBubble = ({ message, direction }) => {
 const Media = ({ hasFailed, url }) => {
   return (
     <div
-      className={`${styles.media}${!url ? ' ' + styles.placeholder : ''}`}
+      className={`rounded-[4px] cursor-pointer m-4 flex w-[220px] h-[220px] justify-center items-center ${!url ? 'bg-[rgba(22,46,52,0.58)]' : ''}`}
       onClick={() => {
         if (url) {
           // Handle custom modal or lightbox for media preview
@@ -76,7 +91,8 @@ const Media = ({ hasFailed, url }) => {
         }
       }}
     >
-      {!url && !hasFailed && <div className={styles.spinner}></div>}
+      {!url && !hasFailed && <div className="border border-[#3b3b3b] bg-black"></div>}
+
 
       {hasFailed && (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -86,9 +102,9 @@ const Media = ({ hasFailed, url }) => {
       )}
 
       {!hasFailed && url && (
-        <div className={styles.media_icon}>
-          <div className={styles.picture_preview} style={{ backgroundImage: `url(${url})` }}>
-            <span role="img" aria-label="eye icon" className={styles.eyeIcon}>👁️</span>
+        <div className="m-4 relative rounded-[4px] top-0 overflow-hidden h-[220px] w-[220px] flex justify-center items-center flex-shrink-0 flex-basis-[220px]">
+          <div className="bg-cover bg-center" style={{ backgroundImage: `url(${url})` }}>
+            <span role="img" aria-label="eye icon" className="text-[#747474] block text-[12px] mt-8">👁️</span>
           </div>
         </div>
       )}
