@@ -433,7 +433,7 @@ const ChatApp = (item) => {
               placeholder="Message..."
               name="message"
               autoComplete="off"
-              className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-white  mb-2'
+              className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-white  mb-2 fixed'
               value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)}
               onClick={() => {
                 toast.success(`Email sent!`)
