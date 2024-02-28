@@ -99,7 +99,7 @@ export async function loader({ request, params }: LoaderFunction) {
         await delay(50);
         try {
           const fetchedConversation = await client.conversations.v1.conversations(conversationSid).fetch();
-          conversationChatServiceSid = fetchedConversation.chatServiceSid;
+          conversationChatServiceSid = fetchedConversation.body;
         } catch (error) { console.error('Error fetching conversation:', error); }
 
         // Create a participant/customer
@@ -131,8 +131,7 @@ export async function loader({ request, params }: LoaderFunction) {
         // List user conversations
         await delay(50);
         try {
-          const userConversations = await client.conversations.v1.users(userSid).userConversations.list({ limit: 20 });
-          convoList = userConversations; // Update convoList with the fetched conversations
+          convoList = await client.conversations.v1.users(userSid).userConversations.list({ limit: 50 });
           //   userConversations.forEach(u => console.log(u.friendlyName));
         } catch (error) { console.error('Error creating user:', error); }
 
@@ -163,8 +162,12 @@ export async function loader({ request, params }: LoaderFunction) {
     // .then(userConversations => userConversations.forEach(u => console.log(u.friendlyName)))
     convoList = getConvos;
   }
+
   const conversation = await prisma.getConversation.findFirst({
-    where: { userEmail: user.email }
+    where: { userEmail: user.email },
+    orderBy: {
+      createdAt: 'desc', // or updatedAt: 'desc'
+    },
   });
   let getText
   if (conversation) {
@@ -185,7 +188,18 @@ export async function loader({ request, params }: LoaderFunction) {
   }
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user?.email, }, });
 
-
+  const convoList = await client.conversations.v1.users(userSid).userConversations.list({ limit: 50 });
+  const conversationsData = [];
+  for (let convo of convoList) {
+    const fetchedConversation = await client.conversations.v1.conversations(convo.sid).fetch();
+    const convoData = {
+      body: fetchedConversation.body,
+      author: fetchedConversation.author,
+      createdDate: fetchedConversation.date_created,
+    };
+    conversationsData.push(convoData);
+  }
+  console.log(conversationsData);
   return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates })
 }
 
@@ -277,6 +291,7 @@ const ChatApp = (item) => {
   const [token, setToken] = useState(newToken);
   const [name, setName] = useState(username);
   const [to, setTo] = useState('');
+  const [channelName, setChannelName] = useState('');
   const [from, setFrom] = useState('');
   const [conversation_sid, setConversation_sid] = useState('');
 
@@ -407,22 +422,27 @@ const ChatApp = (item) => {
   if (selectedChannelSid) {
     channelContent = (
       <div onClick={() => { }} id="OpenChannel" className='text-white'>
-        <div className='messagesFieldSZ w-[100%]' style={{ overflowY: "scroll" }}>
+        <div className="flex justify-between border-b border-[#3b3b3b]">
+          <span className="text-lg font-bold text-white m-2">
+            <strong>{channelName}</strong>
+          </span>
+          <select
+            className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  m-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+            onChange={handleChange}>
+            <option value="">Select a Template</option>
+            {templates.map((template, index) => (
+              <option key={index} value={template.title}>
+                {template.title}
+              </option>
+            ))}
+          </select>
+
+        </div>
+
+        <div className='messagesFieldSZ w-[100%] max-h-[87%]'>
           <ChatMessages identity={`+1${user.phone}`} messages={messagesConvo} />
         </div>
         <div className="mb-auto   rounded-md  border-[#3b3b3b]">
-          <div className="flex">
-            <select
-              className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-              onChange={handleChange}>
-              <option value="">Select a Template</option>
-              {templates.map((template, index) => (
-                <option key={index} value={template.title}>
-                  {template.title}
-                </option>
-              ))}
-            </select>
-          </div>
 
           <fetcher.Form ref={$form} method="post"  >
             <input className='w-full p-2' type="hidden" name='phone' defaultValue={`+1${user.phone}`} />
@@ -433,7 +453,7 @@ const ChatApp = (item) => {
               placeholder="Message..."
               name="message"
               autoComplete="off"
-              className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-white  mb-2 fixed'
+              className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-white  mb-2 '
               value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)}
               onClick={() => {
                 toast.success(`Email sent!`)
@@ -446,7 +466,6 @@ const ChatApp = (item) => {
                 }, 5);
               }}
             />
-            <Button type='submit' variant='outline'>Send</Button>
           </fetcher.Form>
         </div>
       </div>
@@ -503,23 +522,17 @@ const ChatApp = (item) => {
           </div>
           <ul className="top-0 overflow-y-scroll grow" >
             {channels.map((item, index) => {
-              const currentDate = new Date();
-
               const activeChannel = item.conversationSid === selectedChannelSid;
               const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
-
-              const itemDate = new Date(item.dateUpdated);
+              const currentDate = new Date().setHours(0, 0, 0, 0);
+              const itemDate = new Date(item.dateUpdated).setHours(0, 0, 0, 0);
               let formattedDate;
-              if (
-                itemDate.getDate() === currentDate.getDate() &&
-                itemDate.getMonth() === currentDate.getMonth() &&
-                itemDate.getFullYear() === currentDate.getFullYear()
-              ) {
-                formattedDate = itemDate.toLocaleTimeString();
+              if (itemDate === currentDate) {
+                formattedDate = new Date(item.dateUpdated).toLocaleTimeString();
               } else {
-                formattedDate = itemDate.toLocaleDateString();
+                formattedDate = new Date(item.dateUpdated).toLocaleDateString();
               }
-
+              const lastMessageList = messagesConvo[messagesConvo.length - 1];
               return (
                 <li
                   key={index}
@@ -550,6 +563,7 @@ const ChatApp = (item) => {
                       })
                       .catch(error => console.error('Error:', error));
                     setSelectedChannelSid(item.conversationSid);
+                    setChannelName(item.friendlyName || item.sid)
                     console.log(selectedChannelSid)
                   }}
                   className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
@@ -565,8 +579,8 @@ const ChatApp = (item) => {
                       </p>
                     </div>
                     <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
-                      {messages && messages.length > 0 && messages[0].body
-                        ? messages[0].body.split(' ').slice(0, 12).join(' ') + '...'
+                      {lastMessageList && lastMessageList.length > 0 && lastMessageList[0].body
+                        ? lastMessageList[0].body.split(' ').slice(0, 12).join(' ') + '...'
                         : ''}
                     </p>
                   </div>

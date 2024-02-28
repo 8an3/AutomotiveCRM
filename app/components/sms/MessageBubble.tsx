@@ -40,10 +40,17 @@ const MessageBubble = ({ message, direction }) => {
     }, [message, hasMedia]); */
 
   const { itemStyle, divStyle } = direction === 'incoming'
-    ? { itemStyle: "inline-block px-0 py-0 pl-5 align-bottom w-[55%] my-1", divStyle: "bg-myColor-500 my-1 rounded-lg text-white m-0 p-5 pl-12 w-full" }
-    : { itemStyle: "flex justify-end overflow-hidden pr-5 my-26 w-[55%]", divStyle: "bg-myColor-900 my-1 rounded-lg  text-right w-full p-5 pr-12" };
+    ? { itemStyle: "inline-block px-0 py-0 pl-10 align-bottom w-full my-1", divStyle: "bg-myColor-800 w-[55%] rounded-lg text-white m-0 px-1 pl-5" }
+    : { itemStyle: " w-full pr-10 justify-self-end my-1", divStyle: "w-[55%] ml-auto my-1 float-right bg-myColor-900 rounded-lg text-right  text-white pr-5 p-1" };
+  //: { itemStyle: " overflow-hidden pr-5 my-26 w-[55%]", divStyle: "bg-myColor-900 my-1 rounded-lg  text-right w-full p-5 pr-12" };
 
-
+  /**<strong>
+              {message.type === 'whatsapp' && <span role="img" aria-label="whatsapp icon">📱</span>}
+              {message.type === 'chat' && <span role="img" aria-label="chat icon">💬</span>}
+              {message.type === 'sms' && <span role="img" aria-label="sms icon">📲</span>}
+            </strong>
+            <br />
+            */
   const currentDate = new Date();
   const itemDate = new Date(message.dateCreated);
   let formattedDate;
@@ -57,17 +64,13 @@ const MessageBubble = ({ message, direction }) => {
   } else {
     formattedDate = itemDate.toLocaleDateString();
   }
+  // {` ${message.author} `}
+
   return (
     <li id={message.conversationSid} className={itemStyle}>
       <div className={divStyle}>
         <div>
-          <strong>
-            {message.type === 'whatsapp' && <span role="img" aria-label="whatsapp icon">📱</span>}
-            {message.type === 'chat' && <span role="img" aria-label="chat icon">💬</span>}
-            {message.type === 'sms' && <span role="img" aria-label="sms icon">📲</span>}
-            {` ${message.author} `}
-          </strong>
-          <br />
+
           <div className="flex justify-start items-center flex-wrap">
             {hasMedia && <Media hasFailed={mediaDownloadFailed} url={mediaUrl} />}
           </div>
