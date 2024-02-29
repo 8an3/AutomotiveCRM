@@ -77,7 +77,7 @@ export default function FinanceNotes() {
 
   return (
     <div className="flex-auto px-4 lg:px-10 py-10 pt-0 bg-slate11">
-      <div className="relative mx-3 mt-3 max-h-[600px] h-auto overflow-y-auto">
+      <div className="relative mx-3 mt-3 max-h-[800px] h-auto overflow-y-auto">
         <ul>
           {financeNotes.map((message) => (
             <li

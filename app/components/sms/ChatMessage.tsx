@@ -16,10 +16,10 @@ export const links: LinksFunction = () => [
 ];
 
 const ChatMessages = ({ identity, messages, }) => {
-  console.log(messages, 'and then? no and then!!! and thennnn???');
-  console.log(messages, identity.toLowerCase().replace(/\s/g, ''), 'chatmessages');
+  // console.log(messages, 'and then? no and then!!! and thennnn???');
+  // console.log(messages, identity.toLowerCase().replace(/\s/g, ''), 'chatmessages');
   if (!Array.isArray(messages) || messages.length === 0) {
-    return <p>No messages available.</p>;
+    return <p className='text-center mt-[300px]'>No messages available.</p>;
   }
   return (
     <div id="messages" className='text-white '>

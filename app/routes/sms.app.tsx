@@ -61,7 +61,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'
   const authToken = 'd38e2fd884be4196d0f6feb0b970f63f'
   const client = require('twilio')(accountSid, authToken);
-  const username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+  const username = user?.username.toLowerCase().replace(/\s/g, '');//'skylerzanth'//localStorage.getItem("username") ?? "";
   const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
   const proxyPhone = '+12176347250'
   let callToken;
@@ -158,7 +158,7 @@ export async function loader({ request, params }: LoaderFunction) {
   let getConvos;
 
   if (!Array.isArray(convoList) || convoList.length === 0) {
-    getConvos = await client.conversations.v1.users('skylerzanth').userConversations.list({ limit: 20 });
+    getConvos = await client.conversations.v1.users(`${username}`).userConversations.list({ limit: 50 });
     // .then(userConversations => userConversations.forEach(u => console.log(u.friendlyName)))
     convoList = getConvos;
   }
@@ -187,20 +187,29 @@ export async function loader({ request, params }: LoaderFunction) {
     }
   }
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user?.email, }, });
+  const convosList = await client.conversations.v1.users(username).userConversations.list({ limit: 50 });
+  console.log(convosList, 'convosList is convosList');
 
-  const convoList = await client.conversations.v1.users(userSid).userConversations.list({ limit: 50 });
   const conversationsData = [];
-  for (let convo of convoList) {
-    const fetchedConversation = await client.conversations.v1.conversations(convo.sid).fetch();
-    const convoData = {
-      body: fetchedConversation.body,
-      author: fetchedConversation.author,
-      createdDate: fetchedConversation.date_created,
-    };
-    conversationsData.push(convoData);
+  for (let convo of convosList) {
+    const fetchedConversation = await client.conversations.v1.conversations(convo.conversationSid).fetch();
+    console.log(fetchedConversation, 'fetchedConversation is fetchedConversation');
+
+    const messages = await client.conversations.v1.conversations(convo.conversationSid).messages.list({ limit: 1, order: 'desc' });
+    if (messages.length > 0) {
+      const message = messages[0];
+      const convoData = {
+        body: message.body,
+        author: message.author,
+        conversationSid: message.conversationSid,
+        createdDate: message.dateCreated,
+      };
+      conversationsData.push(convoData);
+    }
   }
+
   console.log(conversationsData);
-  return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates })
+  return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates, conversationsData, })
 }
 
 export async function action({ request, }: ActionFunction) {
@@ -246,7 +255,7 @@ export async function action({ request, }: ActionFunction) {
 
 
 const ChatApp = (item) => {
-  const { convoList, callToken, username, newToken, user, getText, getTemplates, conversations, latestNotes, } = useLoaderData()
+  const { convoList, callToken, newToken, user, getText, getTemplates, conversationsData, username, } = useLoaderData()
   const [templates, setTemplates] = useState(getTemplates);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   // const dispatch = useDispatch();
@@ -261,8 +270,6 @@ const ChatApp = (item) => {
     const selectedTemplate = templates.find(template => template.title === event.target.value);
     setSelectedTemplate(selectedTemplate);
   };
-
-
 
   React.useEffect(() => {
     if (selectedTemplate) {
@@ -416,9 +423,6 @@ const ChatApp = (item) => {
     boundChannels: new Set(),
   });
 
-
-
-
   if (selectedChannelSid) {
     channelContent = (
       <div onClick={() => { }} id="OpenChannel" className='text-white'>
@@ -439,12 +443,12 @@ const ChatApp = (item) => {
 
         </div>
 
-        <div className='messagesFieldSZ w-[100%] max-h-[87%]'>
+        <div className='relative w-[100%] max-h-[800px] h-auto '>
           <ChatMessages identity={`+1${user.phone}`} messages={messagesConvo} />
         </div>
         <div className="mb-auto   rounded-md  border-[#3b3b3b]">
 
-          <fetcher.Form ref={$form} method="post"  >
+          <Form ref={$form} method="post"  >
             <input className='w-full p-2' type="hidden" name='phone' defaultValue={`+1${user.phone}`} />
             <input className='w-full p-2' type="hidden" name='intent' defaultValue='sendMessage' />
             <input className='w-full p-2' type="hidden" name='conversationSid' defaultValue={conversation_sid} />
@@ -453,26 +457,26 @@ const ChatApp = (item) => {
               placeholder="Message..."
               name="message"
               autoComplete="off"
-              className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-white  mb-2 '
-              value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)}
+              className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-white  mb-2 mt-2'
+              value={text}
+              ref={textareaRef}
+              onChange={(e) => setText(e.target.value)}
               onClick={() => {
                 toast.success(`Email sent!`)
                 if (selectedChannelSid) {
                   setConversation_sid(selectedChannelSid)
-
                 }
                 setTimeout(() => {
                   SendMessage(item, user)
                 }, 5);
               }}
             />
-          </fetcher.Form>
+          </Form>
         </div>
       </div>
     );
   } else if (statusString !== "success") {
     channelContent = "Loading your chat!";
-
   } else {
     channelContent = "";
   }
@@ -486,15 +490,8 @@ const ChatApp = (item) => {
       <div className="mx-auto mt-[65px] flex h-[93%] w-[95%] border border-[#3b3b3b] bg-black">
         <div className="flex flex-col w-[25%] max-w-[25%] space-y-2 border border-[#ffffff4d]">
           <div className="tabListSZ mx-auto flex w-full border-b border-[#3b3b3b]">
-            <Tabs defaultValue="New Chat" className="m-2 mx-auto w-[95%] justify-start">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger onClick={() => {
-
-                }} value="New Chat">
-                  <p className=" text-[#fff]">
-                    New Chat
-                  </p>
-                </TabsTrigger>
+            <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
+              <TabsList className="grid w-auto grid-cols-3">
                 <TabsTrigger
                   onClick={() => {
 
@@ -521,16 +518,16 @@ const ChatApp = (item) => {
             </Tabs>
           </div>
           <ul className="top-0 overflow-y-scroll grow" >
-            {channels.map((item, index) => {
+            {conversationsData.map((item, index) => {
               const activeChannel = item.conversationSid === selectedChannelSid;
               const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
               const currentDate = new Date().setHours(0, 0, 0, 0);
-              const itemDate = new Date(item.dateUpdated).setHours(0, 0, 0, 0);
+              const itemDate = new Date(item.createdDate).setHours(0, 0, 0, 0);
               let formattedDate;
               if (itemDate === currentDate) {
-                formattedDate = new Date(item.dateUpdated).toLocaleTimeString();
+                formattedDate = new Date(item.createdDate).toLocaleTimeString();
               } else {
-                formattedDate = new Date(item.dateUpdated).toLocaleDateString();
+                formattedDate = new Date(item.createdDate).toLocaleDateString();
               }
               const lastMessageList = messagesConvo[messagesConvo.length - 1];
               return (
@@ -563,7 +560,7 @@ const ChatApp = (item) => {
                       })
                       .catch(error => console.error('Error:', error));
                     setSelectedChannelSid(item.conversationSid);
-                    setChannelName(item.friendlyName || item.sid)
+                    setChannelName(item.author || item.sid)
                     console.log(selectedChannelSid)
                   }}
                   className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
@@ -572,15 +569,15 @@ const ChatApp = (item) => {
                     <input type='hidden' name='intent' defaultValue='getConversation' />
                     <div className="m-2 flex items-center justify-between">
                       <span className="text-lg font-bold text-white">
-                        <strong>{item.friendlyName || item.sid}</strong>
+                        <strong>{item.author || item.author}</strong>
                       </span>
                       <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
                         {formattedDate}
                       </p>
                     </div>
                     <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
-                      {lastMessageList && lastMessageList.length > 0 && lastMessageList[0].body
-                        ? lastMessageList[0].body.split(' ').slice(0, 12).join(' ') + '...'
+                      {conversationsData && conversationsData.length > 0 && conversationsData[0].body
+                        ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
                         : ''}
                     </p>
                   </div>

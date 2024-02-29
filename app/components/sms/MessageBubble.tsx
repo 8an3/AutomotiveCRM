@@ -40,8 +40,8 @@ const MessageBubble = ({ message, direction }) => {
     }, [message, hasMedia]); */
 
   const { itemStyle, divStyle } = direction === 'incoming'
-    ? { itemStyle: "inline-block px-0 py-0 pl-10 align-bottom w-full my-1", divStyle: "bg-myColor-800 w-[55%] rounded-lg text-white m-0 px-1 pl-5" }
-    : { itemStyle: " w-full pr-10 justify-self-end my-1", divStyle: "w-[55%] ml-auto my-1 float-right bg-myColor-900 rounded-lg text-right  text-white pr-5 p-1" };
+    ? { itemStyle: "inline-block px-0 py-0 pl-10 align-bottom w-full my-1", divStyle: "bg-black w-[55%] rounded-lg text-white m-0 px-1 pl-5 mt-2" }
+    : { itemStyle: " w-full pr-10 justify-self-end my-1", divStyle: "w-[55%] ml-auto my-1 float-right bg-black rounded-lg text-right  text-white pr-5 p-1 mt-2" };
   //: { itemStyle: " overflow-hidden pr-5 my-26 w-[55%]", divStyle: "bg-myColor-900 my-1 rounded-lg  text-right w-full p-5 pr-12" };
 
   /**<strong>
@@ -52,7 +52,7 @@ const MessageBubble = ({ message, direction }) => {
             <br />
             */
   const currentDate = new Date();
-  const itemDate = new Date(message.dateCreated);
+  const itemDate = new Date(message.date_created);
   let formattedDate;
 
   if (

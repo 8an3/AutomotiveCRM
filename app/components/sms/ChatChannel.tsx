@@ -101,15 +101,14 @@ function ChatChannel(props, messages) {
     },
     [key],
   );
-  console.log(messages, 'messagaef33r3w23')
   return (
     <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }} className='text-white'>
       <div >
-        <div style={{ flexBasis: "100%", flexGrow: 2, flexShrink: 1, overflowY: "scroll" }}>
+        <div style={{ flexBasis: "100%", flexGrow: 2, flexShrink: 1 }}>
           <ChatMessages identity={user.username} messages={messages} />
         </div>
         <div>
-          <Form ref={$form} method="post" onSubmit={sendMessage}>
+          <Form ref={$form} method="post">
 
             <div className='content-end' style={{ width: "100%", display: "flex", flexDirection: "row" }}>
               <TextArea

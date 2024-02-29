@@ -37,11 +37,9 @@ export default function Roadmap() {
 
 	const todoRoadmap = [
 		{ type: "issue", desc: "API file upload does not work in production folder API is already in use by platfo procidor move API/file upload to dealerapi/fileupload - wip" },
-		{ type: "issue", desc: "sms messenger" },
-		{ type: "issue", desc: "extra testing on staff chat" },
+		{ type: "issue", desc: "move staff chat to sms messenger" },
 		{ type: "issue", desc: "lien payout" },
-		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins" },
-		{ type: "issue", desc: "last note column" },
+		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - wip" },
 		{ type: "issue", desc: "put customer coms in cuterom file not bike file" },
 
 		{ type: "admin", desc: "export customers" },
@@ -88,7 +86,6 @@ export default function Roadmap() {
 		{ type: 'google', desc: 'Calendar' },
 		{ type: 'google', desc: 'Keep note' },
 
-		{ type: "notifications", desc: "push notifications - cheat way to do it in terms of cost and coding - just send a email along with the in app notfication as long as your phone is hooked up to your computer, you will get notified through your phone and computer" },
 
 		{ type: "quote", desc: "find source with API with up-to-date model information - Kelly Black Book - they have the product take picutre of blue ages for now and just ocr scan" },
 		{ type: "quote", desc: "Save form to LOCAL STORASGE(CHECK REMIX SITE FOR SOLUTIONp) incase something happens to connection or if they srep awway from their computer that way whenever you come back the form is filled out the way you left it" },
@@ -144,6 +141,9 @@ export default function Roadmap() {
 
 	const DoneRoadMap = [
 		{ type: "sales process", desc: "update finance mgr lock so that the sales person can have a in queue timer" },
+		{ type: "notifications", desc: "push notifications - cheat way to do it in terms of cost and coding - just send a email along with the in app notfication as long as your phone is hooked up to your computer, you will get notified through your phone and computer" },
+		{ type: "issue", desc: "last note column" },
+		{ type: "issue", desc: "sms messenger" },
 		{ type: "issue", desc: "calendar - complete appointment" },
 		{ type: "issue", desc: "email refresh token use revalidateOnFocus from swr to refresh tokens https://swr.vercel.app/docs/revalidation" },
 		{ type: "Automation", desc: "integration with vercel app - wip" },
