@@ -31,12 +31,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog"
+
 export const action: ActionFunction = async ({ req, request, params, }) => {
   const formPayload = Object.fromEntries(await request.formData());
   let formData = financeFormSchema.parse(formPayload);
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
+  console.log('in emailactrion')
   const user = await model.user.query.getForSession({ email: email });
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
@@ -78,7 +79,7 @@ export const action: ActionFunction = async ({ req, request, params, }) => {
 }
 
 export default function EmailClient({ data, isButtonPressed, setIsButtonPressed }) {
-  const { getTemplates, user, conversations, latestNotes } = useLoaderData();
+  const { getTemplates, user, conversations, latestNotes, refreshToken, tokens } = useLoaderData();
   const [templates, setTemplates] = useState(getTemplates);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const today = new Date();
@@ -133,9 +134,11 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
       vin: formData.get('vin'),
       stockNum: formData.get('stockNum'),
     }
-    Object.keys(data).forEach(key => formData.append(key, data[key]));
-    //console.log(data, 'data')
-    const createComms = await CreateCommunications(data)
+    Object.keys(data).forEach(key => {
+      formData.delete(key);
+      formData.append(key, data[key]);
+    });    //console.log(data, 'data')
+    //const createComms = await CreateCommunications(data)
     const template = formData.get('template')
     if (template === "createEmailTemplate") {
       console.log('hit template')
@@ -154,7 +157,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
     } else {
       console.log('hit else')
 
-      const promise2 = fetch('/emails/send/form', {
+      const promise2 = fetch('/leads/sales', {
         method: 'POST',
         body: formData,
       })
@@ -208,6 +211,8 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
     setNote(foundNote);
   }, [data.financeId]);
 
+
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -230,7 +235,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
             </TabsList>
             <TabsContent value="account">
 
-              <fetcher.Form method="post">
+              <fetcher.Form onSubmit={handleSubmit}>
                 <div className='flex flex-col'>
                   <label className=" mt-3 w-full text-left text-[15px] text-black" htmlFor="name">
                     Templates
@@ -392,43 +397,70 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
 
             </TabsContent>
             <TabsContent value="notes">
+
               <div className='max-h-[900px] overflow-y-scroll'>
                 <>
+                  <RootDialog>
+                    <DialogTrigger asChild>
+                      <Button variant='outline'>Add Note</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Add Note</DialogTitle>
+                        <DialogDescription>
+                          Click save when you're done.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <fetcher.Form method="post">
+
+                        <div className="grid gap-4 py-4">
+                          <TextArea
+                            placeholder="Type your message here."
+                            name="customContent"
+                            className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
+                          />
+                          <Input type="hidden" defaultValue={user.name} name="author" />
+                          <Input
+                            type="hidden"
+                            defaultValue={user.id}
+                            name="customerId"
+                          />
+                          <Input
+                            type="hidden"
+                            defaultValue={data.id}
+                            name="financeId"
+                          />
+                          <Input
+                            type="hidden"
+                            defaultValue="saveFinanceNote"
+                            name="intent"
+                          />
+                          <div className="mt-2 flex justify-end cursor-pointer">
+                            {/* saveFinanceNote */}
+                            <Button
+                              variant='outline'
+                              name="intent"
+                              type="submit"
+                              className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-white"
+                              value="saveFinanceNote"
+
+                            >
+                              Save
+                            </Button>
+                          </div>
+
+                        </div>
+                      </fetcher.Form>
+
+                      <DialogFooter>
+                        <Button type="submit">Save changes</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </RootDialog>
                   {note ? (
                     <div>{note.customContent}</div>
                   ) : (
-                    <RootDialog>
-                      <DialogTrigger asChild>
-                        <Button variant='outline'>Add Note</Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader>
-                          <DialogTitle>Add note</DialogTitle>
-                          <DialogDescription>
-                            Make changes to your profile here. Click save when you're done.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Input
-                              id="name"
-                              defaultValue="Pedro Duarte"
-                              className="col-span-3"
-                            />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Input
-                              id="username"
-                              defaultValue="@peduarte"
-                              className="col-span-3"
-                            />
-                          </div>
-                        </div>
-                        <DialogFooter>
-                          <Button type="submit">Save changes</Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </RootDialog>
+                    <p>No notes at this time...</p>
                   )}
                 </>
               </div>

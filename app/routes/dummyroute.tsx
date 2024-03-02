@@ -107,11 +107,15 @@ export async function EmailFunction(request, params, user, financeId, formPayloa
   let customContent = formPayload.customContent
   let filledContent = ''
   if (referrerPath === '/overview/$' || referrerPath === '/dashboard/calls' || referrerPath === '/leads') {
-    const templateString = formPayload.customContent //'Hello ${clientFname}, just wanted to follow up to our conversations...';
-    const templateVars = clientData
-    filledContent = fillTemplate(templateString, templateVars);
-    console.log(filledContent); // "Hey Bob, just wanted to follow up to our conversations..."
-    customContent = filledContent
+    try {
+      const templateString = formPayload.customContent //'Hello ${clientFname}, just wanted to follow up to our conversations...';
+      const templateVars = clientData
+      filledContent = fillTemplate(templateString, templateVars);
+      console.log(filledContent); // "Hey Bob, just wanted to follow up to our conversations..."
+      customContent = filledContent
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   let modelData = ''

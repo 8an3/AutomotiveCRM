@@ -489,7 +489,7 @@ export async function FirstCustomer() {
 export async function DealerInfo() {
   const data = await prisma.dealerInfo.create({
     data: {
-      dealerName: 'Freedom H-d',
+      dealerName: 'Freedom H-D',
       dealerAddress: '1963 Merivale Rd',
       dealerCity: 'Ottawa',
       dealerProv: 'ON',
@@ -502,7 +502,10 @@ export async function DealerInfo() {
 export async function DealerFeesAdminCreate() {
   const data = await prisma.dealerFeesAdmin.create({
     data: {
-
+      dealer: 'Freedom H-D',
+      dealerAddress: '1963 Merivale Rd',
+      dealerProv: 'Ottawa, ON, k0C1g1',
+      dealerPhone: '6137877777',
 
       omvicNumber: '515115',
       userLoanProt: 0,

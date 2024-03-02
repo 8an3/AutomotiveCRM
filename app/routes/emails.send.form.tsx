@@ -44,10 +44,26 @@ import { CompleteLastAppt } from '~/components/actions/dashboardCalls'
 //import { UploadFileAction } from "~/routes/dealer.api.fileUpload";
 import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
 import { getSession } from "~/sessions/auth-session.server";
+import { EmailFunction } from "~/routes/dummyroute";
 
 
 
-
+export async function ComsCount(financeId, commType) {
+  const record = await prisma.communications.findUnique({
+    where: { financeId: financeId },
+  });
+  if (record) {
+    await prisma.communications.update({
+      where: { financeId: financeId },
+      data: { [commType]: record[commType] + 1 },
+    });
+  } else {
+    await prisma.communications.create({
+      data: { financeId: financeId, [commType]: 1 },
+    });
+  }
+  return json({ ok: true });
+}
 
 export const action: ActionFunction = async ({
   req,
@@ -93,45 +109,25 @@ export const action: ActionFunction = async ({
   }
   // calls
   if (intent === "EmailClient") {
-    console.log(data.email, 'formData.email')
+    console.log(user.email, 'formData.email')
     const comdata = {
       financeId: formData.financeId,
-      userId: formData.userId,
+      userEmail: user?.email,
       content: formData.customContent,
       title: formData.subject,
       direction: formData.direction,
-      result: 'Attemted',
+      result: formData.customerState,
       subject: formData.subject,
       type: 'Email',
       userName: user?.name,
       date: new Date().toISOString(),
     }
-    const createAptData = {
-      title: formData.subject,
-      start: '3', //formData.followUpDay,
-      contactMethod: 'Any',
-      completed: 'no',
-      apptStatus: 'Pending',
-      apptType: 'Follow Up',
-      note: formData.customContent,
-      unit: formData.unit,
-      brand: formData.brand,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      financeId: formData.financeId,
-      userId: formData.userId,
-      description: formData.customContent,
-      userName: user?.name,
-      attachments: '',
-      direction: 'Outgoing',
-      resultOfcall: 'Email Sent',
-    }
-    const completeApt = await CompleteLastAppt(userId, financeId);
+    // const completeApt = await CompleteLastAppt(userId, financeId)
+    const sendEmail = await EmailFunction(request, params, user, financeId, formPayload)
+    const setComs = await prisma.communicationsOverview.create({ data: comdata, });
+    const saveComms = await ComsCount(financeId, 'Email')
 
-    console.log('textQuickFU', comdata)
-    return json({ completeApt, createAptData });
+    return json({ saveComms, sendEmail, formData, setComs, })//, redirect(`/dummyroute`)
   }
   if (template === "createEmailTemplate") {
     console.log('hit email template crewator')

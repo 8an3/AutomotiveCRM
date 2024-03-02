@@ -13,6 +13,7 @@ import { updateFinanceNote } from '~/utils/financeNote/update.server';
 import { createDashData } from '~/utils/dashboard/create.server';
 import { updateDashData } from '~/utils/dashboard/update.server';
 import FullBreakdown from './emails/custom/paymentsBreakdown'
+import ReactDOMServer from 'react-dom/server';
 
 
 import { model } from '~/models'
@@ -31,23 +32,21 @@ import FullCustom from "./emails/custom/fullCustom";
 import { getMergedFinanceOnFinance, getMergedFinanceOnFinanceUniqueFInanceId } from "~/utils/client/getLatestFinance.server";
 import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
 import { requireAuthCookie } from '~/utils/misc.user.server';
-
-
-
-
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { getSession } from '~/sessions/auth-session.server';
+import { SendEmail } from "./email.server";
 
 export async function action({ request, params }: DataFunctionArgs) {
   const formPayload = Object.fromEntries(await request.formData());
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
+  let tokens = session.get("accessToken")
+  // new
   const user = await model.user.query.getForSession({ email: email });
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
   }
+  console.log('email action')
 
   const financeId = formPayload.financeId
   const referrer = request.headers.get('Referer');
@@ -56,6 +55,7 @@ export async function action({ request, params }: DataFunctionArgs) {
   let finance = await getMergedFinanceOnFinanceUniqueFInanceId(financeId)
   const deFees = await getDealerFeesbyEmail(email)
   const brand = finance?.brand
+
   function fillTemplate(templateString, templateVars) {
     return templateString.replace(/\${(.*?)}/g, (_, g) => templateVars[g]);
   }
@@ -109,7 +109,7 @@ export async function action({ request, params }: DataFunctionArgs) {
   console.log(referrerPath); // Logs the referrer URL
   let customContent = formPayload.customContent
   let filledContent = ''
-  if (referrerPath === '/overview/$' || referrerPath === '/dashboard/calls') {
+  if (referrerPath === '/overview/$' || referrerPath === '/leads') {
     const templateString = formPayload.customContent //'Hello ${clientFname}, just wanted to follow up to our conversations...';
     const templateVars = clientData
     filledContent = fillTemplate(templateString, templateVars);
@@ -117,7 +117,7 @@ export async function action({ request, params }: DataFunctionArgs) {
     customContent = filledContent
   }
 
-  let modelData = ''
+  let modelData;
   if (brand === 'Kawasaki') {
     modelData = await getDataKawasaki(finance);
   }
@@ -217,30 +217,32 @@ export async function action({ request, params }: DataFunctionArgs) {
   const model2 = finance?.model
   const intent = formPayload.emailType
 
-  const subjectLine = formPayload?.subject
-  const customerEmail = formPayload?.customerEmail
+  const subject = formPayload?.subject
+  const to = formPayload?.customerEmail
   const preview = formPayload?.preview
   // console.log(deFees, 'defees', intent, finance, intent, intent)
-  const fromEmail = user.email
+  const fromEmail = user?.email
   // 1
-  if (formPayload.emailType === 'fullCustom') {
-    const data = await resend.emails.send({
-      from: fromEmail,
-      to: `${customerEmail}`,
-      subject: `${subjectLine}`,
-      bcc: `${userEmail}`,
-      react: <FullCustom
+  if (intent === 'fullCustom') {
+    const jsxContent = (
+      <FullCustom
         customContent={filledContent}
         userEmail={userEmail}
         userFname={userFname}
         userPhone={userPhone}
         clientData={clientData}
       />
-    });
+    );
+    const text = ReactDOMServer.renderToString(jsxContent);
+
+    const sendemail = SendEmail(user, to, subject, text, tokens)
+
+    console.log('hitfullcustom')
+
     console.log('fulCustom sent')
-    return json({ 'email sent': data, finance, user, status: { code: 204, message: 'Email sent successfully!' } })
+    return json({ 'email sent': sendemail, finance, user, status: { code: 204, message: 'Email sent successfully!' } })
   }
-  else if (formPayload.emailType === 'paymentsTemp') {
+  else if (intent === 'paymentsTemp') {
     const data = await resend.emails.send({
       from: fromEmail,
       to: `${custEmail}`,
@@ -2203,7 +2205,6 @@ export async function loader({ params, request }) {
   if (!user) {
     redirect('/login')
   }
-
   const { delivered, financeId } = formPayload;
   const formData = financeFormSchema.parse(formPayload)
 

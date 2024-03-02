@@ -89,7 +89,7 @@ input#type-a-message {
   margin-left: 0.5em;
   margin-right: 0.5em;
   height: 100%;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 #OpenChannel {

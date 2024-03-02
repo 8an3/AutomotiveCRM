@@ -32,6 +32,9 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
   const session = await getPref(request.headers.get("Cookie"));
+  let tokens = session.get("accessToken")
+  // new
+  const refreshToken = session.get("refreshToken")
   const sliderWidth = session.get("sliderWidth");
   const financeCookie = session.get("financeId");
   const userEmail = user?.email
@@ -67,11 +70,11 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
   const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
 
-  const fetchLatestNotes = async (financeRecords) => {
-    const promises = financeRecords.map(async (financeRecord) => {
+  const fetchLatestNotes = async (webLeadData) => {
+    const promises = webLeadData.map(async (webLeadData) => {
       try {
         const latestNote = await prisma.financeNote.findFirst({
-          where: { customerId: financeRecord.financeId },
+          where: { customerId: webLeadData.financeId },
           orderBy: { createdAt: 'desc' },
         });
         return latestNote;
@@ -107,6 +110,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNewLead,
       latestNotes,
       notifications,
+      refreshToken, tokens
     });
   }
   if (brand === "Switch") {
@@ -127,6 +131,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNewLead,
       notifications,
       dashBoardCustURL,
+      refreshToken, tokens
     });
   }
 
@@ -146,6 +151,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       notifications,
       dashBoardCustURL,
+      refreshToken, tokens
     });
   }
 
@@ -169,6 +175,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       conversations,
       getWishList,
       notifications,
+      refreshToken, tokens,
       dashBoardCustURL,
     });
   }
@@ -189,6 +196,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       conversations,
       notifications,
       dashBoardCustURL,
+      refreshToken, tokens
     });
   }
 
@@ -212,6 +220,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNewLead,
       notifications,
       getTemplates,
+      refreshToken, tokens
     });
   } else {
     let modelData;
@@ -235,6 +244,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         getWishList,
         notifications,
         webLeadData,
+        refreshToken, tokens
 
       });
     }
@@ -255,6 +265,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       notifications,
       webLeadData,
+      refreshToken, tokens
     });
   }
 }
@@ -780,7 +791,7 @@ export const dashboardAction: ActionFunction = async ({ req, request, params, })
   if (intent === "EmailClient") {
     const comdata = {
       financeId: formData.financeId,
-      userId: formData.userId,
+      userEmail: user?.email,
       content: formData.customContent,
       title: formData.subject,
       direction: formData.direction,
@@ -790,14 +801,12 @@ export const dashboardAction: ActionFunction = async ({ req, request, params, })
       userName: user?.name,
       date: new Date().toISOString(),
     }
-    const completeApt = await CompleteLastAppt(userId, financeId)
+    // const completeApt = await CompleteLastAppt(userId, financeId)
     const sendEmail = await EmailFunction(request, params, user, financeId, formPayload)
-    const setComs = await prisma.communicationsOverview.create({
-      data: comdata,
-    });
+    const setComs = await prisma.communicationsOverview.create({ data: comdata, });
     const saveComms = await ComsCount(financeId, 'Email')
 
-    return json({ saveComms, sendEmail, completeApt, formData, setComs, })//, redirect(`/dummyroute`)
+    return json({ saveComms, sendEmail, formData, setComs, })//, redirect(`/dummyroute`)
   }
   if (intent === 'PhoneCall') {
     const textfollowUpDay = formData.followUpDay2

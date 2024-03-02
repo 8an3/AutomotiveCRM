@@ -40,7 +40,8 @@ const getAccessToken = async (refreshToken) => {
     console.log(err);
   }
 };
-export default getAccessToken
+
+
 export function Unauthorized(refreshToken) {
   console.log('Unauthorized');
   const newAccessToken = getAccessToken(refreshToken)

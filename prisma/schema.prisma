@@ -723,6 +723,7 @@ model CommunicationsOverview {
   direction String?
   subject   String?
   result    String?
+  userEmail String?
 
   @@index([financeId])
 }
@@ -927,6 +928,7 @@ model Finance {
   sendToFinanceNow    String?
   dealNumber          String?
   bikeStatus          String?
+  lien                String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

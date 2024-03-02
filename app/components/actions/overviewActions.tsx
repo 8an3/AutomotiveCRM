@@ -23,9 +23,7 @@ export async function overviewLoader({ request, params }: LoaderFunction) {
 
     const user = await model.user.query.getForSession({ email: email });
     /// console.log(user, account, 'wquiote loadert')
-    if (!user) {
-        redirect('/login')
-    }
+    if (!user) { redirect('/login') }
 
     const userId = user?.id
     let finance = await prisma.finance.findFirst({
@@ -173,13 +171,13 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     }
     const userId = user?.id;
     const clientfileId = formData.clientfileId
-    const dashboardId = formData.dashboardId
-    const client66 = await SetClient66(userId, clientfileId, financeId, dashboardId)
+    const dashbaordId = formData.dashboardId
+    const client66 = await SetClient66(userId, clientfileId, financeId, dashbaordId, request)
     const session = await getPref(request.headers.get("Cookie"));
     session.set("userId", userId);
     session.set("clientfileId", clientfileId);
     session.set("financeId", financeId);
-    session.set("dashboardId", dashboardId);
+    session.set("dashboardId", dashbaordId);
 
 
     const lastContact = new Date().toISOString();
@@ -296,6 +294,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
             tradeMileage: formData.tradeMileage,
             trim: formData.trim,
             vin: formData.vin,
+            lien: formData.lien,
         },
     });
     const dashboard = await prisma.dashboard.update({
