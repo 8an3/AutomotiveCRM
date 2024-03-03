@@ -30,6 +30,7 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card"
 import axios from "axios";
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
 ];
@@ -177,6 +178,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   return json({ labelData, API_KEY, user, tokens, getTemplates, request, emailDetails, unreadEmails, refreshToken }, {
   });
 }
+
 export async function action({ params, request }: DataFunctionArgs) {
   const formPayload = Object.fromEntries(await request.formData());
   let formData = financeFormSchema.parse(formPayload)

@@ -8,6 +8,107 @@ import {
   DialogTrigger,
   DialogClose,
 } from "~/components/ui/dialog"
+import { Input, Button, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, TextArea, Label, ButtonLoading } from "~/components/ui/index";
+import { useLoaderData, Form, useFetcher, useLocation, useNavigation } from "@remix-run/react";
+import { PhoneOutcome, MenuScale, Mail, MessageText, User, ArrowDown, Calendar as CalendarIcon, WebWindowClose, } from "iconoir-react";
+import { dashboardLoader } from "~/components/actions/dashboardCalls";
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select"
+import { useRootLoaderData } from "~/hooks";
+import MesasageContent from "./messageContent";
+import { Toaster, toast } from 'sonner'
+
+
+export let loader = dashboardLoader;
+
+export default function LogCall({ data }) {
+
+  const { user } = useLoaderData();
+  let fetcher = useFetcher();
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
+  const financeId = data.id
+  const email = data.email
+  const phone = data.phone
+  const firstName = data.firstName
+  const lastName = data.lastName
+  const id = data.id
+  const userId = user.id
+  const userEmail = user.email
+  const userName = user.userName
+  const brand = data.brand
+  const unit = data.unit
+  const resultOfcall = data.resultOfcall
+  const direction = 'Outgoing'
+  const contactMethod = 'phone'
+  const note = `Called ${firstName}.`
+  const title = `Called ${firstName}.`
+  const navigation = useNavigation();
+  const isSubmitting = navigation.formAction === "/leads/sales";
+  return (
+    <Form method='post' >
+
+      <Input type='hidden' value={firstName} name='firstName' />
+      <Input type='hidden' value={lastName} name='lastName' />
+      <Input type='hidden' value={phone} name='SMS' />
+      <Input type="hidden" defaultValue={userEmail} name="userEmail" />
+      <Input type="hidden" defaultValue={brand} name="brand" />
+      <Input type="hidden" defaultValue={unit} name="unit" />
+      <Input type="hidden" defaultValue='future' name="apptStatus" />
+      <Input type="hidden" defaultValue='no' name="completed" />
+      <Input type="hidden" defaultValue='Sales' name="apptType" />
+      <Input type='hidden' value={email} name='email' />
+      <Input type='hidden' value={userName} name='userName' />
+      <Input type='hidden' value={data.id} name='userId' />
+      <Input type='hidden' value={data.phone} name='phone' />
+      <Input type="hidden" defaultValue={resultOfcall} name="resultOfcall" />
+      <Input type="hidden" defaultValue={direction} name="direction" />
+      <Input type="hidden" defaultValue='Quick F/U' name="title" />
+      <Input type="hidden" defaultValue={contactMethod} name="contactMethod" />
+      <Input type="hidden" defaultValue={financeId} name="financeId" />
+      <Input type="hidden" defaultValue={userId} name="userId" />
+      <Input type="hidden" defaultValue={id} name="financeId" />
+      <Input type="hidden" defaultValue={note} name="note" />
+      <Input type="hidden" defaultValue={title} name="title" />
+      <Input type="hidden" value='Attempted' name="result" />
+      <Button
+        onClick={() => {
+          // setIsButtonPressed(true);
+          // Change the button text
+          toast.success(`Calling ${data.firstName}...`)
+        }}
+        isSubmitting={isSubmitting}
+
+        name='intent'
+        value='callClient'
+        type='submit'
+
+      >
+        <p className="cursor-pointer text-white hover:text-[#02a9ff] target:text-[#02a9ff]" >
+          <PhoneOutcome />
+        </p>
+      </Button>
+    </Form>
+  );
+}
+
+
+
+/**import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "~/components/ui/dialog"
 import { Input, Button, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, TextArea, Label, } from "~/components/ui/index";
 import { useLoaderData, Form, useFetcher, useLocation } from "@remix-run/react";
 import { PhoneOutcome, MenuScale, Mail, MessageText, User, ArrowDown, Calendar as CalendarIcon, WebWindowClose, } from "iconoir-react";
@@ -133,3 +234,4 @@ export default function LogCall({ data }) {
     </Dialog >
   );
 }
+ */

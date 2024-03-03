@@ -5,7 +5,7 @@ import { model } from "~/models";
 import { DataFunctionArgs } from '@remix-run/server-runtime';
 import { useLoaderData } from '@remix-run/react';
 import type { oauth2_v2 } from 'googleapis';
-import { DataFunctionArgs, json, redirect, type LoaderFunction } from '@remix-run/node';
+import { DataFunctionArgs, json, redirect, type LoaderFunction, createCookie } from '@remix-run/node';
 import { RefreshToken } from "~/services/google-auth.server";
 import axios from 'axios';
 
@@ -14,6 +14,7 @@ const oauth2Client = new google.auth.OAuth2(
   "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",
   "http://localhost:3000/google/callback"
 );
+export default oauth2Client;
 
 const gmail = google.gmail({
   version: 'v1',
@@ -59,40 +60,94 @@ export function Unauthorized(refreshToken) {
   const tokens = newAccessToken
   return tokens
 }
-export async function SendEmail(user, to, subject, text, tokens) {
-  const emailLines = [
-    `From: ${user.firstName} ${user.lastName} ${user.email}`,
-    `To: ${to}`,
-    'Content-type: text/html;charset=iso-8859-1',
-    'MIME-Version: 1.0',
-    `Subject: ${subject}`,
-    '',
-    `${text}`
-  ];
 
-  const email = emailLines.join('\r\n').trim();
-  const base64Email = btoa(unescape(encodeURIComponent(email)));
+export async function TokenRegen(request) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  const user = await model.user.query.getForSession({ email: email });
+  if (!user) { redirect('/login') }
+  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  let tokens = session.get("accessToken")
+  // new
+  const refreshToken = session.get("refreshToken")
+  let cookie = createCookie("session_66", {
+    secrets: ['secret'],
+    // 30 days
+    maxAge: 30 * 24 * 60 * 60,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
+    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
+  });
+  // new
+  if (userRes.status === 401) {
+    const unauthorizedAccess = await Unauthorized(refreshToken)
+    tokens = unauthorizedAccess
 
-  const url = `https://gmail.googleapis.com/gmail/v1/users/${encodeURIComponent(user.email)}/messages/send?key=${API_KEY}`;
+    session.set("accessToken", tokens);
+    await commitSession(session);
 
-  try {
-    const response = await axios.post(url, {
-      raw: base64Email
-    }, {
-      headers: {
-        Authorization: `Bearer ${tokens}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
+    const cookies = cookie.serialize({
+      email: email,
+      refreshToken: refreshToken,
+      accessToken: tokens,
+    })
+    await cookies
 
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    // Handle the error
+  } else {
+    console.log('Authorized')
   }
+  const googleTokens = {
+    tokens,
+    refreshToken
+  }
+  return googleTokens
 }
+
+
+
+
+export async function SendEmail(user, to, subject, text, tokens) {
+
+  // Set your variables
+  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  const USER_ID = user.email;
+  const ACCESS_TOKEN = tokens;
+  const TO_ADDRESS = to;
+
+  // Construct the MIME message
+  const EMAIL_CONTENT = `From: ${USER_ID}\r\n` +
+    `To: ${TO_ADDRESS}\r\n` +
+    `Subject: ${subject}\r\n` +
+    `Content-Type: text/plain; charset=utf-8\r\n\r\n` +
+    `${text}`;
+
+  // Encode the MIME message in Base64
+  const BASE64_ENCODED_CONTENT = btoa(unescape(encodeURIComponent(EMAIL_CONTENT)));
+
+  // Set the API endpoint
+  const url = `https://gmail.googleapis.com/gmail/v1/users/${USER_ID}/messages/send?key=${API_KEY}`;
+
+  // Send the email using Axios
+  axios.post(url, {
+    raw: BASE64_ENCODED_CONTENT
+  }, {
+    headers: {
+      Authorization: `Bearer ${ACCESS_TOKEN}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }
+  })
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Error sending email:', error);
+    });
+}
+
 export async function GetUserEmails() {
   const res = await gmail.users.messages.list({ userId: 'me' });
   console.log(res.data);

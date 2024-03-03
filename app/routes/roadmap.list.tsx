@@ -38,6 +38,7 @@ export default function Roadmap() {
 	const todoRoadmap = [
 		{ type: "issue", desc: "API file upload does not work in production folder API is already in use by platfo procidor move API/file upload to dealerapi/fileupload - wip" },
 		{ type: "issue", desc: "move staff chat to sms messenger" },
+		{ type: "issue", desc: "need to redo email templates in overview - wip check bottom of file" },
 		{ type: "issue", desc: "email not currently working in overview" },
 		{ type: "issue", desc: "lien payout - COMPLETED BUT NEEDS TESTING" },
 		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - wip" },

@@ -214,6 +214,7 @@ export async function action({ request, }: ActionFunction) {
   const user = await model.user.query.getForSession({ email: email });
   if (!user) { redirect('/login') }
   const intent = formData.intent
+
   if (intent === 'getConversation') {
     const sid = formData.conversationSid
     const convoId = sid

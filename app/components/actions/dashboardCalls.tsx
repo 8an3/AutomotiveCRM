@@ -1,4 +1,4 @@
-import { json, type ActionFunction, LoaderFunction, redirect, } from "@remix-run/node";
+import { json, type ActionFunction, createCookie, type LoaderFunction, redirect, } from "@remix-run/node";
 import financeFormSchema from "~/routes/overviewUtils/financeFormSchema";
 ////import { authenticator } from "~/services";
 import { findDashboardDataById, findQuoteById, getDataBmwMoto, getDataByModel, getDataByModelManitou, getDataHarley, getDataKawasaki, getDataTriumph, getLatestBMWOptions, getLatestBMWOptions2, getLatestOptionsManitou, getRecords, } from "~/utils/finance/get.server";
@@ -22,8 +22,50 @@ import { EmailFunction } from "~/routes/dummyroute";
 import { SetCookie, commitSession as commitPref, getSession as getPref } from "~/utils/pref.server";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
-import { getSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
+import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
+import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
+import { google } from 'googleapis';
+import oauth2Client, { SendEmail, } from "~/routes/email.server";
+
+
+
+const getAccessToken = async (refreshToken) => {
+  try {
+    const accessTokenObj = await axios.post(
+      'https://www.googleapis.com/oauth2/v4/token',
+      {
+        refresh_token: refreshToken,
+        client_id: "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
+        client_secret: "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",
+        grant_type: 'refresh_token'
+      }
+    );
+
+    return accessTokenObj.data.access_token;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+export function Unauthorized(refreshToken) {
+  console.log('Unauthorized');
+  const newAccessToken = getAccessToken(refreshToken)
+
+  console.log(newAccessToken, 'newAccessToken', refreshToken, 'refreshToken')
+
+  oauth2Client.setCredentials({
+    //  refresh_token: refreshToken,
+    access_token: newAccessToken,
+  });
+  google.options({ auth: oauth2Client });
+  //  const userRes = await gmail.users.getProfile({ userId: 'me' });
+  //console.log(userRes, 'userRes')
+
+  const tokens = newAccessToken
+  return tokens
+}
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
@@ -32,17 +74,11 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
   const session = await getPref(request.headers.get("Cookie"));
-  let tokens = session.get("accessToken")
-  // new
-  const refreshToken = session.get("refreshToken")
+
   const sliderWidth = session.get("sliderWidth");
-  const financeCookie = session.get("financeId");
   const userEmail = user?.email
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: userEmail, }, });
-  const currentURL = new URL(request.url).pathname;
-  let financeId;
   let finance;
-  let dashData;
   finance = await getMergedFinance(userEmail);
   const brand = finance?.brand;
   const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
@@ -87,9 +123,36 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     return Promise.all(promises);
   };
   const latestNotes = await fetchLatestNotes(finance);
-  console.log(latestNotes);
+  let tokens = session2.get("accessToken")
+  const refreshToken = session2.get("refreshToken")
+  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
+    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
+  });
+  console.log(userRes, 'userRes')
+  // new
+  if (userRes.status === 401) {
+    const unauthorizedAccess = await Unauthorized(refreshToken)
+    tokens = unauthorizedAccess
 
+    session.set("accessToken", tokens);
+    await commitSession(session);
+    let cookie = createCookie("session_66", {
+      secrets: ['secret'],
+      // 30 days
+      maxAge: 30 * 24 * 60 * 60,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+    const cookies = cookie.serialize({
+      email: email,
+      refreshToken: refreshToken,
+      accessToken: tokens,
+    })
+    await cookies
+    console.log(tokens, 'authorized tokens')
 
+  } else { console.log('Authorized'); }
 
 
   if (brand === "Manitou") {
@@ -110,7 +173,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNewLead,
       latestNotes,
       notifications,
-      refreshToken, tokens
+      refreshToken, tokens, request
     });
   }
   if (brand === "Switch") {
@@ -131,7 +194,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNewLead,
       notifications,
       dashBoardCustURL,
-      refreshToken, tokens
+      refreshToken, tokens, request
     });
   }
 
@@ -151,7 +214,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       notifications,
       dashBoardCustURL,
-      refreshToken, tokens
+      refreshToken, tokens, request
     });
   }
 
@@ -177,6 +240,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       notifications,
       refreshToken, tokens,
       dashBoardCustURL,
+      request
     });
   }
 
@@ -196,7 +260,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       conversations,
       notifications,
       dashBoardCustURL,
-      refreshToken, tokens
+      refreshToken, tokens, request
     });
   }
 
@@ -220,7 +284,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNewLead,
       notifications,
       getTemplates,
-      refreshToken, tokens
+      refreshToken, tokens, request
     });
   } else {
     let modelData;
@@ -244,7 +308,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         getWishList,
         notifications,
         webLeadData,
-        refreshToken, tokens
+        refreshToken, tokens, request
 
       });
     }
@@ -265,7 +329,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       notifications,
       webLeadData,
-      refreshToken, tokens
+      refreshToken, tokens, request
     });
   }
 }
@@ -462,9 +526,53 @@ export async function ConvertDynamic(finance) {
   const emailBody = replaceTemplateValues(template, values);
   return emailBody
 }
+export async function TokenRegen(request) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  const user = await model.user.query.getForSession({ email: email });
+  if (!user) { redirect('/login') }
+  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  let tokens = session.get("accessToken")
+  // new
+  const refreshToken = session.get("refreshToken")
+  let cookie = createCookie("session_66", {
+    secrets: ['secret'],
+    // 30 days
+    maxAge: 30 * 24 * 60 * 60,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
+    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
+  });
+  // new
+  if (userRes.status === 401) {
+    const unauthorizedAccess = await Unauthorized(refreshToken)
+    tokens = unauthorizedAccess
+
+    session.set("accessToken", tokens);
+    await commitSession(session);
+
+    const cookies = cookie.serialize({
+      email: email,
+      refreshToken: refreshToken,
+      accessToken: tokens,
+    })
+    await cookies
+
+  } else {
+    console.log('Authorized')
+  }
+  const googleTokens = {
+    tokens,
+    refreshToken
+  }
+  return googleTokens
+}
 
 
-export const dashboardAction: ActionFunction = async ({ req, request, params, }) => {
+export const dashboardAction: ActionFunction = async ({ request, }) => {
   const formPayload = Object.fromEntries(await request.formData())
   const formData = financeFormSchema.parse(formPayload);
   const session2 = await getSession(request.headers.get("Cookie"));
@@ -801,37 +909,49 @@ export const dashboardAction: ActionFunction = async ({ req, request, params, })
       userName: user?.name,
       date: new Date().toISOString(),
     }
+    const to = formData.customerEmail
+    const text = formData.customContent
+    const subject = formData.subject
+    const tokens = formData.tokens
     // const completeApt = await CompleteLastAppt(userId, financeId)
-    const sendEmail = await EmailFunction(request, params, user, financeId, formPayload)
+    const sendEmail = await SendEmail(user, to, subject, text, tokens)
     const setComs = await prisma.communicationsOverview.create({ data: comdata, });
     const saveComms = await ComsCount(financeId, 'Email')
-
-    return json({ saveComms, sendEmail, formData, setComs, })//, redirect(`/dummyroute`)
+    console.log('refreshToken',)
+    return json({ sendEmail, saveComms, formData, setComs, })//, redirect(`/dummyroute`)
   }
-  if (intent === 'PhoneCall') {
-    const textfollowUpDay = formData.followUpDay2
+  if (intent === 'callClient') {
+    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'
+    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f'
+    const client = require('twilio')(accountSid, authToken);
     const comdata = {
       financeId: formData.financeId,
-      userId: formData.userId,
-      content: formData.note,
-      title: formData.title,
+      userEmail: user?.email,
+      content: formData.customContent,
+      title: formData.subject,
       direction: formData.direction,
-      result: formData.resultOfcall,
-      subject: formData.messageContent,
-      type: 'Text',
+      result: formData.customerState,
+      subject: formData.subject,
+      type: 'Phone',
       userName: user?.name,
       date: new Date().toISOString(),
     }
-    const completeApt = await CompleteLastAppt(userId, financeId)
-    const followUpDay3 = textfollowUpDay
-    const doTGwoDays = await TwoDays(followUpDay3, formData, financeId, user)
-
-    const setComs = await prisma.communicationsOverview.create({
-      data: comdata,
-    });
-    const saveComms = await ComsCount(financeId, 'Phone')
-
-    return json({ doTGwoDays, completeApt, setComs, saveComms });
+    const to = formData.customerEmail
+    const text = formData.customContent
+    const subject = formData.subject
+    const tokens = formData.tokens
+    // const completeApt = await CompleteLastAppt(userId, financeId)
+    const callCLient = await client.calls
+      .create({
+        twiml: '<Response><Say>Ahoy, World!</Say></Response>',
+        to: `+1${user.phone}`,
+        from: '+12176347250'
+      })
+      .then(call => console.log(call.sid));
+    const setComs = await prisma.communicationsOverview.create({ data: comdata, });
+    const saveComms = await ComsCount(financeId, 'Email')
+    console.log('refreshToken',)
+    return json({ callCLient, saveComms, formData, setComs, })//, redirect(`/dummyroute`)
   }
   if (intent === 'textQuickFU') {
     console.log('hit textquick fu')
