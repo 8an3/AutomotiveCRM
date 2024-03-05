@@ -23,45 +23,11 @@ import { SearchCustomerModal } from '~/components/dashboard/calendar/searchCusto
 import axios from 'axios';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
-import { google } from 'googleapis';
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
 ]
-const getAccessToken = async (refreshToken) => {
-  try {
-    const accessTokenObj = await axios.post(
-      'https://www.googleapis.com/oauth2/v4/token',
-      {
-        refresh_token: refreshToken,
-        client_id: "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
-        client_secret: "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",
-        grant_type: 'refresh_token'
-      }
-    );
 
-    return accessTokenObj.data.access_token;
-  } catch (err) {
-    console.log(err);
-  }
-};
-export function Unauthorized(refreshToken) {
-  console.log('Unauthorized');
-  const newAccessToken = getAccessToken(refreshToken)
-
-  console.log(newAccessToken, 'newAccessToken', refreshToken, 'refreshToken')
-
-  oauth2Client.setCredentials({
-    //  refresh_token: refreshToken,
-    access_token: newAccessToken,
-  });
-  google.options({ auth: oauth2Client });
-  //  const userRes = await gmail.users.getProfile({ userId: 'me' });
-  //console.log(userRes, 'userRes')
-
-  const tokens = newAccessToken
-  return tokens
-}
 export async function CompleteLastAppt(userId, financeId) {
   console.log('CompleteLastAppt')
   const lastApt = await prisma.clientApts.findFirst({
@@ -255,50 +221,7 @@ export async function ConvertDynamic(finance) {
   const emailBody = replaceTemplateValues(template, values);
   return emailBody
 }
-export async function TokenRegen(request) {
-  const session = await getSession(request.headers.get("Cookie"));
-  const email = session.get("email")
-  const user = await model.user.query.getForSession({ email: email });
-  if (!user) { redirect('/login') }
-  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
-  let tokens = session.get("accessToken")
-  // new
-  const refreshToken = session.get("refreshToken")
-  let cookie = createCookie("session_66", {
-    secrets: ['secret'],
-    // 30 days
-    maxAge: 30 * 24 * 60 * 60,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-  });
-  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
-    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
-  });
-  // new
-  if (userRes.status === 401) {
-    const unauthorizedAccess = await Unauthorized(refreshToken)
-    tokens = unauthorizedAccess
 
-    session.set("accessToken", tokens);
-    await commitSession(session);
-
-    const cookies = cookie.serialize({
-      email: email,
-      refreshToken: refreshToken,
-      accessToken: tokens,
-    })
-    await cookies
-
-  } else {
-    console.log('Authorized')
-  }
-  const googleTokens = {
-    tokens,
-    refreshToken
-  }
-  return googleTokens
-}
 export async function action({ request }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData());
   let formData = financeFormSchema.parse(formPayload);
