@@ -3,7 +3,8 @@ import {
   json,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+  unstable_createFileUploadHandler,
   type ActionFunction
 } from '@remix-run/node';
 import { Form, useActionData, Link, useLoaderData, useFetcher } from '@remix-run/react';
@@ -26,14 +27,13 @@ import {
 
 export const action = async ({ request }: ActionArgs) => {
   try {
-    const formData = await parseMultipartFormData(request);
+
+    const formData = await parseMultipartFormData(request, uploadHandler);
     console.log('formData:', formData);
 
     const csv = formData ? formData.get('selected_csv') : undefined;
 
-    if (!csv) {
-      throw new Error('CSV file not found in form data.');
-    }
+    if (!csv) { throw new Error('CSV file not found in form data.'); }
 
     const rows = csv.split('\n').slice(1); // Skip header row
 
@@ -111,6 +111,43 @@ export const action = async ({ request }: ActionArgs) => {
     }, { status: 500 });
   }
 };
+/// thios works just foundd it  https://stackblitz.com/edit/node-ubpgp5?file=app%2Froutes%2Findex.tsx
+/**export const action = async ({ request }: ActionArgs) => {
+  const csvUploadHandler: UploadHandler = async ({
+    name,
+    filename,
+    data,
+    contentType,
+  }) => {
+    if (name !== 'selected_csv') {
+      return undefined;
+    }
+    let chunks = [];
+    for await (let chunk of data) {
+      chunks.push(chunk);
+    }
+
+    return await new Blob(chunks, { type: contentType }).text();
+  };
+
+  const uploadHandler: UploadHandler = composeUploadHandlers(
+    csvUploadHandler,
+    createMemoryUploadHandler()
+  );
+  const formData = await parseMultipartFormData(request, uploadHandler);
+  const csv = formData.get('selected_csv');
+
+  // alternate method using just memeoryUploadHandler
+  // const uploadHandler = createMemoryUploadHandler();
+  // const formData = await parseMultipartFormData(request, uploadHandler);
+  // const csvFile = formData.get('selected_csv') as File;
+  // const csv = await csvFile.text();
+
+  console.log(`csv`, csv);
+  return json({
+    csv,
+  });
+}; */
 
 export default function FormCard() {
   const [cardQuantity, setCardQuantity] = useState(0);
