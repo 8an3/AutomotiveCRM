@@ -45,8 +45,6 @@ const getAccessToken = async (refreshToken) => {
     console.log(err);
   }
 };
-
-
 export function Unauthorized(refreshToken) {
   console.log('Unauthorized');
   const newAccessToken = getAccessToken(refreshToken)
@@ -64,7 +62,6 @@ export function Unauthorized(refreshToken) {
   const tokens = newAccessToken
   return tokens
 }
-
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")

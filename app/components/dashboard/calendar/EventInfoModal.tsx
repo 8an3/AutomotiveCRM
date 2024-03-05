@@ -122,7 +122,11 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
   const vin = currentEvent?.vin
   const stockNum = currentEvent?.stockNum
   console.log(aptId, 'apitdi')
-
+  /**  <div className='w-[150px] mx-auto justify-between flex'>
+                        <LogCall data={data} />
+                        <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
+                        <Logtext data={data} />
+                      </div> */
   return (
     <>
       <Dialog.Root open={open}  >
@@ -169,11 +173,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
 
                   <Container size="1">
                     {/* update */}
-                    <div className='w-[150px] mx-auto justify-between flex'>
-                      <LogCall data={data} />
-                      <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
-                      <Logtext data={data} />
-                    </div>
+
                     <Form method="post" >
                       <input type="hidden" defaultValue={financeId} name="financeId" />
                       <input type="hidden" defaultValue={unit} name="unit" />
@@ -185,7 +185,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
                       <input type="hidden" defaultValue={vin} name="vin" />
                       <input type="hidden" defaultValue={stockNum} name="stockNum" />
 
-                      <input type="hidden" defaultValue={aptId} name="id" />
+                      <input type="hidden" defaultValue={aptId} name="aptId" />
                       <input type="hidden" defaultValue='yes' name="completed" />
                       <input type="hidden" defaultValue={title} name="title" />
                       <input type="hidden" defaultValue={address} name="address" />
@@ -353,7 +353,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
                             <input type='hidden' value={firstName} name='firstName' />
                             <input type="hidden" defaultValue={resourceId} name="resourceId" />
                             <input type='hidden' value={lastName} name='lastName' />
-                            <input type="hidden" defaultValue={aptId} name="id" />
+                            <input type="hidden" defaultValue={aptId} name="aptId" />
                             <input type="hidden" defaultValue={address} name="address" />
                             <input type="hidden" defaultValue={unit} name="unit" />
                             <input type="hidden" defaultValue={vin} name="vin" />

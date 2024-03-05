@@ -163,6 +163,10 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
 
   const [note, setNote] = useState(null);
 
+  async function userToken() {
+    return await prisma.user.findUnique({ where: { email: user.email } })
+  }
+
   const findNoteByCustomerId = (customerId) => {
     return latestNotes.find((note) => note && note.customerId === customerId);
   };
@@ -176,7 +180,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
 
   const handleEmailClick = async () => {
 
-    console.log(user, tokens, refreshToken, 'token regen')
+    console.log(user, tokens, userToken.refreshToken, 'token regen')
 
     //const sendemail = await SendEmail(user, data.email, subject, text, tokens)
     //return { ok: true, getToken };
@@ -203,108 +207,104 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
               <TabsTrigger value="notes">Notes</TabsTrigger>
             </TabsList>
             <TabsContent value="account">
-              <fetcher.Form method='post'>
 
-                <div className='flex flex-col'>
-                  <label className=" mt-3 w-full text-left text-[15px] text-black" htmlFor="name">
-                    Templates
-                  </label>
-                  <select
-                    className={`border-black text-black  bg-white autofill:placeholder:text-text-black justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-                    onChange={handleChange}>
-                    <option value="">Select a template</option>
-                    {templates && templates.filter(template => template.type === 'email').map((template, index) => (
-                      <option key={index} value={template.title}>
-                        {template.title}
-                      </option>
-                    ))}
-                  </select>
-                  <label className=" mt-3 w-full text-left text-[15px] text-black" htmlFor="name">
-                    Subject
-                  </label>
-                  <Input
-                    className=" text-black  bg-white shadow-violet7 focus:shadow-violet8 inline-flexw-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-                    id="name"
-                    name='subject'
-                    value={subject}
-                    placeholder="Subject"
-                    onChange={(e) => setSubject(e.target.value)}
+              <div className='flex flex-col'>
+                <label className=" mt-3 w-full text-left text-[15px] text-black" htmlFor="name">
+                  Templates
+                </label>
+                <select
+                  className={`border-black text-black  bg-white autofill:placeholder:text-text-black justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  onChange={handleChange}>
+                  <option value="">Select a template</option>
+                  {templates && templates.filter(template => template.type === 'email').map((template, index) => (
+                    <option key={index} value={template.title}>
+                      {template.title}
+                    </option>
+                  ))}
+                </select>
+                <label className=" mt-3 w-full text-left text-[15px] text-black" htmlFor="name">
+                  Subject
+                </label>
+                <Input
+                  className=" text-black  bg-white shadow-violet7 focus:shadow-violet8 inline-flexw-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                  id="name"
+                  name='subject'
+                  value={subject}
+                  placeholder="Subject"
+                  onChange={(e) => setSubject(e.target.value)}
 
-                  />
+                />
 
-                  <div className="ml-auto flex px-2  ">
-                    <p
-                      onClick={() => setCc(!cc)}
-                      className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff]">
-                      cc
-                    </p>
-                    <p
-                      onClick={() => setBcc(!bcc)}
-                      className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff] ">
-                      bcc
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    {cc && (
-                      <Input placeholder="cc:" name='ccAddress' className="rounded text-black bg-white" />
-                    )}
-                    {bcc && (
-                      <Input placeholder="bcc:" name="bccAddress" className="rounded text-black bg-white" />
-                    )}
-                  </div>
-                  <label className="mt-3 w-[90px] text-left text-[15px] text-black" htmlFor="username">
-                    Body
-                  </label>
-                  <TextArea
-                    value={text}
-                    name="customContent"
-                    className="border-black text-black h-[300px] bg-white"
-                    placeholder="Type your message here."
-                    ref={textareaRef}
-                    onChange={(e) => setText(e.target.value)}
-                  />
+                <div className="ml-auto flex px-2  ">
+                  <p
+                    onClick={() => setCc(!cc)}
+                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff]">
+                    cc
+                  </p>
+                  <p
+                    onClick={() => setBcc(!bcc)}
+                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff] ">
+                    bcc
+                  </p>
                 </div>
-                <input type='hidden' value={data.firstName} name='firstName' />
-                <input type='hidden' value={data.lastName} name='lastName' />
-                <input type='hidden' value={data.email} name='email' />
-                <input type='hidden' value={data.email} name='customerEmail' />
-                <input type="hidden" defaultValue={data.userEmail} name="userEmail" />
-                <input type="hidden" defaultValue={data.id} name="financeId" />
-                <input type="hidden" defaultValue={data.id} name="id" />
-                <input type="hidden" defaultValue={data.brand} name="brand" />
-                <input type="hidden" defaultValue={tokens} name="tokens" />
-                <input type='hidden' value='fullCustom' name='emailType' />
-                <input type='hidden' value='Attempted' name='customerState' />
-                <input type='hidden' value='Outgoing' name='direction' />
-                <input type='hidden' value={data.model} name='unit' />
-                <input type='hidden' value={data.brand} name='brand' />
-                <input type='hidden' value={user.id} name='userId' />
-                <input type='hidden' value='EmailClient' name='intent' />
-                <input type='hidden' value={today} name='lastContact' />
-                <input type="hidden" defaultValue={data.vin} name="vin" />
-                <input type="hidden" defaultValue={data.stockNum} name="stockNum" />
-                <div className="mt-[25px] flex justify-between items-center">
-
-
-                  <Button
-                    onClick={() => {
-                      // setIsButtonPressed(true);
-                      // Change the button text
-                      handleEmailClick()
-                      setButtonText('Email Sent');
-                      toast.success(`Sent email to ${data.firstName}.`)
-                    }}
-                    name='emailType'
-                    value='fullCustom'
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
-                  >
-                    {buttonText}
-                  </Button>
-
-                  {createTemplate === 'createEmailTemplate' && (<input type='hidden' name='intent' value={createTemplate} />)}
+                <div className="grid grid-cols-2 gap-4">
+                  {cc && (
+                    <Input placeholder="cc:" name='ccAddress' className="rounded text-black bg-white" />
+                  )}
+                  {bcc && (
+                    <Input placeholder="bcc:" name="bccAddress" className="rounded text-black bg-white" />
+                  )}
                 </div>
-              </fetcher.Form >
+                <label className="mt-3 w-[90px] text-left text-[15px] text-black" htmlFor="username">
+                  Body
+                </label>
+                <TextArea
+                  value={text}
+                  name="customContent"
+                  className="border-black text-black h-[300px] bg-white"
+                  placeholder="Type your message here."
+                  ref={textareaRef}
+                  onChange={(e) => setText(e.target.value)}
+                />
+              </div>
+              <input type='hidden' value={data.firstName} name='firstName' />
+              <input type='hidden' value={data.lastName} name='lastName' />
+              <input type='hidden' value={data.email} name='email' />
+              <input type='hidden' value={data.email} name='customerEmail' />
+              <input type="hidden" defaultValue={data.userEmail} name="userEmail" />
+              <input type="hidden" defaultValue={data.id} name="financeId" />
+              <input type="hidden" defaultValue={data.id} name="id" />
+              <input type="hidden" defaultValue={data.brand} name="brand" />
+              <input type='hidden' value='fullCustom' name='emailType' />
+              <input type='hidden' value='Attempted' name='customerState' />
+              <input type='hidden' value='Outgoing' name='direction' />
+              <input type='hidden' value={data.model} name='unit' />
+              <input type='hidden' value={data.brand} name='brand' />
+              <input type='hidden' value={user.id} name='userId' />
+              <input type='hidden' value='EmailClient' name='intent' />
+              <input type='hidden' value={today} name='lastContact' />
+              <input type="hidden" defaultValue={data.vin} name="vin" />
+              <input type="hidden" defaultValue={data.stockNum} name="stockNum" />
+              <div className="mt-[25px] flex justify-between items-center">
 
+
+                <Button
+                  onClick={() => {
+                    // setIsButtonPressed(true);
+                    // Change the button text
+                    handleEmailClick()
+                    setButtonText('Email Sent');
+                    toast.success(`Sent email to ${data.firstName}.`)
+                  }}
+                  name='emailType'
+                  value='fullCustom'
+                  className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+                >
+                  {buttonText}
+                </Button>
+
+                {createTemplate === 'createEmailTemplate' && (<input type='hidden' name='intent' value={createTemplate} />)}
+              </div>
               <fetcher.Form method='post'>
                 <input type='hidden' value={data.firstName} name='firstName' />
                 <input type='hidden' value={data.lastName} name='lastName' />

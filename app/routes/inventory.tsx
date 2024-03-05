@@ -7,7 +7,11 @@ import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
 import NotificationSystem from "./notifications";
+import secondary from '~/styles/secondary.css'
 
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: secondary },
+];
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
