@@ -849,7 +849,7 @@ export default function CustomerProfile({ request, }) {
     <>
       <FinanceIdContext.Provider value={financeIdState}>
 
-        <div className=" bg-slate12 mt-[50px]">
+        <div className=" bg-black mt-[50px]">
 
           <Topsection
             getTemplates={getTemplates}

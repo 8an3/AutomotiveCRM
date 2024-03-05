@@ -1788,9 +1788,7 @@ export function MainDashbaord() {
             cell: ({ row }) => {
                 const data = row.original
                 return <div className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff] ">
-                    <a target="_blank" href={`/customer/${data.id}`} rel="noreferrer">
-                        {(row.getValue("lastName"))}
-                    </a>
+                    {(row.getValue("lastName"))}
                 </div>
             },
 

@@ -188,10 +188,10 @@ export async function loader({ request }) {
 export default function PrintAndDocs() {
   const { user, finance, merged, filename, financeId } = useLoaderData();
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
-  const iFrameRef2: React.LegacyRef<HTMLIFrameElement> = useRef(null);
   const MyIFrameComponent = () => {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
+
       if (iFrameRef?.current) {
         iFrameRef.current.src = 'https://third-8an3.vercel.app/customer-forms';
         //iFrameRef.current.src = 'http://localhost:3002/customerGen';
@@ -209,6 +209,8 @@ export default function PrintAndDocs() {
             width="100%"
             height="100%"
             onLoad={hideSpinner}
+            style={{ minHeight: '840px' }}
+
           />
         </div>
       </>
@@ -217,7 +219,7 @@ export default function PrintAndDocs() {
 
   useEffect(() => {
     if (iFrameRef?.current) {
-      iFrameRef.current.src = 'https://third-8an3.vercel.app/customer-forms';
+      iFrameRef.current.src = 'https://third-kappa.vercel.app/customer-forms';
       //  iFrameRef.current.src = 'http://localhost:3002/customer-forms';
       const userId = user.id
       const handleLoad = () => {

@@ -81,6 +81,8 @@ export async function action({ request, }: ActionFunction) {
 }
 
 export default function DashMsger() {
+  const [data, setData] = useState()
+
   const { getTemplates, user, conversations, latestNotes } = useLoaderData();
   const [templates, setTemplates] = useState(getTemplates);
   // console.log(templates, 'data')
@@ -164,7 +166,6 @@ export default function DashMsger() {
     return latestNotes.find((note) => note && note.customerId === customerId);
   };
   const [note, setNote] = useState()
-  const [data, setData] = useState()
 
   // This useEffect ensures that setNote is called only once during the component mount
   useEffect(() => {
@@ -177,19 +178,22 @@ export default function DashMsger() {
   // Inside the content of http://localhost:3000/sms/dashMsger
 
   // Add an event listener to listen for messages from the parent window
-  window.addEventListener('message', (event) => {
-    // Check if the message is coming from an expected source (optional)
-    // In production, you might want to check the origin of the message for security reasons.
+  useEffect(() => {
 
-    // Assuming the expected message format is an object with a 'type' property
-    if (event.data && event.data.type === 'customMessageType') {
-      // Handle the received data
-      const payload = event.data.payload;
-      setData(payload)
-      // Do something with the payload
-      console.log('Received data from parent window:', payload);
-    }
-  });
+    window.addEventListener('message', (event) => {
+      // Check if the message is coming from an expected source (optional)
+      // In production, you might want to check the origin of the message for security reasons.
+
+      // Assuming the expected message format is an object with a 'type' property
+      if (event.data && event.data.type === 'data') {
+        // Handle the received data
+        const payload = event.data.payload;
+        setData(payload)
+        // Do something with the payload
+        console.log('Received data from parent window:', payload);
+      }
+    });
+  }, []);
 
   return (
     <>

@@ -19,15 +19,13 @@ import updateFinance23 from "../dashboard/calls/actions/updateFinance";
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getMergedFinance } from "~/utils/dashloader/dashloader.server";
 import { EmailFunction } from "~/routes/dummyroute";
-import { SetCookie, commitSession as commitPref, getSession as getPref } from "~/utils/pref.server";
-import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
 import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
 import { google } from 'googleapis';
 import oauth2Client, { SendEmail, } from "~/routes/email.server";
-
+import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 
 
 const getAccessToken = async (refreshToken) => {
@@ -73,7 +71,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const user = await model.user.query.getForSession({ email: email });
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
-  const session = await getPref(request.headers.get("Cookie"));
+  const session = await sixSession(request.headers.get("Cookie"));
 
   const sliderWidth = session.get("sliderWidth");
   const userEmail = user?.email
@@ -577,7 +575,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   const formData = financeFormSchema.parse(formPayload);
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-
+  console.log(formData)
   const user = await model.user.query.getForSession({ email: email });
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
@@ -680,7 +678,6 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     return isRead
   }
   const template = formPayload.template;
-  const session = await getPref(request.headers.get("Cookie"));
   const today = new Date();
   let followUpDay = today;
   const clientfileId = formData.clientfileId;
@@ -689,10 +686,11 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   const dashboard = await prisma.dashboard.findUnique({ where: { financeId: financeId, }, });
   const dashboardId = dashboard?.id;
   console.log(financeId, 'finance id from dashboard calls')
-  session.set("financeId", financeId);
-  session.set("clientfileId", clientfileId);
-  const cookie = await commitPref(session)
-  await SetCookie(userId, clientfileId, financeId, dashboardId, request)
+  const session66 = await sixSession(request.headers.get("Cookie"));
+  session66.set("financeId", financeId);
+  session66.set("clientfileId", clientfileId);
+  const serializedSession = await sixCommit(session66);
+
   let pickUpDate;
   if (pickUpDate === null || pickUpDate === undefined) {
     pickUpDate = "To Be Det.";
@@ -1189,9 +1187,242 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   if (intent === "updateFinance") {
     console.log(formData, ' update finance data')
-    const updating = await updateFinance23(financeId, formData, formPayload);
-    console.log(financeId, "updating");
-    return updating;
+
+    let brand = formPayload.brand
+    let customerState = formData.customerState
+    if (formData.customerState === 'Pending') {
+      customerState = 'Pending'
+    }
+    if (formData.customerState === 'Attempted') {
+      customerState = 'Attempted'
+    }
+    if (formData.customerState === 'Reached') {
+      customerState = 'Reached'
+    }
+    if (formData.customerState === 'Lost') {
+      customerState = 'Lost'
+    }
+    if (formData.sold === 'on') {
+      customerState = 'sold'
+    }
+    if (formData.depositMade === 'on') {
+      customerState = 'depositMade'
+    }
+    if (formData.turnOver === 'on') {
+      customerState = 'turnOver'
+    }
+    if (formData.financeApp === 'on') {
+      customerState = 'financeApp'
+    }
+    if (formData.approved === 'on') {
+      customerState = 'approved'
+    }
+    if (formData.signed === 'on') {
+      customerState = 'signed'
+    }
+    if (formData.pickUpSet === 'on') {
+      customerState = 'pickUpSet'
+    }
+    if (formData.delivered === 'on') {
+      customerState = 'delivered'
+    }
+    if (formData.refund === 'on') {
+      customerState = 'refund'
+    }
+    if (formData.funded === 'on') {
+      customerState = 'funded'
+    }
+    let pickUpDate = ''
+    if (formData.pickUpDate) {
+      pickUpDate = new Date(formData.pickUpDate).toISOString()
+    }
+    let lastContact = new Date().toISOString()
+
+    console.log(financeId, 'finaceCheckId')
+    const financeData = {
+
+      email: formData.email,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
+      name: formData.name,
+      address: formData.address,
+      city: formData.city,
+      postal: formData.postal,
+      province: formData.province,
+      dl: formData.dl,
+      typeOfContact: formData.typeOfContact,
+      timeToContact: formData.timeToContact,
+      iRate: formData.iRate,
+      months: formData.months,
+      discount: formData.discount,
+      total: formData.total,
+      onTax: formData.onTax,
+      on60: formData.on60,
+      biweekly: formData.biweekly,
+      weekly: formData.weekly,
+      weeklyOth: formData.weeklyOth,
+      biweekOth: formData.biweekOth,
+      oth60: formData.oth60,
+      weeklyqc: formData.weeklyqc,
+      biweeklyqc: formData.biweeklyqc,
+      qc60: formData.qc60,
+      deposit: formData.deposit,
+      biweeklNatWOptions: formData.biweeklNatWOptions,
+      weeklylNatWOptions: formData.weeklylNatWOptions,
+      nat60WOptions: formData.nat60WOptions,
+      weeklyOthWOptions: formData.weeklyOthWOptions,
+      biweekOthWOptions: formData.biweekOthWOptions,
+      oth60WOptions: formData.oth60WOptions,
+      biweeklNat: formData.biweeklNat,
+      weeklylNat: formData.weeklylNat,
+      nat60: formData.nat60,
+      qcTax: formData.qcTax,
+      otherTax: formData.otherTax,
+      totalWithOptions: formData.totalWithOptions,
+      otherTaxWithOptions: formData.otherTaxWithOptions,
+      desiredPayments: formData.desiredPayments,
+      freight: formData.freight,
+      admin: formData.admin,
+      commodity: formData.commodity,
+      pdi: formData.pdi,
+      discountPer: formData.discountPer,
+      userLoanProt: formData.userLoanProt,
+      userTireandRim: formData.userTireandRim,
+      userGap: formData.userGap,
+      userExtWarr: formData.userExtWarr,
+      userServicespkg: formData.userServicespkg,
+      deliveryCharge: formData.deliveryCharge,
+      vinE: formData.vinE,
+      lifeDisability: formData.lifeDisability,
+      rustProofing: formData.rustProofing,
+      userOther: formData.userOther,
+      paintPrem: formData.paintPrem,
+      licensing: formData.licensing,
+      stockNum: formData.stockNum,
+      options: formData.options,
+      accessories: formData.accessories,
+      labour: formData.labour,
+      year: formData.year,
+      brand: formData.brand,
+      model: formData.model,
+      model1: formData.model1,
+      color: formData.color,
+      modelCode: formData.modelCode,
+      msrp: formData.msrp,
+      userEmail: formData.userEmail,
+      tradeValue: formData.tradeValue,
+      tradeDesc: formData.tradeDesc,
+      tradeColor: formData.tradeColor,
+      tradeYear: formData.tradeYear,
+      tradeMake: formData.tradeMake,
+      tradeVin: formData.tradeVin,
+      tradeTrim: formData.tradeTrim,
+      tradeMileage: formData.tradeMileage,
+      bikeStatus: formData.bikeStatus,
+      trim: formData.trim,
+      vin: formData.vin,
+      lien: formData.lien,
+    }
+    const dashData = {
+      userEmail: formData.userEmail,
+      referral: formData.referral,
+      visited: formData.visited,
+      bookedApt: formData.bookedApt,
+      aptShowed: formData.aptShowed,
+      aptNoShowed: formData.aptNoShowed,
+      testDrive: formData.testDrive,
+      metService: formData.metService,
+      metManager: formData.metManager,
+      metParts: formData.metParts,
+      sold: formData.sold,
+      depositMade: formData.depositMade,
+      refund: formData.refund,
+      turnOver: formData.turnOver,
+      financeApp: formData.financeApp,
+      approved: formData.approved,
+      signed: formData.signed,
+      pickUpSet: formData.pickUpSet,
+      demoed: formData.demoed,
+      delivered: formData.delivered,
+      lastContact: lastContact,
+      status: formData.status,
+      customerState: customerState,
+      result: formData.result,
+      timesContacted: formData.timesContacted,
+      nextAppointment: formData.nextAppointment,
+      completeCall: formData.completeCall,
+      followUpDay: formData.followUpDay,
+      state: formData.state,
+      deliveredDate: formData.deliveredDate,
+      notes: formData.notes,
+      visits: formData.visits,
+      progress: formData.progress,
+      metSalesperson: formData.metSalesperson,
+      metFinance: formData.metFinance,
+      financeApplication: formData.financeApplication,
+      pickUpDate: pickUpDate,
+      pickUpTime: formData.pickUpTime,
+      depositTakenDate: formData.depositTakenDate,
+      docsSigned: formData.docsSigned,
+      tradeRepairs: formData.tradeRepairs,
+      seenTrade: formData.seenTrade,
+      lastNote: formData.lastNote,
+      dLCopy: formData.dLCopy,
+      insCopy: formData.insCopy,
+      testDrForm: formData.testDrForm,
+      voidChq: formData.voidChq,
+      loanOther: formData.loanOther,
+      signBill: formData.signBill,
+      ucda: formData.ucda,
+      tradeInsp: formData.tradeInsp,
+      customerWS: formData.customerWS,
+      otherDocs: formData.otherDocs,
+      urgentFinanceNote: formData.urgentFinanceNote,
+      funded: formData.funded,
+      countsInPerson: formData.countsInPerson,
+      countsPhone: formData.countsPhone,
+      countsSMS: formData.countsSMS,
+      countsOther: formData.countsOther,
+      countsEmail: formData.countsEmail,
+    }
+
+    switch (brand) {
+      case "Manitou":
+        const updatingManitouFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
+        return json({ updatingManitouFinance });
+      case "Switch":
+        const updatingSwitchFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
+        return json({ updatingSwitchFinance });
+      case "BMW-Motorrad":
+        const updatingBMWMotoFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
+        return json({ updatingBMWMotoFinance });
+      default:
+        try {
+          // Update the finance record
+          const finance = await prisma.finance.update({
+            where: {
+              id: financeId,
+            },
+            data: { ...financeData },
+          });
+
+          // Update the dashboard record
+          const dashboard = await prisma.dashboard.update({
+            where: {
+              financeId: financeId, // Assuming the financeId is also the id of the dashboard
+            },
+            data: { ...dashData, }
+          });
+
+          console.log("Finance and Dashboard records updated successfully");
+
+          return { finance, dashboard };
+        } catch (error) {
+          console.error("An error occurred while updating the records:", error);
+          throw error;  // re-throw the error so it can be handled by the caller
+        }
+    }
   }
   // create
   if (intent === "createQuote") {
@@ -1209,11 +1440,15 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   // navigation
   if (intent === "clientProfile") {
+
     console.log(clientfileId, financeId, 'dashboard calls')
     return redirect(`/customer/${clientfileId}/${financeId}`, {
-      headers: { "Set-Cookie": cookie }
+      headers: {
+        "Set-Cookie": serializedSession,
+      },
     });
   }
+
   if (intent === "returnToQuote") {
     const brand = formData.brand;
     const id = formData.id;

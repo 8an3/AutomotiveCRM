@@ -14,6 +14,7 @@ import { commitSession as commitPref, getSession as getPref } from "~/utils/pref
 import { getSession } from '~/sessions/auth-session.server';
 import { SetToken66, requireAuthCookie, SetClient66 } from '~/utils/misc.user.server';
 import { X } from 'lucide-react';
+import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 
 
 
@@ -172,13 +173,10 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     const userId = user?.id;
     const clientfileId = formData.clientfileId
     const dashbaordId = formData.dashboardId
-    const client66 = await SetClient66(userId, clientfileId, financeId, dashbaordId, request)
-    const session = await getPref(request.headers.get("Cookie"));
-    session.set("userId", userId);
-    session.set("clientfileId", clientfileId);
-    session.set("financeId", financeId);
-    session.set("dashboardId", dashbaordId);
-
+    const session66 = await sixSession(request.headers.get("Cookie"));
+    session66.set("financeId", financeId);
+    session66.set("clientfileId", clientfileId);
+    const serializedSession = await sixCommit(session66);
 
     const lastContact = new Date().toISOString();
     const today = new Date()
@@ -358,7 +356,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
             pickUpDate: 'TBD',
         },
     });
-    return json({ finance, dashboard, client66, }, { headers: { "Set-Cookie": await commitPref(session) } }
+    return json({ finance, dashboard }, { headers: { "Set-Cookie": serializedSession, } }
     );
 
 }

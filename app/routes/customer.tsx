@@ -11,9 +11,9 @@ import { Flex, Text, Box, TextArea, TextField, Heading, Select, Theme, ThemePane
 import { Badge } from "~/other/badge";
 import { getSession } from "~/sessions/auth-session.server";
 
-import { commitSession as commitPref, getSession as getPref } from '~/utils/pref.server';
+import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
+
 import Sidebar from "~/components/shared/sidebar";
-import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from '~/models'
 
 export async function loader({ request, params }: LoaderFunction) {
@@ -26,7 +26,7 @@ export async function loader({ request, params }: LoaderFunction) {
     redirect('/login')
   }
   const deFees = await getDealerFeesbyEmail(user.email)
-  const session = await getPref(request.headers.get("Cookie"))
+  const session = await sixSession(request.headers.get("Cookie"))
   const sliderWidth = session.get('sliderWidth')
   let clientfileId = session.get('clientfileId')
   let financeId = session.get('financeId')
@@ -66,7 +66,7 @@ export default function CustMaIN() {
       <div width='100%' height='100%' left='auto' top='auto' className="w-full h-full min-h-screen  px-2 sm:px-1 lg:px-3 bg-black border-gray-300   ">
         <Sidebar user={user} />
         <div className="flex flex-col md:flex-row   ">
-          <div className="w-full md:w-64 bg-slate12 mt-[50px]">
+          <div className="w-full md:w-64 bg-black mt-[50px]">
             <Sidebar2 />
           </div>
           <div className="w-full mt-[20px]">
@@ -123,7 +123,7 @@ export function Sidebar2() {
   return (
     <div className="w-[225px] md:h-screen  top-0 left-0 p-5 overflow-y-auto ">
       {finance && finance.map((financeRecord, index) => (
-        <div key={index} className="w-[95%]">
+        <div key={index} className="w-[95%] mt-3">
           <Link to={`/customer/${clientId}/${financeId}`} className=" cursor-pointer">
             <Card color="gray" className="border border-slate9 p-3 w-auto rounded-md">
               <Flex gap="3" align="center">

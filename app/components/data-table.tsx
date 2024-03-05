@@ -46,6 +46,7 @@ export function DataTable<TData, TValue>({
       commodity: false,
       msrp: false,
       turnover: false,
+      unitPicker: false,
       painPrem: false,
       freight: false,
       biweeklNatWOptions: false,

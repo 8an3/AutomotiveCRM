@@ -76,7 +76,7 @@ export default function LogCall({ data }) {
       <Input type="hidden" defaultValue={note} name="note" />
       <Input type="hidden" defaultValue={title} name="title" />
       <Input type="hidden" value='Attempted' name="result" />
-      <Button
+      <button
         onClick={() => {
           // setIsButtonPressed(true);
           // Change the button text
@@ -92,7 +92,7 @@ export default function LogCall({ data }) {
         <p className="cursor-pointer text-white hover:text-[#02a9ff] target:text-[#02a9ff]" >
           <PhoneOutcome />
         </p>
-      </Button>
+      </button>
     </Form>
   );
 }

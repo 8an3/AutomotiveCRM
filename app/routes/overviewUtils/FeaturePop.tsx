@@ -58,7 +58,7 @@ const FeaturePop = ({ finance, user }) => {
                 </a>
               </Button>
               <Button className=" border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
-                <a href={`/customer/${finance.id}`} target="_blank">
+                <a href={`/customer/${finance.clientfileId}/${finance.id}`} target="_blank">
                   Client File
                 </a>
               </Button>
