@@ -26,6 +26,7 @@ import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/updat
 import { google } from 'googleapis';
 import oauth2Client, { SendEmail, } from "~/routes/email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
+import { DataForm } from '../dashboard/calls/actions/dbData';
 
 
 const getAccessToken = async (refreshToken) => {
@@ -696,199 +697,59 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
 
   if (intent === 'newLead') {
-
-    const firstName = formData.firstName
-    const lastName = formData.lastName
-    const email = formData.email;
-    const model = formData.model;
-    const errors = {
-      firstName: firstName ? null : "First Name is required",
-      lastName: lastName ? null : "lastName is required",
-      email: email ? null : "email is required",
-      model: model ? null : "model is required",
-    };
-    const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
-    if (hasErrors) {
-      return json(errors);
-    }
-    function invariant(
-      condition: any,
-      message: string | (() => string),
-    ): asserts condition {
-      if (!condition) {
-        throw new Error(typeof message === 'function' ? message() : message)
-      }
-    }
-    invariant(typeof firstName === "string", "First Name must be a string");
-    invariant(typeof lastName === "string", "Last Name must be a string");
-    invariant(typeof email === "string", "Email must be a string");
-    invariant(typeof model === "string", "Model must be a string");
-
-
-
-    // console.log(formData, 'newlead')
-    console.log(financeId, 'finaceCheckId')
-    const financeData = {
-
-      email: formData.email,
+    console.log('less than 20')
+    const brand = formData.brand
+    delete formData.financeId
+    delete formData.userId
+    delete formData.followUpDay
+    let { financeId, clientData, dashData, financeData } = DataForm(formData);
+    clientData = {
+      ...clientData,
       firstName: formData.firstName,
       lastName: formData.lastName,
+      name: formData.firstName + ' ' + formData.lastName,
+      email: formData.email,
       phone: formData.phone,
-      name: formData.name,
       address: formData.address,
       city: formData.city,
-      postal: formData.postal,
       province: formData.province,
       dl: formData.dl,
-      typeOfContact: formData.typeOfContact,
-      timeToContact: formData.timeToContact,
-      iRate: formData.iRate,
-      months: formData.months,
-      discount: formData.discount,
-      total: formData.total,
-      onTax: formData.onTax,
-      on60: formData.on60,
-      biweekly: formData.biweekly,
-      weekly: formData.weekly,
-      weeklyOth: formData.weeklyOth,
-      biweekOth: formData.biweekOth,
-      oth60: formData.oth60,
-      weeklyqc: formData.weeklyqc,
-      biweeklyqc: formData.biweeklyqc,
-      qc60: formData.qc60,
-      deposit: formData.deposit,
-      biweeklNatWOptions: formData.biweeklNatWOptions,
-      weeklylNatWOptions: formData.weeklylNatWOptions,
-      nat60WOptions: formData.nat60WOptions,
-      weeklyOthWOptions: formData.weeklyOthWOptions,
-      biweekOthWOptions: formData.biweekOthWOptions,
-      oth60WOptions: formData.oth60WOptions,
-      biweeklNat: formData.biweeklNat,
-      weeklylNat: formData.weeklylNat,
-      nat60: formData.nat60,
-      qcTax: formData.qcTax,
-      otherTax: formData.otherTax,
-      totalWithOptions: formData.totalWithOptions,
-      otherTaxWithOptions: formData.otherTaxWithOptions,
-      desiredPayments: formData.desiredPayments,
-      freight: formData.freight,
-      admin: formData.admin,
-      commodity: formData.commodity,
-      pdi: formData.pdi,
-      discountPer: formData.discountPer,
-      userLoanProt: formData.userLoanProt,
-      userTireandRim: formData.userTireandRim,
-      userGap: formData.userGap,
-      userExtWarr: formData.userExtWarr,
-      userServicespkg: formData.userServicespkg,
-      deliveryCharge: formData.deliveryCharge,
-      vinE: formData.vinE,
-      lifeDisability: formData.lifeDisability,
-      rustProofing: formData.rustProofing,
-      userOther: formData.userOther,
-      paintPrem: formData.paintPrem,
-      licensing: formData.licensing,
-      stockNum: formData.stockNum,
-      options: formData.options,
-      accessories: formData.accessories,
-      labour: formData.labour,
-      year: formData.year,
-      brand: formData.brand,
-      model: formData.model,
-      model1: formData.model1,
-      color: formData.color,
-      modelCode: formData.modelCode,
-      msrp: formData.msrp,
       userEmail: formData.userEmail,
-      tradeValue: formData.tradeValue,
-      tradeDesc: formData.tradeDesc,
-      tradeColor: formData.tradeColor,
-      tradeYear: formData.tradeYear,
-      tradeMake: formData.tradeMake,
-      tradeVin: formData.tradeVin,
-      tradeTrim: formData.tradeTrim,
-      tradeMileage: formData.tradeMileage,
-      trim: formData.trim,
-      vin: formData.vin,
     }
-    const dashData = {
-      userEmail: formData.userEmail,
-      referral: formData.referral,
-      visited: formData.visited,
-      bookedApt: formData.bookedApt,
-      aptShowed: formData.aptShowed,
-      aptNoShowed: formData.aptNoShowed,
-      testDrive: formData.testDrive,
-      metService: formData.metService,
-      metManager: formData.metManager,
-      metParts: formData.metParts,
-      sold: formData.sold,
-      depositMade: formData.depositMade,
-      refund: formData.refund,
-      turnOver: formData.turnOver,
-      financeApp: formData.financeApp,
-      approved: formData.approved,
-      signed: formData.signed,
-      pickUpSet: formData.pickUpSet,
-      demoed: formData.demoed,
-      delivered: formData.delivered,
-      status: 'Active',
-      customerState: 'Attempted',
-      result: formData.result,
-      timesContacted: formData.timesContacted,
-      nextAppointment: formData.nextAppointment,
-      completeCall: formData.completeCall,
-      followUpDay: formData.followUpDay,
-      state: formData.state,
-      deliveredDate: formData.deliveredDate,
-      notes: formData.notes,
-      visits: formData.visits,
-      progress: formData.progress,
-      metSalesperson: formData.metSalesperson,
-      metFinance: formData.metFinance,
-      financeApplication: formData.financeApplication,
-      pickUpDate: pickUpDate,
-      pickUpTime: formData.pickUpTime,
-      depositTakenDate: formData.depositTakenDate,
-      docsSigned: formData.docsSigned,
-      tradeRepairs: formData.tradeRepairs,
-      seenTrade: formData.seenTrade,
-      lastNote: formData.lastNote,
-      dLCopy: formData.dLCopy,
-      insCopy: formData.insCopy,
-      testDrForm: formData.testDrForm,
-      voidChq: formData.voidChq,
-      loanOther: formData.loanOther,
-      signBill: formData.signBill,
-      ucda: formData.ucda,
-      tradeInsp: formData.tradeInsp,
-      customerWS: formData.customerWS,
-      otherDocs: formData.otherDocs,
-      urgentFinanceNote: formData.urgentFinanceNote,
-      funded: formData.funded,
-      countsInPerson: formData.countsInPerson,
-      countsPhone: formData.countsPhone,
-      countsSMS: formData.countsSMS,
-      countsOther: formData.countsOther,
-      countsEmail: formData.countsEmail,
+    const userId = formData.userId
+    if (formData.brand === 'Used') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      //   console.log('Created createQuoteServer:', createQuoteServer)
+      return json({ QuoteServer })
     }
-    const brand = formData.brand
-    switch (brand) {
-      case "Manitou":
-        const updatingManitouFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
-        return json({ updatingManitouFinance });
-      case "Switch":
-        const updatingSwitchFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
-        return json({ updatingSwitchFinance });
-      case "BMW-Motorrad":
-        const updatingBMWMotoFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
-        return json({ updatingBMWMotoFinance });
-      default:
-        const update = await updateFinanceWithDashboard(financeId, financeData, dashData);
+    if (formData.brand === 'Switch') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
 
-        return json({ update })
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      return json({ manitouOptionsCreated, createQuoteServer })
     }
-    return json({ updating })
+    if (formData.brand === 'Manitou') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      return json({ manitouOptionsCreated, createQuoteServer })
+    }
+    if (formData.brand === 'BMW-Motorrad') {
+      const financeId = finance.id
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const updatingFinance = await createBMWOptions(financeId)
+      const updatingFinance2 = await createBMWOptions2(financeId)
+      return json({ updatingFinance, updatingFinance2, createQuoteServer })
+    }
+    else {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      // console.log('Created createQuoteServer:', createQuoteServer)
+      return json({ createQuoteServer })
+    }
   }
   // calls
   if (intent === "EmailClient") {
@@ -1471,14 +1332,59 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   // customer
   if (intent === "AddCustomer") {
-    await createFinanceCheckClientDFirst(
-      finance,
-      email,
-      clientData,
-      financeId,
-      userId
-    );
-    return createFinanceCheckClientDFirst;
+    console.log('less than 20')
+    const brand = formData.brand
+    delete formData.financeId
+    delete formData.userId
+    delete formData.followUpDay
+    let { financeId, clientData, dashData, financeData } = DataForm(formData);
+    clientData = {
+      ...clientData,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      name: formData.firstName + ' ' + formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      province: formData.province,
+      dl: formData.dl,
+      userEmail: formData.userEmail,
+    }
+    const userId = formData.userId
+    if (formData.brand === 'Used') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      //   console.log('Created createQuoteServer:', createQuoteServer)
+      return json({ QuoteServer })
+    }
+    if (formData.brand === 'Switch') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      return json({ manitouOptionsCreated, createQuoteServer })
+    }
+    if (formData.brand === 'Manitou') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      return json({ manitouOptionsCreated, createQuoteServer })
+    }
+    if (formData.brand === 'BMW-Motorrad') {
+      const financeId = finance.id
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const updatingFinance = await createBMWOptions(financeId)
+      const updatingFinance2 = await createBMWOptions2(financeId)
+      return json({ updatingFinance, updatingFinance2, createQuoteServer })
+    }
+    else {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      // console.log('Created createQuoteServer:', createQuoteServer)
+      return json({ createQuoteServer })
+    }
   }
   if (intent === "deleteCustomer") {
     await DeleteCustomer({ formData, formPayload });

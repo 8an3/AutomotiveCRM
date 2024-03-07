@@ -12,19 +12,12 @@ import axios from 'axios';
 export const loader: LoaderFunction = async ({ request, params }: LoaderFunctionArgs) => {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-
   const user = await model.user.query.getForSession({ email: email });
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
-
-
+  if (!user) { redirect('/login') }
   const extraHeaders = {
 
   }
   const endpoint = 'leads'
-
   const accessToken = env.API_ACTIVIX;
   const response = await axios.get(`https://api.crm.activix.ca/v2/${endpoint}`, {
     headers: {
@@ -32,8 +25,7 @@ export const loader: LoaderFunction = async ({ request, params }: LoaderFunction
       'Accept': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     }
-  }
-  )
+  })
     .then(response => {
       console.log(response.data);
     })
@@ -43,22 +35,16 @@ export const loader: LoaderFunction = async ({ request, params }: LoaderFunction
       console.error(`Error status: ${error.response.status}`);
       console.error('Error response:', error.response.data);
     });
-
-
   return response
-
 }
-
+// need update vehicle and need to add vehicle id to my db for reference qwhen updating
 export async function SyncEvents() {
   const activixDataList = await ActivixTest('leads', 'get', { 'custom-header': '' });
 
 }
 export async function SyncLeadData() {
   const accessToken = env.API_ACTIVIX;
-
   const activixDataList = await ActivixTest('leads', 'get', { 'custom-header': '' });
-
-
   if (activixDataList && activixDataList.data) {
     const processedDataList = activixDataList.data.map(async (activixData) => {
       const firstCheck = await prisma.activixLead.findUnique({ where: { id: activixData.id } })
@@ -208,13 +194,87 @@ export async function SyncLeadData() {
           })
           return updateFinance
         }
-
       }
       // should update leads here
-
     })
+    return processedDataList
   }
-  return processedDataList
+  const localLeads = await prisma.finance.findMany({
+    where: { activixId: { equals: null } }
+  });
+  // Define a function to save a lead to the API
+  const saveLeadToApi = async (lead) => {
+    try {
+      const response = await axios.post(`https://api.crm.activix.ca/v2/leads`,
+        {
+          "first_name": lead.firstName,
+          "last_name": lead.lastName,
+          "type": "email",
+          "advisor": {
+            "first_name": "Skyler",
+            "last_name": "Zanth"
+          },
+          "emails": [
+            {
+              "type": "home",
+              "address": lead.email,
+            }
+          ],
+          "phones": [
+            {
+              "number": `+1${lead.phone}`,
+              "type": "mobile"
+            }
+          ],
+          "vehicles": [
+            {
+              "make": lead.brand,
+              "model": lead.model,
+              "year": lead.year,
+              "color_exterior": lead.color,
+              "vin": lead.vin,
+              "price": lead.msrp,
+
+              "type": "wanted"
+            },
+            {
+              "make": lead.tradeMake,
+              "model": lead.tradeDesc,
+              "year": lead.tradeYear,
+              "vin": lead.tradeVin,
+              "color_exterior": lead.tradeColor,
+              "mileage": lead.tradeMileage,
+              "type": "exchange"
+            }
+          ]
+        }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      }
+      )
+        .then(response => {
+          console.log(response.data);
+          console.log('Lead saved successfully:', response.data);
+        })
+        .catch(error => {
+          console.error('Full error object:', error);
+          console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+          console.error(`Error status: ${error.response.status}`);
+          console.error('Error response:', error.response.data);
+        });
+
+    } catch (error) {
+      console.error('Error saving lead:', error.message);
+    }
+  };
+
+  // Loop through localLeads and save each lead to the API
+  for (const lead of localLeads) {
+    await saveLeadToApi(lead);
+  }
 }
 export async function GetAccount() {
   const accessToken = env.API_ACTIVIX;
@@ -622,7 +682,7 @@ export async function CreateLead(formData) {
     });
 
 
-  return null
+  return response
 
 }
 export async function UpdateLead(formData) {
@@ -850,7 +910,7 @@ export async function UpdateLead(formData) {
           delivery_date: data.delivery_date,
           paperwork_date: data.paperwork_date,
           presented_date: data.presented_date,
-          promised_date: data.promised_datere,
+          promised_date: data.promised_date,
           financed_date: data.financed_date,
           road_test_date: data.road_test_date,
           home_road_test_date: data.home_road_test_date,
@@ -1073,7 +1133,7 @@ export async function UpdateCommunications(formData) {
 
   return response
 }
-export async function CreateTask(formData, dateTimeString,) {
+export async function CreateTask(formData) {
   const endpoint = 'tasks'
   const accessToken = env.API_ACTIVIX;
   const response = await axios.post(`https://api.crm.activix.ca/v2/${endpoint}`,
@@ -1084,7 +1144,7 @@ export async function CreateTask(formData, dateTimeString,) {
       },
       "title": formData.title,
       "type": formData.contactMethod,
-      "date": dateTimeString,
+      "date": new Date(),
       "description": formData.note,
     }, {
     headers: {

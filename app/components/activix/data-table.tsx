@@ -7,7 +7,7 @@ import { type ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginati
 import { DataTablePagination } from "../dashboard/calls/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/other/table";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/other/dropdown-menu";
-import { Form, Link, useFetcher, useLoaderData, useTransition, } from "@remix-run/react";
+import { Form, Link, useFetcher, useLoaderData, useNavigation, } from "@remix-run/react";
 import AddCustomer from "../dashboard/calls/addCustomer";
 import Filter from "../dashboard/calls/Filter";
 import { Flex, Text, TextArea, TextField, Heading } from '@radix-ui/themes';
@@ -21,6 +21,8 @@ import {
 } from "~/components/ui/select"
 import { env } from 'process';
 import axios from 'axios';
+import { ButtonLoading } from "~/components/ui/button-loading";
+import { SyncLeadData } from "./functions";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,6 +48,7 @@ export function DataTable<TData, TValue>({
       commodity: false,
       msrp: false,
       turnover: false,
+      unitPicker: false,
       painPrem: false,
       freight: false,
       biweeklNatWOptions: false,
@@ -475,86 +478,15 @@ export function DataTable<TData, TValue>({
   const toggleFilter = () => {
     setShowFilter(!showFilter);
   };
+  const navigation = useNavigation();
 
-  const create = async () => {
-    const accessToken = env.API_ACTIVIX;
+  const isSubmitting = navigation.state === "submitting";
 
-    for (const item of data) {
-      console.log('got one')
-      if (!item.activix) {
-        try {
-          const response = await axios.post(
-            'https://api.crm.activix.ca/v2/leads',
-            {
-              "first_name": item.firstName,
-              "last_name": item.lastName,
-              "type": "email",
-              "locale": "EN",
-              "province": item.province,
-              "city": item.city,
-              "address_line1": item.address,
-              "advisor": {
-                "first_name": "Skyler",
-                "last_name": "Zanth"
-              },
-              "emails": [
-                {
-                  "type": "home",
-                  "address": item.email,
-                }
-              ],
-              "phones": [
-                {
-                  "number": `+1${item.phone}`,
-                  "type": "mobile"
-                }
-              ],
-              "vehicles": [
-                {
-                  "make": item.brand,
-                  "model": item.model,
-                  "year": item.year,
-                  "color_exterior": item.color,
-                  "vin": item.vin,
-                  "price": item.msrp,
-
-                  "type": "wanted"
-                },
-                {
-                  "make": item.tradeMake,
-                  "model": item.tradeDesc,
-                  "year": item.tradeYear,
-                  "vin": item.tradeVin,
-                  "color_exterior": item.tradeColor,
-                  "mileage": item.tradeMileage,
-                  "type": "exchange"
-                }
-              ]
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${accessToken}`,
-              },
-            }
-          );
-          const updateFinance = await prisma.finance.update({
-            where: { id: item.financeId },
-            data: { activixId: response.data.id }
-          })
-          console.log(response.data, updateFinance);
-          item.activix = response.data; // Update this based on your response structure
-        } catch (error) {
-          console.error('Full error object:', error);
-          console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-          console.error(`Error status: ${error.response.status}`);
-          console.error('Error response:', error.response.data);
-        }
-      }
-    }
-  };
-
+  async function syncData() {
+    // save data/ sync data,  no one shuold be calling your leads anyways and update when needed
+    // then move towards a ping as much as you can style of api call when dealing with the client file
+    SyncLeadData()
+  }
   //defaultValue={todayfilterBy}>
   return (
 
@@ -685,8 +617,18 @@ export function DataTable<TData, TValue>({
               <CalendarCheck color="#02a9ff" size={20} strokeWidth={1.5} />
             </button>
           </Link>
-          <Button variant='outline' onClick={() => create()} >Send New Leads</Button>
-
+          <ButtonLoading
+            size="lg"
+            onClick={() => {
+              syncData()
+            }} className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+            name="intent"
+            value="clientProfile"
+            isSubmitting={isSubmitting}
+            loadingText="Naivigating to Client File.."
+          >
+            Sync Data
+          </ButtonLoading>
         </div>
       </div >
       <div className="mt-[20px] rounded-md  border border-[#60646c] text-slate1">

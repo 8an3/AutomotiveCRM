@@ -1,38 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { Form, Link, useActionData, useLoaderData, useNavigation } from '@remix-run/react'
-import {
-  Button,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  Input,
-  Label,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-  TextArea
-} from "../components/ui/index";
-import { CaretSortIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
-import { env } from 'process';
-import axios from 'axios';
-
-import {
-  getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable,
-  getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns
-} from "@tanstack/react-table";
-import type {
-  Table, Column, SortingFn, ColumnDef, ColumnFiltersState, SortingState, VisibilityState, FilterFn, ExpandedState,
-} from "@tanstack/react-table";
+import React, { HTMLAttributes, HTMLProps, useState, useEffect } from 'react'
+import { Form, Link, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
+import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label } from "../components/ui/index";
+import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
+import { getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns } from "@tanstack/react-table";
+import type { Table, Column, SortingFn, ColumnDef, ColumnFiltersState, SortingState, VisibilityState, FilterFn, ExpandedState, FilterFns, } from "@tanstack/react-table";
 import { toast } from "sonner"
 import EditWishList from '../components/dashboard/wishlist/WishListEdit';
 import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "../components/ui/table"
-import { type LinksFunction } from '@remix-run/node';
-import { compareItems, type RankingInfo, rankItem, } from '@tanstack/match-sorter-utils'
-import { DataTable } from "../components/activix/data-table"
+import { type LinksFunction, type DataFunctionArgs } from '@remix-run/node';
+import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
+import { DataTable } from "../components/data-table"
 import { type dashBoardType } from "../components/dashboard/schema";
 import { DataTableColumnHeader } from "../components/dashboard/calls/header"
 import ClientCard from '../components/dashboard/calls/clientCard';
@@ -41,8 +18,9 @@ import EmailClient from '../components/dashboard/calls/emailClient';
 import ClientStatusCard from '../components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '../components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '../components/dashboard/calls/2DaysFromNow';
-import { dashboardAction, dashboardLoader } from "../components/activix/dashboardCallsActivix";
+import { dashboardAction, dashboardLoader } from "../components/actions/dashboardCalls";
 import IndeterminateCheckbox from "../components/dashboard/calls/InderterminateCheckbox"
+import { useRootLoaderData } from "~/hooks/use-root-loader-data";
 import { ListSelection2 } from './quoteUtils/listSelection'
 import { ButtonLoading } from "~/components/ui/button-loading";
 import AttemptedOrReached from "../components/dashboard/calls/setAttOrReached";
@@ -50,14 +28,7 @@ import ContactTimesByType from "../components/dashboard/calls/ContactTimesByType
 import LogCall from "../components/dashboard/calls/logCall";
 import Logtext from "../components/dashboard/calls/logText";
 import { Badge } from "../ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "~/components/ui/dialog"
 import second from '~/styles/second.css'
 
 export const links: LinksFunction = () => [
@@ -71,16 +42,19 @@ export let action = dashboardAction
 
 export default function Mainboard() {
   const [selectedTab, setSelectedTab] = useState("dashboard");
+  const { user } = useRootLoaderData();
+  //<TabsTrigger onClick={() => setSelectedTab("calendar")} value="calendar">Calendar</TabsTrigger>
+  const { notifications } = useLoaderData()
   return (
     <>
 
-      <Tabs defaultValue="dashboard">
+      <Tabs defaultValue="dashboard" className='mt-10'>
         <TabsList className="ml-[19px] grid w-[600px] grid-cols-4">
           <TabsTrigger onClick={() => {
             setSelectedTab("null")
             setSelectedTab("dashboard")
           }}
-            value="dashboard">Activix Dashboard</TabsTrigger>
+            value="dashboard">Sales Dashboard</TabsTrigger>
           <TabsTrigger onClick={() => {
             setSelectedTab("null")
             setSelectedTab("newLeads")
@@ -114,6 +88,7 @@ export default function Mainboard() {
     </>
   )
 }
+
 declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>
@@ -122,6 +97,7 @@ declare module '@tanstack/table-core' {
     itemRank: RankingInfo
   }
 }
+
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value)
@@ -148,6 +124,7 @@ const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
   // Provide an alphanumeric fallback for when the item ranks are equal
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
 }
+
 function Filter({
   column,
   table,
@@ -1152,7 +1129,8 @@ export function WebleadsTable() {
             </div>
 
             <input type='hidden' value={clientFinanceId} name='financeId' />
-            <input type='hidden' value={userEmail} name='userEmail' />
+            <input type='hidden' value={user.email} name='userEmail' />
+
             <input type='hidden' value={clientFirstName} name='firstName' />
             <input type='hidden' value={brand} name='brand' />
             <input type='hidden' value={clientLastName} name='lastName' />
@@ -1197,7 +1175,8 @@ export function WebleadsTable() {
 }
 // leads dashboard
 async function getData(): Promise<dashBoardType[]> {
-  const res = await fetch('/dashboard/calls/loader/activix')
+  //turn into dynamic route and have them call the right loader like q  uote qand overview
+  const res = await fetch('/dashboard/calls/loader')
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
@@ -1707,96 +1686,910 @@ export function MainDashbaord() {
   useEffect(() => {
     const data = async () => {
       const result = await getData();
-      setPaymentData(result.dataSet);
+      setPaymentData(result);
     };
     data()
   }, []);
+  const defaultColumn: Partial<ColumnDef<Payment>> = {
+    cell: ({ getValue, row: { index }, column: { id }, table }) => {
+      const initialValue = getValue()
+      // We need to keep and update the state of the cell normally
+      const [value, setValue] = useState(initialValue)
 
-  const create = async () => {
-    const accessToken = env.API_ACTIVIX;
-
-    for (const item of data) {
-      console.log('got one')
-      if (!item.activix) {
-        try {
-          const response = await axios.post(
-            'https://api.crm.activix.ca/v2/leads',
-            {
-              "first_name": item.firstName,
-              "last_name": item.lastName,
-              "type": "email",
-              "locale": "EN",
-              "province": item.province,
-              "city": item.city,
-              "address_line1": item.address,
-              "advisor": {
-                "first_name": "Skyler",
-                "last_name": "Zanth"
-              },
-              "emails": [
-                {
-                  "type": "home",
-                  "address": item.email,
-                }
-              ],
-              "phones": [
-                {
-                  "number": '+1' + item.phone,
-                  "type": "mobile"
-                }
-              ],
-              "vehicles": [
-                {
-                  "make": item.brand,
-                  "model": item.model,
-                  "year": item.year,
-                  "color_exterior": item.color,
-                  "vin": item.vin,
-                  "price": item.msrp,
-
-                  "type": "wanted"
-                },
-                {
-                  "make": item.tradeMake,
-                  "model": item.tradeDesc,
-                  "year": item.tradeYear,
-                  "vin": item.tradeVin,
-                  "color_exterior": item.tradeColor,
-                  "mileage": item.tradeMileage,
-                  "type": "exchange"
-                }
-              ]
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${accessToken}`,
-              },
-            }
-          );
-          const updateFinance = await prisma.finance.update({
-            where: { id: item.financeId },
-            data: { activixId: response.data.id }
-          })
-          console.log(response.data, updateFinance);
-          item.activix = response.data; // Update this based on your response structure
-        } catch (error) {
-          console.error('Full error object:', error);
-          console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-          console.error(`Error status: ${error.response.status}`);
-          console.error('Error response:', error.response.data);
-        }
+      // When the input is blurred, we'll call our table meta's updateData function
+      const onBlur = () => {
+        ; (table.options.meta as TableMeta).updateData(index, id, value)
       }
-    }
-  };
+
+      // If the initialValue is changed external, sync it up with our state
+      useEffect(() => {
+        setValue(initialValue)
+      }, [initialValue])
+
+      return (
+        <input
+          value={value as string}
+          onChange={e => setValue(e.target.value)}
+          onBlur={onBlur}
+        />
+      )
+    },
+  }
+  const columns: ColumnDef<Payment>[] = [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <IndeterminateCheckbox
+          checked={table.getIsAllRowsSelected()}
+          indeterminate={table.getIsSomeRowsSelected()}
+          onChange={table.getToggleAllRowsSelectedHandler()}
+        />
+      ),
+      cell: ({ row }) => (
+        <div className="px-1">
+          <IndeterminateCheckbox
+            checked={row.getIsSelected()}
+            indeterminate={row.getIsSomeSelected()}
+            onChange={row.getToggleSelectedHandler()}
+          />
+        </div>
+      ),
+    },
+
+    {
+      accessorKey: "firstName",
+      header: ({ column }) => {
+        return <>
+          <DataTableColumnHeader column={column} title="First Name" />
+
+        </>
+
+      },
+      cell: ({ row }) => {
+        const data = row.original
+        //
+        return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none">
+          <ClientCard data={data} row={row} />
+        </div>
+      },
 
 
+    },
+    {
+      accessorKey: "lastName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="LastName" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original
+        return <div className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff] ">
+          {(row.getValue("lastName"))}
+        </div>
+      },
+
+    },
+    {
+
+      accessorKey: "status",
+      header: ({ column }) => {
+        return <>
+          <DataTableColumnHeader column={column} title="Status" />
+        </>
+      },
+      cell: ({ row }) => {
+        const data = row.original
+        return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none  active:bg-[#02a9ff]">
+          <ClientStatusCard data={data} />
+        </div>
+      },
+    },
+    {
+      accessorKey: "nextAppointment",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Next Appt" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original;
+        const formatDate = (dateString) => {
+          const date = new Date(dateString);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
+          const day = String(date.getDate()).padStart(2, '0');
+          const hours = date.getHours();
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+
+          return `${year}-${month}-${day} ${hours}:${minutes}`;
+        };
+
+        const formattedDate = data.nextAppointment && data.nextAppointment !== '1969-12-31 19:00' ? formatDate(data.nextAppointment) : 'TBD';
+
+        return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff]  ">
+          {data.nextAppointment === 'TBD' ? <p>TBD</p> : formattedDate}
+        </div>
+      },
+    },
+    {
+
+      accessorKey: "customerState",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="State" />
+      ), cell: ({ row }) => {
+        const data = row.original
+        //  const id = data.id ? data.id.toString() : '';
+
+
+        return <div className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff]">
+
+          {data.customerState === 'Pending' ? (<AttemptedOrReached data={data} />
+          ) : data.customerState === 'Attempted' ? (<AttemptedOrReached data={data} />
+          ) : data.customerState === 'Reached' ? (<Badge className="bg-jade9">Reached</Badge>
+          ) : data.customerState === 'sold' ? (<Badge className="bg-jade9">Sold</Badge>
+          ) : data.customerState === 'depositMade' ? (<Badge className="bg-jade9">Deposit</Badge>
+          ) : data.customerState === 'turnOver' ? (<Badge className="bg-blue-9">Turn Over</Badge>
+          ) : data.customerState === 'financeApp' ? (<Badge className="bg-blue-9">Application Done</Badge>
+          ) : data.customerState === 'approved' ? (<Badge className="bg-jade9">Approved</Badge>
+          ) : data.customerState === 'signed' ? (<Badge className="bg-jade9">Signed</Badge>
+          ) : data.customerState === 'pickUpSet' ? (<Badge className="bg-jade9">Pick Up Set</Badge>
+          ) : data.customerState === 'delivered' ? (<Badge className="bg-jade9">Delivered</Badge>
+          ) : data.customerState === 'refund' ? (<Badge className="bg-[#cf5454]">Refunded</Badge>
+          ) : data.customerState === 'funded' ? (<Badge className="bg-[#cf5454]">Funded</Badge>
+          ) : (
+            ''
+          )}
+        </div>
+      },
+    },
+    {
+      accessorKey: "contact",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Contact" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original
+        // <CallClient />
+        //<SmsClient data={data} />
+
+
+        const [isButtonPressed, setIsButtonPressed] = useState(false);
+
+        return <>
+          <div className='my-2 grid grid-cols-3 gap-3'>
+            <LogCall data={data} />
+            <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
+            <Logtext data={data} />
+          </div>
+        </>
+      },
+    },
+    {
+      accessorKey: "model",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Model" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original
+        return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
+          <ClientVehicleCard data={data} />
+        </div>
+      },
+    },
+    {
+      accessorKey: "tradeDesc",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Trade" />
+      ),
+      cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("tradeDesc"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "lastNote",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Last Note" />
+      ),
+      cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("lastNote"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "singleFinNote",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Notes" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original;
+        const single = data.singleFinNote;
+        const last = data.lastNote
+        if (single) {
+          return (
+            { single }
+          )
+        }
+        else if (last) {
+          return (
+            { last }
+          )
+        }
+        else
+          return null;
+      },
+    },
+    {
+      accessorKey: "followUpDay",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Preset F/U Day" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original
+        return <>
+
+          <div className='w-[150px]'>
+            <PresetFollowUpDay data={data} />
+          </div>
+        </>
+      },
+    },
+    {
+      accessorKey: "twoDaysFromNow",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Set New Apt." />
+      ),
+      cell: ({ row }) => {
+        const navigation = useNavigation();
+        const isSubmitting = navigation.state === "submitting";
+        const data = row.original
+        return <>
+
+          <div className='w-[200px]'>
+            <TwoDaysFromNow data={data} isSubmitting={isSubmitting} />
+          </div>
+        </>
+      },
+    },
+    {
+      accessorKey: "completeCall",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Complete Call" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original
+        const contactMethod = data.contactMethod
+        return <>
+
+          <div className='w-[125px] cursor-pointer'>
+
+            <CompleteCall data={data} contactMethod={contactMethod} />
+          </div>
+        </>
+      },
+    },
+    {
+      accessorKey: "contactTimesByType",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Contact Times By Type" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original
+        //
+        return <>
+          <div className='w-[175px] cursor-pointer'>
+            <ContactTimesByType data={data} />
+          </div>
+        </>
+      },
+    },
+    {
+      accessorKey: "pickUpDate",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff] " />
+      ),
+      cell: ({ row }) => {
+        const data = row.original
+        if (data.pickUpDate) {
+          const pickupDate = data.pickUpDate
+          return (
+            <div className="bg-transparent :text-[#02a9ff] text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
+              {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
+            </div>
+          );
+        } else
+          return null;
+      },
+    },
+    {
+      accessorKey: "lastContact",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original
+        const formatDate = (dateString) => {
+          const date = new Date(dateString);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
+          const day = String(date.getDate()).padStart(2, '0');
+          const hours = date.getHours();
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+
+          return `${year}-${month}-${day} ${hours}:${minutes}`;
+        };
+
+        // usage
+        const formattedDate = formatDate(data.lastContact);
+        if (formattedDate) {
+          const lastContact1 = data.lastContact
+          return (
+            <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
+              {formattedDate === '1969-12-31 19:00' || formattedDate === null ? 'TBD' : formattedDate}
+            </div>
+          );
+        }
+        return null;
+      },
+
+    },
+    {
+      accessorKey: "unitPicker",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Turnover" />
+      ),
+      cell: ({ row }) => {
+        const data = row.original
+        const lockedValue = Boolean(true)
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const navigation = useNavigation();
+        const isSubmitting = navigation.state === "submitting";
+        const PromiseConst = async () => {
+          const promise = await new Promise(resolve => setTimeout(resolve, 3000));
+          return promise
+        }
+        PromiseConst()
+
+
+        /**
+         * <FinanceTurnover data={data} lockedValue={lockedValue}   />
+                    <input type='hidden' name='intent' value='financeTurnover' />
+                                 <Form method='post' onSubmit={handleSubmit}>
+                    <input type='hidden' name='locked' value={lockedValue} />
+                    <input type='hidden' name='financeId' value={data.id} />
+                </Form>
+
+         *
+        */
+        return <>
+          <div className='w-[175px] cursor-pointer'>
+            <Form method='post' >
+              <input type='hidden' name='intent' value='financeTurnover' />
+              <input type='hidden' name='locked' value={lockedValue} />
+              <input type='hidden' name='financeId' value={data.id} />
+              <ButtonLoading
+                size="lg"
+                className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                type="submit"
+                isSubmitting={isSubmitting}
+                onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
+                loadingText="Updating client info..."
+              >
+                Finance Turnover
+              </ButtonLoading>
+            </Form>
+          </div>
+        </>
+      },
+    },
+
+    {
+      accessorKey: "id",
+
+      cell: ({ row }) => {
+        const data = row.original
+        return (
+          <>
+            {/* <DocuUploadDashboard data={data} />*/}
+          </>
+        );
+      },
+
+    },
+    {
+      accessorKey: "email",
+      header: ({ column }) => (
+        <p className="text-center">email</p>
+      ),
+      cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("email"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "phone",
+      header: ({ column }) => (
+        <p className="text-center">phone</p>
+      ), cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("phone"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "address",
+      header: ({ column }) => (
+        <p className="text-center">address</p>
+      ), cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("address"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "postal",
+      header: ({ column }) => (
+        <p className="text-center">postal</p>
+      ), cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                  hover:shadow-md
+
+
+                  focus:text-[#02a9ff]
+                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("postal"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "city",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="city" />
+      ), cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                  hover:shadow-md
+
+
+                  focus:text-[#02a9ff]
+                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("city"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "province",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="province" />
+      ), cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                  hover:shadow-md
+
+
+                  focus:text-[#02a9ff]
+                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("province"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "financeId",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="financeId" />
+      ), cell: ({ row }) => {
+        return <div className="w-[200px] text-center font-medium">{(row.getValue("financeId"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "userEmail",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="userEmail" />
+      ),
+      cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                  hover:shadow-md
+
+
+                  focus:text-[#02a9ff]
+                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("userEmail"))}</div>
+      },
+
+    },
+    {
+      accessorKey: "pickUpTime",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Pick Up Time" />
+      ),
+      cell: ({ row }) => {
+        return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff] ">
+          {(row.getValue("pickUpTime"))}
+        </div>
+      },
+
+    },
+
+    {
+      accessorKey: "timeToContact",
+      header: "model1",
+    },
+    {
+      accessorKey: "deliveredDate",
+      header: "deliveredDate",
+    },
+    {
+      accessorKey: "timeOfDay",
+      header: "timeOfDay",
+    },
+    {
+      accessorKey: "msrp",
+      header: "msrp",
+    },
+    {
+      accessorKey: "freight",
+      header: "freight",
+    },
+    {
+      accessorKey: "pdi",
+      header: "pdi",
+    },
+    {
+      accessorKey: "admin",
+      header: "admin",
+    },
+    {
+      accessorKey: "commodity",
+      header: "commodity",
+    },
+    {
+      accessorKey: "accessories",
+      header: "accessories",
+    },
+    {
+      accessorKey: "labour",
+      header: "labour",
+    },
+    {
+      accessorKey: "painPrem",
+      header: "painPrem",
+    },
+    {
+      accessorKey: "licensing",
+      header: "licensing",
+    },
+    {
+      accessorKey: "trailer",
+      header: "trailer",
+    },
+    {
+      accessorKey: "depositMade",
+      header: "depositMade",
+    },
+    {
+      accessorKey: "months",
+      header: "months",
+    },
+    {
+      accessorKey: "iRate",
+      header: "iRate",
+    },
+    {
+      accessorKey: "on60",
+      header: "on60",
+    },
+    {
+      accessorKey: "biweekly",
+      header: "biweekly",
+    },
+    {
+      accessorKey: "weekly",
+      header: "weekly",
+    },
+    {
+      accessorKey: "qc60",
+      header: "qc60",
+    },
+    {
+      accessorKey: "biweeklyqc",
+      header: "biweeklyqc",
+    },
+    {
+      accessorKey: "weeklyqc",
+      header: "weeklyqc",
+    },
+    {
+      accessorKey: "nat60",
+      header: "nat60",
+    },
+    {
+      accessorKey: "biweeklNat",
+      header: "biweeklNat",
+    },
+    {
+      accessorKey: "weeklylNat",
+      header: "weeklylNat",
+    },
+    {
+      accessorKey: "oth60",
+      header: "oth60",
+    },
+    {
+      accessorKey: "biweekOth",
+      header: "biweekOth",
+    },
+    {
+      accessorKey: "weeklyOth",
+      header: "weeklyOth",
+    },
+    {
+      accessorKey: "nat60WOptions",
+      header: "nat60WOptions",
+    },
+    {
+      accessorKey: "desiredPayments",
+      header: "desiredPayments",
+    },
+    {
+      accessorKey: "biweeklNatWOptions",
+      header: "biweeklNatWOptions",
+    },
+    {
+      accessorKey: "weeklylNatWOptions",
+      header: "weeklylNatWOptions",
+    },
+    {
+      accessorKey: "oth60WOptions",
+      header: "oth60WOptions",
+    },
+    {
+      accessorKey: "biweekOthWOptions",
+      header: "biweekOthWOptions",
+    },
+    {
+      accessorKey: "visited",
+      header: "visited",
+    },
+    {
+      accessorKey: "aptShowed",
+      header: "aptShowed",
+    },
+    {
+      accessorKey: "bookedApt",
+      header: "bookedApt",
+    },
+    {
+      accessorKey: "aptNoShowed",
+      header: "aptNoShowed",
+    },
+    {
+      accessorKey: "testDrive",
+      header: "testDrive",
+    },
+    {
+      accessorKey: "metParts",
+      header: "metParts",
+    },
+    {
+      accessorKey: "sold",
+      header: "sold",
+    },
+
+    {
+      accessorKey: "refund",
+      header: "refund",
+    },
+    {
+      accessorKey: "turnOver",
+      header: "turnOver",
+    },
+    {
+      accessorKey: "financeApp",
+      header: "financeApp",
+    },
+    {
+      accessorKey: "approved",
+      header: "approved",
+    },
+    {
+      accessorKey: "signed",
+      header: "signed",
+    },
+
+    {
+      accessorKey: "pickUpSet",
+      header: "pickUpSet",
+    },
+    {
+      accessorKey: "demoed",
+      header: "demoed",
+    },
+
+    {
+      accessorKey: "tradeMake",
+      header: "tradeMake",
+    },
+    {
+      accessorKey: "tradeYear",
+      header: "tradeYear",
+    },
+    {
+      accessorKey: "tradeTrim",
+      header: "tradeTrim",
+    },
+    {
+      accessorKey: "tradeColor",
+      header: "tradeColor",
+    },
+    {
+      accessorKey: "tradeVin",
+      header: "tradeVin",
+    },
+    {
+      accessorKey: "delivered",
+      header: "delivered",
+    },
+    {
+      accessorKey: "desiredPayments",
+      header: "desiredPayments",
+    },
+    {
+      accessorKey: "result",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Result" />
+      ), cell: ({ row }) => {
+
+        return <div className="w-[250px] text-center font-medium">
+          Result
+        </div>
+      },
+
+    },
+    {
+      accessorKey: "referral",
+      header: "referral",
+    },
+    {
+      accessorKey: "metService",
+      header: "metService",
+    },
+
+    {
+      accessorKey: "metManager",
+      header: "metManager",
+    },
+    {
+      accessorKey: "metParts",
+      header: "metParts",
+    },
+    {
+      accessorKey: "timesContacted",
+      header: "timesContacted",
+    },
+
+    {
+      accessorKey: "visits",
+      header: "visits",
+    },
+    {
+      accessorKey: "financeApplication",
+      header: "financeApplication",
+    },
+    {
+      accessorKey: "progress",
+      header: "progress",
+    },
+
+    {
+      accessorKey: "metFinance",
+      header: "metFinance",
+    },
+    {
+      accessorKey: "metSalesperson",
+      header: "metSalesperson",
+    },
+    {
+      accessorKey: "seenTrade",
+      header: "seenTrade",
+    },
+    {
+      accessorKey: "docsSigned",
+      header: "docsSigned",
+    },
+    {
+      accessorKey: "tradeRepairs",
+      header: "tradeRepairs",
+    },
+    {
+      accessorKey: "tradeValue",
+      header: "tradeValue",
+    },
+    {
+      accessorKey: "modelCode",
+      header: "modelCode",
+    },
+    {
+      accessorKey: "color",
+      header: "color",
+    },
+    {
+      accessorKey: "model1",
+      header: "model1",
+    },
+    {
+      accessorKey: "stockNum",
+      header: "stockNum",
+    },
+    {
+      accessorKey: "otherTaxWithOptions",
+      header: "otherTaxWithOptions",
+    },
+    {
+      accessorKey: "totalWithOptions",
+      header: "totalWithOptions",
+    },
+    {
+      accessorKey: "otherTax",
+      header: "otherTax",
+    },
+    {
+      accessorKey: "qcTax",
+      header: "lastContact",
+    },
+    {
+      accessorKey: "deposit",
+      header: "tradeValue",
+    },
+    {
+      accessorKey: "rustProofing",
+      header: "modelCode",
+    },
+    {
+      accessorKey: "lifeDisability",
+      header: "color",
+    },
+    {
+      accessorKey: "userServicespkg",
+      header: "model1",
+    },
+    {
+      accessorKey: "userExtWarr",
+      header: "userExtWarr",
+    },
+    {
+      accessorKey: "userGap",
+      header: "userGap",
+    },
+    {
+      accessorKey: "userTireandRim",
+      header: "userTireandRim",
+    },
+    {
+      accessorKey: "userLoanProt",
+      header: "userLoanProt",
+    },
+    {
+      accessorKey: "deliveryCharge",
+      header: "lastContact",
+    },
+    {
+      accessorKey: "onTax",
+      header: "tradeValue",
+    },
+    {
+      accessorKey: "total",
+      header: "modelCode",
+    },
+    {
+      accessorKey: "typeOfContact",
+      header: "typeOfContact",
+    },
+    {
+      accessorKey: "contactMethod",
+      header: "contactMethod",
+    },
+    {
+      accessorKey: "note",
+      header: "note",
+    },
+
+
+
+  ]
   return (
     <>
       <div className="bg-transparent text-gray-300 uppercase">
         <DataTable columns={columns} data={data} />
-        <Button variant='outline' onClick={() => create()} >Send New Leads</Button>
       </div>
     </>
   )
@@ -1923,892 +2716,7 @@ export const defaultColumn: Partial<ColumnDef<Payment>> = {
     )
   },
 }
-const columns: ColumnDef<Payment>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <IndeterminateCheckbox
-        checked={table.getIsAllRowsSelected()}
-        indeterminate={table.getIsSomeRowsSelected()}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="px-1">
-        <IndeterminateCheckbox
-          checked={row.getIsSelected()}
-          indeterminate={row.getIsSomeSelected()}
-          onChange={row.getToggleSelectedHandler()}
-        />
-      </div>
-    ),
-  },
 
-  {
-    accessorKey: "firstName",
-    header: ({ column }) => {
-      return <>
-        <DataTableColumnHeader column={column} title="First Name" />
-
-      </>
-
-    },
-    cell: ({ row }) => {
-      const data = row.original
-      console.log(data, 'data21312')
-      //
-      //
-      return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none">
-        <ClientCard data={data} />
-      </div>
-    },
-
-
-  },
-  {
-    accessorKey: "lastName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="LastName" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original
-      return <div
-        className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff] ">
-        <a target="_blank" href={`/customer/${data.id}`} rel="noreferrer">
-          {(row.getValue("lastName"))}
-        </a>
-      </div>
-    },
-
-  },
-  {
-
-    accessorKey: "status",
-    header: ({ column }) => {
-      return <>
-        <DataTableColumnHeader column={column} title="Status" />
-      </>
-    },
-    cell: ({ row }) => {
-      const data = row.original
-      return <div
-        className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none  active:bg-[#02a9ff]">
-        <ClientStatusCard data={data} />
-      </div>
-    },
-  },
-  {
-    accessorKey: "nextAppointment",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Next Appt" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original;
-      const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
-        return `${year}-${month}-${day} ${hours}:${minutes}`;
-      };
-
-      const formattedDate = data.nextAppointment && data.nextAppointment !== '1969-12-31 19:00' ? formatDate(data.nextAppointment) : 'TBD';
-
-      return <div
-        className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff]  ">
-        {data.nextAppointment === 'TBD' ? <p>TBD</p> : formattedDate}
-      </div>
-    },
-  },
-  {
-
-    accessorKey: "customerState",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="State" />
-    ), cell: ({ row }) => {
-      const data = row.original
-      //  const id = data.id ? data.id.toString() : '';
-
-
-      return <div
-        className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff]">
-
-        {data.customerState === 'Pending' ? (<AttemptedOrReached data={data} />
-        ) : data.customerState === 'Attempted' ? (<AttemptedOrReached data={data} />
-        ) : data.customerState === 'Reached' ? (<Badge className="bg-jade9">Reached</Badge>
-        ) : data.customerState === 'sold' ? (<Badge className="bg-jade9">Sold</Badge>
-        ) : data.customerState === 'depositMade' ? (<Badge className="bg-jade9">Deposit</Badge>
-        ) : data.customerState === 'turnOver' ? (<Badge className="bg-blue-9">Turn Over</Badge>
-        ) : data.customerState === 'financeApp' ? (<Badge className="bg-blue-9">Application Done</Badge>
-        ) : data.customerState === 'approved' ? (<Badge className="bg-jade9">Approved</Badge>
-        ) : data.customerState === 'signed' ? (<Badge className="bg-jade9">Signed</Badge>
-        ) : data.customerState === 'pickUpSet' ? (<Badge className="bg-jade9">Pick Up Set</Badge>
-        ) : data.customerState === 'delivered' ? (<Badge className="bg-jade9">Delivered</Badge>
-        ) : data.customerState === 'refund' ? (<Badge className="bg-[#cf5454]">Refunded</Badge>
-        ) : data.customerState === 'funded' ? (<Badge className="bg-[#cf5454]">Funded</Badge>
-        ) : (
-          ''
-        )}
-      </div>
-    },
-  },
-  {
-    accessorKey: "contact",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Contact" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original
-      // <CallClient />
-      //<SmsClient data={data} />
-
-
-      const [isButtonPressed, setIsButtonPressed] = useState(false);
-
-      return <>
-        <div className='my-2 grid grid-cols-3 gap-3'>
-          <LogCall data={data} />
-          <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
-          <Logtext data={data} />
-        </div>
-      </>
-    },
-  },
-  {
-    accessorKey: "model",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Model" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original
-      return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-        <ClientVehicleCard data={data} />
-      </div>
-    },
-  },
-  {
-    accessorKey: "tradeDesc",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Trade" />
-    ),
-    cell: ({ row }) => {
-      return <div
-        className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("tradeDesc"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "lastNote",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Last Note" />
-    ),
-    cell: ({ row }) => {
-      return <div
-        className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("lastNote"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "singleFinNote",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Notes" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original;
-      const single = data.singleFinNote;
-      const last = data.lastNote
-      if (single) {
-        return (
-          { single }
-        )
-      } else if (last) {
-        return (
-          { last }
-        )
-      } else
-        return null;
-    },
-  },
-  {
-    accessorKey: "followUpDay",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Preset F/U Day" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original
-      return <>
-
-        <div className='w-[150px]'>
-          <PresetFollowUpDay data={data} />
-        </div>
-      </>
-    },
-  },
-  {
-    accessorKey: "twoDaysFromNow",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Set New Apt." />
-    ),
-    cell: ({ row }) => {
-      const navigation = useNavigation();
-      const isSubmitting = navigation.state === "submitting";
-      const data = row.original
-      return <>
-
-        <div className='w-[200px]'>
-          <TwoDaysFromNow data={data} isSubmitting={isSubmitting} />
-        </div>
-      </>
-    },
-  },
-  {
-    accessorKey: "completeCall",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Complete Call" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original
-      const contactMethod = data.contactMethod
-      return <>
-
-        <div className='w-[125px] cursor-pointer'>
-
-          <CompleteCall data={data} contactMethod={contactMethod} />
-        </div>
-      </>
-    },
-  },
-  {
-    accessorKey: "contactTimesByType",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Contact Times By Type" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original
-      //
-      return <>
-        <div className='w-[175px] cursor-pointer'>
-          <ContactTimesByType data={data} />
-        </div>
-      </>
-    },
-  },
-  {
-    accessorKey: "pickUpDate",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pick Up Date"
-        className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff] " />
-    ),
-    cell: ({ row }) => {
-      const data = row.original
-      if (data.pickUpDate) {
-        const pickupDate = data.pickUpDate
-        return (
-          <div
-            className="bg-transparent :text-[#02a9ff] text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
-            {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
-          </div>
-        );
-      } else
-        return null;
-    },
-  },
-  {
-    accessorKey: "lastContact",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Last Contacted"
-        className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original
-      const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
-        return `${year}-${month}-${day} ${hours}:${minutes}`;
-      };
-
-      // usage
-      const formattedDate = formatDate(data.lastContact);
-      if (formattedDate) {
-        const lastContact1 = data.lastContact
-        return (
-          <div
-            className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
-            {formattedDate === '1969-12-31 19:00' || formattedDate === null ? 'TBD' : formattedDate}
-          </div>
-        );
-      }
-      return null;
-    },
-
-  },
-  {
-    accessorKey: "unitPicker",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Turnover" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original
-      const lockedValue = Boolean(true)
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const navigation = useNavigation();
-      const isSubmitting = navigation.state === "submitting";
-      const PromiseConst = async () => {
-        const promise = await new Promise(resolve => setTimeout(resolve, 3000));
-        return promise
-      }
-      PromiseConst()
-
-
-      /**
-       * <FinanceTurnover data={data} lockedValue={lockedValue}   />
-       <input type='hidden' name='intent' value='financeTurnover' />
-       <Form method='post' onSubmit={handleSubmit}>
-       <input type='hidden' name='locked' value={lockedValue} />
-       <input type='hidden' name='financeId' value={data.id} />
-       </Form>
-
-       *
-       */
-      return <>
-        <div className='w-[175px] cursor-pointer'>
-          <Form method='post'>
-            <input type='hidden' name='intent' value='financeTurnover' />
-            <input type='hidden' name='locked' value={lockedValue} />
-            <input type='hidden' name='financeId' value={data.id} />
-            <ButtonLoading
-              size="lg"
-              className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
-              type="submit"
-              isSubmitting={isSubmitting}
-              onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
-              loadingText="Updating client info..."
-            >
-              Finance Turnover
-            </ButtonLoading>
-          </Form>
-        </div>
-      </>
-    },
-  },
-
-  {
-    accessorKey: "id",
-
-    cell: ({ row }) => {
-      const data = row.original
-      return (
-        <>
-          {/* <DocuUploadDashboard data={data} />*/}
-        </>
-      );
-    },
-
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => (
-      <p className="text-center">email</p>
-    ),
-    cell: ({ row }) => {
-      return <div
-        className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("email"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "phone",
-    header: ({ column }) => (
-      <p className="text-center">phone</p>
-    ), cell: ({ row }) => {
-      return <div
-        className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("phone"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "address",
-    header: ({ column }) => (
-      <p className="text-center">address</p>
-    ), cell: ({ row }) => {
-      return <div
-        className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("address"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "postal",
-    header: ({ column }) => (
-      <p className="text-center">postal</p>
-    ), cell: ({ row }) => {
-      return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
-              hover:shadow-md
-
-
-              focus:text-[#02a9ff]
-               focus:outline-none active:bg-[#02a9ff]">{(row.getValue("postal"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "city",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="city" />
-    ), cell: ({ row }) => {
-      return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
-              hover:shadow-md
-
-
-              focus:text-[#02a9ff]
-               focus:outline-none active:bg-[#02a9ff]">{(row.getValue("city"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "province",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="province" />
-    ), cell: ({ row }) => {
-      return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
-              hover:shadow-md
-
-
-              focus:text-[#02a9ff]
-               focus:outline-none active:bg-[#02a9ff]">{(row.getValue("province"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "financeId",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="financeId" />
-    ), cell: ({ row }) => {
-      return <div className="w-[200px] text-center font-medium">{(row.getValue("financeId"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "userEmail",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="userEmail" />
-    ),
-    cell: ({ row }) => {
-      return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
-              hover:shadow-md
-
-
-              focus:text-[#02a9ff]
-               focus:outline-none active:bg-[#02a9ff]">{(row.getValue("userEmail"))}</div>
-    },
-
-  },
-  {
-    accessorKey: "pickUpTime",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pick Up Time" />
-    ),
-    cell: ({ row }) => {
-      return <div
-        className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff] ">
-        {(row.getValue("pickUpTime"))}
-      </div>
-    },
-
-  },
-
-  {
-    accessorKey: "timeToContact",
-    header: "model1",
-  },
-  {
-    accessorKey: "deliveredDate",
-    header: "deliveredDate",
-  },
-  {
-    accessorKey: "timeOfDay",
-    header: "timeOfDay",
-  },
-  {
-    accessorKey: "msrp",
-    header: "msrp",
-  },
-  {
-    accessorKey: "freight",
-    header: "freight",
-  },
-  {
-    accessorKey: "pdi",
-    header: "pdi",
-  },
-  {
-    accessorKey: "admin",
-    header: "admin",
-  },
-  {
-    accessorKey: "commodity",
-    header: "commodity",
-  },
-  {
-    accessorKey: "accessories",
-    header: "accessories",
-  },
-  {
-    accessorKey: "labour",
-    header: "labour",
-  },
-  {
-    accessorKey: "painPrem",
-    header: "painPrem",
-  },
-  {
-    accessorKey: "licensing",
-    header: "licensing",
-  },
-  {
-    accessorKey: "trailer",
-    header: "trailer",
-  },
-  {
-    accessorKey: "depositMade",
-    header: "depositMade",
-  },
-  {
-    accessorKey: "months",
-    header: "months",
-  },
-  {
-    accessorKey: "iRate",
-    header: "iRate",
-  },
-  {
-    accessorKey: "on60",
-    header: "on60",
-  },
-  {
-    accessorKey: "biweekly",
-    header: "biweekly",
-  },
-  {
-    accessorKey: "weekly",
-    header: "weekly",
-  },
-  {
-    accessorKey: "qc60",
-    header: "qc60",
-  },
-  {
-    accessorKey: "biweeklyqc",
-    header: "biweeklyqc",
-  },
-  {
-    accessorKey: "weeklyqc",
-    header: "weeklyqc",
-  },
-  {
-    accessorKey: "nat60",
-    header: "nat60",
-  },
-  {
-    accessorKey: "biweeklNat",
-    header: "biweeklNat",
-  },
-  {
-    accessorKey: "weeklylNat",
-    header: "weeklylNat",
-  },
-  {
-    accessorKey: "oth60",
-    header: "oth60",
-  },
-  {
-    accessorKey: "biweekOth",
-    header: "biweekOth",
-  },
-  {
-    accessorKey: "weeklyOth",
-    header: "weeklyOth",
-  },
-  {
-    accessorKey: "nat60WOptions",
-    header: "nat60WOptions",
-  },
-  {
-    accessorKey: "desiredPayments",
-    header: "desiredPayments",
-  },
-  {
-    accessorKey: "biweeklNatWOptions",
-    header: "biweeklNatWOptions",
-  },
-  {
-    accessorKey: "weeklylNatWOptions",
-    header: "weeklylNatWOptions",
-  },
-  {
-    accessorKey: "oth60WOptions",
-    header: "oth60WOptions",
-  },
-  {
-    accessorKey: "biweekOthWOptions",
-    header: "biweekOthWOptions",
-  },
-  {
-    accessorKey: "visited",
-    header: "visited",
-  },
-  {
-    accessorKey: "aptShowed",
-    header: "aptShowed",
-  },
-  {
-    accessorKey: "bookedApt",
-    header: "bookedApt",
-  },
-  {
-    accessorKey: "aptNoShowed",
-    header: "aptNoShowed",
-  },
-  {
-    accessorKey: "testDrive",
-    header: "testDrive",
-  },
-  {
-    accessorKey: "metParts",
-    header: "metParts",
-  },
-  {
-    accessorKey: "sold",
-    header: "sold",
-  },
-
-  {
-    accessorKey: "refund",
-    header: "refund",
-  },
-  {
-    accessorKey: "turnOver",
-    header: "turnOver",
-  },
-  {
-    accessorKey: "financeApp",
-    header: "financeApp",
-  },
-  {
-    accessorKey: "approved",
-    header: "approved",
-  },
-  {
-    accessorKey: "signed",
-    header: "signed",
-  },
-
-  {
-    accessorKey: "pickUpSet",
-    header: "pickUpSet",
-  },
-  {
-    accessorKey: "demoed",
-    header: "demoed",
-  },
-
-  {
-    accessorKey: "tradeMake",
-    header: "tradeMake",
-  },
-  {
-    accessorKey: "tradeYear",
-    header: "tradeYear",
-  },
-  {
-    accessorKey: "tradeTrim",
-    header: "tradeTrim",
-  },
-  {
-    accessorKey: "tradeColor",
-    header: "tradeColor",
-  },
-  {
-    accessorKey: "tradeVin",
-    header: "tradeVin",
-  },
-  {
-    accessorKey: "delivered",
-    header: "delivered",
-  },
-  {
-    accessorKey: "desiredPayments",
-    header: "desiredPayments",
-  },
-  {
-    accessorKey: "result",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Result" />
-    ), cell: ({ row }) => {
-
-      return <div className="w-[250px] text-center font-medium">
-        Result
-      </div>
-    },
-
-  },
-  {
-    accessorKey: "referral",
-    header: "referral",
-  },
-  {
-    accessorKey: "metService",
-    header: "metService",
-  },
-
-  {
-    accessorKey: "metManager",
-    header: "metManager",
-  },
-  {
-    accessorKey: "metParts",
-    header: "metParts",
-  },
-  {
-    accessorKey: "timesContacted",
-    header: "timesContacted",
-  },
-
-  {
-    accessorKey: "visits",
-    header: "visits",
-  },
-  {
-    accessorKey: "financeApplication",
-    header: "financeApplication",
-  },
-  {
-    accessorKey: "progress",
-    header: "progress",
-  },
-
-  {
-    accessorKey: "metFinance",
-    header: "metFinance",
-  },
-  {
-    accessorKey: "metSalesperson",
-    header: "metSalesperson",
-  },
-  {
-    accessorKey: "seenTrade",
-    header: "seenTrade",
-  },
-  {
-    accessorKey: "docsSigned",
-    header: "docsSigned",
-  },
-  {
-    accessorKey: "tradeRepairs",
-    header: "tradeRepairs",
-  },
-  {
-    accessorKey: "tradeValue",
-    header: "tradeValue",
-  },
-  {
-    accessorKey: "modelCode",
-    header: "modelCode",
-  },
-  {
-    accessorKey: "color",
-    header: "color",
-  },
-  {
-    accessorKey: "model1",
-    header: "model1",
-  },
-  {
-    accessorKey: "stockNum",
-    header: "stockNum",
-  },
-  {
-    accessorKey: "otherTaxWithOptions",
-    header: "otherTaxWithOptions",
-  },
-  {
-    accessorKey: "totalWithOptions",
-    header: "totalWithOptions",
-  },
-  {
-    accessorKey: "otherTax",
-    header: "otherTax",
-  },
-  {
-    accessorKey: "qcTax",
-    header: "lastContact",
-  },
-  {
-    accessorKey: "deposit",
-    header: "tradeValue",
-  },
-  {
-    accessorKey: "rustProofing",
-    header: "modelCode",
-  },
-  {
-    accessorKey: "lifeDisability",
-    header: "color",
-  },
-  {
-    accessorKey: "userServicespkg",
-    header: "model1",
-  },
-  {
-    accessorKey: "userExtWarr",
-    header: "userExtWarr",
-  },
-  {
-    accessorKey: "userGap",
-    header: "userGap",
-  },
-  {
-    accessorKey: "userTireandRim",
-    header: "userTireandRim",
-  },
-  {
-    accessorKey: "userLoanProt",
-    header: "userLoanProt",
-  },
-  {
-    accessorKey: "deliveryCharge",
-    header: "lastContact",
-  },
-  {
-    accessorKey: "onTax",
-    header: "tradeValue",
-  },
-  {
-    accessorKey: "total",
-    header: "modelCode",
-  },
-  {
-    accessorKey: "typeOfContact",
-    header: "typeOfContact",
-  },
-  {
-    accessorKey: "contactMethod",
-    header: "contactMethod",
-  },
-  {
-    accessorKey: "note",
-    header: "note",
-  },
-
-
-]
 export const meta: MetaFunction = () => {
   return [
     { title: 'Sales Leads - Dealer Sales Assistant' },

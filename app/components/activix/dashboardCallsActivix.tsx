@@ -1,17 +1,7 @@
-import { type ActionFunction, json, LoaderFunction, redirect, } from "@remix-run/node";
+import { json, type ActionFunction, createCookie, type LoaderFunction, redirect, } from "@remix-run/node";
 import financeFormSchema from "~/routes/overviewUtils/financeFormSchema";
 ////import { authenticator } from "~/services";
-import {
-  getDataBmwMoto,
-  getDataByModel,
-  getDataByModelManitou,
-  getDataHarley,
-  getDataKawasaki,
-  getDataTriumph,
-  getLatestBMWOptions,
-  getLatestBMWOptions2,
-  getLatestOptionsManitou,
-} from "~/utils/finance/get.server";
+import { findDashboardDataById, findQuoteById, getDataBmwMoto, getDataByModel, getDataByModelManitou, getDataHarley, getDataKawasaki, getDataTriumph, getLatestBMWOptions, getLatestBMWOptions2, getLatestOptionsManitou, getRecords, } from "~/utils/finance/get.server";
 import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { getAllFinanceNotes } from "~/utils/financeNote/get.server";
 import { deleteFinanceNote } from "~/utils/financeNote/delete.server";
@@ -29,73 +19,75 @@ import updateFinance23 from "../dashboard/calls/actions/updateFinance";
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getMergedFinance } from "~/utils/dashloader/dashloader.server";
 import { EmailFunction } from "~/routes/dummyroute";
-import { commitSession as commitPref, getSession as getPref, SetCookie } from "~/utils/pref.server";
 import { model } from "~/models";
-import { getSession } from '~/sessions/auth-session.server';
+import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
+import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
-import {
-  CompleteTask,
-  CreateLead,
-  UpdateLead,
-  UpdateTask,
-  CreateTask,
-  UpdateCommunications,
-  CreateCommunications,
-  CreateVehicle,
-  CreateNote,
-  UpdateNote,
-} from "~/components/activix/functions";
-import { commitSession as commitIds, getSession as getIds } from '~/utils/misc.user.server';
+import { google } from 'googleapis';
+import oauth2Client, { SendEmail, } from "~/routes/email.server";
+import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
+import { DataForm } from '../dashboard/calls/actions/dbData';
+import { CreateCommunications, CompleteTask, CreateLead, CreateTask, UpdateLead } from "./functions";
 
+
+const getAccessToken = async (refreshToken) => {
+  try {
+    const accessTokenObj = await axios.post(
+      'https://www.googleapis.com/oauth2/v4/token',
+      {
+        refresh_token: refreshToken,
+        client_id: "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
+        client_secret: "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",
+        grant_type: 'refresh_token'
+      }
+    );
+
+    return accessTokenObj.data.access_token;
+  } catch (err) {
+    console.log(err);
+  }
+};
+export function Unauthorized(refreshToken) {
+  console.log('Unauthorized');
+  const newAccessToken = getAccessToken(refreshToken)
+
+  console.log(newAccessToken, 'newAccessToken', refreshToken, 'refreshToken')
+
+  oauth2Client.setCredentials({
+    //  refresh_token: refreshToken,
+    access_token: newAccessToken,
+  });
+  google.options({ auth: oauth2Client });
+  //  const userRes = await gmail.users.getProfile({ userId: 'me' });
+  //console.log(userRes, 'userRes')
+
+  const tokens = newAccessToken
+  return tokens
+}
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-
   const user = await model.user.query.getForSession({ email: email });
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
-
+  if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
-  const session = await getPref(request.headers.get("Cookie"));
+  const session = await sixSession(request.headers.get("Cookie"));
+
   const sliderWidth = session.get("sliderWidth");
-  const financeCookie = session.get("financeId");
   const userEmail = user?.email
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: userEmail, }, });
-  //  console.log(getTemplates, 'getTemplates');
-  const currentURL = new URL(request.url).pathname;
-  let financeId;
   let finance;
-  let dashData;
   finance = await getMergedFinance(userEmail);
   const brand = finance?.brand;
-
   const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
-  //console.log(urlSegmentsDashboard)
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
   const customerId = finance?.id;
   const financeNotes = await getAllFinanceNotes(customerId);
-
   const searchData = await prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
   const webLeadData = await prisma.finance.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: null } });
-
-
-  const dashData2 = await prisma.dashboard.findMany({
-    where: {
-      customerState: 'turnOver'
-    },
-  });
-  const financeData2 = await prisma.finance.findMany({
-    where: {
-      id: dashData2.financeId
-    },
-  });
+  const dashData2 = await prisma.dashboard.findMany({ where: { customerState: 'turnOver' }, });
+  const financeData2 = await prisma.finance.findMany({ where: { id: dashData2.financeId }, });
   const financeNewLead = await Promise.all(financeData2.map(async (financeRecord) => {
-    //  console.log('financeRecord.id:', financeRecord.id); // Debugging line
     const correspondingDashRecord = dashData2.find(dashRecord => dashRecord.financeId === financeRecord.id);
-    //  console.log('correspondingDashRecord:', correspondingDashRecord); // Debugging line
-
     const comsCounter = await prisma.communications.findUnique({
       where: {
         financeId: financeRecord.id
@@ -107,23 +99,57 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       ...financeRecord,
     };
   }));
-
   const conversations = await prisma.communicationsOverview.findMany({})
-
-
   const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
+  const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
 
-  const notifications = await prisma.notificationsUser.findMany({
-    where: {
-      userId: user.id,
-    }
-  })
+  const fetchLatestNotes = async (webLeadData) => {
+    const promises = webLeadData.map(async (webLeadData) => {
+      try {
+        const latestNote = await prisma.financeNote.findFirst({
+          where: { customerId: webLeadData.financeId },
+          orderBy: { createdAt: 'desc' },
+        });
+        return latestNote;
+      } catch (error) {
+        console.error('Error fetching note:', error);
+        return null;
+      }
+    });
 
-  //const Locked = await prisma.lockFinanceTerminals.findUnique({ where: { id: 1 } })
-  //const financeLockId = Locked.financeId
-  //  const financeLock = await prisma.finance.findUnique({ where: { id: financeLockId } })
-  // const financeLock=
-  // console.log(financeLock)
+    return Promise.all(promises);
+  };
+  const latestNotes = await fetchLatestNotes(finance);
+  let tokens = session2.get("accessToken")
+  const refreshToken = session2.get("refreshToken")
+  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
+    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
+  });
+  console.log(userRes, 'userRes')
+  // new
+  if (userRes.status === 401) {
+    const unauthorizedAccess = await Unauthorized(refreshToken)
+    tokens = unauthorizedAccess
+
+    session.set("accessToken", tokens);
+    await commitSession(session);
+    let cookie = createCookie("session_66", {
+      secrets: ['secret'],
+      // 30 days
+      maxAge: 30 * 24 * 60 * 60,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+    const cookies = cookie.serialize({
+      email: email,
+      refreshToken: refreshToken,
+      accessToken: tokens,
+    })
+    await cookies
+    console.log(tokens, 'authorized tokens')
+
+  } else { console.log('Authorized'); }
 
 
   if (brand === "Manitou") {
@@ -142,7 +168,9 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       conversations,
       financeNewLead,
+      latestNotes,
       notifications,
+      refreshToken, tokens, request
     });
   }
   if (brand === "Switch") {
@@ -158,10 +186,12 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       user,
       financeNotes,
       getWishList,
+      latestNotes,
       conversations,
       financeNewLead,
       notifications,
       dashBoardCustURL,
+      refreshToken, tokens, request
     });
   }
 
@@ -176,10 +206,12 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       user,
       financeNotes,
       financeNewLead,
+      latestNotes,
       conversations,
       getWishList,
       notifications,
       dashBoardCustURL,
+      refreshToken, tokens, request
     });
   }
 
@@ -194,6 +226,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       finance,
       deFees,
       bmwMoto,
+      latestNotes,
       bmwMoto2,
       sliderWidth,
       user,
@@ -202,7 +235,9 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       conversations,
       getWishList,
       notifications,
+      refreshToken, tokens,
       dashBoardCustURL,
+      request
     });
   }
 
@@ -215,12 +250,14 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       deFees,
       sliderWidth,
       user,
+      latestNotes,
       financeNotes,
       financeNewLead,
       getWishList,
       conversations,
       notifications,
       dashBoardCustURL,
+      refreshToken, tokens, request
     });
   }
 
@@ -237,12 +274,14 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       sliderWidth,
       user,
       financeNotes,
+      latestNotes,
       dashBoardCustURL,
       getWishList,
       conversations,
       financeNewLead,
       notifications,
       getTemplates,
+      refreshToken, tokens, request
     });
   } else {
     let modelData;
@@ -259,12 +298,14 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         financeNotes,
         dashBoardCustURL,
         getTemplates,
+        latestNotes,
         searchData,
         conversations,
         financeNewLead,
         getWishList,
         notifications,
         webLeadData,
+        refreshToken, tokens, request
 
       });
     }
@@ -277,6 +318,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       user,
       financeNotes,
       dashBoardCustURL,
+      latestNotes,
       getTemplates,
       conversations,
       searchData,
@@ -284,10 +326,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       notifications,
       webLeadData,
+      refreshToken, tokens, request
     });
   }
 }
-
 export async function CompleteLastAppt(userId, financeId) {
   console.log('CompleteLastAppt')
   const lastApt = await prisma.clientApts.findFirst({
@@ -315,7 +357,6 @@ export async function CompleteLastAppt(userId, financeId) {
     return finance
   }
 }
-
 export async function TwoDays(followUpDay3, formData, financeId, user) {
   const lastContact = new Date().toISOString();
   let customerState = formData.customerState;
@@ -374,7 +415,6 @@ export async function TwoDays(followUpDay3, formData, financeId, user) {
   //  console.log('hittind 2 days from noiw', formData, followUpDay, completeApt, createClientFinanceAptData)
   return json({ updating, completeApt, createFollowup });
 }
-
 export async function FollowUpApt(formData, user, userId) {
   const lastContact = new Date().toISOString();
   let customerState = formData.customerState;
@@ -410,6 +450,11 @@ export async function FollowUpApt(formData, user, userId) {
     resultOfcall: 'Attempted',
     userId,
   };
+  setTimeout(() => {
+    if (selectedChannel) {
+
+    }
+  }, []);
 
   const nextAppointment = newDate
   const followUpDay = newDate
@@ -424,7 +469,6 @@ export async function FollowUpApt(formData, user, userId) {
   //  console.log('hittind 2 days from noiw', formData, followUpDay, completeApt, createClientFinanceAptData)
   return json({ updating, completeApt, createFollowup });
 }
-
 export async function ComsCount(financeId, commType) {
   const record = await prisma.communications.findUnique({
     where: { financeId: financeId },
@@ -441,7 +485,6 @@ export async function ComsCount(financeId, commType) {
   }
   return json({ ok: true });
 }
-
 export async function ConvertDynamic(finance) {
   function replaceTemplateValues(template, values) {
     let result = template;
@@ -480,21 +523,65 @@ export async function ConvertDynamic(finance) {
   const emailBody = replaceTemplateValues(template, values);
   return emailBody
 }
-
-export const dashboardAction: ActionFunction = async ({ req, request, params, }) => {
-  const formPayload = Object.fromEntries(await request.formData())
-  let formData = financeFormSchema.parse(formPayload);
-  const session2 = await getSession(request.headers.get("Cookie"));
-  const userEmail = session2.get("email")
-  const user = await model.user.query.getForSession({ email: userEmail });
+export async function TokenRegen(request) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  const user = await model.user.query.getForSession({ email: email });
   if (!user) { redirect('/login') }
+  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  let tokens = session.get("accessToken")
+  // new
+  const refreshToken = session.get("refreshToken")
+  let cookie = createCookie("session_66", {
+    secrets: ['secret'],
+    // 30 days
+    maxAge: 30 * 24 * 60 * 60,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
+    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
+  });
+  // new
+  if (userRes.status === 401) {
+    const unauthorizedAccess = await Unauthorized(refreshToken)
+    tokens = unauthorizedAccess
+
+    session.set("accessToken", tokens);
+    await commitSession(session);
+
+    const cookies = cookie.serialize({
+      email: email,
+      refreshToken: refreshToken,
+      accessToken: tokens,
+    })
+    await cookies
+
+  } else {
+    console.log('Authorized')
+  }
+  const googleTokens = {
+    tokens,
+    refreshToken
+  }
+  return googleTokens
+}
+
+
+export const dashboardAction: ActionFunction = async ({ request, }) => {
+  const formPayload = Object.fromEntries(await request.formData())
+  const formData = financeFormSchema.parse(formPayload);
+  const session2 = await getSession(request.headers.get("Cookie"));
+  const email = session2.get("email")
+  console.log(formData)
+  const user = await model.user.query.getForSession({ email: email });
+  /// console.log(user, account, 'wquiote loadert')
+  if (!user) {
+    redirect('/login')
+  }
   const userId = user?.id;
   const intent = formPayload.intent;
-
-  const idSession = await getIds(request.headers.get("Cookie"));
-  const clientfileId = idSession.get('clientfileId')
-  const financeId = idSession.get('financeId')
-  const dashboardId = idSession.get('dashboardId')
 
   if (intent === 'addWishList') {
     const addtoWishList = await prisma.wishList.create({
@@ -569,15 +656,14 @@ export const dashboardAction: ActionFunction = async ({ req, request, params, })
     const locked = Boolean(true)//Boolean(formPayload.locked);
 
     const claim = await prisma.lockFinanceTerminals.update({
-      where: {
-        id: 1
-      },
-      data: {
-        locked: locked,
-        financeId: formData.financeId
-      }
+      where: { id: 1 },
+      data: { locked: locked, financeId: formData.financeId }
     })
-    return claim
+    const finance = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: { financeManager: formData.financeManager }
+    })
+    return json({ claim, finance })
   }
   if (intent === 'reading') {
     const isRead = await prisma.notificationsUser.update({
@@ -591,213 +677,87 @@ export const dashboardAction: ActionFunction = async ({ req, request, params, })
     return isRead
   }
   const template = formPayload.template;
-  const session = await getPref(request.headers.get("Cookie"));
   const today = new Date();
   let followUpDay = today;
-  //const clientfileId = formData.clientfileId;
+  const clientfileId = formData.clientfileId;
   const date = new Date().toISOString()
-  //const financeId = formData?.financeId;
-  const dashboard = await prisma.dashboard.findUnique({
-    where: {
-      financeId: financeId,
-    },
-  });
-  //const dashboardId = dashboard?.id;
-  // session.set("financeId", financeId);
-  //session.set("clientfileId", clientfileId);
-  //const cookie = await commitPref(session)
-  await SetCookie(userId, clientfileId, financeId, dashboardId, request)
+  const financeId = formData?.financeId;
+  const dashboard = await prisma.dashboard.findUnique({ where: { financeId: financeId, }, });
+  const dashboardId = dashboard?.id;
+  console.log(financeId, 'finance id from dashboard calls')
+  const session66 = await sixSession(request.headers.get("Cookie"));
+  session66.set("financeId", financeId);
+  session66.set("clientfileId", clientfileId);
+  const serializedSession = await sixCommit(session66);
+
   let pickUpDate;
   if (pickUpDate === null || pickUpDate === undefined) {
     pickUpDate = "To Be Det.";
   }
   const id = formData?.id;
-
-  // update for activix
-  // lead
+  // activix done need toa add create vehichle
   if (intent === 'newLead') {
-    const financeData = {
-
-      email: formData.email,
+    console.log('less than 20')
+    const brand = formData.brand
+    delete formData.financeId
+    delete formData.userId
+    delete formData.followUpDay
+    let { financeId, clientData, dashData, financeData } = DataForm(formData);
+    clientData = {
+      ...clientData,
       firstName: formData.firstName,
       lastName: formData.lastName,
+      name: formData.firstName + ' ' + formData.lastName,
+      email: formData.email,
       phone: formData.phone,
-      name: formData.name,
       address: formData.address,
       city: formData.city,
-      postal: formData.postal,
       province: formData.province,
       dl: formData.dl,
-      typeOfContact: formData.typeOfContact,
-      timeToContact: formData.timeToContact,
-      iRate: formData.iRate,
-      months: formData.months,
-      discount: formData.discount,
-      total: formData.total,
-      onTax: formData.onTax,
-      on60: formData.on60,
-      biweekly: formData.biweekly,
-      weekly: formData.weekly,
-      weeklyOth: formData.weeklyOth,
-      biweekOth: formData.biweekOth,
-      oth60: formData.oth60,
-      weeklyqc: formData.weeklyqc,
-      biweeklyqc: formData.biweeklyqc,
-      qc60: formData.qc60,
-      deposit: formData.deposit,
-      biweeklNatWOptions: formData.biweeklNatWOptions,
-      weeklylNatWOptions: formData.weeklylNatWOptions,
-      nat60WOptions: formData.nat60WOptions,
-      weeklyOthWOptions: formData.weeklyOthWOptions,
-      biweekOthWOptions: formData.biweekOthWOptions,
-      oth60WOptions: formData.oth60WOptions,
-      biweeklNat: formData.biweeklNat,
-      weeklylNat: formData.weeklylNat,
-      nat60: formData.nat60,
-      qcTax: formData.qcTax,
-      otherTax: formData.otherTax,
-      totalWithOptions: formData.totalWithOptions,
-      otherTaxWithOptions: formData.otherTaxWithOptions,
-      desiredPayments: formData.desiredPayments,
-      freight: formData.freight,
-      admin: formData.admin,
-      commodity: formData.commodity,
-      pdi: formData.pdi,
-      discountPer: formData.discountPer,
-      userLoanProt: formData.userLoanProt,
-      userTireandRim: formData.userTireandRim,
-      userGap: formData.userGap,
-      userExtWarr: formData.userExtWarr,
-      userServicespkg: formData.userServicespkg,
-      deliveryCharge: formData.deliveryCharge,
-      vinE: formData.vinE,
-      lifeDisability: formData.lifeDisability,
-      rustProofing: formData.rustProofing,
-      userOther: formData.userOther,
-      paintPrem: formData.paintPrem,
-      licensing: formData.licensing,
-      stockNum: formData.stockNum,
-      options: formData.options,
-      accessories: formData.accessories,
-      labour: formData.labour,
-      year: formData.year,
-      brand: formData.brand,
-      model: formData.model,
-      model1: formData.model1,
-      color: formData.color,
-      modelCode: formData.modelCode,
-      msrp: formData.msrp,
       userEmail: formData.userEmail,
-      tradeValue: formData.tradeValue,
-      tradeDesc: formData.tradeDesc,
-      tradeColor: formData.tradeColor,
-      tradeYear: formData.tradeYear,
-      tradeMake: formData.tradeMake,
-      tradeVin: formData.tradeVin,
-      tradeTrim: formData.tradeTrim,
-      tradeMileage: formData.tradeMileage,
-      trim: formData.trim,
-      vin: formData.vin,
     }
-    const dashData = {
-      userEmail: formData.userEmail,
-      referral: formData.referral,
-      visited: formData.visited,
-      bookedApt: formData.bookedApt,
-      aptShowed: formData.aptShowed,
-      aptNoShowed: formData.aptNoShowed,
-      testDrive: formData.testDrive,
-      metService: formData.metService,
-      metManager: formData.metManager,
-      metParts: formData.metParts,
-      sold: formData.sold,
-      depositMade: formData.depositMade,
-      refund: formData.refund,
-      turnOver: formData.turnOver,
-      financeApp: formData.financeApp,
-      approved: formData.approved,
-      signed: formData.signed,
-      pickUpSet: formData.pickUpSet,
-      demoed: formData.demoed,
-      delivered: formData.delivered,
-      status: 'Active',
-      customerState: 'Attempted',
-      result: formData.result,
-      timesContacted: formData.timesContacted,
-      nextAppointment: formData.nextAppointment,
-      completeCall: formData.completeCall,
-      followUpDay: formData.followUpDay,
-      state: formData.state,
-      deliveredDate: formData.deliveredDate,
-      notes: formData.notes,
-      visits: formData.visits,
-      progress: formData.progress,
-      metSalesperson: formData.metSalesperson,
-      metFinance: formData.metFinance,
-      financeApplication: formData.financeApplication,
-      pickUpDate: pickUpDate,
-      pickUpTime: formData.pickUpTime,
-      depositTakenDate: formData.depositTakenDate,
-      docsSigned: formData.docsSigned,
-      tradeRepairs: formData.tradeRepairs,
-      seenTrade: formData.seenTrade,
-      lastNote: formData.lastNote,
-      dLCopy: formData.dLCopy,
-      insCopy: formData.insCopy,
-      testDrForm: formData.testDrForm,
-      voidChq: formData.voidChq,
-      loanOther: formData.loanOther,
-      signBill: formData.signBill,
-      ucda: formData.ucda,
-      tradeInsp: formData.tradeInsp,
-      customerWS: formData.customerWS,
-      otherDocs: formData.otherDocs,
-      urgentFinanceNote: formData.urgentFinanceNote,
-      funded: formData.funded,
-      countsInPerson: formData.countsInPerson,
-      countsPhone: formData.countsPhone,
-      countsSMS: formData.countsSMS,
-      countsOther: formData.countsOther,
-      countsEmail: formData.countsEmail,
+    const userId = formData.userId
+    const createActivixLead = await CreateLead(formData)
+    if (formData.brand === 'Used') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      //   console.log('Created createQuoteServer:', createQuoteServer)
+      return json({ QuoteServer })
     }
-    const activixData = { ...dashData, ...financeData, }
+    if (formData.brand === 'Switch') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
 
-    const firstName = formData.firstName
-    const lastName = formData.lastName
-    const email = formData.email;
-    const model = formData.model;
-    const errors = {
-      firstName: firstName ? null : "First Name is required",
-      lastName: lastName ? null : "lastName is required",
-      email: email ? null : "email is required",
-      model: model ? null : "model is required",
-    };
-    const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
-    if (hasErrors) { return json(errors); }
-
-    function invariant(condition: any, message: string | (() => string),): asserts condition {
-      if (!condition) { throw new Error(typeof message === 'function' ? message() : message) }
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      return json({ manitouOptionsCreated, createQuoteServer })
     }
-
-    invariant(typeof firstName === "string", "First Name must be a string");
-    invariant(typeof lastName === "string", "Last Name must be a string");
-    invariant(typeof email === "string", "Email must be a string");
-    invariant(typeof model === "string", "Model must be a string");
-    console.log(financeId, 'finaceCheckId')
-
-    await CreateLead(activixData)
-    return null //json({ activixCreate })
+    if (formData.brand === 'Manitou') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      return json({ manitouOptionsCreated, createQuoteServer })
+    }
+    if (formData.brand === 'BMW-Motorrad') {
+      const financeId = finance.id
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const updatingFinance = await createBMWOptions(financeId)
+      const updatingFinance2 = await createBMWOptions2(financeId)
+      return json({ updatingFinance, updatingFinance2, createQuoteServer })
+    }
+    else {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      // console.log('Created createQuoteServer:', createQuoteServer)
+      return json({ createQuoteServer, createActivixLead })
+    }
   }
-  if (intent === "updateFinance") {
-    console.log(formData, ' update finance data')
-    const updating = await UpdateLead(formData) //updateFinance23(financeId, formData, formPayload);
-    console.log(financeId, "updating");
-    return updating;
-  }
+  // calls
+  // activix done
   if (intent === "EmailClient") {
     const comdata = {
       financeId: formData.financeId,
-      userId: formData.userId,
+      userEmail: user?.email,
       content: formData.customContent,
       title: formData.subject,
       direction: formData.direction,
@@ -807,35 +767,62 @@ export const dashboardAction: ActionFunction = async ({ req, request, params, })
       userName: user?.name,
       date: new Date().toISOString(),
     }
-    const completeApt = await CompleteLastAppt(userId, financeId)
-    const sendEmail = await EmailFunction(request, params, user, financeId, formPayload)
+    const to = formData.customerEmail
+    const text = formData.customContent
+    const subject = formData.subject
+    const tokens = formData.tokens
+    // const completeApt = await CompleteLastAppt(userId, financeId)
+    const sendEmail = await SendEmail(user, to, subject, text, tokens)
     const setComs = await prisma.communicationsOverview.create({ data: comdata, });
     const saveComms = await ComsCount(financeId, 'Email')
-    const createActivixCom = await CreateCommunications(comdata)
-    return json({ saveComms, sendEmail, completeApt, formData, setComs, createActivixCom })//, redirect(`/dummyroute`)
+    console.log('refreshToken',)
+    const updated = {
+      ...formData,
+      contactMethod: 'email',
+    }
+    const createEmailActivix = await CreateCommunications(updated)
+    return json({ sendEmail, saveComms, formData, setComs, createEmailActivix })//, redirect(`/dummyroute`)
   }
-  if (intent === 'PhoneCall') {
-    const textfollowUpDay = formData.followUpDay2
+  // activix done
+  if (intent === 'callClient') {
+    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'
+    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f'
+    const client = require('twilio')(accountSid, authToken);
     const comdata = {
       financeId: formData.financeId,
-      userId: formData.userId,
-      content: formData.note,
-      title: formData.title,
+      userEmail: user?.email,
+      content: formData.customContent,
+      title: formData.subject,
       direction: formData.direction,
-      result: formData.resultOfcall,
-      subject: formData.messageContent,
-      type: 'Text',
+      result: formData.customerState,
+      subject: formData.subject,
+      type: 'Phone',
       userName: user?.name,
       date: new Date().toISOString(),
     }
-    const completeApt = await CompleteLastAppt(userId, financeId)
-    const followUpDay3 = textfollowUpDay
-    const doTGwoDays = await TwoDays(followUpDay3, formData, financeId, user)
-    const setComs = await prisma.communicationsOverview.create({ data: comdata });
-    const saveComms = await ComsCount(financeId, 'Phone')
-    const createActivixCom = await CreateCommunications(comdata)
-    return json({ doTGwoDays, completeApt, setComs, saveComms, createActivixCom });
+    const to = formData.customerEmail
+    const text = formData.customContent
+    const subject = formData.subject
+    const tokens = formData.tokens
+    // const completeApt = await CompleteLastAppt(userId, financeId)
+    const callCLient = await client.calls
+      .create({
+        twiml: '<Response><Say>Ahoy, World!</Say></Response>',
+        to: `+1${user.phone}`,
+        from: '+12176347250'
+      })
+      .then(call => console.log(call.sid));
+    const setComs = await prisma.communicationsOverview.create({ data: comdata, });
+    const saveComms = await ComsCount(financeId, 'Email')
+    console.log('refreshToken',)
+    const updated = {
+      ...formData,
+      contactMethod: 'phone',
+    }
+    const createEmailActivix = await CreateCommunications(updated)
+    return json({ callCLient, saveComms, formData, setComs, createEmailActivix })//, redirect(`/dummyroute`)
   }
+  // activix done
   if (intent === 'textQuickFU') {
     console.log('hit textquick fu')
     const followUpDay3 = formData.followUpDay
@@ -854,26 +841,18 @@ export const dashboardAction: ActionFunction = async ({ req, request, params, })
       userName: user?.name,
       date: new Date().toISOString(),
     }
-    const setComs = await prisma.communicationsOverview.create({ data: comdata, });
+    const setComs = await prisma.communicationsOverview.create({
+      data: comdata,
+    });
     const saveComms = await ComsCount(financeId, 'SMS')
-    const createActivixCom = await CreateCommunications(comdata)
-    return json({ doTGwoDays, completeApt, setComs, saveComms, createActivixCom });
+    const updated = {
+      ...formData,
+      contactMethod: 'SMS',
+    }
+    const createEmailActivix = await CreateCommunications(updated)
+    return json({ doTGwoDays, completeApt, setComs, saveComms, createEmailActivix });
   }
-  if (intent === "updateStatus") {
-    delete formData.brand;
-    //console.log(formData)
-    await UpdateStatus(formData);
-    const UpdateLead = await UpdateLead(formData)
-
-    return (UpdateStatus, UpdateLead);
-  }
-  if (intent === "AddCustomer") {
-    const createCust = await createFinanceCheckClientDFirst(financeData, dashData, email, clientData, financeId, userId);
-    const activixCreate = await CreateLead(formData)
-
-    return json({ createCust, activixCreate });
-  }
-  // appts
+  // activix done
   if (intent === "2DaysFromNow") {
     const lastContact = new Date().toISOString();
     let customerState = formData.customerState;
@@ -970,12 +949,31 @@ export const dashboardAction: ActionFunction = async ({ req, request, params, })
         financeId: formData.financeId,
       }
     })
-    const createActivixTask = await CreateTask(formData, dateTimeString)
 
+    const createTaskActivix = await CreateTask(formData)
 
     //  console.log('hittind 2 days from noiw', formData, followUpDay, completeApt, createClientFinanceAptData)
-    return json({ complete, updating, completeApt, createFollowup, setComs, createActivixTask });
+    return json({ complete, updating, completeApt, createFollowup, setComs, createTaskActivix });
   }
+  // activix done
+  if (intent === "completeApt") {
+    console.log('completeApt')
+    const complete = CompleteLastAppt(userId, financeId)
+    const addFU = formData.addFU
+    const addDetailedFU = formData.addDetailedFU
+    const completeActivix = await CompleteTask(formData)
+    if (addFU === 'on') {
+      const followUpDay3 = formData.followUpDay
+      const twoDays = await TwoDays(followUpDay3, formData, financeId, user)
+      return json({ complete, twoDays, completeActivix })
+    }
+    if (addDetailedFU === 'yes') {
+      const followup = await FollowUpApt(formData, user, userId)
+      return json({ complete, followup, completeActivix })
+    }
+
+  }
+  // activix done
   if (intent === "scheduleFUp") {
     const lastContact = new Date().toISOString();
     let customerState = formData.customerState;
@@ -1061,91 +1059,367 @@ export const dashboardAction: ActionFunction = async ({ req, request, params, })
       userName: user?.name,
       date: new Date().toISOString(),
     }
-    const setComs = await prisma.communicationsOverview.create({ data: comdata, });
-    const createActivixTask = await CreateTask(formData, dateTimeString)
-    return json({ updating, completeApt, createFollowup, setComs, createActivixTask });
-  }
-  if (intent === "completeApt") {
-    console.log('completeApt')
-    const complete = CompleteLastAppt(userId, financeId)
-    const addFU = formData.addFU
-    const addDetailedFU = formData.addDetailedFU
-    const completeActivixTask = await CompleteTask(formData, dateTimeString)
-
-    if (addFU === 'on') {
-      const followUpDay3 = formData.followUpDay
-      const twoDays = await TwoDays(followUpDay3, formData, financeId, user)
-      return json({ complete, twoDays, completeActivixTask })
-    }
-    if (addDetailedFU === 'yes') {
-      const followup = await FollowUpApt(formData, user, userId)
-      return json({ complete, followup, completeActivixTask })
-    }
-
-  }
-  if (intent === "addAppt") {
-    const CreateNewAppt = await CreateAppt(formData);
-    const completeCall = CompleteLastAppt(userId, financeId);
-    const createActivixTask = await CreateTask(formData, dateTimeString)
-    return (CreateNewAppt, createActivixTask);
-  }
-  if (intent === "updateFinanceAppt") {
-    const apptId = formData.id;
-    const updateApt = await UpdateAppt(formData, apptId);
-    const UpdateActivixTask = await UpdateTask(formData, dateTimeString)
-    return json({ updateApt, UpdateActivixTask });
-  }
-  // navigation
-  if (intent === "clientProfile") {
-    console.log(clientfileId, financeId, 'dashboard calls')
-    return redirect(`/customer/${clientfileId}/${financeId}`, {
-      headers: { "Set-Cookie": cookie }
+    const setComs = await prisma.communicationsOverview.create({
+      data: comdata,
     });
+    const activixTask = await CreateTask(formData)
+    //  console.log('hittind 2 days from noiw', formData, followUpDay, completeApt, createClientFinanceAptData)
+    return json({ updating, completeApt, createFollowup, setComs, activixTask });
   }
-  if (intent === "returnToQuote") {
-    const brand = formData.brand;
-    const id = formData.id;
-    //   console.log(id, 'id', `/overview/${brand}/${id}`)
-    return redirect(`/overview/customer/${financeId}`);
-  }
-  // notes
-  if (intent === "saveFinanceNote") {
-    const saveNote = await updateFinanceNotes({ formData });
-    const updateNote = await UpdateNote(formData)
+  // activix done
+  // need to add updae vehcile
+  if (intent === "updateFinance") {
+    console.log(formData, ' update finance data')
 
-    return json({ saveNote, updateNote });
-  }
-  if (intent === "createFinanceNote") {
-    const createNote = await createFinanceNotes({ formData });
-    const createActivixTask = await CreateNote(formData)
-    return json({ createActivixTask, createNote });
-  }
-  if (intent === "updateFinanceNote") {
-    const updateNote = await updateFinanceNote(financeId, formData);
-    const updateNoteActi = await UpdateNote(formData)
+    let brand = formPayload.brand
+    let customerState = formData.customerState
+    if (formData.customerState === 'Pending') {
+      customerState = 'Pending'
+    }
+    if (formData.customerState === 'Attempted') {
+      customerState = 'Attempted'
+    }
+    if (formData.customerState === 'Reached') {
+      customerState = 'Reached'
+    }
+    if (formData.customerState === 'Lost') {
+      customerState = 'Lost'
+    }
+    if (formData.sold === 'on') {
+      customerState = 'sold'
+    }
+    if (formData.depositMade === 'on') {
+      customerState = 'depositMade'
+    }
+    if (formData.turnOver === 'on') {
+      customerState = 'turnOver'
+    }
+    if (formData.financeApp === 'on') {
+      customerState = 'financeApp'
+    }
+    if (formData.approved === 'on') {
+      customerState = 'approved'
+    }
+    if (formData.signed === 'on') {
+      customerState = 'signed'
+    }
+    if (formData.pickUpSet === 'on') {
+      customerState = 'pickUpSet'
+    }
+    if (formData.delivered === 'on') {
+      customerState = 'delivered'
+    }
+    if (formData.refund === 'on') {
+      customerState = 'refund'
+    }
+    if (formData.funded === 'on') {
+      customerState = 'funded'
+    }
+    let pickUpDate = ''
+    if (formData.pickUpDate) {
+      pickUpDate = new Date(formData.pickUpDate).toISOString()
+    }
+    let lastContact = new Date().toISOString()
 
-    return json({ updateNote, updateNoteActi });
-  }
-  // need to update for activix
-  // lead
+    console.log(financeId, 'finaceCheckId')
+    const financeData = {
 
-  // finance
+      email: formData.email,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
+      name: formData.name,
+      address: formData.address,
+      city: formData.city,
+      postal: formData.postal,
+      province: formData.province,
+      dl: formData.dl,
+      typeOfContact: formData.typeOfContact,
+      timeToContact: formData.timeToContact,
+      iRate: formData.iRate,
+      months: formData.months,
+      discount: formData.discount,
+      total: formData.total,
+      onTax: formData.onTax,
+      on60: formData.on60,
+      biweekly: formData.biweekly,
+      weekly: formData.weekly,
+      weeklyOth: formData.weeklyOth,
+      biweekOth: formData.biweekOth,
+      oth60: formData.oth60,
+      weeklyqc: formData.weeklyqc,
+      biweeklyqc: formData.biweeklyqc,
+      qc60: formData.qc60,
+      deposit: formData.deposit,
+      biweeklNatWOptions: formData.biweeklNatWOptions,
+      weeklylNatWOptions: formData.weeklylNatWOptions,
+      nat60WOptions: formData.nat60WOptions,
+      weeklyOthWOptions: formData.weeklyOthWOptions,
+      biweekOthWOptions: formData.biweekOthWOptions,
+      oth60WOptions: formData.oth60WOptions,
+      biweeklNat: formData.biweeklNat,
+      weeklylNat: formData.weeklylNat,
+      nat60: formData.nat60,
+      qcTax: formData.qcTax,
+      otherTax: formData.otherTax,
+      totalWithOptions: formData.totalWithOptions,
+      otherTaxWithOptions: formData.otherTaxWithOptions,
+      desiredPayments: formData.desiredPayments,
+      freight: formData.freight,
+      admin: formData.admin,
+      commodity: formData.commodity,
+      pdi: formData.pdi,
+      discountPer: formData.discountPer,
+      userLoanProt: formData.userLoanProt,
+      userTireandRim: formData.userTireandRim,
+      userGap: formData.userGap,
+      userExtWarr: formData.userExtWarr,
+      userServicespkg: formData.userServicespkg,
+      deliveryCharge: formData.deliveryCharge,
+      vinE: formData.vinE,
+      lifeDisability: formData.lifeDisability,
+      rustProofing: formData.rustProofing,
+      userOther: formData.userOther,
+      paintPrem: formData.paintPrem,
+      licensing: formData.licensing,
+      stockNum: formData.stockNum,
+      options: formData.options,
+      accessories: formData.accessories,
+      labour: formData.labour,
+      year: formData.year,
+      brand: formData.brand,
+      model: formData.model,
+      model1: formData.model1,
+      color: formData.color,
+      modelCode: formData.modelCode,
+      msrp: formData.msrp,
+      userEmail: formData.userEmail,
+      tradeValue: formData.tradeValue,
+      tradeDesc: formData.tradeDesc,
+      tradeColor: formData.tradeColor,
+      tradeYear: formData.tradeYear,
+      tradeMake: formData.tradeMake,
+      tradeVin: formData.tradeVin,
+      tradeTrim: formData.tradeTrim,
+      tradeMileage: formData.tradeMileage,
+      bikeStatus: formData.bikeStatus,
+      trim: formData.trim,
+      vin: formData.vin,
+      lien: formData.lien,
+    }
+    const dashData = {
+      userEmail: formData.userEmail,
+      referral: formData.referral,
+      visited: formData.visited,
+      bookedApt: formData.bookedApt,
+      aptShowed: formData.aptShowed,
+      aptNoShowed: formData.aptNoShowed,
+      testDrive: formData.testDrive,
+      metService: formData.metService,
+      metManager: formData.metManager,
+      metParts: formData.metParts,
+      sold: formData.sold,
+      depositMade: formData.depositMade,
+      refund: formData.refund,
+      turnOver: formData.turnOver,
+      financeApp: formData.financeApp,
+      approved: formData.approved,
+      signed: formData.signed,
+      pickUpSet: formData.pickUpSet,
+      demoed: formData.demoed,
+      delivered: formData.delivered,
+      lastContact: lastContact,
+      status: formData.status,
+      customerState: customerState,
+      result: formData.result,
+      timesContacted: formData.timesContacted,
+      nextAppointment: formData.nextAppointment,
+      completeCall: formData.completeCall,
+      followUpDay: formData.followUpDay,
+      state: formData.state,
+      deliveredDate: formData.deliveredDate,
+      notes: formData.notes,
+      visits: formData.visits,
+      progress: formData.progress,
+      metSalesperson: formData.metSalesperson,
+      metFinance: formData.metFinance,
+      financeApplication: formData.financeApplication,
+      pickUpDate: pickUpDate,
+      pickUpTime: formData.pickUpTime,
+      depositTakenDate: formData.depositTakenDate,
+      docsSigned: formData.docsSigned,
+      tradeRepairs: formData.tradeRepairs,
+      seenTrade: formData.seenTrade,
+      lastNote: formData.lastNote,
+      dLCopy: formData.dLCopy,
+      insCopy: formData.insCopy,
+      testDrForm: formData.testDrForm,
+      voidChq: formData.voidChq,
+      loanOther: formData.loanOther,
+      signBill: formData.signBill,
+      ucda: formData.ucda,
+      tradeInsp: formData.tradeInsp,
+      customerWS: formData.customerWS,
+      otherDocs: formData.otherDocs,
+      urgentFinanceNote: formData.urgentFinanceNote,
+      funded: formData.funded,
+      countsInPerson: formData.countsInPerson,
+      countsPhone: formData.countsPhone,
+      countsSMS: formData.countsSMS,
+      countsOther: formData.countsOther,
+      countsEmail: formData.countsEmail,
+    }
+    switch (brand) {
+      case "Manitou":
+        const updatingManitouFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
+        return json({ updatingManitouFinance, });
+      case "Switch":
+        const updatingSwitchFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
+        return json({ updatingSwitchFinance, });
+      case "BMW-Motorrad":
+        const updatingBMWMotoFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
+        return json({ updatingBMWMotoFinance, });
+      default:
+        try {
+          // Update the finance record
+          const finance = await prisma.finance.update({
+            where: { id: financeId, }, data: { ...financeData },
+          });
+
+          // Update the dashboard record
+          const dashboard = await prisma.dashboard.update({
+            where: { financeId: financeId, }, data: { ...dashData, }
+          });
+
+          console.log("Finance and Dashboard records updated successfully");
+
+          return { finance, dashboard, updateActivix };
+        } catch (error) {
+          console.error("An error occurred while updating the records:", error);
+          throw error;  // re-throw the error so it can be handled by the caller
+        }
+    }
+  }
+  // create
   if (intent === "createQuote") {
     console.log("creating quote");
     const brand = formData.brand;
     const financeId = formData.id;
     return redirect(`/quote/${brand}/${financeId}`);
   }
+  // update
+  if (intent === "updateStatus") {
+    delete formData.brand;
+    //console.log(formData)
+    await UpdateStatus(formData);
+    return UpdateStatus;
+  }
+  // navigation
+  if (intent === "clientProfile") {
+
+    console.log(clientfileId, financeId, 'dashboard calls')
+    return redirect(`/customer/${clientfileId}/${financeId}`, {
+      headers: {
+        "Set-Cookie": serializedSession,
+      },
+    });
+  }
+
+  if (intent === "returnToQuote") {
+    const brand = formData.brand;
+    const id = formData.id;
+    //   console.log(id, 'id', `/overview/${brand}/${id}`)
+    return redirect(`/overview/customer/${financeId}`);
+  }
   // appts
+  if (intent === "addAppt") {
+    CreateAppt(formData);
+    const completeCall = CompleteLastAppt(userId, financeId);
+    return CreateAppt;
+  }
   if (intent === "deleteApt") {
     const newFormData = { ...formData };
     delete newFormData.intent;
     const deleteNote = await deleteFinanceAppts(newFormData);
     return json({ deleteNote });
   }
+  if (intent === "updateFinanceAppt") {
+    const apptId = formData.id;
+    const updateApt = await UpdateAppt(formData, apptId);
+    return json({ updateApt });
+  }
+  // customer
+  if (intent === "AddCustomer") {
+    console.log('less than 20')
+    const brand = formData.brand
+    delete formData.financeId
+    delete formData.userId
+    delete formData.followUpDay
+    let { financeId, clientData, dashData, financeData } = DataForm(formData);
+    clientData = {
+      ...clientData,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      name: formData.firstName + ' ' + formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      province: formData.province,
+      dl: formData.dl,
+      userEmail: formData.userEmail,
+    }
+    const userId = formData.userId
+    if (formData.brand === 'Used') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      //   console.log('Created createQuoteServer:', createQuoteServer)
+      return json({ QuoteServer })
+    }
+    if (formData.brand === 'Switch') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      return json({ manitouOptionsCreated, createQuoteServer })
+    }
+    if (formData.brand === 'Manitou') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      return json({ manitouOptionsCreated, createQuoteServer })
+    }
+    if (formData.brand === 'BMW-Motorrad') {
+      const financeId = finance.id
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const updatingFinance = await createBMWOptions(financeId)
+      const updatingFinance2 = await createBMWOptions2(financeId)
+      return json({ updatingFinance, updatingFinance2, createQuoteServer })
+    }
+    else {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      // console.log('Created createQuoteServer:', createQuoteServer)
+      return json({ createQuoteServer })
+    }
+  }
   if (intent === "deleteCustomer") {
     await DeleteCustomer({ formData, formPayload });
     return DeleteCustomer;
+  }
+  // notes
+  if (intent === "saveFinanceNote") {
+    await updateFinanceNotes({ formData });
+    return updateFinanceNotes;
+  }
+  if (intent === "createFinanceNote") {
+    await createFinanceNotes({ formData });
+    return createFinanceNotes;
+  }
+  if (intent === "updateFinanceNote") {
+    const updateNote = await updateFinanceNote(financeId, formData);
+    return json({ updateNote });
   }
   if (intent === "deleteFinanceNote") {
     const deleteNote = await deleteFinanceNote(id);

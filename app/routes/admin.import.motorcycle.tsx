@@ -1,5 +1,71 @@
-import type { ActionArgs, UploadHandler, LoaderArgs } from '@remix-run/node';
 import {
+  json,
+  unstable_createFileUploadHandler,
+  unstable_composeUploadHandlers,
+  unstable_createMemoryUploadHandler,
+  unstable_parseMultipartFormData,
+} from '@remix-run/node';
+import { Form, useActionData } from '@remix-run/react';
+import { prisma } from '~/libs';
+import type { ActionArgs, UploadHandler } from '@remix-run/node';
+import { useEffect, useState, useRef } from 'react';
+
+
+
+
+export default function Index() {
+
+  const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
+  const MyIFrameComponent = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+      const handleHeightMessage = (event: MessageEvent) => {
+        if (event.data && event.data.type === 'iframeHeight' && event.data.height) {
+          setIsLoading(false);
+
+          if (iFrameRef.current) {
+            iFrameRef.current.style.height = `${event.data.height}px`;
+          }
+        }
+      };
+
+      if (iFrameRef.current) {
+        // iFrameRef.current.src = 'http://localhost:3000/body';
+        iFrameRef.current.src = 'https://crmsat.vercel.app/admin/import/motorcycle';
+        window.addEventListener('message', handleHeightMessage);
+      }
+
+      return () => {
+        if (iFrameRef.current) {
+          window.removeEventListener('message', handleHeightMessage);
+        }
+      };
+    }, []);
+
+    return (
+      <>
+        <div className="h-full w-full ">
+          <iframe
+            ref={iFrameRef}
+            title="my-iframe"
+            width="100%"
+            className=' border-none'
+            style={{ minHeight: '840px' }}
+          />
+        </div>
+      </>
+    );
+  };
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <MyIFrameComponent />
+    </div>
+  );
+}
+
+/**
+import {
+  type ActionArgs, type UploadHandler,
   json,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
@@ -25,94 +91,8 @@ import {
 } from "~/utils/upload-handler";
 
 
+
 export const action = async ({ request }: ActionArgs) => {
-  try {
-
-    const formData = await parseMultipartFormData(request, uploadHandler);
-    console.log('formData:', formData);
-
-    const csv = formData ? formData.get('selected_csv') : undefined;
-
-    if (!csv) { throw new Error('CSV file not found in form data.'); }
-
-    const rows = csv.split('\n').slice(1); // Skip header row
-
-    for (const row of rows) {
-      const data = row.split(',').map((column) => column.trim());
-
-      await prisma.inventoryMotorcycle.create({
-        data: {
-          packageNumber: data[0],
-          packagePrice: data[1],
-          stockNumber: data[2],
-          type: data[3],
-          class: data[4],
-          year: data[5],
-          make: data[6],
-          model: data[7],
-          modelName: data[8],
-          submodel: data[9],
-          subSubmodel: data[10],
-          price: data[11],
-          exteriorColor: data[12],
-          mileage: data[13],
-          consignment: data[14].toLowerCase() === 'true',
-          onOrder: data[15].toLowerCase() === 'true',
-          expectedOn: data[16],
-          status: data[17],
-          orderStatus: data[18],
-          hdcFONumber: data[19],
-          hdmcFONumber: data[20],
-          vin: data[21],
-          age: parseInt(data[22], 10),
-          floorPlanDueDate: data[23],
-          location: data[24],
-          stocked: data[25].toLowerCase() === 'true',
-          stockedDate: data[26],
-          isNew: data[27].toLowerCase() === 'true',
-          actualCost: data[28],
-          mfgSerialNumber: data[29],
-          engineNumber: data[30],
-          plates: data[31],
-          keyNumber: data[32],
-          length: data[33],
-          width: data[34],
-          engine: data[35],
-          fuelType: data[36],
-          power: data[37],
-          chassisNumber: data[38],
-          chassisYear: data[39],
-          chassisMake: data[40],
-          chassisModel: data[41],
-          chassisType: data[42],
-          registrationState: data[43],
-          registrationExpiry: data[44],
-          grossWeight: data[45],
-          netWeight: data[46],
-          insuranceCompany: data[47],
-          policyNumber: data[48],
-          insuranceAgent: data[49],
-          insuranceStartDate: data[50],
-          insuranceEndDate: data[51],
-        },
-      });
-    }
-
-    console.log(`csv`, csv);
-    return json({
-      csv,
-      success: true,
-    });
-  } catch (error) {
-    console.error('Error in action:', error);
-    return json({
-      error: error.message || 'Internal Server Error',
-      success: false,
-    }, { status: 500 });
-  }
-};
-/// thios works just foundd it  https://stackblitz.com/edit/node-ubpgp5?file=app%2Froutes%2Findex.tsx
-/**export const action = async ({ request }: ActionArgs) => {
   const csvUploadHandler: UploadHandler = async ({
     name,
     filename,
@@ -137,6 +117,66 @@ export const action = async ({ request }: ActionArgs) => {
   const formData = await parseMultipartFormData(request, uploadHandler);
   const csv = formData.get('selected_csv');
 
+  for (const row of rows) {
+    const data = row.split(',').map((column) => column.trim());
+
+    await prisma.inventoryMotorcycle.create({
+      data: {
+        packageNumber: data[0],
+        packagePrice: data[1],
+        stockNumber: data[2],
+        type: data[3],
+        class: data[4],
+        year: data[5],
+        make: data[6],
+        model: data[7],
+        modelName: data[8],
+        submodel: data[9],
+        subSubmodel: data[10],
+        price: data[11],
+        exteriorColor: data[12],
+        mileage: data[13],
+        consignment: data[14].toLowerCase() === 'true',
+        onOrder: data[15].toLowerCase() === 'true',
+        expectedOn: data[16],
+        status: data[17],
+        orderStatus: data[18],
+        hdcFONumber: data[19],
+        hdmcFONumber: data[20],
+        vin: data[21],
+        age: parseInt(data[22], 10),
+        floorPlanDueDate: data[23],
+        location: data[24],
+        stocked: data[25].toLowerCase() === 'true',
+        stockedDate: data[26],
+        isNew: data[27].toLowerCase() === 'true',
+        actualCost: data[28],
+        mfgSerialNumber: data[29],
+        engineNumber: data[30],
+        plates: data[31],
+        keyNumber: data[32],
+        length: data[33],
+        width: data[34],
+        engine: data[35],
+        fuelType: data[36],
+        power: data[37],
+        chassisNumber: data[38],
+        chassisYear: data[39],
+        chassisMake: data[40],
+        chassisModel: data[41],
+        chassisType: data[42],
+        registrationState: data[43],
+        registrationExpiry: data[44],
+        grossWeight: data[45],
+        netWeight: data[46],
+        insuranceCompany: data[47],
+        policyNumber: data[48],
+        insuranceAgent: data[49],
+        insuranceStartDate: data[50],
+        insuranceEndDate: data[51],
+      },
+    });
+  }
   // alternate method using just memeoryUploadHandler
   // const uploadHandler = createMemoryUploadHandler();
   // const formData = await parseMultipartFormData(request, uploadHandler);
@@ -147,7 +187,9 @@ export const action = async ({ request }: ActionArgs) => {
   return json({
     csv,
   });
-}; */
+};
+/// thios works just foundd it  https://stackblitz.com/edit/node-ubpgp5?file=app%2Froutes%2Findex.tsx
+
 
 export default function FormCard() {
   const [cardQuantity, setCardQuantity] = useState(0);
@@ -166,58 +208,16 @@ export default function FormCard() {
   };
 
   return (
-    <div className='text-white border border-white rounded-md mx-auto mt-10'>
-      <Form style={{ display: "flex", flexDirection: "column" }}>
-
-
-        <contactFileUploader.Form
-          onDragOver={(e) => {
-            e.preventDefault();
-          }}
-          onDrop={(e) => {
-            e.nativeEvent.preventDefault();
-
-            const file = e.dataTransfer.files?.[0];
-
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.set("import_file", file);
-
-            submitUpload(formData);
-          }}
-          onChange={(e) => {
-            const formData = new FormData(e.currentTarget);
-
-            submitUpload(formData);
-          }}
-        >
-          <div>
-            <label htmlFor="import_file">
-              <span>Upload a file</span>
-              <input id="import_file" name="import_file" type="file" />
-            </label>
-            <p>or drag and drop</p>
-          </div>
-          <p>XLSX, CSV up to 5MB</p>
-        </contactFileUploader.Form>
-
-        <p>Liste des gens : </p>
-        <pre>{JSON.stringify(contactFileUploader.data)}</pre>
-
-        <div
-          style={{
-            border: "1px solid black",
-            width: "fit-content",
-            padding: 12,
-            marginTop: 50,
-          }}
-        >
-          <p>Quantité de cartes : {totalCardQuantity}</p>
-          <p>Prix final de l'opération' : {totalCardQuantity * cardAmount}€</p>
-        </div>
+    <div style={{ textAlign: 'center' }}>
+      <h1 style={{ marginBottom: 10 }}>UPDATE CODE LIST</h1>
+      <Form method="post" encType="multipart/form-data">
+        <input type="file" accept=".csv" name="selected_csv" />
+        <button type="submit" className="btn btn-sm">
+          UPLOAD CSV
+        </button>
       </Form>
     </div>
+
   );
 }
 
@@ -284,4 +284,60 @@ async function createOrUpdateYourModel(data) {
         <Button onClick={() => Click1()} download="inventoryMotorcycles.csv" className="btn btn-sm text-white border-white border py-2 px-3 rounded-md mb-5">
           DOWNLOAD CSV
         </Button>
-      </div> */
+      </div>
+
+
+
+       <div className='text-white border border-white rounded-md mx-auto mt-10'>
+      <Form style={{ display: "flex", flexDirection: "column" }}>
+
+
+        <contactFileUploader.Form
+          onDragOver={(e) => {
+            e.preventDefault();
+          }}
+          onDrop={(e) => {
+            e.nativeEvent.preventDefault();
+
+            const file = e.dataTransfer.files?.[0];
+
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.set("selected_csv", file);
+
+            submitUpload(formData);
+          }}
+          onChange={(e) => {
+            const formData = new FormData(e.currentTarget);
+
+            submitUpload(formData);
+          }}
+        >
+          <div>
+            <label htmlFor="selected_csv">
+              <span>Upload a file</span>
+              <input id="selected_csv" name="selected_csv" type="file" />
+            </label>
+            <p>or drag and drop</p>
+          </div>
+          <p>XLSX, CSV up to 5MB</p>
+        </contactFileUploader.Form>
+
+        <p>Liste des gens : </p>
+        <pre>{JSON.stringify(contactFileUploader.data)}</pre>
+
+        <div
+          style={{
+            border: "1px solid black",
+            width: "fit-content",
+            padding: 12,
+            marginTop: 50,
+          }}
+        >
+          <p>Quantité de cartes : {totalCardQuantity}</p>
+          <p>Prix final de l'opération' : {totalCardQuantity * cardAmount}€</p>
+        </div>
+      </Form>
+    </div>*/
+
