@@ -71,7 +71,6 @@ export async function loader({ request, params, req }: LoaderFunction) {
         username: email?.split('@')[0],
         email: email,
         password: { create: { hash: hashedPassword } },
-        subscriptionId: 'trialing',
         role: { connect: { id: defaultUserRole?.id } },
         profile: {
           create: {
