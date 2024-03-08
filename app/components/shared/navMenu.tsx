@@ -46,6 +46,12 @@ export function NavigationMenuSales() {
               <ListItem href="/customFeatures" title="Custom Features">
                 Do you need something that is not available? We can help.
               </ListItem>
+              <ListItem href="/privacy" title="Privacy Policy">
+                Privacy Policy
+              </ListItem>
+              <ListItem href="/forGoogle" title="Google">
+                For Google Verification Process
+              </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
