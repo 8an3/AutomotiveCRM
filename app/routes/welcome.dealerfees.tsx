@@ -123,7 +123,8 @@ export const action: ActionFunction = async ({ request }) => {
     }
     if (!existingDealerFees) {
       console.log('no dealer fees something is wrong')
-      await prisma.dealerFees.create({
+      await prisma.dealerFees.update({
+        where: { userEmail: email },
 
         data: {
           dealer: formData.dealer,
@@ -153,7 +154,6 @@ export const action: ActionFunction = async ({ request }) => {
           userLabour: formData.userLabour,
           userMarketAdj: formData.userMarketAdj,
           userCommodity: formData.userCommodity,
-          email: userEmail,
           destinationCharge: formData.destinationCharge,
           userFreight: formData.userFreight,
           userAdmin: formData.userAdmin,
@@ -168,39 +168,41 @@ export const action: ActionFunction = async ({ request }) => {
       where: { id: 1 },
     });
     const DealerFees = await prisma.dealerFees.create({
+
+
       data: {
-        dealer: DealerInfo.dealerName,
-        dealerAddress: DealerInfo.dealerAddress,
-        dealerProv: DealerInfo.dealerProv,
-        dealerPhone: DealerInfo.dealerPhone,
-        omvicNumber: deFees.omvicNumber,
-        userLoanProt: deFees.userLoanProt,
-        userTireandRim: deFees.userTireandRim,
-        userGap: deFees.userGap,
-        userExtWarr: deFees.userExtWarr,
-        userServicespkg: deFees.userServicespkg,
-        vinE: deFees.vinE,
-        lifeDisability: deFees.lifeDisability,
-        rustProofing: deFees.rustProofing,
-        userLicensing: deFees.userLicensing,
-        userFinance: deFees.userFinance,
-        userDemo: deFees.userDemo,
-        userGasOnDel: deFees.userGasOnDel,
-        userOMVIC: deFees.userOMVIC,
-        userOther: deFees.userOther,
-        userTax: deFees.userTax,
-        userAirTax: deFees.userAirTax,
-        userTireTax: deFees.userTireTax,
-        userGovern: deFees.userGovern,
-        userPDI: deFees.userPDI,
-        userLabour: deFees.userLabour,
-        userMarketAdj: deFees.userMarketAdj,
-        userCommodity: deFees.userCommodity,
-        destinationCharge: deFees.destinationCharge,
-        userFreight: deFees.userFreight,
-        userAdmin: deFees.userAdmin,
-        email: user.email,
-        userEmail: user.email,
+        dealer: 'Dealer Name',
+        dealerAddress: '1234 street ave',
+        dealerProv: 'Toronto, ON, K1K1K1',
+        dealerPhone: '416-416-4164',
+        omvicNumber: formData.omvicNumber,
+        userLoanProt: formData.userLoanProt,
+        userTireandRim: formData.userTireandRim,
+        userGap: formData.userGap,
+        userExtWarr: formData.userExtWarr,
+        userServicespkg: formData.userServicespkg,
+        vinE: formData.vinE,
+        lifeDisability: formData.lifeDisability,
+        rustProofing: formData.rustProofing,
+        userLicensing: formData.userLicensing,
+        userFinance: formData.userFinance,
+        userDemo: formData.userDemo,
+        userGasOnDel: formData.userGasOnDel,
+        userOMVIC: formData.userOMVIC,
+        userOther: formData.userOther,
+        userTax: formData.userTax,
+        userAirTax: formData.userAirTax,
+        userTireTax: formData.userTireTax,
+        userGovern: formData.userGovern,
+        userPDI: formData.userPDI,
+        userLabour: formData.userLabour,
+        userMarketAdj: formData.userMarketAdj,
+        userCommodity: formData.userCommodity,
+        destinationCharge: formData.destinationCharge,
+        userFreight: formData.userFreight,
+        userAdmin: formData.userAdmin,
+
+        userEmail: email,
 
       }
     });
@@ -265,7 +267,7 @@ export const loader = async ({ request, params }) => {
   }
   if (!DealerInfo) {
     deFees = await prisma.dealerFees.findUnique({
-      where: { email: email },
+      where: { userEmail: email },
     });
     if (!deFees) {
       // If no record exists, create a new one

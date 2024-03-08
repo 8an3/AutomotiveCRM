@@ -504,7 +504,7 @@ export async function DealerFeesAdminCreate() {
     data: {
       dealer: 'Freedom H-D',
       dealerAddress: '1963 Merivale Rd',
-      dealerProv: 'Ottawa, ON, k0C1g1',
+      dealerProv: 'Ottawa, ON, K0C1G1',
       dealerPhone: '6137877777',
 
       omvicNumber: '515115',
