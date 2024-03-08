@@ -87,22 +87,23 @@ export default function Route() {
     return null; // Return null because this component doesn't render anything
   }
   return (
-    <div className="w-full  grid grid-cols-2">
-      <div className="w-[50%]">
-        <p className="left-[25px] top-[50px]">DSA</p>
-      </div>
+    <div className="w-full  grid grid-cols-1">
+
       <div className="w-[50%]">
         <div className='flex items-center justify-center text-center'>
           <Form action="/google" method="post">
-            <div className=" fixed top-[50%] left-[70%] translate-x-[-50%] translate-y-[-50%]">
-              <h1 className="text-white">Login to your account</h1>
+            <div className=" fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+              <h1 className="text-white">Welcome to D.S.A.</h1>
               <p className="text-white mt-5">Continue with your google account to login</p>
               <Button variant='outline' className='w-auto rounded-xl mt-5 border border-white px-8 py-5 text-xl text-white '>
                 <p className='mr-1'> Login with </p>
                 <FcGoogle className='text-[28px]' /><p>oogle</p>
               </Button>
-              <hr className="solid mt-5 text-white" />
-              <p className="mt-5 text-white">If you need to register and subscribe follow this</p><Link to='/subscribe'><p className="text-white"> link</p></Link>
+              <hr className="solid mt-5 text-white mb-5" />
+              <Link to='/privacy'>
+                <p className='text-white'>To review our Privacy Policy</p>
+
+              </Link>
             </div>
           </Form>
         </div>

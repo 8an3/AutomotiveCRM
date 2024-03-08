@@ -79,6 +79,7 @@ export default function Roadmap() {
 		{ type: "dash", desc: "dash switcher in settings to change from integration to integration or not" },
 
 		{ type: "dealer", desc: "calendar to set store hours" },
+		{ type: "dealer", desc: "invite user section where it send an email with links to the crm and " },
 
 		{ type: "email", desc: "webhook for incoming emails, save notifiation and messeages" },
 
