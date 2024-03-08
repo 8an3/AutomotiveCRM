@@ -689,6 +689,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   session66.set("financeId", financeId);
   session66.set("clientfileId", clientfileId);
   const serializedSession = await sixCommit(session66);
+  const accessToken = env.API_ACTIVIX;
 
   let pickUpDate;
   if (pickUpDate === null || pickUpDate === undefined) {
@@ -1069,58 +1070,8 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   // activix done
   // need to add updae vehcile
   if (intent === "updateFinance") {
-    console.log(formData, ' update finance data')
-
     let brand = formPayload.brand
-    let customerState = formData.customerState
-    if (formData.customerState === 'Pending') {
-      customerState = 'Pending'
-    }
-    if (formData.customerState === 'Attempted') {
-      customerState = 'Attempted'
-    }
-    if (formData.customerState === 'Reached') {
-      customerState = 'Reached'
-    }
-    if (formData.customerState === 'Lost') {
-      customerState = 'Lost'
-    }
-    if (formData.sold === 'on') {
-      customerState = 'sold'
-    }
-    if (formData.depositMade === 'on') {
-      customerState = 'depositMade'
-    }
-    if (formData.turnOver === 'on') {
-      customerState = 'turnOver'
-    }
-    if (formData.financeApp === 'on') {
-      customerState = 'financeApp'
-    }
-    if (formData.approved === 'on') {
-      customerState = 'approved'
-    }
-    if (formData.signed === 'on') {
-      customerState = 'signed'
-    }
-    if (formData.pickUpSet === 'on') {
-      customerState = 'pickUpSet'
-    }
-    if (formData.delivered === 'on') {
-      customerState = 'delivered'
-    }
-    if (formData.refund === 'on') {
-      customerState = 'refund'
-    }
-    if (formData.funded === 'on') {
-      customerState = 'funded'
-    }
-    let pickUpDate = ''
-    if (formData.pickUpDate) {
-      pickUpDate = new Date(formData.pickUpDate).toISOString()
-    }
     let lastContact = new Date().toISOString()
-
     console.log(financeId, 'finaceCheckId')
     const financeData = {
 
@@ -1269,36 +1220,308 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       countsOther: formData.countsOther,
       countsEmail: formData.countsEmail,
     }
-    switch (brand) {
-      case "Manitou":
-        const updatingManitouFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
-        return json({ updatingManitouFinance, });
-      case "Switch":
-        const updatingSwitchFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
-        return json({ updatingSwitchFinance, });
-      case "BMW-Motorrad":
-        const updatingBMWMotoFinance = await updateFinanceWithDashboard(financeId, financeData, dashData);
-        return json({ updatingBMWMotoFinance, });
-      default:
-        try {
-          // Update the finance record
-          const finance = await prisma.finance.update({
-            where: { id: financeId, }, data: { ...financeData },
-          });
+    const fullName = user.username;
+    const words = fullName.split(' ');
+    const firstName = words[0];
+    const lastName = words[1];
+    const UpdateLead = await axios.put(`https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
+      {
+        "first_name": formData.firstName,
+        "last_name": formData.lastName,
+        "type": "email",
+        "advisor": {
+          "first_name": firstName,
+          "last_name": lastName
+        },
+        "emails": [
+          {
+            "type": "home",
+            "address": formData.email,
+          }
+        ],
+        "phones": [
+          {
+            "number": `+1${formData.phone}`,
+            "type": "mobile"
+          }
+        ],
+        "vehicles": [
+          {
+            "make": formData.brand,
+            "model": formData.model,
+            "year": formData.year,
+            "color_exterior": formData.color,
+            "vin": formData.vin,
+            "price": formData.msrp,
 
-          // Update the dashboard record
-          const dashboard = await prisma.dashboard.update({
-            where: { financeId: financeId, }, data: { ...dashData, }
-          });
-
-          console.log("Finance and Dashboard records updated successfully");
-
-          return { finance, dashboard, updateActivix };
-        } catch (error) {
-          console.error("An error occurred while updating the records:", error);
-          throw error;  // re-throw the error so it can be handled by the caller
-        }
+            "type": "wanted"
+          },
+          {
+            "make": formData.tradeMake,
+            "model": formData.tradeDesc,
+            "year": formData.tradeYear,
+            "vin": formData.tradeVin,
+            "color_exterior": formData.tradeColor,
+            "mileage": formData.tradeMileage,
+            "type": "exchange"
+          }
+        ]
+      }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
     }
+    ).then(response => {
+      console.log(response.data);
+      const data = response.data
+      async function CreateActvix() {
+        const financeData = await prisma.finance.update({
+          where: { id: data.financeId, },
+          data: {
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            phone: data.phone,
+            name: data.name,
+            address: data.address,
+            city: data.city,
+            postal: data.postal,
+            province: data.province,
+            dl: data.dl,
+            typeOfContact: data.typeOfContact,
+            timeToContact: data.timeToContact,
+            iRate: data.iRate,
+            months: data.months,
+            discount: data.discount,
+            total: data.total,
+            onTax: data.onTax,
+            on60: data.on60,
+            biweekly: data.biweekly,
+            weekly: data.weekly,
+            weeklyOth: data.weeklyOth,
+            biweekOth: data.biweekOth,
+            oth60: data.oth60,
+            weeklyqc: data.weeklyqc,
+            biweeklyqc: data.biweeklyqc,
+            qc60: data.qc60,
+            deposit: data.deposit,
+            biweeklNatWOptions: data.biweeklNatWOptions,
+            weeklylNatWOptions: data.weeklylNatWOptions,
+            nat60WOptions: data.nat60WOptions,
+            weeklyOthWOptions: data.weeklyOthWOptions,
+            biweekOthWOptions: data.biweekOthWOptions,
+            oth60WOptions: data.oth60WOptions,
+            biweeklNat: data.biweeklNat,
+            weeklylNat: data.weeklylNat,
+            nat60: data.nat60,
+            qcTax: data.qcTax,
+            otherTax: data.otherTax,
+            totalWithOptions: data.totalWithOptions,
+            otherTaxWithOptions: data.otherTaxWithOptions,
+            desiredPayments: data.desiredPayments,
+            freight: data.freight,
+            admin: data.admin,
+            commodity: data.commodity,
+            pdi: data.pdi,
+            discountPer: data.discountPer,
+            userLoanProt: data.userLoanProt,
+            userTireandRim: data.userTireandRim,
+            userGap: data.userGap,
+            userExtWarr: data.userExtWarr,
+            userServicespkg: data.userServicespkg,
+            deliveryCharge: data.deliveryCharge,
+            vinE: data.vinE,
+            lifeDisability: data.lifeDisability,
+            rustProofing: data.rustProofing,
+            userOther: data.userOther,
+            paintPrem: data.paintPrem,
+            licensing: data.licensing,
+            stockNum: data.stockNum,
+            options: data.options,
+            accessories: data.accessories,
+            labour: data.labour,
+            year: data.year,
+            brand: data.brand,
+            model: data.model,
+            model1: data.model1,
+            color: data.color,
+            modelCode: data.modelCode,
+            msrp: data.msrp,
+            userEmail: data.userEmail,
+            tradeValue: data.tradeValue,
+            tradeDesc: data.tradeDesc,
+            tradeColor: data.tradeColor,
+            tradeYear: data.tradeYear,
+            tradeMake: data.tradeMake,
+            tradeVin: data.tradeVin,
+            tradeTrim: data.tradeTrim,
+            tradeMileage: data.tradeMileage,
+            trim: data.trim,
+            vin: data.vin,
+          }
+        })
+        const dashboardData = await prisma.dashboard.update({
+          where: { id: data.financeId, },
+          data: {
+            userEmail: data.userEmail,
+            referral: data.referral,
+            visited: data.visited,
+            bookedApt: data.bookedApt,
+            aptShowed: data.aptShowed,
+            aptNoShowed: data.aptNoShowed,
+            testDrive: data.testDrive,
+            metService: data.metService,
+            metManager: data.metManager,
+            metParts: data.metParts,
+            sold: data.sold,
+            depositMade: data.depositMade,
+            refund: data.refund,
+            turnOver: data.turnOver,
+            financeApp: data.financeApp,
+            approved: data.approved,
+            signed: data.signed,
+            pickUpSet: data.pickUpSet,
+            demoed: data.demoed,
+            delivered: data.delivered,
+            status: 'Active',
+            customerState: 'Attempted',
+            result: data.result,
+            timesContacted: data.timesContacted,
+            nextAppointment: data.nextAppointment,
+            completeCall: data.completeCall,
+            followUpDay: data.followUpDay,
+            state: data.state,
+            deliveredDate: data.deliveredDate,
+            notes: data.notes,
+            visits: data.visits,
+            progress: data.progress,
+            metSalesperson: data.metSalesperson,
+            metFinance: data.metFinance,
+            financeApplication: data.financeApplication,
+            pickUpDate: pickUpDate,
+            pickUpTime: data.pickUpTime,
+            depositTakenDate: data.depositTakenDate,
+            docsSigned: data.docsSigned,
+            tradeRepairs: data.tradeRepairs,
+            seenTrade: data.seenTrade,
+            lastNote: data.lastNote,
+            dLCopy: data.dLCopy,
+            insCopy: data.insCopy,
+            testDrForm: data.testDrForm,
+            voidChq: data.voidChq,
+            loanOther: data.loanOther,
+            signBill: data.signBill,
+            ucda: data.ucda,
+            tradeInsp: data.tradeInsp,
+            customerWS: data.customerWS,
+            otherDocs: data.otherDocs,
+            urgentFinanceNote: data.urgentFinanceNote,
+            funded: data.funded,
+            countsInPerson: data.countsInPerson,
+            countsPhone: data.countsPhone,
+            countsSMS: data.countsSMS,
+            countsOther: data.countsOther,
+            countsEmail: data.countsEmail,
+          }
+        })
+        const activixData = await prisma.activixLead.update({
+          where: { id: data.financeId, },
+          data: {
+            id: data.id,
+            account_id: data.account_id,
+            customer_id: data.customer_id,
+            appointment_date: data.appointment_date,
+            phone_appointment_date: data.phone_appointment_date,
+            available_date: data.available_date,
+            be_back_date: data.be_back_date,
+            call_date: data.call_date,
+            created_at: data.created_at,
+            csi_date: data.csi_date,
+            delivered_date: data.delivered_date,
+            deliverable_date: data.deliverable_date,
+            delivery_date: data.delivery_date,
+            paperwork_date: data.paperwork_date,
+            presented_date: data.presented_date,
+            promised_date: data.promised_datere,
+            financed_date: data.financed_date,
+            road_test_date: data.road_test_date,
+            home_road_test_date: data.home_road_test_date,
+            sale_date: data.sale_date,
+            updated_at: data.updated_at,
+            address_line1: data.address,
+            city: data.city,
+            civility: data.civility,
+            country: data.country,
+            credit_approved: data.credit_approved,
+            dealer_tour: data.dealer_tour,
+            financial_institution: data.financial_institution,
+            first_name: data.firstName,
+            funded: data.funded,
+            inspected: data.inspected,
+            last_name: data.lastName,
+            postal_code: data.postal,
+            province: data.province,
+            result: data.result,
+            status: data.status,
+            type: data.type,
+            walk_around: data.walk_around,
+            comment: data.comment,
+            delivered_by: data.delivered_by,
+            emails: data.email,
+            phones: data.phone,
+            financeId: data.financeId,
+            userEmail: data.userEmail,
+
+            /**home_presented_date: data.home_presented_date,
+             birth_date: data.birth_date,
+             source_id: data.source_id,
+             Integer: data.Integer,
+             provider_id: data.provider_id,
+             unsubscribe_all_date: data.unsubscribe_all_date,
+             unsubscribe_call_date: data.unsubscribe_call_date,
+             unsubscribe_email_date: data.unsubscribe_email_date,
+             unsubscribe_sms_date: data.unsubscribe_sms_date,
+             advisor: data.advisor,
+             take_over_date: data.take_over_date,
+             search_term: data.search_term,
+             gender: data.gender,
+             form: data.form,
+             division: data.division,
+             created_method: data.created_method,
+             campaign: data.campaign,
+             address_line2: data.address_line2,
+             business: data.business,
+             business_name: data.business_name,
+             second_contact: data.second_contact,
+             second_contact_civility: data.second_contact_civility,
+             segment: data.segment,
+             source: data.source,
+             qualification: data.qualification,
+             rating: data.rating,
+             referrer: data.referrer,
+             provider: data.provider,
+             progress_state: data.progress_state,
+             locale: data.locale,
+             navigation_history: data.navigation_history,
+             keyword: data.keyword,*/
+          }
+        })
+        return json({ financeData, dashboardData, activixData })
+      }
+      CreateActvix()
+
+    })
+      .catch(error => {
+        console.error('Full error object:', error);
+        console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+        console.error(`Error status: ${error.response.status}`);
+        console.error('Error response:', error.response.data);
+      });
+
+    return UpdateLead
+
   }
   // create
   if (intent === "createQuote") {
@@ -1333,7 +1556,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   // appts
   if (intent === "addAppt") {
-    CreateAppt(formData);
+    await CreateAppt(formData);
     const completeCall = CompleteLastAppt(userId, financeId);
     return CreateAppt;
   }
