@@ -80,6 +80,7 @@ export async function seedUsers() {
 
     },
   });
+
   return user
 }
 export async function FirstFinance() {
