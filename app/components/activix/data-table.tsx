@@ -485,7 +485,8 @@ export function DataTable<TData, TValue>({
   async function syncData() {
     // save data/ sync data,  no one shuold be calling your leads anyways and update when needed
     // then move towards a ping as much as you can style of api call when dealing with the client file
-    SyncLeadData()
+    await SyncLeadData()
+    console.log(SyncLeadData)
   }
   //defaultValue={todayfilterBy}>
   return (
@@ -617,18 +618,20 @@ export function DataTable<TData, TValue>({
               <CalendarCheck color="#02a9ff" size={20} strokeWidth={1.5} />
             </button>
           </Link>
-          <ButtonLoading
-            size="lg"
-            onClick={() => {
-              syncData()
-            }} className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
-            name="intent"
-            value="clientProfile"
-            isSubmitting={isSubmitting}
-            loadingText="Naivigating to Client File.."
-          >
-            Sync Data
-          </ButtonLoading>
+          <Form method='post' >
+            <ButtonLoading
+              size="lg"
+              onClick={() => {
+                syncData()
+              }} className="w-auto cursor-pointer ml-3  hover:text-[#02a9ff] text-[#02a9ff] border-[#02a9ff]"
+              name='intent'
+              value='syncActiData'
+              isSubmitting={isSubmitting}
+              loadingText="Naivigating to Client File.."
+            >
+              Sync Data
+            </ButtonLoading>
+          </Form>
         </div>
       </div >
       <div className="mt-[20px] rounded-md  border border-[#60646c] text-slate1">

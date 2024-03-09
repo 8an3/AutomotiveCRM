@@ -1,8 +1,7 @@
 import financeFormSchema from '~/routes/overviewUtils/financeFormSchema';
 import { type DataFunctionArgs, type V2_MetaFunction, type ActionFunction, json, redirect, type ActionArgs, LoaderFunction } from '@remix-run/node'
-import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, } from "~/utils/finance/create.server";
+import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
 import { financeIdLoader, overviewLoader } from "./overviewActions";
-import { createClientFileRecord, financeWithDashboard, } from '~/utils/finance/create.server';
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { findQuoteById, } from "~/utils/finance/get.server";
 import { QuoteServer } from '~/utils/quote/quote.server';
@@ -10,8 +9,8 @@ import { prisma } from '~/libs/prisma.server';
 import { commitSession as commitPref, getSession as getPref } from "~/utils/pref.server";
 import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
-
 import { model } from "~/models";
+import { CreateCommunications, CompleteTask, CreateLead, CreateTask, } from '../activix/functions';
 
 export function invariant(
   condition: any,
@@ -56,6 +55,16 @@ export async function quoteAction({ params, request }: ActionArgs) {
 
   // console.log(formData, 'checking formPayload quote oader')
   // console.log(financeId, 'checking financeId quote loader')
+  const session2 = await getSession(request.headers.get("Cookie"));
+  const userEmail = session2.get("email")
+  const user = await prisma.user.findUnique({ where: { email: userEmail } });
+
+  let createActivixLead;
+  if (user.activixActivated === 'yes') {
+    createActivixLead = await CreateLead(formData)
+    console.log(createActivixLead)
+  }
+
   if (financeId.length > 20) {
     console.log('more than 20')
     try {
@@ -96,7 +105,6 @@ export async function quoteAction({ params, request }: ActionArgs) {
   } else {
     console.log('less than 20')
     const brand = formData.brand
-    delete formData.financeId
     delete formData.userId
     delete formData.followUpDay
     let { financeId, clientData, dashData, financeData } = DataForm(formData);
@@ -118,20 +126,20 @@ export async function quoteAction({ params, request }: ActionArgs) {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
       //   console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ QuoteServer }), redirect(`/overview/Used`)
+      return json({ createQuoteServer, createActivixLead }), redirect(`/overview/Used`)
     }
     if (formData.brand === 'Switch') {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
 
       const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer }), redirect(`/options/${brand}`)
+      return json({ manitouOptionsCreated, createQuoteServer, createActivixLead }), redirect(`/options/${brand}`)
     }
     if (formData.brand === 'Manitou') {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
       const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer }), redirect(`/options/${brand}`)
+      return json({ manitouOptionsCreated, createQuoteServer, createActivixLead }), redirect(`/options/${brand}`)
     }
     if (formData.brand === 'BMW-Motorrad') {
       const financeId = finance.id
@@ -139,13 +147,13 @@ export async function quoteAction({ params, request }: ActionArgs) {
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
       const updatingFinance = await createBMWOptions(financeId)
       const updatingFinance2 = await createBMWOptions2(financeId)
-      return json({ updatingFinance, updatingFinance2, createQuoteServer }), redirect(`/options/${brand}`)
+      return json({ updatingFinance, updatingFinance2, createQuoteServer, createActivixLead }), redirect(`/options/${brand}`)
     }
     else {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
       // console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ QuoteServer }), redirect(`/overview/${brand}`)
+      return json({ createQuoteServer, createActivixLead }), redirect(`/overview/${brand}`)
     }
   }
 }

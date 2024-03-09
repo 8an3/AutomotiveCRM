@@ -9,7 +9,7 @@ import { prisma } from '~/libs';
 import { env } from 'process';
 import axios from 'axios';
 
-export const loader: LoaderFunction = async ({ request, params }: LoaderFunctionArgs) => {
+export const loaderklujh: LoaderFunction = async ({ request, params }: LoaderFunctionArgs) => {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
   const user = await model.user.query.getForSession({ email: email });
@@ -37,244 +37,246 @@ export const loader: LoaderFunction = async ({ request, params }: LoaderFunction
     });
   return response
 }
+const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
 // need update vehicle and need to add vehicle id to my db for reference qwhen updating
 export async function SyncEvents() {
   const activixDataList = await ActivixTest('leads', 'get', { 'custom-header': '' });
 
 }
-export async function SyncLeadData() {
-  const accessToken = env.API_ACTIVIX;
-  const activixDataList = await ActivixTest('leads', 'get', { 'custom-header': '' });
-  if (activixDataList && activixDataList.data) {
-    const processedDataList = activixDataList.data.map(async (activixData) => {
-      const firstCheck = await prisma.activixLead.findUnique({ where: { id: activixData.id } })
-      if (!firstCheck) {
-        let clientfile = await prisma.clientfile.findUnique({ where: { email: activixData.emails[0] } })
-        if (!clientfile) {
-          clientfile = await prisma.clientfile.create({
-            data: {
-              firstName: activixData.first_name,
-              lastName: activixData.last_name,
-              phone: activixData.phones[0],
-              name: activixData.first_name + ' ' + activixData.last_name,
-              email: activixData.email[0],
-              address: activixData.address_line1,
-              city: activixData.city,
-              province: activixData.province,
-            }
-          })
-        }
-        let finance = await prisma.finance.findUnique({
-          where: {
-            id: activixData.id
+export async function SyncLeadData(activixData) {
+  const endpoint = 'leads'
+  const response = await axios.get(`https://api.crm.activix.ca/v2/${endpoint}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  });
+
+  console.log(response, 'response 1')
+
+  const processedDataList = await Promise.all(response.data.map(async (activixData) => {
+    const firstCheck = await prisma.activixLead.findUnique({ where: { id: activixData.id } })
+    if (!firstCheck) {
+      let clientfile = await prisma.clientfile.findUnique({ where: { email: activixData.emails[0] } })
+      if (!clientfile) {
+        clientfile = await prisma.clientfile.create({
+          data: {
+            firstName: activixData.first_name,
+            lastName: activixData.last_name,
+            phone: activixData.phones[0],
+            name: activixData.first_name + ' ' + activixData.last_name,
+            email: activixData.email[0],
+            address: activixData.address_line1,
+            city: activixData.city,
+            province: activixData.province,
           }
         })
-        if (!finance) {
-          finance = await prisma.finance.create({
-            data: {
-
-              email: activixData.email[0],
-              firstName: activixData.first_name,
-              lastName: activixData.last_name,
-              phone: activixData.phones[0],
-              name: activixData.first_name + ' ' + activixData.last_name,
-              address: activixData.address_line1,
-              city: activixData.city,
-              province: activixData.province,
-              stockNum: activixData.vehicles[0].stock,
-              options: activixData.vehicles[0].comment,
-              accessories: activixData.vehicles[0].accessories,
-              year: activixData.vehicles[0].year,
-              brand: activixData.vehicles[0].make,
-              model: activixData.vehicles[0].model,
-              color: activixData.vehicles[0].color_exterior,
-              msrp: activixData.vehicles[0].price,
-              tradeValue: activixData.vehicles[0].value,
-              trim: activixData.vehicles[0].trim,
-              vin: activixData.vehicles[0].vin,
-            }
-          })
-          const savedActivix = await prisma.activixLead.create({
-            data: {
-              financeId: finance.id,
-              id: activixDataList.id,
-              account_id: activixDataList.account_id,
-              customer_id: activixDataList.customer_id,
-              source_id: activixDataList.source_id,
-              Integer: activixDataList.Integer,
-              provider_id: activixDataList.provider_id,
-              appointment_date: activixDataList.appointment_date,
-              phone_appointment_date: activixDataList.phone_appointment_date,
-              available_date: activixDataList.available_date,
-              be_back_date: activixDataList.be_back_date,
-              birth_date: activixDataList.birth_date,
-              call_date: activixDataList.call_date,
-              created_at: activixDataList.created_at,
-              csi_date: activixDataList.csi_date,
-              delivered_date: activixDataList.delivered_date,
-              deliverable_date: activixDataList.deliverable_date,
-              delivery_date: activixDataList.delivery_date,
-              home_presented_date: activixDataList.home_presented_date,
-              paperwork_date: activixDataList.paperwork_date,
-              presented_date: activixDataList.presented_date,
-              promised_datere: activixDataList.promised_datere,
-              financed_date: activixDataList.financed_date,
-              road_test_date: activixDataList.road_test_date,
-              home_road_test_date: activixDataList.home_road_test_date,
-              sale_date: activixDataList.sale_date,
-              take_over_date: activixDataList.take_over_date,
-              unsubscribe_all_date: activixDataList.unsubscribe_all_date,
-              unsubscribe_call_date: activixDataList.unsubscribe_call_date,
-              unsubscribe_email_date: activixDataList.unsubscribe_email_date,
-              unsubscribe_sms_date: activixDataList.unsubscribe_sms_date,
-              updated_at: activixDataList.updated_at,
-              address_line1: activixDataList.address_line1,
-              address_line2: activixDataList.address_line2,
-              business: activixDataList.business,
-              business_name: activixDataList.business_name,
-              campaign: activixDataList.campaign,
-              city: activixDataList.city,
-              civility: activixDataList.civility,
-              country: activixDataList.country,
-              created_method: activixDataList.created_method,
-              credit_approved: activixDataList.credit_approved,
-              dealer_tour: activixDataList.dealer_tour,
-              division: activixDataList.division,
-              financial_institution: activixDataList.financial_institution,
-              first_name: activixDataList.first_name,
-              form: activixDataList.form,
-              funded: activixDataList.funded,
-              gender: activixDataList.gender,
-              inspected: activixDataList.inspected,
-              keyword: activixDataList.keyword,
-              last_name: activixDataList.last_name,
-              locale: activixDataList.locale,
-              navigation_history: activixDataList.navigation_history,
-              postal_code: activixDataList.postal_code,
-              progress_state: activixDataList.progress_state,
-              provider: activixDataList.provider,
-              province: activixDataList.province,
-              qualification: activixDataList.qualification,
-              rating: activixDataList.rating,
-              referrer: activixDataList.referrer,
-              result: activixDataList.result,
-              search_term: activixDataList.search_term,
-              second_contact: activixDataList.second_contact,
-              second_contact_civility: activixDataList.second_contact_civility,
-              segment: activixDataList.segment,
-              source: activixDataList.source,
-              status: activixDataList.status,
-              type: activixDataList.type,
-              walk_around: activixDataList.walk_around,
-              comment: activixDataList.comment,
-              advisor: activixDataList.advisor,
-              delivered_by: activixDataList.delivered_by,
-              emails: activixDataList.emails[0],
-              emails2: activixDataList.emails[1],
-              phones: activixDataList.phones[0],
-              phones2: activixDataList.phones[1],
-              phones3: activixDataList.phones[2],
-            }
-          })
-          const dashboard = await prisma.dashboard.create({
-            financeId: finance.id,
-            customerState: activixData.result,
-            status: activixData.status
-
-          })
-          const updateFinance = await prisma.finance.update({
-            where: {
-              id: finance.id,
-            },
-            data: {
-              activixId: savedActivix.id,
-              clientfileId: clientfile.id,
-              dashboardId: dashboard.id,
-            }
-          })
-          return updateFinance
-        }
       }
-      // should update leads here
-    })
-    return processedDataList
-  }
+      let finance = await prisma.finance.findUnique({
+        where: {
+          id: activixData.id
+        }
+      })
+      if (!finance) {
+        finance = await prisma.finance.create({
+          data: {
+
+            email: activixData.email[0],
+            firstName: activixData.first_name,
+            lastName: activixData.last_name,
+            phone: activixData.phones[0],
+            name: activixData.first_name + ' ' + activixData.last_name,
+            address: activixData.address_line1,
+            city: activixData.city,
+            province: activixData.province,
+            stockNum: activixData.vehicles[0].stock,
+            options: activixData.vehicles[0].comment,
+            accessories: activixData.vehicles[0].accessories,
+            year: activixData.vehicles[0].year,
+            brand: activixData.vehicles[0].make,
+            model: activixData.vehicles[0].model,
+            color: activixData.vehicles[0].color_exterior,
+            msrp: activixData.vehicles[0].price,
+            tradeValue: activixData.vehicles[0].value,
+            trim: activixData.vehicles[0].trim,
+            vin: activixData.vehicles[0].vin,
+          }
+        })
+        const savedActivix = await prisma.activixLead.create({
+          data: {
+            financeId: finance.id,
+            id: activixData.id,
+            account_id: activixData.account_id,
+            customer_id: activixData.customer_id,
+            source_id: activixData.source_id,
+            Integer: activixData.Integer,
+            provider_id: activixData.provider_id,
+            appointment_date: activixData.appointment_date,
+            phone_appointment_date: activixData.phone_appointment_date,
+            available_date: activixData.available_date,
+            be_back_date: activixData.be_back_date,
+            birth_date: activixData.birth_date,
+            call_date: activixData.call_date,
+            created_at: activixData.created_at,
+            csi_date: activixData.csi_date,
+            delivered_date: activixData.delivered_date,
+            deliverable_date: activixData.deliverable_date,
+            delivery_date: activixData.delivery_date,
+            home_presented_date: activixData.home_presented_date,
+            paperwork_date: activixData.paperwork_date,
+            presented_date: activixData.presented_date,
+            promised_datere: activixData.promised_datere,
+            financed_date: activixData.financed_date,
+            road_test_date: activixData.road_test_date,
+            home_road_test_date: activixData.home_road_test_date,
+            sale_date: activixData.sale_date,
+            take_over_date: activixData.take_over_date,
+            unsubscribe_all_date: activixData.unsubscribe_all_date,
+            unsubscribe_call_date: activixData.unsubscribe_call_date,
+            unsubscribe_email_date: activixData.unsubscribe_email_date,
+            unsubscribe_sms_date: activixData.unsubscribe_sms_date,
+            updated_at: activixData.updated_at,
+            address_line1: activixData.address_line1,
+            address_line2: activixData.address_line2,
+            business: activixData.business,
+            business_name: activixData.business_name,
+            campaign: activixData.campaign,
+            city: activixData.city,
+            civility: activixData.civility,
+            country: activixData.country,
+            created_method: activixData.created_method,
+            credit_approved: activixData.credit_approved,
+            dealer_tour: activixData.dealer_tour,
+            division: activixData.division,
+            financial_institution: activixData.financial_institution,
+            first_name: activixData.first_name,
+            form: activixData.form,
+            funded: activixData.funded,
+            gender: activixData.gender,
+            inspected: activixData.inspected,
+            keyword: activixData.keyword,
+            last_name: activixData.last_name,
+            locale: activixData.locale,
+            navigation_history: activixData.navigation_history,
+            postal_code: activixData.postal_code,
+            progress_state: activixData.progress_state,
+            provider: activixData.provider,
+            province: activixData.province,
+            qualification: activixData.qualification,
+            rating: activixData.rating,
+            referrer: activixData.referrer,
+            result: activixData.result,
+            search_term: activixData.search_term,
+            second_contact: activixData.second_contact,
+            second_contact_civility: activixData.second_contact_civility,
+            segment: activixData.segment,
+            source: activixData.source,
+            status: activixData.status,
+            type: activixData.type,
+            walk_around: activixData.walk_around,
+            comment: activixData.comment,
+            advisor: activixData.advisor,
+            delivered_by: activixData.delivered_by,
+            emails: activixData.emails[0],
+            emails2: activixData.emails[1],
+            phones: activixData.phones[0],
+            phones2: activixData.phones[1],
+            phones3: activixData.phones[2],
+          }
+        })
+        const dashboard = await prisma.dashboard.create({
+          financeId: finance.id,
+          customerState: activixData.result,
+          status: activixData.status
+
+        })
+        const updateFinance = await prisma.finance.update({
+          where: {
+            id: finance.id,
+          },
+          data: {
+            activixId: savedActivix.id,
+            clientfileId: clientfile.id,
+            dashboardId: dashboard.id,
+          }
+        })
+        return updateFinance
+      }
+    }
+    // should update leads here
+  }));
+
+
   const localLeads = await prisma.finance.findMany({
     where: { activixId: { equals: null } }
   });
   // Define a function to save a lead to the API
   const saveLeadToApi = async (lead) => {
     try {
-      const response = await axios.post(`https://api.crm.activix.ca/v2/leads`,
-        {
-          "first_name": lead.firstName,
-          "last_name": lead.lastName,
-          "type": "email",
-          "advisor": {
-            "first_name": "Skyler",
-            "last_name": "Zanth"
+      const response = await axios.post(`https://api.crm.activix.ca/v2/leads`, {
+        "first_name": lead.firstName,
+        "last_name": lead.lastName,
+        "type": "email",
+        "advisor": {
+          "first_name": lead.advisor.firstName,
+          "last_name": lead.advisor.lastName
+        },
+        "emails": [
+          {
+            "type": "home",
+            "address": lead.email,
+          }
+        ],
+        "phones": [
+          {
+            "number": `+1${lead.phone}`,
+            "type": "mobile"
+          }
+        ],
+        "vehicles": [
+          {
+            "make": lead.brand,
+            "model": lead.model,
+            "year": lead.year,
+            "color_exterior": lead.color,
+            "vin": lead.vin,
+            "price": lead.msrp,
+            "type": "wanted"
           },
-          "emails": [
-            {
-              "type": "home",
-              "address": lead.email,
-            }
-          ],
-          "phones": [
-            {
-              "number": `+1${lead.phone}`,
-              "type": "mobile"
-            }
-          ],
-          "vehicles": [
-            {
-              "make": lead.brand,
-              "model": lead.model,
-              "year": lead.year,
-              "color_exterior": lead.color,
-              "vin": lead.vin,
-              "price": lead.msrp,
-
-              "type": "wanted"
-            },
-            {
-              "make": lead.tradeMake,
-              "model": lead.tradeDesc,
-              "year": lead.tradeYear,
-              "vin": lead.tradeVin,
-              "color_exterior": lead.tradeColor,
-              "mileage": lead.tradeMileage,
-              "type": "exchange"
-            }
-          ]
-        }, {
+          {
+            "make": lead.tradeMake,
+            "model": lead.tradeDesc,
+            "year": lead.tradeYear,
+            "vin": lead.tradeVin,
+            "color_exterior": lead.tradeColor,
+            "mileage": lead.tradeMileage,
+            "type": "exchange"
+          }
+        ]
+      }, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         }
-      }
-      )
-        .then(response => {
-          console.log(response.data);
-          console.log('Lead saved successfully:', response.data);
-        })
-        .catch(error => {
-          console.error('Full error object:', error);
-          console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-          console.error(`Error status: ${error.response.status}`);
-          console.error('Error response:', error.response.data);
-        });
+      });
 
+      console.log(response.data);
+      console.log('Lead saved successfully:', response.data);
     } catch (error) {
-      console.error('Error saving lead:', error.message);
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
     }
   };
 
   // Loop through localLeads and save each lead to the API
-  for (const lead of localLeads) {
+  await Promise.all(localLeads.map(async (lead) => {
     await saveLeadToApi(lead);
-  }
+  }));
+  return processedDataList
 }
 export async function GetAccount() {
   const accessToken = env.API_ACTIVIX;
@@ -362,8 +364,8 @@ export async function CreateLead(formData) {
       "last_name": formData.lastName,
       "type": "email",
       "advisor": {
-        "first_name": "Skyler",
-        "last_name": "Zanth"
+        "first_name": firstName,
+        "last_name": lastName
       },
       "emails": [
         {
@@ -695,8 +697,8 @@ export async function UpdateLead(formData) {
       "last_name": formData.lastName,
       "type": "email",
       "advisor": {
-        "first_name": "Skyler",
-        "last_name": "Zanth"
+        "first_name": firstName,
+        "last_name": lastName
       },
       "emails": [
         {

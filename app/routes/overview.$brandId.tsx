@@ -85,8 +85,6 @@ export function Overview({ outletSize }) {
     destinationCharge: parseFloat(deFees.destinationCharge) || 0,
     userMarketAdj: parseFloat(deFees.userMarketAdj) || 0,
     userOther: parseFloat(deFees.userOther) || 0,
-    lien: 0,
-
     userExtWarr: parseFloat(deFees.userExtWarr) || 0,
     userServicespkg: parseFloat(deFees.userServicespkg) || 0,
     vinE: parseFloat(deFees.vinE) || 0,

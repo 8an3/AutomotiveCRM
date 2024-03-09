@@ -1,11 +1,11 @@
 import { Form, useActionData, useFetcher, useLoaderData, useNavigation } from '@remix-run/react'
-import { Separator, Button, Input, Label } from '~/components/ui/index'
+import { Separator, Button, Input, Label, Switch, Checkbox } from '~/components/ui/index'
 import { json, redirect, type ActionFunction, type DataFunctionArgstype, type MetaFunction, type LoaderFunction, } from '@remix-run/node'
 import DailySheet from '~/components/formToPrint/dailyWorkPlan'
 import { getUserById, updateUser, updateDealerFees, getDealerFeesbyEmail, getDealerFeesbyEmailAdmin } from '~/utils/user.server'
 import financeFormSchema from './overviewUtils/financeFormSchema';
 import { toast } from "sonner"
-import React from 'react';
+import React, { useState } from 'react';
 import { getMergedFinance } from '~/utils/dashloader/dashloader.server'
 import { deleteDailyPDF } from '~/utils/dailyPDF/delete.server'
 import { saveDailyWorkPlan } from '~/utils/dailyPDF/create.server'
@@ -24,18 +24,11 @@ import { model } from "~/models";
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
-  const user = await model.user.query.getForSession({ email: email });
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
+  const user = await prisma.user.findUnique({ where: { email: email } });
+  if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
-
-
   const userEmail = user?.email
   const deFees = await prisma.dealerFees.findUnique({ where: { userEmail: user.email } });
-
   const userId = user?.id
   const dataPDF = await getDailyPDF(userEmail)
   const statsData = await getMergedFinance(userEmail)
@@ -362,6 +355,13 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
   const navigation = useNavigation();
 
   const isSubmitting = navigation.state === "submitting";
+  const [activixActivated, setActivixActivated] = useState(user.activixActivated === 'yes');
+
+  const handleCheckboxChange = () => {
+    // Update the state based on the opposite value of the current state
+    setActivixActivated(!activixActivated);
+  };
+
   return (
     <Tabs defaultValue="dealerFees" className="w-[95%] mx-auto " >
 
@@ -522,10 +522,10 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2 bg-slate11 text-white">
-            <fetcher.Form method="post" className=' mt-2'>
-              <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
+            <fetcher.Form method="post" className=''>
+              <div className="grid sm:grid-cols-3 grid-cols-1  gap-2">
 
-                <div className="grid gap-2  ">
+                <div className="grid gap-2 mt-2 ">
                   <Label htmlFor="area">Name</Label>
                   <Input
                     className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
@@ -537,7 +537,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                   />
                 </div>
 
-                <div className="grid gap-2">
+                <div className="grid gap-2 mt-2">
                   <Label htmlFor="area">Phone</Label>
                   <Input
                     defaultValue={phone}
@@ -549,7 +549,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                   />
                 </div>
 
-                <div className="grid gap-2">
+                <div className="grid gap-2 mt-2">
                   <Label htmlFor="area" className=''>Email</Label>
                   <Input
                     className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
@@ -573,7 +573,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                 </div>
               </div>
               <p className="text-slate4 text-sm mt-10">
-                Dealer Information - This will only be for the contracts.
+                Dealer Information - This will only be for contracts.
               </p>
               <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
 
@@ -663,178 +663,49 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
           </CardContent>
         </Card>
 
-      </TabsContent>
-      <TabsContent value="dailyPdf" className='rounded-md'>
-        <Card>
-          <CardHeader className='bg-myColor-900'>
-            <CardTitle className='text-white'>
-              Daily PDF
-            </CardTitle>
-            <CardDescription>
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2 bg-slate11 text-white">
+        <Card className='rounded-md text-white mt-5 w-1/3'>
+          <Form method='post' >
+            <CardHeader className='bg-myColor-900'>
+              <CardTitle className='text-white'>Feature Settings</CardTitle>
+              <CardDescription className='text-white'>Manage your cookie settings here.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-6 text-white space-y-2 bg-slate11">
+              <div className="flex items-center justify-between space-x-2">
+                <Label htmlFor="necessary" className="flex flex-col space-y-1 mt-2">
+                  <span>Activix Integration</span>
+                  <span className="font-normal leading-snug text-muted-foreground">
+                    Will unlock featues and functions that will only benefit users who currently use activix. Essentially replacing activix as a crm, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers.
+                  </span>
+                </Label>
+                <input
+                  className='scale-150 p-3'
+                  type='checkbox'
+                  id='necessary'
+                  name='activixActivated'
+                  checked={activixActivated}
+                  onChange={handleCheckboxChange}
+                />
+                <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
 
-
-
-            <Form method="post">
-
-              <div className="grid  grid-cols-1 gap-12 mt-3">
-                <div>
-                  <div>
-                    <p>Guest Interactions:</p>
-                  </div>
-                  <div className='grid grid-cols-4 space-between'>
-                    <Input
-                      placeholder="Todays Goal"
-                      name="todaysGoalGuest"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Todays Actual"
-                      name="todaysActualGuest"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Difference"
-                      name="differenceGuest"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Months Goal"
-                      name="monthsGoalGuest"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <p>Test Rides:</p>
-                  </div>
-                  <div className='grid grid-cols-4'>
-
-                    <Input
-                      placeholder="Todays Goal"
-                      name="todaysGoalTestDrives"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Todays Actual"
-                      name="todaysActualTestDrives"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Difference"
-                      name="differenceTestDrives"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Months Goal"
-                      name="monthsGoalTestDrives"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <p>Write-Ups:</p>
-                  </div>
-                  <div className='grid grid-cols-4 space-between'>
-                    <Input
-                      placeholder="Todays Goal"
-                      name="todaysGoalWriteUps"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Todays Actual"
-                      name="todaysActualWriteUps"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Difference"
-                      name="differenceWriteUps"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Months Goal"
-                      name="monthsGoalWriteUps"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <p>Deliveries:</p>
-                    <div className='grid grid-cols-4 space-between'>
-
-                      <Input
-                        placeholder="Todays Goal"
-                        name="todaysGoalDeliveries"
-                        className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      <Input
-                        placeholder="Todays Actual"
-                        name="todaysActualDeliveries"
-                        className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      <Input
-                        placeholder="Difference"
-                        name="differenceDeliveries"
-                        className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      <Input
-                        placeholder="Months Goal"
-                        name="monthsGoalDeliveries"
-                        className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      <Input
-                        type='hidden'
-                        name="userEmail"
-                        defaultValue={user.email}
-                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none
-
-
-     focus:text-[#02a9ff]
-      mx-1"
-                      />
-                    </div>
-                  </div>
-
-                  <p className='mt-5'>Sales Focus and Training:</p>
-                  <p>Ask questions, select the right bike, go for the close to see where in the sales process they are at, sit on and present features and benefites, offer test drive, trial close: sit down and write up, negotiate, handle objections, obtain commitment in some way or form, turn over to finance</p>
-                  <p className='mt-5'>Sales Tasks:</p>
-                  <p>follow up with todays tasks in crm</p>
-                  <p>ensure all listings on socials are up to date</p>
-                  <p>complete appts or reschedule if they were no shows</p>
-                  <p>have sit down with SM to discuss sales oppurtunities</p>
-
-                  <Button type="submit" name='intent' value='dailyPDF' className="bg-[#02a9ff] mt-3 mb-10 w-[75px] mx-1 text-white active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all duration-150"
-                  >
-                    Save
-                  </Button>
-                  <DailySheet dataPDF={dataPDF} />
-                </div>
               </div>
-            </Form>
-
-          </CardContent>
+              <Input type='hidden' name="email" defaultValue={user.email} />
+              <Input type='hidden' name="userEmail" defaultValue={user.email} />
+            </CardContent>
+            <CardFooter className='text-white bg-slate11'>
+              <ButtonLoading
+                size="lg"
+                className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                type="submit"
+                name='intent'
+                value='activixActivated'
+                isSubmitting={isSubmitting}
+                onClick={() => toast.success(`Update complete.`)}
+                loadingText="Updating information..."
+              >
+                Update
+              </ButtonLoading>
+            </CardFooter>
+          </Form>
         </Card>
       </TabsContent>
     </Tabs >
@@ -926,6 +797,15 @@ export const action: ActionFunction = async ({ request }) => {
     return ({ savedaily, delete2 })
 
   }
+  if (intent === 'activixActivated') {
+    const userUpdate = await prisma.user.update({
+      data: {
+        activixActivated: formData.activixActivated
+      },
+      where: { email: Input.email },
+    })
+    return userUpdate
+  }
   return null
 }
 
@@ -946,8 +826,8 @@ export const meta: MetaFunction = () => {
 
 export default function Mainbody() {
   const { user, deFees, dataPDF, statsData, comsRecords } = useLoaderData()
-  const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
-
+  const userIsAllowed = getUserIsAllowed(user, ["ADMIN"]);
+  console.log(user, 'usersettings')
   return (
     <>
       <div className="flex h-[100%] w-[98vw] left-0">

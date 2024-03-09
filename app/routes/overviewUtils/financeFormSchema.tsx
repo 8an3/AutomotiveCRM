@@ -25,6 +25,7 @@ const financeFormSchema = z.object({
   financeManager: zfd.text(z.string().optional()),
   rowId: zfd.text(z.string().optional()),
   licensingSent: zfd.text(z.string().optional()),
+  activixActivated: zfd.text(z.string().optional()),
   refunded: zfd.text(z.string().optional()),
   location: zfd.text(z.string().optional()),
   locked: z.coerce.boolean(),

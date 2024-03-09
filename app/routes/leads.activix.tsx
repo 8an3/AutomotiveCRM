@@ -9,7 +9,6 @@ import EditWishList from '../components/dashboard/wishlist/WishListEdit';
 import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "../components/ui/table"
 import { type LinksFunction, type DataFunctionArgs } from '@remix-run/node';
 import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
-import { DataTable } from "../components/data-table"
 import { type dashBoardType } from "../components/dashboard/schema";
 import { DataTableColumnHeader } from "../components/dashboard/calls/header"
 import ClientCard from '../components/dashboard/calls/clientCard';
@@ -18,7 +17,7 @@ import EmailClient from '../components/dashboard/calls/emailClient';
 import ClientStatusCard from '../components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '../components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '../components/dashboard/calls/2DaysFromNow';
-import { dashboardAction, dashboardLoader } from "../components/actions/dashboardCalls";
+import { dashboardAction, dashboardLoader } from "../components/activix/dashboardCallsActivix";
 import IndeterminateCheckbox from "../components/dashboard/calls/InderterminateCheckbox"
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
 import { ListSelection2 } from './quoteUtils/listSelection'
@@ -30,7 +29,7 @@ import Logtext from "../components/dashboard/calls/logText";
 import { Badge } from "../ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "~/components/ui/dialog"
 import second from '~/styles/second.css'
-
+import { DataTable } from '~/components/activix/data-table';
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: second },
   { rel: "icon", type: "image/svg", href: '/dashboard.svg' },

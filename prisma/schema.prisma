@@ -42,6 +42,7 @@ model User {
   customerId            String?  @unique
   returning             Boolean? @default(false)
   subscriptionId        String?
+  activixActivated      String?
 
   role          UserRole           @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
   profile       UserProfile        @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
