@@ -33,6 +33,7 @@ import {
 
 } from "~/components/ui/dialog"
 import { SendEmail, TokenRegen } from "~/routes/email.server";
+import { EditorTiptapHook } from "~/components/libs/editor-tiptap";
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -186,6 +187,17 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
     //return { ok: true, getToken };
   };
 
+  const someFunction = () => {
+    onUpdate({ editor, setText, handleUpdate });
+  };
+  /**  <TextArea
+                    value={text}
+                    name="customContent"
+                    className="border-black text-black h-[300px] bg-white"
+                    placeholder="Type your message here."
+                    ref={textareaRef}
+                    onChange={(e) => setText(e.target.value)}
+                  /> */
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -255,17 +267,12 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                     <Input placeholder="bcc:" name="bccAddress" className="rounded text-black bg-white" />
                   )}
                 </div>
-                <label className="mt-3 w-[90px] text-left text-[15px] text-black" htmlFor="username">
-                  Body
-                </label>
-                <TextArea
-                  value={text}
-                  name="customContent"
-                  className="border-black text-black h-[300px] bg-white"
-                  placeholder="Type your message here."
-                  ref={textareaRef}
-                  onChange={(e) => setText(e.target.value)}
-                />
+
+
+                <EditorTiptapHook onChange={someFunction} />
+
+                <input type='hidden' defaultValue={text} name='customContent' />
+
               </div>
               <input type='hidden' value={data.firstName} name='firstName' />
               <input type='hidden' value={data.lastName} name='lastName' />

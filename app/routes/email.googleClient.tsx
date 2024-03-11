@@ -30,6 +30,7 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card"
 import axios from "axios";
+import { EditorTiptapHook, Editor } from "~/components/libs/editor-tiptap";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
@@ -235,7 +236,6 @@ export default function EmailClient() {
   const [unread, setUnread] = useState('')
   const [inbox, setInbox] = useState(emailDetails.messagesUnread)
   const [reply, setReply] = useState(false)
-  const [text, setText] = useState('');
   const [composeEmail, setComposeEmail] = useState(false);
   const [which, setWhich] = useState('');
   const [RenameFolderInput, setRenameFolderInput] = useState(false);
@@ -251,6 +251,11 @@ export default function EmailClient() {
   const [labelName, setLabelName] = useState('');
   const [openReply, setOpenReply] = useState(false)
   const [subject, setSubject] = useState('')
+
+  let content;
+  let handleUpdate;
+  const editor = Editor(content, handleUpdate)
+  const [text, setText] = useState('')
 
   const newEmails = unreadEmails.map(email => ({
     ...email,
@@ -1002,6 +1007,13 @@ export default function EmailClient() {
                           {template.title}
                         </option>
                       ))} */
+
+
+
+  const someFunction = () => {
+    onUpdate({ editor, setText, handleUpdate });
+  };
+
   return (
     <>
       <div className="!border-1 !mx-auto !bg-black flex !w-[95%] !h-[90vh] !border !border-[#3b3b3b] mt-[60px]">
@@ -1249,7 +1261,12 @@ export default function EmailClient() {
             )}
             {reply && (
               <div className="border-l mb-2 items-end justify-end rounded-md border-t border-[#3b3b3b]">
-                <Textarea value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)} className="m-2 mx-auto h-[200px] w-[98%]" placeholder="Reply to email..." />
+
+                {/*<Textarea value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)} className="m-2 mx-auto h-[200px] w-[98%]" placeholder="Reply to email..." />*/}
+                <EditorTiptapHook onChange={someFunction} />
+
+                <input type='hidden' defaultValue={text} name='body' />
+
                 <div className="mx-2 flex justify-between">
                   <div className="flex">
                     <select
@@ -1358,14 +1375,11 @@ export default function EmailClient() {
               </div>
             </div>
             <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#3b3b3b]">
-              <Textarea
-                value={text}
-                ref={textareaRef}
-                name='body'
-                onChange={(e) => setText(e.target.value)}
-                className="m-2 mx-auto h-[850px] w-[98%]"
-                placeholder="Reply to email..."
-              />
+
+              <EditorTiptapHook onChange={someFunction} />
+
+              <input type='hidden' defaultValue={text} name='body' />
+
               <div className="mx-2 flex justify-between">
                 <div className="flex">
 

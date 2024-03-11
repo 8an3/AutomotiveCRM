@@ -1453,7 +1453,7 @@ export function Example({ content, handleUpdate, }: {
                                   </BubbleMenu>
                                 </div>
                                 <br />
-                                <EditorContent editor={editor} content={content} className="mt-5 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
+                                <EditorContent editor={editor} className="mt-5 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
                                 <br />
 
 

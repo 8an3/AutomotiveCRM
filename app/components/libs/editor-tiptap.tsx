@@ -42,18 +42,9 @@ import { prisma } from "~/libs"
  * - Manage link/URL
  * - Add image
  */
-
-export function EditorTiptapHook({ content, handleUpdate, }: {
-  content?: Content | string
-  handleUpdate?: (htmlString: string) => void
-}) {
+export function Editor(content, handleUpdate) {
   const CustomDocument = Document.extend({ content: 'taskList', })
   const CustomTaskItem = TaskItem.extend({ content: 'inline*', })
-  const [text, setText] = useState('')
-  useEffect(() => {
-    const text = window.localStorage.getItem("templateEmail");
-    setText(text);
-  }, []);
   const editor = useEditor({
     content,
     extensions: [
@@ -79,7 +70,20 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
       }
     },
   })
+  return editor
+}
 
+
+export function EditorTiptapHook({ content, handleUpdate, }: {
+  content?: Content | string
+  handleUpdate?: (htmlString: string) => void
+}) {
+  const editor = Editor(content, handleUpdate)
+  const [text, setText] = useState('')
+  useEffect(() => {
+    const text = window.localStorage.getItem("templateEmail");
+    setText(text);
+  }, []);
 
   const buttonActive = cn(buttonVariants({ variant: "default", size: "xs", isIcon: true }))
   const buttonInactive = cn(buttonVariants({ variant: "ghost", size: "xs", isIcon: true }))
@@ -98,7 +102,8 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
 
     const fixedUrl = fixUrl(url)
     editor.chain().focus().extendMarkRange("link").setLink({ href: fixedUrl }).run()
-  }, [editor])
+  })
+
 
   const [financeList, setFinanceList] = useState([])
 
@@ -337,6 +342,9 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
   function handleDropdownChange(value) {
     setText(value);
   }
+
+
+
   if (!editor) return null
   return (
     <>
@@ -758,5 +766,15 @@ export function EditorTiptapContextViewHTML() {
     <article className="prose-config whitespace-pre-wrap">{parseHTML(editor.getHTML())}</article>
   )
 }
+
+export const onUpdate = ({ setText, handleUpdate }) => {
+  let content;
+  const editor = Editor(content, handleUpdate)
+  const updatedText = editor.getHTML();
+  if (handleUpdate) {
+    handleUpdate(updatedText);
+  }
+  return setText(updatedText);
+};
 
 //const contentExample = `<p> Write message here...</p>`

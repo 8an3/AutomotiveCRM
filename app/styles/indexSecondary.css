@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  overflow-x: hidden;
+  /* Set the background color to black */
+}
+
+.socials {
+  height: 98%;
+}
+
+.channelListSZ {
+  height: 100%;
+  flex-grow: 1;
+  top: 0px;
+}
+
+.tabListSZ {
+  height: 55px;
+
+}
+
+.messagesFieldSZ {
+  flex-grow: 1;
+}
+
+.textfieldSMS {
+  bottom: 0px;
+}
