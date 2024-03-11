@@ -1681,6 +1681,9 @@ export function WishList() {
   )
 }
 export function MainDashbaord() {
+  const { user, financeData } = useLoaderData()
+
+
   const [data, setPaymentData,] = useState<dashBoardType[]>([]);
   useEffect(() => {
     const data = async () => {
@@ -2588,7 +2591,7 @@ export function MainDashbaord() {
   return (
     <>
       <div className="bg-transparent text-gray-300 uppercase">
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={data} user={user} financeData={financeData} />
       </div>
     </>
   )

@@ -10,7 +10,7 @@ import { commitSession as commitPref, getSession as getPref } from "~/utils/pref
 import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
-import { CreateCommunications, CompleteTask, CreateLead, CreateTask, } from '../activix/functions';
+import { CreateCommunications, CompleteTask, CreateLead, CreateTask, } from '../../routes/api.activix';
 
 export function invariant(
   condition: any,
@@ -61,7 +61,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
 
   let createActivixLead;
   if (user.activixActivated === 'yes') {
-    createActivixLead = await CreateLead(formData)
+    createActivixLead = await CreateLead(formData, user)
     console.log(createActivixLead)
   }
 

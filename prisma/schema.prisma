@@ -4,7 +4,7 @@
 // https://github.com/planetscale/beam/blob/main/prisma/schema.prisma
 // You can visualize the schema with https://prismaliser.app
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
@@ -491,7 +491,7 @@ model Script {
   id       String  @id @default(cuid())
   name     String?
   email    String?
-  content  String? @db.LongText
+  content  String?
   category String?
   subCat   String?
 
@@ -507,7 +507,7 @@ model EmailTemplates {
   firstName   String?
   lastName    String?
   name        String?
-  body        String? @db.LongText
+  body        String?
   userEmail   String?
   category    String?
   type        String?
@@ -733,7 +733,7 @@ model CommunicationsOverview {
   financeId String?
   userId    String?
   title     String?
-  content   String?  @db.LongText
+  content   String?
   date      String?
   userName  String?
   type      String?

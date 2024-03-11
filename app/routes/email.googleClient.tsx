@@ -9,7 +9,7 @@ import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, Select
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { DataFunctionArgs, json, redirect, type LoaderFunction, createCookie, LinksFunction } from '@remix-run/node';
 import { model } from "~/models";
-import { Outlet, useLoaderData, useNavigation, Form } from '@remix-run/react';
+import { Outlet, useLoaderData, useNavigation, Form, useLocation } from '@remix-run/react';
 import { prisma } from "~/libs";
 import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, } from "~/components/ui/context-menu"
 import { Dialog as Dialog1, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "~/components/ui/dialog"
@@ -36,6 +36,7 @@ export const links: LinksFunction = () => [
 ];
 
 export async function loader({ params, request }: DataFunctionArgs) {
+  console.log(request.headers.get(), ' heade5ras')
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   const user = await model.user.query.getForSession({ email: email });
@@ -935,6 +936,11 @@ export default function EmailClient() {
     fetchAndRenderEmails();
   }, [label]);
 
+  const host = useLocation();
+  console.log(host, 'ijhvbjhvj')
+
+
+
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
   const MyIFrameComponent = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -948,10 +954,15 @@ export default function EmailClient() {
           }
         }
       };
+      const currentHost = typeof window !== 'undefined' ? window.location.host : null;
 
       if (iFrameRef.current) {
-        // iFrameRef.current.src = 'http://localhost:3000/body';
-        iFrameRef.current.src = 'https://www.dealersalesassistant.ca/body';
+        if (currentHost === 'localhost:3000') {
+          iFrameRef.current.src = 'http://localhost:3000/body';
+        }
+        if (currentHost === 'dealersalesassistant.ca') {
+          iFrameRef.current.src = 'https://www.dealersalesassistant.ca/body';
+        }
         window.addEventListener('message', handleHeightMessage);
       }
 

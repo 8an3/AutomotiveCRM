@@ -858,6 +858,14 @@ export default function Mainbody() {
               Change Password
             </Button>
           </RemixNavLink>
+          <RemixNavLink to={`/docs`}>
+            <Button
+              variant="link"
+              className="w-full justify-start cursor-pointer text-white"
+            >
+              Docs
+            </Button>
+          </RemixNavLink>
           <RemixNavLink to={`/logout`}>
             <Button variant="link" className="w-full justify-start cursor-pointer text-white" >
               Log out

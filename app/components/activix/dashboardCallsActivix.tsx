@@ -27,7 +27,7 @@ import { google } from 'googleapis';
 import oauth2Client, { SendEmail, } from "~/routes/email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
-import { CreateCommunications, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData } from "./functions";
+import { CreateCommunications, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData } from "../../routes/api.activix";
 import { QuoteServer } from '~/utils/quote/quote.server';
 import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
 
@@ -153,7 +153,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
   } else { console.log('Authorized'); }
 
-
+  const financeData = await prisma.finance.findMany({ where: { userEmail: userEmail } });
   if (brand === "Manitou") {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(user.email);
@@ -271,6 +271,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     return json({
       ok: true,
       modelData,
+      financeData,
       finance,
       deFees,
       sliderWidth,
@@ -306,6 +307,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         financeNewLead,
         getWishList,
         notifications,
+        financeData,
         webLeadData,
         refreshToken, tokens, request
 
@@ -328,6 +330,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       notifications,
       webLeadData,
+      financeData,
       refreshToken, tokens, request
     });
   }

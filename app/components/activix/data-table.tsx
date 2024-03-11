@@ -22,7 +22,8 @@ import {
 import { env } from 'process';
 import axios from 'axios';
 import { ButtonLoading } from "~/components/ui/button-loading";
-import { SyncLeadData } from "./functions";
+import { SyncLeadData } from "../../routes/api.activix";
+import { prisma } from "~/libs/prisma.server";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,12 +31,7 @@ interface DataTableProps<TData, TValue> {
   dashData: TData[];
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-
-}: DataTableProps<TData, TValue>) {
-
+export function DataTable<TData, TValue>({ columns, data, user, financeData }: DataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
       id: false,
@@ -485,10 +481,13 @@ export function DataTable<TData, TValue>({
   async function syncData() {
     // save data/ sync data,  no one shuold be calling your leads anyways and update when needed
     // then move towards a ping as much as you can style of api call when dealing with the client file
-    await SyncLeadData()
-    console.log(SyncLeadData)
+    await SyncLeadData(user, financeData)
+
   }
   //defaultValue={todayfilterBy}>
+
+
+
   return (
 
     <div className="mb-[20px]  even:bg-myColor-900  rounded overflow-x-hidden   justify-center">
