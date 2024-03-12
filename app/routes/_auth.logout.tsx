@@ -11,16 +11,16 @@ import { model } from '../models'
 export async function action({ request }: ActionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
 
-  if (!session) { return json({ status: 302, redirect: '/login' }); };
+  if (!session) { return json({ status: 302, redirect: '/' }); };
 
-  if (!session) { return redirect('/login') }
+  if (!session) { return redirect('/') }
   const email = session.get("email")
   const user = await model.user.query.getForSession({ email: email });
   if (!user) {
-    return json({ status: 302, redirect: '/login' })
+    return json({ status: 302, redirect: '/' })
   }
   else {
-    return redirect('/emails', {
+    return redirect('/', {
       headers: {
         "Set-Cookie": await destroySession(session),
       },
@@ -34,9 +34,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const user = await model.user.query.getForSession({ email: email });
   if (!user) {
-    return redirect('/login')
+    return redirect('/')
   } else {
-    return redirect('/emails', {
+    return redirect('/', {
       headers: {
         "Set-Cookie": await destroySession(session),
       },
