@@ -23,7 +23,7 @@ import Parts from './images/parts.png'
 import Quoeimage from '../../images/quote.png'
 import { useRootLoaderData } from "~/hooks";
 import Indexvideo from './images/proof40secs.mp4'
-import { Input, Button, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, Label, Separator, Badge, } from "~/components/ui/index"
+import { Input, Button, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, Label, Separator, Badge, RemixNavLinkText, } from "~/components/ui/index"
 import index from '~/styles/index.css'
 import {
   Carousel,
@@ -808,6 +808,33 @@ function NewSection() {
           </Tabs>
         </>
       )}
+    </>
+  )
+}
+function footer() {
+  return (
+    <>
+      <div className="mt-[100px]">
+        <div className='bg-slate11 text-white'>
+          <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
+            <RemixNavLinkText to='/'>
+              <p>Home</p>
+            </RemixNavLinkText>
+            <RemixNavLinkText to='/roadmap'>
+              <p>Roadmap</p>
+            </RemixNavLinkText>
+            <Link to='/crm'>
+              <p>CRM</p>
+            </Link>
+            <Link to='/contact'>
+              <p>Contact</p>
+            </Link>
+            <Link to='/privacy'>
+              <p>Privacy Policy</p>
+            </Link>
+          </div>
+        </div>
+      </div>
     </>
   )
 }

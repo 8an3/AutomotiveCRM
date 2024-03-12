@@ -2,7 +2,7 @@ export default function Privacy() {
   return (
     <div className="text-black text-center w-1/2 mt-[100px] text-center mx-auto">
       <p>
-        Website Privacy Policy Template
+        Website Privacy Policy
 
       </p>
       <br />
