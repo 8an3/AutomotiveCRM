@@ -1122,27 +1122,69 @@ export async function UpdateLead(formData,) {
   return response
 
 }
-export async function UpdateLeadClientCard(formData,) {
+export async function UpdateLeadBasic(formData) {
   const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
   const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
 
-  const response = await axios.put(`https://api.crm.activix.ca/v2/leads/${activixId.activixId}`,
+  const response = await axios.put(`https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
     {
       "first_name": formData.firstName,
       "last_name": formData.lastName,
       "type": "email",
-      "emails": [
-        {
-          "type": "home",
-          "address": formData.email,
-        }
-      ],
-      "phones": [
-        {
-          "number": `+1${formData.phone}`,
-          "type": "mobile"
-        }
-      ],
+
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  }
+  ).then(response => { console.log(response.data); }).catch(error => {
+    console.error('Full error object:', error);
+    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+    console.error(`Error status: ${error.response.status}`);
+    console.error('Error response:', error.response.data);
+  });
+
+  const emails = await axios.put(`https://api.crm.activix.ca/v2/lead-emails/${formData.activixId}`,
+    {
+      "type": "home",
+      "address": formData.email,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    }
+  ).then(response => { console.log(response.data); }).catch(error => {
+    console.error('Full error object:', error);
+    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+    console.error(`Error status: ${error.response.status}`);
+    console.error('Error response:', error.response.data);
+  });
+
+  const phones = await axios.put(`https://api.crm.activix.ca/v2/lead-phones/${formData.activixId}`,
+    {
+      "number": `+1${formData.phone}`,
+      "type": "mobile"
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  }
+  ).then(response => { console.log(response.data); }).catch(error => {
+    console.error('Full error object:', error);
+    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+    console.error(`Error status: ${error.response.status}`);
+    console.error('Error response:', error.response.data);
+  });
+
+  const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${formData.activixId}`,
+    {
       "vehicles": [
         {
           "make": formData.brand,
@@ -1154,15 +1196,6 @@ export async function UpdateLeadClientCard(formData,) {
 
           "type": "wanted"
         },
-        {
-          "make": formData.tradeMake,
-          "model": formData.tradeDesc,
-          "year": formData.tradeYear,
-          "vin": formData.tradeVin,
-          "color_exterior": formData.tradeColor,
-          "mileage": formData.tradeMileage,
-          "type": "exchange"
-        }
       ]
     }, {
     headers: {
@@ -1171,24 +1204,24 @@ export async function UpdateLeadClientCard(formData,) {
       'Authorization': `Bearer ${accessToken}`,
     }
   }
-  ).then(response => {
-    console.log(response.data);
-  })
-    .catch(error => {
-      console.error('Full error object:', error);
-      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-      console.error(`Error status: ${error.response.status}`);
-      console.error('Error response:', error.response.data);
-    });
+  ).then(response => { console.log(response.data); }).catch(error => {
+    console.error('Full error object:', error);
+    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+    console.error(`Error status: ${error.response.status}`);
+    console.error('Error response:', error.response.data);
+  });
 
-  const emails = await axios.put(`https://api.crm.activix.ca/v2/leads/${activixId.activixId}`,
+  return response
+
+}
+export async function UpdateLeadPhone(formData) {
+  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+
+  const phones = await axios.put(`https://api.crm.activix.ca/v2/lead-phones/${formData.activixId}`,
     {
-      "emails": [
-        {
-          "type": "home",
-          "address": formData.email,
-        }
-      ],
+      "number": `+1${formData.phone}`,
+      "type": "mobile"
     }, {
     headers: {
       'Content-Type': 'application/json',
@@ -1196,18 +1229,103 @@ export async function UpdateLeadClientCard(formData,) {
       'Authorization': `Bearer ${accessToken}`,
     }
   }
-  ).then(response => {
-    console.log(response.data);
-  })
-    .catch(error => {
-      console.error('Full error object:', error);
-      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-      console.error(`Error status: ${error.response.status}`);
-      console.error('Error response:', error.response.data);
-    });
+  ).then(response => { console.log(response.data); }).catch(error => {
+    console.error('Full error object:', error);
+    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+    console.error(`Error status: ${error.response.status}`);
+    console.error('Error response:', error.response.data);
+  });
+  return phones
+
+}
+export async function UpdateLeademail(formData) {
+  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
 
 
-  return response
+  const emails = await axios.put(`https://api.crm.activix.ca/v2/lead-emails/${formData.activixId}`,
+    {
+      "type": "home",
+      "address": formData.email,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    }
+  ).then(response => { console.log(response.data); }).catch(error => {
+    console.error('Full error object:', error);
+    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+    console.error(`Error status: ${error.response.status}`);
+    console.error('Error response:', error.response.data);
+  });
+
+
+  return emails
+
+}
+export async function UpdateLeadWantedVeh(formData) {
+  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+
+
+  const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${formData.activixId}`,
+    {
+      "make": formData.brand,
+      "model": formData.model,
+      "year": formData.year,
+      "color_exterior": formData.color,
+      "vin": formData.vin,
+      "price": formData.msrp,
+      "type": "wanted"
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  }
+  ).then(response => { console.log(response.data); }).catch(error => {
+    console.error('Full error object:', error);
+    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+    console.error(`Error status: ${error.response.status}`);
+    console.error('Error response:', error.response.data);
+  });
+
+  return vehicles
+
+}
+export async function UpdateLeadEchangeVeh(formData) {
+  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+
+
+  const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${formData.activixId}`,
+    {
+      "make": formData.brand,
+      "model": formData.model,
+      "year": formData.year,
+      "color_exterior": formData.color,
+      "vin": formData.vin,
+      "price": formData.msrp,
+      "type": "wanted"
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  }
+  ).then(response => { console.log(response.data); }).catch(error => {
+    console.error('Full error object:', error);
+    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+    console.error(`Error status: ${error.response.status}`);
+    console.error('Error response:', error.response.data);
+  });
+
+  return vehicles
 
 }
 export async function CreateCommunications(formData) {

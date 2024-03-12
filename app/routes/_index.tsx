@@ -819,6 +819,7 @@ function Footer() {
       <div className="mt-[100px] ">
         <div className='bg-slate11 text-white'>
           <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
+            <p>Dealer Sales Assistant</p>
           </div>
 
           <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
