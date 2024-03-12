@@ -10,6 +10,9 @@ import { toast } from "sonner"
 
 
 const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+
+
+
 // need update vehicle and need to add vehicle id to my db for reference qwhen updating
 export async function UpdateFinanceRecord(activixData, finance) {
 
@@ -703,94 +706,26 @@ export async function CreateVehicle(body) {
 
   return response
 }
-export async function CreateLead(formData, user) {
-  const accessToken = process.env.API_ACTIVIX;
+export async function CreateLead(formData, user, createQuoteServer) {
+  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+
   const nameParts = user.username.split(' ');
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(' ');
-  const response = await axios.post(`https://api.crm.activix.ca/v2/leads`,
-    {
-      "first_name": formData.firstName,
-      "last_name": formData.lastName,
-      "type": "email",
-      "advisor": {
-        "first_name": firstName,
-        "last_name": lastName
-      },
-      "emails": [
-        {
-          "type": "home",
-          "address": formData.email,
-        }
-      ],
-      "phones": [
-        {
-          "number": `+1${formData.phone}`,
-          "type": "mobile"
-        }
-      ],
-      "vehicles": [
-        {
-          "make": formData.brand,
-          "model": formData.model,
-          "year": formData.year,
-          "color_exterior": formData.color,
-          "vin": formData.vin,
-          "price": formData.msrp,
 
-          "type": "wanted"
-        },
-        {
-          "make": formData.tradeMake,
-          "model": formData.tradeDesc,
-          "year": formData.tradeYear,
-          "vin": formData.tradeVin,
-          "color_exterior": formData.tradeColor,
-          "mileage": formData.tradeMileage,
-          "type": "exchange"
-        }
-      ]
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  }
-  )
-    .then(response => {
-      console.log(response.data);
-      const data = response.data
-      async function CreateActvix() {
-        let clientFile = await prisma.clientfile.findUnique({ where: { email: formData.email } })
-        if (!clientFile) {
-          clientFile = await prisma.clientfile.create({
-            data: {
-              financeId: formData.financeId,
-              userId: formData.userId,
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-              name: formData.name,
-              email: formData.email,
-              phone: formData.phone,
-              address: formData.address,
-              city: formData.city,
-              postal: formData.postal,
-              province: formData.province,
-              dl: formData.dl,
-              typeOfContact: formData.typeOfContact,
-              timeToContact: formData.timeToContact,
-            }
-          })
-          return clientFile
-        } else { return clientFile }
-        const financeData = await prisma.finance.create({
+  async function CreateActvix(formData) {
+    try {
+      let clientFile = await prisma.clientfile.findUnique({ where: { email: formData.email } })
+      if (!clientFile) {
+        clientFile = await prisma.clientfile.create({
           data: {
-            email: formData.email,
+            financeId: formData.financeId,
+            userId: formData.userId,
             firstName: formData.firstName,
             lastName: formData.lastName,
-            phone: formData.phone,
             name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
             address: formData.address,
             city: formData.city,
             postal: formData.postal,
@@ -798,308 +733,12 @@ export async function CreateLead(formData, user) {
             dl: formData.dl,
             typeOfContact: formData.typeOfContact,
             timeToContact: formData.timeToContact,
-            iRate: formData.iRate,
-            months: formData.months,
-            discount: formData.discount,
-            total: formData.total,
-            onTax: formData.onTax,
-            on60: formData.on60,
-            biweekly: formData.biweekly,
-            weekly: formData.weekly,
-            weeklyOth: formData.weeklyOth,
-            biweekOth: formData.biweekOth,
-            oth60: formData.oth60,
-            weeklyqc: formData.weeklyqc,
-            biweeklyqc: formData.biweeklyqc,
-            qc60: formData.qc60,
-            deposit: formData.deposit,
-            biweeklNatWOptions: formData.biweeklNatWOptions,
-            weeklylNatWOptions: formData.weeklylNatWOptions,
-            nat60WOptions: formData.nat60WOptions,
-            weeklyOthWOptions: formData.weeklyOthWOptions,
-            biweekOthWOptions: formData.biweekOthWOptions,
-            oth60WOptions: formData.oth60WOptions,
-            biweeklNat: formData.biweeklNat,
-            weeklylNat: formData.weeklylNat,
-            nat60: formData.nat60,
-            qcTax: formData.qcTax,
-            otherTax: formData.otherTax,
-            totalWithOptions: formData.totalWithOptions,
-            otherTaxWithOptions: formData.otherTaxWithOptions,
-            desiredPayments: formData.desiredPayments,
-            freight: formData.freight,
-            admin: formData.admin,
-            commodity: formData.commodity,
-            pdi: formData.pdi,
-            discountPer: formData.discountPer,
-            userLoanProt: formData.userLoanProt,
-            userTireandRim: formData.userTireandRim,
-            userGap: formData.userGap,
-            userExtWarr: formData.userExtWarr,
-            userServicespkg: formData.userServicespkg,
-            deliveryCharge: formData.deliveryCharge,
-            vinE: formData.vinE,
-            lifeDisability: formData.lifeDisability,
-            rustProofing: formData.rustProofing,
-            userOther: formData.userOther,
-            paintPrem: formData.paintPrem,
-            licensing: formData.licensing,
-            stockNum: formData.stockNum,
-            options: formData.options,
-            accessories: formData.accessories,
-            labour: formData.labour,
-            year: formData.year,
-            brand: formData.brand,
-            model: formData.model,
-            model1: formData.model1,
-            color: formData.color,
-            modelCode: formData.modelCode,
-            msrp: formData.msrp,
-            userEmail: formData.userEmail,
-            tradeValue: formData.tradeValue,
-            tradeDesc: formData.tradeDesc,
-            tradeColor: formData.tradeColor,
-            tradeYear: formData.tradeYear,
-            tradeMake: formData.tradeMake,
-            tradeVin: formData.tradeVin,
-            tradeTrim: formData.tradeTrim,
-            tradeMileage: formData.tradeMileage,
-            trim: formData.trim,
-            vin: formData.vin,
           }
         })
-        const dashboardData = await prisma.dashboard.create({
-          data: {
-            userEmail: formData.userEmail,
-            referral: formData.referral,
-            visited: formData.visited,
-            bookedApt: formData.bookedApt,
-            aptShowed: formData.aptShowed,
-            aptNoShowed: formData.aptNoShowed,
-            testDrive: formData.testDrive,
-            metService: formData.metService,
-            metManager: formData.metManager,
-            metParts: formData.metParts,
-            sold: formData.sold,
-            depositMade: formData.depositMade,
-            refund: formData.refund,
-            turnOver: formData.turnOver,
-            financeApp: formData.financeApp,
-            approved: formData.approved,
-            signed: formData.signed,
-            pickUpSet: formData.pickUpSet,
-            demoed: formData.demoed,
-            delivered: formData.delivered,
-            status: 'Active',
-            customerState: 'Attempted',
-            result: formData.result,
-            timesContacted: formData.timesContacted,
-            nextAppointment: formData.nextAppointment,
-            completeCall: formData.completeCall,
-            followUpDay: formData.followUpDay,
-            state: formData.state,
-            deliveredDate: formData.deliveredDate,
-            notes: formData.notes,
-            visits: formData.visits,
-            progress: formData.progress,
-            metSalesperson: formData.metSalesperson,
-            metFinance: formData.metFinance,
-            financeApplication: formData.financeApplication,
-            pickUpDate: pickUpDate,
-            pickUpTime: formData.pickUpTime,
-            depositTakenDate: formData.depositTakenDate,
-            docsSigned: formData.docsSigned,
-            tradeRepairs: formData.tradeRepairs,
-            seenTrade: formData.seenTrade,
-            lastNote: formData.lastNote,
-            dLCopy: formData.dLCopy,
-            insCopy: formData.insCopy,
-            testDrForm: formData.testDrForm,
-            voidChq: formData.voidChq,
-            loanOther: formData.loanOther,
-            signBill: formData.signBill,
-            ucda: formData.ucda,
-            tradeInsp: formData.tradeInsp,
-            customerWS: formData.customerWS,
-            otherDocs: formData.otherDocs,
-            urgentFinanceNote: formData.urgentFinanceNote,
-            funded: formData.funded,
-            countsInPerson: formData.countsInPerson,
-            countsPhone: formData.countsPhone,
-            countsSMS: formData.countsSMS,
-            countsOther: formData.countsOther,
-            countsEmail: formData.countsEmail,
-          }
-        })
-        const activixData = await prisma.activixLead.create({
-          data: {
-            id: data.id,
-            account_id: data.account_id,
-            customer_id: data.customer_id,
-            appointment_date: data.appointment_date,
-            phone_appointment_date: data.phone_appointment_date,
-            available_date: data.available_date,
-            be_back_date: data.be_back_date,
-            call_date: data.call_date,
-            created_at: data.created_at,
-            csi_date: data.csi_date,
-            delivered_date: data.delivered_date,
-            deliverable_date: data.deliverable_date,
-            delivery_date: data.delivery_date,
-            paperwork_date: data.paperwork_date,
-            presented_date: data.presented_date,
-            promised_date: data.promised_datere,
-            financed_date: data.financed_date,
-            road_test_date: data.road_test_date,
-            home_road_test_date: data.home_road_test_date,
-            sale_date: data.sale_date,
-            updated_at: data.updated_at,
-            address_line1: formData.address,
-            city: formData.city,
-            civility: data.civility,
-            country: data.country,
-            credit_approved: data.credit_approved,
-            dealer_tour: data.dealer_tour,
-            financial_institution: data.financial_institution,
-            first_name: formData.firstName,
-            funded: data.funded,
-            inspected: data.inspected,
-            last_name: formData.lastName,
-            postal_code: formData.postal,
-            province: formData.province,
-            result: formData.result,
-            status: formData.status,
-            type: data.type,
-            walk_around: data.walk_around,
-            comment: data.comment,
-            delivered_by: data.delivered_by,
-            emails: formData.email,
-            phones: formData.phone,
-            financeId: formData.financeId,
-            userEmail: formData.userEmail,
 
-            /**home_presented_date: data.home_presented_date,
-             birth_date: data.birth_date,
-             source_id: data.source_id,
-             Integer: data.Integer,
-             provider_id: data.provider_id,
-             unsubscribe_all_date: data.unsubscribe_all_date,
-             unsubscribe_call_date: data.unsubscribe_call_date,
-             unsubscribe_email_date: data.unsubscribe_email_date,
-             unsubscribe_sms_date: data.unsubscribe_sms_date,
-             advisor: data.advisor,
-             take_over_date: data.take_over_date,
-             search_term: data.search_term,
-             gender: data.gender,
-             form: data.form,
-             division: data.division,
-             created_method: data.created_method,
-             campaign: data.campaign,
-             address_line2: data.address_line2,
-             business: data.business,
-             business_name: data.business_name,
-             second_contact: data.second_contact,
-             second_contact_civility: data.second_contact_civility,
-             segment: data.segment,
-             source: data.source,
-             qualification: data.qualification,
-             rating: data.rating,
-             referrer: data.referrer,
-             provider: data.provider,
-             progress_state: data.progress_state,
-             locale: data.locale,
-             navigation_history: data.navigation_history,
-             keyword: data.keyword,*/
-
-
-
-          }
-        })
-        const updateFinance = await prisma.finance.update({
-          where: { id: financeData.id, },
-          data: {
-            financeId: financeData.id,
-            dashboardId: dashboardData.id,
-            activixId: activixData.id,
-            clientfileId: clientFile.id,
-          }
-        })
-        return updateFinance
       }
-      CreateActvix()
-
-    })
-    .catch(error => {
-      console.error('Full error object:', error);
-      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-      console.error(`Error status: ${error.response.status}`);
-      console.error('Error response:', error.response.data);
-    });
-
-
-  return response
-
-}
-export async function UpdateLead(formData) {
-  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-  const endpoint = 'leads'
-  const accessToken = process.env.API_ACTIVIX;
-  const response = await axios.put(`https://api.crm.activix.ca/v2/${endpoint}/${activixId.activixId}`,
-    {
-      "first_name": formData.firstName,
-      "last_name": formData.lastName,
-      "type": "email",
-      "advisor": {
-        "first_name": firstName,
-        "last_name": lastName
-      },
-      "emails": [
-        {
-          "type": "home",
-          "address": formData.email,
-        }
-      ],
-      "phones": [
-        {
-          "number": `+1${formData.phone}`,
-          "type": "mobile"
-        }
-      ],
-      "vehicles": [
-        {
-          "make": formData.brand,
-          "model": formData.model,
-          "year": formData.year,
-          "color_exterior": formData.color,
-          "vin": formData.vin,
-          "price": formData.msrp,
-
-          "type": "wanted"
-        },
-        {
-          "make": formData.tradeMake,
-          "model": formData.tradeDesc,
-          "year": formData.tradeYear,
-          "vin": formData.tradeVin,
-          "color_exterior": formData.tradeColor,
-          "mileage": formData.tradeMileage,
-          "type": "exchange"
-        }
-      ]
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  }
-  ).then(response => {
-    console.log(response.data);
-    const data = response.data
-    async function CreateActvix() {
-
       const financeData = await prisma.finance.update({
-        where: { id: formData.financeId },
+        where: { id: createQuoteServer.finance.id },
         data: {
           email: formData.email,
           firstName: formData.firstName,
@@ -1184,7 +823,7 @@ export async function UpdateLead(formData) {
         }
       })
       const dashboardData = await prisma.dashboard.update({
-        where: { id: formData.financeId },
+        where: { id: createQuoteServer.dashboard.id },
         data: {
           userEmail: formData.userEmail,
           referral: formData.referral,
@@ -1206,8 +845,8 @@ export async function UpdateLead(formData) {
           pickUpSet: formData.pickUpSet,
           demoed: formData.demoed,
           delivered: formData.delivered,
-          status: formData.status,
-          customerState: formData.customerState,
+          status: 'Active',
+          customerState: 'Attempted',
           result: formData.result,
           timesContacted: formData.timesContacted,
           nextAppointment: formData.nextAppointment,
@@ -1248,9 +887,8 @@ export async function UpdateLead(formData) {
         }
       })
       const activixData = await prisma.activixLead.create({
-        where: { id: financeData.activixId },
         data: {
-          id: data.id,
+          activixId: data.id,
           account_id: data.account_id,
           customer_id: data.customer_id,
           appointment_date: data.appointment_date,
@@ -1265,7 +903,7 @@ export async function UpdateLead(formData) {
           delivery_date: data.delivery_date,
           paperwork_date: data.paperwork_date,
           presented_date: data.presented_date,
-          promised_date: data.promised_date,
+          promised_date: data.promised_datere,
           financed_date: data.financed_date,
           road_test_date: data.road_test_date,
           home_road_test_date: data.home_road_test_date,
@@ -1293,7 +931,7 @@ export async function UpdateLead(formData) {
           emails: formData.email,
           phones: formData.phone,
           financeId: formData.financeId,
-          userEmail: formData.userEmail,
+          userEmail: user.email,
 
           /**home_presented_date: data.home_presented_date,
            birth_date: data.birth_date,
@@ -1332,19 +970,234 @@ export async function UpdateLead(formData) {
 
         }
       })
-      const updateFinance = await prisma.finance.update({
-        where: { id: financeData.id, },
-        data: {
-          financeId: financeData.id,
-          dashboardId: dashboardData.id,
-          activixId: activixData.id,
-          clientfileId: clientFile.id,
-        }
-      })
-      return updateFinance
-    }
-    CreateActvix()
 
+
+
+      // Returning the relevant data
+      return { financeData, activixData, dashboardData };
+    } catch (error) {
+      // Handle errors here
+      console.error(error);
+      throw error; // rethrow the error for handling at a higher level if needed
+    }
+  }
+
+  const response = await axios.post(`https://api.crm.activix.ca/v2/leads`,
+    {
+      "first_name": formData.firstName,
+      "last_name": formData.lastName,
+      "type": "email",
+      "advisor": {
+        "first_name": firstName,
+        "last_name": lastName
+      },
+      "emails": [
+        {
+          "type": "home",
+          "address": formData.email,
+        }
+      ],
+      "phones": [
+        {
+          "number": `+1${formData.phone}`,
+          "type": "mobile"
+        }
+      ],
+      "vehicles": [
+        {
+          "make": formData.brand,
+          "model": formData.model,
+          "year": formData.year,
+          "color_exterior": formData.color,
+          "vin": formData.vin,
+          "price": formData.msrp,
+
+          "type": "wanted"
+        },
+        {
+          "make": formData.tradeMake,
+          "model": formData.tradeDesc,
+          "year": formData.tradeYear,
+          "vin": formData.tradeVin,
+          "color_exterior": formData.tradeColor,
+          "mileage": formData.tradeMileage,
+          "type": "exchange"
+        }
+      ]
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  }
+  )
+    .then(response => {
+      console.log(response.data);
+      const data = response.data
+      console.log(data.id, 'api activix add custoemr')
+      async function CreateActvix3() {
+        const result = await CreateActvix(formData);
+        const updateActivix = await prisma.activixLead.update({
+          where: { id: result.activixData.id },
+          data: {
+            activixId: result.activixData.id,
+          }
+        })
+        return updateActivix
+      }
+      CreateActvix3()
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
+
+  console.log(response, 'response')
+  return response
+
+}
+export async function UpdateLead(formData,) {
+  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+
+  const response = await axios.put(`https://api.crm.activix.ca/v2/leads/${activixId.activixId}`,
+    {
+      "first_name": formData.firstName,
+      "last_name": formData.lastName,
+      "type": "email",
+      "emails": [
+        {
+          "type": "home",
+          "address": formData.email,
+        }
+      ],
+      "phones": [
+        {
+          "number": `+1${formData.phone}`,
+          "type": "mobile"
+        }
+      ],
+      "vehicles": [
+        {
+          "make": formData.brand,
+          "model": formData.model,
+          "year": formData.year,
+          "color_exterior": formData.color,
+          "vin": formData.vin,
+          "price": formData.msrp,
+
+          "type": "wanted"
+        },
+        {
+          "make": formData.tradeMake,
+          "model": formData.tradeDesc,
+          "year": formData.tradeYear,
+          "vin": formData.tradeVin,
+          "color_exterior": formData.tradeColor,
+          "mileage": formData.tradeMileage,
+          "type": "exchange"
+        }
+      ]
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  }
+  ).then(response => {
+    console.log(response.data);
+  })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
+
+
+  return response
+
+}
+export async function UpdateLeadClientCard(formData,) {
+  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+
+  const response = await axios.put(`https://api.crm.activix.ca/v2/leads/${activixId.activixId}`,
+    {
+      "first_name": formData.firstName,
+      "last_name": formData.lastName,
+      "type": "email",
+      "emails": [
+        {
+          "type": "home",
+          "address": formData.email,
+        }
+      ],
+      "phones": [
+        {
+          "number": `+1${formData.phone}`,
+          "type": "mobile"
+        }
+      ],
+      "vehicles": [
+        {
+          "make": formData.brand,
+          "model": formData.model,
+          "year": formData.year,
+          "color_exterior": formData.color,
+          "vin": formData.vin,
+          "price": formData.msrp,
+
+          "type": "wanted"
+        },
+        {
+          "make": formData.tradeMake,
+          "model": formData.tradeDesc,
+          "year": formData.tradeYear,
+          "vin": formData.tradeVin,
+          "color_exterior": formData.tradeColor,
+          "mileage": formData.tradeMileage,
+          "type": "exchange"
+        }
+      ]
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  }
+  ).then(response => {
+    console.log(response.data);
+  })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
+
+  const emails = await axios.put(`https://api.crm.activix.ca/v2/leads/${activixId.activixId}`,
+    {
+      "emails": [
+        {
+          "type": "home",
+          "address": formData.email,
+        }
+      ],
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  }
+  ).then(response => {
+    console.log(response.data);
   })
     .catch(error => {
       console.error('Full error object:', error);

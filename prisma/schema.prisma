@@ -1290,7 +1290,10 @@ model BmwMotoOptions2 {
 // aactivix records
 // -----------------------------------------------------------------------------
 model ActivixLead {
-  id                      String  @id @unique
+  id                      String   @id @default(cuid())
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  actvixId                String?
   account_id              String?
   customer_id             String?
   source_id               String?

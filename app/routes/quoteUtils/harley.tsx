@@ -1,5 +1,5 @@
 export const HarleyList = () => (
-    <datalist id="ListOptions">
+    <datalist id="ListOptions2">
         <option value="model" />
         <option value="Nightster - Vivid Black - RH975" />
         <option value="Nightster - Color - RH975" />
@@ -91,4 +91,4 @@ export const HarleyList = () => (
         <option value="Tri Glide Ultra Ann  - Base - FLHTCUTG" />
 
     </datalist>
-    )
+)

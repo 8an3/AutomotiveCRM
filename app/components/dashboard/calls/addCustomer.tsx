@@ -18,7 +18,7 @@ import {
   Popover,
   TextArea,
 } from "~/components/ui/index";
-import { useLoaderData, Form, useFetcher, useActionData } from "@remix-run/react";
+import { useLoaderData, Form, useFetcher, useActionData, } from "@remix-run/react";
 import {
   PhoneOutcome,
   MenuScale,
@@ -65,7 +65,8 @@ export default function AddCustomer() {
     setBrandId(e.target.value);
   };
   const errors = useActionData() as Record<string, string | null>;
-
+  const fetcher = useFetcher()
+  const data = useActionData()
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -80,7 +81,8 @@ export default function AddCustomer() {
           </DialogTitle>
 
         </DialogHeader>
-        <Form method="post">
+        <p>{brandId}</p>
+        <fetcher.Form method="post">
           <div className="flex flex-col ">
             <Input
               placeholder="First Name (required)"
@@ -139,11 +141,7 @@ export default function AddCustomer() {
               <option value="Spyder" />
               <option value="Yamaha" />
             </datalist>
-            <Input className=" mt-3 " placeholder="Model" type="text" list="ListOptions" name="model" />
-            <ListSelection2 brandId={brandId} />
-            {errors?.model ? (
-              <em className="text-[#ff0202]">{errors.model}</em>
-            ) : null}
+
           </div>
           <Input type="hidden" name="iRate" defaultValue={10.99} />
           <Input type="hidden" name="tradeValue" defaultValue={0} />
@@ -176,7 +174,7 @@ export default function AddCustomer() {
               <WebWindowClose />
             </button>
           </DialogClose>
-        </Form>
+        </fetcher.Form>
       </DialogContent>
     </Dialog>
   );

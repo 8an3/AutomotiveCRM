@@ -26,7 +26,6 @@ export async function QuoteServer(
         clientFileId,
         "ClientFile record already exists. Skipping creation."
       );
-      clientFileId = newClientFile.id;
       console.log(clientFileId, "ClientFile record created successfully");
       const finance = await prisma.finance.create({
         data: financeData,

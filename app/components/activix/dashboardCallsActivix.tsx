@@ -681,6 +681,66 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     })
     return isRead
   }
+  if (intent === "AddCustomer") {
+    console.log('less than 20')
+    const brand = formData.brand
+    delete formData.financeId
+    delete formData.userId
+    delete formData.followUpDay
+
+    let { financeId, clientData, dashData, financeData } = DataForm(formData);
+    clientData = {
+      ...clientData,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      name: formData.firstName + ' ' + formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      province: formData.province,
+      dl: formData.dl,
+      userEmail: user.email,
+    }
+    const userId = formData.userId
+    if (formData.brand === 'Used') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      //   console.log('Created createQuoteServer:', createQuoteServer)
+      const createActivixLead = await CreateLead(formData, user)
+      return json({ createQuoteServer, createActivixLead })
+    }
+    if (formData.brand === 'Switch') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      const createActivixLead = await CreateLead(formData, user)
+      return json({ manitouOptionsCreated, createQuoteServer, createActivixLead })
+    }
+    if (formData.brand === 'Manitou') {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const manitouOptionsCreated = await createFinanceManitou(formData)
+      const createActivixLead = await CreateLead(formData, user)
+      return json({ manitouOptionsCreated, createQuoteServer, createActivixLead })
+    }
+    if (formData.brand === 'BMW-Motorrad') {
+      const financeId = finance.id
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const updatingFinance = await createBMWOptions(financeId)
+      const updatingFinance2 = await createBMWOptions2(financeId)
+      const createActivixLead = await CreateLead(formData, user)
+      return json({ updatingFinance, updatingFinance2, createQuoteServer, createActivixLead })
+    }
+    else {
+      const email = formData.email
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const createActivixLead = await CreateLead(formData, user, createQuoteServer)
+      // console.log('Created createQuoteServer:', createQuoteServer)
+      return json({ createQuoteServer, createActivixLead })
+    }
+  }
   const template = formPayload.template;
   const today = new Date();
   let followUpDay = today;
@@ -1585,63 +1645,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   // customer
   // done
-  if (intent === "AddCustomer") {
-    console.log('less than 20')
-    const brand = formData.brand
-    delete formData.financeId
-    delete formData.userId
-    delete formData.followUpDay
-    const createActivixLead = await CreateLead(formData)
 
-    let { financeId, clientData, dashData, financeData } = DataForm(formData);
-    clientData = {
-      ...clientData,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      name: formData.firstName + ' ' + formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      city: formData.city,
-      province: formData.province,
-      dl: formData.dl,
-      userEmail: formData.userEmail,
-    }
-    const userId = formData.userId
-    if (formData.brand === 'Used') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      //   console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ createQuoteServer, createActivixLead })
-    }
-    if (formData.brand === 'Switch') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-
-      const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer, createActivixLead })
-    }
-    if (formData.brand === 'Manitou') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer, createActivixLead })
-    }
-    if (formData.brand === 'BMW-Motorrad') {
-      const financeId = finance.id
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      const updatingFinance = await createBMWOptions(financeId)
-      const updatingFinance2 = await createBMWOptions2(financeId)
-      return json({ updatingFinance, updatingFinance2, createQuoteServer, createActivixLead })
-    }
-    else {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      // console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ createQuoteServer, createActivixLead })
-    }
-  }
   if (intent === "deleteCustomer") {
     await DeleteCustomer({ formData, formPayload });
     return DeleteCustomer;

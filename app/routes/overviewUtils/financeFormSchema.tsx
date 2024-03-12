@@ -137,6 +137,7 @@ const financeFormSchema = z.object({
   brand: zfd.text(z.string().optional()),
   model1: zfd.text(z.string().optional()),
   commodity: zfd.text(z.string().optional()),
+  activixId: zfd.text(z.string().optional()),
   paintPrem: zfd.text(z.string().optional()),
   deliveryCharge: zfd.numeric(z.number().optional()),
   omvicNumber: zfd.text(z.string().optional()),

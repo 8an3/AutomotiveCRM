@@ -714,22 +714,22 @@ function NewSection() {
             <TabsContent value="account">
               <Card className='bg-white'>
                 <CardHeader>
-                  <CardTitle>Why</CardTitle>
-                  <CardDescription>
-                    It was never my intention on taking this so far and building a full fledge CRM that competes with the largest brands, but...
+                  <CardTitle className="text-lg leading-8 text-black">  It was never my intention on taking this so far and building a full fledge CRM that competes with the largest brands, but...</CardTitle>
+                  <CardDescription className="text-lg leading-8 text-black">
+                    There are some serious flaws with-in the industry, and so many people who make the decisions to design them, dont use them and can't see how they waste as much time as they do.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <p className="mt-6 text-lg leading-8 text-slate1">
+                  <p className="text-lg leading-8 text-black">
                     What if you could save up to or more than 130 mins a day?
                   </p>
-                  <p className="mt-6 text-lg leading-8 text-slate1">
+                  <p className="mt-6 text-lg leading-8 text-black">
                     It sounds rediculous, I know... but you can test how much time your current crm wastes. Send a mass email to 20 people and time how long it takes to, 1: complete the call along with any notes or anything else you need to put in. 2: schedule the follow-up call, properly, leaving yourself good notes to have a great follow up and not have to dig through previous calls to get a sense of where the customer is at. You can cheat this and say it doesnt take long. On average it would take 1:30 to 2:00 each call, unless your driven and good with the crm you have, you can get it down to a min. If your slow on the computer, this number sky rockets horribly.
                   </p>
-                  <p className="mt-6 text-lg leading-8 text-slate1">
+                  <p className="mt-6 text-lg leading-8 text-black">
                     You can easily do 100 calls a day in sales, between texts, emails, calls and so on. Even more if no ones picking up. So at BEST your wasting 100 mins a day. At your WORST, you can waste in excess of 200 mins. We all drag our heels at times, I get it.
                   </p>
-                  <p className="mt-6 text-lg leading-8 text-slate1">
+                  <p className="mt-6 text-lg leading-8 text-black">
                     What if you could get that process down to 10 secs? Or even down to one?  At 10 secs, your wasting 16.6 mins a day, instead 100-200 mins. If someone doesn't answer your call or text, its 1 second. This is just on that one process we talked about... what about all the other ways crm's prolonged your sales process?
                   </p>
                 </CardContent>
