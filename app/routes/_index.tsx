@@ -48,7 +48,8 @@ import secondary from '~/styles/indexSecondary.css'
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: index },
   { rel: "stylesheet", href: secondary },
-
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
 ]
 
 export async function loader({ request }: LoaderArgs) {
@@ -84,6 +85,7 @@ export default function Index() {
         <AlertBox />
         <NewHeader />
         <NewSection />
+        <Footer />
       </div>
     </>
   )
@@ -811,27 +813,30 @@ function NewSection() {
     </>
   )
 }
-function footer() {
+function Footer() {
   return (
     <>
-      <div className="mt-[100px]">
+      <div className="mt-[100px] ">
         <div className='bg-slate11 text-white'>
           <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
-            <RemixNavLinkText to='/'>
+          </div>
+
+          <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
+            <RemixNavLinkText to='/' className='mt-[100px]'>
               <p>Home</p>
             </RemixNavLinkText>
             <RemixNavLinkText to='/roadmap'>
               <p>Roadmap</p>
             </RemixNavLinkText>
-            <Link to='/crm'>
+            <RemixNavLinkText to='/crm'>
               <p>CRM</p>
-            </Link>
-            <Link to='/contact'>
+            </RemixNavLinkText>
+            <RemixNavLinkText to='/contact'>
               <p>Contact</p>
-            </Link>
-            <Link to='/privacy'>
+            </RemixNavLinkText>
+            <RemixNavLinkText to='/privacy' className='mb-[50px]'>
               <p>Privacy Policy</p>
-            </Link>
+            </RemixNavLinkText>
           </div>
         </div>
       </div>
