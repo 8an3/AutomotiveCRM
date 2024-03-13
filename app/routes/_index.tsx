@@ -43,6 +43,7 @@ import {
   TabsTrigger,
 } from "~/components/ui/tabs"
 import secondary from '~/styles/indexSecondary.css'
+import { prisma } from "./libs";
 
 
 export const links: LinksFunction = () => [

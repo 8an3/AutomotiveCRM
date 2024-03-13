@@ -13,7 +13,6 @@ import {
 import { configDev } from "~/configs";
 import { Plus, Trash } from "~/icons";
 import { createSitemap, formatPluralItems } from "~/utils";
-
 import type { ActionArgs } from "@remix-run/node";
 import { prisma } from "~/libs";
 
