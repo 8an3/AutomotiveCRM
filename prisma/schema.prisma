@@ -57,10 +57,12 @@ model User {
 }
 
 model userIntergration {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userEmail String   @unique
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  userEmail        String   @unique
+  subscriptionId   String?
+  activixActivated String?
 }
 
 model DealerCustomer {
