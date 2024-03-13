@@ -787,24 +787,26 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       userEmail: formData.userEmail,
     }
     const userId = formData.userId
-    const createActivixLead = await CreateLead(formData)
     if (formData.brand === 'Used') {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
       //   console.log('Created createQuoteServer:', createQuoteServer)
+      const createActivixLead = await CreateLead(formData, user, createQuoteServer)
+
       return json({ createQuoteServer })
     }
     if (formData.brand === 'Switch') {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-
       const manitouOptionsCreated = await createFinanceManitou(formData)
+      const createActivixLead = await CreateLead(formData, user, createQuoteServer)
       return json({ manitouOptionsCreated, createQuoteServer })
     }
     if (formData.brand === 'Manitou') {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
       const manitouOptionsCreated = await createFinanceManitou(formData)
+      const createActivixLead = await CreateLead(formData, user, createQuoteServer)
       return json({ manitouOptionsCreated, createQuoteServer })
     }
     if (formData.brand === 'BMW-Motorrad') {
@@ -813,11 +815,13 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
       const updatingFinance = await createBMWOptions(financeId)
       const updatingFinance2 = await createBMWOptions2(financeId)
+      const createActivixLead = await CreateLead(formData, user, createQuoteServer)
       return json({ updatingFinance, updatingFinance2, createQuoteServer })
     }
     else {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const createActivixLead = await CreateLead(formData, user, createQuoteServer)
       // console.log('Created createQuoteServer:', createQuoteServer)
       return json({ createQuoteServer, createActivixLead })
     }
@@ -878,7 +882,10 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     const callCLient = await client.calls
       .create({
         twiml: '<Response><Say>Ahoy, World!</Say></Response>',
-        to: `+1${user.phone}`,
+        to: `+1${formData.phone}`,
+        // to: `+1${formData.phone}`,
+        // from: `+1${user.phone}`,
+
         from: '+12176347250'
       })
       .then(call => console.log(call.sid));
@@ -1321,8 +1328,9 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   if (intent === "updateStatus") {
     delete formData.brand;
     //console.log(formData)
-    await UpdateStatus(formData);
-    return UpdateStatus;
+    const update = await UpdateStatus(formData);
+    const updateActivix = await UpdateLeadBasic(formData)
+    return json({ update, updateActivix });
   }
   // navigation
   if (intent === "clientProfile") {

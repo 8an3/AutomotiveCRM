@@ -37,6 +37,8 @@ const ClientStatusCard = ({ data }) => {
             <Input type="hidden" defaultValue={id} name="id" />
             <Input type="hidden" defaultValue={data.brand} name="brand" />
             <Input type="hidden" defaultValue='updateStatus' name="intent" />
+            <input type='hidden' name='activixId' value={data.activixId} />
+
         </Form>
     );
 }

@@ -208,6 +208,7 @@ const CompleteCall = ({ data, contactMethod }) => {
           <Input type="hidden" defaultValue='Sales' name="apptType" />
           <input type="hidden" defaultValue={data.vin} name="vin" />
           <input type="hidden" defaultValue={data.stockNum} name="stockNum" />
+          <input type='hidden' name='activixId' value={data.activixId} />
 
           <div className="mt-[25px] flex justify-end">
             <DialogClose >

@@ -72,6 +72,7 @@ export default function SmsClient({ data }) {
             <input type="hidden" defaultValue={data.brand} name="brand" />
             <input type='hidden' value='smsClient' name='intent' />
             <input type='hidden' value={today} name='lastContact' />
+            <input type='hidden' name='activixId' value={data.activixId} />
 
             <div className="mt-[25px] flex justify-end">
               <Dialog.Close asChild>

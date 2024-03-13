@@ -56,6 +56,13 @@ model User {
   @@index([profileId])
 }
 
+model userIntergration {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userEmail String   @unique
+}
+
 model DealerCustomer {
   id             String   @id @default(cuid())
   createdAt      DateTime @default(now())

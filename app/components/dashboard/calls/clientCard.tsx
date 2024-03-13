@@ -183,6 +183,7 @@ export default function ClientCard({ data }) {
                             <Input type="hidden" defaultValue={data.brand} name="brand" />
                             <input type='hidden' name='financeId' value={data.id} />
                             <input type='hidden' name='email' value={data.email} />
+                            <input type='hidden' name='activixId' value={data.activixId} />
 
                             <Accordion type="single" collapsible>
                                 <AccordionItem value="1" className='mt-5'>

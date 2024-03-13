@@ -89,6 +89,7 @@ export default function TwoDaysFromNow({ data }) {
                     <input type="hidden" defaultValue={data.id} name="id" />
                     <input type="hidden" defaultValue={data.customerState} name="customerState" />
                     <input type="hidden" defaultValue={1} name="resourceId" />
+                    <input type='hidden' name='activixId' value={data.activixId} />
 
                     <input type="hidden" defaultValue={data.firstName} name="firstName" />
                     <input type="hidden" defaultValue={data.lastName} name="lastName" />

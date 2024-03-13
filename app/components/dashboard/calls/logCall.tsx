@@ -76,6 +76,8 @@ export default function LogCall({ data }) {
       <Input type="hidden" defaultValue={note} name="note" />
       <Input type="hidden" defaultValue={title} name="title" />
       <Input type="hidden" value='Attempted' name="result" />
+      <input type='hidden' name='activixId' value={data.activixId} />
+
       <button
         onClick={() => {
           // setIsButtonPressed(true);

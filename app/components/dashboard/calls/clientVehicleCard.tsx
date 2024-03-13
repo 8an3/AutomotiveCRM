@@ -611,6 +611,7 @@ export default function ClientVehicleCard({ data, }) {
                 <input type='hidden' name='userEmail' value={data.userEmail} />
                 <input type='hidden' name='brand' value={data.brand} />
                 <input type='hidden' name='clientfileId' value={data.clientfileId} />
+                <input type='hidden' name='activixId' value={data.activixId} />
                 <input type='hidden' name='whichVehicle' value='exchange' />
 
                 <div className="mb-auto mr-auto p-3">

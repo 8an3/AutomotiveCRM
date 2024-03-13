@@ -292,6 +292,8 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
               <input type='hidden' value={today} name='lastContact' />
               <input type="hidden" defaultValue={data.vin} name="vin" />
               <input type="hidden" defaultValue={data.stockNum} name="stockNum" />
+              <input type='hidden' name='activixId' value={data.activixId} />
+
               <div className="mt-[25px] flex justify-between items-center">
 
 
