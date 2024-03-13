@@ -324,7 +324,26 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const email = session.get("email")
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
 
-  const user = await model.user.query.getForSession({ email: email });
+
+    const user = await prisma.user.findUnique({
+        where: { email: email },
+        select: {
+          id: true,
+          name: true,
+          username: true,
+          email: true,
+          subscriptionId: true,
+          customerId: true,
+          returning: true,
+          phone: true,
+          dealer: true,
+          position: true,
+          roleId: true,
+          profileId: true,
+          omvicNumber: true,
+          role: { select: { symbol: true, name: true } },
+        },
+      });
   const tokens = session.get("accessToken")
   let refreshToken
   refreshToken = session.get("refreshToken")
@@ -359,7 +378,26 @@ export async function action({ params, request }: DataFunctionArgs) {
 
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
 
-  const user = await model.user.query.getForSession({ email: email });
+
+    const user = await prisma.user.findUnique({
+        where: { email: email },
+        select: {
+          id: true,
+          name: true,
+          username: true,
+          email: true,
+          subscriptionId: true,
+          customerId: true,
+          returning: true,
+          phone: true,
+          dealer: true,
+          position: true,
+          roleId: true,
+          profileId: true,
+          omvicNumber: true,
+          role: { select: { symbol: true, name: true } },
+        },
+      });
   const tokens = session.get("accessToken")
   let refreshToken
   refreshToken = session.get("refreshToken")

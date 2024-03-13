@@ -16,7 +16,26 @@ import APITest from "~/components/backups/inbound.test";
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-  const user = await model.user.query.getForSession({ email: email });
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      dealer: true,
+      position: true,
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      role: { select: { symbol: true, name: true } },
+    },
+  });
   if (!user) { redirect('/login') }
   const userProfile = await prisma.user.findUnique({ where: { email: email } })
   const refreshToken2 = userProfile.refreshToken

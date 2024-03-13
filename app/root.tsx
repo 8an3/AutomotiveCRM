@@ -60,7 +60,26 @@ export async function loader({ request }: LoaderArgs) {
       ENV,
     });
   }
-  const user = await model.user.query.getForSession({ email: email });
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      dealer: true,
+      position: true,
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      role: { select: { symbol: true, name: true } },
+    },
+  });
   if (!user) {
     return redirect(`/logout`);
   }

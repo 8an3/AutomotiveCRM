@@ -40,7 +40,26 @@ export async function loader({ params, request }: DataFunctionArgs) {
   console.log(request.headers.get(), ' heade5ras')
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-  const user = await model.user.query.getForSession({ email: email });
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      dealer: true,
+      position: true,
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      role: { select: { symbol: true, name: true } },
+    },
+  });
   if (!user) { redirect('/login') }
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
   let tokens = session.get("accessToken")
@@ -186,7 +205,26 @@ export async function action({ params, request }: DataFunctionArgs) {
   let formData = financeFormSchema.parse(formPayload)
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-  const user = await model.user.query.getForSession({ email: email });
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      dealer: true,
+      position: true,
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      role: { select: { symbol: true, name: true } },
+    },
+  });
   if (!user) { redirect('/login') }
   const userEmail = user?.email;
   const userId = user?.id;

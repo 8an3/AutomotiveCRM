@@ -23,7 +23,25 @@ import { model } from '~/models'
 
 export async function optionsLoader({ request, params }: LoaderFunctionArgs) {
     const userSession = await authenticator.isAuthenticated(request, { failureRedirect: "/login", });
-    const user = await model.user.query.getForSession({ id: userSession.id });
+    const user = await prisma.user.findUnique({
+        where: { email: userSession.email },
+        select: {
+            id: true,
+            name: true,
+            username: true,
+            email: true,
+            subscriptionId: true,
+            customerId: true,
+            returning: true,
+            phone: true,
+            dealer: true,
+            position: true,
+            roleId: true,
+            profileId: true,
+            omvicNumber: true,
+            role: { select: { symbol: true, name: true } },
+        },
+    });
 
     const finance = await getLatestFinance2(email)
 

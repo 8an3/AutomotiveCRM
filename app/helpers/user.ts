@@ -98,15 +98,8 @@ export async function getAuthErrorSession(request: Request) {
   return errorSession;
 }
 
-export function getUserIsAllowed(
-  user?: UserData,
-  expectedRoleSymbols?: UserRole["symbol"][]
-) {
-  if (!user) {
-    return false;
-  }
-  const userIsAllowed = expectedRoleSymbols?.find(
-    (symbol) => user?.role?.symbol === symbol
-  );
+export function getUserIsAllowed(user?: UserData, expectedRoleSymbols?: UserRole["symbol"][]) {
+  if (!user) { return false; }
+  const userIsAllowed = expectedRoleSymbols?.find((symbol) => user?.role?.symbol === symbol);
   return userIsAllowed ? true : false;
 }

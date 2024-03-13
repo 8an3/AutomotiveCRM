@@ -11,7 +11,26 @@ import Roadmap from "./roadmap.list";
 export const loader = async ({ request }) => {
 	const session = await getSession(request.headers.get("Cookie"));
 	const email = session.get("email")
-	const user = await model.user.query.getForSession({ email: email });
+
+	const user = await prisma.user.findUnique({
+		where: { email: email },
+		select: {
+			id: true,
+			name: true,
+			username: true,
+			email: true,
+			subscriptionId: true,
+			customerId: true,
+			returning: true,
+			phone: true,
+			dealer: true,
+			position: true,
+			roleId: true,
+			profileId: true,
+			omvicNumber: true,
+			role: { select: { symbol: true, name: true } },
+		},
+	});
 	const notifications = await prisma.notificationsUser.findMany({
 		where: { userId: user.id, }
 	})
@@ -28,8 +47,7 @@ export default function Quote() {
 	return (
 		<>
 			<div className="w-full h-auto  px-2 sm:px-1 lg:px-3 bg-black border-gray-300 font-bold uppercase  ">
-				<Sidebar user={user} />
-				<NotificationSystem />
+
 				<Roadmap />
 			</div>
 		</>

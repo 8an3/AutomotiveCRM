@@ -59,7 +59,26 @@ export async function action({ request }: ActionFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  const user = await model.user.query.getForSession({ email: email });
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      dealer: true,
+      position: true,
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      role: { select: { symbol: true, name: true } },
+    },
+  });
   const userId = user?.id;
   const intent = formPayload.intent;
   const today = new Date();
@@ -510,7 +529,26 @@ export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  const user = await model.user.query.getForSession({ email: email });
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      dealer: true,
+      position: true,
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      role: { select: { symbol: true, name: true } },
+    },
+  });
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

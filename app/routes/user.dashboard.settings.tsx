@@ -20,11 +20,30 @@ import { getSession, commitSession, destroySession } from '../sessions/auth-sess
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
+import axios from 'axios'
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-  const user = await prisma.user.findUnique({ where: { email: email } });
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      dealer: true,
+      position: true,
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      role: { select: { symbol: true, name: true } },
+    },
+  });
   if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const userEmail = user?.email
@@ -713,7 +732,6 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
 }
 
 export const action: ActionFunction = async ({ request }) => {
-  console.log('settings')
   const formPayload = Object.fromEntries(await request.formData())
   const Input = financeFormSchema.parse(formPayload)
   const intent = formPayload.intent
@@ -797,25 +815,65 @@ export const action: ActionFunction = async ({ request }) => {
     return ({ savedaily, delete2 })
 
   }
-  if (intent === 'activixActivated') {
-    const userUpdate = await prisma.user.update({
-      data: {
-        activixActivated: formData.activixActivated
-      },
-      where: { email: Input.email },
-    })
-    return userUpdate
-  }
-  return null
-}
 
+  if (intent === 'activixActivated') {
+    const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+    const activix = await prisma.user.update({
+      where: { email: Input.userEmail },
+      data: { activixActivated: Input.activixActivated }
+    })
+    const integration = await prisma.userIntergration.findUnique({ where: { userEmail: Input.userEmail } });
+    let actiData;
+    try {
+      const response = await axios.get(`https://api.crm.activix.ca/v2/account?include[]=users`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      });
+      const users = response.data.users;
+      const userEmail = Input.userEmail;
+      const userObject = users.find(user => user.email === userEmail);
+
+      if (userObject) {
+        console.log('Matching object found:', userObject);
+      } else {
+        console.log('No matching object found');
+      }
+
+      switch (!integration) {
+        case true:
+          actiData = await prisma.userIntergration.create({
+            data: {
+              userEmail: Input.userEmail,
+              activixId: userObject.id.toString(),
+              activixActivated: Input.activixActivated,
+            }
+          });
+          break;
+        default:
+          actiData = await prisma.userIntergration.update({
+            where: { userEmail: Input.userEmail },
+            data: {
+              userEmail: Input.userEmail,
+              activixId: userObject.id.toString(),
+              activixActivated: Input.activixActivated,
+            }
+          });
+          return actiData;
+      }
+      return actiData;
+    } catch (error) {
+      console.error('Error occurred while fetching account data:', error);
+      // Handle error here
+    }
+  }
+}
 export const meta: MetaFunction = () => {
   return [
     { title: 'User Settings - Dealer Sales Assistant' },
-    {
-      property: "og:title",
-      content: "Your very own assistant!",
-    },
+    { property: "og:title", content: "Your very own assistant!", },
     {
       name: "description",
       content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
@@ -827,20 +885,13 @@ export const meta: MetaFunction = () => {
 export default function Mainbody() {
   const { user, deFees, dataPDF, statsData, comsRecords } = useLoaderData()
   const userIsAllowed = getUserIsAllowed(user, ["ADMIN"]);
-  console.log(user, 'usersettings')
+  console.log(userIsAllowed, user, user.role); // Expected output: true
   return (
     <>
       <div className="flex h-[100%] w-[98vw] left-0">
         <div className="w-[300px] rounded-lg h-[95%] bg-slate12 text-slate2  ">
           <hr className="solid" />
-          <RemixNavLink to={`/welcome/quote`}>
-            <Button
-              variant="link"
-              className="w-full justify-start cursor-pointer text-white "
-            >
-              Walkthrough
-            </Button>
-          </RemixNavLink>
+
           {userIsAllowed ? (
             <>
               <RemixNavLink to={`/admin`}>
@@ -858,7 +909,7 @@ export default function Mainbody() {
               Change Password
             </Button>
           </RemixNavLink>
-          <RemixNavLink to={`/docs`}>
+          <RemixNavLink to={`/user/docs`}>
             <Button
               variant="link"
               className="w-full justify-start cursor-pointer text-white"

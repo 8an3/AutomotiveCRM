@@ -35,13 +35,16 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export let action = rootAction
 
 export default function Sidebar() {
-  //const { user } = useLoaderData();
+  const { user } = useLoaderData();
   // console.log(user)
   const location = useLocation();
   let fetcher = useFetcher()
   // const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
   const isUserDashboard = location.pathname.includes('/user/dashboard')
-  const { user } = useRootLoaderData();
+  //  const { user } = useRootLoaderData();
+  const adminUser = getUserIsAllowed(user, ["ADMIN", "MANAGER",]);
+  const financeUser = getUserIsAllowed(user, ["ADMIN", "MANAGER", "FINANCE"]);
+  const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
 
   const MyIFrameComponent = () => {
@@ -409,20 +412,24 @@ export default function Sidebar() {
                     </Button>
                   </RemixNavLink>
                 </Dialog.Close>
-                <Dialog.Close asChild>
-                  <RemixNavLink to={`/leads/finance`}>
-                    <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
-                      Finance Dashboard
-                    </Button>
-                  </RemixNavLink>
-                </Dialog.Close>
-                <Dialog.Close asChild>
-                  <RemixNavLink to={`/leads/activix`}>
-                    <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
-                      Activix Dashboard
-                    </Button>
-                  </RemixNavLink>
-                </Dialog.Close>
+                {financeUser === true && (
+                  <Dialog.Close asChild>
+                    <RemixNavLink to={`/leads/finance`}>
+                      <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
+                        Finance Dashboard
+                      </Button>
+                    </RemixNavLink>
+                  </Dialog.Close>
+                )}
+                {user?.activixActivated === 'yes' && (
+                  <Dialog.Close asChild>
+                    <RemixNavLink to={`/leads/activix`}>
+                      <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
+                        Activix Dashboard
+                      </Button>
+                    </RemixNavLink>
+                  </Dialog.Close>
+                )}
                 <Dialog.Close asChild>
                   <RemixNavLink to={`/calendar/sales`}>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
@@ -522,39 +529,10 @@ export default function Sidebar() {
 
                 {user && user?.email === 'skylerzanth@gmail.com' && (
                   <>
-                    <h3 className='text-white'>
-                      Detailed Walkthrough
-                    </h3>
+                    <h1 className="w-full mt-10 justify-start cursor-pointer text-white " >Dev Links</h1>
+                    <hr className="w-full justify-start cursor-pointer text-white " />
                     <hr className="solid" />
-                    <p>Quote</p>
-                    <p>Dashboard</p>
-                    <p>Calendar</p>
-                    <p>Payment Calculator</p>
-                    <p>Document Builder</p>
-                    <p>Template Builder</p>
-                    <p>Scripts</p>
-                    <p>Ad Manager</p>
-                    <p>Automation</p>
-
                     <>
-                      <h1 className="w-full mt-10 justify-start cursor-pointer text-white " >Dev Links</h1>
-                      <hr className="w-full justify-start cursor-pointer text-white " />
-                      <Dialog.Close asChild>
-                        <RemixNavLink to={`/smsClient`}>
-                          <Button variant="link" className="w-full justify-start cursor-pointer text-white " >
-                            Text | SMS
-                          </Button>
-                        </RemixNavLink>
-                      </Dialog.Close>
-
-                      <Dialog.Close asChild>
-                        <Form action="/google" method="post">
-                          <Button variant='outline' className='text-black border-black border px-3 py-2'>
-                            Login with <Google />
-                          </Button>
-                        </Form>
-                      </Dialog.Close>
-
                       <Dialog.Close asChild>
                         <RemixNavLink to={`/automation`}>
                           <Button

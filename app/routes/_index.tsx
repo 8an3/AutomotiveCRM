@@ -58,7 +58,26 @@ export async function loader({ request }: LoaderArgs) {
   const userSession = await getSession(request.headers.get("Cookie"))
   const email = userSession.get("email")
   if (email) {
-    const user = await model.user.query.getForSession({ email: email });
+
+    const user = await prisma.user.findUnique({
+      where: { email: email },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        subscriptionId: true,
+        customerId: true,
+        returning: true,
+        phone: true,
+        dealer: true,
+        position: true,
+        roleId: true,
+        profileId: true,
+        omvicNumber: true,
+        role: { select: { symbol: true, name: true } },
+      },
+    });
 
     throw user && redirect("/quote/Harley-Davidson");
   };
@@ -444,7 +463,17 @@ export function FAQ() {
           FAQ
         </h2>
       </div>
+      <Accordion type="single" collapsible className="w-full text-white">
+        {faqItems.map((item, index) => (
+          <AccordionItem key={index} value={index}>
+            <AccordionTrigger>{item.question}</AccordionTrigger>
+            <AccordionContent>
+              {item.answer}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
 
+      </Accordion>
       <Carousel className=" mx-auto my-auto  w-[95%]" opts={{
         loop: true,
       }}>
@@ -660,27 +689,7 @@ function NewSection() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <>
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="item-1">
-                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                        <AccordionContent>
-                          Yes. It adheres to the WAI-ARIA design pattern.
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="item-2">
-                        <AccordionTrigger>Is it styled?</AccordionTrigger>
-                        <AccordionContent>
-                          Yes. It comes with default styles that matches the other
-                          components&apos; aesthetic.
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="item-3">
-                        <AccordionTrigger>Is it animated?</AccordionTrigger>
-                        <AccordionContent>
-                          Yes. It's animated by default, but you can disable it if you prefer.
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
+
                     <FAQ />
 
                   </>
@@ -824,19 +833,19 @@ function Footer() {
 
           <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
             <RemixNavLinkText to='/' className='mt-[100px]'>
-              <p>Home</p>
+              <p className='hover:underline'>Home</p>
             </RemixNavLinkText>
             <RemixNavLinkText to='/roadmap'>
-              <p>Roadmap</p>
+              <p className='hover:underline'>Roadmap</p>
             </RemixNavLinkText>
             <RemixNavLinkText to='/crm'>
-              <p>CRM</p>
+              <p className='hover:underline'>CRM</p>
             </RemixNavLinkText>
             <RemixNavLinkText to='/contact'>
-              <p>Contact</p>
+              <p className='hover:underline'>Contact</p>
             </RemixNavLinkText>
             <RemixNavLinkText to='/privacy' className='mb-[50px]'>
-              <p>Privacy Policy</p>
+              <p className='hover:underline'>Privacy Policy</p>
             </RemixNavLinkText>
           </div>
         </div>

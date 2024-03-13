@@ -61,7 +61,7 @@ model userIntergration {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   userEmail        String   @unique
-  subscriptionId   String?
+  activixId        String?
   activixActivated String?
 }
 

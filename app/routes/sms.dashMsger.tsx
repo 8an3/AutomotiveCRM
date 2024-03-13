@@ -46,7 +46,26 @@ export async function action({ request, }: ActionFunction) {
   const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'
   const authToken = 'd38e2fd884be4196d0f6feb0b970f63f'
   const client = require('twilio')(accountSid, authToken);
-  const user = await model.user.query.getForSession({ email: email });
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      dealer: true,
+      position: true,
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      role: { select: { symbol: true, name: true } },
+    },
+  });
   if (!user) { redirect('/login') }
   const intent = formData.intent
 
