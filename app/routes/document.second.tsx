@@ -6,7 +6,7 @@ import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { redirect, json } from "@remix-run/node";
 import { model } from '~/models';
 import { getSession } from '~/sessions/auth-session.server';
-
+import { prisma } from "~/libs";
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")

@@ -8,9 +8,8 @@ import { CheckSub } from '~/utils/checksub.server'
 import { getSession } from '~/sessions/auth-session.server';
 import { redirect, json } from "@remix-run/node";
 import { requireAuthCookie } from '~/utils/misc.user.server';
+import { prisma } from "~/libs";
 
-
-const prisma = new PrismaClient();
 interface CleanupFunction {
   (): void;
 }

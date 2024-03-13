@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-
+import { prisma } from "~/libs";
 import { ButtonLink, PageHeader, RemixLink, RemixLinkText } from "~/components";
 import { requireUserRole, requireUserSession } from "~/helpers";
 import { LayoutDashboard } from "~/icons";

@@ -21,7 +21,7 @@ import { InfoEmpty, SubmitDocument } from "~/icons";
 import { model } from "~/models";
 import { schemaNoteUpdate } from "~/schemas";
 import { createSitemap, invariant } from "~/utils";
-
+import { prisma } from "~/libs";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { z } from "zod";
 

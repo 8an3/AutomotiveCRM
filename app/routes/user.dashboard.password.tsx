@@ -32,7 +32,7 @@ import {
 } from "~/schemas";
 import { createSitemap } from "~/utils";
 import { getSession } from "~/sessions/auth-session.server";
-
+import { prisma } from "~/libs";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { z } from "zod";
 

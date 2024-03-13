@@ -1,5 +1,6 @@
 
 import { json, type LoaderFunction } from '@remix-run/node';
+import { prisma } from "../libs";
 
 export async function loader({ request, params }: LoaderFunction) {
   const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'

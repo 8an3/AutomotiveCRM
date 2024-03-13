@@ -1,7 +1,7 @@
 import { json, type ActionFunction, type DataFunctionArgs, redirect } from "@remix-run/node";
 import { Resend } from "resend";
 import ScriptForm from "./emails/contact/scriptForm";
-
+import { prisma } from "~/libs";
 import ContactForm from "./emails/contact/contact";
 import { model } from '~/models'
 
