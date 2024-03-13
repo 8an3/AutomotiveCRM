@@ -1299,7 +1299,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     const fullName = user.username;
     const words = fullName.split(' ');
     const firstName = words[0];
-    const lastName = words[1]; \
+    const lastName = words[1];
 
     const newData = {
       ...financeData,
