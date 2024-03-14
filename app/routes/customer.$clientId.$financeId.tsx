@@ -34,6 +34,7 @@ import { getSession } from "~/sessions/auth-session.server";
 import { SetClient66, requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import { client_66 } from '~/utils/misc.user.server';
+import { UpdateLeadBasic, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, UpdateNoteCreateTask, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "./api.activix";
 
 
 export const action: ActionFunction = async ({ req, request, params }) => {
@@ -134,18 +135,27 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   }
   // appointment
   if (intent === 'updateFinanceAppt') {
-    const updateApt = await UpdateAppt(formData)
+    const apptId = formData.apptId
+    const updateApt = await UpdateAppt(formData, apptId)
+    if (user?.activixActivated === 'yes') {
+      await UpdateTask(formData)
+    }
     return json({ updateApt });
   }
   if (intent === 'addAppt') {
     const createApt = createClientApts(formData)
     const LastContacted = LastContacted(formData)
+    if (user.activixActivated === 'yes') {
+      await CreateTask(formData)
+    }
+
     return (createApt)
   }
   if (intent === 'deleteApt') {
     const newFormData = { ...formData };
     delete newFormData.intent;
     const deleteNote = await deleteFinanceAppts(newFormData)
+
     return json({ deleteNote });
   }
   if (intent === 'completeApt') {
@@ -157,6 +167,12 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     const apptId = formData.messageId
     formData = { ...formData, completed, apptStatus, customerState }
     const updateApt = await UpdateAppt(formData, apptId)
+    if (user.activixActivated === 'yes') {
+      await UpdateTask(formData)
+    }
+    if (user?.activixActivated === 'yes') {
+      await UpdateNote(formData)
+    }
     return json({ updateApt });
   }
   // notes
@@ -174,6 +190,9 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     }
 
     const updateNote = await updateFinanceNote(noteId, noteData)
+    if (user?.activixActivated === 'yes') {
+      await UpdateNote(formData)
+    }
     return json({ updateNote });
   }
   if (intent === 'saveFinanceNote') {
@@ -206,6 +225,9 @@ export const action: ActionFunction = async ({ req, request, params }) => {
           clientfileId: clientfileId,
         }
       })
+    }
+    if (user?.activixActivated === 'yes') {
+      await CreateNote(formData)
     }
     return json({ SaveFinanceNote, notification, saved })
   }
@@ -326,6 +348,12 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         // console.log(financeData, 'financeData', finance, 'finance', clientData, 'clientData')
 
         const updateClient = await updateFinanceWithDashboard(financeId, financeData, finance)
+        if (user?.activixActivated === 'yes') {
+          await UpdateLeadBasic(formData)
+          await UpdateLeademail(formData)
+          await UpdateLeadPhone(formData)
+          await UpdateLeadWantedVeh(formData)
+        }
         return json({ updateClient })
     }
   }
@@ -343,44 +371,58 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     }
     const finance = []
     const updateClient = await updateFinanceWithDashboard(financeId, financeData, finance)
-    return json({ updateClient })
+
+    if (user.activixActivated === 'yes') {
+      await UpdateLeadWantedVeh(formData)
+    }
+    return json({ updateClient, })
   }
   if (intent === 'dealProgress') {
+
+    const currentDate = new Date().toISOString();
+
+    const updateData = {};
+
+    if (!formData.reached) updateData.reached = currentDate;
+    if (!formData.attempted) updateData.attempted = currentDate;
+    if (!formData.visited) updateData.visited = currentDate;
+    if (!formData.sold) updateData.sold = currentDate;
+    if (!formData.depositMade) updateData.depositMade = currentDate;
+    if (!formData.turnOver) updateData.turnOver = currentDate;
+    if (!formData.applicationDone) updateData.applicationDone = currentDate;
+    if (!formData.approved) updateData.approved = currentDate;
+    if (!formData.signed) updateData.signed = currentDate;
+    if (!formData.licensingSent) updateData.licensingSent = currentDate;
+    if (!formData.liceningDone) updateData.liceningDone = currentDate;
+    if (!formData.pickUpSet) updateData.pickUpSet = currentDate;
+    if (!formData.delivered) updateData.delivered = currentDate;
+    if (!formData.refund) updateData.refund = currentDate;
+    if (!formData.funded) updateData.funded = currentDate;
+    if (!formData.cancelled) updateData.cancelled = currentDate;
+    if (!formData.lost) updateData.lost = currentDate;
+    if (!formData.financeApp) updateData.financeApp = currentDate;
+    if (!formData.testDrive) updateData.testDrive = currentDate;
+    if (!formData.seenTrade) updateData.seenTrade = currentDate;
+    if (!formData.metService) updateData.metService = currentDate;
+    if (!formData.metManager) updateData.metManager = currentDate;
+    if (!formData.metParts) updateData.metParts = currentDate;
+    if (!formData.demoed) updateData.demoed = currentDate;
 
     const updateDealProgress = await prisma.dashboard.update({
       where: { financeId: formData.financeId },
       data: {
-        reached: formData.reached,
-        attempted: formData.attempted,
+        ...updateData,
         pending: formData.pending,
-        visited: formData.visited,
         bookedApt: formData.bookedApt,
         aptShowed: formData.aptShowed,
         aptNoShowed: formData.aptNoShowed,
-        sold: formData.sold,
-        depositMade: formData.depositMade,
-        turnOver: formData.turnOver,
-        applicationDone: formData.applicationDone,
-        approved: formData.approved,
-        signed: formData.signed,
-        licensingSent: formData.licensingSent,
-        liceningDone: formData.liceningDone,
-        pickUpSet: formData.pickUpSet,
-        delivered: formData.delivered,
-        refund: formData.refund,
-        funded: formData.funded,
-        cancelled: formData.cancelled,
-        lost: formData.lost,
-        financeApp: formData.financeApp,
         referral: formData.referral,
-        testDrive: formData.testDrive,
-        seenTrade: formData.seenTrade,
-        metService: formData.metService,
-        metManager: formData.metManager,
-        metParts: formData.metParts,
-        demoed: formData.demoed,
       },
-    })
+    });
+
+    if (user.activixActivated === 'yes') {
+      await UpdateLeadBasic(formData)
+    }
     return json({ updateDealProgress })
   }
   // trade
@@ -396,7 +438,10 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     }
     const finance = []
     const updateClient = await updateFinanceWithDashboard(financeId, financeData, finance)
-    return json({ updateClient })
+    if (user?.activixActivated === 'yes') {
+      await UpdateLeadWantedVeh(financeData)
+    }
+    return json({ updateClient, })
   }
   // client info
   if (intent === 'updateClientInfoFinance') {
@@ -416,6 +461,12 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         dl: formData.dl,
       }
     })
+    if (user?.activixActivated === 'yes') {
+      await UpdateLeadBasic(formData)
+      await UpdateLeademail(formData)
+      await UpdateLeadPhone(formData)
+    }
+
     return json({ updateClient })
   }
   else return null
@@ -464,6 +515,12 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const docTemplates = await getDocsbyUserId(userId)
   const clientFile = await getClientFileById(clientfileId)
   const Coms = await getComsOverview(financeId)
+  if (user?.activixActivated === 'yes') {
+    await UpdateLeadBasic(formData)
+    await UpdateLeademail(formData)
+    await UpdateLeadPhone(formData)
+    await UpdateLeadWantedVeh(formData)
+  }
   let merged = {
     userLoanProt: finance[0].userLoanProt,
     userTireandRim: finance[0].userTireandRim,
