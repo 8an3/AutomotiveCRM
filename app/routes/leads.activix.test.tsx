@@ -53,12 +53,7 @@ export async function loader({ request, params }: LoaderFunction) {
   }
 }
 
-// Activixtest component
-export default function Activixtest({ activixData }: { activixData: any }) {
-  console.log(activixData); // Check if data is received
 
-  // Render activixData here
-}
 
 
 export default function Activixtest() {
