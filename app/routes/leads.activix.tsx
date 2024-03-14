@@ -1,5 +1,5 @@
 import React, { HTMLAttributes, HTMLProps, useState, useEffect } from 'react'
-import { Form, Link, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
+import { Form, Link, Outlet, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
 import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label } from "../components/ui/index";
 import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
 import { getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns } from "@tanstack/react-table";
@@ -84,6 +84,9 @@ export default function Mainboard() {
           </TabsContent>
         )}
       </Tabs>
+      <div className='w-2/3 mt-[50px]  overflow-y-scroll'>
+        <Outlet />
+      </div>
     </>
   )
 }

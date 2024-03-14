@@ -868,6 +868,7 @@ model Finance {
   dashboardId         String? @unique
   financeId           String? @unique
   activixId           String? @unique
+  theRealActId        String?
   financeManager      String?
   email               String?
   firstName           String?
