@@ -7,6 +7,7 @@ import { redirect, json } from "@remix-run/node";
 import { model } from '~/models';
 import { getSession } from '~/sessions/auth-session.server';
 import { prisma } from "~/libs";
+
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
@@ -247,7 +248,7 @@ export function PdfGen() {
     useEffect(() => {
       if (iFrameRef?.current) {
         //  iFrameRef.current.src = 'https://third-kappa.vercel.app/';
-        iFrameRef.current.src = 'https://third-8an3.vercel.app';
+        iFrameRef.current.src = 'https://third-kappa.vercel.app';
       }
     });
     const hideSpinner = () => {
@@ -257,7 +258,7 @@ export function PdfGen() {
     // console.log('merged23', merged, 'user', user, 'docName', docName)
     useEffect(() => {
       if (iFrameRef?.current) {
-        iFrameRef.current.src = 'https://third-8an3.vercel.app'
+        iFrameRef.current.src = 'https://third-kappa.vercel.app'
         // iFrameRef.current.src = 'https://third-kappa.vercel.app/';
 
 
