@@ -264,7 +264,7 @@ export function PdfGen() {
 
 
         const handleLoad = () => {
-          const data = { merged, userId, user };
+          const data = { merged, user, doc, filename };
           iFrameRef.current.contentWindow.postMessage(data, '*');
         };
 
