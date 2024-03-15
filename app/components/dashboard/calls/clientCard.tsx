@@ -282,11 +282,8 @@ export default function ClientCard({ data }) {
                         </ButtonLoading>
                     </Form>
                     <div className=' mt-3'>
-                        <fetcher.Form method="post">
-                            <input type='hidden' name='financeId' value={data.id} />
-                            <input type='hidden' name='userEmail' value={data.userEmail} />
-                            <input type='hidden' name='brand' value={data.brand} />
-                            <input type='hidden' name='clientfileId' value={data.clientfileId} />
+
+                        <Link to={`/customer/${data.clientfileId}/${data.id}`}>
                             <ButtonLoading
                                 size="lg"
                                 type="submit"
@@ -298,7 +295,7 @@ export default function ClientCard({ data }) {
                             >
                                 Client File
                             </ButtonLoading>
-                        </fetcher.Form>
+                        </Link>
                         <fetcher.Form method="post"  >
                             <input type='hidden' name='financeId' value={data.id} />
                             <input type='hidden' name='brand' value={data.brand} />
