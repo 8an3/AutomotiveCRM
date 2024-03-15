@@ -289,15 +289,13 @@ export async function loader({ request, params }: LoaderFunction) {
           console.log(financeData, activixData, dashboardData)
           return { financeData, activixData, dashboardData };
         } catch (error) {
-          // Handle errors here
           console.error(error);
-          throw error; // rethrow the error for handling at a higher level if needed
+          throw error;
         }
       }
       CreateActvix()
     }
     else {
-      // Perform creation logic only if the record does not exist in the database
       console.log(`Record with id ${data.id} does not exist in the finance database`);
       const formData = data;
       const nameParts = user.username.split(' ');
@@ -306,7 +304,6 @@ export async function loader({ request, params }: LoaderFunction) {
       console.log(formData, 'formdata')
       async function CreateActvix() {
         try {
-
           const financeData = await prisma.finance.update({
             where: { activixId: formData.id },
             data: {
@@ -496,156 +493,142 @@ export async function loader({ request, params }: LoaderFunction) {
               theRealActId: activixData.id,
             }
           })
-
-
-          // Returning the relevant data
           console.log(financeData, activixData, dashboardData)
           return { financeData, activixData, dashboardData };
+        } catch (error) {
+          console.error('Error:', error);
+        } finally {
+          console.log("This code always runs, regardless of whether there was an error or not.");
         }
-  }
-
-      return user;
+        return user;
+      }
+      CreateActvix()
     }
   }
-  async function checkFieldInDatabase(id) {
-    // Implement your logic to check if the record exists in your finance database
-    // You can use Prisma queries to check if the record with the given id exists
+}
+async function checkFieldInDatabase(id) {
+  const record = await prisma.finance.findFirst({ where: { theRealActId: id.toString(), }, });
+  return !!record;
+}
+export default function Activixtest() {
+  const { activixData } = useLoaderData();
+  if (!activixData || !activixData.data || !Array.isArray(activixData.data)) { return <p>No data available</p>; }
+  return (
+    <div className='text-white bg-black'>
+      <h1>Activix Data</h1>
+      <div className='w-[90%] mt-[25px]'>
+        <ul>
+          {activixData.data.map((lead, index) => (
+            <li key={index} className='grid grid-cols-4 mb-5 mx-auto'>
+              <div>
+                <p>{lead.first_name} {lead.last_name}</p>
+                <hr className="solid" />
+              </div>
+              <p>ID: {lead.id}</p>
+              <p>Name: {lead.name}</p>
+              <p>Email: {lead.email}</p>
+              <p>id: {lead.id}</p>
+              <p>account_id: {lead.account_id}</p>
+              <p>customer_id: {lead.customer_id}</p>
+              <p>source_id: {lead.source_id}</p>
+              <p>provider_id: {lead.provider_id}</p>
+              <p>appointment_date: {lead.appointment_date}</p>
+              <p>appointment_event_id: {lead.appointment_event_id}</p>
+              <p>phone_appointment_date: {lead.phone_appointment_date}</p>
+              <p>available_date: {lead.available_date}</p>
+              <p>be_back_date: {lead.be_back_date}</p>
+              <p>birth_date: {lead.birth_date}</p>
+              <p>call_date: {lead.call_date}</p>
+              <p>created_at: {lead.created_at}</p>
+              <p>csi_date: {lead.csi_date}</p>
+              <p>deliverable_date: {lead.deliverable_date}</p>
+              <p>delivered_date: {lead.delivered_date}</p>
+              <p>delivery_date: {lead.delivery_date}</p>
+              <p>funded: {lead.funded}</p>
+              <p>end_service_date: {lead.end_service_date}</p>
+              <p>home_presented_date: {lead.home_presented_date}</p>
+              <p>last_visit_date: {lead.last_visit_date}</p>
+              <p>next_visit_date: {lead.next_visit_date}</p>
+              <p>open_work_order_date: {lead.open_work_order_date}</p>
+              <p>paperwork_date: {lead.paperwork_date}</p>
+              <p>planned_pick_up_date: {lead.planned_pick_up_date}</p>
+              <p>presented_date: {lead.presented_date}</p>
+              <p>promised_date: {lead.promised_date}</p>
+              <p>refinanced_date: {lead.refinanced_date}</p>
+              <p>repair_date: {lead.repair_date}</p>
+              <p>road_test_date: {lead.road_test_date}</p>
+              <p>home_road_test_date: {lead.home_road_test_date}</p>
+              <p>sale_date: {lead.sale_date}</p>
+              <p>take_over_date: {lead.take_over_date}</p>
+              <p>unsubscribe_all_date: {lead.unsubscribe_all_date}</p>
+              <p>unsubscribe_call_date: {lead.unsubscribe_call_date}</p>
+              <p>unsubscribe_email_date: {lead.unsubscribe_email_date}</p>
+              <p>unsubscribe_sms_date: {lead.unsubscribe_sms_date}</p>
+              <p>updated_at: {lead.updated_at}</p>
+              <p>work_order_closure_date: {lead.work_order_closure_date}</p>
+              <p>work_order_partial_closure_date: {lead.work_order_partial_closure_date}</p>
+              <p>address_line1: {lead.address_line1}</p>
+              <p>address_line2: {lead.address_line2}</p>
+              <p>credit_approved: {lead.credit_approved}</p>
+              <p>average_spending: {lead.average_spending}</p>
+              <p>business: {lead.business}</p>
+              <p>business_name: {lead.business_name}</p>
+              <p>city: {lead.city}</p>
+              <p>civility: {lead.civility}</p>
+              <p>code: {lead.code}</p>
+              <p>comment: {lead.comment}</p>
+              <p>country: {lead.country}</p>
+              <p>created_method: {lead.created_method}</p>
+              <p>dealer_tour: {lead.dealer_tour}</p>
+              <p>division: {lead.division}</p>
+              <p>financial_institution: {lead.financial_institution}</p>
+              <p>first_name: {lead.first_name}</p>
+              <p>gender: {lead.gender}</p>
+              <p>inspected: {lead.inspected}</p>
+              <p>invoiced: {lead.invoiced}</p>
+              <p>last_name: {lead.last_name}</p>
+              <p>locale: {lead.locale}</p>
+              <p>loyalty: {lead.loyalty}</p>
+              <p>odometer_last_visit: {lead.odometer_last_visit}</p>
+              <p>postal_code: {lead.postal_code}</p>
+              <p>prepaid: {lead.prepaid}</p>
+              <p>prepared: {lead.prepared}</p>
+              <p>province: {lead.province}</p>
+              <p>qualification: {lead.qualification}</p>
+              <p>rating: {lead.rating}</p>
+              <p>reached_client: {lead.reached_client}</p>
+              <p>repair_order: {lead.repair_order}</p>
+              <p>result: {lead.result}</p>
+              <p>second_contact: {lead.second_contact}</p>
+              <p>second_contact_civility: {lead.second_contact_civility}</p>
+              <p>segment: {lead.segment}</p>
+              <p>service_cleaned: {lead.service_cleaned}</p>
+              <p>service_interval_km: {lead.service_interval_km}</p>
+              <p>service_monthly_km: {lead.service_monthly_km}</p>
+              <p>source: {lead.source}</p>
+              <p>progress_state: {lead.progress_state}</p>
+              <p>status: {lead.status}</p>
+              <p>storage: {lead.storage}</p>
+              <p>type: {lead.type}</p>
+              <p>walk_around: {lead.walk_around}</p>
+              <p>work_order: {lead.work_order}</p>
+              <p>referrer: {lead.referrer}</p>
+              <p>search_term: {lead.search_term}</p>
+              <p>keyword: {lead.keyword}</p>
+              <p>navigation_history: {lead.navigation_history || 'N/A'}</p>
+              <p>campaign: {lead.campaign || 'N/A'}</p>
+              <p>response_time: {lead.response_time || 'N/A'}</p>
+              <p>first_update_time: {lead.first_update_time || 'N/A'}</p>
+              <p>customer: {lead.customer ? lead.customer.someField : 'N/A'}</p>
+              <p>emails: {lead.emails[0].address ? lead.emails.join(', ') : 'N/A'}</p>
+              <p>phones: {lead.phones[0].number ? lead.phones.join(', ') : 'N/A'}</p>
 
-    const record = await prisma.finance.findFirst({
-      where: {
-        theRealActId: id.toString(),
-      },
-    });
-
-    return !!record; // Return true if the record exists, false otherwise
-  }
-
-
-
-  export default function Activixtest() {
-    const { activixData } = useLoaderData();
-
-    // Check if activixData exists and contains data
-    if (!activixData || !activixData.data || !Array.isArray(activixData.data)) {
-      return <p>No data available</p>;
-    }
-
-    return (
-      <div className='text-white bg-black'>
-        <h1>Activix Data</h1>
-        <div className='w-[90%] mt-[25px]'>
-          <ul>
-            {activixData.data.map((lead, index) => (
-              <li key={index} className='grid grid-cols-4 mb-5 mx-auto'>
-                <div>
-                  <p>{lead.first_name} {lead.last_name}</p>
-                  <hr className="solid" />
-                </div>
-                <p>ID: {lead.id}</p>
-                <p>Name: {lead.name}</p>
-                <p>Email: {lead.email}</p>
-                <p>id: {lead.id}</p>
-                <p>account_id: {lead.account_id}</p>
-                <p>customer_id: {lead.customer_id}</p>
-                <p>source_id: {lead.source_id}</p>
-                <p>provider_id: {lead.provider_id}</p>
-                <p>appointment_date: {lead.appointment_date}</p>
-                <p>appointment_event_id: {lead.appointment_event_id}</p>
-                <p>phone_appointment_date: {lead.phone_appointment_date}</p>
-                <p>available_date: {lead.available_date}</p>
-                <p>be_back_date: {lead.be_back_date}</p>
-                <p>birth_date: {lead.birth_date}</p>
-                <p>call_date: {lead.call_date}</p>
-                <p>created_at: {lead.created_at}</p>
-                <p>csi_date: {lead.csi_date}</p>
-                <p>deliverable_date: {lead.deliverable_date}</p>
-                <p>delivered_date: {lead.delivered_date}</p>
-                <p>delivery_date: {lead.delivery_date}</p>
-                <p>funded: {lead.funded}</p>
-                <p>end_service_date: {lead.end_service_date}</p>
-                <p>home_presented_date: {lead.home_presented_date}</p>
-                <p>last_visit_date: {lead.last_visit_date}</p>
-                <p>next_visit_date: {lead.next_visit_date}</p>
-                <p>open_work_order_date: {lead.open_work_order_date}</p>
-                <p>paperwork_date: {lead.paperwork_date}</p>
-                <p>planned_pick_up_date: {lead.planned_pick_up_date}</p>
-                <p>presented_date: {lead.presented_date}</p>
-                <p>promised_date: {lead.promised_date}</p>
-                <p>refinanced_date: {lead.refinanced_date}</p>
-                <p>repair_date: {lead.repair_date}</p>
-                <p>road_test_date: {lead.road_test_date}</p>
-                <p>home_road_test_date: {lead.home_road_test_date}</p>
-                <p>sale_date: {lead.sale_date}</p>
-                <p>take_over_date: {lead.take_over_date}</p>
-                <p>unsubscribe_all_date: {lead.unsubscribe_all_date}</p>
-                <p>unsubscribe_call_date: {lead.unsubscribe_call_date}</p>
-                <p>unsubscribe_email_date: {lead.unsubscribe_email_date}</p>
-                <p>unsubscribe_sms_date: {lead.unsubscribe_sms_date}</p>
-                <p>updated_at: {lead.updated_at}</p>
-                <p>work_order_closure_date: {lead.work_order_closure_date}</p>
-                <p>work_order_partial_closure_date: {lead.work_order_partial_closure_date}</p>
-                <p>address_line1: {lead.address_line1}</p>
-                <p>address_line2: {lead.address_line2}</p>
-                <p>credit_approved: {lead.credit_approved}</p>
-                <p>average_spending: {lead.average_spending}</p>
-                <p>business: {lead.business}</p>
-                <p>business_name: {lead.business_name}</p>
-                <p>city: {lead.city}</p>
-                <p>civility: {lead.civility}</p>
-                <p>code: {lead.code}</p>
-                <p>comment: {lead.comment}</p>
-                <p>country: {lead.country}</p>
-                <p>created_method: {lead.created_method}</p>
-                <p>dealer_tour: {lead.dealer_tour}</p>
-                <p>division: {lead.division}</p>
-                <p>financial_institution: {lead.financial_institution}</p>
-                <p>first_name: {lead.first_name}</p>
-                <p>gender: {lead.gender}</p>
-                <p>inspected: {lead.inspected}</p>
-                <p>invoiced: {lead.invoiced}</p>
-                <p>last_name: {lead.last_name}</p>
-                <p>locale: {lead.locale}</p>
-                <p>loyalty: {lead.loyalty}</p>
-                <p>odometer_last_visit: {lead.odometer_last_visit}</p>
-                <p>postal_code: {lead.postal_code}</p>
-                <p>prepaid: {lead.prepaid}</p>
-                <p>prepared: {lead.prepared}</p>
-                <p>province: {lead.province}</p>
-                <p>qualification: {lead.qualification}</p>
-                <p>rating: {lead.rating}</p>
-                <p>reached_client: {lead.reached_client}</p>
-                <p>repair_order: {lead.repair_order}</p>
-                <p>result: {lead.result}</p>
-                <p>second_contact: {lead.second_contact}</p>
-                <p>second_contact_civility: {lead.second_contact_civility}</p>
-                <p>segment: {lead.segment}</p>
-                <p>service_cleaned: {lead.service_cleaned}</p>
-                <p>service_interval_km: {lead.service_interval_km}</p>
-                <p>service_monthly_km: {lead.service_monthly_km}</p>
-                <p>source: {lead.source}</p>
-                <p>progress_state: {lead.progress_state}</p>
-                <p>status: {lead.status}</p>
-                <p>storage: {lead.storage}</p>
-                <p>type: {lead.type}</p>
-                <p>walk_around: {lead.walk_around}</p>
-                <p>work_order: {lead.work_order}</p>
-                <p>referrer: {lead.referrer}</p>
-                <p>search_term: {lead.search_term}</p>
-                <p>keyword: {lead.keyword}</p>
-                <p>navigation_history: {lead.navigation_history || 'N/A'}</p>
-                <p>campaign: {lead.campaign || 'N/A'}</p>
-                <p>response_time: {lead.response_time || 'N/A'}</p>
-                <p>first_update_time: {lead.first_update_time || 'N/A'}</p>
-                <p>customer: {lead.customer ? lead.customer.someField : 'N/A'}</p>
-                <p>emails: {lead.emails[0].address ? lead.emails.join(', ') : 'N/A'}</p>
-                <p>phones: {lead.phones[0].number ? lead.phones.join(', ') : 'N/A'}</p>
-
-                {/* Add more lead fields as needed */}
-              </li>
-            ))}
-          </ul>
-        </div>
-
+              {/* Add more lead fields as needed */}
+            </li>
+          ))}
+        </ul>
       </div>
-    );
-  }
+
+    </div>
+  );
+}
