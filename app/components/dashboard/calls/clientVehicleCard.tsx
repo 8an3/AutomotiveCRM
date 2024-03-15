@@ -583,6 +583,12 @@ export default function ClientVehicleCard({ data, }) {
                       name="tradeVin"
                       defaultValue={data.tradeVin}
                     />
+                    <Input
+                      className="mt-2  h-8 bg-slate11  "
+                      placeholder="Mileage"
+                      name="tradeMileage"
+                      defaultValue={data.tradeMileage}
+                    />
                   </div>
                   <div className="mx-3 my-3 grid w-[90%] grid-cols-2 p-2">
                     <p className=" text-sm ">Trade Value</p>
