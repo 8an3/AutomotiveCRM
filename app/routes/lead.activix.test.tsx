@@ -53,49 +53,9 @@ export async function loader({ request, params }) {
 
   if (!user) { return redirect('/login'); }
   await SyncImport(user);
-  await SyncExport(user);
+
 }
 
-
-async function SyncExport(user) {
-  // Fetch records from the finance database
-  const records = await prisma.finance.findMany({
-    where: { userEmail: user?.email, actvixData: { not: null } },
-  });
-
-  // Function to post data to Activix API for a single record
-  async function postToActivix(record) {
-    const accessToken = "YOUR_ACCESS_TOKEN_HERE"; // Replace with your actual access token
-    try {
-      const response = await axios.post('https://api.crm.activix.ca/v2/leads', {
-        // Populate the data to be sent to the API from the record
-        // Ensure you include all required fields
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        }
-      });
-      console.log('Posted data to Activix API:', response.data);
-    } catch (error) {
-      console.error('Error posting data to Activix API:', error);
-      throw error; // Throw error to be caught by the caller
-    }
-  }
-
-  // Function to process records and post to Activix API if needed
-  async function processRecords() {
-    for (const record of records) {
-      if (!record.actvixData || !record.actvixData.id) {
-        await postToActivix(record);
-      }
-    }
-  }
-
-  // Call the function to process records
-  await processRecords();
-}
 
 
 export async function SyncImport(user) {

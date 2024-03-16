@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import axios from "axios";
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
+import { CreateLeadActivix, UpdateLead } from "./api.activix";
 // loader function
 export async function loader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
@@ -61,11 +62,15 @@ export async function loader({ request, params }: LoaderFunction) {
     }
 
     const existsInDatabase = await checkFieldInDatabase(data.id);
+    console.log('syncing to local database')
     await SyncImport(existsInDatabase, user, data)
-    await SyncExport(existsInDatabase, user, data)
-
+    console.log('syncing to api')
+    await SyncExport(user, data)
   }
 }
+const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+
+
 async function checkFieldInDatabase(id) {
   const record = await prisma.finance.findFirst({ where: { theRealActId: id.toString(), }, });
   return !!record;
@@ -197,6 +202,7 @@ async function SyncImport(existsInDatabase, user, data) {
   if (!existsInDatabase) {
     console.log(`Record with id ${data.id} does not exist in the finance database`);
     const formData = data;
+    console.log(formData, 'formdata')
     const nameParts = user.username.split(' ');
     const firstName = nameParts[0];
     const lastName = nameParts.slice(1).join(' ');
@@ -630,8 +636,47 @@ async function SyncImport(existsInDatabase, user, data) {
     CreateActvix()
   }
 }
-async function SyncExport(existsInDatabase, user, data) {
+async function SyncExport(user, data) {
+  // Define a function to save a lead to the API
+  const lead = data;
+  console.log(data, 'data')
+  const localCustomerList = await prisma.finance.findMany({ where: { userEmail: user.email, actvixId: null } });
 
+  let currentPage = 1;
+  const response = await axios.get(`https://api.crm.activix.ca/v2/leads?include[]=emails&include[]=phones`, {
+    params: {
+      page: currentPage,
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  });
+  const updatePromises = [];
+  for (const activixData of response.data.data) {
+    const activixId = activixData.id;
+    let isMatchFound = false;
+    for (const finance of localCustomerList) {
+      const financeActiId = parseInt(finance.activixId);
+      isMatchFound = false;
+      if (activixId === financeActiId) {
+        isMatchFound = true;
+        console.log(`Updated finance record for Activix ID: ${activixData.id}`);
+        updatePromises.push(UpdateLead(finance));
+        break;
+      }
+    }
+    if (!isMatchFound) {
+      console.log(`No match found for Activix ID: ${activixData.id}`);
+      for (const finance of localCustomerList) {
+        console.log(`created finance record for Activix ID: ${activixData.id}`);
+        updatePromises.push(CreateLeadActivix(activixData, finance));
+        break;
+      }
+    }
+  }
+  await Promise.all(updatePromises);
 }
 
 
@@ -1101,44 +1146,4 @@ async function ActivixImport(user) {
       return !!record; // Return true if the record exists, false otherwise
     }
   }
-}
-
-async function ActivixExport(user) {
-  // Fetch records from the finance database
-  const records = await prisma.finance.findMany({
-    where: { userEmail: user?.email, actvixData: { not: null } },
-  });
-
-  // Function to post data to Activix API for a single record
-  async function postToActivix(record) {
-    const accessToken = "YOUR_ACCESS_TOKEN_HERE"; // Replace with your actual access token
-    try {
-      const response = await axios.post('https://api.crm.activix.ca/v2/leads', {
-        // Populate the data to be sent to the API from the record
-        // Ensure you include all required fields
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        }
-      });
-      console.log('Posted data to Activix API:', response.data);
-    } catch (error) {
-      console.error('Error posting data to Activix API:', error);
-      throw error; // Throw error to be caught by the caller
-    }
-  }
-
-  // Function to process records and post to Activix API if needed
-  async function processRecords() {
-    for (const record of records) {
-      if (!record.actvixData || !record.actvixData.id) {
-        await postToActivix(record);
-      }
-    }
-  }
-
-  // Call the function to process records
-  await processRecords();
 }
