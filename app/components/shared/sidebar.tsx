@@ -46,35 +46,6 @@ export default function Sidebar() {
   const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
 
-  const MyIFrameComponent = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    useEffect(() => {
-      if (iFrameRef?.current) {
-        iFrameRef.current.src = 'http://localhost:3000/internal/im/lobby';
-        //iFrameRef.current.src = 'http://localhost:3002/customerGen';
-      }
-    });
-    const hideSpinner = () => {
-      setIsLoading(false);
-    };
-
-    return (
-      <>
-        <div className="h-[100vh] w-full ">
-          <iframe
-            ref={iFrameRef}
-            title="my-iframe"
-            width="100%"
-            height="100%"
-            onLoad={hideSpinner}
-          />
-        </div>
-      </>
-    );
-  };
-
-
-
   useEffect(() => {
     if (iFrameRef?.current) {
       iFrameRef.current.src = 'http://localhost:3000/internal/im/lobby';

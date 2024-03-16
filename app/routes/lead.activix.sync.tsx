@@ -633,3 +633,512 @@ async function SyncImport(existsInDatabase, user, data) {
 async function SyncExport(existsInDatabase, user, data) {
 
 }
+
+
+async function ActivixImport(user) {
+
+  // sync import
+  const activixData = await CallActi();
+  if (!activixData || !activixData.data) {
+    throw new Error("Failed to fetch ActivixData or missing data");
+  }
+  const dataObjects = activixData.data;
+  for (const data of dataObjects) {
+    if (!data.emails || data.emails.length === 0 || !data.emails[0].address) {
+      console.log(`Record with id ${data.id} does not have an email address. Skipping...`);
+      continue;
+    }
+
+    const existsInDatabase = await checkFieldInDatabase(data.id)
+
+    if (!existsInDatabase) {
+      // Perform creation logic only if the record does not exist in the database
+      console.log(`Record with id ${data.id} does not exist in the finance database`);
+      const formData = data;
+      const nameParts = user.username.split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ');
+      console.log(formData, 'formdata')
+      async function CreateActvix() {
+        try {
+          let clientFile = await prisma.clientfile.findUnique({ where: { email: formData.emails[0].address } })
+          if (!clientFile) {
+            clientFile = await prisma.clientfile.create({
+              data: {
+                userId: user?.id,
+                firstName: formData.first_name,
+                lastName: formData.last_name,
+                name: formData.first_name + ' ' + formData.last_name,
+                email: formData.emails[0].address,
+                phone: formData.phones[0].number,
+                address: formData.address_line1,
+                city: formData.city,
+                postal: formData.postal_code,
+                province: formData.province,
+              }
+            })
+
+          }
+          const financeData = await prisma.finance.create({
+            data: {
+              firstName: formData.first_name,
+              lastName: formData.last_name,
+              name: formData.first_name + ' ' + formData.last_name,
+              email: formData.emails[0].address,
+              phone: formData.phones[0].number,
+              address: formData.address_line1,
+              city: formData.city,
+              postal: formData.postal_code,
+              province: formData.province,
+              year: formData.vehicle[0].year,
+              brand: formData.vehicle[0].make,
+              model: formData.vehicle[0].model,
+              model1: formData.model1,
+              color: formData.vehicle[0].color_exterior,
+              modelCode: formData.modelCode,
+              msrp: formData.vehicle[0].price,
+              userEmail: user?.email,
+              tradeValue: formData.vehicle[1].price,
+              tradeDesc: formData.vehicle[1].model,
+              tradeColor: formData.vehicle[1].color_exterior,
+              tradeYear: formData.vehicle[1].year,
+              tradeMake: formData.vehicle[1].make,
+              tradeVin: formData.vehicle[1].vin,
+              tradeTrim: formData.vehicle[1].trim,
+              tradeMileage: formData.vehicle[1].odometer,
+              trim: formData.vehicle[0].trim,
+              vin: formData.vehicle[0].vin,
+            }
+          })
+          const dashboardData = await prisma.dashboard.create({
+            data: {
+              userEmail: user?.email,
+              referral: formData.referral,
+              visited: formData.visited,
+              bookedApt: formData.bookedApt,
+              aptShowed: formData.aptShowed,
+              aptNoShowed: formData.aptNoShowed,
+              testDrive: formData.testDrive,
+              metService: formData.metService,
+              metManager: formData.metManager,
+              metParts: formData.metParts,
+              sold: formData.sold,
+              depositMade: formData.depositMade,
+              refund: formData.refund,
+              turnOver: formData.turnOver,
+              financeApp: formData.financeApp,
+              approved: formData.approved,
+              signed: formData.signed,
+              pickUpSet: formData.pickUpSet,
+              demoed: formData.demoed,
+              delivered: formData.delivered,
+              status: 'Active',
+              customerState: 'Attempted',
+              result: formData.result,
+              timesContacted: formData.timesContacted,
+              nextAppointment: formData.nextAppointment,
+              completeCall: formData.completeCall,
+              followUpDay: formData.followUpDay,
+              state: formData.state,
+              deliveredDate: formData.deliveredDate,
+              notes: formData.notes,
+              visits: formData.visits,
+              progress: formData.progress,
+              metSalesperson: formData.metSalesperson,
+              metFinance: formData.metFinance,
+              financeApplication: formData.financeApplication,
+              pickUpDate: formData.pickUpDate,
+              pickUpTime: formData.pickUpTime,
+              depositTakenDate: formData.depositTakenDate,
+              docsSigned: formData.docsSigned,
+              tradeRepairs: formData.tradeRepairs,
+              seenTrade: formData.seenTrade,
+              lastNote: formData.lastNote,
+              dLCopy: formData.dLCopy,
+              insCopy: formData.insCopy,
+              testDrForm: formData.testDrForm,
+              voidChq: formData.voidChq,
+              loanOther: formData.loanOther,
+              signBill: formData.signBill,
+              ucda: formData.ucda,
+              tradeInsp: formData.tradeInsp,
+              customerWS: formData.customerWS,
+              otherDocs: formData.otherDocs,
+              urgentFinanceNote: formData.urgentFinanceNote,
+              funded: formData.funded,
+              countsInPerson: formData.countsInPerson,
+              countsPhone: formData.countsPhone,
+              countsSMS: formData.countsSMS,
+              countsOther: formData.countsOther,
+              countsEmail: formData.countsEmail,
+            }
+          })
+          const activixData = await prisma.activixLead.create({
+            data: {
+              actvixId: data.id.toString(),
+              account_id: data.account_id.toString(),
+              customer_id: data.customer_id.toString(),
+              appointment_date: data.appointment_date,
+              phone_appointment_date: data.phone_appointment_date,
+              available_date: data.available_date,
+              be_back_date: data.be_back_date,
+              call_date: data.call_date,
+              created_at: data.created_at,
+              csi_date: data.csi_date,
+              delivered_date: data.delivered_date,
+              deliverable_date: data.deliverable_date,
+              delivery_date: data.delivery_date,
+              paperwork_date: data.paperwork_date,
+              presented_date: data.presented_date,
+              promised_date: data.promised_datere,
+              financed_date: data.financed_date,
+              road_test_date: data.road_test_date,
+              home_road_test_date: data.home_road_test_date,
+              sale_date: data.sale_date,
+              updated_at: data.updated_at,
+              address_line1: data.address,
+              city: data.city,
+              civility: data.civility,
+              country: data.country,
+              credit_approved: data.credit_approved ? data.credit_approved.toString() : null,
+              dealer_tour: data.creditdealer_tour_approved ? data.dealer_tour.toString() : null,
+              financial_institution: data.financial_institution,
+              first_name: data.firstName,
+              funded: data.funded ? data.funded.toString() : null,
+              inspected: data.inspected ? data.inspected.toString() : null,
+              last_name: data.lastName,
+              postal_code: data.postal,
+              province: data.province,
+              result: data.result,
+              status: data.status,
+              type: data.type,
+              walk_around: data.walk_around ? data.walk_around.toString() : null,
+              comment: data.comment,
+              delivered_by: data.delivered_by,
+              emails: data.email,
+              phones: data.phone,
+              financeId: data.financeId,
+              userEmail: user?.email,
+
+              /**home_presented_date: data.home_presented_date,
+               birth_date: data.birth_date,
+               source_id: data.source_id,
+               Integer: data.Integer,
+               provider_id: data.provider_id,
+               unsubscribe_all_date: data.unsubscribe_all_date,
+               unsubscribe_call_date: data.unsubscribe_call_date,
+               unsubscribe_email_date: data.unsubscribe_email_date,
+               unsubscribe_sms_date: data.unsubscribe_sms_date,
+               advisor: data.advisor,
+               take_over_date: data.take_over_date,
+               search_term: data.search_term,
+               gender: data.gender,
+               form: data.form,
+               division: data.division,
+               created_method: data.created_method,
+               campaign: data.campaign,
+               address_line2: data.address_line2,
+               business: data.business,
+               business_name: data.business_name,
+               second_contact: data.second_contact,
+               second_contact_civility: data.second_contact_civility,
+               segment: data.segment,
+               source: data.source,
+               qualification: data.qualification,
+               rating: data.rating,
+               referrer: data.referrer,
+               provider: data.provider,
+               progress_state: data.progress_state,
+               locale: data.locale,
+               navigation_history: data.navigation_history,
+               keyword: data.keyword,*/
+
+
+
+            }
+          })
+          await prisma.finance.update({
+            where: { id: financeData.id },
+            data: {
+              clientfileId: clientFile.id,
+              dashboardId: dashboardData.id,
+              financeId: financeData.id,
+              theRealActId: activixData.id,
+            }
+          })
+
+
+          // Returning the relevant data
+          console.log(financeData, activixData, dashboardData)
+          return { financeData, activixData, dashboardData };
+        } catch (error) {
+          // Handle errors here
+          console.error(error);
+          throw error; // rethrow the error for handling at a higher level if needed
+        }
+      }
+      CreateActvix()
+    }
+    else {
+      // Perform creation logic only if the record does not exist in the database
+      console.log(`Record with id ${data.id} does not exist in the finance database`);
+      const formData = data;
+      const nameParts = user.username.split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ');
+      console.log(formData, 'formdata')
+      async function CreateActvix() {
+        try {
+
+          const financeData = await prisma.finance.update({
+            where: { activixId: formData.id },
+            data: {
+              firstName: formData.first_name,
+              lastName: formData.last_name,
+              name: formData.first_name + ' ' + formData.last_name,
+              email: formData.emails[0].address,
+              phone: formData.phones[0].number,
+              address: formData.address_line1,
+              city: formData.city,
+              postal: formData.postal_code,
+              province: formData.province,
+              year: formData.vehicle[0].year,
+              brand: formData.vehicle[0].make,
+              model: formData.vehicle[0].model,
+              model1: formData.model1,
+              color: formData.vehicle[0].color_exterior,
+              modelCode: formData.modelCode,
+              msrp: formData.vehicle[0].price,
+              userEmail: user?.email,
+              tradeValue: formData.vehicle[1].price,
+              tradeDesc: formData.vehicle[1].model,
+              tradeColor: formData.vehicle[1].color_exterior,
+              tradeYear: formData.vehicle[1].year,
+              tradeMake: formData.vehicle[1].make,
+              tradeVin: formData.vehicle[1].vin,
+              tradeTrim: formData.vehicle[1].trim,
+              tradeMileage: formData.vehicle[1].odometer,
+              trim: formData.vehicle[0].trim,
+              vin: formData.vehicle[0].vin,
+            }
+          })
+          const dashboardData = await prisma.dashboard.update({
+            where: { id: finance.financeId },
+            data: {
+              userEmail: user?.email,
+              referral: formData.referral,
+              visited: formData.visited,
+              bookedApt: formData.bookedApt,
+              aptShowed: formData.aptShowed,
+              aptNoShowed: formData.aptNoShowed,
+              testDrive: formData.testDrive,
+              metService: formData.metService,
+              metManager: formData.metManager,
+              metParts: formData.metParts,
+              sold: formData.sold,
+              depositMade: formData.depositMade,
+              refund: formData.refund,
+              turnOver: formData.turnOver,
+              financeApp: formData.financeApp,
+              approved: formData.approved,
+              signed: formData.signed,
+              pickUpSet: formData.pickUpSet,
+              demoed: formData.demoed,
+              delivered: formData.delivered,
+              status: 'Active',
+              customerState: 'Attempted',
+              result: formData.result,
+              timesContacted: formData.timesContacted,
+              nextAppointment: formData.nextAppointment,
+              completeCall: formData.completeCall,
+              followUpDay: formData.followUpDay,
+              state: formData.state,
+              deliveredDate: formData.deliveredDate,
+              notes: formData.notes,
+              visits: formData.visits,
+              progress: formData.progress,
+              metSalesperson: formData.metSalesperson,
+              metFinance: formData.metFinance,
+              financeApplication: formData.financeApplication,
+              pickUpDate: formData.pickUpDate,
+              pickUpTime: formData.pickUpTime,
+              depositTakenDate: formData.depositTakenDate,
+              docsSigned: formData.docsSigned,
+              tradeRepairs: formData.tradeRepairs,
+              seenTrade: formData.seenTrade,
+              lastNote: formData.lastNote,
+              dLCopy: formData.dLCopy,
+              insCopy: formData.insCopy,
+              testDrForm: formData.testDrForm,
+              voidChq: formData.voidChq,
+              loanOther: formData.loanOther,
+              signBill: formData.signBill,
+              ucda: formData.ucda,
+              tradeInsp: formData.tradeInsp,
+              customerWS: formData.customerWS,
+              otherDocs: formData.otherDocs,
+              urgentFinanceNote: formData.urgentFinanceNote,
+              funded: formData.funded,
+              countsInPerson: formData.countsInPerson,
+              countsPhone: formData.countsPhone,
+              countsSMS: formData.countsSMS,
+              countsOther: formData.countsOther,
+              countsEmail: formData.countsEmail,
+            }
+          })
+          const activixData = await prisma.activixLead.update({
+            where: { id: finance.theRealActId },
+            data: {
+              actvixId: data.id.toString(),
+              account_id: data.account_id.toString(),
+              customer_id: data.customer_id.toString(),
+              appointment_date: data.appointment_date,
+              phone_appointment_date: data.phone_appointment_date,
+              available_date: data.available_date,
+              be_back_date: data.be_back_date,
+              call_date: data.call_date,
+              created_at: data.created_at,
+              csi_date: data.csi_date,
+              delivered_date: data.delivered_date,
+              deliverable_date: data.deliverable_date,
+              delivery_date: data.delivery_date,
+              paperwork_date: data.paperwork_date,
+              presented_date: data.presented_date,
+              promised_date: data.promised_datere,
+              financed_date: data.financed_date,
+              road_test_date: data.road_test_date,
+              home_road_test_date: data.home_road_test_date,
+              sale_date: data.sale_date,
+              updated_at: data.updated_at,
+              address_line1: data.address,
+              city: data.city,
+              civility: data.civility,
+              country: data.country,
+              credit_approved: data.credit_approved ? data.credit_approved.toString() : null,
+              dealer_tour: data.creditdealer_tour_approved ? data.dealer_tour.toString() : null,
+              financial_institution: data.financial_institution,
+              first_name: data.firstName,
+              funded: data.funded ? data.funded.toString() : null,
+              inspected: data.inspected ? data.inspected.toString() : null,
+              last_name: data.lastName,
+              postal_code: data.postal,
+              province: data.province,
+              result: data.result,
+              status: data.status,
+              type: data.type,
+              walk_around: data.walk_around ? data.walk_around.toString() : null,
+              comment: data.comment,
+              delivered_by: data.delivered_by,
+              emails: data.email,
+              phones: data.phone,
+              financeId: data.financeId,
+              userEmail: user?.email,
+
+              /**home_presented_date: data.home_presented_date,
+               birth_date: data.birth_date,
+               source_id: data.source_id,
+               Integer: data.Integer,
+               provider_id: data.provider_id,
+               unsubscribe_all_date: data.unsubscribe_all_date,
+               unsubscribe_call_date: data.unsubscribe_call_date,
+               unsubscribe_email_date: data.unsubscribe_email_date,
+               unsubscribe_sms_date: data.unsubscribe_sms_date,
+               advisor: data.advisor,
+               take_over_date: data.take_over_date,
+               search_term: data.search_term,
+               gender: data.gender,
+               form: data.form,
+               division: data.division,
+               created_method: data.created_method,
+               campaign: data.campaign,
+               address_line2: data.address_line2,
+               business: data.business,
+               business_name: data.business_name,
+               second_contact: data.second_contact,
+               second_contact_civility: data.second_contact_civility,
+               segment: data.segment,
+               source: data.source,
+               qualification: data.qualification,
+               rating: data.rating,
+               referrer: data.referrer,
+               provider: data.provider,
+               progress_state: data.progress_state,
+               locale: data.locale,
+               navigation_history: data.navigation_history,
+               keyword: data.keyword,*/
+
+
+
+            }
+          })
+          await prisma.finance.update({
+            where: { id: financeData.id },
+            data: {
+              dashboardId: dashboardData.id,
+              financeId: financeData.id,
+              theRealActId: activixData.id,
+            }
+          })
+
+
+          // Returning the relevant data
+          console.log(financeData, activixData, dashboardData)
+          return { financeData, activixData, dashboardData };
+        }
+        catch (error) {
+          // Handle errors here
+          console.error(error);
+          throw error; // rethrow the error for handling at a higher level if needed
+        }
+      }
+    }
+    async function checkFieldInDatabase(id) {
+      const record = await prisma.finance.findFirst({
+        where: {
+          theRealActId: id.toString(),
+        },
+      });
+      return !!record; // Return true if the record exists, false otherwise
+    }
+  }
+}
+
+async function ActivixExport(user) {
+  // Fetch records from the finance database
+  const records = await prisma.finance.findMany({
+    where: { userEmail: user?.email, actvixData: { not: null } },
+  });
+
+  // Function to post data to Activix API for a single record
+  async function postToActivix(record) {
+    const accessToken = "YOUR_ACCESS_TOKEN_HERE"; // Replace with your actual access token
+    try {
+      const response = await axios.post('https://api.crm.activix.ca/v2/leads', {
+        // Populate the data to be sent to the API from the record
+        // Ensure you include all required fields
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      });
+      console.log('Posted data to Activix API:', response.data);
+    } catch (error) {
+      console.error('Error posting data to Activix API:', error);
+      throw error; // Throw error to be caught by the caller
+    }
+  }
+
+  // Function to process records and post to Activix API if needed
+  async function processRecords() {
+    for (const record of records) {
+      if (!record.actvixData || !record.actvixData.id) {
+        await postToActivix(record);
+      }
+    }
+  }
+
+  // Call the function to process records
+  await processRecords();
+}
