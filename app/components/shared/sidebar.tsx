@@ -35,13 +35,10 @@ export let action = rootAction
 
 export default function Sidebar() {
   const { user } = useLoaderData();
-  const id = user.id
-  async function activixMenu2(id) {
-    const getUser = await prisma.user.findUnique({ where: { id: id } })
-    return getUser
-  }
-  const activixMenu = activixMenu2(id)
-  console.log(user, activixMenu, 'sidebar user')
+
+
+  v
+  console.log(user, 'sidebar user')
   const location = useLocation();
   let fetcher = useFetcher()
   // const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
