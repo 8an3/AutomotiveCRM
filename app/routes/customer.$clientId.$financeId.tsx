@@ -516,9 +516,13 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const clientFile = await getClientFileById(clientfileId)
   const Coms = await getComsOverview(financeId)
   const dealerFees = await prisma.dealerFees.findUnique({ where: { userEmail: user?.email } })
-
+  const dealerInfo = await prisma.dealerInfo.findFirst()
 
   let merged = {
+    dealerName: dealerInfo?.dealerName,
+    dealerAddress: dealerInfo?.dealerAddress,
+    dealerProv: `${dealerInfo?.dealerCity}, ${dealerInfo?.dealerProv}, ${dealerInfo?.dealerPostal}`,
+    dealerPhone: dealerInfo?.dealerPhone,
     userLoanProt: finance[0].userLoanProt,
     userTireandRim: finance[0].userTireandRim,
     userGap: finance[0].userGap,
@@ -603,7 +607,6 @@ export async function loader({ params, request }: DataFunctionArgs) {
     trim: finance[0].trim,
     vin: finance[0].vin,
     lien: finance[0].lien,
-    labour: finance[0].labour,
 
     date: new Date().toLocaleDateString(),
     dl: finance[0].dl,
