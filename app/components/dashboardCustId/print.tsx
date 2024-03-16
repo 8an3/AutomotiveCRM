@@ -30,7 +30,7 @@ export default function Print() {
     tradeVin: finance.tradeVin === null ? ' ' : finance.tradeVin,
     stockNum: finance.stockNum === null ? ' ' : finance.stockNum,
     namextwar: finance.userExtWarr === null ? ' ' : 'Extended Warranty',
-    nameloan: finance.userLoanProt === null ? ' ' : 'Loan Protection',
+    nameloan: finance.userLoanProt === null ? 'Loan Protection' : ' ',
     namegap: finance.userGap === null ? ' ' : 'Gap Insurance',
     nameTireandRim: finance.userTireandRim === null ? ' ' : 'Warranty',
     namevinE: finance.vinE === null ? ' ' : 'Vin Etching',
@@ -97,7 +97,7 @@ export default function Print() {
       // Function to convert values to strings
 
       const handleLoad = () => {
-        const data = { merged: newMerged, user, userId };
+        const data = { newMerged, user, userId };
         iFrameRef.current?.contentWindow?.postMessage(data, '*');
       };
 
