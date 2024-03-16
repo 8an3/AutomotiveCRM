@@ -515,12 +515,9 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const docTemplates = await getDocsbyUserId(userId)
   const clientFile = await getClientFileById(clientfileId)
   const Coms = await getComsOverview(financeId)
-  if (user?.activixActivated === 'yes') {
-    await UpdateLeadBasic(formData)
-    await UpdateLeademail(formData)
-    await UpdateLeadPhone(formData)
-    await UpdateLeadWantedVeh(formData)
-  }
+  const dealerFees = await prisma.dealerFees.findUnique({ where: { userEmail: user?.email } })
+
+
   let merged = {
     userLoanProt: finance[0].userLoanProt,
     userTireandRim: finance[0].userTireandRim,
@@ -530,23 +527,23 @@ export async function loader({ params, request }: DataFunctionArgs) {
     vinE: finance[0].vinE,
     lifeDisability: finance[0].lifeDisability,
     rustProofing: finance[0].rustProofing,
-    userLicensing: finance[0].userLicensing,
-    userFinance: finance[0].userFinance,
-    userDemo: finance[0].userDemo,
-    userGasOnDel: finance[0].userGasOnDel,
-    userOMVIC: finance[0].userOMVIC,
+    userLicensing: dealerFees.userLicensing,
+    userFinance: dealerFees.userFinance,
+    userDemo: dealerFees.userDemo,
+    userGasOnDel: dealerFees.userGasOnDel,
+    userOMVIC: dealerFees.userOMVIC,
     userOther: finance[0].userOther,
-    userTax: finance[0].userTax,
-    userAirTax: finance[0].userAirTax,
-    userTireTax: finance[0].userTireTax,
-    userGovern: finance[0].userGovern,
-    userPDI: finance[0].userPDI,
-    userLabour: finance[0].userLabour,
-    userMarketAdj: finance[0].userMarketAdj,
-    userCommodity: finance[0].userCommodity,
-    destinationCharge: finance[0].destinationCharge,
-    userFreight: finance[0].userFreight,
-    userAdmin: finance[0].userAdmin,
+    userTax: dealerFees.userTax,
+    userAirTax: dealerFees.userAirTax,
+    userTireTax: dealerFees.userTireTax,
+    userGovern: dealerFees.userGovern,
+    userPDI: dealerFees.userPDI,
+    userLabour: dealerFees.userLabour,
+    userMarketAdj: dealerFees.userMarketAdj,
+    userCommodity: dealerFees.userCommodity,
+    destinationCharge: dealerFees.destinationCharge,
+    userFreight: dealerFees.userFreight,
+    userAdmin: dealerFees.userAdmin,
     iRate: finance[0].iRate,
     months: finance[0].months,
     discount: finance[0].discount,
@@ -662,6 +659,13 @@ export async function loader({ params, request }: DataFunctionArgs) {
     urgentFinanceNote: finance[0].urgentFinanceNote,
     funded: finance[0].funded,
 
+  }
+
+  if (user?.activixActivated === 'yes') {
+    await UpdateLeadBasic(merged)
+    await UpdateLeademail(merged)
+    await UpdateLeadPhone(merged)
+    await UpdateLeadWantedVeh(merged)
   }
   for (let key in merged) {
     merged[key] = String(merged[key]);
