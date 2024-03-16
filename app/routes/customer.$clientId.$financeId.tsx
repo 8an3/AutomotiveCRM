@@ -602,6 +602,8 @@ export async function loader({ params, request }: DataFunctionArgs) {
     tradeMileage: finance[0].tradeMileage,
     trim: finance[0].trim,
     vin: finance[0].vin,
+    lien: finance[0].lien,
+    labour: finance[0].labour,
 
     date: new Date().toLocaleDateString(),
     dl: finance[0].dl,
