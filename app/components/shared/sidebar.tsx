@@ -35,10 +35,7 @@ export let action = rootAction
 
 export default function Sidebar() {
   const { user } = useLoaderData();
-
-
-  v
-  console.log(user, 'sidebar user')
+  // console.log(user, 'sidebar user')
   const location = useLocation();
   let fetcher = useFetcher()
   // const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
