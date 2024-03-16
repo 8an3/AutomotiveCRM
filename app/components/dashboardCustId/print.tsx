@@ -35,6 +35,7 @@ export async function loader({ request }) {
   const finance = await getMergedFinanceOnFinance(financeId)
 
   let merged = {
+    username: user?.username,
     userLoanProt: finance[0].userLoanProt,
     userTireandRim: finance[0].userTireandRim,
     userGap: finance[0].userGap,
@@ -118,6 +119,7 @@ export async function loader({ request }) {
     tradeMileage: finance[0].tradeMileage,
     trim: finance[0].trim,
     vin: finance[0].vin,
+    tradeMileage: finance[0].tradeMileage,
 
     date: new Date().toLocaleDateString(),
     dl: finance[0].dl,
@@ -187,6 +189,17 @@ export async function loader({ request }) {
 
 export default function Print() {
   const { user, finance, merged, filename, financeId } = useLoaderData();
+  const newMerged = {
+    ...merged,
+    tradeMileage: finance.tradeMileage,
+    userName: user?.username,
+    year: finance.year === null ? ' ' : finance.year,
+    tradeYear: finance.tradeYear === null ? ' ' : finance.tradeYear,
+    vin: finance.vin === null ? ' ' : finance.vin,
+    tradeVin: finance.tradeVin === null ? ' ' : finance.tradeVin,
+    stockNum: finance.stockNum === null ? ' ' : finance.stockNum,
+
+  }
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
   const MyIFrameComponent = () => {
     const [isLoading, setIsLoading] = useState(true);
