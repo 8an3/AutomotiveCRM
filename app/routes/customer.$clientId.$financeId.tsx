@@ -515,13 +515,65 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const docTemplates = await getDocsbyUserId(userId)
   const clientFile = await getClientFileById(clientfileId)
   const Coms = await getComsOverview(financeId)
-  if (user?.activixActivated === 'yes') {
-    await UpdateLeadBasic(formData)
-    await UpdateLeademail(formData)
-    await UpdateLeadPhone(formData)
-    await UpdateLeadWantedVeh(formData)
-  }
+  const dealerFees = await prisma.dealerFees.findUnique({ where: { userEmail: user?.email } })
+  const dealerInfo = await prisma.dealerInfo.findFirst()
+
   let merged = {
+
+
+    tradeMileage: finance[0].tradeMileage,
+    userName: user?.username,
+    year: finance[0].year === null ? ' ' : finance[0].year,
+    tradeYear: finance[0].tradeYear === null ? ' ' : finance[0].tradeYear,
+    vin: finance[0].vin === null ? ' ' : finance[0].vin,
+    tradeVin: finance[0].tradeVin === null ? ' ' : finance[0].tradeVin,
+    stockNum: finance[0].stockNum === null ? ' ' : finance[0].stockNum,
+    namextwar: finance[0].userExtWarr === null ? ' ' : 'Extended Warranty',
+    asdasd: finance[0].userOther === null ? ' ' : 'Other',
+    nameloan: finance[0].userLoanProt === null ? ' ' : 'Loan Protection',
+    namegap: finance[0].userGap === null ? ' ' : 'Gap Insurance',
+    nameTireandRim: finance[0].userTireandRim === null ? ' ' : 'Warranty',
+    namevinE: finance[0].vinE === null ? ' ' : 'Vin Etching',
+    namerust: finance[0].rustProofing === null ? ' asdasdsa' : 'Rust Proofing',
+    namelife: finance[0].lifeDisability === null ? ' ' : 'Life and Disability Ins.',
+    nameservice: finance[0].userServicespkg === null ? ' ' : 'Service Package',
+    namedelivery: finance[0].deliveryCharge === null ? ' ' : 'Delivery Charge',
+    userGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : dealerFees?.userGovern,
+    nameGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : 'Government Fees',
+    userAirTax: Number(dealerFees?.userAirTax) < 0 ? ' ' : dealerFees?.userAirTax,
+    nameAirTax: Number(dealerFees?.userAirTax) < 0 ? ' ' : 'Air Tax',
+    userTireTax: Number(dealerFees?.userTireTax) < 0 ? ' ' : dealerFees?.userTireTax,
+    nameTireTax: Number(dealerFees?.userTireTax) < 0 ? ' ' : 'Tire Tax',
+    userFinance: Number(dealerFees?.userFinance) < 0 ? ' ' : dealerFees?.userFinance,
+    nameFinance: Number(dealerFees?.userFinance) < 0 ? ' ' : 'Finance Fee',
+    destinationCharge: Number(dealerFees?.destinationCharge) < 0 ? ' ' : dealerFees?.destinationCharge,
+    namedestinationCharge: Number(dealerFees?.destinationCharge) < 0 ? ' ' : 'Destination Charge',
+    userMarketAdj: Number(dealerFees?.userMarketAdj) < 0 ? ' ' : dealerFees?.userMarketAdj,
+    nameMarketAdj: Number(dealerFees?.userMarketAdj) < 0 ? ' ' : 'Market Adjustment',
+    userOMVIC: Number(dealerFees?.userOMVIC) < 0 ? ' ' : dealerFees?.userOMVIC,
+    nameOMVIC: Number(dealerFees?.userOMVIC) < 0 ? ' ' : 'OMVIC / Gov Fee',
+    userDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : dealerFees?.userDemo,
+    nameDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : 'Demonstration Fee',
+    discountPer: Number(finance[0].discountPer) < 0 ? ' ' : finance[0].discountPer,
+    namediscountPer: Number(finance[0].discountPer) < 0 ? ' ' : 'Discount %',
+    discount: Number(finance[0].discount) < 0 ? ' ' : finance[0].discount,
+    namediscount: Number(finance[0].discount) < 0 ? ' ' : 'Discount',
+    namefreight: Number(finance[0].freight) < 0 ? ' ' : 'Freight',
+    nameadmin: Number(finance[0].admin) < 0 ? ' ' : 'Admin',
+    namepdi: Number(finance[0].pdi) < 0 ? ' ' : 'PDI',
+    namcomm: Number(finance[0].commodity) < 0 ? ' ' : 'Commodity',
+    nameaccessories: Number(finance[0].accessories) < 0 ? ' ' : 'Other Accessories',
+    namelabour: Number(finance[0].labour) < 0 ? ' ' : 'Labour',
+    netDifference: (Number(finance[0].total) - Number(finance[0].tradeValue)),
+    hstSubTotal: (Number(finance[0].total) + Number(finance[0].onTax)),
+    withLicensing: (Number(finance[0].total) + Number(finance[0].onTax) + Number(finance[0].licensing)),
+    withLien: (Number(finance[0].total) + Number(finance[0].onTax) + Number(finance[0].licensing) + Number(finance[0].lien)),
+    payableAfterDel: (Number(finance[0].total) + Number(finance[0].onTax) + Number(finance[0].licensing) + Number(finance[0].lien) - Number(finance[0].deposit)),
+
+    dealerName: dealerInfo?.dealerName,
+    dealerAddress: dealerInfo?.dealerAddress,
+    dealerProv: `${dealerInfo?.dealerCity}, ${dealerInfo?.dealerProv}, ${dealerInfo?.dealerPostal}`,
+    dealerPhone: dealerInfo?.dealerPhone,
     userLoanProt: finance[0].userLoanProt,
     userTireandRim: finance[0].userTireandRim,
     userGap: finance[0].userGap,
@@ -530,26 +582,26 @@ export async function loader({ params, request }: DataFunctionArgs) {
     vinE: finance[0].vinE,
     lifeDisability: finance[0].lifeDisability,
     rustProofing: finance[0].rustProofing,
-    userLicensing: finance[0].userLicensing,
-    userFinance: finance[0].userFinance,
-    userDemo: finance[0].userDemo,
-    userGasOnDel: finance[0].userGasOnDel,
-    userOMVIC: finance[0].userOMVIC,
+    userLicensing: dealerFees?.userLicensing,
+    //  userFinance: dealerFees?.userFinance,
+    //  userDemo: dealerFees?.userDemo,
+    userGasOnDel: dealerFees?.userGasOnDel,
+    //   userOMVIC: dealerFees?.userOMVIC,
     userOther: finance[0].userOther,
-    userTax: finance[0].userTax,
-    userAirTax: finance[0].userAirTax,
-    userTireTax: finance[0].userTireTax,
-    userGovern: finance[0].userGovern,
-    userPDI: finance[0].userPDI,
-    userLabour: finance[0].userLabour,
-    userMarketAdj: finance[0].userMarketAdj,
-    userCommodity: finance[0].userCommodity,
-    destinationCharge: finance[0].destinationCharge,
-    userFreight: finance[0].userFreight,
-    userAdmin: finance[0].userAdmin,
+    userTax: dealerFees?.userTax,
+    //  userAirTax: dealerFees?.userAirTax,
+    //  userTireTax: dealerFees?.userTireTax,
+    //  userGovern: dealerFees?.userGovern,
+    userPDI: dealerFees?.userPDI,
+    userLabour: dealerFees?.userLabour,
+    //  userMarketAdj: dealerFees?.userMarketAdj,
+    userCommodity: dealerFees?.userCommodity,
+    // destinationCharge: dealerFees?.destinationCharge,
+    userFreight: dealerFees?.userFreight,
+    userAdmin: dealerFees?.userAdmin,
     iRate: finance[0].iRate,
     months: finance[0].months,
-    discount: finance[0].discount,
+    //  discount: finance[0].discount,
     total: finance[0].total,
     onTax: finance[0].onTax,
     on60: finance[0].on60,
@@ -580,7 +632,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
     admin: finance[0].admin,
     commodity: finance[0].commodity,
     pdi: finance[0].pdi,
-    discountPer: finance[0].discountPer,
+    //   discountPer: finance[0].discountPer,
     deliveryCharge: finance[0].deliveryCharge,
     paintPrem: finance[0].paintPrem,
     msrp: finance[0].msrp,
@@ -588,23 +640,24 @@ export async function loader({ params, request }: DataFunctionArgs) {
     options: finance[0].options,
     accessories: finance[0].accessories,
     labour: finance[0].labour,
-    year: finance[0].year,
+    //year: finance[0].year,
     brand: finance[0].brand,
     model: finance[0].model,
-    stockNum: finance[0].stockNum,
+    //  stockNum: finance[0].stockNum,
     model1: finance[0].model1,
     color: finance[0].color,
     modelCode: finance[0].modelCode,
     tradeValue: finance[0].tradeValue,
     tradeDesc: finance[0].tradeDesc,
     tradeColor: finance[0].tradeColor,
-    tradeYear: finance[0].tradeYear,
+    //  tradeYear: finance[0].tradeYear,
     tradeMake: finance[0].tradeMake,
-    tradeVin: finance[0].tradeVin,
+    //  tradeVin: finance[0].tradeVin,
     tradeTrim: finance[0].tradeTrim,
-    tradeMileage: finance[0].tradeMileage,
+    //  tradeMileage: finance[0].tradeMileage,
     trim: finance[0].trim,
-    vin: finance[0].vin,
+    //vin: finance[0].vin,
+    lien: finance[0].lien,
 
     date: new Date().toLocaleDateString(),
     dl: finance[0].dl,
@@ -662,6 +715,16 @@ export async function loader({ params, request }: DataFunctionArgs) {
     urgentFinanceNote: finance[0].urgentFinanceNote,
     funded: finance[0].funded,
 
+
+
+
+  }
+
+  if (user?.activixActivated === 'yes') {
+    await UpdateLeadBasic(merged)
+    await UpdateLeademail(merged)
+    await UpdateLeadPhone(merged)
+    await UpdateLeadWantedVeh(merged)
   }
   for (let key in merged) {
     merged[key] = String(merged[key]);

@@ -458,6 +458,7 @@ const financeFormSchema = z.object({
   todaysActualWriteUps: zfd.text(z.string().optional()),
   differenceWriteUps: zfd.text(z.string().optional()),
   monthsGoalWriteUps: zfd.text(z.string().optional()),
+  whichVehicle: zfd.text(z.string().optional()),
   todaysGoalDeliveries: zfd.text(z.string().optional()),
   todaysActualDeliveries: zfd.text(z.string().optional()),
   differenceDeliveries: zfd.text(z.string().optional()),

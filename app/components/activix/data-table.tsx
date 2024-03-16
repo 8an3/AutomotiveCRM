@@ -7,7 +7,7 @@ import { type ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginati
 import { DataTablePagination } from "../dashboard/calls/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/other/table";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/other/dropdown-menu";
-import { Form, Link, useFetcher, useLoaderData, useNavigation, } from "@remix-run/react";
+import { Form, Link, useFetcher, useNavigate, useNavigation, } from "@remix-run/react";
 import AddCustomer from "../dashboard/calls/addCustomer";
 import Filter from "../dashboard/calls/Filter";
 import { Flex, Text, TextArea, TextField, Heading } from '@radix-ui/themes';
@@ -152,6 +152,7 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({})
+  const navigate = useNavigate();
 
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -617,20 +618,16 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
               <CalendarCheck color="#02a9ff" size={20} strokeWidth={1.5} />
             </button>
           </Link>
-          <Form method='post' >
-            <ButtonLoading
-              size="lg"
-              onClick={() => {
-                syncData()
-              }} className="w-auto cursor-pointer ml-3  hover:text-[#02a9ff] text-[#02a9ff] border-[#02a9ff]"
-              name='intent'
-              value='syncActiData'
-              isSubmitting={isSubmitting}
-              loadingText="Naivigating to Client File.."
-            >
-              Sync Data
-            </ButtonLoading>
-          </Form>
+          <ButtonLoading
+            size="lg"
+            onClick={() => {
+              navigate("/lead/activix/sync");
+            }} className="w-auto cursor-pointer ml-3  hover:text-[#02a9ff] text-[#02a9ff] border-[#02a9ff]"
+            isSubmitting={isSubmitting}
+            loadingText="Naivigating to Client File.."
+          >
+            Sync Data
+          </ButtonLoading>
         </div>
       </div >
       <div className="mt-[20px] rounded-md  border border-[#60646c] text-slate1">

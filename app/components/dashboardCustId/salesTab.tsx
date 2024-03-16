@@ -498,6 +498,42 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                         </div>
                       </div>
                     )}
+                    {clientUnit && clientUnit.tradeMileage ? (
+                      <div className="w-full  px-4">
+
+                        <div className="relative w-full mb-3">
+                          <label
+                            className="block uppercase text-slate1 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            Mileage
+                          </label>
+                          <input
+                            type="text"
+                            className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            defaultValue={clientUnit.tradeMileage}
+                            name='vin'
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full  px-4">
+
+                        <div className="relative w-full mb-3">
+                          <label
+                            className="block uppercase text-slate1 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            Mileage
+                          </label>
+                          <input
+                            type="text"
+                            className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            name='tradeMileage'
+                          />
+                        </div>
+                      </div>
+                    )}
 
 
                     <Toast.Provider swipeDirection="right">

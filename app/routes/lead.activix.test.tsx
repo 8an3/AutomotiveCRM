@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import axios from "axios";
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
+import { CreateLeadActivix } from "./api.activix";
 // loader function
 
 async function CallActi() {
