@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+      {
+          "label": "gitPull",
+          "type": "shell",
+          "command": "git pull",
+          "problemMatcher": []
+      },
+      {
+          "label": "gitPush",
+          "type": "shell",
+          "command": "git push",
+          "problemMatcher": []
+      }
+  ]
+}
