@@ -3,7 +3,6 @@
 import { Form, Link, useLoaderData, useLocation, useFetcher } from '@remix-run/react';
 import { RemixNavLink, Input, Separator, Button, } from "~/components"
 import { TextArea, } from "~/components/ui"
-import { Google, UserSquare, } from "iconoir-react";
 import { rootAction, useUserLoader } from './actions';
 import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "~/other/sheet"
 import { getUserIsAllowed } from "~/helpers";
@@ -16,17 +15,17 @@ import { model } from "~/models";
 import { toast } from 'sonner';
 import { Menu } from 'lucide-react';
 import { useRootLoaderData } from '~/hooks/use-root-loader-data';
-import { requireAuthCookie } from '~/utils/misc.user.server';
 import { useEffect, useRef, useState } from 'react';
 import Chat from "~/components/shared/chat";
-import IMLobby from '~/routes/internal.im.lobby';
+import { prisma } from "~/libs";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   let userSession = await getSession(request.headers.get("Cookie"));
+  let email = userSession.get("email");
+
   if (!userSession) { return json({ status: 302, redirect: 'login' }); };
   let user = await model.user.query.getForSession({ email });
   if (!user) { user = await model.user.query.getForSession({ email: userSession.email }); }
-  let email = userSession.get("email");
 
   if (!email) { email = userSession.mail }
   if (!user) { return json({ status: 302, redirect: 'login' }); };
@@ -36,7 +35,13 @@ export let action = rootAction
 
 export default function Sidebar() {
   const { user } = useLoaderData();
-  // console.log(user)
+  const id = user.id
+  async function activixMenu2(id) {
+    const getUser = await prisma.user.findUnique({ where: { id: id } })
+    return getUser
+  }
+  const activixMenu = activixMenu2(id)
+  console.log(user, activixMenu, 'sidebar user')
   const location = useLocation();
   let fetcher = useFetcher()
   // const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
@@ -421,15 +426,13 @@ export default function Sidebar() {
                     </RemixNavLink>
                   </Dialog.Close>
                 )}
-                {user?.activixActivated === 'yes' && (
-                  <Dialog.Close asChild>
-                    <RemixNavLink to={`/leads/activix`}>
-                      <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
-                        Activix Dashboard
-                      </Button>
-                    </RemixNavLink>
-                  </Dialog.Close>
-                )}
+                <Dialog.Close asChild>
+                  <RemixNavLink to={`/leads/activix`}>
+                    <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
+                      Activix Dashboard
+                    </Button>
+                  </RemixNavLink>
+                </Dialog.Close>
                 <Dialog.Close asChild>
                   <RemixNavLink to={`/calendar/sales`}>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >

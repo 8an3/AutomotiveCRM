@@ -41,6 +41,8 @@ export default function Roadmap() {
 		{ type: "issue", desc: "need to redo email templates in overview - wip check bottom of file" },
 		{ type: "issue", desc: "email not currently working in overview" },
 		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - wip" },
+		{ type: "issue", desc: "need mileage for new vehciles for printing paperwork" },
+
 
 		{ type: "admin", desc: "export customers" },
 		{ type: "admin", desc: "export parts" },
