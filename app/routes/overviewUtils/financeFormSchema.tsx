@@ -149,6 +149,7 @@ const financeFormSchema = z.object({
   admin: zfd.text(z.string().optional()),
   pdi: zfd.text(z.string().optional()),
   discountPer: zfd.text(z.string().optional()),
+  promised_date: zfd.text(z.string().optional()),
   color: zfd.text(z.string().optional()),
   msrp: zfd.text(z.string().optional()),
   modelCode: zfd.text(z.string().optional()),

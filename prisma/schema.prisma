@@ -867,7 +867,7 @@ model Finance {
   clientfileId        String?
   dashboardId         String? @unique
   financeId           String? @unique
-  activixId           String? @unique
+  activixId           String?
   theRealActId        String?
   financeManager      String?
   email               String?
@@ -1323,7 +1323,7 @@ model ActivixLead {
   home_presented_date     String?
   paperwork_date          String?
   presented_date          String?
-  promised_datere         String?
+  promised_date           String?
   financed_date           String?
   road_test_date          String?
   home_road_test_date     String?

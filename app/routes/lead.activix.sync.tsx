@@ -53,22 +53,46 @@ export async function loader({ request, params }: LoaderFunction) {
     }
   }
 
-  const activixData = await CallActi();
-  if (!activixData || !activixData.data) { throw new Error("Failed to fetch ActivixData or missing data"); }
+  async function synchronizeDataWithActivix(user) {
+    try {
+      // Fetch data from Activix
+      const activixData = await CallActi();
 
-  const dataObjects = activixData.data;
-  for (const data of dataObjects) {
-    if (!data || !data.emails || data.emails.length === 0 || !data.emails[0].address) {
-      console.log(`Record with id ${data?.id} does not have an email address. Skipping...`);
-      continue;
+      // Check if data is valid
+      if (!activixData || !activixData.data) {
+        throw new Error("Failed to fetch ActivixData or missing data");
+      }
+
+      // Iterate over each data object from Activix
+      for (const data of activixData.data) {
+        // Skip if data or email address is missing
+        if (!data || !data.emails || data.emails.length === 0 || !data.emails[0].address) {
+          console.log(`Record with id ${data?.id} does not have an email address. Skipping...`);
+          continue;
+        }
+
+        // Check if the record exists in the local database
+        const existsInDatabase = await checkFieldInDatabase(data.id);
+
+        // Sync data with local database
+        console.log('Syncing to local database...');
+        await SyncImport(existsInDatabase, user, data);
+      }
+
+      // Sync data with external API after processing all records
+      console.log('Syncing to external API...');
+      await SyncExport(user);
+
+      console.log('Data synchronization complete.');
+    } catch (error) {
+      console.error('Error synchronizing data:', error);
+      throw error; // Rethrow the error to be caught by the caller
     }
-
-    const existsInDatabase = await checkFieldInDatabase(data?.id);
-    console.log('syncing to local database')
-    await SyncImport(existsInDatabase, user, data)
-    console.log('syncing to api')
-    await SyncExport(user, data)
   }
+
+  // Example usage:
+  await synchronizeDataWithActivix(user);
+
 }
 
 async function checkFieldInDatabase(id) {
@@ -118,24 +142,26 @@ async function SyncImport(existsInDatabase, user, data) {
               city: formData.city,
               postal: formData.postal_code,
               province: formData.province,
-              year: formData.vehicle[0].year,
-              brand: formData.vehicle[0].make,
-              model: formData.vehicle[0].model,
+              year: formData.vehicles[0].year,
+              brand: formData.vehicles[0].make,
+              model: formData.vehicles[0].model,
               model1: formData.model1,
-              color: formData.vehicle[0].color_exterior,
+              color: formData.vehicles[0].color_exterior,
               modelCode: formData.modelCode,
-              msrp: formData.vehicle[0].price,
+              msrp: formData.vehicles[0].price,
               userEmail: user?.email,
-              tradeValue: formData.vehicle[1].price,
-              tradeDesc: formData.vehicle[1].model,
-              tradeColor: formData.vehicle[1].color_exterior,
-              tradeYear: formData.vehicle[1].year,
-              tradeMake: formData.vehicle[1].make,
-              tradeVin: formData.vehicle[1].vin,
-              tradeTrim: formData.vehicle[1].trim,
-              tradeMileage: formData.vehicle[1].odometer,
-              trim: formData.vehicle[0].trim,
-              vin: formData.vehicle[0].vin,
+              tradeValue: formData.vehicles[1].price,
+              tradeDesc: formData.vehicles[1].model,
+              tradeColor: formData.vehicles[1].color_exterior,
+              tradeYear: formData.vehicles[1].year,
+              tradeMake: formData.vehicles[1].make,
+              tradeVin: formData.vehicles[1].vin,
+              tradeTrim: formData.vehicles[1].trim,
+              tradeMileage: formData.vehicles[1].odometer,
+              trim: formData.vehicles[0].trim,
+              vin: formData.vehicles[0].vin,
+              activixId: data.id.toString(),
+
             }
           })
           const dashboardData = await prisma.dashboard.create({
@@ -218,7 +244,7 @@ async function SyncImport(existsInDatabase, user, data) {
               delivery_date: data.delivery_date,
               paperwork_date: data.paperwork_date,
               presented_date: data.presented_date,
-              promised_date: data.promised_datere,
+              promised_date: data.promised_date,
               financed_date: data.financed_date,
               road_test_date: data.road_test_date,
               home_road_test_date: data.home_road_test_date,
@@ -435,7 +461,7 @@ async function SyncImport(existsInDatabase, user, data) {
               delivery_date: data.delivery_date,
               paperwork_date: data.paperwork_date,
               presented_date: data.presented_date,
-              promised_date: data.promised_datere,
+              promised_date: data.promised_date,
               financed_date: data.financed_date,
               road_test_date: data.road_test_date,
               home_road_test_date: data.home_road_test_date,
@@ -528,11 +554,10 @@ async function SyncImport(existsInDatabase, user, data) {
     }
   }
 }
-async function SyncExport(user, data) {
-  const accessToken = "YOUR_ACCESS_TOKEN"; // Ensure you have access token defined
+async function SyncExport(user) {
 
   // Fetch local finance records for the user
-  const localCustomerList = await prisma.finance.findMany({ where: { userEmail: user.email, actvixId: null } });
+  const localCustomerList = await prisma.finance.findMany({ where: { userEmail: user.email, activixId: null } });
 
   // Fetch all leads from Activix API (consider handling pagination)
   const response = await axios.get(`https://api.crm.activix.ca/v2/leads?include[]=emails&include[]=phones`, {
@@ -564,7 +589,7 @@ async function SyncExport(user, data) {
     if (!isMatchFound) {
       console.log(`No match found for Activix ID: ${activixData.id}`);
       console.log(`Created finance record for Activix ID: ${activixData.id}`);
-      updatePromises.push(CreateLeadActivix(activixData)); // Assuming CreateLeadActivix function creates a new lead
+      updatePromises.push(CreateLeadActivix(activixData, user)); // Assuming CreateLeadActivix function creates a new lead
     }
   }
 
@@ -727,7 +752,7 @@ async function ActivixImport(user) {
               delivery_date: data.delivery_date,
               paperwork_date: data.paperwork_date,
               presented_date: data.presented_date,
-              promised_date: data.promised_datere,
+              promised_date: data.promised_date,
               financed_date: data.financed_date,
               road_test_date: data.road_test_date,
               home_road_test_date: data.home_road_test_date,
@@ -941,7 +966,7 @@ async function ActivixImport(user) {
               delivery_date: data.delivery_date,
               paperwork_date: data.paperwork_date,
               presented_date: data.presented_date,
-              promised_date: data.promised_datere,
+              promised_date: data.promised_date,
               financed_date: data.financed_date,
               road_test_date: data.road_test_date,
               home_road_test_date: data.home_road_test_date,

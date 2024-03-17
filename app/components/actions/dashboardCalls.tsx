@@ -27,6 +27,7 @@ import { google } from 'googleapis';
 import oauth2Client, { SendEmail, } from "~/routes/email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
+import { QuoteServer } from "~/utils/quote/quote.server";
 
 
 const getAccessToken = async (refreshToken) => {
@@ -156,7 +157,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       // 30 days
       maxAge: 30 * 24 * 60 * 60,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "lax",
     });
     const cookies = cookie.serialize({
@@ -536,7 +537,7 @@ export async function ConvertDynamic(finance) {
     tradeValue: finance.tradeValue,
     tradeMileage: finance.tradeMileage,
   }
-  const template = `Hello ${clientFname}, your ${model} has been shipped.`;
+  const template = `Hello ${finance.firstName}, your ${model} has been shipped.`;
 
   const emailBody = replaceTemplateValues(template, values);
   return emailBody
@@ -574,7 +575,7 @@ export async function TokenRegen(request) {
     // 30 days
     maxAge: 30 * 24 * 60 * 60,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "lax",
   });
   const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
@@ -1411,7 +1412,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
       //   console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ QuoteServer })
+      return json({ createQuoteServer })
     }
     if (formData.brand === 'Switch') {
       const email = formData.email

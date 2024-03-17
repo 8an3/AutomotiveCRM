@@ -150,7 +150,7 @@ export async function SyncLeadData() {
               home_presented_date: activixDataList.home_presented_date,
               paperwork_date: activixDataList.paperwork_date,
               presented_date: activixDataList.presented_date,
-              promised_datere: activixDataList.promised_datere,
+              promised_date: activixDataList.promised_date,
               financed_date: activixDataList.financed_date,
               road_test_date: activixDataList.road_test_date,
               home_road_test_date: activixDataList.home_road_test_date,
