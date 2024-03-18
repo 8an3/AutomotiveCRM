@@ -1381,6 +1381,7 @@ model ActivixLead {
   phones2                 String?
   phones3                 String?
   financeId               String?
+  dashboardId             String?
   userEmail               String?
 }
 

@@ -32,7 +32,7 @@ async function seed() {
   await DealerInfo();
   await SeedDealerFees()
   await SeedLockFinanceTerminals()
-  await FirstFinance()
+  //await FirstFinance()
 }
 
 /**

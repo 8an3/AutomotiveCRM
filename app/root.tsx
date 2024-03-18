@@ -55,11 +55,7 @@ export async function loader({ request }: LoaderArgs) {
   // const userSession = await authenticator.isAuthenticated(request);
   const userSession = await getSession(request.headers.get("Cookie"));
   const email = userSession.get("email")
-  if (!email) {
-    return json({
-      ENV,
-    });
-  }
+  if (!email) { return json({ ENV, }); }
 
   const user = await prisma.user.findUnique({
     where: { email: email },
@@ -80,9 +76,7 @@ export async function loader({ request }: LoaderArgs) {
       role: { select: { symbol: true, name: true } },
     },
   });
-  if (!user) {
-    return redirect(`/logout`);
-  }
+  if (!user) { return redirect(`/logout`); }
 
   const loaderData = {
     ENV,

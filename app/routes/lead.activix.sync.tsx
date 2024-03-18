@@ -79,9 +79,15 @@ export async function loader({ request, params }: LoaderFunction) {
         await SyncImport(existsInDatabase, user, data);
       }
 
-      // Sync data with external API after processing all records
-      console.log('Syncing to external API...');
-      await SyncExport(user);
+
+      for (const data of activixData.data) {
+        if (!data || !data.emails || data.emails.length === 0 || !data.emails[0].address) {
+          console.log(`Record with id ${data?.id} does not have an email address. Skipping...`);
+          continue;
+        }
+        console.log('Syncing to external API...');
+        await SyncExport(user, data);
+      }
 
       console.log('Data synchronization complete.');
     } catch (error) {
@@ -166,6 +172,8 @@ async function SyncImport(existsInDatabase, user, data) {
           })
           const dashboardData = await prisma.dashboard.create({
             data: {
+              clientfileId: clientFile.id,
+              financeId: financeData.id,
               userEmail: user?.email,
               referral: formData.referral,
               visited: formData.visited,
@@ -244,7 +252,7 @@ async function SyncImport(existsInDatabase, user, data) {
               delivery_date: data.delivery_date,
               paperwork_date: data.paperwork_date,
               presented_date: data.presented_date,
-              promised_date: data.promised_date,
+              //   promised_date: data.promised_date,
               financed_date: data.financed_date,
               road_test_date: data.road_test_date,
               home_road_test_date: data.home_road_test_date,
@@ -314,8 +322,8 @@ async function SyncImport(existsInDatabase, user, data) {
           await prisma.finance.update({
             where: { id: financeData.id },
             data: {
-              clientfileId: clientFile.id,
               dashboardId: dashboardData.id,
+              clientfileId: clientFile.id,
               financeId: financeData.id,
               theRealActId: activixData.id,
             }
@@ -461,7 +469,7 @@ async function SyncImport(existsInDatabase, user, data) {
               delivery_date: data.delivery_date,
               paperwork_date: data.paperwork_date,
               presented_date: data.presented_date,
-              promised_date: data.promised_date,
+              //  promised_date: data.promised_date,
               financed_date: data.financed_date,
               road_test_date: data.road_test_date,
               home_road_test_date: data.home_road_test_date,
@@ -554,23 +562,16 @@ async function SyncImport(existsInDatabase, user, data) {
     }
   }
 }
-async function SyncExport(user) {
+async function SyncExport(user, data) {
 
   // Fetch local finance records for the user
   const localCustomerList = await prisma.finance.findMany({ where: { userEmail: user.email, activixId: null } });
 
-  // Fetch all leads from Activix API (consider handling pagination)
-  const response = await axios.get(`https://api.crm.activix.ca/v2/leads?include[]=emails&include[]=phones`, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  });
 
   // Process each lead from the Activix API
   const updatePromises = [];
-  for (const activixData of response.data.data) {
+  for (const activixData of data.data.data) {
+    console.log(activixData, data.data, 'actvix data in export')
     const activixId = activixData.id;
     let isMatchFound = false;
 
@@ -591,6 +592,7 @@ async function SyncExport(user) {
       console.log(`Created finance record for Activix ID: ${activixData.id}`);
       updatePromises.push(CreateLeadActivix(activixData, user)); // Assuming CreateLeadActivix function creates a new lead
     }
+    return redirect('/leads/activix')
   }
 
   // Wait for all update promises to resolve
@@ -752,7 +754,7 @@ async function ActivixImport(user) {
               delivery_date: data.delivery_date,
               paperwork_date: data.paperwork_date,
               presented_date: data.presented_date,
-              promised_date: data.promised_date,
+              //  promised_date: data.promised_date,
               financed_date: data.financed_date,
               road_test_date: data.road_test_date,
               home_road_test_date: data.home_road_test_date,
@@ -849,7 +851,7 @@ async function ActivixImport(user) {
       const firstName = nameParts[0];
       const lastName = nameParts.slice(1).join(' ');
       console.log(formData, 'formdata')
-      async function CreateActvix() {
+      async function UpdateACtvix() {
         try {
 
           const financeData = await prisma.finance.update({
@@ -885,7 +887,7 @@ async function ActivixImport(user) {
             }
           })
           const dashboardData = await prisma.dashboard.update({
-            where: { id: finance.financeId },
+            where: { id: financeData.id },
             data: {
               userEmail: user?.email,
               referral: formData.referral,
@@ -949,8 +951,12 @@ async function ActivixImport(user) {
             }
           })
           const activixData = await prisma.activixLead.update({
-            where: { id: finance.theRealActId },
+            where: { id: formData.id },
             data: {
+              financeId: financeData.financeId,
+              dashboardData: data.dashboardData,
+
+              clientfileId: financeData.financeId,
               actvixId: data.id.toString(),
               account_id: data.account_id.toString(),
               customer_id: data.customer_id.toString(),
@@ -966,7 +972,7 @@ async function ActivixImport(user) {
               delivery_date: data.delivery_date,
               paperwork_date: data.paperwork_date,
               presented_date: data.presented_date,
-              promised_date: data.promised_date,
+              //  promised_date: data.promised_date,
               financed_date: data.financed_date,
               road_test_date: data.road_test_date,
               home_road_test_date: data.home_road_test_date,

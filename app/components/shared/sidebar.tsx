@@ -23,27 +23,23 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   let userSession = await getSession(request.headers.get("Cookie"));
   let email = userSession.get("email");
 
-  if (!userSession) { return json({ status: 302, redirect: 'login' }); };
   let user = await model.user.query.getForSession({ email });
-  if (!user) { user = await model.user.query.getForSession({ email: userSession.email }); }
 
-  if (!email) { email = userSession.mail }
-  if (!user) { return json({ status: 302, redirect: 'login' }); };
   return json({ user, email })
 }
 export let action = rootAction
 
 export default function Sidebar() {
-  const { user } = useLoaderData();
+  //  const { user } = useLoaderData();
   // console.log(user, 'sidebar user')
   const location = useLocation();
   let fetcher = useFetcher()
   // const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
   const isUserDashboard = location.pathname.includes('/user/dashboard')
-  //  const { user } = useRootLoaderData();
-  const adminUser = getUserIsAllowed(user, ["ADMIN", "MANAGER",]);
-  const financeUser = getUserIsAllowed(user, ["ADMIN", "MANAGER", "FINANCE"]);
-  const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
+  const { user } = useRootLoaderData();
+  //const adminUser = getUserIsAllowed(user, ["ADMIN", "MANAGER",]);
+  // const financeUser = getUserIsAllowed(user, ["ADMIN", "MANAGER", "FINANCE"]);
+  //const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
 
   useEffect(() => {
@@ -382,15 +378,13 @@ export default function Sidebar() {
                     </Button>
                   </RemixNavLink>
                 </Dialog.Close>
-                {financeUser === true && (
-                  <Dialog.Close asChild>
-                    <RemixNavLink to={`/leads/finance`}>
-                      <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
-                        Finance Dashboard
-                      </Button>
-                    </RemixNavLink>
-                  </Dialog.Close>
-                )}
+                <Dialog.Close asChild>
+                  <RemixNavLink to={`/leads/finance`}>
+                    <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
+                      Finance Dashboard
+                    </Button>
+                  </RemixNavLink>
+                </Dialog.Close>
                 <Dialog.Close asChild>
                   <RemixNavLink to={`/leads/activix`}>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >

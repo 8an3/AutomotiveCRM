@@ -185,7 +185,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (DealerInfo) {
     const deFees = await prisma.dealerFeesAdmin.findUnique({
       where: { id: 1 },
-    });
+    });/*
     const DealerFees = await prisma.dealerFees.create({
 
 
@@ -224,8 +224,8 @@ export const action: ActionFunction = async ({ request }) => {
         userEmail: email,
 
       }
-    });
-    return (DealerFees) && redirect("/welcome/quote")
+    });*/
+    return redirect("/welcome/quote")
   }
 }
 
@@ -376,13 +376,13 @@ export const loader = async ({ request, params }) => {
       return json({ request, user, deFees, Dealerfees, FinanceOptions });
     }
     else {
-      return DealerInfo
+      return ({ DealerInfo, user })
 
     }
     deFees = await prisma.dealerFees.findUnique({
       where: { userEmail: user?.email },
     });
-    return null
+    return user
   }
 }
 

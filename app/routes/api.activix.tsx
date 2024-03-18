@@ -766,6 +766,7 @@ export async function UpdateLead(formData,) {
 
 }
 export async function CreateLeadActivix(formData, user) {
+  console.log(formData, 'CreateLeadActivix')
   const nameParts = user.username.split(' ');
   const firstName = nameParts[0]; // 'Skyler'
   const lastName = nameParts[1]; // 'Zanth'
