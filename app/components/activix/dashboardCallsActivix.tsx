@@ -1202,16 +1202,72 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   // activix done
   // need to add updae vehcile
-  if (intent === "updateFinance") {
+  if (intent === "updateFinanceTwo") {
     let brand = formPayload.brand
     let lastContact = new Date().toISOString()
-    console.log(financeId, 'finaceCheckId')
+
+    let customerState = formData.customerState
+    if (formData.customerState === 'Pending') {
+      customerState = 'Pending'
+    }
+    if (formData.customerState === 'Attempted') {
+      customerState = 'Attempted'
+    }
+    if (formData.customerState === 'Reached') {
+      customerState = 'Reached'
+    }
+    if (formData.customerState === 'Lost') {
+      customerState = 'Lost'
+    }
+    if (formData.sold === 'on') {
+      customerState = 'sold'
+    }
+    if (formData.depositMade === 'on') {
+      customerState = 'depositMade'
+    }
+    if (formData.turnOver === 'on') {
+      customerState = 'turnOver'
+    }
+    if (formData.financeApp === 'on') {
+      customerState = 'financeApp'
+    }
+    if (formData.approved === 'on') {
+      customerState = 'approved'
+    }
+    if (formData.signed === 'on') {
+      customerState = 'signed'
+    }
+    if (formData.pickUpSet === 'on') {
+      customerState = 'pickUpSet'
+    }
+    if (formData.delivered === 'on') {
+      customerState = 'delivered'
+    }
+    if (formData.refund === 'on') {
+      customerState = 'refund'
+    }
+    if (formData.funded === 'on') {
+      customerState = 'funded'
+    }
+
+    let phoneNumber = formData.phone
+
+    if (phoneNumber.length === 13) {
+      // Remove the first two characters
+      phoneNumber = phoneNumber.substring(4);
+    } else if (phoneNumber.length === 10) {
+      // Add +1 at the beginning
+      phoneNumber = phoneNumber.substring(2);
+
+      //phoneNumber = '+1' + phoneNumber;
+    }
+    console.log(formData.phone)
     const financeData = {
 
       email: formData.email,
       firstName: formData.firstName,
       lastName: formData.lastName,
-      phone: formData.phone,
+      phone: phoneNumber,
       name: formData.name,
       address: formData.address,
       city: formData.city,
@@ -1362,18 +1418,23 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       ...financeData,
       ...dashData
     }
-    const lead = await UpdateLeadBasic(newData)
-    const phone = await UpdateLeadPhone(newData)
-    const email = await UpdateLeademail(newData)
-    if (formData.whichVehicle === 'wanted') {
-      await UpdateLeadWantedVeh(newData)
-    }
-    if (formData.whichVehicle === 'exchange') {
-      await UpdateLeadEchangeVeh(newData)
-    }
-    return json({ UpdateLead, lead, phone, email })
+    const updateLocal = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: { ...financeData, }
+    })
+    const updateLocalDash = await prisma.dashboard.update({
+      where: { financeId: formData.financeId },
+      data: { ...dashData, }
+    })
+    const lead = await UpdateLeadBasic(formData, user)
+    console.log(lead, 'lead')
+    return json({ UpdateLead, lead, updateLocal, updateLocalDash })
 
   }
+  //  const phone = await UpdateLeadPhone(formData)
+  // const updateemail = await UpdateLeademail(formData)
+  //   if (formData.whichVehicle === 'wanted') {  await UpdateLeadWantedVeh(formData)   }
+  //  if (formData.whichVehicle === 'exchange') {      await UpdateLeadEchangeVeh(formData)    }
   // create
   if (intent === "createQuote") {
     console.log("creating quote");

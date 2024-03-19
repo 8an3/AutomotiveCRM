@@ -58,6 +58,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
       roleId: true,
       profileId: true,
       omvicNumber: true,
+      activixActivated: true,
       role: { select: { symbol: true, name: true } },
     },
   });
@@ -303,7 +304,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
 
     const finance = {
 
-      userEmail: user.email,
+      userEmail: user?.email,
       pickUpDate,
       lastContact
     }
@@ -317,6 +318,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
       postal: formData.postal,
       province: formData.province,
       dl: formData.dl,
+      customerState: customerState,
 
     }
     const clientData = {

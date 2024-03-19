@@ -179,11 +179,7 @@ export default function ClientCard({ data }) {
                                 <option value="Do Not Contact">Do Not Contact</option>
                             </select>
 
-                            <Input type="hidden" defaultValue={data.userEmail} name="userEmail" />
-                            <Input type="hidden" defaultValue={data.brand} name="brand" />
-                            <input type='hidden' name='financeId' value={data.id} />
-                            <input type='hidden' name='email' value={data.email} />
-                            <input type='hidden' name='activixId' value={data.activixId} />
+
 
                             <Accordion type="single" collapsible>
                                 <AccordionItem value="1" className='mt-5'>
@@ -252,10 +248,16 @@ export default function ClientCard({ data }) {
                                 </>
                             )}
                             {/* Button Group */}
+                            <Input type="hidden" defaultValue={data.userEmail} name="userEmail" />
+                            <Input type="hidden" defaultValue={data.brand} name="brand" />
+                            <input type='hidden' name='financeId' value={data.id} />
+                            <input type='hidden' name='id' value={data.id} />
+                            <input type='hidden' name='email' value={data.email} />
+                            <input type='hidden' name='activixId' value={data.activixId} />
                         </div>
                         <ButtonLoading
                             size="lg"
-                            value='updateFinance'
+                            value='updateFinanceTwo'
                             className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
                             name="intent" type="submit"
                             isSubmitting={isSubmitting}

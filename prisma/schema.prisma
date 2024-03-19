@@ -1303,7 +1303,7 @@ model ActivixLead {
   id                      String   @id @default(cuid())
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
-  actvixId                String?
+  actvixId                String?  @unique
   account_id              String?
   customer_id             String?
   source_id               String?
@@ -1383,6 +1383,7 @@ model ActivixLead {
   financeId               String?
   dashboardId             String?
   userEmail               String?
+  promised_datere         String?
 }
 
 model activixCommunication {
