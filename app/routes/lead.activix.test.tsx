@@ -103,6 +103,101 @@ export async function loader({ request, params }) {
       console.error(`Error status: ${error.response.status}`);
       console.error('Error response:', error.response.data);
     });
+  // 32916122
+
+  const leadId = 43314827//response.data.data.id;
+
+  const getEvent = await axios.get(
+    `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  // Handle successful response
+  console.log('Response:', getEvent.data.data.events);
+  const lastEventId = getEvent.data.data.events[0].id
+  const description = 'test';
+  const startAt = new Date();
+  startAt.setMinutes(startAt.getMinutes() - 5);
+  const completed = startAt.toISOString().replace(/\.\d{3}Z$/, '-04:00');
+  console.log(completed);
+
+  const updated = await axios.post(`https://api.crm.activix.ca/v2/events`,
+    {
+      lead_id: lastEventId,
+      completed: true,
+      completed_at: '2024-03-19T20:36:19+00:00',
+      end_at: getEvent.data.data.events[0].end_at,
+      start_at: getEvent.data.data.events[0].start_at,
+      title: getEvent.data.data.events[0].title,
+      description: description,
+      type: getEvent.data.data.events[0].type,
+      owner_id: 143041,
+      owner: { id: 143041 }
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    });
+  const error = updated.response.data.errors;
+  console.log(error);
+  console.log(updated)
+  return null
+}
+
+
+async function CreateAndCompleteEvent() {
+  const leadId = 43314827//response.data.data.id;
+
+  const getEvent = await axios.get(
+    `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  // Handle successful response
+  console.log('Response:', getEvent.data.data.events);
+  const lastEventId = getEvent.data.data.events[0].id
+  const description = 'test';
+  const startAt = new Date();
+  startAt.setMinutes(startAt.getMinutes() - 5);
+  const completed = startAt.toISOString().replace(/\.\d{3}Z$/, '-04:00');
+  console.log(completed);
+
+  const updated = await axios.post(`https://api.crm.activix.ca/v2/events`,
+    {
+      lead_id: lastEventId,
+      completed: true,
+      completed_at: '2024-03-19T20:36:19+00:00',
+      end_at: getEvent.data.data.events[0].end_at,
+      start_at: getEvent.data.data.events[0].start_at,
+      title: getEvent.data.data.events[0].title,
+      description: description,
+      type: getEvent.data.data.events[0].type,
+      owner_id: 143041,
+      owner: { id: 143041 }
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    });
+  const error = updated.response.data.errors;
+  console.log(error);
+  console.log(updated)
   return null
 }
 

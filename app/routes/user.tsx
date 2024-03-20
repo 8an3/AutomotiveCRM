@@ -8,9 +8,11 @@ import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
 import NotificationSystem from "./notifications";
 import slider from '~/styles/slider.css'
+import secondary from '~/styles/secondary.css'
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
+  { rel: "stylesheet", href: secondary },
 ];
 
 export const loader = async ({ request }) => {

@@ -34,7 +34,7 @@ import { getSession } from "~/sessions/auth-session.server";
 import { SetClient66, requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import { client_66 } from '~/utils/misc.user.server';
-import { UpdateLeadBasic, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, UpdateNoteCreateTask, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "./api.activix";
+import { UpdateLeadBasic, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, UpdateNoteCreateTask, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "./api.activix";
 
 
 export const action: ActionFunction = async ({ req, request, params }) => {
@@ -351,10 +351,11 @@ export const action: ActionFunction = async ({ req, request, params }) => {
 
         const updateClient = await updateFinanceWithDashboard(financeId, financeData, finance)
         if (user?.activixActivated === 'yes') {
-          await UpdateLeadBasic(formData)
+          await UpdateLeadBasic(formData, user)
           await UpdateLeademail(formData)
           await UpdateLeadPhone(formData)
           await UpdateLeadWantedVeh(formData)
+          await UpdateLeadEchangeVeh(formData)
         }
         return json({ updateClient })
     }
@@ -494,6 +495,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
       roleId: true,
       profileId: true,
       omvicNumber: true,
+      activixActivated: true,
       role: { select: { symbol: true, name: true } },
     },
   });
@@ -508,7 +510,9 @@ export async function loader({ params, request }: DataFunctionArgs) {
 
   const aptFinance3 = await getAppointmentsForFinance(financeId)
   const finance = await getMergedFinanceOnFinance(financeId)
-
+  if (user?.activixActivated === 'yes') {
+    await UpdateClientFromActivix(finance)
+  }
   const dashboardIdCookie = await prisma.finance.findUnique({ where: { id: financeId } })
   const SetClient66Cookie = await SetClient66(userId, clientId, financeId, dashboardIdCookie.dashboardId, request)
 

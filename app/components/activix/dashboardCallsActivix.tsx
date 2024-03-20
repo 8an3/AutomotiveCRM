@@ -27,7 +27,7 @@ import { google } from 'googleapis';
 import oauth2Client, { SendEmail, } from "~/routes/email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
-import { CreateCommunications, CreateCompleteEvent, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData, UpdateLeadBasic, UpdateLeadPhone, UpdateLeademail, UpdateLeadWantedVeh, UpdateLeadEchangeVeh, UpdateLeadStatus } from "../../routes/api.activix";
+import { CreateNote, UpdateNote, CreateCommunications, CreateCompleteEvent, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData, UpdateLeadBasic, UpdateLeadPhone, UpdateLeademail, UpdateLeadWantedVeh, UpdateLeadEchangeVeh, UpdateLeadStatus } from "../../routes/api.activix";
 import { QuoteServer } from '~/utils/quote/quote.server';
 import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
 
@@ -1093,14 +1093,13 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
     if (hasAppt !== null && hasAppt !== undefined) {
       // Array has more than 0 elements
-      const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
+      const createTaskActivix = await CreateTask(formData, start_at, end_at)
+      // const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
       return json({ complete, updating, completeApt, createFollowup, setComs, createTaskActivix });
     } else {
       const createTaskActivix = await CreateTask(formData, start_at, end_at)
       return json({ complete, updating, completeApt, createFollowup, setComs, createTaskActivix });
     }
-
-
   }
   // activix done
   if (intent === "completeApt") {
@@ -1218,7 +1217,8 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
     if (hasAppt !== null && hasAppt !== undefined) {
       // Array has more than 0 elements
-      const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
+      // const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
+      const createTaskActivix = await CreateTask(formData, start_at, end_at)
       return json({ updating, completeApt, createFollowup, setComs, createTaskActivix });
     } else {
       const createTaskActivix = await CreateTask(formData, start_at, end_at)
@@ -1858,12 +1858,15 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     return updateFinanceNotes;
   }
   if (intent === "createFinanceNote") {
-    await createFinanceNotes({ formData });
-    return createFinanceNotes;
+    const localNote = await createFinanceNotes(formData);
+    const apiNote = await CreateNote(formData)
+    return ({ localNote, apiNote });
   }
   if (intent === "updateFinanceNote") {
     const updateNote = await updateFinanceNote(financeId, formData);
-    return json({ updateNote });
+    const apiNote = await UpdateNote(formData)
+    return ({ updateNote, apiNote });
+
   }
   if (intent === "deleteFinanceNote") {
     const deleteNote = await deleteFinanceNote(id);
