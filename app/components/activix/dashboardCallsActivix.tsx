@@ -27,7 +27,7 @@ import { google } from 'googleapis';
 import oauth2Client, { SendEmail, } from "~/routes/email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
-import { CreateCommunications, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData, UpdateLeadBasic, UpdateLeadPhone, UpdateLeademail, UpdateLeadWantedVeh, UpdateLeadEchangeVeh, UpdateLeadStatus } from "../../routes/api.activix";
+import { CreateCommunications, CreateCompleteEvent, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData, UpdateLeadBasic, UpdateLeadPhone, UpdateLeademail, UpdateLeadWantedVeh, UpdateLeadEchangeVeh, UpdateLeadStatus } from "../../routes/api.activix";
 import { QuoteServer } from '~/utils/quote/quote.server';
 import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
 
@@ -1086,16 +1086,21 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     })
     const startat = new Date(newDate);
     const endat = new Date(startat.getTime() + 30 * 60000); // Adding 30 minutes
-
     const start_at = startat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
     const end_at = endat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
-
-
-
     console.log(end_at, start_at, endat, startat)
+    const hasAppt = await prisma.clientApts.findFirst({ where: { financeId: formData.financeId } });
 
-    const createTaskActivix = await CreateTask(formData, start_at, end_at)
-    return json({ complete, updating, completeApt, createFollowup, setComs, createTaskActivix });
+    if (hasAppt !== null && hasAppt !== undefined) {
+      // Array has more than 0 elements
+      const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
+      return json({ complete, updating, completeApt, createFollowup, setComs, createTaskActivix });
+    } else {
+      const createTaskActivix = await CreateTask(formData, start_at, end_at)
+      return json({ complete, updating, completeApt, createFollowup, setComs, createTaskActivix });
+    }
+
+
   }
   // activix done
   if (intent === "completeApt") {
@@ -1204,9 +1209,21 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     const setComs = await prisma.communicationsOverview.create({
       data: comdata,
     });
-    const activixTask = await CreateTask(formData)
-    //  console.log('hittind 2 days from noiw', formData, followUpDay, completeApt, createClientFinanceAptData)
-    return json({ updating, completeApt, createFollowup, setComs, activixTask });
+    const startat = new Date(followUpDay);
+    const endat = new Date(startat.getTime() + 30 * 60000); // Adding 30 minutes
+    const start_at = startat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
+    const end_at = endat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
+    console.log(end_at, start_at, endat, startat)
+    const hasAppt = await prisma.clientApts.findFirst({ where: { financeId: formData.financeId } });
+
+    if (hasAppt !== null && hasAppt !== undefined) {
+      // Array has more than 0 elements
+      const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
+      return json({ updating, completeApt, createFollowup, setComs, createTaskActivix });
+    } else {
+      const createTaskActivix = await CreateTask(formData, start_at, end_at)
+      return json({ updating, completeApt, createFollowup, setComs, createTaskActivix });
+    }
   }
   // activix done
   // need to add updae vehcile

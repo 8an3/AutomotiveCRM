@@ -1329,7 +1329,9 @@ export async function CreateCompleteEvent(formData, start_at, end_at) {
       'Authorization': `Bearer ${accessToken}`,
     }
   });
-  const leadId = response.data.lead.id;
+  console.log(response.data)
+  const leadId = response.data.data.id;
+
   const getEvent = await axios.get(
     `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
     {
@@ -1338,20 +1340,27 @@ export async function CreateCompleteEvent(formData, start_at, end_at) {
         Accept: 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
-    });
+    }
+  );
+  // Handle successful response
+  console.log('Response:', getEvent.data.data.events);
+
+
   console.log(getEvent)
   /// last one created is at 0 apparently
-  const lastEventId = getEvent.data[0].id
+  const lastEventId = getEvent.data.data.events[0].id
   const updated = await axios.post(`https://api.crm.activix.ca/v2/events`, {
     lead_id: lastEventId,
     completed: true,
-  }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  });
+    completed_at: new Date().toISOString(),
+  },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    });
   console.log(updated)
   return response
 
@@ -1362,23 +1371,25 @@ export async function CompleteTask(formData, dateTimeString,) {
   const endpoint = 'tasks'
   const response = await axios.put(`https://api.crm.activix.ca/v2/${endpoint}/${activixId}`,
     {
-      "lead_id": formData.activixId,
-      "owner": {
-        "id": 17162,
+      lead_id: formData.activixId,
+      owner: {
+        first_name: 'Skyler',
+        last_name: 'Zanth API'
       },
-      "completed": true,
-      "completed_at": new Date().toISOString(),
-      "title": formData.title,
-      "type": formData.contactMethod,
-      "date": dateTimeString,
-      "description": formData.note,
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
+      completed: true,
+      completed_at: new Date().toISOString(),
+      title: formData.title,
+      type: formData.contactMethod,
+      date: dateTimeString,
+      description: formData.note,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
     }
-  }
   )
     .then(response => {
       console.log(response.data);
