@@ -120,6 +120,7 @@ export default function ClientCard({ data }) {
             { name: "province", value: data.province, placeHolder: "Province" },
             { name: "postal", value: data.postal, placeHolder: "Postal Code" },
             { name: "dl", value: data.dl, placeHolder: "Driver License" },
+            { name: "dob", value: data.dob, placeHolder: "1988-06-15" },
         ];
         return ClientDetails;
     }
@@ -252,8 +253,11 @@ export default function ClientCard({ data }) {
                             <Input type="hidden" defaultValue={data.brand} name="brand" />
                             <input type='hidden' name='financeId' value={data.id} />
                             <input type='hidden' name='id' value={data.id} />
-                            <input type='hidden' name='email' value={data.email} />
                             <input type='hidden' name='activixId' value={data.activixId} />
+                            <input type='hidden' name='phoneId' value={data.phoneId} />
+                            <input type='hidden' name='vehicleIdWanted' value={data.vehicleIdWanted} />
+                            <input type='hidden' name='vehicleIdWTrade' value={data.vehicleIdWTrade} />
+                            <input type='hidden' name='emailId' value={data.emailId} />
                         </div>
                         <ButtonLoading
                             size="lg"

@@ -1043,11 +1043,12 @@ export function UnitPickerTable({ finance, }) {
         <input type='hidden' name='isNew' defaultValue={selectedModel?.isNew} />
         <input type='hidden' name='keyNumber' defaultValue={selectedModel?.keyNumber} />
         <input type='hidden' name='onOrder' defaultValue={selectedModel?.onOrder} />
+        <input type='hidden' name='vehicleIdWanted' defaultValue={finance?.vehicleIdWanted} />
         <button
           className="border rounded p-2 mb-2 mt-2 mr-auto "
           type='submit'
           name='intent'
-          value='updateFinance'
+          value='updateFinanceWanted'
           onClick={() => {
             toast.message('Unit has been saved to contract.', {
               description: `${selectedModel.firstName}, ${selectedModel.lastName}`,

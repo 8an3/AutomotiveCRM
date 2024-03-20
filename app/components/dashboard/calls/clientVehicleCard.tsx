@@ -589,6 +589,7 @@ export default function ClientVehicleCard({ data, }) {
                       name="tradeMileage"
                       defaultValue={data.tradeMileage}
                     />
+                    <input type='hidden' name='vehicleIdWTrade' defaultValue={data.vehicleIdWTrade} />
                   </div>
                   <div className="mx-3 my-3 grid w-[90%] grid-cols-2 p-2">
                     <p className=" text-sm ">Trade Value</p>
@@ -624,7 +625,7 @@ export default function ClientVehicleCard({ data, }) {
 
                   <ButtonLoading
                     size="lg"
-                    value='updateFinance'
+                    value='updateFinanceTrade'
                     className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
                     name="intent" type="submit"
 

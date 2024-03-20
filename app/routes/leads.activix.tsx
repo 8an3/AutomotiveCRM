@@ -1178,7 +1178,7 @@ export function WebleadsTable() {
 // leads dashboard
 async function getData(): Promise<dashBoardType[]> {
   //turn into dynamic route and have them call the right loader like q  uote qand overview
-  const res = await fetch('/dashboard/calls/loader')
+  const res = await fetch('/dashboard/calls/loader/activix')
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
@@ -1695,6 +1695,7 @@ export function MainDashbaord() {
     };
     data()
   }, []);
+  console.log(data)
   const defaultColumn: Partial<ColumnDef<Payment>> = {
     cell: ({ getValue, row: { index }, column: { id }, table }) => {
       const initialValue = getValue()
@@ -2407,6 +2408,10 @@ export function MainDashbaord() {
     {
       accessorKey: "tradeYear",
       header: "tradeYear",
+    },
+    {
+      accessorKey: "createdAt",
+      header: "createdAt",
     },
     {
       accessorKey: "tradeTrim",

@@ -909,174 +909,204 @@ export async function CreateLeadActivix(formData, user) {
   } */
   return response
 }
-
+// client card
 export async function UpdateLeadBasic(formData, user) {
-  console.log(formData)
+  console.log(formData, 'formdata inside api')
   const nameParts = user.username.split(' ');
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(' ');
-  const response = await axios.put(`https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
+  const response = await axios.put(
+    `https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
     {
-      "first_name": formData.firstName,
-      "last_name": formData.lastName,
-      "type": "email",
-      "advisor": {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      city: formData.city,
+      province: formData.province,
+      postal_code: formData.postal,
+      birth_date: formData.dob,
+      address_line1: formData.address,
+      type: 'email',
+      advisor: {
         "first_name": firstName,
         "last_name": lastName
       },
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  }
-  ).then(response => { console.log(response.data); }).catch(error => {
-    console.error('Full error object:', error);
-    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-    console.error(`Error status: ${error.response.status}`);
-    console.error('Error response:', error.response.data);
-  });
-
-  const emails = await axios.put(`https://api.crm.activix.ca/v2/lead-emails/${formData.activixId}`,
-    {
-      "type": "home",
-      "address": formData.email,
     },
     {
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      }
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
     }
-  ).then(response => { console.log(response.data); }).catch(error => {
-    console.error('Full error object:', error);
-    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-    console.error(`Error status: ${error.response.status}`);
-    console.error('Error response:', error.response.data);
-  });
+  )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
 
-  const phones = await axios.put(`https://api.crm.activix.ca/v2/lead-phones/${formData.activixId}`,
-    {
-      "number": `+1${formData.phone}`,
-      "type": "mobile"
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  }
-  ).then(response => { console.log(response.data); }).catch(error => {
-    console.error('Full error object:', error);
-    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-    console.error(`Error status: ${error.response.status}`);
-    console.error('Error response:', error.response.data);
-  });
 
-  const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${formData.activixId}`,
-    {
-      "vehicles": [
-        {
-          "make": formData.brand,
-          "model": formData.model,
-          "year": formData.year,
-          "color_exterior": formData.color,
-          "vin": formData.vin,
-          "price": formData.msrp,
 
-          "type": "wanted"
-        },
-      ]
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  }
-  ).then(response => { console.log(response.data); }).catch(error => {
-    console.error('Full error object:', error);
-    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-    console.error(`Error status: ${error.response.status}`);
-    console.error('Error response:', error.response.data);
-  });
 
   return response
 
 }
-export async function UpdateLeadPhone(formData) {
-  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-  let phoneNumber = formData.phone;
-  if (!phoneNumber.startsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
-  const phones = await axios.put(`https://api.crm.activix.ca/v2/lead-phones/${formData.activixId}`,
+export async function UpdateLeadStatus(formData, user) {
+  console.log(formData)
+  const nameParts = user.username.split(' ');
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(' ');
+  const response = await axios.put(
+    `https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
     {
-      "number": phoneNumber,
-      "type": "mobile"
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    }
-  }
-  ).then(response => { console.log(response.data); }).catch(error => {
-    console.error('Full error object:', error);
-    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-    console.error(`Error status: ${error.response.status}`);
-    console.error('Error response:', error.response.data);
-  });
-  return phones
+      status: formData.status,
+      address_line1: formData.address,
 
-}
-export async function UpdateLeademail(formData) {
-  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-
-
-  const emails = await axios.put(`https://api.crm.activix.ca/v2/lead-emails/${formData.activixId}`,
-    {
-      "type": "home",
-      "address": formData.email,
     },
     {
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      }
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
     }
-  ).then(response => { console.log(response.data); }).catch(error => {
-    console.error('Full error object:', error);
-    console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-    console.error(`Error status: ${error.response.status}`);
-    console.error('Error response:', error.response.data);
-  });
+  )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
 
+
+
+
+  return response
+
+}
+export async function UpdateLeadResult(formData, user) {
+  console.log(formData)
+  const nameParts = user.username.split(' ');
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(' ');
+  const response = await axios.put(
+    `https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
+    {
+      result: formData.result,
+      address_line1: formData.address,
+
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
+
+
+
+
+  return response
+
+}
+// client card
+export async function UpdateLeadPhone(formData) {
+  let phoneNumber = formData.phone;
+  // if (!phoneNumber.startsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
+  const phones = await axios.put(
+    `https://api.crm.activix.ca/v2/lead-phones/${formData.phoneId}`,
+    {
+      "number": formData.phone,
+      "type": "mobile",
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
+  return phones
+
+}
+// client card
+export async function UpdateLeademail(formData) {
+  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+
+
+  const emails = await axios.put(
+    `https://api.crm.activix.ca/v2/lead-emails/${formData.emailId}`,
+    {
+      "address": formData.email,
+      "type": "home",
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
 
   return emails
 
 }
 export async function UpdateLeadWantedVeh(formData) {
-  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-
-
   const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${formData.activixId}`,
     {
-      "make": formData.brand,
-      "model": formData.model,
-      "year": formData.year,
-      "color_exterior": formData.color,
-      "vin": formData.vin,
-      "price": formData.msrp,
-      "type": "wanted"
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
+      make: formData.brand,
+      model: formData.model,
+      year: formData.year,
+      color_exterior: formData.color,
+      vin: formData.vin,
+      price: formData.msrp,
+      type: "wanted"
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
     }
-  }
   ).then(response => { console.log(response.data); }).catch(error => {
     console.error('Full error object:', error);
     console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
@@ -1089,17 +1119,15 @@ export async function UpdateLeadWantedVeh(formData) {
 }
 export async function UpdateLeadEchangeVeh(formData) {
   const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-
-
   const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${activixId.activixId}`,
     {
-      "make": formData.brand,
-      "model": formData.model,
-      "year": formData.year,
-      "color_exterior": formData.color,
-      "vin": formData.vin,
-      "price": formData.msrp,
-      "type": "wanted"
+      make: formData.brand,
+      model: formData.model,
+      year: formData.year,
+      color_exterior: formData.color,
+      vin: formData.vin,
+      price: formData.msrp,
+      type: "wanted"
     }, {
     headers: {
       'Content-Type': 'application/json',
@@ -1246,25 +1274,27 @@ export async function UpdateCommunications(formData) {
 
   return response
 }
-export async function CreateTask(formData) {
-  const endpoint = 'tasks'
-  const response = await axios.post(`https://api.crm.activix.ca/v2/${endpoint}`,
+export async function CreateTask(formData, start_at, end_at) {
+  const response = await axios.post(`https://api.crm.activix.ca/v2/events`,
     {
-      "lead_id": formData.activixId,
-      "owner": {
-        "id": 17162,
+      lead_id: formData.activixId,
+      owner: {
+        first_name: 'Skyler',
+        last_name: 'Zanth API'
       },
-      "title": formData.title,
-      "type": formData.contactMethod,
-      "date": new Date(),
-      "description": formData.note,
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
+      title: formData.title,
+      type: "appointment",
+      start_at: start_at,
+      end_at: end_at,
+      description: formData.note,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
     }
-  }
   )
     .then(response => {
       console.log(response.data);
@@ -1277,6 +1307,52 @@ export async function CreateTask(formData) {
     });
 
 
+  return response
+
+}
+export async function CreateCompleteEvent(formData, start_at, end_at) {
+  const response = await axios.post(`https://api.crm.activix.ca/v2/events`, {
+    lead_id: formData.activixId,
+    owner: {
+      first_name: 'Skyler',
+      last_name: 'Zanth API'
+    },
+    title: formData.title,
+    type: "appointment",
+    start_at: start_at,
+    end_at: end_at,
+    description: formData.note,
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  });
+  const leadId = response.data.lead.id;
+  const getEvent = await axios.get(
+    `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  console.log(getEvent)
+  /// last one created is at 0 apparently
+  const lastEventId = getEvent.data[0].id
+  const updated = await axios.post(`https://api.crm.activix.ca/v2/events`, {
+    lead_id: lastEventId,
+    completed: true,
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  });
+  console.log(updated)
   return response
 
 }

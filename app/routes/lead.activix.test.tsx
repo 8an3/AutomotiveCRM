@@ -54,27 +54,123 @@ export async function loader({ request, params }) {
 
   if (!user) { return redirect('/login'); }
   //await SyncImport(user);
-  const response = await axios.get(`https://api.crm.activix.ca/v2/leads/43280101`,
+
+  await axios.get(
+    `https://api.crm.activix.ca/v2/leads/42132008?include[]=phones&include[]=emails&include[]=vehicles&include[]=events&include[]=advisor&include[]=events`,
+
     {
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      }
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
     }
-  ).then(response => {
-    console.log(response.data);
-  })
+  )
+    .then(response => {
+      const data = response.data.data; // Accessing the 'data' property of the response
+      console.log(response.data.data.advisor)
+      // Logging customer details
+      console.log("Customer ID:", data.id);
+      console.log("Customer Name:", `${data.first_name} ${data.last_name}`);
+      console.log("Emails:");
+      data.emails.forEach(email => {
+        console.log("  -", email.id); // Assuming email is a property of each email object
+        console.log("  -", email.address); // Assuming email is a property of each email object
+      });
+      console.log("Phones:");
+      data.phones.forEach(phone => {
+        console.log("  -", phone.id); // Assuming phone_number is a property of each phone object
+        console.log("  -", phone.number); // Assuming phone_number is a property of each phone object
+      });
+      console.log("Vehicles:");
+      data.vehicles.forEach(vehicle => {
+        console.log("  - Vehicle ID:", vehicle.id); // Assuming id is a property of each vehicle object
+        console.log("    Make:", vehicle.make); // Assuming make is a property of each vehicle object
+        console.log("    Model:", vehicle.model); // Assuming model is a property of each vehicle object
+        // Add more properties as needed
+      });
+      console.log("Events:");
+      data.events.forEach(vehicle => {
+        console.log("  - Event ID:", vehicle.id); // Assuming id is a property of each vehicle object
+        console.log("    Title:", vehicle.Title); // Assuming make is a property of each vehicle object
+        console.log("    Type:", vehicle.Type); // Assuming model is a property of each vehicle object
+        // Add more properties as needed
+      });
+    })
     .catch(error => {
       console.error('Full error object:', error);
       console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
       console.error(`Error status: ${error.response.status}`);
       console.error('Error response:', error.response.data);
     });
-  return response
+  return null
 }
 
+// to get a lead with data
+/** await axios.put(
+    `https://api.crm.activix.ca/v2/lead-emails/42132008`,
+    {
+      "address": "test@gmail.com",
+      "type": "home",
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    }); */
+/** const response = await axios.get(
+    `https://api.crm.activix.ca/v2/leads/43570588?include[]=phones&include[]=emails&include[]=vehicles`,
 
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  )
+    .then(response => {
+      const data = response.data.data; // Accessing the 'data' property of the response
+
+      // Logging customer details
+      console.log("Customer ID:", data.id);
+      console.log("Customer Name:", `${data.first_name} ${data.last_name}`);
+      console.log("Emails:");
+      data.emails.forEach(email => {
+        console.log("  -", email.id); // Assuming email is a property of each email object
+        console.log("  -", email.address); // Assuming email is a property of each email object
+      });
+      console.log("Phones:");
+      data.phones.forEach(phone => {
+        console.log("  -", phone.id); // Assuming phone_number is a property of each phone object
+        console.log("  -", phone.number); // Assuming phone_number is a property of each phone object
+      });
+      console.log("Vehicles:");
+      data.vehicles.forEach(vehicle => {
+        console.log("  - Vehicle ID:", vehicle.id); // Assuming id is a property of each vehicle object
+        console.log("    Make:", vehicle.make); // Assuming make is a property of each vehicle object
+        console.log("    Model:", vehicle.model); // Assuming model is a property of each vehicle object
+        // Add more properties as needed
+      });
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    }); */
 
 export async function SyncImport(user) {
 

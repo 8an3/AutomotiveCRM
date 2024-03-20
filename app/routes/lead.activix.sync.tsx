@@ -220,7 +220,7 @@ async function updateRecordInDatabase(data, user) {
       }
     })
     const activixData = await prisma.activixLead.update({
-      where: { activixId: financeData.activixId },
+      where: { actvixId: financeData.activixId },
       data: {
         actvixId: data.id.toString(),
         account_id: data.account_id.toString(),
@@ -454,6 +454,10 @@ async function createRecordInDatabase(data, user) {
           actvixId: data.id.toString(),
           account_id: data.account_id.toString(),
           customer_id: data.customer_id.toString(),
+          phoneId: data.phones[0].id.toString(),
+          vehicleIdWanted: data.vehicles[1].id.toString(),
+          vehicleIdWTrade: data.vehicles[0].id.toString(),
+          emailId: data.emails[0].id.toString(),
           appointment_date: data.appointment_date,
           phone_appointment_date: data.phone_appointment_date,
           available_date: data.available_date,
