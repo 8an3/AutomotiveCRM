@@ -45,8 +45,24 @@ export default function LogText({ data }) {
   const today = new Date();
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [text, setText] = React.useState('');
-  const [cc, setCc] = useState(false)
-  const [bcc, setBcc] = useState(false)
+  const [resultOfcall, setresultOfcall] = useState('Left Message')
+  const [direction, setdirection] = useState('Outgoing')
+  const [title, settitle] = useState(`F/U on ${data.unit}`)
+  const [contactMethod, setcontactMethod] = useState('SMS')
+  const [descfup, setdescfup] = useState(false)
+  const [firstName, setfirstName] = useState(data.firstName)
+  const [lastName, setlastName] = useState(data.lastName)
+  const [phone, setphone] = useState(data.phone)
+  const [apptStatus, setapptStatus] = useState('future')
+  const [completed, setcompleted] = useState('no')
+  const [apptType, setapptType] = useState('Sales')
+  const [email, setemail] = useState(data.email)
+  const [userName, setuserName] = useState(user.name)
+  const financeId = data.id
+  const userEmail = user.email
+  const id = data.id
+  const userId = user.id
+
   const handleChange = (event) => {
     const selectedTemplate = templates.find(template => template.title === event.target.value);
     setSelectedTemplate(selectedTemplate);
@@ -56,84 +72,27 @@ export default function LogText({ data }) {
       setText(selectedTemplate.body);
     }
   }, [selectedTemplate]);
-
-
   const [date, setDate] = useState<Value>(new Date());
   const [time, setTime] = useState('');
   const dateTime = new Date(date);
   const [hours, minutes] = time.split(':').map(Number);
   dateTime.setHours(hours, minutes);
-
-  const [resultOfcall, setresultOfcall] = useState('Left Message')
-  const [direction, setdirection] = useState('Outgoing')
-  const [title, settitle] = useState(`F/U on ${data.unit}`)
-
   const [convos, setConvos] = useState([])
   useEffect(() => {
     async function GetPreviousConversations() {
-
       setConvos(conversations)
       return conversations
     }
     GetPreviousConversations()
-
   }, [data.id]);
-
-
   const [note, setNote] = useState()
-  const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
+  let fetcher = useFetcher();
+  const [buttonText, setButtonText] = useState('Send Text');
+  const [createTemplate, setCreateTemplate] = useState('')
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
 
-  const MyIFrameComponent = () => {
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-      const handleHeightMessage = (event: MessageEvent) => {
-        if (event.data && event.data.type === 'iframeHeight' && event.data.height) {
-          setIsLoading(false);
-
-          if (iFrameRef.current) {
-            iFrameRef.current.style.height = `${event.data.height}px`;
-          }
-        }
-      };
-
-      const sendCustomMessageToIframe = () => {
-        const dataToSend = {
-          type: 'data',
-          payload: data,
-        };
-        if (iFrameRef.current && iFrameRef.current.contentWindow) {
-          iFrameRef.current.contentWindow.postMessage(dataToSend, '*');
-        }
-      };
-
-      if (iFrameRef.current) {
-        iFrameRef.current.src = 'http://localhost:3000/sms/dashMsger';
-        window.addEventListener('message', handleHeightMessage);
-        sendCustomMessageToIframe();
-      }
-      return () => {
-        if (iFrameRef.current) {
-          window.removeEventListener('message', handleHeightMessage);
-        }
-      };
-    }, []);
-
-    return (
-      <>
-        <div className="h-full w-full ">
-          <iframe
-            ref={iFrameRef}
-            title="my-iframe"
-            width="100%"
-            className=' border-none'
-          />
-        </div>
-      </>
-    );
-  };
-
-
+  const navigation = useNavigation();
+  const isSubmitting = navigation.formAction === "/leads/sales";
   return (
     <RootDialog>
       <DialogTrigger asChild>
@@ -156,7 +115,112 @@ export default function LogText({ data }) {
             <TabsTrigger value="notes">Notes</TabsTrigger>
           </TabsList>
           <TabsContent value="account">
-            <MyIFrameComponent />
+
+            <div className='flex flex-col'>
+              <fetcher.Form method="post" action='/client/sms/send'>
+
+
+                <label className="mt-2 text-black w-full text-left text-[15px]" htmlFor="name">
+                  Templates
+                </label>
+                <select
+                  className={`border-black bg-white w-full text-black placeholder:text-blue-300 border justifty-start h-8 cursor-pointer rounded mb-65 px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  onChange={handleChange}>
+                  <option value="">Select a template</option>
+                  {templates && templates.filter(template => template.type === 'text').map((template, index) => (
+                    <option key={index} value={template.title}>
+                      {template.title}
+                    </option>
+                  ))}
+                </select>
+
+
+                <label className="mt-5 text-black text-left text-[15px]" htmlFor="username">
+                  Message
+                </label>
+                <TextArea
+                  value={text}
+                  placeholder="Message body..."
+                  name="note"
+                  className=" bg-white h-[300px] border-black text-black placeholder:text-black"
+                  ref={textareaRef}
+                  onChange={(e) => setText(e.target.value)}
+                />
+                <Input type="hidden" defaultValue={text} name="body" />
+                <Input type="hidden" defaultValue={resultOfcall} name="resultOfcall" />
+                <Input type="hidden" defaultValue={direction} name="direction" />
+                <Input type="hidden" defaultValue='Quick F/U' name="title" />
+                <Input type="hidden" defaultValue={contactMethod} name="contactMethod" />
+                <Input type="hidden" defaultValue={id} name="financeId" />
+                <Input type="hidden" defaultValue={descfup} name="descfup" />
+                <Input type='hidden' value={firstName} name='firstName' />
+                <Input type='hidden' value={lastName} name='lastName' />
+                <Input type='hidden' value={phone} name='phone' />
+                <Input type="hidden" defaultValue={userEmail} name="userEmail" />
+                <Input type='hidden' value={email} name='email' />
+                <Input type='hidden' value={userName} name='userName' />
+                <Input type='hidden' value={id} name='userId' />
+                <Input type="hidden" defaultValue={data.id} name="id" />
+                <Input type="hidden" defaultValue={resultOfcall} name="resultOfcall" />
+                <Input type="hidden" defaultValue={direction} name="direction" />
+                <Input type="hidden" defaultValue={note} name="note" />
+                <Input type="hidden" defaultValue={title} name="title" />
+                <Input type="hidden" defaultValue={contactMethod} name="contactMethod" />
+                <Input type="hidden" defaultValue={financeId} name="financeId" />
+                <Input type="hidden" defaultValue={apptStatus} name="apptStatus" />
+                <Input type="hidden" defaultValue={completed} name="completed" />
+                <Input type="hidden" defaultValue={apptType} name="apptType" />
+                <Input type="hidden" defaultValue={userId} name="userId" />
+                <div className="mt-[25px] flex justify-between items-center">
+
+                  <Button
+                    onClick={() => {
+                      // setIsButtonPressed(true);
+                      // Change the button text
+                      setButtonText('Email Sent');
+                      toast.success(`Sent text to ${data.firstName}.`)
+                    }}
+                    name='intent'
+                    value='textQuickFU'
+                    type='submit'
+                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+                  >
+                    {buttonText}
+                  </Button>
+
+                  {createTemplate === 'createEmailTemplate' && (<input type='hidden' name='intent' value={createTemplate} />)}
+                </div>
+
+              </fetcher.Form >
+              <fetcher.Form method='post'>
+                <Input type="hidden" defaultValue={id} name="financeId" />
+                <Input type="hidden" defaultValue={userId} name="userId" />
+                <Input type="hidden" defaultValue={userEmail} name="userEmail" />
+
+                <input type='hidden' name='name' value='Update new template' />
+                <input type='hidden' name='body' value={text} />
+                <input type='hidden' name='category' value='To opdate' />
+                <input type='hidden' name='userEmail' value={user.email} />
+                <input type='hidden' name='subject' value='Copied from text client' />
+                <input type='hidden' name='title' value='Copied from text client' />
+                <ButtonLoading
+                  size="lg"
+                  name='intent'
+                  value='createEmailTemplate'
+                  type='submit'
+                  isSubmitting={isSubmitting}
+                  onClick={() => {
+                    setIsButtonPressed(true);
+                    setCreateTemplate("createEmailTemplate")
+                    toast.message('Helping you become the hulk of sales...')
+                  }}
+                  loadingText="Loading..."
+                  className="w-auto cursor-pointer  mt-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border-black"
+                >
+                  Save As Template
+                </ButtonLoading>
+              </fetcher.Form >
+            </div>
           </TabsContent>
           <TabsContent value="password">
             <div className='max-h-[900px] overflow-y-scroll' >

@@ -888,7 +888,9 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   // activix done
   if (intent === "EmailClient") {
     const comdata = {
-      financeId: formData.financeId,
+      finance: {
+        connect: { id: formData.financeId, } // Assuming financeId is the ID of the finance record you want to connect
+      },
       userEmail: user?.email,
       content: formData.customContent,
       title: formData.subject,
@@ -897,12 +899,16 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       subject: formData.subject,
       type: 'Email',
       userName: user?.name,
+      lead_id: formData.activixId,
+      method: 'email',
+      type: 'outgoing',
       date: new Date().toISOString(),
     }
+
     const to = formData.customerEmail
     const text = formData.customContent
     const subject = formData.subject
-    const tokens = formData.tokens
+    let tokens = session2.get("accessToken")
     // const completeApt = await CompleteLastAppt(userId, financeId)
     const sendEmail = await SendEmail(user, to, subject, text, tokens)
     const setComs = await prisma.communicationsOverview.create({ data: comdata, });
@@ -911,6 +917,9 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     const updated = {
       ...formData,
       contactMethod: 'email',
+      method: 'email',
+      type: 'outgoing',
+      lead_id: formData.activixId,
     }
     const createEmailActivix = await CreateCommunications(updated)
     return json({ sendEmail, saveComms, formData, setComs, createEmailActivix })//, redirect(`/dummyroute`)

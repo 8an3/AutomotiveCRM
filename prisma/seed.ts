@@ -200,7 +200,6 @@ export async function FirstCustomer() {
   const finance = await prisma.finance.create({
     data: {
       id: 'clrkwvcwo00013aljooz2z4g8',
-      financeFigures: null,
       clientfileId: 'clrkwvcsx00003aljzjhfunsj',
       dashboardId: 'clrkwvd0h00023aljgsywagtb',
       financeId: 'clrkwvcwo00013aljooz2z4g8',

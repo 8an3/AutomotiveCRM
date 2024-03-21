@@ -145,15 +145,10 @@ export default function DashMsger() {
   const [direction, setdirection] = useState('Outgoing')
   const [title, settitle] = useState(`F/U on ${data.unit}`)
   const [contactMethod, setcontactMethod] = useState('SMS')
-  //const [followUpDay] = useState(value)
   const [descfup, setdescfup] = useState(false)
-  const [twodayfup, settwodayfup] = useState(1)
-  const [timeOfDay, settimeOfDay] = useState('18:00')
   const [firstName, setfirstName] = useState(data.firstName)
   const [lastName, setlastName] = useState(data.lastName)
   const [phone, setphone] = useState(data.phone)
-  const [brand, setbrand] = useState(data.brand)
-  const [unit, setunit] = useState(data.unit)
   const [apptStatus, setapptStatus] = useState('future')
   const [completed, setcompleted] = useState('no')
   const [apptType, setapptType] = useState('Sales')
@@ -247,62 +242,21 @@ export default function DashMsger() {
             ref={textareaRef}
             onChange={(e) => setText(e.target.value)}
           />
-
-          <Input type="hidden" defaultValue={id} name="financeId" />
           <Input type="hidden" defaultValue={text} name="body" />
-
-          <Input type="hidden" defaultValue={descfup} name="descfup" />
-          <Input type="hidden" defaultValue={twodayfup} name="twodayfup" />
-          <Input type='hidden' value={timeOfDay} name='timeOfDay' />
-          <Input type='hidden' value={firstName} name='firstName' />
-          <Input type='hidden' value={lastName} name='lastName' />
-          <Input type='hidden' value={phone} name='SMS' />
-          <Input type="hidden" defaultValue={userEmail} name="userEmail" />
-          <Input type="hidden" defaultValue={brand} name="brand" />
-          <Input type="hidden" defaultValue={unit} name="unit" />
-          <Input type="hidden" defaultValue='future' name="apptStatus" />
-          <Input type="hidden" defaultValue='no' name="completed" />
-          <Input type="hidden" defaultValue='Sales' name="apptType" />
-          <Input type='hidden' value={email} name='email' />
-          <Input type='hidden' value={userName} name='userName' />
-          <Input type='hidden' value={data.id} name='userId' />
-          <Input type='hidden' value={data.phone} name='phone' />
-
           <Input type="hidden" defaultValue={resultOfcall} name="resultOfcall" />
           <Input type="hidden" defaultValue={direction} name="direction" />
           <Input type="hidden" defaultValue='Quick F/U' name="title" />
           <Input type="hidden" defaultValue={contactMethod} name="contactMethod" />
-          <Input type="hidden" defaultValue={financeId} name="financeId" />
-          <Input type="hidden" defaultValue={apptStatus} name="apptStatus" />
-          <Input type="hidden" defaultValue={completed} name="completed" />
-          <Input type="hidden" defaultValue={apptType} name="apptType" />
-          <Input type="hidden" defaultValue={userId} name="userId" />
-          <Input type="hidden" defaultValue={value} name="followUpDay" />
-          <Input type='hidden' value={value} name='dateModal' />
-
-          <Input type='hidden' value={value} name='followUpDay' />
-
-          <Input type='hidden' value={setDate} name='setDate' />
           <Input type="hidden" defaultValue={id} name="financeId" />
           <Input type="hidden" defaultValue={descfup} name="descfup" />
-          <Input type="hidden" defaultValue={dateTime} name="dateTime" />
-          <Input type='hidden' value={timeOfDay} name='timeOfDay' />
           <Input type='hidden' value={firstName} name='firstName' />
           <Input type='hidden' value={lastName} name='lastName' />
           <Input type='hidden' value={phone} name='phone' />
           <Input type="hidden" defaultValue={userEmail} name="userEmail" />
-          <Input type="hidden" defaultValue={brand} name="brand" />
-          <Input type="hidden" defaultValue={unit} name="unit" />
-          <Input type="hidden" defaultValue='future' name="apptStatus" />
-          <Input type="hidden" defaultValue='no' name="completed" />
-          <Input type="hidden" defaultValue='Sales' name="apptType" />
           <Input type='hidden' value={email} name='email' />
           <Input type='hidden' value={userName} name='userName' />
           <Input type='hidden' value={id} name='userId' />
           <Input type="hidden" defaultValue={data.id} name="id" />
-          <Input type="hidden" defaultValue={value} name="followUpDay" />
-
-
           <Input type="hidden" defaultValue={resultOfcall} name="resultOfcall" />
           <Input type="hidden" defaultValue={direction} name="direction" />
           <Input type="hidden" defaultValue={note} name="note" />

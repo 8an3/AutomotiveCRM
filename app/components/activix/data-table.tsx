@@ -657,9 +657,8 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
         </div>
       </div >
       <div className="mt-[20px] rounded-md  border border-[#60646c] text-slate1">
-        <Table className="rounded-md overflow-x-auto border-[#60646c]">
+        <Table className="rounded-md overflow-x-auto overflow-y-auto border-[#60646c]">
           <TableHeader>
-
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className=' border-[#60646c]'>
                 {headerGroup.headers.map((header) => {

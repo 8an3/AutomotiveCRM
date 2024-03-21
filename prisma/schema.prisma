@@ -747,9 +747,11 @@ model CommunicationsOverview {
   date      String?
   userName  String?
   type      String?
+  lead_id   String?
   direction String?
   subject   String?
   result    String?
+  method    String?
   userEmail String?
 
   @@index([financeId])
@@ -817,18 +819,19 @@ model Clientfile {
   financeId String? @unique
   userId    String?
 
-  firstName     String?
-  lastName      String?
-  name          String?
-  email         String? @unique
-  phone         String?
-  address       String?
-  city          String?
-  postal        String?
-  province      String?
-  dl            String?
-  typeOfContact String?
-  timeToContact String?
+  firstName      String?
+  lastName       String?
+  name           String?
+  email          String? @unique
+  phone          String?
+  address        String?
+  city           String?
+  postal         String?
+  province       String?
+  dl             String?
+  typeOfContact  String?
+  timeToContact  String?
+  conversationId String?
 }
 
 // -----------------------------------------------------------------------------
@@ -863,8 +866,8 @@ model LockFinanceTerminals {
 }
 
 model Finance {
-  id                  String  @id @default(cuid())
-  financeFigures      String? @unique
+  id String @id @default(cuid())
+
   clientfileId        String?
   dashboardId         String? @unique
   financeId           String? @unique

@@ -18,6 +18,7 @@ const financeFormSchema = z.object({
   partNumbers: zfd.text(z.string().optional()),
   customerEmail: zfd.text(z.string().optional()),
   tokens: zfd.text(z.string().optional()),
+  lead_id: zfd.text(z.string().optional()),
   orderNumber: zfd.text(z.string().optional()),
   quantity: zfd.text(z.string().optional()),
   description: zfd.text(z.string().optional()),

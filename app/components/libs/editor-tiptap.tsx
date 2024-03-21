@@ -770,7 +770,7 @@ export function EditorTiptapContextViewHTML() {
 export const onUpdate = ({ setText, handleUpdate }) => {
   let content;
   const editor = Editor(content, handleUpdate)
-  const updatedText = editor.getHTML();
+  const updatedText = editor?.getHTML();
   if (handleUpdate) {
     handleUpdate(updatedText);
   }

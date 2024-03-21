@@ -51,12 +51,20 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import { getSession } from '~/sessions/auth-session.server';
 import { SendEmail } from "./email.server";
 
+
+type ContactMeEmailProps = {
+  userEmail?: string; // Define userEmail as a string or undefined
+  // Other prop definitions...
+};
+
+
 export async function action({ request, params }: DataFunctionArgs) {
   const formPayload = Object.fromEntries(await request.formData());
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   let tokens = session.get("accessToken")
-  // new
+  const resend = new Resend(process.env.resend_API_KEY);
+
 
   const user = await prisma.user.findUnique({
     where: { email: email },
@@ -78,18 +86,16 @@ export async function action({ request, params }: DataFunctionArgs) {
     },
   });
   /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) { redirect('/login') }
   console.log('email action')
 
-  const financeId = formPayload.financeId
+  const financeId = formPayload.financeId || '';
   const referrer = request.headers.get('Referer');
   const referrerUrl = new URL(referrer);
   const referrerPath = referrerUrl.pathname; // This is the path
   let finance = await getMergedFinanceOnFinanceUniqueFInanceId(financeId)
   const deFees = await getDealerFeesbyEmail(email)
-  const brand = finance?.brand
+  const brand = finance?.brand || '';
 
   function fillTemplate(templateString, templateVars) {
     return templateString.replace(/\${(.*?)}/g, (_, g) => templateVars[g]);
@@ -142,7 +148,7 @@ export async function action({ request, params }: DataFunctionArgs) {
   }
 
   console.log(referrerPath); // Logs the referrer URL
-  let customContent = formPayload.customContent
+  let customContent = formPayload.customContent || '';
   let filledContent = ''
   if (referrerPath === '/overview/$' || referrerPath === '/leads') {
     const templateString = formPayload.customContent //'Hello ${clientFname}, just wanted to follow up to our conversations...';
@@ -152,530 +158,180 @@ export async function action({ request, params }: DataFunctionArgs) {
     customContent = filledContent
   }
 
-  let modelData;
+  let modelData = ''
   if (brand === 'Kawasaki') {
     modelData = await getDataKawasaki(finance);
   }
   const url = ''//UrlSelect(financeModel)
 
-  const financeModel = finance?.model
-  const userLabour = deFees?.userLabour
-  const userOMVIC = deFees?.userOMVIC
-  const userLicensing = deFees?.userLicensing
+  const financeModel = finance?.model || '';
+  const userLabour = deFees?.userLabour || '';
+  const userOMVIC = deFees?.userOMVIC || '';
+  const userLicensing = deFees?.userLicensing || '';
 
-  const userExtWarr = deFees?.userExtWarr
-  const userServicespkg = deFees?.userServicespkg
-  const vinE = deFees?.vinE
-  const rustProofing = deFees?.rustProofing
-  const userGap = deFees?.userGap
-  const userLoanProt = deFees?.userLoanProt
-  const userTireandRim = deFees?.userTireandRim
-  const userOther = deFees?.userOther
-  const dealer = deFees?.dealer
-  const pdi = deFees?.userPDI
-  const userAirTax = deFees?.userAirTax
-  const userDemo = deFees?.userDemo
-  const userMarketAdj = deFees?.userMarketAdj
-  const userGasOnDel = deFees?.userGasOnDel
-  const destinationCharge = deFees?.destinationCharge
-  const userFinance = deFees?.userFinance
-  const userGovern = deFees?.userGovern
-  const userTireTax = deFees?.userTireTax
-  const admin = deFees?.userAdmin
-  const commodity = deFees?.userCommodity
-  const discount = finance?.discount
-  const discountPer = finance?.discountPer
-  const painPrem = finance?.paintPrem
-  const onTax = finance?.onTax
-  const total = finance?.total
-  const months = finance?.months
-  const stockNum = finance?.stockNum
-  const year = finance?.year
-  const deposit = finance?.deposit
-  const licensing = finance?.licensing
-  const labour = finance?.labour
-  const accessories = finance?.accessories
-  const msrp = finance?.msrp
-  const tradeValue = finance?.tradeValue
-  const modelCode = finance?.modelCode
-  const customerName = finance?.name
-  const custEmail = finance?.email
-
-
+  const userExtWarr = deFees?.userExtWarr || '';
+  const userServicespkg = deFees?.userServicespkg || '';
+  const vinE = deFees?.vinE || '';
+  const rustProofing = deFees?.rustProofing || '';
+  const userGap = deFees?.userGap || '';
+  const userLoanProt = deFees?.userLoanProt || '';
+  const userTireandRim = deFees?.userTireandRim || '';
+  const userOther = deFees?.userOther || '';
+  const dealer = deFees?.dealer || '';
+  const pdi = deFees?.userPDI || '';
+  const userAirTax = deFees?.userAirTax || '';
+  const userDemo = deFees?.userDemo || '';
+  const userMarketAdj = deFees?.userMarketAdj || '';
+  const userGasOnDel = deFees?.userGasOnDel || '';
+  const destinationCharge = deFees?.destinationCharge || '';
+  const userFinance = deFees?.userFinance || '';
+  const userGovern = deFees?.userGovern || '';
+  const userTireTax = deFees?.userTireTax || '';
+  const admin = deFees?.userAdmin || '';
+  const commodity = deFees?.userCommodity || '';
+  const discount = finance?.discount || '';
+  const discountPer = finance?.discountPer || '';
+  const painPrem = finance?.paintPrem || '';
+  const onTax = finance?.onTax || '';
+  const total = finance?.total || '';
+  const months = finance?.months || '';
+  const stockNum = finance?.stockNum || '';
+  const year = finance?.year || '';
+  const deposit = finance?.deposit || '';
+  const licensing = finance?.licensing || '';
+  const labour = finance?.labour || '';
+  const accessories = finance?.accessories || '';
+  const msrp = finance?.msrp || '';
+  const tradeValue = finance?.tradeValue || '';
+  const modelCode = finance?.modelCode || '';
+  const customerName = finance?.name || '';
+  const custEmail = finance?.email || '';
 
 
-  const qcTax = finance?.qcTax
-  const weeklyqc = finance?.weeklyqc
-  const biweeklyqc = finance?.biweeklyqc
-  const qc60 = finance?.qc60
 
-  const weeklyOth = finance?.weeklyOth
-  const biweekOth = finance?.biweekOth
-  const oth60 = finance?.oth60
-  const biweeklNat = finance?.biweeklNat
-  const weeklylNat = finance?.weeklylNat
-  const nat60 = finance?.nat60
 
-  const userEmail = user?.email
-  const userPhone = user?.phone
-  const userFname = user?.name
-  const totalWithOptions = finance?.totalWithOptions
-  const otherTaxWithOptions = finance?.otherTaxWithOptions
-  const otherTax = finance?.otherTax
-  const weeklyOthWOptions = finance?.weeklyOthWOptions
-  const biweekOthWOptions = finance?.biweekOthWOptions
-  const oth60WOptions = finance?.oth60WOptions
-  const biweeklNatWOptions = finance?.biweeklNatWOptions
-  const nat60WOptions = finance?.nat60WOptions
-  const weeklylNatWOptions = finance?.weeklylNatWOptions
+  const qcTax = finance?.qcTax || '';
+  const weeklyqc = finance?.weeklyqc || '';
+  const biweeklyqc = finance?.biweeklyqc || '';
+  const qc60 = finance?.qc60 || '';
+
+  const weeklyOth = finance?.weeklyOth || '';
+  const biweekOth = finance?.biweekOth || '';
+  const oth60 = finance?.oth60 || '';
+  const biweeklNat = finance?.biweeklNat || '';
+  const weeklylNat = finance?.weeklylNat || '';
+  const nat60 = finance?.nat60 || '';
+
+  const userEmail = user?.email || '';
+  const userPhone = user?.phone || '';
+  const userFname = user?.name || '';
+  const totalWithOptions = finance?.totalWithOptions || '';
+  const otherTaxWithOptions = finance?.otherTaxWithOptions || '';
+  const otherTax = finance?.otherTax || '';
+  const weeklyOthWOptions = finance?.weeklyOthWOptions || '';
+  const biweekOthWOptions = finance?.biweekOthWOptions || '';
+  const oth60WOptions = finance?.oth60WOptions || '';
+  const biweeklNatWOptions = finance?.biweeklNatWOptions || '';
+  const nat60WOptions = finance?.nat60WOptions || '';
+  const weeklylNatWOptions = finance?.weeklylNatWOptions || '';
 
 
   //wOptions, wBreakdown, wSpec , optionsWBreakdown, optionsWSpec
 
-  const model2 = finance?.model
-  const intent = formPayload.emailType
+  const model2 = finance?.model || '';
+  const intent = formPayload.emailType || '';
 
-  const subject = formPayload?.subject
-  const to = formPayload?.customerEmail
-  const preview = formPayload?.preview
+  const subject = formPayload?.subject || '';
+  const to = formPayload?.customerEmail || '';
+  const preview = formPayload?.preview || '';
   // console.log(deFees, 'defees', intent, finance, intent, intent)
-  const fromEmail = user?.email
+  const fromEmail = user?.email || '';
 
 
-  let body;
-  let topPart;
-  let weekly;
-  let biweekly;
-  let monthly;
+  let body = ''
+  let topPart = ''
+  let weekly = ''
+  let biweekly = ''
+  let monthly = ''
 
-
-
+  let payments = ''
+  let display = ''
   switch (payments) {
     case 'ontario':
-      weekly = finance?.weekly
-      biweekly = finance?.biweekly
-      monthly = finance?.on60
+      weekly = finance?.weekly || '';
+      biweekly = finance?.biweekly || '';
+      monthly = finance?.on60 || '';
       break;
     case 'ontarioWOptions':
-      weekly = finance?.weekly
-      biweekly = finance?.biweekly
-      monthly = finance?.on60
+      weekly = finance?.weekly || '';
+      biweekly = finance?.biweekly || '';
+      monthly = finance?.on60 || '';
       break;
     case 'native':
-      weekly = finance?.weeklyqc
-      biweekly = finance?.biweeklyqc
-      monthly = finance?.qc60
+      weekly = finance?.weeklyqc || '';
+      biweekly = finance?.biweeklyqc || '';
+      monthly = finance?.qc60 || '';
       break;
     case 'nativeWOptions':
-      weekly = finance?.weeklylNatWOptions
-      biweekly = finance?.biweeklNatWOptions
-      monthly = finance?.nat60WOptions
+      weekly = finance?.weeklylNatWOptions || '';
+      biweekly = finance?.biweeklNatWOptions || '';
+      monthly = finance?.nat60WOptions || '';
       break;
     case 'other':
-      weekly = finance?.weeklyOth
-      biweekly = finance?.biweekOth
-      monthly = finance?.oth60
+      weekly = finance?.weeklyOth || '';
+      biweekly = finance?.biweekOth || '';
+      monthly = finance?.oth60 || '';
       break;
     case 'otherWOptions':
-      weekly = finance?.weeklyOthWOptions
-      biweekly = finance?.biweekOthWOptions
-      monthly = finance?.oth60WOptions
+      weekly = finance?.weeklyOthWOptions || '';
+      biweekly = finance?.biweekOthWOptions || '';
+      monthly = finance?.oth60WOptions || '';
       break;
     default:
   }
 
-  switch (display) {
-    case 'payments':
-      body = () => {
-        return (
-          <>
-            <Text className="text-black text-2xl font-thin leading-[24px]">
-              Payments
-            </Text>
-            <Hr style={hr} />
-            <Text style={paragraph}>
-              With ${deposit} down, over {months} months your payments are;
-            </Text>
-            <Row>
-              <Column align="left">
-                <Text className="text-black text-[14px]">
-                  ${weekly} / Weekly
-                </Text>
-              </Column>
-              <Column align="center">
-                <Text className="text-black text-[14px] ">
-                  ${biweekly} / Bi-weekly
-                </Text>
-              </Column>
-              <Column align="right">
-                <Text className="text-black text-[14px] ">
-                  ${monthly} / Monthly
-                </Text>
-              </Column>
-            </Row>
-          </>
-        )
-      }
-      break;
 
-    case 'wBreakdown':
-      body = () => {
-        return (
-          <>
 
-            <Text className="text-black text-2xl font-thin leading-[24px]">
-              Model
-            </Text>
-            <Hr style={hr} />
-            <Row>
-              <Column align="left">
-                <Text className="text-black text-[14px]">
-                  Brand
-                </Text>
-              </Column>
+  /**
 
-              <Column align="right">
-                <Text className="text-black text-[14px] ">
-                  {brand}
-                </Text>
-              </Column>
-            </Row>
-            <Row>
-              <Column align="left">
-                <Text className="text-black text-[14px]">
-                  Model
-                </Text>
-              </Column>
 
-              <Column align="right">
-                <Text className="text-black text-[14px] ">
-                  {model2}
-                </Text>
-              </Column>
-            </Row>
-            {modelCode && (
+    switch (display) {
+      case 'payments':
+        body = () => {
+          return (
+            <>
+              <Text className="text-black text-2xl font-thin leading-[24px]">
+                Payments
+              </Text>
+              <Hr style={hr} />
+              <Text style={paragraph}>
+                With ${deposit} down, over {months} months your payments are;
+              </Text>
               <Row>
                 <Column align="left">
                   <Text className="text-black text-[14px]">
-                    Model Code
+                    ${weekly} / Weekly
                   </Text>
                 </Column>
-
+                <Column align="center">
+                  <Text className="text-black text-[14px] ">
+                    ${biweekly} / Bi-weekly
+                  </Text>
+                </Column>
                 <Column align="right">
                   <Text className="text-black text-[14px] ">
-                    {modelCode}
+                    ${monthly} / Monthly
                   </Text>
                 </Column>
               </Row>
-            )}
-            {stockNum && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Year
-                  </Text>
-                </Column>
+            </>
+          )
+        }
+        break;
 
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    {year}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {stockNum && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Stock Number
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    {stockNum}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            <Text className="text-black text-2xl font-thin leading-[24px]">
-              Price
-            </Text>
-            <Hr style={hr} />
-            <Row>
-              <Column align="left">
-                <Text className="text-black text-[14px]">
-                  MSRP
-                </Text>
-              </Column>
-
-              <Column align="right">
-                <Text className="text-black text-[14px] ">
-                  ${msrp}
-                </Text>
-              </Column>
-            </Row>
-
-            {pdi > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    PDI
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${pdi}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {admin > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Admin
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${admin}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {commodity > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Commodity
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${commodity}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {accessories > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Accessories
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${accessories}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {labour > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Labour Hours
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${labour}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {licensing > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Licensing
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${licensing}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-
-
-
-            {userTireTax > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Tire Tax
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${userTireTax}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {userGovern > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Government Fees
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${userGovern}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {userFinance > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Finance Fees
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${userFinance}
-                  </Text>
-                </Column>
-              </Row>
-
-            )}
-            {destinationCharge > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Destination Charge
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${destinationCharge}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {userGasOnDel > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Gas On Delivery
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${userGasOnDel}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {userMarketAdj > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Market Adjustment
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${userMarketAdj}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {userDemo > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Demonstrate features or walkaround
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${userDemo}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {userAirTax > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Air Tax
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${userAirTax}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {painPrem > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Paint Premium
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${painPrem}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-            {tradeValue > 0 && (
-              <Row>
-                <Column align="left">
-                  <Text className="text-black text-[14px]">
-                    Trade Value
-                  </Text>
-                </Column>
-
-                <Column align="right">
-                  <Text className="text-black text-[14px] ">
-                    ${tradeValue}
-                  </Text>
-                </Column>
-              </Row>
-            )}
-
-
-
-
-          </>
-        )
-      }
-      break;
-
-    case 'wBreakdownAndPdf':
-      body = () => {
-        return (
-          <>
-            <Text style={paragraph}>
-              Here is the link to the spec sheet for the {model2}: {url}
-            </Text>
+      case 'wBreakdown':
+        body = () => {
+          return (
             <>
 
               <Text className="text-black text-2xl font-thin leading-[24px]">
@@ -1020,137 +676,486 @@ export async function action({ request, params }: DataFunctionArgs) {
 
 
             </>
-          </>
-        )
-      }
-      break;
+          )
+        }
+        break;
 
-    default:
-  }
+      case 'wBreakdownAndPdf':
+        body = () => {
+          return (
+            <>
+              <Text style={paragraph}>
+                Here is the link to the spec sheet for the {model2}: {url}
+              </Text>
+              <>
 
-  switch (emailType) {
-    case 'fullCustom':
-      topPart = () => {
-        return (
-          <>
-            <Text style={paragraph}>
-              {customContent}
-            </Text>
-          </>
-        )
-      }
-      break;
-
-    case 'template':
-      topPart = () => {
-        return (
-          <>
-            <Text style={paragraph}>
-              Dear {customerName},
-            </Text>
-            <Text style={paragraph}>
-              I hope this message finds you well. I wanted to express my appreciation for the opportunity to meet with you and discuss your upcoming purchase of the {model2}. It was a pleasure learning about your preferences and requirements.
-            </Text>
-            <Text style={paragraph}>
-              As promised, I have attached the pricing details for the {model2} to this email. Please review the payments below, and if you have any questions or need further information, do not hesitate to reach out.
-            </Text>
-            <Text style={paragraph}>
-              I value your interest in our products, and I'm here to assist you every step of the way. If you decide to move forward with your purchase, call me right away. Otherwise I will follow up with you in a couple of days to ensure a smooth and timely process. You can reach me via email at {userEmail} or directly on my cell phone at {userPhone} for any inquiries or to secure your purchase.
-            </Text>
-            <Text style={paragraph}>
-              Thank you for considering us for your needs. Your satisfaction is our top priority, and I look forward to assisting you further.
-            </Text>
-          </>
-        )
-      }
-      break;
-    default:
-  }
-
-  const mainTemplate = () => {
-    return (
-      <Html>
-        <Head />
-        <Tailwind>
-          <Body style={main}>
-            <Container style={container}>
-              <Section style={box}>
-                <topPart />
-                <body />
+                <Text className="text-black text-2xl font-thin leading-[24px]">
+                  Model
+                </Text>
                 <Hr style={hr} />
-                <Text style={paragraph}>
-                  Best regards,
+                <Row>
+                  <Column align="left">
+                    <Text className="text-black text-[14px]">
+                      Brand
+                    </Text>
+                  </Column>
+
+                  <Column align="right">
+                    <Text className="text-black text-[14px] ">
+                      {brand}
+                    </Text>
+                  </Column>
+                </Row>
+                <Row>
+                  <Column align="left">
+                    <Text className="text-black text-[14px]">
+                      Model
+                    </Text>
+                  </Column>
+
+                  <Column align="right">
+                    <Text className="text-black text-[14px] ">
+                      {model2}
+                    </Text>
+                  </Column>
+                </Row>
+                {modelCode && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Model Code
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        {modelCode}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {stockNum && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Year
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        {year}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {stockNum && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Stock Number
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        {stockNum}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                <Text className="text-black text-2xl font-thin leading-[24px]">
+                  Price
                 </Text>
-                <Text style={paragraph}>
-                  {userFname}
-                </Text>
-                <Text style={paragraph}>
-                  {dealer}
-                </Text>
-                <Text style={paragraph}>
-                  {userPhone}
-                </Text>
-                <Text style={paragraph}>
-                  {userEmail}
-                </Text>
-              </Section>
-            </Container>
-          </Body>
-        </Tailwind>
-      </Html>
-    );
-  }
+                <Hr style={hr} />
+                <Row>
+                  <Column align="left">
+                    <Text className="text-black text-[14px]">
+                      MSRP
+                    </Text>
+                  </Column>
 
-  const container = {
-    backgroundColor: '#ffffff',
-    margin: '0 auto',
-    padding: '20px 0 48px',
-    marginBottom: '64px',
-  };
-  const paragraph = {
-    fontSize: '16px',
-    lineHeight: '24px',
-    textAlign: 'left' as const,
-  };
+                  <Column align="right">
+                    <Text className="text-black text-[14px] ">
+                      ${msrp}
+                    </Text>
+                  </Column>
+                </Row>
 
-  const hr = {
-    borderColor: '#e6ebf1',
-    margin: '20px 0',
-  };
-  const main = {
-    backgroundColor: '#f6f9fc',
-    fontFamily:
-      '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
-  };
+                {pdi > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        PDI
+                      </Text>
+                    </Column>
 
-  const box = {
-    padding: '0 48px',
-  };
-  console.log('weekly', weekly)
-  console.log('biweekly', biweekly)
-  console.log('monthly', monthly)
-  console.log('qcTax', qcTax)
-  console.log('weeklyqc', weeklyqc)
-  console.log('biweeklyqc', biweeklyqc)
-  console.log('qc60', qc60)
-  console.log('weeklyOth', weeklyOth)
-  console.log('biweekOth', biweekOth)
-  console.log('oth60', oth60)
-  console.log('totalWithOptions', totalWithOptions)
-  console.log('otherTaxWithOptions', otherTaxWithOptions)
-  console.log('otherTax', otherTax)
-  console.log('weeklyOthWOptions', weeklyOthWOptions)
-  console.log('biweekOthWOptions', biweekOthWOptions)
-  console.log('oth60WOptions', oth60WOptions)
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${pdi}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {admin > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Admin
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${admin}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {commodity > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Commodity
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${commodity}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {accessories > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Accessories
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${accessories}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {labour > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Labour Hours
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${labour}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {licensing > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Licensing
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${licensing}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
 
 
-  return mainTemplate
+
+                {userTireTax > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Tire Tax
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${userTireTax}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {userGovern > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Government Fees
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${userGovern}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {userFinance > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Finance Fees
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${userFinance}
+                      </Text>
+                    </Column>
+                  </Row>
+
+                )}
+                {destinationCharge > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Destination Charge
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${destinationCharge}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {userGasOnDel > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Gas On Delivery
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${userGasOnDel}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {userMarketAdj > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Market Adjustment
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${userMarketAdj}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {userDemo > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Demonstrate features or walkaround
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${userDemo}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {userAirTax > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Air Tax
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${userAirTax}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {painPrem > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Paint Premium
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${painPrem}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
+                {tradeValue > 0 && (
+                  <Row>
+                    <Column align="left">
+                      <Text className="text-black text-[14px]">
+                        Trade Value
+                      </Text>
+                    </Column>
+
+                    <Column align="right">
+                      <Text className="text-black text-[14px] ">
+                        ${tradeValue}
+                      </Text>
+                    </Column>
+                  </Row>
+                )}
 
 
 
 
+              </>
+            </>
+          )
+        }
+        break;
+
+      default:
+    }
+
+    switch (emailType) {
+      case 'fullCustom':
+        topPart = () => {
+          return (
+            <>
+              <Text style={paragraph}>
+                {customContent}
+              </Text>
+            </>
+          )
+        }
+        break;
+
+      case 'template':
+        topPart = () => {
+          return (
+            <>
+              <Text style={paragraph}>
+                Dear {customerName},
+              </Text>
+              <Text style={paragraph}>
+                I hope this message finds you well. I wanted to express my appreciation for the opportunity to meet with you and discuss your upcoming purchase of the {model2}. It was a pleasure learning about your preferences and requirements.
+              </Text>
+              <Text style={paragraph}>
+                As promised, I have attached the pricing details for the {model2} to this email. Please review the payments below, and if you have any questions or need further information, do not hesitate to reach out.
+              </Text>
+              <Text style={paragraph}>
+                I value your interest in our products, and I'm here to assist you every step of the way. If you decide to move forward with your purchase, call me right away. Otherwise I will follow up with you in a couple of days to ensure a smooth and timely process. You can reach me via email at {userEmail} or directly on my cell phone at {userPhone} for any inquiries or to secure your purchase.
+              </Text>
+              <Text style={paragraph}>
+                Thank you for considering us for your needs. Your satisfaction is our top priority, and I look forward to assisting you further.
+              </Text>
+            </>
+          )
+        }
+        break;
+      default:
+    }
+
+    const mainTemplate = () => {
+      return (
+        <Html>
+          <Head />
+          <Tailwind>
+            <Body style={main}>
+              <Container style={container}>
+                <Section style={box}>
+                  <topPart />
+                  <body />
+                  <Hr style={hr} />
+                  <Text style={paragraph}>
+                    Best regards,
+                  </Text>
+                  <Text style={paragraph}>
+                    {userFname}
+                  </Text>
+                  <Text style={paragraph}>
+                    {dealer}
+                  </Text>
+                  <Text style={paragraph}>
+                    {userPhone}
+                  </Text>
+                  <Text style={paragraph}>
+                    {userEmail}
+                  </Text>
+                </Section>
+              </Container>
+            </Body>
+          </Tailwind>
+        </Html>
+      );
+    }
+
+    const container = {
+      backgroundColor: '#ffffff',
+      margin: '0 auto',
+      padding: '20px 0 48px',
+      marginBottom: '64px',
+    };
+    const paragraph = {
+      fontSize: '16px',
+      lineHeight: '24px',
+      textAlign: 'left' as const,
+    };
+
+    const hr = {
+      borderColor: '#e6ebf1',
+      margin: '20px 0',
+    };
+    const main = {
+      backgroundColor: '#f6f9fc',
+      fontFamily:
+        '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+    };
+
+    const box = {
+      padding: '0 48px',
+    };
+    console.log('weekly', weekly)
+    console.log('biweekly', biweekly)
+    console.log('monthly', monthly)
+    console.log('qcTax', qcTax)
+    console.log('weeklyqc', weeklyqc)
+    console.log('biweeklyqc', biweeklyqc)
+    console.log('qc60', qc60)
+    console.log('weeklyOth', weeklyOth)
+    console.log('biweekOth', biweekOth)
+    console.log('oth60', oth60)
+    console.log('totalWithOptions', totalWithOptions)
+    console.log('otherTaxWithOptions', otherTaxWithOptions)
+    console.log('otherTax', otherTax)
+    console.log('weeklyOthWOptions', weeklyOthWOptions)
+    console.log('biweekOthWOptions', biweekOthWOptions)
+    console.log('oth60WOptions', oth60WOptions)
 
 
+    return mainTemplate */
 
 
 
@@ -1164,7 +1169,6 @@ export async function action({ request, params }: DataFunctionArgs) {
       from: fromEmail,
       to: `${custEmail}`,
       subject: `${finance.brand} ${model2} model information.`,
-      bcc: `${userEmail}`,
       react: <FullCustom
         customContent={filledContent}
         userEmail={userEmail}
@@ -1181,7 +1185,6 @@ export async function action({ request, params }: DataFunctionArgs) {
       from: fromEmail,
       to: `${custEmail}`,
       subject: `${finance.brand} ${model2} model information.`,
-      bcc: `${userEmail}`,
       react: <TempPayments
         customerName={customerName}
         model2={model2}
@@ -1208,7 +1211,6 @@ export async function action({ request, params }: DataFunctionArgs) {
       from: fromEmail,
       to: `${custEmail}`,
       subject: `${finance.brand} ${model2} model information.`,
-      bcc: `${userEmail}`,
       react: <TempPaymentsBreakdown
         customContent={customContent}
         customerName={customerName}

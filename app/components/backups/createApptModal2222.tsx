@@ -363,7 +363,6 @@ const CreateApptModal = ({ user, open, handleClose, currentEvent, onCompleteEven
       leadSource: null,
       createdAt: new Date(2023, 11, 23, 9, 0),
       updatedAt: new Date(2023, 11, 23, 9, 30),
-      financeFigures: null,
       dashboardId: 'clqhtlzgh0003uozsbw0l0lm4',
       email: 'nmichinski@gmail.com',
       firstName: 'natashia',

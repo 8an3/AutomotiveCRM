@@ -109,7 +109,7 @@ export function Sidebar2() {
   //console.log(finance)as
   let newFinance;
   if (user.activixActivated === 'yes') {
-    newFinance = finance[0]
+    newFinance = finance
   } else {
     newFinance = finance
   }
