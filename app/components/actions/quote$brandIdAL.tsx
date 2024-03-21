@@ -10,7 +10,7 @@ import { commitSession as commitPref, getSession as getPref } from "~/utils/pref
 import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
-import { CreateCommunications, CompleteTask, CreateLead, CreateTask, } from '../../routes/api.activix';
+import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.activix';
 
 export function invariant(
   condition: any,
@@ -59,11 +59,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
   const userEmail = session2.get("email")
   const user = await prisma.user.findUnique({ where: { email: userEmail } });
 
-  let createActivixLead;
-  if (user.activixActivated === 'yes') {
-    createActivixLead = await CreateLead(formData, user)
-    console.log(createActivixLead)
-  }
+
 
   if (financeId.length > 20) {
     console.log('more than 20')
@@ -124,36 +120,52 @@ export async function quoteAction({ params, request }: ActionArgs) {
     const userId = formData.userId
     if (formData.brand === 'Used') {
       const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      //   console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ createQuoteServer, createActivixLead }), redirect(`/overview/Used`)
+      let createQuoteServer
+      if (user.activixActivated === 'yes') {
+        createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
+      } else {
+        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
+      }
+      return json({ createQuoteServer, }), redirect(`/overview/Used`)
     }
     if (formData.brand === 'Switch') {
       const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
+      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
 
       const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer, createActivixLead }), redirect(`/options/${brand}`)
+      return json({ manitouOptionsCreated, createQuoteServer, }), redirect(`/options/${brand}`)
     }
     if (formData.brand === 'Manitou') {
       const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer, createActivixLead }), redirect(`/options/${brand}`)
+      let createQuoteServer
+      if (user.activixActivated === 'yes') {
+        createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
+      } else {
+        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
+      } const manitouOptionsCreated = await createFinanceManitou(formData)
+      return json({ manitouOptionsCreated, createQuoteServer, }), redirect(`/options/${brand}`)
     }
     if (formData.brand === 'BMW-Motorrad') {
       const financeId = finance.id
       const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      const updatingFinance = await createBMWOptions(financeId)
+      let createQuoteServer
+      if (user.activixActivated === 'yes') {
+        createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
+      } else {
+        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
+      } const updatingFinance = await createBMWOptions(financeId)
       const updatingFinance2 = await createBMWOptions2(financeId)
-      return json({ updatingFinance, updatingFinance2, createQuoteServer, createActivixLead }), redirect(`/options/${brand}`)
+      return json({ updatingFinance, updatingFinance2, createQuoteServer, }), redirect(`/options/${brand}`)
     }
     else {
       const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      // console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ createQuoteServer, createActivixLead }), redirect(`/overview/${brand}`)
+      let createQuoteServer
+      if (user.activixActivated === 'yes') {
+        createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
+      } else {
+        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
+      }
+      return json({ createQuoteServer, }), redirect(`/overview/${brand}`)
     }
   }
 }

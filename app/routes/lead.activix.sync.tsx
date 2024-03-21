@@ -64,9 +64,12 @@ async function synchronizeDataWithActivix(user) {
         console.log('Syncing to external API...');
 
         if (match) {
-          await updateRecordInExternalAPI(match, user);
+          const update = await updateRecordInExternalAPI(match, user);
+          console.log(update, 'update')
+
         } else {
-          await createRecordInExternalAPI(data, user);
+          const create = await createRecordInExternalAPI(data, user);
+          console.log(create, 'create')
         }
       } catch (error) {
         console.error('Error synchronizing data:', error);
@@ -122,8 +125,9 @@ async function checkFieldInDatabase(id) {
 async function updateRecordInDatabase(data, user) {
   const formData = data
   try {
+    const findFinance = await prisma.finance.findFirst({ where: { activixId: formData.id.toString() } })
     const financeData = await prisma.finance.update({
-      where: { activixId: formData.id.toString() },
+      where: { id: findFinance?.id },
       data: {
         firstName: formData.first_name,
         lastName: formData.last_name,
@@ -220,9 +224,8 @@ async function updateRecordInDatabase(data, user) {
       }
     })
     const activixData = await prisma.activixLead.update({
-      where: { actvixId: financeData.activixId },
+      where: { activixId: data.id.toString(), },
       data: {
-        actvixId: data.id.toString(),
         account_id: data.account_id.toString(),
         customer_id: data.customer_id.toString(),
         appointment_date: data.appointment_date,
@@ -307,12 +310,12 @@ async function updateRecordInDatabase(data, user) {
     await prisma.finance.update({
       where: { id: financeData.id },
       data: {
+        activixId: data.id.toString(),
         dashboardId: dashboardData.id,
         financeId: financeData.id,
         theRealActId: activixData.id,
       }
     })
-    console.log(financeData, activixData, dashboardData)
     return { financeData, activixData, dashboardData };
   } catch (error) {
     console.error('Error:', error);
@@ -451,7 +454,7 @@ async function createRecordInDatabase(data, user) {
       })
       const activixData = await prisma.activixLead.create({
         data: {
-          actvixId: data.id.toString(),
+          activixId: data.id.toString(),
           account_id: data.account_id.toString(),
           customer_id: data.customer_id.toString(),
           phoneId: data.phones[0].id.toString(),
@@ -546,7 +549,6 @@ async function createRecordInDatabase(data, user) {
           theRealActId: activixData.id,
         }
       })
-      console.log(financeData, activixData, dashboardData)
       return { financeData, activixData, dashboardData };
     } catch (error) {
       console.error(error);
@@ -750,7 +752,7 @@ async function ActivixImport(user) {
           })
           const activixData = await prisma.activixLead.create({
             data: {
-              actvixId: data.id.toString(),
+              activixId: data.id.toString(),
               account_id: data.account_id.toString(),
               customer_id: data.customer_id.toString(),
               appointment_date: data.appointment_date,
@@ -968,7 +970,7 @@ async function ActivixImport(user) {
                 dashboardData: data.dashboardData,
 
                 clientfileId: financeData.financeId,
-                actvixId: data.id.toString(),
+                activixId: data.id.toString(),
                 account_id: data.account_id.toString(),
                 customer_id: data.customer_id.toString(),
                 appointment_date: data.appointment_date,

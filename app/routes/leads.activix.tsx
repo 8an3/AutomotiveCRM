@@ -2412,6 +2412,7 @@ export function MainDashbaord() {
     {
       accessorKey: "createdAt",
       header: "createdAt",
+      sortDescFirst: true,
     },
     {
       accessorKey: "tradeTrim",

@@ -37,6 +37,7 @@ export async function loader({ request, params }: LoaderFunction) {
       roleId: true,
       profileId: true,
       omvicNumber: true,
+      activixActivated: true,
       role: { select: { symbol: true, name: true } },
     },
   });
@@ -49,9 +50,12 @@ export async function loader({ request, params }: LoaderFunction) {
   const sliderWidth = session.get('sliderWidth')
   let clientfileId = session.get('clientfileId')
   let financeId = session.get('financeId')
+  console.log(financeId, 'financeid')
   const finance = await getMergedFinanceOnFinance(financeId)
   const financeNotes = await getAllFinanceNotes(financeId)
-  const financeList = await prisma.finance.findMany({ where: { clientfileId: clientfileId, }, });
+  const financeEmail = await prisma.finance.findFirst({ where: { clientfileId: clientfileId, }, });
+  const financeList = await prisma.finance.findMany({ where: { email: financeEmail?.email }, });
+  console.log(financeList, 'listssst')
   financeId = financeList[0].id
   const { firstParam, clientId } = params;
   // console.log(clientId, financeId)
@@ -82,8 +86,8 @@ export default function CustMaIN() {
       </> */
   return (
     <>
-      <div width='100%' height='100%' left='auto' top='auto' className="w-full h-full min-h-screen  px-2 sm:px-1 lg:px-3 bg-black border-gray-300   ">
-        <Sidebar user={user} />
+      <div className="w-full h-full min-h-screen  px-2 sm:px-1 lg:px-3 bg-black border-gray-300   ">
+        <Sidebar />
         <div className="flex flex-col md:flex-row   ">
           <div className="w-full md:w-64 bg-black mt-[50px]">
             <Sidebar2 />
@@ -100,39 +104,44 @@ export default function CustMaIN() {
 
 
 export function Sidebar2() {
-  const { clientfileId, financeId, finance } = useLoaderData()
+  const { clientfileId, financeId, finance, user } = useLoaderData()
   const { firstParam, clientId } = useParams();
-  //console.log(finance)
-
+  //console.log(finance)as
+  let newFinance;
+  if (user.activixActivated === 'yes') {
+    newFinance = finance[0]
+  } else {
+    newFinance = finance
+  }
   let NewListForStatus = [
     {
       name: 'status',
-      value: finance[0].status === 'Active' ? <Badge className="bg-[#22c55e]">Active</Badge> :
-        finance[0].status === 'Invalid' ? <Badge className="bg-white">Invalid</Badge> :
-          finance[0].status === 'Duplicate' ? <Badge className="bg-white">Duplicate</Badge> :
-            finance[0].status === 'Lost' ? <Badge className="bg-[#e11d48]">Lost</Badge> :
+      value: newFinance.status === 'Active' ? <Badge className="bg-[#22c55e]">Active</Badge> :
+        newFinance.status === 'Invalid' ? <Badge className="bg-white">Invalid</Badge> :
+          newFinance.status === 'Duplicate' ? <Badge className="bg-white">Duplicate</Badge> :
+            newFinance.status === 'Lost' ? <Badge className="bg-[#e11d48]">Lost</Badge> :
               '',
       label: 'Customer status'
     },
     {
       name: 'customerState',
-      value: finance[0].customerState === 'Reached' ? (<Badge className="bg-[#22c55e]">Reached</Badge>
-      ) : finance[0].customerState === 'Attemted' ? (<Badge className="bg-white">Attemted</Badge>
-      ) : finance[0].customerState === 'Pending' ? (<Badge className="bg-[#e11d48]">Pending</Badge>
-      ) : finance[0].customerState === 'Visited' ? (<Badge className="bg-white">Visited</Badge>
-      ) : finance[0].customerState === 'bookedApt' ? (<Badge className="bg-white">Booked Apt</Badge>
-      ) : finance[0].customerState === 'aptShowed' ? (<Badge className="bg-white">Apt Showed</Badge>
-      ) : finance[0].customerState === 'aptNoShowed' ? (<Badge className="bg-white">Apt No Showed</Badge>
-      ) : finance[0].customerState === 'sold' ? (<Badge className="bg-[#22c55e]">Sold</Badge>
-      ) : finance[0].customerState === 'depositMade' ? (<Badge className="bg-[#f97316]">Deposit</Badge>
-      ) : finance[0].customerState === 'turnOver' ? (<Badge className="bg-[#fbbf24]">Turn Over</Badge>
-      ) : finance[0].customerState === 'finance[0]App' ? (<Badge className="bg-blue-600">Application Done</Badge>
-      ) : finance[0].customerState === 'approved' ? (<Badge className="bg-[#22c55e]">Approved</Badge>
-      ) : finance[0].customerState === 'signed' ? (<Badge className="bg-[#22c55e]">Signed</Badge>
-      ) : finance[0].customerState === 'pickUpSet' ? (<Badge className="bg-[#22c55e]">Pick Up Set</Badge>
-      ) : finance[0].customerState === 'delivered' ? (<Badge className="bg-[#22c55e]">Delivered</Badge>
-      ) : finance[0].customerState === 'refund' ? (<Badge className="bg-[#f97316]">Refunded</Badge>
-      ) : finance[0].customerState === 'funded' ? (<Badge className="bg-[#f97316]">Funded</Badge>
+      value: newFinance.customerState === 'Reached' ? (<Badge className="bg-[#22c55e]">Reached</Badge>
+      ) : newFinance.customerState === 'Attemted' ? (<Badge className="bg-white">Attemted</Badge>
+      ) : newFinance.customerState === 'Pending' ? (<Badge className="bg-[#e11d48]">Pending</Badge>
+      ) : newFinance.customerState === 'Visited' ? (<Badge className="bg-white">Visited</Badge>
+      ) : newFinance.customerState === 'bookedApt' ? (<Badge className="bg-white">Booked Apt</Badge>
+      ) : newFinance.customerState === 'aptShowed' ? (<Badge className="bg-white">Apt Showed</Badge>
+      ) : newFinance.customerState === 'aptNoShowed' ? (<Badge className="bg-white">Apt No Showed</Badge>
+      ) : newFinance.customerState === 'sold' ? (<Badge className="bg-[#22c55e]">Sold</Badge>
+      ) : newFinance.customerState === 'depositMade' ? (<Badge className="bg-[#f97316]">Deposit</Badge>
+      ) : newFinance.customerState === 'turnOver' ? (<Badge className="bg-[#fbbf24]">Turn Over</Badge>
+      ) : newFinance.customerState === 'finance[0]App' ? (<Badge className="bg-blue-600">Application Done</Badge>
+      ) : newFinance.customerState === 'approved' ? (<Badge className="bg-[#22c55e]">Approved</Badge>
+      ) : newFinance.customerState === 'signed' ? (<Badge className="bg-[#22c55e]">Signed</Badge>
+      ) : newFinance.customerState === 'pickUpSet' ? (<Badge className="bg-[#22c55e]">Pick Up Set</Badge>
+      ) : newFinance.customerState === 'delivered' ? (<Badge className="bg-[#22c55e]">Delivered</Badge>
+      ) : newFinance.customerState === 'refund' ? (<Badge className="bg-[#f97316]">Refunded</Badge>
+      ) : newFinance.customerState === 'funded' ? (<Badge className="bg-[#f97316]">Funded</Badge>
       ) : (
         ''
       ),

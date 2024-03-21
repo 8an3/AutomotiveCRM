@@ -1302,10 +1302,11 @@ model BmwMotoOptions2 {
 // aactivix records
 // -----------------------------------------------------------------------------
 model ActivixLead {
-  id              String   @id @default(cuid())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  actvixId        String?  @unique
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  activixId String?  @unique
+
   account_id      String?
   customer_id     String?
   source_id       String?
@@ -1387,7 +1388,7 @@ model ActivixLead {
   phones                  String?
   phones2                 String?
   phones3                 String?
-  financeId               String?
+  financeId               String? @unique
   dashboardId             String?
   userEmail               String?
   promised_datere         String?

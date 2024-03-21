@@ -1,7 +1,11 @@
 "use client";
 import { Button, Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, } from "~/components/ui/index";
 import React, { useMemo, useEffect, useState, useRef } from "react";
-
+import {
+  rankItem,
+  compareItems,
+  RankingInfo,
+} from '@tanstack/match-sorter-utils'
 import { ScrollArea } from "~/other/scrollarea";
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, type SortingState, getSortedRowModel, sortingFns, SortingFn, FilterFns, FilterFn, type VisibilityState, getFilteredRowModel, type ColumnFiltersState, } from "@tanstack/react-table";
 import { DataTablePagination } from "../dashboard/calls/pagination";
@@ -158,9 +162,24 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
     []
   );
 
+  const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+    // Rank the item
+    const itemRank = rankItem(row.getValue(columnId), value)
+
+    // Store the itemRank info
+    addMeta({
+      itemRank,
+    })
+
+    // Return if the item should be filtered in/out
+    return itemRank.passed
+  }
   const table = useReactTable({
     data,
     columns,
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -171,12 +190,19 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
     enableRowSelection: true,
     // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
     onRowSelectionChange: setRowSelection,
-
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+    },
+    initialState: {
+      sorting: [
+        {
+          id: 'createdAt',
+          desc: true, // sort by name in descending order by default
+        },
+      ],
     },
   });
 

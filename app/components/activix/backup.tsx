@@ -2667,7 +2667,7 @@ export async function loader({ request, params }: LoaderFunction) {
             })
             const activixData = await prisma.activixLead.create({
               data: {
-                actvixId: data.id.toString(),
+                activixId: data.id.toString(),
                 account_id: data.account_id.toString(),
                 customer_id: data.customer_id.toString(),
                 appointment_date: data.appointment_date,
@@ -2881,7 +2881,7 @@ export async function loader({ request, params }: LoaderFunction) {
             const activixData = await prisma.activixLead.update({
               where: { id: finance.theRealActId },
               data: {
-                actvixId: data.id.toString(),
+                activixId: data.id.toString(),
                 account_id: data.account_id.toString(),
                 customer_id: data.customer_id.toString(),
                 appointment_date: data.appointment_date,

@@ -699,6 +699,53 @@ export async function CreateLead(formData, user, createQuoteServer) {
   return response
 
 }
+export async function QuoteCreateLead(formData) {
+
+  const response = await axios.post(`https://api.crm.activix.ca/v2/leads`,
+    {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      type: "email",
+      advisor: {
+        first_name: 'Skyler',
+        last_name: 'Zanth API'
+      },
+      emails: [
+        {
+          type: "home",
+          address: formData.email,
+        }
+      ],
+      phones: [
+        {
+          number: `+1${formData.phone}`,
+          type: "mobile"
+        }
+      ],
+      vehicles: [
+        {
+          make: formData.brand,
+          model: formData.model,
+          year: formData.year,
+          color_exterior: formData.color,
+          vin: formData.vin,
+          price: formData.msrp,
+          type: "wanted"
+        },
+      ]
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    }
+  }
+  )
+  console.log(response.data)
+
+  return response.data
+}
+
 export async function UpdateLead(formData,) {
   const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
   let phoneNumber = formData.phone;
@@ -729,13 +776,13 @@ export async function UpdateLead(formData,) {
   return response
 
 }
-export async function CreateLeadActivix(formData, user) {
-  let phoneNumber = formData.phone;
-  if (!phoneNumber.startsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
+export async function CreateLeadActivix(formData,) {
+  let phoneNumber = `+1${formData.phone}`// formData.phone;
+  //if (!phoneNumber.startsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
 
-  const nameParts = user.username.split(' ');
-  const firstName = nameParts[0];
-  const lastName = nameParts[1];
+  //  const nameParts = user.username.split(' ');
+  // const firstName = nameParts[0];
+  //  const lastName = nameParts[1];
   const response = await axios.post(`https://api.crm.activix.ca/v2/leads`,
     {
       "first_name": formData.firstName,
@@ -743,8 +790,8 @@ export async function CreateLeadActivix(formData, user) {
       "source_id": 6600,
       "type": "email",
       "advisor": {
-        "first_name": firstName,
-        "last_name": lastName
+        first_name: 'Skyler',
+        last_name: 'Zanth API'
       },
       "emails": [
         {
@@ -793,6 +840,7 @@ export async function CreateLeadActivix(formData, user) {
       console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
       console.error(`Error status: ${error.response.status}`);
       console.error('Error response:', error.response.data);
+      console.error('Error response:', error.response.data.message);
     });
 
   /**{
@@ -1586,7 +1634,7 @@ export async function UpdateNote(formData) {
 
 }
 export async function UpdateClientFromActivix(finance) {
-  const leadId = finance.activixId
+  const leadId = Number(finance.activixId)
 
   const getEvent = await axios.get(
     `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=emails&include[]=phones&include[]=vehicles&include[]=events`,

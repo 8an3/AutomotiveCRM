@@ -36,6 +36,41 @@ import { model } from "~/models";
 import { client_66 } from '~/utils/misc.user.server';
 import { UpdateLeadBasic, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, UpdateNoteCreateTask, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "./api.activix";
 
+async function GetMergedWithActivix(financeId) {
+  try {
+    const financeData = await prisma.finance.findMany({
+      where: {
+        id: financeId,
+      },
+    });
+    console.log('financeData:', financeData); // Debugging line
+
+    const dashData = await prisma.dashboard.findMany({
+      where: {
+        financeId: financeId,
+      },
+    });
+    console.log('dashData:', dashData); // Debugging line
+    const activixData = await prisma.activixLead.findUnique({ where: { activixId: financeData.activixId } })
+    /// Merge financeData and dashData
+    const mergedData = financeData.map((financeRecord) => {
+      console.log('financeRecord.id:', financeRecord.id); // Debugging line
+      const correspondingDashRecord = dashData.find(dashRecord => dashRecord.financeId === financeRecord.id);
+      console.log('correspondingDashRecord:', correspondingDashRecord); // Debugging line
+      return {
+        ...activixData,
+        ...correspondingDashRecord,
+        ...financeRecord,
+      };
+    });
+
+
+    return mergedData;
+  } catch (error) {
+    console.error("Error fetching dashboard entries by financeId:", error);
+    throw new Error("Failed to fetch dashboard entries by financeId");
+  }
+}
 
 export const action: ActionFunction = async ({ req, request, params }) => {
   const formPayload = Object.fromEntries(await request.formData());
@@ -72,12 +107,12 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   const financeId = idSession.get('financeId')
   const dashboardId = idSession.get('dashboardId')
 
-  console.log('headeras', userId, clientfileId, financeId, dashboardId)
+  // console.log('headeras', userId, clientfileId, financeId, dashboardId)
 
   if (intent === 'createOrder') {
     let partNumbers = formData["partNumbers[]"];
 
-    console.log(formData)
+    //(formData)
     try {
       // Create the PartsOrder first
       let partsOrder = await prisma.partsOrder.create({
@@ -160,7 +195,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     return json({ deleteNote });
   }
   if (intent === 'completeApt') {
-    console.log('hit completeapt')
+    // console.log('hit completeapt')
     let customerState = formData.customerState
     if (customerState === 'Pending') { customerState = 'Attempted' }
     const completed = 'yes'
@@ -291,7 +326,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     const financeId = formData.financeId
     const userEmail = formData.userEmail
     brand = formData.brand
-    console.log('1111', formData.financeId, '2222')
+    // console.log('1111', formData.financeId, '2222')
 
     delete formData.financeId
     delete formData.timeToContact
@@ -334,7 +369,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     }
     delete clientData.financeId
     delete financeData.financeId
-    console.log(financeData, 'financeData', finance, 'finance', clientData, 'clientData', financeId)
+    // console.log(financeData, 'financeData', finance, 'finance', clientData, 'clientData', financeId)
     //   console.log(formData, 'formData from dashboardAL')
     switch (brand) {
       case "Manitou":
@@ -448,7 +483,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   }
   // client info
   if (intent === 'updateClientInfoFinance') {
-    console.log(formData.dashboardId, formData.clientId, formData.financeId, formData.clientfileId, formData.id, 'updateClientInfoFinance')
+    //console.log(formData.dashboardId, formData.clientId, formData.financeId, formData.clientfileId, formData.id, 'updateClientInfoFinance')
     const updateClient = await prisma.clientfile.update({
       where: { id: formData.clientId },
       data: {
@@ -509,9 +544,12 @@ export async function loader({ params, request }: DataFunctionArgs) {
   let sliderWidth = 50
 
   const aptFinance3 = await getAppointmentsForFinance(financeId)
-  const finance = await getMergedFinanceOnFinance(financeId)
+  let finance
   if (user?.activixActivated === 'yes') {
     await UpdateClientFromActivix(finance)
+    finance = await GetMergedWithActivix(financeId)
+  } else {
+    finance = await getMergedFinanceOnFinance(financeId)
   }
   const dashboardIdCookie = await prisma.finance.findUnique({ where: { id: financeId } })
   const SetClient66Cookie = await SetClient66(userId, clientId, financeId, dashboardIdCookie.dashboardId, request)

@@ -64,7 +64,7 @@ export async function loader({ request, params }: LoaderFunction) {
         // console.log('financeRecord.id:', financeRecord.id); // Debugging line
         const correspondingDashRecord = dashData.find(dashRecord => dashRecord.financeId === financeRecord.id);
         // console.log('correspondingDashRecord:', correspondingDashRecord); // Debugging line
-        const correspondingActivixRecord = activixData.find(activixRecord => activixRecord.actvixId === financeRecord.activixId);
+        const correspondingActivixRecord = activixData.find(activixRecord => activixRecord.activixId === financeRecord.activixId);
 
         const comsCounter = await prisma.communications.findUnique({
           where: {

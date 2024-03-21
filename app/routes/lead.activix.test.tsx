@@ -9,8 +9,7 @@ const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIj
 
 async function CallActi() {
   try {
-    const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
-    const response = await axios.get(`https://api.crm.activix.ca/v2/leads?include[]=emails&include[]=phones&include[]=vehicles`, {
+    const response = await axios.get(`https://api.crm.activix.ca/v2/leads?filter[created_at]=2024-03-21&include[]=emails&include[]=phones&include[]=vehicles`, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -51,9 +50,107 @@ export async function loader({ request, params }) {
       role: { select: { symbol: true, name: true } },
     },
   });
-
   if (!user) { return redirect('/login'); }
   //await SyncImport(user);
+  const callData = await CallActi()
+  console.log(callData, 'calldata')
+  return null
+}
+
+async function CreateCompleteEvent() {
+  const leadId = 43314827//response.data.data.id;
+
+  const getEvent = await axios.get(
+    `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  // Handle successful response
+  console.log('Response:', getEvent.data.data.events);
+  const lastEventId = getEvent.data.data.events[0].id
+  const description = 'test';
+  const startAt = new Date();
+  startAt.setMinutes(startAt.getMinutes() - 5);
+  const completed = startAt.toISOString().replace(/\.\d{3}Z$/, '-04:00');
+  console.log(completed);
+
+  const updated = await axios.post(`https://api.crm.activix.ca/v2/events`,
+    {
+      lead_id: lastEventId,
+      completed: true,
+      completed_at: '2024-03-19T20:36:19+00:00',
+      end_at: getEvent.data.data.events[0].end_at,
+      start_at: getEvent.data.data.events[0].start_at,
+      title: getEvent.data.data.events[0].title,
+      description: description,
+      type: getEvent.data.data.events[0].type,
+      owner_id: 143041,
+      owner: { id: 143041 }
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    });
+  const error = updated.response.data.errors;
+  console.log(error);
+  console.log(updated)
+}
+async function CreateAndCompleteEvent() {
+  const leadId = 43314827//response.data.data.id;
+
+  const getEvent = await axios.get(
+    `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  // Handle successful response
+  console.log('Response:', getEvent.data.data.events);
+  const lastEventId = getEvent.data.data.events[0].id
+  const description = 'test';
+  const startAt = new Date();
+  startAt.setMinutes(startAt.getMinutes() - 5);
+  const completed = startAt.toISOString().replace(/\.\d{3}Z$/, '-04:00');
+  console.log(completed);
+
+  const updated = await axios.post(`https://api.crm.activix.ca/v2/events`,
+    {
+      lead_id: lastEventId,
+      completed: true,
+      completed_at: '2024-03-19T20:36:19+00:00',
+      end_at: getEvent.data.data.events[0].end_at,
+      start_at: getEvent.data.data.events[0].start_at,
+      title: getEvent.data.data.events[0].title,
+      description: description,
+      type: getEvent.data.data.events[0].type,
+      owner_id: 143041,
+      owner: { id: 143041 }
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    });
+  const error = updated.response.data.errors;
+  console.log(error);
+  console.log(updated)
+  return null
+}
+async function GetSingleLead() {
 
   await axios.get(
     `https://api.crm.activix.ca/v2/leads/42132008?include[]=phones&include[]=emails&include[]=vehicles&include[]=events&include[]=advisor&include[]=events`,
@@ -103,104 +200,8 @@ export async function loader({ request, params }) {
       console.error(`Error status: ${error.response.status}`);
       console.error('Error response:', error.response.data);
     });
-  // 32916122
-
-  const leadId = 43314827//response.data.data.id;
-
-  const getEvent = await axios.get(
-    `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-  // Handle successful response
-  console.log('Response:', getEvent.data.data.events);
-  const lastEventId = getEvent.data.data.events[0].id
-  const description = 'test';
-  const startAt = new Date();
-  startAt.setMinutes(startAt.getMinutes() - 5);
-  const completed = startAt.toISOString().replace(/\.\d{3}Z$/, '-04:00');
-  console.log(completed);
-
-  const updated = await axios.post(`https://api.crm.activix.ca/v2/events`,
-    {
-      lead_id: lastEventId,
-      completed: true,
-      completed_at: '2024-03-19T20:36:19+00:00',
-      end_at: getEvent.data.data.events[0].end_at,
-      start_at: getEvent.data.data.events[0].start_at,
-      title: getEvent.data.data.events[0].title,
-      description: description,
-      type: getEvent.data.data.events[0].type,
-      owner_id: 143041,
-      owner: { id: 143041 }
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      }
-    });
-  const error = updated.response.data.errors;
-  console.log(error);
-  console.log(updated)
   return null
 }
-
-
-async function CreateAndCompleteEvent() {
-  const leadId = 43314827//response.data.data.id;
-
-  const getEvent = await axios.get(
-    `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-  // Handle successful response
-  console.log('Response:', getEvent.data.data.events);
-  const lastEventId = getEvent.data.data.events[0].id
-  const description = 'test';
-  const startAt = new Date();
-  startAt.setMinutes(startAt.getMinutes() - 5);
-  const completed = startAt.toISOString().replace(/\.\d{3}Z$/, '-04:00');
-  console.log(completed);
-
-  const updated = await axios.post(`https://api.crm.activix.ca/v2/events`,
-    {
-      lead_id: lastEventId,
-      completed: true,
-      completed_at: '2024-03-19T20:36:19+00:00',
-      end_at: getEvent.data.data.events[0].end_at,
-      start_at: getEvent.data.data.events[0].start_at,
-      title: getEvent.data.data.events[0].title,
-      description: description,
-      type: getEvent.data.data.events[0].type,
-      owner_id: 143041,
-      owner: { id: 143041 }
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      }
-    });
-  const error = updated.response.data.errors;
-  console.log(error);
-  console.log(updated)
-  return null
-}
-
 // to get a lead with data
 /** await axios.put(
     `https://api.crm.activix.ca/v2/lead-emails/42132008`,
@@ -407,7 +408,7 @@ export async function SyncImport(user) {
           })
           const activixData = await prisma.activixLead.create({
             data: {
-              actvixId: data.id.toString(),
+              activixId: data.id.toString(),
               account_id: data.account_id.toString(),
               customer_id: data.customer_id.toString(),
               appointment_date: data.appointment_date,
@@ -621,7 +622,7 @@ export async function SyncImport(user) {
           const activixData = await prisma.activixLead.update({
             where: { id: finance.theRealActId },
             data: {
-              actvixId: data.id.toString(),
+              activixId: data.id.toString(),
               account_id: data.account_id.toString(),
               customer_id: data.customer_id.toString(),
               appointment_date: data.appointment_date,
@@ -1078,7 +1079,7 @@ export async function loader({ request, params }: LoaderFunction) {
             })
             const activixData = await prisma.activixLead.create({
               data: {
-                actvixId: data.id.toString(),
+                activixId: data.id.toString(),
                 account_id: data.account_id.toString(),
                 customer_id: data.customer_id.toString(),
                 appointment_date: data.appointment_date,
@@ -1292,7 +1293,7 @@ export async function loader({ request, params }: LoaderFunction) {
             const activixData = await prisma.activixLead.update({
               where: { id: finance.theRealActId },
               data: {
-                actvixId: data.id.toString(),
+                activixId: data.id.toString(),
                 account_id: data.account_id.toString(),
                 customer_id: data.customer_id.toString(),
                 appointment_date: data.appointment_date,

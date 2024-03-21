@@ -36,6 +36,9 @@ export const loader = async ({ request }) => {
       roleId: true,
       profileId: true,
       omvicNumber: true,
+      activixActivated: true,
+      activixEmail: true,
+
       role: { select: { symbol: true, name: true } },
     },
   });
