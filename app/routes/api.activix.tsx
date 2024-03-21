@@ -996,12 +996,260 @@ export async function UpdateLeadBasic(formData, user) {
       console.error(`Error status: ${error.response.status}`);
       console.error('Error response:', error.response.data);
     });
+  const financeData = formData
+  const updateLocal = await UpdateLocalLead(financeData)
 
+  return ({ response, updateLocal })
 
+}
+export async function UpdateLeadApiOnly(formData, user) {
+  console.log(formData, 'formdata inside api')
+  const nameParts = user.username.split(' ');
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(' ');
+  const response = await axios.put(
+    `https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
+    {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      city: formData.city,
+      province: formData.province,
+      postal_code: formData.postal,
+      birth_date: formData.dob,
+      address_line1: formData.address,
+      credit_approved: formData.approved,
+      sale_date: formData.sold,
+      delivery_date: formData.deliveredDate,
+      delivered_date: formData.deliveredDate,
+      type: 'email',
+      result: formData.result,
+      advisor: {
+        "first_name": 'Skyler',
+        "last_name": 'Zanth API'
+      },
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
+  return ({ response })
 
+}
+async function UpdateLocalLead(financeData) {
+  async function CallActi() {
+    try {
+      const response = await axios.get(`https://api.crm.activix.ca/v2/leads/${financeData.activixId}?include[]=emails&include[]=phones&include[]=vehicles&include[]=events`, {
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${accessToken}`, }
+      });
+      return response.data; // Return response data directly
+    } catch (error) {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+      throw error; // Throw error to be caught by the caller
+    }
+  }
+  const formData = await CallActi();
+  try {
+    const findFinance = await prisma.finance.findFirst({ where: { activixId: formData.id.toString() } })
+    const financeData = await prisma.finance.update({
+      where: { id: findFinance?.id },
+      data: {
+        firstName: formData.first_name,
+        lastName: formData.last_name,
+        name: formData.first_name + ' ' + formData.last_name,
+        email: formData.emails[0].address,
+        phone: formData.phones[0].number,
+        address: formData.address_line1,
+        city: formData.city,
+        postal: formData.postal_code,
+        province: formData.province,
+        year: formData.vehicles[1].year,
+        brand: formData.vehicles[1].make,
+        model: formData.vehicles[1].model,
+        model1: formData.model1,
+        color: formData.vehicles[1].color_exterior,
+        modelCode: formData.modelCode,
+        msrp: formData.vehicles[1].price,
+        tradeValue: formData.vehicles[0].price,
+        tradeDesc: formData.vehicles[0].model,
+        tradeColor: formData.vehicles[0].color_exterior,
+        tradeYear: formData.vehicles[0].year,
+        tradeMake: formData.vehicles[0].make,
+        tradeVin: formData.vehicles[0].vin,
+        tradeTrim: formData.vehicles[0].trim,
+        tradeMileage: formData.vehicles[0].odometer,
+        trim: formData.vehicles[1].trim,
+        vin: formData.vehicles[1].vin,
+      }
+    })
+    const dashboardData = await prisma.dashboard.update({
+      where: { financeId: financeData.id },
+      data: {
+        referral: formData.referral,
+        visited: formData.visited,
+        bookedApt: formData.bookedApt,
+        aptShowed: formData.aptShowed,
+        aptNoShowed: formData.aptNoShowed,
+        testDrive: formData.testDrive,
+        metService: formData.metService,
+        metManager: formData.metManager,
+        metParts: formData.metParts,
+        sold: formData.sold,
+        depositMade: formData.depositMade,
+        refund: formData.refund,
+        turnOver: formData.turnOver,
+        financeApp: formData.financeApp,
+        approved: formData.approved,
+        signed: formData.signed,
+        pickUpSet: formData.pickUpSet,
+        demoed: formData.demoed,
+        delivered: formData.delivered,
+        status: formData.status,
+        customerState: formData.state,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: formData.nextAppointment,
+        followUpDay: formData.followUpDay,
+        state: formData.state,
+        deliveredDate: formData.deliveredDate,
+        notes: formData.notes,
+        visits: formData.visits,
+        progress: formData.progress,
+        metSalesperson: formData.metSalesperson,
+        metFinance: formData.metFinance,
+        financeApplication: formData.financeApplication,
+        pickUpDate: formData.pickUpDate,
+        pickUpTime: formData.pickUpTime,
+        depositTakenDate: formData.depositTakenDate,
+        docsSigned: formData.docsSigned,
+        tradeRepairs: formData.tradeRepairs,
+        seenTrade: formData.seenTrade,
+        lastNote: formData.lastNote,
+        dLCopy: formData.dLCopy,
+        insCopy: formData.insCopy,
+        testDrForm: formData.testDrForm,
+        voidChq: formData.voidChq,
+        loanOther: formData.loanOther,
+        signBill: formData.signBill,
+        ucda: formData.ucda,
+        tradeInsp: formData.tradeInsp,
+        customerWS: formData.customerWS,
+        otherDocs: formData.otherDocs,
+        urgentFinanceNote: formData.urgentFinanceNote,
+        funded: formData.funded,
+        countsInPerson: formData.countsInPerson,
+        countsPhone: formData.countsPhone,
+        countsSMS: formData.countsSMS,
+        countsOther: formData.countsOther,
+        countsEmail: formData.countsEmail,
+      }
+    })
+    const data = formData
+    const activixData = await prisma.activixLead.update({
+      where: { activixId: data.id.toString(), },
+      data: {
+        account_id: data.account_id.toString(),
+        customer_id: data.customer_id.toString(),
+        appointment_date: data.appointment_date,
+        phone_appointment_date: data.phone_appointment_date,
+        available_date: data.available_date,
+        be_back_date: data.be_back_date,
+        call_date: data.call_date,
+        created_at: data.created_at,
+        csi_date: data.csi_date,
+        delivered_date: data.delivered_date,
+        deliverable_date: data.deliverable_date,
+        delivery_date: data.delivery_date,
+        paperwork_date: data.paperwork_date,
+        presented_date: data.presented_date,
+        //   promised_date: data.promised_date,
+        financed_date: data.financed_date,
+        road_test_date: data.road_test_date,
+        home_road_test_date: data.home_road_test_date,
+        sale_date: data.sale_date,
+        updated_at: data.updated_at,
+        address_line1: data.address_line1,
+        city: data.city,
+        civility: data.civility,
+        country: data.country,
+        credit_approved: data.credit_approved ? data.credit_approved.toString() : null,
+        dealer_tour: data.creditdealer_tour_approved ? data.dealer_tour.toString() : null,
+        financial_institution: data.financial_institution,
+        first_name: data.first_name,
+        funded: data.funded ? data.funded.toString() : null,
+        inspected: data.inspected ? data.inspected.toString() : null,
+        last_name: data.last_name,
+        postal_code: data.postal_code,
+        province: data.province,
+        result: data.result,
+        status: data.status,
+        type: data.type,
+        walk_around: data.walk_around ? data.walk_around.toString() : null,
+        comment: data.comment,
+        delivered_by: data.delivered_by,
+        emails: data.emails[0].address,
+        phones: data.phones[0].number,
+        financeId: data.financeId,
+        userEmail: user?.email,
 
-  return response
+        /**home_presented_date: data.home_presented_date,
+         birth_date: data.birth_date,
+         source_id: data.source_id,
+         Integer: data.Integer,
+         provider_id: data.provider_id,
+         unsubscribe_all_date: data.unsubscribe_all_date,
+         unsubscribe_call_date: data.unsubscribe_call_date,
+         unsubscribe_email_date: data.unsubscribe_email_date,
+         unsubscribe_sms_date: data.unsubscribe_sms_date,
+         advisor: data.advisor,
+         take_over_date: data.take_over_date,
+         search_term: data.search_term,
+         gender: data.gender,
+         form: data.form,
+         division: data.division,
+         created_method: data.created_method,
+         campaign: data.campaign,
+         address_line2: data.address_line2,
+         business: data.business,
+         business_name: data.business_name,
+         second_contact: data.second_contact,
+         second_contact_civility: data.second_contact_civility,
+         segment: data.segment,
+         source: data.source,
+         qualification: data.qualification,
+         rating: data.rating,
+         referrer: data.referrer,
+         provider: data.provider,
+         progress_state: data.progress_state,
+         locale: data.locale,
+         navigation_history: data.navigation_history,
+         keyword: data.keyword,*/
 
+      }
+    })
+
+    return { financeData, activixData, dashboardData };
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    console.log("This code always runs, regardless of whether there was an error or not.");
+  }
+  return null
 }
 export async function UpdateLeadStatus(formData, user) {
   console.log(formData)
