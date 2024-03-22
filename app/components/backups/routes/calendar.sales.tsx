@@ -10,6 +10,7 @@ import { type ActionFunction, type DataFunctionArgs, json, redirect, } from '@re
 import { model } from '~/models';
 import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigate, useNavigation } from '@remix-run/react'
 import { getAllFinanceAptsForCalendar, getSingleFinanceAppts } from '~/utils/financeAppts/get.server';
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { Flex, Text, Button, Card, Heading, Container, IconButton } from '@radix-ui/themes';
 import { UserPlus, Gauge, CalendarCheck, Search, ChevronRightIcon, Circle, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
@@ -21,6 +22,7 @@ import AddCustomerModal from '~/components/dashboard/calendar/addCustomerModal'
 import { AddAppt } from '~/components/dashboard/calendar/addAppt';
 import { SearchCustomerModal } from '~/components/dashboard/calendar/searchCustomerModal'
 import { getSession } from '~/sessions/auth-session.server';
+
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
@@ -60,25 +62,7 @@ export async function action({ request }: ActionFunction) {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   const userId = user?.id;
   const intent = formPayload.intent;
   const today = new Date();
@@ -590,25 +574,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
 
   const userId = user.id

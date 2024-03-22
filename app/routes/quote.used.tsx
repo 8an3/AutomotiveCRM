@@ -2,7 +2,8 @@ import { Form, useActionData, useLoaderData, useParams, useNavigation } from '@r
 import { Input, Label, Button, Separator } from '../components/ui/index'
 import { ActionArgs, type DataFunctionArgs, json, type MetaFunction, type LoaderFunction, redirect } from '@remix-run/node'
 import { ButtonLoading, } from "../components";
-import { prisma } from '~/libs/prisma.server';
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { ImageSelect } from './overviewUtils/imageselect'
 import { quoteAction, quoteLoader } from '../components/actions/quote$brandIdAL'
 import React, { useRef, useEffect } from 'react'

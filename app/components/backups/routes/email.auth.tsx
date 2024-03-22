@@ -9,10 +9,12 @@ import { CheckSub } from '~/utils/checksub.server'
 import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { google } from 'googleapis'
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import bcrypt from "bcryptjs";
 import axios from "axios";
 import { querystring } from 'querystring'
+
 
 interface CleanupFunction {
   (): void;
@@ -52,25 +54,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
 
   //return eventStream(request.signal, function setup(send) {

@@ -11,7 +11,8 @@ import {
 
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getLastAppointmentForFinance } from "~/utils/client/getLastApt.server";
-import { prisma } from "~/libs/prisma.server";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { prisma } from "~/libs";
 import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
 

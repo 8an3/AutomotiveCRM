@@ -28,6 +28,7 @@ import oauth2Client, { SendEmail, } from "~/routes/email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { QuoteServer } from "~/utils/quote/quote.server";
+import { GetUser } from "~/utils/loader.server";
 
 
 const getAccessToken = async (refreshToken) => {
@@ -68,25 +69,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
   const session = await sixSession(request.headers.get("Cookie"));
@@ -546,25 +529,7 @@ export async function TokenRegen(request) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
   let tokens = session.get("accessToken")
@@ -613,25 +578,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
   console.log(formData)
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });  /// console.log(user, account, 'wquiote loadert')
+  const user = await GetUser(email)  /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
   }
@@ -822,7 +769,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       date: new Date().toISOString(),
     }
     const to = formData.customerEmail
-    const text = formData.customContent
+    const text = formData.body
     const subject = formData.subject
     const tokens = formData.tokens
     // const completeApt = await CompleteLastAppt(userId, financeId)

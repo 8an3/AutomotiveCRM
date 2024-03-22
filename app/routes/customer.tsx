@@ -10,7 +10,7 @@ import { prisma } from "~/libs";
 import { Flex, Text, Box, TextArea, TextField, Heading, Select, Theme, ThemePanel, Inset, Grid, Avatar } from '@radix-ui/themes';
 import { Badge } from "~/other/badge";
 import { getSession } from "~/sessions/auth-session.server";
-
+import { GetUser } from "~/utils/loader.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 
 import Sidebar from "~/components/shared/sidebar";
@@ -21,26 +21,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const email = session2.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      activixActivated: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

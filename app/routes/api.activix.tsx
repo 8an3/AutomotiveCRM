@@ -3,6 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import { model } from "~/models";
 import { getSession, } from '~/sessions/auth-session.server';
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 
 import axios from 'axios';
@@ -1064,10 +1065,11 @@ async function UpdateLocalLead(financeData) {
     }
   }
   const formData = await CallActi();
+  console.log(formData)
   try {
-    const findFinance = await prisma.finance.findFirst({ where: { activixId: formData.id.toString() } })
+
     const financeData = await prisma.finance.update({
-      where: { id: findFinance?.id },
+      where: { id: formData?.id },
       data: {
         firstName: formData.first_name,
         lastName: formData.last_name,
@@ -1098,7 +1100,7 @@ async function UpdateLocalLead(financeData) {
       }
     })
     const dashboardData = await prisma.dashboard.update({
-      where: { financeId: financeData.id },
+      where: { financeId: formData?.id },
       data: {
         referral: formData.referral,
         visited: formData.visited,
@@ -1161,7 +1163,7 @@ async function UpdateLocalLead(financeData) {
     })
     const data = formData
     const activixData = await prisma.activixLead.update({
-      where: { activixId: data.id.toString(), },
+      where: { activixId: data.activixId },
       data: {
         account_id: data.account_id.toString(),
         customer_id: data.customer_id.toString(),
@@ -1442,55 +1444,60 @@ export async function UpdateLeadEchangeVeh(formData) {
 
 }
 export async function CreateCommunications(formData) {
-
-  const endpoint = 'communications'
+  console.log(formData, 'ionside coimms api server activix')
+  const leadId = formData.leadId
+  const startat = new Date();
+  const start_at = startat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
   let bodyData = {}
-  const date = new Date().toISOString()
-
 
   if (formData.contactMethod === 'phone') {
     bodyData = {
-      lead_id: formData.activixId,
-      "method": "phone",
-      "type": "outgoing",
-      "call_status": "calling",
-      "description": formData.title + ' ' + formData.note,
-      "executed_at": date,
-      "executed_by": 17162,
+      lead_id: leadId,
+      method: "phone",
+      type: "outgoing",
+      call_status: "calling",
+      description: 'Called customer from the dashboard.',
+      executed_at: start_at,
+      executed_by: 143041,
     }
   }
 
   if (formData.contactMethod === 'SMS') {
     bodyData = {
-      lead_id: formData.activixId,
-      "method": "phone",
-      "type": "outgoing",
-      "call_status": "attempted",
-      "description": `SMS - ${formData.body}`,
-      "executed_at": date,
-      "executed_by": 17162,
+      lead_id: leadId,
+      method: "sms",
+      type: "outgoing",
+      call_status: "calling",
+      description: 'Texted customer from the dashboard.',
+      executed_at: start_at,
+      executed_by: 143041,
     }
   }
   if (formData.contactMethod === 'email') {
+    console.log('hit email!@!@!@!@!@')
     bodyData = {
-      lead_id: formData.activixId,
-      "method": "email",
-      "type": "outgoing",
-      "email_subject": formData.subject,
-      "email_body": formData.note,
-      "email_user": formData.userEmail,
-      "description": formData.customContent,
-      "executed_at": date,
-      "executed_by": 17162,
+      lead_id: leadId,
+      method: "email",
+      type: "outgoing",
+      email_subject: 'test',
+      email_body: formData.body,
+      email_user: formData.userEmail,
+      description: 'Sent email from the dashboard.',
+      executed_at: start_at,
+      executed_by: 143041,
     }
   }
-  const response = await axios.post(`https://api.crm.activix.ca/v2/${endpoint}`, { bodyData, }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
+  const response = await axios.post(`https://api.crm.activix.ca/v2/communications`,
+    {
+      bodyData
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
     }
-  }
   )
     .then(response => {
       console.log(response.data);
@@ -1767,25 +1774,7 @@ export async function SaveTasks() {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email");
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
 
   const savedTasks = [];
 

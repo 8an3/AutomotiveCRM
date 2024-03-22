@@ -7,7 +7,8 @@ import { setMessages, setSelectedChannel } from '~/actions/actions';
 import axios from "axios";
 import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
 import { json, type LinksFunction, type LoaderFunction, type ActionFunction, } from '@remix-run/node';
-import { prisma } from "../libs";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { model } from "../models";
 import { getSession } from "~/sessions/auth-session.server";
 
@@ -17,6 +18,7 @@ import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, Select
 import financeFormSchema from "./overviewUtils/financeFormSchema";
 import { useDispatch, connect, useSelector } from 'react-redux';
 import { toast } from "sonner"
+
 
 
 async function getToken(
@@ -49,25 +51,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'
   const authToken = 'd38e2fd884be4196d0f6feb0b970f63f'
   const client = require('twilio')(accountSid, authToken);
@@ -231,25 +215,7 @@ export async function action({ request, }: ActionFunction) {
   const authToken = 'd38e2fd884be4196d0f6feb0b970f63f'
   const client = require('twilio')(accountSid, authToken);
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const intent = formData.intent
   if (intent === 'getConversation') {

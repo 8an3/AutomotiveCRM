@@ -27,7 +27,8 @@ import { env } from 'process';
 import axios from 'axios';
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { SyncLeadData } from "../../routes/api.activix";
-import { prisma } from "~/libs/prisma.server";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

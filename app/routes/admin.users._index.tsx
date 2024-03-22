@@ -63,25 +63,7 @@ export async function action({ request }: ActionArgs) {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   const isActionAllowed = requireUserRole(user, ["ADMIN", "MANAGER"]);
   if (!isActionAllowed) {
     return forbidden({ message: "Not allowed" });

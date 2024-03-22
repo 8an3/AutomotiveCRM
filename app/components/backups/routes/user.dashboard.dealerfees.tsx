@@ -6,34 +6,18 @@ import { getDealerFeesbyEmail, updateDealerFees, updateUser } from '~/utils/user
 import * as Toast from '@radix-ui/react-toast';
 import React from 'react';
 import WelcomeDealerFeesSection from './welcome.dealerfees'
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
+
 
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

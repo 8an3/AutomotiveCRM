@@ -1,5 +1,6 @@
 import { redirect } from "@remix-run/node";
-import { prisma } from "~/libs/prisma.server";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { getSession, commitSession } from "~/utils/pref.server";
 
 

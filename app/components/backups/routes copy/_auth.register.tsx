@@ -41,7 +41,8 @@ import {
 
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import type { z } from "zod";
-import { prisma } from "~/libs/prisma.server";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { redirectIfLoggedInLoader, setAuthOnResponse } from "~/utils/misc.user.server";
 
 export const meta: V2_MetaFunction = () => {

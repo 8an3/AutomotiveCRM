@@ -18,7 +18,8 @@ import {
 } from "@tanstack/react-table"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
 import { DataFunctionArgs } from '@remix-run/node';
-import { prisma } from '~/libs/prisma.server';
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import {
   RankingInfo,
   rankItem,

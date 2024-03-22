@@ -1,5 +1,6 @@
 import { json, redirect, type ActionFunction, type DataFunctionArgs } from "@remix-run/node";
 import { Resend } from "resend";
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { deleteBMW, deleteFinance, deleteManitou } from '~/utils/finance/delete.server';
 import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, } from "~/utils/finance/create.server";
@@ -41,25 +42,7 @@ export async function action({ request, params }: DataFunctionArgs) {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
@@ -2216,25 +2199,7 @@ export async function loader({ params, request }) {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

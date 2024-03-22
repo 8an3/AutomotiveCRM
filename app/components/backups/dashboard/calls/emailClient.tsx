@@ -9,7 +9,7 @@ import { authenticator } from "~/services/auth-service.server";
 import { type ActionFunction, json } from "@remix-run/node";
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
-import { prisma } from "~/libs";
+
 import { CreateCommunications } from '~/utils/communications/communications.server';
 import { getLastAppointmentForFinance } from "~/utils/client/getLastApt.server";
 import { toast } from 'sonner'
@@ -31,6 +31,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog"
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 
 export const action: ActionFunction = async ({ req, request, params, }) => {
   const formPayload = Object.fromEntries(await request.formData());
@@ -39,25 +41,7 @@ export const action: ActionFunction = async ({ req, request, params, }) => {
   const email = session.get("email")
   console.log('in emailactrion')
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

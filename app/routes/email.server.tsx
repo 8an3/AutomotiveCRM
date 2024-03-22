@@ -1,5 +1,6 @@
 import { google } from 'googleapis';
 import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { model } from "~/models";
 import { DataFunctionArgs } from '@remix-run/server-runtime';
@@ -65,25 +66,7 @@ export async function TokenRegen(request) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
   let tokens = session.get("accessToken")
@@ -129,42 +112,30 @@ export async function TokenRegen(request) {
 
 
 export async function SendEmail(user, to, subject, text, tokens) {
-
-  // Set your variables
+  console.log(to, subject, text, tokens, 'inside sendmail')
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
   const USER_ID = user.email;
   const ACCESS_TOKEN = tokens;
   const TO_ADDRESS = to;
-
-  // Construct the MIME message
   const EMAIL_CONTENT = `From: ${USER_ID}\r\n` +
     `To: ${TO_ADDRESS}\r\n` +
     `Subject: ${subject}\r\n` +
-    `Content-Type: text/plain; charset=utf-8\r\n\r\n` +
+    `Content-Type: text/html; charset=utf-8\r\n\r\n` +  // Change content type to text/html
     `${text}`;
 
-  // Encode the MIME message in Base64
   const BASE64_ENCODED_CONTENT = btoa(unescape(encodeURIComponent(EMAIL_CONTENT)));
-
-  // Set the API endpoint
   const url = `https://gmail.googleapis.com/gmail/v1/users/${USER_ID}/messages/send?key=${API_KEY}`;
-
-  // Send the email using Axios
-  axios.post(url, {
-    raw: BASE64_ENCODED_CONTENT
-  }, {
-    headers: {
-      Authorization: `Bearer ${ACCESS_TOKEN}`,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    }
-  })
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error('Error sending email:', error);
+  try {
+    const response = await axios.post(url, { raw: BASE64_ENCODED_CONTENT }, {
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }
     });
+    console.log(response.data);
+    return response.data;
+  } catch (error) { console.error('Error sending email:', error); throw error; }
 }
 
 export async function GetUserEmails() {

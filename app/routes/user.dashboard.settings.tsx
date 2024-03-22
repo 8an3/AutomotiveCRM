@@ -15,6 +15,7 @@ import { getUserIsAllowed } from "~/helpers";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/components/ui/tabs"
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
 import { ButtonLoading } from "~/components/ui/button-loading";
@@ -22,28 +23,12 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import axios from 'axios'
 
+
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
+
   if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const userEmail = user?.email

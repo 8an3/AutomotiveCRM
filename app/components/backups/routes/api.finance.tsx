@@ -1,5 +1,6 @@
 import { json, type LoaderFunction, type LoaderFunctionArgs } from '@remix-run/node';
-import { prisma } from "../libs";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { Form, Link, Outlet, useFetcher, useLoaderData, useParams, useSubmit } from "@remix-run/react";
 import PaymentsCalc from './finance.blocked';
 

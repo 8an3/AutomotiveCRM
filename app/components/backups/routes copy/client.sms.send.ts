@@ -16,7 +16,8 @@ import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
 
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getLastAppointmentForFinance } from "~/utils/client/getLastApt.server";
-import { prisma } from "~/libs/prisma.server";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 
 // ----- for the sms on the dashboard
 

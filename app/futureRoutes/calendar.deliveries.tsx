@@ -2,7 +2,8 @@ import { getAllFinanceAptsForCalendar, getSingleFinanceAppts } from '~/utils/fin
 import { type ActionFunction, type DataFunctionArgs, json, redirect, LoaderFunction } from '@remix-run/node';
 ;
 import { model } from '~/models';
-import { prisma } from '~/libs/prisma.server';
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import React, { type SetStateAction, type MouseEvent, useCallback, type Dispatch, useState, useRef, useEffect } from "react"
 
 import { type IEventInfo } from "../../../routes/calendar.sales"
@@ -43,25 +44,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

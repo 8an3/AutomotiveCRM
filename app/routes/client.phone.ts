@@ -11,7 +11,8 @@ import {
 
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getLastAppointmentForFinance } from "~/utils/client/getLastApt.server";
-import { prisma } from "~/libs/prisma.server";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { prisma } from "~/libs";
 import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
 
@@ -97,7 +98,6 @@ export async function action({ params, request }) {
     // console.log("financeId:", financeId); // Add this line
 
     let clientAptsData = {
-      title: formData.title,
       start: newDate,
       contactMethod: formData.contactMethod,
       completed: formData.completed,

@@ -1,4 +1,5 @@
-import { prisma } from "~/libs/prisma.server";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 
 export async function NewLeadsNot() {
   const notificationsNewLead = await prisma.notificationsUser.findMany({

@@ -19,6 +19,7 @@ import { toast } from "sonner"
 import { saveDailyWorkPlan } from '~/utils/dailyPDF/create.server'
 import { getDailyPDF } from '~/utils/dailyPDF/get.server'
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import financeFormSchema from "./overviewUtils/financeFormSchema";
 import { getMergedFinance } from '~/utils/dashloader/dashloader.server'
@@ -34,25 +35,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

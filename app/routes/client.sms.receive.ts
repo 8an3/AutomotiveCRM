@@ -96,9 +96,7 @@ export async function action({ params, request }) {
     console.log("financeId:", financeId); // Add this line
 
     let clientAptsData = {
-      title: formData.title,
       start: newDate,
-
       //end: formData.end,
       contactMethod: formData.contactMethod,
       completed: formData.completed,
@@ -116,7 +114,6 @@ export async function action({ params, request }) {
       //description,
       userName: user?.name,
       title: "Contacted by Instant Function",
-
       direction: "Outgoing",
       resultOfcall: "Attempted",
       userId,

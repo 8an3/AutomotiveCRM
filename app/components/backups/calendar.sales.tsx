@@ -13,6 +13,7 @@ import { model } from '~/models';
 import financeFormSchema from '../../routes/overviewUtils/financeFormSchema';
 import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigate, useNavigation } from '@remix-run/react'
 import { getAllFinanceAptsForCalendar, getSingleFinanceAppts } from '~/utils/financeAppts/get.server';
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { Flex, Text, Button, Card, Heading, Container, IconButton } from '@radix-ui/themes';
 import { UserPlus, Gauge, CalendarCheck, Search } from 'lucide-react'
@@ -22,30 +23,13 @@ import EventInfoModal from "~/components/dashboard/calendar/EventInfoModal"
 import AddDatePickerEventModal from "~/components/backups/createApptModal2222"
 const DragAndDropCalendar = withDragAndDrop(Calendar)
 
+
 export async function loader({ request }: DataFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
@@ -502,6 +486,7 @@ import { model } from '~/models';
 import financeFormSchema from '../../routes/overviewUtils/financeFormSchema';
 import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigate, useNavigation } from '@remix-run/react'
 import { getAllFinanceAptsForCalendar, getSingleFinanceAppts } from '~/utils/financeAppts/get.server';
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { Flex, Text, Button, Card, Heading, Container, IconButton } from '@radix-ui/themes';
 import { UserPlus, Gauge, CalendarCheck, Search } from 'lucide-react'
@@ -897,6 +882,7 @@ import AddCustomer from '~/components/dashboard/calls/addCustomer'
 import { dashboardAction } from '~/components/actions/dashboardCalls'
 import stylesheet from './overviewUtils/styles2.css'
 import { commitSession, getSession } from "~/utils/pref.server";
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import updateFinance23 from '~/components/dashboard/calls/actions/updateFinance'
 import { createfinanceApt } from '~/utils/financeAppts/create.server'

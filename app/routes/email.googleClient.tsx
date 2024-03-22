@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { DataFunctionArgs, json, redirect, type LoaderFunction, createCookie, LinksFunction } from '@remix-run/node';
 import { model } from "~/models";
 import { Outlet, useLoaderData, useNavigation, Form, useLocation } from '@remix-run/react';
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, } from "~/components/ui/context-menu"
 import { Dialog as Dialog1, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "~/components/ui/dialog"
@@ -30,36 +31,17 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card"
 import axios from "axios";
-import { EditorTiptapHook, Editor } from "~/components/libs/editor-tiptap";
+import { EditorTiptapHook, Editor, onUpdate } from "~/components/libs/editor-tiptap";
 
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: slider },
-];
+
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: slider },];
+
 
 export async function loader({ params, request }: DataFunctionArgs) {
-  console.log(request.headers.get(), ' heade5ras')
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
+  const user = await GetUser(email)
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
   if (!user) { redirect('/login') }
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
   let tokens = session.get("accessToken")
@@ -206,25 +188,7 @@ export async function action({ params, request }: DataFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const userEmail = user?.email;
   const userId = user?.id;
@@ -294,7 +258,9 @@ export default function EmailClient() {
   let handleUpdate;
   const editor = Editor(content, handleUpdate)
   const [text, setText] = useState('')
-
+  const someFunction = () => {
+    onUpdate({ editor, setText, handleUpdate });
+  };
   const newEmails = unreadEmails.map(email => ({
     ...email,
     subject: email.subject?.value || null
@@ -459,14 +425,10 @@ export default function EmailClient() {
       setSubject(selectedTemplate.subject);
     }
   }, [selectedTemplate]);
-  const HandleGewtLabel = async (label) => {
-    // const res2 = await getUserEmails(oauth2Client);
-    //const res = await sendEmail(oauth2Client);
-    //console.log('test', res, 'test')
 
+  async function HandleGewtLabel(label) {
     const labelData = await GetLabel(label)
     return labelData
-
   }
   const HandleSendEmail = async (user, to, subject, text) => {
     return sendEmail
@@ -980,7 +942,7 @@ export default function EmailClient() {
   }, [label]);
 
   const host = useLocation();
-  console.log(host, 'ijhvbjhvj')
+
 
 
 
@@ -1048,9 +1010,7 @@ export default function EmailClient() {
 
 
 
-  const someFunction = () => {
-    onUpdate({ editor, setText, handleUpdate });
-  };
+
 
   return (
     <>

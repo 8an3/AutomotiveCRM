@@ -8,7 +8,8 @@ import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { badRequest, forbidden } from "remix-utils";
 import { createMetaData, getRandomText, getRedirectTo, useRedirectTo, } from "~/utils";
 import { getSession } from "../../sessions/auth-session.server";
-import { prisma } from "../../libs";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import financeFormSchema from '../../routes/overviewUtils/financeFormSchema';
 import axios from 'axios';
 

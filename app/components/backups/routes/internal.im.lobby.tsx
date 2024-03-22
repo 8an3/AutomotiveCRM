@@ -6,12 +6,14 @@ import { useEventSource } from "remix-utils";
 import { emitter } from "../services/emitter";
 import { getSession } from '../sessions/auth-session.server'
 import { model } from "../models";
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { XCircle } from "lucide-react";
 import { Textarea } from "~/other/textarea";
 import { Input } from "~/components/ui/input";
 import EventEmitter from "events";
 import useSWR from 'swr';
+
 
 const event = new EventEmitter();
 
@@ -23,25 +25,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   const staffMembers = await prisma.user.findMany({})
   if (!user) {

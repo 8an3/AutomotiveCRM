@@ -16,7 +16,8 @@ import {
   Paginator,
 } from "@twilio/conversations";
 import { json, type LinksFunction, type LoaderFunction } from '@remix-run/node';
-import { prisma } from "../../libs";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { model } from "../../models";
 import { getSession } from "~/sessions/auth-session.server";
 import slider from '~/styles/slider.css'

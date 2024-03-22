@@ -15,6 +15,7 @@ import { getSession } from '~/sessions/auth-session.server';
 import { SetToken66, requireAuthCookie, SetClient66 } from '~/utils/misc.user.server';
 import { X } from 'lucide-react';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
+import { GetUser } from "~/utils/loader.server";
 
 
 
@@ -22,25 +23,7 @@ export async function overviewLoader({ request, params }: LoaderFunction) {
     const session2 = await getSession(request.headers.get("Cookie"));
     const email = session2.get("email")
 
-    const user = await prisma.user.findUnique({
-        where: { email: email },
-        select: {
-            id: true,
-            name: true,
-            username: true,
-            email: true,
-            subscriptionId: true,
-            customerId: true,
-            returning: true,
-            phone: true,
-            dealer: true,
-            position: true,
-            roleId: true,
-            profileId: true,
-            omvicNumber: true,
-            role: { select: { symbol: true, name: true } },
-        },
-    });
+    const user = await GetUser(email)
     /// console.log(user, account, 'wquiote loadert')
     if (!user) { redirect('/login') }
 

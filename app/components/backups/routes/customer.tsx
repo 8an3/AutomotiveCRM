@@ -6,6 +6,7 @@ import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { getAllFinanceNotes } from '~/utils/financeNote/get.server';
 import { getClientListMerged, getMergedFinanceOnFinance } from "~/utils/dashloader/dashloader.server";
 import React from "react";
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { Flex, Text, Box, TextArea, TextField, Heading, Select, Theme, ThemePanel, Inset, Grid, Avatar } from '@radix-ui/themes';
 import { Badge } from "~/other/badge";
@@ -16,30 +17,13 @@ import Sidebar from "~/components/shared/sidebar";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from '~/models'
 
+
 export async function loader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

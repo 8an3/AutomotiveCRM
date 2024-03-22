@@ -1,6 +1,7 @@
 import { useLoaderData, Form, useActionData } from '@remix-run/react'
 import { type MetaFunction, json, redirect, type ActionFunction, type LoaderFunction, } from '@remix-run/node'
 import { Input, Label, Separator, Button, } from '~/components/ui/index'
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import financeFormSchema from './overviewUtils/financeFormSchema'
 import { createDealerfees, getDealerFeesbyEmail, updateDealerFees, updateUser } from '~/utils/user.server'
@@ -11,6 +12,7 @@ import { saveDailyWorkPlan } from '~/utils/dailyPDF/create.server'
 import { getSession } from "~/sessions/auth-session.server";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from '~/models'
+
 
 export function invariant(
   condition: any,
@@ -29,25 +31,7 @@ export const action: ActionFunction = async ({ request }) => {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
@@ -232,25 +216,7 @@ export const loader = async ({ request, params }) => {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
@@ -582,25 +548,7 @@ export const asdsaloader: LoaderFunction = async ({ request }) => {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

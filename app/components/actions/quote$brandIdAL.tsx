@@ -4,13 +4,14 @@ import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions
 import { financeIdLoader, overviewLoader } from "./overviewActions";
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { findQuoteById, } from "~/utils/finance/get.server";
-import { QuoteServer } from '~/utils/quote/quote.server';
-import { prisma } from '~/libs/prisma.server';
+import { QuoteServer, QuoteServerActivix } from '~/utils/quote/quote.server';
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { commitSession as commitPref, getSession as getPref } from "~/utils/pref.server";
 import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
-import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.activix';
+import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.server'
 
 export function invariant(
   condition: any,
@@ -182,25 +183,7 @@ export async function quoteLoader({ request, params }: LoaderFunction) {
   const email = session2.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });  /// console.log(user, account, 'wquiote loadert')
+  const user = await GetUser(email)  /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
   }

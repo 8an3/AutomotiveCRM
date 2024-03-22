@@ -4,6 +4,7 @@ import { redirect, type DataFunctionArgs, json, type MetaFunction, type ActionFu
 import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { directClose, getCloses, assumptiveClose, alternativeClose, problemSolvingClose, emotionalClose, getOvercomes, feltClose, getFollowUp, getQualifying, getTexting, getStories, testDriveClose, upSellClose, questionClose, summaryClose, trialClose, getScriptsListItems, getLatestScripts } from '~/utils/scripts/get.server'
 import { zfd } from 'zod-form-data'
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { financeFormSchema } from '../shared/actions';
 import { getSession } from '~/sessions/auth-session.server';
@@ -11,30 +12,13 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from '~/models'
 
 
+
 export async function scriptsLoader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });  /// console.log(user, account, 'wquiote loadert')
+  const user = await GetUser(email)  /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
   }

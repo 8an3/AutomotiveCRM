@@ -4,6 +4,7 @@ import { Form, useActionData, useFetcher, useLoaderData, useNavigation, Outlet }
 import { json, redirect, type ActionFunction, type DataFunctionArgstype, type MetaFunction, type LoaderFunction, } from '@remix-run/node'
 import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
 import { model } from "~/models";
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { RemixNavLink, } from "~/components"
 import { Separator, Button, Input, Label, Switch, Checkbox } from '~/components/ui/index'
@@ -11,10 +12,12 @@ import { getUserIsAllowed } from "~/helpers";
 import { useState } from "react"
 
 
+
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-  const user = await prisma.user.findUnique({ where: { email: email } });
+  const user = await GetUser(email)
+
   if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const userEmail = user?.email

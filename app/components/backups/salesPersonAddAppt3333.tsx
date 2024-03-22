@@ -12,7 +12,8 @@ import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, flexRende
 import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
 import { DataFunctionArgs } from '@remix-run/node';
-import { prisma } from '~/libs/prisma.server';
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import Filter from "~/components/dashboard/calls/Filter";
 import styled from 'styled-components';
 

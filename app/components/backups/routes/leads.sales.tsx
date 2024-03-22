@@ -36,7 +36,8 @@ import ContactTimesByType from "../components/dashboard/calls/ContactTimesByType
 import LogCall from "../components/dashboard/calls/logCall";
 import Logtext from "~/components/dashboard/calls/logText";
 import { Badge } from "../ui/badge";
-import { prisma } from "../libs";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 import { ArrowDownCircle, ArrowDownUp, ArrowRightCircle } from 'lucide-react';
 import DnDResource from './calendar.sales';
 import {

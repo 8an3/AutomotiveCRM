@@ -28,6 +28,9 @@ import rbc from '~/styles/rbc.css'
 import { Provider } from 'react-redux';
 import store from './store'; // Import the Redux store
 
+import { GetUser } from "~/utils/loader.server";
+
+
 export const links: LinksFunction = () => [
   // { rel: "stylesheet", href: styles },
   { rel: "stylesheet", href: tailwind },
@@ -57,25 +60,7 @@ export async function loader({ request }: LoaderArgs) {
   const email = userSession.get("email")
   if (!email) { return json({ ENV, }); }
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { return redirect(`/logout`); }
 
   const loaderData = {

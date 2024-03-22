@@ -8,7 +8,7 @@ import { deleteFinanceNote } from "~/utils/financeNote/delete.server";
 import UpdateStatus from "../dashboard/calls/actions/UpdateStatus";
 import DeleteCustomer from "../dashboard/calls/actions/DeleteCustomer";
 import { updateFinanceNote } from "~/utils/client/updateFinanceNote.server";
-import { prisma } from "~/libs";
+
 import { deleteFinanceAppts } from "~/utils/financeAppts/delete.server";
 import UpdateAppt from "../dashboard/calls/actions/updateAppt";
 import { createFinanceCheckClientDFirst } from "~/utils/finance/create.server";
@@ -24,12 +24,14 @@ import { getSession, commitSession, getSession as getToken66, commitSession as c
 import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
 import { google } from 'googleapis';
-import oauth2Client, { SendEmail, } from "~/routes/email.server";
+import oauth2Client, { SendEmail, Unauthorized, } from "~/routes/email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { CreateNote, UpdateNote, CreateCommunications, CreateCompleteEvent, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData, UpdateLeadBasic, UpdateLeadPhone, UpdateLeademail, UpdateLeadWantedVeh, UpdateLeadEchangeVeh, UpdateLeadStatus } from "../../routes/api.activix";
 import { QuoteServer } from '~/utils/quote/quote.server';
 import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 
 const getAccessToken = async (refreshToken) => {
   try {
@@ -48,47 +50,26 @@ const getAccessToken = async (refreshToken) => {
     console.log(err);
   }
 };
-export function Unauthorized(refreshToken) {
-  console.log('Unauthorized');
-  const newAccessToken = getAccessToken(refreshToken)
 
-  console.log(newAccessToken, 'newAccessToken', refreshToken, 'refreshToken')
-
-  oauth2Client.setCredentials({
-    //  refresh_token: refreshToken,
-    access_token: newAccessToken,
-  });
-  google.options({ auth: oauth2Client });
-  //  const userRes = await gmail.users.getProfile({ userId: 'me' });
-  //console.log(userRes, 'userRes')
-
-  const tokens = newAccessToken
-  return tokens
-}
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      activixActivated: true,
-      role: { select: { symbol: true, name: true } },
-    },
+  const user = await GetUser(email)
+  let tokens = session2.get("accessToken")
+  const refreshToken = user?.refreshToken
+  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
+    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
   });
+  console.log(userRes.status, 'userRes')
+  if (userRes.status === 401) {
+    const unauthorizedAccess = await Unauthorized(refreshToken)
+    tokens = unauthorizedAccess
+    session2.set("accessToken", tokens);
+    await commitSession(session2);
+    console.log(tokens, 'authorized tokens')
+  } else {
+    console.log('Authorized');
+  }
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
   const session = await sixSession(request.headers.get("Cookie"));
@@ -120,8 +101,11 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       ...financeRecord,
     };
   }));
-  const conversations = await prisma.communicationsOverview.findMany({})
-  const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
+  const conversations = await prisma.communicationsOverview.findMany({
+    orderBy: {
+      createdAt: 'desc' // Ordering by created_at field in descending order
+    }
+  }); const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
   const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
 
   const fetchLatestNotes = async (webLeadData) => {
@@ -141,11 +125,11 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     return Promise.all(promises);
   };
   const latestNotes = await fetchLatestNotes(finance);
-  let tokens = session2.get("accessToken")
-  const refreshToken = session2.get("refreshToken")
-  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
-    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
-  });
+  //let tokens = session2.get("accessToken")
+  // const refreshToken = session2.get("refreshToken")
+  //onst userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
+  //headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
+  //});
   console.log(userRes, 'userRes')
   // new
   if (userRes.status === 401) {
@@ -551,25 +535,7 @@ export async function TokenRegen(request) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
   let tokens = session.get("accessToken")
@@ -619,25 +585,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   const email = session2.get("email")
   // console.log(formData)
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
@@ -668,7 +616,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         title: formData.title,
         subject: formData.subject,
         category: 'To update',
-        userEmail: user.email,
+        userEmail: user?.email,
         dept: 'sales',
         type: 'Text / Email',
       },
@@ -892,7 +840,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         connect: { id: formData.financeId, } // Assuming financeId is the ID of the finance record you want to connect
       },
       userEmail: user?.email,
-      content: formData.customContent,
+      content: formData.body,
       title: formData.subject,
       direction: formData.direction,
       result: formData.customerState,
@@ -904,24 +852,45 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       type: 'outgoing',
       date: new Date().toISOString(),
     }
-
     const to = formData.customerEmail
-    const text = formData.customContent
+    const text = formData.body
     const subject = formData.subject
     let tokens = session2.get("accessToken")
-    // const completeApt = await CompleteLastAppt(userId, financeId)
     const sendEmail = await SendEmail(user, to, subject, text, tokens)
     const setComs = await prisma.communicationsOverview.create({ data: comdata, });
     const saveComms = await ComsCount(financeId, 'Email')
-    console.log('refreshToken',)
-    const updated = {
-      ...formData,
-      contactMethod: 'email',
-      method: 'email',
-      type: 'outgoing',
-      lead_id: formData.activixId,
-    }
-    const createEmailActivix = await CreateCommunications(updated)
+    const leadId = formData.leadId
+    const startat = new Date();
+    const start_at = startat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
+    const createEmailActivix = await axios.post(`https://api.crm.activix.ca/v2/communications`,
+      {
+        lead_id: leadId,
+        method: "email",
+        type: "outgoing",
+        email_subject: 'test',
+        email_body: formData.body,
+        email_user: formData.userEmail,
+        description: 'Sent email from the dashboard.',
+        executed_at: start_at,
+        executed_by: 143041,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      }
+    )
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Full error object:', error);
+        console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+        console.error(`Error status: ${error.response.status}`);
+        console.error('Error response:', error.response.data);
+      });
     return json({ sendEmail, saveComms, formData, setComs, createEmailActivix })//, redirect(`/dummyroute`)
   }
   // activix done
@@ -963,7 +932,36 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       ...formData,
       contactMethod: 'phone',
     }
-    const createEmailActivix = await CreateCommunications(updated)
+    const leadId = formData.leadId
+    const startat = new Date();
+    const start_at = startat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
+    const createEmailActivix = await axios.post(`https://api.crm.activix.ca/v2/communications`,
+      {
+        lead_id: leadId,
+        method: "phone",
+        type: "outgoing",
+        call_status: "calling",
+        description: 'Called customer from the dashboard.',
+        executed_at: start_at,
+        executed_by: 143041,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      }
+    )
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Full error object:', error);
+        console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+        console.error(`Error status: ${error.response.status}`);
+        console.error('Error response:', error.response.data);
+      });
     return json({ callCLient, saveComms, formData, setComs, createEmailActivix })//, redirect(`/dummyroute`)
   }
   // activix done

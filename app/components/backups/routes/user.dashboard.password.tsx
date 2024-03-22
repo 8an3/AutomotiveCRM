@@ -35,6 +35,8 @@ import { getSession } from "~/sessions/auth-session.server";
 
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { z } from "zod";
+import { GetUser } from "~/utils/loader.server";
+import { prisma } from "~/libs";
 
 export const handle = createSitemap();
 
@@ -43,25 +45,7 @@ export const loader = async ({ request }) => {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

@@ -2,6 +2,7 @@ import { Container } from "@radix-ui/themes";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import React from "react";
 import { getSession } from '~/sessions/auth-session.server';
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
@@ -9,6 +10,7 @@ import { LinksFunction, json } from "@remix-run/node";
 import NotificationSystem from "./notifications";
 import slider from '~/styles/slider.css'
 import secondary from '~/styles/secondary.css'
+
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
@@ -20,25 +22,7 @@ export const loader = async ({ request }) => {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   const notifications = await prisma.notificationsUser.findMany({
     where: {

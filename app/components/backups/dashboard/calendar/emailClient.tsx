@@ -9,12 +9,14 @@ import { authenticator } from "~/services/auth-service.server";
 import { type ActionFunction, json } from "@remix-run/node";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose, } from "~/components/ui/dialog"
 import { Cross2Icon } from '@radix-ui/react-icons';
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { CreateCommunications } from '~/utils/communications/communications.server';
 import { getLastAppointmentForFinance } from "~/utils/client/getLastApt.server";
 import { toast } from 'sonner'
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/components/ui/tabs"
+
 
 export const action: ActionFunction = async ({ req, request, params, }) => {
   const formPayload = Object.fromEntries(await request.formData());
@@ -23,25 +25,7 @@ export const action: ActionFunction = async ({ req, request, params, }) => {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

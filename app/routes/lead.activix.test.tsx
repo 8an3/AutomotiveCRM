@@ -1,15 +1,17 @@
-import { type LoaderFunction } from "@remix-run/node";
+import { type LoaderFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import axios from "axios";
+import { useState } from 'react'
+import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
 import { CreateLeadActivix, GetLeads } from "./api.activix";
-// loader function
+import { Unauthorized } from "~/routes/email.server";
 const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
 
 async function CallActi() {
   try {
-    const response = await axios.get(`https://api.crm.activix.ca/v2/leads?filter[created_at]=2024-03-21&include[]=emails&include[]=phones&include[]=vehicles`, {
+    const response = await axios.get(`https://api.crm.activix.ca/v2/leads?filter[created_at]=2024-03-21&include[]=emails&include[]=phones&include[]=vehicles&include[]=advisor&include[]=account&include[]=communications`, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -26,35 +28,16 @@ async function CallActi() {
   }
 }
 
-
-
 export async function loader({ request, params }) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email");
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { return redirect('/login'); }
   //await SyncImport(user);
-  const callData = await CallActi()
+  const callData = await GetSingleLead()
   console.log(callData, 'calldata')
-  return null
+
+  return json({ callData })
 }
 
 async function CreateCompleteEvent() {
@@ -151,57 +134,145 @@ async function CreateAndCompleteEvent() {
   return null
 }
 async function GetSingleLead() {
+  try {
+    const response = await axios.get(
+      `https://api.crm.activix.ca/v2/leads/42132008?include[]=phones&include[]=emails&include[]=vehicles&include[]=events&include[]=advisor&include[]=account&include[]=communications&include[]=tasks`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
 
-  await axios.get(
-    `https://api.crm.activix.ca/v2/leads/42132008?include[]=phones&include[]=emails&include[]=vehicles&include[]=events&include[]=advisor&include[]=events`,
+    const data = response.data.data;
 
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  )
-    .then(response => {
-      const data = response.data.data; // Accessing the 'data' property of the response
-      console.log(response.data.data.advisor)
-      // Logging customer details
-      console.log("Customer ID:", data.id);
-      console.log("Customer Name:", `${data.first_name} ${data.last_name}`);
-      console.log("Emails:");
-      data.emails.forEach(email => {
-        console.log("  -", email.id); // Assuming email is a property of each email object
-        console.log("  -", email.address); // Assuming email is a property of each email object
-      });
-      console.log("Phones:");
-      data.phones.forEach(phone => {
-        console.log("  -", phone.id); // Assuming phone_number is a property of each phone object
-        console.log("  -", phone.number); // Assuming phone_number is a property of each phone object
-      });
-      console.log("Vehicles:");
-      data.vehicles.forEach(vehicle => {
-        console.log("  - Vehicle ID:", vehicle.id); // Assuming id is a property of each vehicle object
-        console.log("    Make:", vehicle.make); // Assuming make is a property of each vehicle object
-        console.log("    Model:", vehicle.model); // Assuming model is a property of each vehicle object
-        // Add more properties as needed
-      });
-      console.log("Events:");
-      data.events.forEach(vehicle => {
-        console.log("  - Event ID:", vehicle.id); // Assuming id is a property of each vehicle object
-        console.log("    Title:", vehicle.Title); // Assuming make is a property of each vehicle object
-        console.log("    Type:", vehicle.Type); // Assuming model is a property of each vehicle object
-        // Add more properties as needed
-      });
-    })
-    .catch(error => {
-      console.error('Full error object:', error);
-      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-      console.error(`Error status: ${error.response.status}`);
-      console.error('Error response:', error.response.data);
+    console.log("Customer ID:", data.id);
+    console.log("Customer Name:", `${data.first_name} ${data.last_name}`);
+    console.log("Emails:");
+    console.log('Advisor - ', data.advisor);
+
+    data.emails.forEach(email => {
+      console.log("  -", email.id);
+      console.log("  -", email.address);
     });
-  return null
+
+    data.communications.forEach(email => {
+      console.log("  -", email.id);
+      console.log("  -", email.lead_id);
+      console.log("  -", email.method);
+      console.log("  -", email.type);
+      console.log("  -", email.description);
+      console.log("  -", email.email_subject);
+      console.log("  -", email.email_body);
+      console.log("  -", email.email_user);
+    });
+
+    console.log("Phones:");
+    data.phones.forEach(phone => {
+      console.log("  -", phone.id);
+      console.log("  -", phone.number);
+    });
+
+    console.log("Vehicles:");
+    data.vehicles.forEach(vehicle => {
+      console.log("  - Vehicle ID:", vehicle.id);
+      console.log("    Make:", vehicle.make);
+      console.log("    Model:", vehicle.model);
+    });
+
+    console.log("Events:");
+    data.events.forEach(event => {
+      console.log("  - Event ID:", event.id);
+      console.log("    Title:", event.title);
+      console.log("    Type:", event.type);
+    });
+
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    return null; // Return null or handle the error accordingly
+  }
 }
+
+
+export default function CustomerDetails() {
+  const { callData } = useLoaderData()
+  const [customerData, setCustomerData] = useState(callData);
+
+  return (
+    <div className="bg-black text-white p-4 text-center">
+      {customerData && (
+        <>
+          <div>
+            <h1 className='mt-5'>Customer ID: {customerData.id}</h1>
+            <h2 className='mt-5'>Customer Name: {`${customerData.first_name} ${customerData.last_name}`}</h2>
+            <h3 className='mt-5'>Emails:</h3>
+            {customerData.emails.map(email => (
+              <div key={email.id}>
+                <p>ID: {email.id}</p>
+                <p>Address: {email.address}</p>
+              </div>
+            ))}
+            <h3 className='mt-5'>Communications:</h3>
+            {customerData.communications.map(communication => (
+              <div key={communication.id}>
+                <p>ID: {communication.id}</p>
+                <p>Lead ID: {communication.lead_id}</p>
+                <p>Method: {communication.method}</p>
+                <p>Type: {communication.type}</p>
+                <p>Description: {communication.description}</p>
+                <p>Email Subject: {communication.email_subject}</p>
+                <p>Email Body: {communication.email_body}</p>
+                <p>Email User: {communication.email_user}</p>
+              </div>
+            ))}
+            <h3 className='mt-5'>phones:</h3>
+            {customerData.phones.map(email => (
+              <div key={email.id}>
+                <p>ID: {email.id}</p>
+                <p>Address: {email.number}</p>
+              </div>
+            ))}
+            <h3 className='mt-5'>vehicles:</h3>
+            {customerData.vehicles.map(email => (
+              <div key={email.id}>
+                <p>Vehicle ID: {email.id}</p>
+                <p>Make: {email.make}</p>
+                <p>Model: {email.model}</p>
+              </div>
+            ))}
+            <h3 className='mt-5'>events:</h3>
+            {customerData.events.map(email => (
+              <div key={email.id}>
+                <p>events ID: {email.id}</p>
+                <p>lead_id: {email.lead_id}</p>
+                <p>owner_id: {email.owner_id}</p>
+                <p>title: {email.title}</p>
+                <p>type: {email.type}</p>
+                <p>start_at: {email.start_at}</p>
+              </div>
+            ))}
+            <h3 className='mt-5'>tasks:</h3>
+            {customerData.tasks.map(email => (
+              <div key={email.id}>
+                <p>events ID: {email.id}</p>
+                <p>lead_id: {email.lead_id}</p>
+                <p>owner_id: {email.owner_id}</p>
+                <p>title: {email.title}</p>
+                <p>type: {email.type}</p>
+                <p>date: {email.date}</p>
+              </div>
+            ))}
+
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // to get a lead with data
 /** await axios.put(
     `https://api.crm.activix.ca/v2/lead-emails/42132008`,
@@ -737,7 +808,7 @@ export async function SyncImport(user) {
 }
 
 
-export default function Activixtest() {
+export function Activixtest() {
   const { activixData } = useLoaderData();
 
   // Check if activixData exists and contains data
@@ -869,25 +940,7 @@ export default function Activixtest() {
 export async function loader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+const user = await GetUser(email)
   if (!user) { redirect('/login'); }
 
   async function CallActi() {

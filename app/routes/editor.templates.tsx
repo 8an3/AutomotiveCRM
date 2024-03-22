@@ -74,42 +74,23 @@ import {
 } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { Undo, Redo, List, ScanLine, Eraser, Code, ListPlus, Brackets, Pilcrow, Minus } from 'lucide-react';
+import { Undo, Redo, List, ScanLine, Eraser, Code, ListPlus, Brackets, Pilcrow, Minus, AlignLeft, AlignCenter, AlignRight, AlignJustify, Highlighter, WrapText, Quote, Heading1, Heading2, Heading3 } from 'lucide-react';
 
 import { IconMatch } from "../components/libs/icons"
 import { buttonVariants } from "../components/ui/button"
 import { cn } from "../components/ui/utils"
 import { parseHTML } from "~/utils/html"
 import { fixUrl } from "~/utils/url"
+import { GetUser } from "~/utils/loader.server";
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) { redirect('/login') }
 
 
   let userMail = email
@@ -129,25 +110,7 @@ export const action = async ({ request }: ActionArgs) => {
   const email = session.get("email")
 
 
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      subscriptionId: true,
-      customerId: true,
-      returning: true,
-      phone: true,
-      dealer: true,
-      position: true,
-      roleId: true,
-      profileId: true,
-      omvicNumber: true,
-      role: { select: { symbol: true, name: true } },
-    },
-  });
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
 
   const intent = formData.intent;
@@ -1152,24 +1115,7 @@ export function Example({ content, handleUpdate, }: {
                                   >
                                     <IconMatch className="size-4" icon="editor-strikethrough" />
                                   </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                                    className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
-                                  >
-                                    H1
-                                  </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                                    className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
-                                  >
-                                    H2
-                                  </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                                    className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
-                                  >
-                                    H3
-                                  </button>
+
                                   <Minus color="#ffffff" strokeWidth={1.5} />
                                   <button
                                     type="button"
@@ -1191,7 +1137,7 @@ export function Example({ content, handleUpdate, }: {
                                     onClick={() => editor.chain().focus().toggleBlockquote().run()}
                                     className={editor.isActive('blockquote') ? 'is-active' : ''}
                                   >
-                                    toggleBlockquote
+                                    <Quote strokeWidth={0.75} />
                                   </button>
                                   <button
                                     onClick={() => editor.chain().focus().toggleCode().run()}
@@ -1229,7 +1175,7 @@ export function Example({ content, handleUpdate, }: {
                                     <ScanLine strokeWidth={1.5} />
                                   </button>
                                   <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-                                    hard break
+                                    <WrapText strokeWidth={0.75} />
                                   </button>
                                   <Minus color="#ffffff" strokeWidth={1.5} />
                                   <button
@@ -1258,22 +1204,40 @@ export function Example({ content, handleUpdate, }: {
                                   </button>
                                   <Minus color="#ffffff" strokeWidth={1.5} />
                                   <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}>
-                                    left
+                                    <AlignLeft strokeWidth={0.75} />
                                   </button>
                                   <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}>
-                                    center
+                                    <AlignCenter strokeWidth={0.75} />
                                   </button>
                                   <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}>
-                                    right
+                                    <AlignRight strokeWidth={0.75} />
                                   </button>
                                   <button onClick={() => editor.chain().focus().setTextAlign('justify').run()} className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}>
-                                    justify
+                                    <AlignJustify strokeWidth={0.75} />
                                   </button>
                                   <Minus color="#ffffff" strokeWidth={1.5} />
                                   <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
-                                    highlight
+                                    <Highlighter strokeWidth={0.75} />
                                   </button>
                                   <Minus color="#ffffff" strokeWidth={1.5} />
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                                    className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+                                  >
+                                    <Heading1 strokeWidth={0.75} />
+                                  </button>
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                                    className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
+                                  >
+                                    <Heading2 strokeWidth={0.75} />
+                                  </button>
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                                    className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
+                                  >
+                                    <Heading3 strokeWidth={0.75} />
+                                  </button>
                                 </div>
                                 <div
                                   className={cn(
