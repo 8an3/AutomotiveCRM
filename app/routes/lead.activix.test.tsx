@@ -33,16 +33,19 @@ export async function loader({ request, params }) {
   const email = session2.get("email");
   const user = await GetUser(email)
   if (!user) { return redirect('/login'); }
-  //await SyncImport(user);
-  const callData = await GetSingleLead()
-  console.log(callData, 'calldata')
+  // await SyncImport(user);
+  // const callData = await GetSingleLead()
+  // console.log(callData, 'calldata')
 
-  return json({ callData })
+
+  const getEvent = await axios.get(`https://api.crm.activix.ca/v2/events`,
+    { headers: { 'Content-Type': 'application/json', Accept: 'application/json', Authorization: `Bearer ${accessToken}`, }, }
+  );
+  return json({ getEvent })
 }
 
 async function CreateCompleteEvent() {
-  const leadId = 43314827//response.data.data.id;
-
+  const leadId = 43280101
   const getEvent = await axios.get(
     `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
     {
@@ -66,14 +69,12 @@ async function CreateCompleteEvent() {
     {
       lead_id: lastEventId,
       completed: true,
-      completed_at: '2024-03-19T20:36:19+00:00',
+      completed_at: completed,
       end_at: getEvent.data.data.events[0].end_at,
       start_at: getEvent.data.data.events[0].start_at,
       title: getEvent.data.data.events[0].title,
-      description: description,
       type: getEvent.data.data.events[0].type,
       owner_id: 143041,
-      owner: { id: 143041 }
     },
     {
       headers: {
@@ -108,18 +109,16 @@ async function CreateAndCompleteEvent() {
   const completed = startAt.toISOString().replace(/\.\d{3}Z$/, '-04:00');
   console.log(completed);
 
-  const updated = await axios.post(`https://api.crm.activix.ca/v2/events`,
+  const updated = await axios.put(`https://api.crm.activix.ca/v2/events/32939459`,
     {
-      lead_id: lastEventId,
+      lead_id: 43280101, //lastEventId,
       completed: true,
-      completed_at: '2024-03-19T20:36:19+00:00',
-      end_at: getEvent.data.data.events[0].end_at,
-      start_at: getEvent.data.data.events[0].start_at,
-      title: getEvent.data.data.events[0].title,
-      description: description,
-      type: getEvent.data.data.events[0].type,
+      completed_at: '2024-03-21T21:00:14+00:00',
+      end_at: '2024-03-21T21:00:16+00:00',// getEvent.data.data.events[0].end_at,
+      start_at: '2024-03-21T21:00:15+00:00', //getEvent.data.data.events[0].start_at,
+      title: 'F/U on the Low Rider ST - Color - FXLRS',//getEvent.data.data.events[0].title,
+      type: 'appointment',// getEvent.data.data.events[0].type,
       owner_id: 143041,
-      owner: { id: 143041 }
     },
     {
       headers: {
@@ -128,9 +127,8 @@ async function CreateAndCompleteEvent() {
         'Authorization': `Bearer ${accessToken}`,
       }
     });
-  const error = updated.response.data.errors;
-  console.log(error);
-  console.log(updated)
+  console.log(updated.data, 'getEvents')
+  console.dir(updated.data, 'getEvents')
   return null
 }
 async function GetSingleLead() {
@@ -1459,3 +1457,187 @@ const user = await GetUser(email)
 }
 
 */
+const data = {
+  data: [
+    {
+      id: 32939459,
+      lead_id: 43280101,
+      owner_id: 143041,
+      created_at: '2024-03-20T21:00:14+00:00',
+      end_at: '2024-03-22T01:30:15+00:00',
+      start_at: '2024-03-22T01:00:15+00:00',
+      updated_at: '2024-03-20T21:00:15+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the Low Rider ST - Color - FXLRS',
+      type: 'appointment'
+    },
+    {
+      id: 32936238,
+      lead_id: 43570588,
+      owner_id: 143041,
+      created_at: '2024-03-20T19:57:24+00:00',
+      end_at: '2024-03-23T00:27:24+00:00',
+      start_at: '2024-03-22T23:57:24+00:00',
+      updated_at: '2024-03-20T19:57:24+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the Road Glide',
+      type: 'appointment'
+    },
+    {
+      id: 32916739,
+      lead_id: 42138417,
+      owner_id: 143041,
+      created_at: '2024-03-20T16:19:10+00:00',
+      end_at: '2024-03-21T20:49:11+00:00',
+      start_at: '2024-03-21T20:19:11+00:00',
+      updated_at: '2024-03-20T16:19:11+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the M3',
+      type: 'appointment'
+    },
+    {
+      id: 32916122,
+      lead_id: 43314827,
+      owner_id: 143041,
+      created_at: '2024-03-20T16:06:19+00:00',
+      end_at: '2024-03-22T20:36:19+00:00',
+      start_at: '2024-03-22T20:06:19+00:00',
+      updated_at: '2024-03-20T16:06:19+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the Nightster - Vivid Black - RH975',
+      type: 'appointment'
+    },
+    {
+      id: 32914420,
+      lead_id: 43315031,
+      owner_id: 143041,
+      created_at: '2024-03-20T15:36:31+00:00',
+      end_at: '2024-03-21T20:06:31+00:00',
+      start_at: '2024-03-21T19:36:31+00:00',
+      updated_at: '2024-03-20T15:36:32+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the Nightster - Color - RH975',
+      type: 'appointment'
+    },
+    {
+      id: 32910591,
+      lead_id: 43318738,
+      owner_id: 143041,
+      created_at: '2024-03-20T14:41:00+00:00',
+      end_at: '2024-03-21T19:11:00+00:00',
+      start_at: '2024-03-21T18:41:00+00:00',
+      updated_at: '2024-03-20T14:41:00+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the Nightster - Vivid Black - RH975',
+      type: 'appointment'
+    },
+    {
+      id: 32910095,
+      lead_id: 42132008,
+      owner_id: 143041,
+      created_at: '2024-03-20T14:33:00+00:00',
+      end_at: '2024-03-25T19:03:01+00:00',
+      start_at: '2024-03-25T18:33:01+00:00',
+      updated_at: '2024-03-20T14:33:00+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the DeLorean',
+      type: 'appointment'
+    },
+    {
+      id: 32908521,
+      lead_id: 42132008,
+      owner_id: 143041,
+      created_at: '2024-03-20T14:01:03+00:00',
+      end_at: '2024-03-24T18:31:02+00:00',
+      start_at: '2024-03-24T18:01:02+00:00',
+      updated_at: '2024-03-20T14:01:03+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the DeLorean',
+      type: 'appointment'
+    },
+    {
+      id: 32907305,
+      lead_id: 42132008,
+      owner_id: 143041,
+      created_at: '2024-03-20T13:35:46+00:00',
+      end_at: '2024-03-23T02:30:00+00:00',
+      start_at: '2024-03-23T02:00:00+00:00',
+      updated_at: '2024-03-20T13:35:46+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the DeLorean',
+      type: 'appointment'
+    },
+    {
+      id: 32894624,
+      lead_id: 43407584,
+      owner_id: 143041,
+      created_at: '2024-03-20T08:59:48+00:00',
+      end_at: '2024-03-21T13:29:49+00:00',
+      start_at: '2024-03-21T12:59:49+00:00',
+      updated_at: '2024-03-20T08:59:48+00:00',
+      canceled: false,
+      completed: false,
+      completed_at: '',
+      confirmed: false,
+      description: null,
+      no_show: false,
+      priority: 'normal',
+      title: 'F/U on the null',
+      type: 'appointment'
+    }
+  ],
+}

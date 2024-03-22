@@ -1065,7 +1065,7 @@ async function UpdateLocalLead(financeData) {
     }
   }
   const formData = await CallActi();
-  console.log(formData)
+  console.log(formData.data.emails[0].address, 'email')
   try {
 
     const financeData = await prisma.finance.update({
@@ -1633,8 +1633,7 @@ export async function CreateCompleteEvent(formData, start_at, end_at) {
     }
   });
   console.log(response.data)
-  const leadId = response.data.data.id;
-
+  const leadId = response.data.lead.id;
   const getEvent = await axios.get(
     `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=events`,
     {
@@ -1647,16 +1646,24 @@ export async function CreateCompleteEvent(formData, start_at, end_at) {
   );
   // Handle successful response
   console.log('Response:', getEvent.data.data.events);
+  const lastEventId = getEvent.data.data.events[0].id
+  const description = 'test';
+  const startAt = new Date();
+  startAt.setMinutes(startAt.getMinutes() - 5);
+  const completed = startAt.toISOString().replace(/\.\d{3}Z$/, '-04:00');
+  console.log(completed);
 
-
-  console.log(getEvent)
-  /// last one created is at 0 apparently
-  const lastEventId = getEvent.data.data.events[1].id
-  const updated = await axios.post(`https://api.crm.activix.ca/v2/events`, {
-    lead_id: lastEventId,
-    completed: true,
-    completed_at: new Date().toISOString(),
-  },
+  await axios.post(`https://api.crm.activix.ca/v2/events`,
+    {
+      lead_id: lastEventId,
+      completed: true,
+      completed_at: completed,
+      end_at: getEvent.data.data.events[0].end_at,
+      start_at: getEvent.data.data.events[0].start_at,
+      title: getEvent.data.data.events[0].title,
+      type: getEvent.data.data.events[0].type,
+      owner_id: 143041,
+    },
     {
       headers: {
         'Content-Type': 'application/json',
@@ -1664,7 +1671,10 @@ export async function CreateCompleteEvent(formData, start_at, end_at) {
         'Authorization': `Bearer ${accessToken}`,
       }
     });
-  console.log(updated)
+  const error = updated.data.errors;
+  console.log(error);
+
+
   return response
 
 }

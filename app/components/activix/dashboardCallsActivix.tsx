@@ -1100,7 +1100,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
     if (hasAppt !== null && hasAppt !== undefined) {
       // Array has more than 0 elements
-      const createTaskActivix = await CreateTask(formData, start_at, end_at)
+      const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
       // const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
       return json({ complete, updating, completeApt, createFollowup, setComs, createTaskActivix });
     } else {
@@ -1124,7 +1124,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       const followup = await FollowUpApt(formData, user, userId)
       return json({ complete, followup, completeActivix })
     }
-
+    return null
   }
   // activix done
   if (intent === "scheduleFUp") {
@@ -1215,7 +1215,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     const setComs = await prisma.communicationsOverview.create({
       data: comdata,
     });
-    const startat = new Date(followUpDay);
+    const startat = new Date(newDate);
     const endat = new Date(startat.getTime() + 30 * 60000); // Adding 30 minutes
     const start_at = startat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
     const end_at = endat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
@@ -1224,12 +1224,12 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
     if (hasAppt !== null && hasAppt !== undefined) {
       // Array has more than 0 elements
+      const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
       // const createTaskActivix = await CreateCompleteEvent(formData, start_at, end_at)
-      const createTaskActivix = await CreateTask(formData, start_at, end_at)
-      return json({ updating, completeApt, createFollowup, setComs, createTaskActivix });
+      return json({ complete, updating, completeApt, createFollowup, setComs, createTaskActivix });
     } else {
       const createTaskActivix = await CreateTask(formData, start_at, end_at)
-      return json({ updating, completeApt, createFollowup, setComs, createTaskActivix });
+      return json({ complete, updating, completeApt, createFollowup, setComs, createTaskActivix });
     }
   }
   // activix done

@@ -525,11 +525,99 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                     )}
                   </div>
                   <div className="p-1">
-                    <div className="mr-auto px-2   mt-auto grid grid-cols-1 ">
+                    <div className="mr-auto px-2   mt-auto grid grid-cols-1 border border-black rounded-md">
                       {/*  <RichTextExample /> */}
+
                       <div
                         className={cn(
-                          "z-10 mb-5 w-[95%] mt-2 flex flex-wrap max-auto items-center gap-1 rounded-md p-1 border border-black mx-auto",
+                          "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
+                          "bg-white text-black transition-all align-center justify-center",
+                          "sm:sticky sm:top-[120px]",
+                        )}
+                      >
+                        <select
+                          name="clientAtr"
+                          onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
+                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '
+                        >
+                          <option value="">Client</option>
+                          {Object.entries(clientAtr).map(([title, value]) => (
+                            <option key={title} value={title}>
+                              {title}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          name="wantedVehAttr"
+                          onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
+                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '   >
+                          <option value="">Wanted Veh</option>
+                          {Object.entries(wantedVehAttr).map(([title, value]) => (
+                            <option key={title} value={title}>
+                              {title}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          name="tradeVehAttr"
+                          onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
+                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '         >
+                          <option value="">Trade Veh</option>
+                          {Object.entries(tradeVehAttr).map(([title, value]) => (
+                            <option key={title} value={title}>
+                              {title}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          name="salesPersonAttr"
+                          onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
+                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '          >
+                          <option value="">Sales Person</option>
+                          {Object.entries(salesPersonAttr).map(([title, value]) => (
+                            <option key={title} value={title}>
+                              {title}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          name="FandIAttr"
+                          onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
+                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
+                          <option value="">F & I Manager</option>
+                          {Object.entries(FandIAttr).map(([title, value]) => (
+                            <option key={title} value={title}>
+                              {title}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          name="dealerInfo"
+                          onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
+                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
+                          <option value="">Dealer Info</option>
+                          {Object.entries(dealerInfo).map(([title, value]) => (
+                            <option key={title} value={title}>
+                              {title}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          name="financeInfo"
+                          onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
+                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
+                          <option value="">Finance Info</option>
+                          {Object.entries(financeInfo).map(([title, value]) => (
+                            <option key={title} value={title}>
+                              {title}
+                            </option>
+                          ))}
+                        </select>
+
+                      </div>
+                      <div
+                        className={cn(
+                          "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
                           "bg-white text-black transition-all justify-center",
                           // "sm:sticky sm:top-[80px]",
                         )}
@@ -679,94 +767,6 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                           <Heading3 strokeWidth={0.75} />
                         </button>
                       </div>
-                      <div
-                        className={cn(
-                          "z-10 mt-2 mb-2 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1 border border-black mx-auto",
-                          "bg-white text-black transition-all align-center justify-center",
-                          "sm:sticky sm:top-[120px]",
-                        )}
-                      >
-                        <select
-                          name="clientAtr"
-                          onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '
-                        >
-                          <option value="">Client</option>
-                          {Object.entries(clientAtr).map(([title, value]) => (
-                            <option key={title} value={title}>
-                              {title}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          name="wantedVehAttr"
-                          onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '   >
-                          <option value="">Wanted Veh</option>
-                          {Object.entries(wantedVehAttr).map(([title, value]) => (
-                            <option key={title} value={title}>
-                              {title}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          name="tradeVehAttr"
-                          onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '         >
-                          <option value="">Trade Veh</option>
-                          {Object.entries(tradeVehAttr).map(([title, value]) => (
-                            <option key={title} value={title}>
-                              {title}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          name="salesPersonAttr"
-                          onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '          >
-                          <option value="">Sales Person</option>
-                          {Object.entries(salesPersonAttr).map(([title, value]) => (
-                            <option key={title} value={title}>
-                              {title}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          name="FandIAttr"
-                          onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
-                          <option value="">F & I Manager</option>
-                          {Object.entries(FandIAttr).map(([title, value]) => (
-                            <option key={title} value={title}>
-                              {title}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          name="dealerInfo"
-                          onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
-                          <option value="">Dealer Info</option>
-                          {Object.entries(dealerInfo).map(([title, value]) => (
-                            <option key={title} value={title}>
-                              {title}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          name="financeInfo"
-                          onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
-                          <option value="">Finance Info</option>
-                          {Object.entries(financeInfo).map(([title, value]) => (
-                            <option key={title} value={title}>
-                              {title}
-                            </option>
-                          ))}
-                        </select>
-
-                      </div>
-
                       <div>
                         <BubbleMenu
                           editor={editor}
@@ -895,7 +895,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                         </BubbleMenu>
                       </div>
                       <br />
-                      <EditorContent editor={editor} className="mt-5 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
+                      <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
                       <br />
 
 

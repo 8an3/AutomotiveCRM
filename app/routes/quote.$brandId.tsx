@@ -157,6 +157,9 @@ export default function Quote() {
               <div className="grid gap-1 mr-2 font-thin">
                 <Label className="flex font-thin items-end mt-1 " htmlFor="area">Phone</Label>
                 <Input className=" mt-1 " placeholder="Phone" name="phone" type="number" />
+                {errors?.phone ? (
+                  <em className="text-[#ff0202] text-right">{errors.phone}</em>
+                ) : null}
               </div>
               <div className="grid gap-1 font-thin">
                 <Label className="flex font-thin mt-1 justify-end " htmlFor="area">Email (required)</Label>
