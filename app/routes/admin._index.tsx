@@ -25,6 +25,7 @@ import { getMergedFinance } from '~/utils/dashloader/dashloader.server'
 import { deleteDailyPDF } from "~/utils/dailyPDF/delete.server";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
+import { GetUser } from "~/utils/loader.server";
 
 
 export const handle = createSitemap();

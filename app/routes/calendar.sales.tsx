@@ -23,6 +23,8 @@ import { SearchCustomerModal } from '~/components/dashboard/calendar/searchCusto
 import axios from 'axios';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
+import { GetUser } from "~/utils/loader.server";
+
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },

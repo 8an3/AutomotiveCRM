@@ -141,9 +141,12 @@ export function Sidebar2() {
                   <Text as="div" size="2" highContrast className='text-slate3 text-sm text-center justify-center' >
                     {financeRecord.year} {financeRecord.brand}
                   </Text>
-                  <Text as="div" size="2" weight="bold" highContrast className='text-slate3 text-center text-sm justify-center'>
-                    {financeRecord.model.toString().slice(0, 23)}
-                  </Text>
+                  {financeRecord.model && (
+                    <Text as="div" size="2" weight="bold" highContrast className='text-slate3 text-center text-sm justify-center'>
+                      {financeRecord.model.toString().slice(0, 23)}
+                    </Text>
+                  )}
+
 
                   <div className="flex justify-between">
                     {NewListForStatus.map((item) => (

@@ -34,14 +34,12 @@ export async function loader({ request, params }) {
   const user = await GetUser(email)
   if (!user) { return redirect('/login'); }
   // await SyncImport(user);
-  // const callData = await GetSingleLead()
-  // console.log(callData, 'calldata')
+  const callData = await GetSingleLead()
+  console.log(callData, 'calldata')
 
 
-  const getEvent = await axios.get(`https://api.crm.activix.ca/v2/events`,
-    { headers: { 'Content-Type': 'application/json', Accept: 'application/json', Authorization: `Bearer ${accessToken}`, }, }
-  );
-  return json({ getEvent })
+
+  return null// json({ getEvent })
 }
 
 async function CreateCompleteEvent() {
@@ -134,7 +132,7 @@ async function CreateAndCompleteEvent() {
 async function GetSingleLead() {
   try {
     const response = await axios.get(
-      `https://api.crm.activix.ca/v2/leads/42132008?include[]=phones&include[]=emails&include[]=vehicles&include[]=events&include[]=advisor&include[]=account&include[]=communications&include[]=tasks`,
+      `https://api.crm.activix.ca/v2/leads/43808652?include[]=phones&include[]=emails&include[]=vehicles&include[]=events&include[]=advisor&include[]=account&include[]=communications&include[]=tasks`,
       {
         headers: {
           'Content-Type': 'application/json',

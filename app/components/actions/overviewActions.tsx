@@ -1,5 +1,6 @@
 import { json, type ActionFunction, type DataFunctionArgs, LoaderFunction, redirect } from '@remix-run/node'
 import financeFormSchema from '../../routes/overviewUtils/financeFormSchema';
+import axios from "axios";
 
 import { model } from '~/models'
 import { getDealerFeesbyEmail } from "~/utils/user.server";
@@ -16,8 +17,8 @@ import { SetToken66, requireAuthCookie, SetClient66 } from '~/utils/misc.user.se
 import { X } from 'lucide-react';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { GetUser } from "~/utils/loader.server";
-
-
+//import { UpdateLead } from '~/routes/api.activix';
+const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
 
 export async function overviewLoader({ request, params }: LoaderFunction) {
     const session2 = await getSession(request.headers.get("Cookie"));
@@ -165,7 +166,6 @@ export async function financeIdLoader({ financeId, request }) {
 }
 
 export const overviewAction: ActionFunction = async ({ request, params }) => {
-
     const formPayload = Object.fromEntries(await request.formData());
     let formData = financeFormSchema.parse(formPayload)
     const userSession = await getSession(request.headers.get("Cookie"));
@@ -201,6 +201,8 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     const lastContact = new Date().toISOString();
     const today = new Date()
     formData = { ...formData, lastContact, pickUpDate: 'TBD', }
+    const updateActivix = await UpdateLead(formData)
+    console.log(updateActivix, 'updateActivix')
     if (formPayload.intent === 'emailPayments') {
         return redirect('/dashboard/features/emailPayments'),
             { headers: { "Set-Cookie": await commitPref(session) } }
@@ -376,9 +378,186 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
             pickUpDate: 'TBD',
         },
     });
-    return json({ finance, dashboard }, { headers: { "Set-Cookie": serializedSession, } }
+    return json({ finance, dashboard, updateActivix }, { headers: { "Set-Cookie": serializedSession, } }
     );
 
 }
 
 
+async function UpdateLead(formData) {
+    const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+    let phoneNumber = formData.phone;
+    if (!phoneNumber.startsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
+
+    const response = await axios.put(`https://api.crm.activix.ca/v2/leads/${activixId.activixId}`,
+        {
+            first_name: formData.firstName ?? null,
+            last_name: formData.lastName ?? null,
+            birth_date: formData.dob ?? null,
+            funded: formData.dob ?? null,
+            deliverable_date: formData.birthDate ?? null,
+            delivered_date: formData.birthDate ?? null,
+            delivery_date: formData.birthDate ?? null,
+            last_visit_date: formData.birthDate ?? null,
+            paperwork_date: formData.birthDate ?? null,
+            planned_pick_up_date: formData.birthDate ?? null,
+            presented_date: formData.birthDate ?? null,
+            sale_date: formData.birthDate ?? null,
+            address_line1: formData.birthDate ?? null,
+            credit_approved: formData.birthDate ?? null,
+            city: formData.birthDate ?? null,
+            country: formData.birthDate ?? null,
+            dealer_tour: formData.birthDate ?? null,
+            financial_institution: formData.birthDate ?? null,
+            postal_code: formData.birthDate ?? null,
+            prepared: formData.birthDate ?? null,
+            province: formData.birthDate ?? null,
+            result: formData.birthDate ?? null,
+            progress_state: formData.birthDate ?? null,
+            status: formData.birthDate ?? null,
+            walk_around: formData.birthDate ?? null,
+            response_time: formData.birthDate ?? null,
+            first_update_time: formData.birthDate ?? null,
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        }
+    ).then(response => {
+        console.log(response.data);
+    })
+        .catch(error => {
+            console.error('Full error object:', error);
+            console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+            console.error(`Error status: ${error.response.status}`);
+            console.error('Error response:', error.response.data);
+        });
+
+
+    return response
+
+}
+const data = {
+    data: {
+        id: 43808652,
+        account_id: 17162,
+        customer_id: 41912773,
+        source_id: null,
+        provider_id: null,
+        appointment_date: null,
+        appointment_event_id: null,
+        phone_appointment_date: null,
+        available_date: null,
+        be_back_date: null,
+        birth_date: null,
+        call_date: null,
+        created_at: '2024-03-22T20:14:07+00:00',
+        csi_date: null,
+        deliverable_date: null,
+        delivered_date: null,
+        delivery_date: null,
+        funded: null,
+        end_service_date: null,
+        home_presented_date: null,
+        last_visit_date: null,
+        next_visit_date: null,
+        open_work_order_date: null,
+        paperwork_date: null,
+        planned_pick_up_date: null,
+        presented_date: null,
+        promised_date: null,
+        refinanced_date: null,
+        repair_date: null,
+        road_test_date: null,
+        home_road_test_date: null,
+        sale_date: null,
+        take_over_date: null,
+        unsubscribe_all_date: null,
+        unsubscribe_call_date: null,
+        unsubscribe_email_date: null,
+        unsubscribe_sms_date: null,
+        updated_at: '2024-03-22T20:54:37+00:00',
+        work_order_closure_date: null,
+        work_order_partial_closure_date: null,
+        address_line1: null,
+        address_line2: null,
+        credit_approved: false,
+        average_spending: 0,
+        business: null,
+        business_name: null,
+        city: null,
+        civility: null,
+        code: null,
+        comment: null,
+        country: 'CA',
+        created_method: 'api',
+        dealer_tour: null,
+        division: null,
+        financial_institution: null,
+        first_name: 'Jason',
+        gender: 0,
+        inspected: false,
+        invoiced: false,
+        last_name: 'Stathom',
+        locale: 'fr',
+        loyalty: null,
+        odometer_last_visit: null,
+        postal_code: null,
+        prepaid: null,
+        prepared: false,
+        province: 'QC',
+        qualification: null,
+        rating: null,
+        reached_client: false,
+        repair_order: null,
+        result: 'pending',
+        second_contact: null,
+        second_contact_civility: null,
+        segment: null,
+        service_cleaned: false,
+        service_interval_km: null,
+        service_monthly_km: null,
+        source: null,
+        provider: null,
+        progress_state: null,
+        status: null,
+        storage: null,
+        type: 'email',
+        walk_around: false,
+        work_order: null,
+        referrer: null,
+        search_term: null,
+        keyword: null,
+        navigation_history: null,
+        campaign: null,
+        response_time: null,
+        first_update_time: null,
+        account: {
+            id: 17162,
+            created_at: '2023-12-14T16:45:54+00:00',
+            updated_at: '2023-12-14T16:45:56+00:00',
+            name: 'Sandbox - Skyler Zanth'
+        },
+        advisor: {
+            id: 143041,
+            created_at: '2023-12-14T16:47:06+00:00',
+            updated_at: '2023-12-14T16:47:08+00:00',
+            email: 'skylerzanth@gmail.com',
+            first_name: 'Skyler',
+            last_name: 'Zanth API'
+        },
+        bdc: null,
+        commercial: null,
+        service_advisor: null,
+        service_agent: null,
+        customer: { id: 41912773 },
+        emails: [[Object]],
+        communications: [],
+        phones: [[Object]],
+        products: [],
+        vehicles: [[Object]]
+    }
+}

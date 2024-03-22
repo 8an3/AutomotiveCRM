@@ -89,6 +89,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
   const handleChange = (event) => {
     const selectedTemplate = templates.find(template => template.title === event.target.value);
     setSelectedTemplate(selectedTemplate);
+    editor?.commands.insertContent(selectedTemplate.body)
   };
   React.useEffect(() => {
     if (selectedTemplate) {
@@ -464,7 +465,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className=" bg-background/80  fixed inset-0 backdrop-blur-sm" />
-        <Dialog.Content className=" fixed left-[50%] top-[50%] max-h-[85%] w-[90vw] overflow-y-scroll translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white text-black p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none md:w-[750px]">
+        <Dialog.Content className=" fixed left-[50%] top-[50%] max-h-[85%] w-[90vw] overflow-y-scroll translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white text-black p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none md:w-[950px]">
 
           <Dialog.Description className="text-mauve11 mb-5 mt-[10px] text-[15px] leading-normal ">
           </Dialog.Description>

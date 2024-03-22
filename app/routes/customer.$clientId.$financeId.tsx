@@ -31,6 +31,7 @@ import { getSession } from "~/sessions/auth-session.server";
 import { SetClient66, requireAuthCookie } from '~/utils/misc.user.server';
 import { UpdateLeadBasic, UpdateLeadApiOnly, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, UpdateNoteCreateTask, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "./api.activix";
 import axios from "axios";
+import { GetUser } from "~/utils/loader.server";
 
 async function GetMergedWithActivix(financeId) {
   try {
