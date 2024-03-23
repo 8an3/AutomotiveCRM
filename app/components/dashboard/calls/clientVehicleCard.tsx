@@ -1,8 +1,9 @@
 import {
   useLoaderData,
   Form,
-  useRouteLoaderData,
+  useNavigate,
   useFetcher,
+  useSearchParams
 } from "@remix-run/react";
 import {
   Input,
@@ -27,14 +28,23 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/other/tabs";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import UnitPicker from '../unitPicker'
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select"
 import { Toaster, toast } from 'sonner'
+import { getSession, commitSession, destroySession } from '~/utils/misc.user.server';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { prisma } from "~/libs";
 
 
-export default function ClientVehicleCard({ data, }) {
+export default async function ClientVehicleCard({ data }, request) {
   const [open, setOpen] = React.useState(false);
   const timerRef = React.useRef(0);
 
@@ -94,32 +104,76 @@ export default function ClientVehicleCard({ data, }) {
     fetchUnit();
   }, [data.stockNum]);
 
-  // console.log(clientUnit, 'clientUnit');
+  const fetcher = useFetcher();
+
+  const navigate = useNavigate();
+  const options = [
+    "BMW-Motorrad", "Can-Am", "Can-Am-SXS", "Harley-Davidson", "Indian", "Kawasaki",
+    "KTM", "Manitou", "Sea-Doo", "Switch", "Ski-Doo", "Suzuki", "Triumph", "Spyder", "Yamaha"
+  ];
+  const formRef = useRef(null);
+
+  const handleSelectChange = (event) => {
+    const selectedBrand = event.target.value;
+    if (selectedBrand) {
+      navigate(`/quote/${selectedBrand}`);
+    }
+  };
+  const session = await getSession(request.headers.get("Cookie"));
+
+  async function SetCookie() {
+    session.set("firstName", data.firstName);
+    session.set("lastName", data.lastName);
+    session.set("phone", data.phone);
+    session.set("email", data.email);
+    const serializedSession = await commitSession(session);
+
+    return redirect(null, {
+      headers: {
+        "Set-Cookie": serializedSession,
+      },
+    });
+  }
+  await SetCookie()
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <p className="hover:text-[#02a9ff]">
-          {data.model}
-        </p>
-      </SheetTrigger>
+      <p className="hover:text-[#02a9ff]">
+        {data.model ? (
+          <SheetTrigger asChild>
+            <div>{data.model}</div>
+          </SheetTrigger>
+        ) : (
+          <div>
+            <Form method="post" ref={formRef}>
+              <select
+                name='selectBrand'
+                onChange={handleSelectChange}
+                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] mx-auto"
+              >
+                <option value="">Select Brand</option>
+                {options.map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </Form>
+          </div>
+        )}
+      </p>
       <SheetHeader>
         <SheetTitle>
           <SheetContent side='left' className='bg-[#1c2024] w-full md:w-[50%]  overflow-y-auto    shadow-[0_2px_10px] text-white' >
-
             <h3 className="text-2xl font-thin text-white">CLIENT VEHICLE CARD</h3>
-
             <Form method='post'>
               <div className="grid grid-cols-1 text-white">
-                {/* Left column with inputs */}
                 <div>
                   <div className="mx-3 my-3 w-[90%]">
                     <h3 className="text-2xl font-thin">PURCHASING</h3>
-
                     <Input type="hidden" defaultValue={data.id} name="financeId" />
                     <Input type="hidden" defaultValue={id} name="id" />
                     <Input type="hidden" defaultValue={data.brand} name="brand" />
                     <Input type="hidden" defaultValue='updateFinance' name="intent" />
-
                   </div>
                   <div className="mx-3 my-3 w-[90%]">
                     <Tabs defaultValue="model" className="my-x mx-3 w-[90%]">
@@ -647,5 +701,5 @@ export default function ClientVehicleCard({ data, }) {
         </SheetTitle>
       </SheetHeader>
     </Sheet>
-  );
+  )
 }
