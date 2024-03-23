@@ -132,10 +132,10 @@ export default async function Quote() {
   }, []);
 
   const session = await getSession(request.headers.get("Cookie"));
-  const firstName = session.get("firstName");
-  const lastName = session.get("lastName");
-  const phone = session.get("phone");
-  const email = session.get("email");
+  const firstName = session.get("firstName") ?? '';
+  const lastName = session.get("lastName") ?? '';
+  const phone = session.get("phone") ?? '';
+  const email = session.get("email") ?? '';
   return (
     <>
       <div className="mx-auto my-auto mt-[55px] ">
@@ -147,7 +147,7 @@ export default async function Quote() {
             <div className="grid grid-cols-2 gap-2 mt-1 " >
               <div className="grid gap-1 mr-2 font-thin">
                 <Label className="flex font-thin mt-1 " htmlFor="area">First Name (required)</Label>
-                <Input className="  mt-1 " placeholder="Name" type="text" name="firstName" defaultValue={firstName ?? ''}
+                <Input className="  mt-1 " placeholder="Name" type="text" name="firstName" defaultValue={firstName}
                 />
                 {errors?.firstName ? (
                   <em className="text-[#ff0202]">{errors.firstName}</em>
@@ -155,21 +155,21 @@ export default async function Quote() {
               </div>
               <div className="grid gap-1 font-thin">
                 <Label className="flex font-thin justify-end   mt-1 " htmlFor="area">Last Name (required)</Label>
-                <Input className="  mt-1 text-right " placeholder="Name" type="text" name="lastName" defaultValue={lastName ?? ''} />
+                <Input className="  mt-1 text-right " placeholder="Name" type="text" name="lastName" defaultValue={lastName} />
                 {errors?.lastName ? (
                   <em className="text-[#ff0202] text-right">{errors.lastName}</em>
                 ) : null}
               </div>
               <div className="grid gap-1 mr-2 font-thin">
                 <Label className="flex font-thin items-end mt-1 " htmlFor="area">Phone</Label>
-                <Input className=" mt-1 " placeholder="Phone" name="phone" type="number" defaultValue={phone ?? ''} />
+                <Input className=" mt-1 " placeholder="Phone" name="phone" type="number" defaultValue={phone} />
                 {errors?.phone ? (
                   <em className="text-[#ff0202] text-right">{errors.phone}</em>
                 ) : null}
               </div>
               <div className="grid gap-1 font-thin">
                 <Label className="flex font-thin mt-1 justify-end " htmlFor="area">Email (required)</Label>
-                <Input className="grid text-right" placeholder="Email" type="email" name="email" defaultValue={email ?? ''} />
+                <Input className="grid text-right" placeholder="Email" type="email" name="email" defaultValue={email} />
                 {errors?.email ? (
                   <em className="text-[#ff0202] text-right">{errors.email}</em>
                 ) : null}
