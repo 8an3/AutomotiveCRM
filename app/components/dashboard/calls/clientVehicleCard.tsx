@@ -117,13 +117,100 @@ export default function ClientVehicleCard({ data, }) {
 
   const formRef = useRef(null);
 
+  // const handleSelectChange = (event) => {    const selectedBrand = event.target.value;    if (selectedBrand) {      navigate(`/quote/${selectedBrand}`);    }  };
+  // console.log(clientUnit, 'clientUnit');
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [dependentOptions, setDependentOptions] = useState([]);
+
+  // Function to fetch data for the dependent dropdown based on the selected brand
+  const fetchDependentOptions = async (brand) => {
+    let modelList;
+
+    if (brand === 'Harley-DavidsonMY24') {
+      modelList = await prisma.harley24.findMany()
+    }
+    if (brand === 'Can-Am-SXS-MY24') {
+      modelList = await prisma.my24canam.findMany()
+    }
+    if (brand === 'Ski-Doo-MY24') {
+      modelList = await prisma.my24canam.findMany()
+    }
+    // MY 23
+    if (brand === 'Kawasaki') {
+      modelList = await prisma.kawasaki.findMany()
+    }
+    if (brand === 'Manitou') {
+      modelList = await prisma.manitou.findMany()
+    }
+    if (brand === 'Sea-Doo') {
+      modelList = await prisma.seadoo.findMany()
+    }
+    if (brand === 'Switch') {
+      modelList = await prisma.switch.findMany()
+    }
+    if (brand === 'Can-Am') {
+      modelList = await prisma.canam.findMany()
+    }
+    if (brand === 'Can-Am-SXS') {
+      modelList = await prisma.canamsxs.findMany()
+    }
+    if (brand === 'Switch') {
+      modelList = await prisma.switch.findMany()
+    }
+    if (brand === 'KTM') {
+      modelList = await prisma.harley24.findMany()
+    }
+    if (brand === 'Ski-Doo') {
+      modelList = await prisma.skidoo.findMany()
+    }
+    if (brand === 'Suzuki') {
+      modelList = await prisma.suzuki.findMany()
+    }
+    if (brand === 'Triumph') {
+      modelList = await prisma.triumph.findMany()
+    }
+    if (brand === 'BMW-Motorrad') {
+      modelList = await prisma.bmwmoto.findMany()
+    }
+    if (brand === 'Indian') {
+      modelList = await prisma.harley24.findMany()
+    }
+    if (brand === 'Yamaha') {
+      modelList = await prisma.harley24.findMany()
+    }
+    if (brand === 'Suzuki') {
+      modelList = await prisma.suzuki.findMany()
+    }
+    if (brand === 'Spyder') {
+      modelList = await prisma.spyder.findMany()
+    }
+    if (brand === 'Harley-Davidson') {
+      modelList = await prisma.harley.findMany()
+    }
+
+
+
+    const data = modelList;
+    console.log(data, brand, 'sdata, brand')
+    setDependentOptions(data);
+  };
+
+  // Function to handle change in the brand dropdown
   const handleSelectChange = (event) => {
     const selectedBrand = event.target.value;
-    if (selectedBrand) {
-      navigate(`/quote/${selectedBrand}`);
-    }
+    setSelectedBrand(selectedBrand);
+    // Fetch data for the dependent dropdown based on the selected brand
+    fetchDependentOptions(selectedBrand);
   };
-  // console.log(clientUnit, 'clientUnit');
+
+  // Function to handle submission of the form
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const chosenBrand = event.target.value;
+    navigate(`/overview/${chosenBrand}`);
+
+  };
+
   return (
     <Sheet>
       {data.model ? (
@@ -132,22 +219,38 @@ export default function ClientVehicleCard({ data, }) {
         </SheetTrigger>
       ) : (
         <div>
-          <Form method="post" ref={formRef}>
-            <select
-              name='selectBrand'
-              onChange={handleSelectChange}
-              className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] mx-auto"
-            >
-              <option value="">Select Brand</option>
-              {options.map((option, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+          <Form method="post" onSubmit={handleSubmit} ref={formRef}>
+            {!selectedBrand && (
+              <select
+                name='selectBrand'
+                onChange={handleSelectChange}
+                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
+              >
+                <option value="">Select Brand</option>
+                {options.map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            )}
+            {selectedBrand && (
+              <select
+                name='model'
+                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
+              >
+                <option value='' >Select Model</option>
+                {dependentOptions.map((model, index) => (
+                  <option key={index} value={model}>
+                    {model}
+                  </option>
+                ))}
+              </select>
+            )}
           </Form>
         </div>
-      )}
+      )
+      }
       <SheetHeader>
         <SheetTitle>
           <SheetContent side='left' className='bg-[#1c2024] w-full md:w-[50%]  overflow-y-auto    shadow-[0_2px_10px] text-white' >
@@ -692,7 +795,7 @@ export default function ClientVehicleCard({ data, }) {
           </SheetContent>
         </SheetTitle>
       </SheetHeader>
-    </Sheet>
+    </Sheet >
   );
 }
 

@@ -12,8 +12,8 @@ import { findQuoteById } from '~/utils/finance/get.server';
 import { model } from '~/models';
 import { getSession } from '~/sessions/auth-session.server';
 import Sidebar from "~/components/shared/sidebar";
+import { requireAuthCookie } from '~/utils/misc.user.server';
 import { useRootLoaderData } from '~/hooks/use-root-loader-data';
-import { getSession as session66, commitSession, destroySession, requireAuthCookie } from '~/utils/misc.user.server';
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -97,19 +97,19 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const financeId = urlSegments[urlSegments.length - 1];
   if (financeId.length > 32) {
     const finance = await findQuoteById(financeId);
-    return json({ ok: true, finance, sliderWidth, financeId, userId, modelList, user, request })
+    return json({ ok: true, finance, sliderWidth, financeId, userId, modelList, user })
   }
 
   else {
-    return json({ ok: true, sliderWidth, userId, modelList, user, request })
+    return json({ ok: true, sliderWidth, userId, modelList, user })
   }
 }
 
 export let action = quoteAction
 
-export default async function Quote() {
+export default function Quote() {
   let { brandId } = useParams()
-  const { userId, modelList, user, request } = useLoaderData()
+  const { userId, modelList, user } = useLoaderData()
 
   const userEmail = user?.email
 
@@ -118,7 +118,7 @@ export default async function Quote() {
   const isSubmitting = navigation.state === "submitting";
   //console.log(userEmail, user, 'userquote')
   function BusyIndicator() {
-    const promise = () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Sonner' }), 2000));
+    // const promise = () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Sonner' }), 2000));
 
     React.useEffect(() => {
       if (isSubmitting) {
@@ -131,11 +131,6 @@ export default async function Quote() {
     window.localStorage.setItem("user", user);
   }, []);
 
-  const session = await getSession(request.headers.get("Cookie"));
-  const firstName = session.get("firstName") ?? '';
-  const lastName = session.get("lastName") ?? '';
-  const phone = session.get("phone") ?? '';
-  const email = session.get("email") ?? '';
   return (
     <>
       <div className="mx-auto my-auto mt-[55px] ">
@@ -147,29 +142,28 @@ export default async function Quote() {
             <div className="grid grid-cols-2 gap-2 mt-1 " >
               <div className="grid gap-1 mr-2 font-thin">
                 <Label className="flex font-thin mt-1 " htmlFor="area">First Name (required)</Label>
-                <Input className="  mt-1 " placeholder="Name" type="text" name="firstName" defaultValue={firstName}
-                />
+                <Input className="  mt-1 " placeholder="Name" type="text" name="firstName" />
                 {errors?.firstName ? (
                   <em className="text-[#ff0202]">{errors.firstName}</em>
                 ) : null}
               </div>
               <div className="grid gap-1 font-thin">
                 <Label className="flex font-thin justify-end   mt-1 " htmlFor="area">Last Name (required)</Label>
-                <Input className="  mt-1 text-right " placeholder="Name" type="text" name="lastName" defaultValue={lastName} />
+                <Input className="  mt-1 text-right " placeholder="Name" type="text" name="lastName" />
                 {errors?.lastName ? (
                   <em className="text-[#ff0202] text-right">{errors.lastName}</em>
                 ) : null}
               </div>
               <div className="grid gap-1 mr-2 font-thin">
                 <Label className="flex font-thin items-end mt-1 " htmlFor="area">Phone</Label>
-                <Input className=" mt-1 " placeholder="Phone" name="phone" type="number" defaultValue={phone} />
+                <Input className=" mt-1 " placeholder="Phone" name="phone" type="number" />
                 {errors?.phone ? (
                   <em className="text-[#ff0202] text-right">{errors.phone}</em>
                 ) : null}
               </div>
               <div className="grid gap-1 font-thin">
                 <Label className="flex font-thin mt-1 justify-end " htmlFor="area">Email (required)</Label>
-                <Input className="grid text-right" placeholder="Email" type="email" name="email" defaultValue={email} />
+                <Input className="grid text-right" placeholder="Email" type="email" name="email" />
                 {errors?.email ? (
                   <em className="text-[#ff0202] text-right">{errors.email}</em>
                 ) : null}

@@ -12,6 +12,7 @@ import { Textarea } from "~/other/textarea";
 import { Input } from "~/components/ui/input";
 import EventEmitter from "events";
 import useSWR from 'swr';
+import { GetUser } from "~/utils/loader.server";
 
 const event = new EventEmitter();
 
