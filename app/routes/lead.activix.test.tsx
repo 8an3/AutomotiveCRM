@@ -44,8 +44,8 @@ export async function loader({ request, params }) {
     console.log("Harley Models:", harleyModels);
     console.log("Can-Am Models:", canamModels);
 
-    const harleyModelNames = harleyModels.map(model => model?.name).filter(Boolean);
-    const canamModelNames = canamModels.map(model => model?.name).filter(Boolean);
+    const harleyModelNames = harleyModels.map(model => model?.model).filter(Boolean);
+    const canamModelNames = canamModels.map(model => model?.model).filter(Boolean);
 
 
     const modelList = {
@@ -55,7 +55,7 @@ export async function loader({ request, params }) {
 
     console.log("Model List:", modelList);
 
-    return modelList;
+    return json({ modelList });
   } catch (error) {
     console.error("Error in loader:", error);
     return error;
