@@ -22,6 +22,7 @@ import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import NotificationSystem from "./notifications";
 import Sidebar from '~/components/shared/sidebar';
+import { GetUser } from "~/utils/loader.server";
 
 export const links: LinksFunction = () => [{ rel: "icon", type: "image/svg", href: '/calculator.svg' },]
 

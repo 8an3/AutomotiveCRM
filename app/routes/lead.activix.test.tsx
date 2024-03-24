@@ -1,7 +1,7 @@
 import { type LoaderFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import axios from "axios";
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
@@ -44,8 +44,9 @@ export async function loader({ request, params }) {
     console.log("Harley Models:", harleyModels);
     console.log("Can-Am Models:", canamModels);
 
-    const harleyModelNames = harleyModels.map(model => model.name);
-    const canamModelNames = canamModels.map(model => model.name);
+    const harleyModelNames = harleyModels.map(model => model?.name).filter(Boolean);
+    const canamModelNames = canamModels.map(model => model?.name).filter(Boolean);
+
 
     const modelList = {
       'Harley-Davidson': harleyModelNames,
@@ -63,10 +64,20 @@ export async function loader({ request, params }) {
 
 export default function CheckThis() {
   const { modelList } = useLoaderData();
-  console.log(modelList, 'modellsit')
+  console.log(modelList, 'modelList')
   const [selectedType, setSelectedType] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
   const [models, setModels] = useState([]);
+
+  useEffect(() => {
+    if (modelList) {
+      // Extract models from modelList based on selectedType
+      const selectedModels = modelList[selectedType] || [];
+      setModels(selectedModels);
+    }
+  }, [modelList, selectedType]);
+
+  console.log(models, 'models');
 
   // Function to handle change in the brand dropdown
   const handleTypeChange = (event) => {
