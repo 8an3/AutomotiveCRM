@@ -5,6 +5,7 @@ import {
   useRouteLoaderData,
   useFetcher,
   useNavigate,
+  useActionData,
 } from "@remix-run/react";
 import {
   Input,
@@ -29,11 +30,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/other/tabs";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import UnitPicker from '../unitPicker'
-
+import { dashboardAction, dashboardLoader } from "../../activix/dashboardCallsActivix";
 import { Toaster, toast } from 'sonner'
 
 import React, { useEffect, useRef, useState } from "react";
 import { prisma } from "~/libs";
+import { json } from "@remix-run/node";
 
 
 export default function ClientVehicleCard({ data, }) {
@@ -117,85 +119,87 @@ export default function ClientVehicleCard({ data, }) {
 
   const formRef = useRef(null);
 
-  // const handleSelectChange = (event) => {    const selectedBrand = event.target.value;    if (selectedBrand) {      navigate(`/quote/${selectedBrand}`);    }  };
-  // console.log(clientUnit, 'clientUnit');
   const [selectedBrand, setSelectedBrand] = useState('');
   const [dependentOptions, setDependentOptions] = useState([]);
 
-  // Function to fetch data for the dependent dropdown based on the selected brand
-  const fetchDependentOptions = async (brand) => {
-    let modelList;
-
-    if (brand === 'Harley-DavidsonMY24') {
-      modelList = await prisma.harley24.findMany()
-    }
-    if (brand === 'Can-Am-SXS-MY24') {
-      modelList = await prisma.my24canam.findMany()
-    }
-    if (brand === 'Ski-Doo-MY24') {
-      modelList = await prisma.my24canam.findMany()
-    }
-    // MY 23
-    if (brand === 'Kawasaki') {
-      modelList = await prisma.kawasaki.findMany()
-    }
-    if (brand === 'Manitou') {
-      modelList = await prisma.manitou.findMany()
-    }
-    if (brand === 'Sea-Doo') {
-      modelList = await prisma.seadoo.findMany()
-    }
-    if (brand === 'Switch') {
-      modelList = await prisma.switch.findMany()
-    }
-    if (brand === 'Can-Am') {
-      modelList = await prisma.canam.findMany()
-    }
-    if (brand === 'Can-Am-SXS') {
-      modelList = await prisma.canamsxs.findMany()
-    }
-    if (brand === 'Switch') {
-      modelList = await prisma.switch.findMany()
-    }
-    if (brand === 'KTM') {
-      modelList = await prisma.harley24.findMany()
-    }
-    if (brand === 'Ski-Doo') {
-      modelList = await prisma.skidoo.findMany()
-    }
-    if (brand === 'Suzuki') {
-      modelList = await prisma.suzuki.findMany()
-    }
-    if (brand === 'Triumph') {
-      modelList = await prisma.triumph.findMany()
-    }
-    if (brand === 'BMW-Motorrad') {
-      modelList = await prisma.bmwmoto.findMany()
-    }
-    if (brand === 'Indian') {
-      modelList = await prisma.harley24.findMany()
-    }
-    if (brand === 'Yamaha') {
-      modelList = await prisma.harley24.findMany()
-    }
-    if (brand === 'Suzuki') {
-      modelList = await prisma.suzuki.findMany()
-    }
-    if (brand === 'Spyder') {
-      modelList = await prisma.spyder.findMany()
-    }
-    if (brand === 'Harley-Davidson') {
-      modelList = await prisma.harley.findMany()
-    }
 
 
+  async function fetchDependentOptions(brand) {
 
-    const data = modelList;
-    console.log(data, brand, 'sdata, brand')
-    setDependentOptions(data);
+
+    try {
+      console.log(brand, 'fetchDependentOptions');
+      let modelList;
+      // MY 24
+      if (brand === 'Harley-DavidsonMY24') {
+        modelList = await prisma.harley24.findMany()
+      }
+      if (brand === 'Can-Am-SXS-MY24') {
+        modelList = await prisma.my24canam.findMany()
+      }
+      if (brand === 'Ski-Doo-MY24') {
+        modelList = await prisma.my24canam.findMany()
+      }
+      // MY 23
+      if (brand === 'Kawasaki') {
+        modelList = await prisma.kawasaki.findMany()
+      }
+      if (brand === 'Manitou') {
+        modelList = await prisma.manitou.findMany()
+      }
+      if (brand === 'Sea-Doo') {
+        modelList = await prisma.seadoo.findMany()
+      }
+      if (brand === 'Switch') {
+        modelList = await prisma.switch.findMany()
+      }
+      if (brand === 'Can-Am') {
+        modelList = await prisma.canam.findMany()
+      }
+      if (brand === 'Can-Am-SXS') {
+        modelList = await prisma.canamsxs.findMany()
+      }
+      if (brand === 'Switch') {
+        modelList = await prisma.switch.findMany()
+      }
+      if (brand === 'KTM') {
+        modelList = await prisma.harley24.findMany()
+      }
+      if (brand === 'Ski-Doo') {
+        modelList = await prisma.skidoo.findMany()
+      }
+      if (brand === 'Suzuki') {
+        modelList = await prisma.suzuki.findMany()
+      }
+      if (brand === 'Triumph') {
+        modelList = await prisma.triumph.findMany()
+      }
+      if (brand === 'BMW-Motorrad') {
+        modelList = await prisma.bmwmoto.findMany()
+      }
+      if (brand === 'Indian') {
+        modelList = await prisma.harley24.findMany()
+      }
+      if (brand === 'Yamaha') {
+        modelList = await prisma.harley24.findMany()
+      }
+      if (brand === 'Suzuki') {
+        modelList = await prisma.suzuki.findMany()
+      }
+      if (brand === 'Spyder') {
+        modelList = await prisma.spyder.findMany()
+      }
+      if (brand === 'Harley-Davidson') {
+        modelList = await prisma.harley.findMany()
+      }
+      setDependentOptions(modelList);
+      console.error(modelList, '1');
+
+    } catch (error) {
+      console.error('Error fetching dependent options:', error);
+      // Handle error (e.g., display error message)
+    }
   };
-
-  // Function to handle change in the brand dropdown
   const handleSelectChange = (event) => {
     const selectedBrand = event.target.value;
     setSelectedBrand(selectedBrand);
@@ -203,13 +207,12 @@ export default function ClientVehicleCard({ data, }) {
     fetchDependentOptions(selectedBrand);
   };
 
-  // Function to handle submission of the form
   const handleSubmit = (event) => {
     event.preventDefault();
-    const chosenBrand = event.target.value;
-    navigate(`/overview/${chosenBrand}`);
-
+    navigate(`/overview/${selectedBrand}`);
   };
+  console.error(dependentOptions, '2');
+  console.error(selectedBrand, '3');
 
   return (
     <Sheet>
@@ -219,8 +222,8 @@ export default function ClientVehicleCard({ data, }) {
         </SheetTrigger>
       ) : (
         <div>
-          <Form method="post" onSubmit={handleSubmit} ref={formRef}>
-            {!selectedBrand && (
+          {!selectedBrand && (
+            <Form method="post" ref={formRef}>
               <select
                 name='selectBrand'
                 onChange={handleSelectChange}
@@ -233,8 +236,12 @@ export default function ClientVehicleCard({ data, }) {
                   </option>
                 ))}
               </select>
-            )}
-            {selectedBrand && (
+            </Form>
+          )}
+          {selectedBrand && (
+            <Form method="post" onSubmit={handleSubmit} ref={formRef}>
+              <input type='hidden' name='brand' defaultValue={selectedBrand} />
+
               <select
                 name='model'
                 className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
@@ -246,8 +253,8 @@ export default function ClientVehicleCard({ data, }) {
                   </option>
                 ))}
               </select>
-            )}
-          </Form>
+            </Form>
+          )}
         </div>
       )
       }

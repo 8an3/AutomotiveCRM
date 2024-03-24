@@ -29,18 +29,92 @@ async function CallActi() {
 }
 
 export async function loader({ request, params }) {
-  const session2 = await getSession(request.headers.get("Cookie"));
-  const email = session2.get("email");
-  const user = await GetUser(email)
-  if (!user) { return redirect('/login'); }
-  // await SyncImport(user);
-  const callData = await GetSingleLead()
-  console.log(callData, 'calldata')
+  try {
+    const session2 = await getSession(request.headers.get("Cookie"));
+    const email = session2.get("email");
+    const user = await GetUser(email)
+    if (!user) {
+      console.error("User not found");
+      return redirect('/login');
+    }
 
+    const harleyModels = await prisma.harley.findMany();
+    const canamModels = await prisma.canam.findMany();
 
+    console.log("Harley Models:", harleyModels);
+    console.log("Can-Am Models:", canamModels);
 
-  return null// json({ getEvent })
+    const harleyModelNames = harleyModels.map(model => model.name);
+    const canamModelNames = canamModels.map(model => model.name);
+
+    const modelList = {
+      'Harley-Davidson': harleyModelNames,
+      'Can-Am': canamModelNames,
+    };
+
+    console.log("Model List:", modelList);
+
+    return modelList;
+  } catch (error) {
+    console.error("Error in loader:", error);
+    return error;
+  }
 }
+
+export default function CheckThis() {
+  const { modelList } = useLoaderData();
+  console.log(modelList, 'modellsit')
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedOption, setSelectedOption] = useState('');
+  const [models, setModels] = useState([]);
+
+  // Function to handle change in the brand dropdown
+  const handleTypeChange = (event) => {
+    const selectedType = event.target.value;
+    setSelectedType(selectedType);
+    // Populate the second dropdown based on the selected brand
+    if (selectedType && modelList && modelList[selectedType]) {
+      setModels(modelList[selectedType]);
+    } else {
+      setModels([]);
+    }
+  };
+  return (
+    <div>
+      <div className='flex justify-between mt-3 xs:grid xs:grid-cols-1'>
+        <select value={selectedType} onChange={handleTypeChange}
+          className="rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+        >
+          <option value="">Select Brand</option>
+
+          {/* Map over the brand options */}
+          {modelList && Object.keys(modelList).map((brand) => (
+            <option key={brand} value={brand}>
+              {brand}
+            </option>
+          ))}
+        </select>
+
+        {selectedType && (
+          <select value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}
+            className="mx-auto  rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+          >
+            <option value="">Select Model</option>
+
+            {/* Map over the models of the selected brand */}
+            {models.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
+        )}
+
+      </div>
+    </div>
+  )
+}
+
 
 async function CreateCompleteEvent() {
   const leadId = 43280101
@@ -193,7 +267,7 @@ async function GetSingleLead() {
 }
 
 
-export default function CustomerDetails() {
+export function CustomerDetails() {
   const { callData } = useLoaderData()
   const [customerData, setCustomerData] = useState(callData);
 
