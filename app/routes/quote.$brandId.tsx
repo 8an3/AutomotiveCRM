@@ -105,11 +105,13 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       lastName: sessionOrder.get("lastName") ?? '',
       firstName: sessionOrder.get("firstName") ?? '',
       financeId: sessionOrder.get("financeId") ?? '',
+      activixId: sessionOrder.get("activixId") ?? '',
+      address: sessionOrder.get("address") ?? '',
     }
   }
   console.log(custData)
   const urlSegments = new URL(request.url).pathname.split('/');
-  const financeId = urlSegments[urlSegments.length - 1];
+  let financeId = urlSegments[urlSegments.length - 1];
   if (financeId.length > 32) {
     const finance = await findQuoteById(financeId);
     return json({ ok: true, finance, sliderWidth, financeId, userId, modelList, user })
@@ -145,8 +147,137 @@ export default function Quote() {
 
   // Extract data from custData
   const { firstName, lastName, phone, email } = custData || {};
+  if (custData.financeId.length > 20) {
+    return (
+      <>
+        <div className="mx-auto my-auto mt-[55px] ">
+          <ImageSelect />
+          <Form method='post' >
+            <fieldset disabled={isSubmitting}>
+              <div className="mt-3">
+                <h3 className="text-2xl font-thin">CLIENT INFORMATION</h3></div><Separator />
+              <div className="grid grid-cols-2 gap-2 mt-1 " >
+                <div className="grid gap-1 mr-2 font-thin">
+                  <Label className="flex font-thin mt-1 " htmlFor="area">First Name (required)</Label>
+                  <input type="hidden" name="firstName" defaultValue={firstName} />
+                  <a>{firstName} </a>
+                  {errors?.firstName ? (
+                    <em className="text-[#ff0202]">{errors.firstName}</em>
+                  ) : null}
+                </div>
+                <div className="grid gap-1 font-thin">
+                  <Label className="flex font-thin justify-end   mt-1 " htmlFor="area">Last Name (required)</Label>
+                  <input type="hidden" name="lastName" defaultValue={lastName} />
+                  <a className='text-right'>{lastName} </a>
 
+                  {errors?.lastName ? (
+                    <em className="text-[#ff0202] text-right">{errors.lastName}</em>
+                  ) : null}
+                </div>
+                <div className="grid gap-1 mr-2 font-thin">
+                  <Label className="flex font-thin items-end mt-1 " htmlFor="area">Phone</Label>
+                  <input type="hidden" name="phone" defaultValue={custData.phone} />
+                  <a>{custData.phone} </a>
 
+                  {errors?.phone ? (
+                    <em className="text-[#ff0202] text-right">{errors.phone}</em>
+                  ) : null}
+                </div>
+                <div className="grid gap-1 font-thin">
+                  <Label className="flex font-thin mt-1 justify-end " htmlFor="area">Email (required)</Label>
+                  <input type="hidden" name="email" defaultValue={email} />
+                  <a className='text-right'>{email} </a>
+
+                  {errors?.email ? (
+                    <em className="text-[#ff0202] text-right">{errors.email}</em>
+                  ) : null}
+                </div>
+                <div className="grid gap-1 mr-2 font-thin">
+                  <Label className="flex font-thin  items-end mt-1 " htmlFor="area">Address</Label>
+                  <input type='hidden' name="address" defaultValue={custData.address} />
+                  <a >{custData.address} </a>
+
+                </div>
+              </div>
+
+              <div className="mt-3">
+                <h3 className="text-2xl font-thin">MODEL INFORMATION</h3>
+              </div>
+              <Separator />
+              <div className="grid gap-1 font-thin">
+                <Label className="mt-3 flex font-thin " htmlFor="area">
+                  Model (required)
+                </Label>
+                <select name='model'
+                  className={`border-black text-black w-full placeholder:text-blue-300  mx-auto  h-9 cursor-pointer rounded-md border bg-white px-3 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none  focus:border-[#60b9fd]`}
+                >
+                  <option value='' >Search By Model</option>
+                  {modelList.map((model, index) => (
+                    <option key={index} value={model.model}>
+                      {model.model}
+                    </option>
+                  ))}
+                </select>
+                {errors?.model ? (
+                  <em className="text-[#ff0202]">{errors.model}</em>
+                ) : null}
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 mt-1 " >
+                <div className="grid gap-1 mr-2 font-thin">
+                  <Label className="flex font-thin mt-1 " htmlFor="area">Year</Label>
+                  <Input className="grid" placeholder="Year" name="year" type="number" defaultValue='' />
+                </div>
+                <div className="grid gap-1  font-thin">
+                  <Label className="flex font-thin justify-end items-end mt-1 " htmlFor="area">Stock Number</Label>
+                  <Input className="text-right " placeholder="Stock Number" name="stockNum" defaultValue='' />
+                </div>
+
+              </div>
+              <div className="grid gap-2 mt-1">
+                <Label className="font-thin " htmlFor="area">Options</Label>
+                <Input placeholder="Options" name="options" className="mt-1 w-full" />
+              </div>
+
+              <Input type="hidden" name="iRate" defaultValue={10.99} />
+              <Input type="hidden" name="tradeValue" defaultValue={0} />
+              <Input type="hidden" name="lien" defaultValue={0} />
+              <Input type="hidden" name="discount" defaultValue={0} />
+              <Input type="hidden" name="followUpDay" defaultValue={3} />
+              <Input type="hidden" name="deposit" defaultValue={0} />
+              <Input type="hidden" name="months" defaultValue={60} />
+              <Input type="hidden" name="accessories" defaultValue={0} />
+
+              <Input type="hidden" name="userId" defaultValue={userId} />
+              <Input type="hidden" name="brand" defaultValue={brandId} />
+              <Input type="hidden" name="userEmail" defaultValue={user.email} />
+              <Input type="hidden" name="financeId" defaultValue={custData.financeId} />
+              <Input type="hidden" name="activixId" defaultValue={custData.activixId} />
+
+              <div className='flex justify-end' >
+                <ButtonLoading
+                  size="lg"
+                  type="submit"
+                  className="w-auto cursor-pointer ml-auto mt-5"
+                  name="intent"
+                  value="submit"
+                  isSubmitting={isSubmitting}
+                  loadingText="Creating finance deal..."
+                >
+                  Next
+                </ButtonLoading>
+              </div>
+              {isSubmitting ? <BusyIndicator /> : null}
+
+            </fieldset>
+
+          </Form>
+        </div>
+      </>
+    )
+
+  }
+  console.log(custData, phone, 'in function')
   return (
     <>
       <div className="mx-auto my-auto mt-[55px] ">
@@ -172,7 +303,7 @@ export default function Quote() {
               </div>
               <div className="grid gap-1 mr-2 font-thin">
                 <Label className="flex font-thin items-end mt-1 " htmlFor="area">Phone</Label>
-                <Input className=" mt-1 " placeholder="Phone" name="phone" type="number" defaultValue={phone} />
+                <Input className=" mt-1 " placeholder="Phone" name="phone" defaultValue={custData.phone} />
                 {errors?.phone ? (
                   <em className="text-[#ff0202] text-right">{errors.phone}</em>
                 ) : null}
@@ -241,7 +372,8 @@ export default function Quote() {
             <Input type="hidden" name="userId" defaultValue={userId} />
             <Input type="hidden" name="brand" defaultValue={brandId} />
             <Input type="hidden" name="userEmail" defaultValue={user.email} />
-            <Input type="hidden" name="financeIdFromDash" defaultValue={custData.financeId} />
+            <Input type="hidden" name="financeId" defaultValue={custData.financeId} />
+            <Input type="hidden" name="activixId" defaultValue={custData.activixId} />
 
             <div className='flex justify-end' >
               <ButtonLoading

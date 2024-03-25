@@ -314,21 +314,22 @@ export async function GetLeads() {
   return response
 
 }
-export async function CreateVehicle(body) {
+export async function CreateVehicle(formData) {
   const response = await axios.post(`https://api.crm.activix.ca/v2/lead-vehicles`, {
-    body,
-    // lead_id: 42132008,
-    //"make": "BMW Motorrad",
-    //"model": "S1000RR",
-    // "year": 2018,
-    // "type": "wanted"
-  }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
+
+    lead_id: Number(formData.activixId),
+    make: formData.brand,
+    model: formData.model,
+    year: formData.year,
+    type: "wanted"
+  },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      }
     }
-  }
   )
     .then(response => {
       console.log(response.data);
@@ -744,13 +745,14 @@ export async function QuoteCreateLead(formData) {
 
 export async function UpdateLead(formData,) {
   const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-  let phoneNumber = formData.phone;
-  if (!phoneNumber.startsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
+
 
   const response = await axios.put(`https://api.crm.activix.ca/v2/leads/${activixId.activixId}`,
     {
-      "first_name": formData.firstName,
-      "last_name": formData.lastName,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      address_line1: formData.address,
+      result: "Reached",
     },
     {
       headers: {

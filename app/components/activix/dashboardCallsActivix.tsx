@@ -586,7 +586,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
   // console.log(formData)
-
+  const lastContact = new Date()
   const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
@@ -595,11 +595,15 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   const userId = user?.id;
   const intent = formPayload.intent;
   if (intent === 'selectBrand') {
+    console.log(formData.phone)
     const sessionOrder = await getOrder(request.headers.get("Cookie"));
     sessionOrder.set("firstName", formData.firstName);
     sessionOrder.set("lastName", formData.lastName);
     sessionOrder.set("phone", formData.phone);
     sessionOrder.set("email", formData.email);
+    sessionOrder.set("address", formData.address);
+    sessionOrder.set("financeId", formData.financeId);
+    sessionOrder.set("activixId", formData.activixId);
     return redirect(`/quote/${formData.selectBrand}`, {
       headers: {
         "Set-Cookie": await commitOrder(sessionOrder),

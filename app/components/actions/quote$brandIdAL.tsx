@@ -13,7 +13,7 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.server'
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
-import { UpdateLead } from '~/routes/api.activix';
+import { UpdateLead, CreateVehicle } from '~/routes/api.activix';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 
 export function invariant(
@@ -27,7 +27,6 @@ export function invariant(
 
 export async function quoteAction({ params, request }: ActionArgs) {
   const urlSegments = new URL(request.url).pathname.split('/');
-  const financeId = urlSegments[urlSegments.length - 1]
   //const { financeId } = params;
   let formPayload = Object.fromEntries(await request.formData());
   const name = formPayload.firstName + ' ' + formPayload.lastName
@@ -39,8 +38,12 @@ export async function quoteAction({ params, request }: ActionArgs) {
   const lastName = formPayload.lastName
   const email = formPayload.email;
   const model = formPayload.model;
-
-
+  let financeId
+  if (formData.financeId.length > 20) {
+    financeId = formData.financeId
+  } else {
+    financeId = urlSegments[urlSegments.length - 1]
+  }
   const errors = {
     firstName: firstName ? null : "First Name is required",
     lastName: lastName ? null : "lastName is required",
@@ -63,7 +66,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
   const userEmail = session2.get("email")
   const user = await prisma.user.findUnique({ where: { email: userEmail } });
 
-
+  console.log(formData.financeIdFromDash, 'formData.financeIdFromDash')
 
   if (financeId.length > 20) {
     console.log('more than 20')
@@ -102,7 +105,9 @@ export async function quoteAction({ params, request }: ActionArgs) {
       console.error(`quote not submitted ${error}`)
       return (`quote not submitted ${error}`)
     }
-  } else if (formData.financeIdFromDash > 20) {
+  } else if (formData.financeId.length > 20) {
+    const formData = financeFormSchema.parse(formPayload)
+
     const financeId = formData.financeId        //console.log(DataForm, 'dataform')
 
     const userId = user?.id;
@@ -117,13 +122,11 @@ export async function quoteAction({ params, request }: ActionArgs) {
     const today = new Date()
     //formData = { ...formData, lastContact, pickUpDate: 'TBD', }
     const updateActivix = await UpdateLead(formData)
+    const createVehicle = await CreateVehicle(formData)
     console.log(updateActivix, 'updateActivix')
     console.log(formData, 'formdata from overview')
     const finance = await prisma.finance.update({
-      where: {
-        id:
-          financeId
-      },
+      where: { id: formData.financeId },
       data: {
         //  clientfileId: formData.clientfileId,
         //dashboardId: formData.dashboardId,
@@ -212,10 +215,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
       },
     });
     const dashboard = await prisma.dashboard.update({
-      where: {
-        financeId:
-          financeId
-      },
+      where: { financeId: formData.financeId },
       data: {
         financeId: financeId,
         lastContact: today.toISOString(),
