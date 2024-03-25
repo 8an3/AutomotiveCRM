@@ -148,6 +148,7 @@ export default function ClientVehicleCard({ data, }) {
             <input type='hidden' name='lastName' value={data.lastName} />
             <input type='hidden' name='phone' value={data.phone} />
             <input type='hidden' name='email' value={data.email} />
+            <input type='hidden' name='financeId' value={data.id} />
             <input type='hidden' name='intent' value='selectBrand' />
           </Form>
         </div>

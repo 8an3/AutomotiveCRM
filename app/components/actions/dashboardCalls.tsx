@@ -592,6 +592,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     sessionOrder.set("lastName", formData.lastName);
     sessionOrder.set("phone", formData.phone);
     sessionOrder.set("email", formData.email);
+    sessionOrder.set("financeId", formData.financeId);
     return redirect(`/quote/${formData.selectBrand}`, {
       headers: {
         "Set-Cookie": await commitOrder(sessionOrder),

@@ -13,6 +13,8 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.server'
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
+import { UpdateLead } from '~/routes/api.activix';
+import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 
 export function invariant(
   condition: any,
@@ -100,6 +102,175 @@ export async function quoteAction({ params, request }: ActionArgs) {
       console.error(`quote not submitted ${error}`)
       return (`quote not submitted ${error}`)
     }
+  } else if (formData.financeIdFromDash > 20) {
+    const financeId = formData.financeId        //console.log(DataForm, 'dataform')
+
+    const userId = user?.id;
+    const clientfileId = formData.clientfileId
+    const dashbaordId = formData.dashboardId
+    const session66 = await sixSession(request.headers.get("Cookie"));
+    session66.set("financeId", financeId);
+    session66.set("clientfileId", clientfileId);
+    const serializedSession = await sixCommit(session66);
+
+    const lastContact = new Date().toISOString();
+    const today = new Date()
+    //formData = { ...formData, lastContact, pickUpDate: 'TBD', }
+    const updateActivix = await UpdateLead(formData)
+    console.log(updateActivix, 'updateActivix')
+    console.log(formData, 'formdata from overview')
+    const finance = await prisma.finance.update({
+      where: {
+        id:
+          financeId
+      },
+      data: {
+        //  clientfileId: formData.clientfileId,
+        //dashboardId: formData.dashboardId,
+        //  financeId: formData.financeId,
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        name: formData.name,
+        address: formData.address,
+        city: formData.city,
+        postal: formData.postal,
+        province: formData.province,
+        dl: formData.dl,
+        typeOfContact: formData.typeOfContact,
+        timeToContact: formData.timeToContact,
+        iRate: formData.iRate,
+        months: formData.months,
+        discount: formData.discount,
+        total: formData.total,
+        onTax: formData.onTax,
+        on60: formData.on60,
+        biweekly: formData.biweekly,
+        weekly: formData.weekly,
+        weeklyOth: formData.weeklyOth,
+        biweekOth: formData.biweekOth,
+        oth60: formData.oth60,
+        weeklyqc: formData.weeklyqc,
+        biweeklyqc: formData.biweeklyqc,
+        qc60: formData.qc60,
+        deposit: formData.deposit,
+        biweeklNatWOptions: formData.biweeklNatWOptions,
+        weeklylNatWOptions: formData.weeklylNatWOptions,
+        nat60WOptions: formData.nat60WOptions,
+        weeklyOthWOptions: formData.weeklyOthWOptions,
+        biweekOthWOptions: formData.biweekOthWOptions,
+        oth60WOptions: formData.oth60WOptions,
+        biweeklNat: formData.biweeklNat,
+        weeklylNat: formData.weeklylNat,
+        nat60: formData.nat60,
+        qcTax: formData.qcTax,
+        otherTax: formData.otherTax,
+        totalWithOptions: formData.totalWithOptions,
+        otherTaxWithOptions: formData.otherTaxWithOptions,
+        desiredPayments: formData.desiredPayments,
+        freight: formData.freight,
+        admin: formData.admin,
+        commodity: formData.commodity,
+        pdi: formData.pdi,
+        discountPer: formData.discountPer,
+        userLoanProt: formData.userLoanProt,
+        userTireandRim: formData.userTireandRim,
+        userGap: formData.userGap,
+        userExtWarr: formData.userExtWarr,
+        userServicespkg: formData.userServicespkg,
+        deliveryCharge: formData.deliveryCharge,
+        vinE: formData.vinE,
+        lifeDisability: formData.lifeDisability,
+        rustProofing: formData.rustProofing,
+        userOther: formData.userOther,
+        paintPrem: formData.paintPrem,
+        licensing: formData.licensing,
+        stockNum: formData.stockNum,
+        options: formData.options,
+        accessories: formData.accessories,
+        labour: formData.labour,
+        year: formData.year,
+        brand: formData.brand,
+        model: formData.model,
+        model1: formData.model1,
+        color: formData.color,
+        modelCode: formData.modelCode,
+        msrp: formData.msrp,
+        userEmail: formData.userEmail,
+        tradeValue: formData.tradeValue,
+        tradeDesc: formData.tradeDesc,
+        tradeColor: formData.tradeColor,
+        tradeYear: formData.tradeYear,
+        tradeMake: formData.tradeMake,
+        tradeVin: formData.tradeVin,
+        tradeTrim: formData.tradeTrim,
+        tradeMileage: formData.tradeMileage,
+        trim: formData.trim,
+        vin: formData.vin,
+        lien: formData.lien,
+      },
+    });
+    const dashboard = await prisma.dashboard.update({
+      where: {
+        financeId:
+          financeId
+      },
+      data: {
+        financeId: financeId,
+        lastContact: today.toISOString(),
+        referral: 'off',
+        visited: 'off',
+        bookedApt: 'off',
+        aptShowed: 'off',
+        aptNoShowed: 'off',
+        testDrive: 'off',
+        metService: 'off',
+        metManager: 'off',
+        metParts: 'off',
+        sold: 'off',
+        depositMade: 'off',
+        refund: 'off',
+        turnOver: 'off',
+        financeApp: 'off',
+        approved: 'off',
+        signed: 'off',
+        pickUpSet: 'off',
+        demoed: 'off',
+        delivered: 'off',
+        notes: 'off',
+        metSalesperson: 'off',
+        metFinance: 'off',
+        financeApplication: 'off',
+        pickUpTime: 'off',
+        depositTakenDate: 'off',
+        docsSigned: 'off',
+        tradeRepairs: 'off',
+        seenTrade: 'off',
+        lastNote: 'off',
+        dLCopy: 'off',
+        insCopy: 'off',
+        testDrForm: 'off',
+        voidChq: 'off',
+        loanOther: 'off',
+        signBill: 'off',
+        ucda: 'off',
+        tradeInsp: 'off',
+        customerWS: 'off',
+        otherDocs: 'off',
+        urgentFinanceNote: 'off',
+        funded: 'off',
+        status: 'Active',
+        result: formData.result,
+        customerState: formData.customerState,
+        timesContacted: formData.timesContacted,
+        visits: formData.visits,
+        progress: formData.progress,
+      },
+    });
+    return json({ finance, dashboard, updateActivix }, { headers: { "Set-Cookie": serializedSession, } }
+    );
+
   } else {
     console.log('less than 20')
     const brand = formData.brand

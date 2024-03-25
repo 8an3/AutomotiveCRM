@@ -100,10 +100,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (referer === 'http://localhost:3000/leads/activix') {
     const sessionOrder = await getOrder(request.headers.get("Cookie"));
     custData = {
-      phone: sessionOrder.get("phone"),
-      email: sessionOrder.get("email"),
-      lastName: sessionOrder.get("lastName"),
-      firstName: sessionOrder.get("firstName"),
+      phone: sessionOrder.get("phone") ?? '',
+      email: sessionOrder.get("email") ?? '',
+      lastName: sessionOrder.get("lastName") ?? '',
+      firstName: sessionOrder.get("firstName") ?? '',
+      financeId: sessionOrder.get("financeId") ?? '',
     }
   }
   console.log(custData)
@@ -240,6 +241,7 @@ export default function Quote() {
             <Input type="hidden" name="userId" defaultValue={userId} />
             <Input type="hidden" name="brand" defaultValue={brandId} />
             <Input type="hidden" name="userEmail" defaultValue={user.email} />
+            <Input type="hidden" name="financeIdFromDash" defaultValue={custData.financeId} />
 
             <div className='flex justify-end' >
               <ButtonLoading
