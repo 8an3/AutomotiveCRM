@@ -5,6 +5,7 @@ import {
   useRouteLoaderData,
   useFetcher,
   useNavigate,
+  useSubmit,
   useActionData,
 } from "@remix-run/react";
 import {
@@ -118,101 +119,9 @@ export default function ClientVehicleCard({ data, }) {
   ];
 
   const formRef = useRef(null);
-
-  const [selectedBrand, setSelectedBrand] = useState('');
-  const [dependentOptions, setDependentOptions] = useState([]);
+  const submit = useSubmit();
 
 
-
-  async function fetchDependentOptions(brand) {
-
-
-    try {
-      console.log(brand, 'fetchDependentOptions');
-      let modelList;
-      // MY 24
-      if (brand === 'Harley-DavidsonMY24') {
-        modelList = await prisma.harley24.findMany()
-      }
-      if (brand === 'Can-Am-SXS-MY24') {
-        modelList = await prisma.my24canam.findMany()
-      }
-      if (brand === 'Ski-Doo-MY24') {
-        modelList = await prisma.my24canam.findMany()
-      }
-      // MY 23
-      if (brand === 'Kawasaki') {
-        modelList = await prisma.kawasaki.findMany()
-      }
-      if (brand === 'Manitou') {
-        modelList = await prisma.manitou.findMany()
-      }
-      if (brand === 'Sea-Doo') {
-        modelList = await prisma.seadoo.findMany()
-      }
-      if (brand === 'Switch') {
-        modelList = await prisma.switch.findMany()
-      }
-      if (brand === 'Can-Am') {
-        modelList = await prisma.canam.findMany()
-      }
-      if (brand === 'Can-Am-SXS') {
-        modelList = await prisma.canamsxs.findMany()
-      }
-      if (brand === 'Switch') {
-        modelList = await prisma.switch.findMany()
-      }
-      if (brand === 'KTM') {
-        modelList = await prisma.harley24.findMany()
-      }
-      if (brand === 'Ski-Doo') {
-        modelList = await prisma.skidoo.findMany()
-      }
-      if (brand === 'Suzuki') {
-        modelList = await prisma.suzuki.findMany()
-      }
-      if (brand === 'Triumph') {
-        modelList = await prisma.triumph.findMany()
-      }
-      if (brand === 'BMW-Motorrad') {
-        modelList = await prisma.bmwmoto.findMany()
-      }
-      if (brand === 'Indian') {
-        modelList = await prisma.harley24.findMany()
-      }
-      if (brand === 'Yamaha') {
-        modelList = await prisma.harley24.findMany()
-      }
-      if (brand === 'Suzuki') {
-        modelList = await prisma.suzuki.findMany()
-      }
-      if (brand === 'Spyder') {
-        modelList = await prisma.spyder.findMany()
-      }
-      if (brand === 'Harley-Davidson') {
-        modelList = await prisma.harley.findMany()
-      }
-      setDependentOptions(modelList);
-      console.error(modelList, '1');
-
-    } catch (error) {
-      console.error('Error fetching dependent options:', error);
-      // Handle error (e.g., display error message)
-    }
-  };
-  const handleSelectChange = (event) => {
-    const selectedBrand = event.target.value;
-    setSelectedBrand(selectedBrand);
-    // Fetch data for the dependent dropdown based on the selected brand
-    fetchDependentOptions(selectedBrand);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    navigate(`/overview/${selectedBrand}`);
-  };
-  console.error(dependentOptions, '2');
-  console.error(selectedBrand, '3');
 
   return (
     <Sheet>
@@ -222,42 +131,27 @@ export default function ClientVehicleCard({ data, }) {
         </SheetTrigger>
       ) : (
         <div>
-          {!selectedBrand && (
-            <Form method="post" ref={formRef}>
-              <select
-                name='selectBrand'
-                onChange={handleSelectChange}
-                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
-              >
-                <option value="">Select Brand</option>
-                {options.map((option, index) => (
-                  <option key={index} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </Form>
-          )}
-          {selectedBrand && (
-            <Form method="post" onSubmit={handleSubmit} ref={formRef}>
-              <input type='hidden' name='brand' defaultValue={selectedBrand} />
+          <Form method="post" onChange={(event) => { submit(event.currentTarget); }}>
+            <select
+              name='selectBrand'
 
-              <select
-                name='model'
-                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
-              >
-                <option value='' >Select Model</option>
-                {dependentOptions.map((model, index) => (
-                  <option key={index} value={model}>
-                    {model}
-                  </option>
-                ))}
-              </select>
-            </Form>
-          )}
+              className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
+            >
+              <option value="">Select Brand</option>
+              {options.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <input type='hidden' name='firstName' value={data.firstName} />
+            <input type='hidden' name='lastName' value={data.lastName} />
+            <input type='hidden' name='phone' value={data.phone} />
+            <input type='hidden' name='email' value={data.email} />
+            <input type='hidden' name='intent' value='selectBrand' />
+          </Form>
         </div>
-      )
-      }
+      )}
       <SheetHeader>
         <SheetTitle>
           <SheetContent side='left' className='bg-[#1c2024] w-full md:w-[50%]  overflow-y-auto    shadow-[0_2px_10px] text-white' >

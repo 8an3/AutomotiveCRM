@@ -29,6 +29,7 @@ import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/m
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { QuoteServer } from "~/utils/quote/quote.server";
 import { GetUser } from "~/utils/loader.server";
+import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 
 
 const getAccessToken = async (refreshToken) => {
@@ -583,8 +584,20 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     redirect('/login')
   }
   const userId = user?.id;
+  console.log(formData)
   const intent = formPayload.intent;
-
+  if (intent === 'selectBrand') {
+    const sessionOrder = await getOrder(request.headers.get("Cookie"));
+    sessionOrder.set("firstName", formData.firstName);
+    sessionOrder.set("lastName", formData.lastName);
+    sessionOrder.set("phone", formData.phone);
+    sessionOrder.set("email", formData.email);
+    return redirect(`/quote/${formData.selectBrand}`, {
+      headers: {
+        "Set-Cookie": await commitOrder(sessionOrder),
+      },
+    });
+  }
   if (intent === 'addWishList') {
     const addtoWishList = await prisma.wishList.create({
       data: {

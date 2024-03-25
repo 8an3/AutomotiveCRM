@@ -66,6 +66,7 @@ const financeFormSchema = z.object({
   clientId: zfd.text(z.string().optional()),
   dashboardId: zfd.text(z.string().optional()),
   attributes: zfd.text(z.string().optional()),
+  selectBrand: zfd.text(z.string().optional()),
   clientEmail: zfd.text(z.string().optional()),
   dl: zfd.text(z.string().optional()),
   nextAppt: zfd.text(z.string().optional()),

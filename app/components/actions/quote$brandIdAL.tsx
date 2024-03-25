@@ -12,6 +12,7 @@ import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.server'
+import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 
 export function invariant(
   condition: any,
@@ -192,6 +193,7 @@ export async function quoteLoader({ request, params }: LoaderFunction) {
   const sliderWidth = session.get('sliderWidth')
 
   const userId = user?.id
+
 
   const urlSegments = new URL(request.url).pathname.split('/');
   const financeId = urlSegments[urlSegments.length - 1];

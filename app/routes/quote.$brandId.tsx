@@ -6,7 +6,7 @@ import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { ImageSelect } from './overviewUtils/imageselect'
 import { quoteAction, quoteLoader } from '../components/actions/quote$brandIdAL'
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner'
 import { findQuoteById } from '~/utils/finance/get.server';
 import { model } from '~/models';
@@ -14,6 +14,7 @@ import { getSession } from '~/sessions/auth-session.server';
 import Sidebar from "~/components/shared/sidebar";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { useRootLoaderData } from '~/hooks/use-root-loader-data';
+import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -93,6 +94,19 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = user?.id
   user = await prisma.user.findUnique({ where: { email: email } });
 
+  const referer = request.headers.get('Referer');
+  console.log('Referer:', referer);
+  let custData
+  if (referer === 'http://localhost:3000/leads/activix') {
+    const sessionOrder = await getOrder(request.headers.get("Cookie"));
+    custData = {
+      phone: sessionOrder.get("phone"),
+      email: sessionOrder.get("email"),
+      lastName: sessionOrder.get("lastName"),
+      firstName: sessionOrder.get("firstName"),
+    }
+  }
+  console.log(custData)
   const urlSegments = new URL(request.url).pathname.split('/');
   const financeId = urlSegments[urlSegments.length - 1];
   if (financeId.length > 32) {
@@ -101,7 +115,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
 
   else {
-    return json({ ok: true, sliderWidth, userId, modelList, user })
+    return json({ ok: true, sliderWidth, userId, modelList, user, referer, custData })
   }
 }
 
@@ -109,7 +123,7 @@ export let action = quoteAction
 
 export default function Quote() {
   let { brandId } = useParams()
-  const { userId, modelList, user } = useLoaderData()
+  const { userId, modelList, user, referer, custData } = useLoaderData()
 
   const userEmail = user?.email
 
@@ -127,9 +141,10 @@ export default function Quote() {
     }, [isSubmitting]);
   }
 
-  useEffect(() => {
-    window.localStorage.setItem("user", user);
-  }, []);
+
+  // Extract data from custData
+  const { firstName, lastName, phone, email } = custData || {};
+
 
   return (
     <>
@@ -142,28 +157,28 @@ export default function Quote() {
             <div className="grid grid-cols-2 gap-2 mt-1 " >
               <div className="grid gap-1 mr-2 font-thin">
                 <Label className="flex font-thin mt-1 " htmlFor="area">First Name (required)</Label>
-                <Input className="  mt-1 " placeholder="Name" type="text" name="firstName" />
+                <Input className="  mt-1 " placeholder="Name" type="text" name="firstName" defaultValue={firstName} />
                 {errors?.firstName ? (
                   <em className="text-[#ff0202]">{errors.firstName}</em>
                 ) : null}
               </div>
               <div className="grid gap-1 font-thin">
                 <Label className="flex font-thin justify-end   mt-1 " htmlFor="area">Last Name (required)</Label>
-                <Input className="  mt-1 text-right " placeholder="Name" type="text" name="lastName" />
+                <Input className="  mt-1 text-right " placeholder="Name" type="text" name="lastName" defaultValue={lastName} />
                 {errors?.lastName ? (
                   <em className="text-[#ff0202] text-right">{errors.lastName}</em>
                 ) : null}
               </div>
               <div className="grid gap-1 mr-2 font-thin">
                 <Label className="flex font-thin items-end mt-1 " htmlFor="area">Phone</Label>
-                <Input className=" mt-1 " placeholder="Phone" name="phone" type="number" />
+                <Input className=" mt-1 " placeholder="Phone" name="phone" type="number" defaultValue={phone} />
                 {errors?.phone ? (
                   <em className="text-[#ff0202] text-right">{errors.phone}</em>
                 ) : null}
               </div>
               <div className="grid gap-1 font-thin">
                 <Label className="flex font-thin mt-1 justify-end " htmlFor="area">Email (required)</Label>
-                <Input className="grid text-right" placeholder="Email" type="email" name="email" />
+                <Input className="grid text-right" placeholder="Email" type="email" name="email" defaultValue={email} />
                 {errors?.email ? (
                   <em className="text-[#ff0202] text-right">{errors.email}</em>
                 ) : null}
