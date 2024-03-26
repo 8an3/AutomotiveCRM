@@ -636,7 +636,7 @@ export async function CreateLead(formData, user, createQuoteServer) {
       ],
       "phones": [
         {
-          "number": `+1${formData.phone}`,
+          "number": `${formData.phone}`,
           "type": "mobile"
         }
       ],
@@ -715,7 +715,7 @@ export async function QuoteCreateLead(formData) {
       ],
       phones: [
         {
-          number: `+1${formData.phone}`,
+          number: `${formData.phone}`,
           type: "mobile"
         }
       ],
@@ -752,7 +752,7 @@ export async function UpdateLead(formData,) {
       first_name: formData.firstName,
       last_name: formData.lastName,
       address_line1: formData.address,
-      result: "Reached",
+      result: "reached",
     },
     {
       headers: {
@@ -776,8 +776,8 @@ export async function UpdateLead(formData,) {
 
 }
 export async function CreateLeadActivix(formData,) {
-  let phoneNumber = `+1${formData.phone}`// formData.phone;
-  //if (!phoneNumber.startsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
+  let phoneNumber = `${formData.phone}`// formData.phone;
+  //if (!phoneNumber.tartsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
 
   //  const nameParts = user.username.split(' ');
   // const firstName = nameParts[0];

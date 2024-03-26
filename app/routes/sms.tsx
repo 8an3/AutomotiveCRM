@@ -13,6 +13,7 @@ import slider from '~/styles/slider.css'
 import secondary from '~/styles/secondary.css'
 import ChatChannel from '~/styles/ChatChannel.css'
 import messageBubble from '~/styles/messageBubble.css'
+import { GetUser } from "~/utils/loader.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },

@@ -9,12 +9,11 @@ import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { commitSession as commitPref, getSession as getPref } from "~/utils/pref.server";
 import { getSession } from '~/sessions/auth-session.server';
-import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.server'
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 import { UpdateLead, CreateVehicle } from '~/routes/api.activix';
-import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
+import { getSession as sixSession, commitSession as sixCommit, destroySession } from '~/utils/misc.user.server'
 
 export function invariant(
   condition: any,
@@ -38,17 +37,22 @@ export async function quoteAction({ params, request }: ActionArgs) {
   const lastName = formPayload.lastName
   const email = formPayload.email;
   const model = formPayload.model;
+  const phone = formPayload.phone;
   let financeId
-  if (formData.financeId.length > 20) {
+  if (formData.activixId && (formData.financeId.length > 20)) {
     financeId = formData.financeId
   } else {
     financeId = urlSegments[urlSegments.length - 1]
   }
+  const phoneRegex = /^\+1\d{3}\d{7}$/; // Regex pattern to match +1 followed by 3-digit area code and 7 more digits
+
   const errors = {
     firstName: firstName ? null : "First Name is required",
     lastName: lastName ? null : "lastName is required",
     email: email ? null : "email is required",
     model: model ? null : "model is required",
+    phone: phoneRegex.test(phone) ? null : "Phone must be in the format +1XXXYYYYYYY", // Add phone validation using regex
+
   };
   const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
   if (hasErrors) {
@@ -59,6 +63,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
   invariant(typeof lastName === "string", "Last Name must be a string");
   invariant(typeof email === "string", "Email must be a string");
   invariant(typeof model === "string", "Model must be a string");
+  invariant(typeof phone === "string", "Phone must be a string");
 
   // console.log(formData, 'checking formPayload quote oader')
   // console.log(financeId, 'checking financeId quote loader')
@@ -68,7 +73,9 @@ export async function quoteAction({ params, request }: ActionArgs) {
 
   console.log(formData.financeIdFromDash, 'formData.financeIdFromDash')
 
-  if (financeId.length > 20) {
+  const referer = request.headers.get('Referer');
+  console.log('Referer:', referer);
+  /**if (financeId) {
     console.log('more than 20')
     try {
       const brand = formData.brand
@@ -105,10 +112,11 @@ export async function quoteAction({ params, request }: ActionArgs) {
       console.error(`quote not submitted ${error}`)
       return (`quote not submitted ${error}`)
     }
-  } else if (formData.financeId.length > 20) {
+  } else */ if (formData.toStock === 'true') {// if (referer === 'http://localhost:3000/leads/activix' && formData.activixId && (formData.financeId.length > 20)) {
+
+
     const formData = financeFormSchema.parse(formPayload)
 
-    const financeId = formData.financeId        //console.log(DataForm, 'dataform')
 
     const userId = user?.id;
     const clientfileId = formData.clientfileId
