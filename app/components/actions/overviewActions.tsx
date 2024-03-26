@@ -171,7 +171,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     const userSession = await getSession(request.headers.get("Cookie"));
     if (!userSession) { return json({ status: 302, redirect: 'login' }); };
     const email = userSession.get("email");
-    const user = await model.user.query.getForSession({ email });
+    const user = await GetUser(email)
     if (!user) { return json({ status: 302, redirect: 'login' }); };
     const latestDashboard = await prisma.dashboard.findFirst({ orderBy: { createdAt: 'desc', }, });
     const financeId = formData.financeId        //console.log(DataForm, 'dataform')
@@ -201,8 +201,11 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     const lastContact = new Date().toISOString();
     const today = new Date()
     formData = { ...formData, lastContact, pickUpDate: 'TBD', }
-    const updateActivix = await UpdateLead(formData)
-    console.log(updateActivix, 'updateActivix')
+    if (user.activixActivated === 'yes') {
+        const updateActivix = await UpdateLead(formData)
+        console.log(updateActivix, 'updateActivix')
+    }
+
     if (formPayload.intent === 'emailPayments') {
         return redirect('/dashboard/features/emailPayments'),
             { headers: { "Set-Cookie": await commitPref(session) } }
@@ -378,7 +381,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
             pickUpDate: 'TBD',
         },
     });
-    return json({ finance, dashboard, updateActivix }, { headers: { "Set-Cookie": serializedSession, } }
+    return json({ finance, dashboard }, { headers: { "Set-Cookie": serializedSession, } }
     );
 
 }
@@ -386,9 +389,9 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
 
 async function UpdateLead(formData) {
     const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-    let phoneNumber = formData.phone;
-    if (!phoneNumber.startsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
 
+    const startat = new Date();
+    const start_at = startat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
     const response = await axios.put(`https://api.crm.activix.ca/v2/leads/${activixId.activixId}`,
         {
             first_name: formData.firstName ?? null,
@@ -396,25 +399,25 @@ async function UpdateLead(formData) {
             birth_date: formData.dob ?? null,
             funded: formData.dob ?? null,
             deliverable_date: formData.birthDate ?? null,
-            delivered_date: formData.birthDate ?? null,
+            delivered_date: formData.deliveredDate ?? null,
             delivery_date: formData.birthDate ?? null,
-            last_visit_date: formData.birthDate ?? null,
+            last_visit_date: start_at,
             paperwork_date: formData.birthDate ?? null,
-            planned_pick_up_date: formData.birthDate ?? null,
+            //    planned_pick_up_date: formData.pickUpDate ?? null,
             presented_date: formData.birthDate ?? null,
             sale_date: formData.birthDate ?? null,
-            address_line1: formData.birthDate ?? null,
-            credit_approved: formData.birthDate ?? null,
-            city: formData.birthDate ?? null,
-            country: formData.birthDate ?? null,
+            address_line1: formData.address ?? null,
+            credit_approved: false,
+            city: formData.city ?? null,
+            country: formData.country ?? null,
             dealer_tour: formData.birthDate ?? null,
             financial_institution: formData.birthDate ?? null,
-            postal_code: formData.birthDate ?? null,
+            postal_code: formData.postalCode ?? null,
             prepared: formData.birthDate ?? null,
-            province: formData.birthDate ?? null,
-            result: formData.birthDate ?? null,
-            progress_state: formData.birthDate ?? null,
-            status: formData.birthDate ?? null,
+            province: formData.province ?? null,
+            result: formData.result ?? null,
+            progress_state: formData.customerState ?? null,
+            //  status: 'active',
             walk_around: formData.birthDate ?? null,
             response_time: formData.birthDate ?? null,
             first_update_time: formData.birthDate ?? null,

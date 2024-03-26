@@ -51,7 +51,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
     lastName: lastName ? null : "lastName is required",
     email: email ? null : "email is required",
     model: model ? null : "model is required",
-    phone: phoneRegex.test(phone) ? null : "Phone must be in the format +1XXXYYYYYYY", // Add phone validation using regex
+    phone: phoneRegex.test(phone) ? null : "Phone must be in the format +14164164164", // Add phone validation using regex
 
   };
   const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
@@ -112,12 +112,10 @@ export async function quoteAction({ params, request }: ActionArgs) {
       console.error(`quote not submitted ${error}`)
       return (`quote not submitted ${error}`)
     }
-  } else */ if (formData.toStock === 'true') {// if (referer === 'http://localhost:3000/leads/activix' && formData.activixId && (formData.financeId.length > 20)) {
-
-
+  } else */
+  console.log(formData.toStock, 'tostock in aaction')
+  if (formData.activixRoute === 'yes') {// if (referer === 'http://localhost:3000/leads/activix' && formData.activixId && (formData.financeId.length > 20)) {
     const formData = financeFormSchema.parse(formPayload)
-
-
     const userId = user?.id;
     const clientfileId = formData.clientfileId
     const dashbaordId = formData.dashboardId
@@ -133,6 +131,8 @@ export async function quoteAction({ params, request }: ActionArgs) {
     const createVehicle = await CreateVehicle(formData)
     console.log(updateActivix, 'updateActivix')
     console.log(formData, 'formdata from overview')
+    const brand = formData.brand
+
     const finance = await prisma.finance.update({
       where: { id: formData.financeId },
       data: {
@@ -276,7 +276,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
         progress: formData.progress,
       },
     });
-    return json({ finance, dashboard, updateActivix }, { headers: { "Set-Cookie": serializedSession, } }
+    return json({ finance, dashboard, updateActivix }, redirect(`/overview/${brand}`), { headers: { "Set-Cookie": serializedSession, } }
     );
 
   } else {

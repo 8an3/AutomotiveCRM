@@ -8,6 +8,7 @@ import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
 import NotificationSystem from "./notifications";
 import secondary from '~/styles/secondary.css'
+import { GetUser } from "~/utils/loader.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: secondary },

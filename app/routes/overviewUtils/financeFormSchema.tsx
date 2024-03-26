@@ -472,6 +472,7 @@ const financeFormSchema = z.object({
   todaysActualDeliveries: zfd.text(z.string().optional()),
   differenceDeliveries: zfd.text(z.string().optional()),
   monthsGoalDeliveries: zfd.text(z.string().optional()),
+  activixRoute: zfd.text(z.string().optional()),
   tradeMileage: zfd.text(z.string().optional()),
   seenOwnership: zfd.text(z.string().optional()),
   originalOwner: zfd.text(z.string().optional()),
