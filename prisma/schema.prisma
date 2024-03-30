@@ -768,7 +768,9 @@ model WishList {
   lastName      String?
   email         String?
   phone         String?
+  brand         String?
   model         String?
+  brand2        String?
   model2        String?
   wishListNotes String?
 }

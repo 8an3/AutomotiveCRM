@@ -55,10 +55,32 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
   };
   // <Input type="hidden" name="financeId" defaultValue={user.id} />
   const [brandId, setBrandId] = useState('');
+  const [modelList, setModelList] = useState();
 
   const handleBrand = (e) => {
     setBrandId(e.target.value);
+    console.log(brandId, modelList)
   };
+
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(`/api/modelList/${brandId}`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      return res.json();
+    }
+
+    if (brandId.length > 3) {
+      const fetchData = async () => {
+        const result = await getData();
+        setModelList(result);
+        console.log(brandId, result); // Log the updated result
+      };
+      fetchData();
+    }
+  }, [brandId]);
+
   const errors = useActionData() as Record<string, string | null>;
 
   return (
@@ -141,8 +163,19 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                     <option value="Spyder" />
                     <option value="Yamaha" />
                   </datalist>
-                  <Input className=" mt-3 " placeholder="Model" type="text" list="ListOptions" name="model" />
-                  <ListSelection2 brandId={brandId} />
+                  {modelList && (
+                    <>
+                      <Input
+                        className=" mt-3 "
+                        placeholder="Model" type="text" list="ListOptions2" name="model"
+                      />
+                      <datalist id="ListOptions2">
+                        {modelList.models.map((item, index) => (
+                          <option key={index} value={item.model} />
+                        ))}
+                      </datalist>
+                    </>
+                  )}
                   {errors?.model ? (
                     <em className="text-[#ff0202]">{errors.model}</em>
                   ) : null}

@@ -66,7 +66,7 @@ export async function seedUsers() {
   const user = await prisma.user.create({
     data: {
       email: REMIX_ADMIN_EMAIL,
-      password: { create: { hash: hashedPassword } },
+      //    password: { create: { hash: hashedPassword } },
       name: "Skyler",
       username: "Skyler Zanth",
       phone: "6138980992",
@@ -83,47 +83,7 @@ export async function seedUsers() {
 
   return user
 }
-export async function FirstFinance() {
-  const data = await prisma.finance.create({
-    data: {
-      model: 'Heritage Softtail',
-      firstName: 'Franco',
-      lastName: 'Franco',
-      email: 'testrestdf@example.com',
-      phone: '123-456-7891',
-      address: '123 Main St',
-      leadNote: 'interested in the 2024 night rod',
-      city: 'test',
-      postal: 'test',
-      province: 'test',
-      dl: 'test',
-      typeOfContact: 'test',
-      timeToContact: 'test',
-      deposit: '500',
-      desiredPayments: '400',
-      stockNum: 'test',
-      options: 'test',
-      year: '2022',
-      brand: 'HD',
-      model1: 'Heritage Softtail',
-      color: 'black',
-      modelCode: 'none',
-      msrp: '19999',
-      userEmail: 'skylerzanth@gmail.com',
-      tradeValue: 'test',
-      tradeDesc: 'M90',
-      tradeColor: 'black',
-      tradeYear: '2018',
-      tradeMake: 'suzuki',
-      tradeVin: 'test',
-      tradeTrim: 'm90',
-      tradeMileage: '15000',
-      trim: 'test',
-      vin: 'test',
-    }
-  })
-  return data
-}
+
 export async function SeedLockFinanceTerminals() {
   const data = await prisma.lockFinanceTerminals.create({
     data: {
@@ -197,21 +157,39 @@ export async function seedNotes() {
   });
 }
 export async function FirstCustomer() {
+  const user = await prisma.user.findFirst({
+    where: { role: { symbol: "ADMIN" } },
+  });
+  const clientfile = await prisma.clientfile.create({
+    data: {
+      email: 'skylerzanth@gmail.com',
+      firstName: 'Skyler',
+      lastName: 'zanth',
+      phone: '+16138980992',
+      name: 'skyler zanth',
+      address: '1234 st',
+      city: 'Otawa',
+      postal: 'k1j23V2',
+      province: 'ON',
+      dl: 'HS02QI3J0DF',
+      userId: user.email
+    }
+  })
   const finance = await prisma.finance.create({
     data: {
-      id: 'clrkwvcwo00013aljooz2z4g8',
-      clientfileId: 'clrkwvcsx00003aljzjhfunsj',
-      dashboardId: 'clrkwvd0h00023aljgsywagtb',
-      financeId: 'clrkwvcwo00013aljooz2z4g8',
+      ///  id: 'clrkwvcwo00013aljooz2z4g8',
+      clientfileId: clientfile.id,
+      // dashboardId: 'clrkwvd0h00023aljgsywagtb',
+      // financeId: 'clrkwvcwo00013aljooz2z4g8',
       financeManager: null,
       email: 'skylerzanth@gmail.com',
       firstName: 'skyler',
       lastName: 'zanth',
-      phone: '6136134',
+      phone: '+16138980992',
       name: 'skyler zanth',
       address: '1234 st',
       city: 'Otawa',
-      postal: ['k1j23V2'],
+      postal: 'k1j23V2',
       province: 'ON',
       dl: 'HS02QI3J0DF',
       typeOfContact: 'phone',
@@ -376,121 +354,27 @@ export async function FirstCustomer() {
 
     }
   })
-  const client = await prisma.clientfile.create({
-    data: {
-      financeId: finance.id,
-      firstName: 'sktyler',
-      lastName: 'zanth',
-      name: 'sktyler',
-      email: 'skylerzanth@gmail.com',
-      phone: '61361134',
-      address: '1234 st',
-      city: 'ottawa',
-      postal: 'k0c 1g0',
-      province: 'on',
-      dl: 'd123131231',
-    }
-  })
+
   const finance2 = await prisma.finance.update({
     where: {
       id: finance.id
     },
     data: {
-      clientfileId: client.id,
+      // clientfileId: client.id,
       dashboardId: dashboard.id,
       financeId: finance.id,
       financeManager: 'skylerzanth@gmail.com',
       email: 'skylerzanth@gmail.com',
-      firstName: 'skyler',
-      lastName: 'zanth',
-      phone: '6136134',
-      name: 'skyler zanth',
-      address: '1234 st',
-      city: 'Otawa',
-      postal: 'k1j23V2',
-      province: 'ON',
-      dl: 'HS02QI3J0DF',
-      typeOfContact: 'phone',
-      timeToContact: 'Morning',
-      iRate: '10.99',
-      months: '60',
-      discount: '0',
-      total: null,
-      onTax: null,
-      on60: null,
-      biweekly: null,
-      weekly: null,
-      weeklyOth: null,
-      biweekOth: null,
-      oth60: null,
-      weeklyqc: null,
-      biweeklyqc: null,
-      qc60: null,
-      deposit: '0',
-      biweeklNatWOptions: null,
-      weeklylNatWOptions: null,
-      nat60WOptions: null,
-      weeklyOthWOptions: null,
-      biweekOthWOptions: null,
-      oth60WOptions: null,
-      biweeklNat: null,
-      weeklylNat: null,
-      nat60: null,
-      qcTax: null,
-      otherTax: null,
-      totalWithOptions: null,
-      otherTaxWithOptions: null,
-      desiredPayments: null,
-      freight: null,
-      admin: null,
-      commodity: null,
-      pdi: null,
-      discountPer: null,
-      userLoanProt: null,
-      userTireandRim: null,
-      userGap: null,
-      userExtWarr: null,
-      userServicespkg: null,
-      deliveryCharge: null,
-      vinE: null,
-      lifeDisability: null,
-      rustProofing: null,
-      userOther: null,
-      paintPrem: null,
-      licensing: null,
-      stockNum: null,
-      options: null,
-      accessories: null,
-      labour: null,
-      year: null,
-      brand: 'Harley-Davidson',
-      model: 'Low Rider S - Color - FXLRS',
-      model1: null,
-      color: null,
-      modelCode: null,
-      msrp: null,
       userEmail: 'skylerzanth@gmail.com',
-      tradeValue: '0',
-      tradeDesc: null,
-      tradeColor: null,
-      tradeYear: null,
-      tradeMake: null,
-      tradeVin: null,
-      tradeTrim: null,
-      tradeMileage: null,
-      trim: null,
-      vin: null,
-      leadNote: null,
-
     }
   })
-  return json({ finance, dashboard, client, finance2 })
+  return json({ finance, dashboard, clientfile, finance2 })
 }
 export async function DealerInfo() {
   const data = await prisma.dealerInfo.create({
     data: {
       dealerName: 'Freedom H-D',
-      dealerAddress: '1963 Merivale Rd',
+      dealerAddress: '1234 Road Rd',
       dealerCity: 'Ottawa',
       dealerProv: 'ON',
       dealerPostal: 'k0C1g1',
@@ -503,7 +387,7 @@ export async function DealerFeesAdminCreate() {
   const data = await prisma.dealerFeesAdmin.create({
     data: {
       dealer: 'Freedom H-D',
-      dealerAddress: '1963 Merivale Rd',
+      dealerAddress: '1234 Road Rd',
       dealerProv: 'Ottawa, ON, K0C1G1',
       dealerPhone: '6137877777',
 
@@ -539,76 +423,91 @@ export async function DealerFeesAdminCreate() {
 
 }
 export async function FirstMsgNotification() {
+  const user = await prisma.user.findFirst({ where: { role: { symbol: "ADMIN" } }, });
   const data = await prisma.notificationsUser.create({
     data: {
-      title: `Thie is where you will get notified for:`,
+      title: 'Welcome new user! UPDATES',
+      content: 'Welcome new user! UPDATES',
       read: 'false',
-      type: 'New Lead',
-      content: `New leads`,
-      userId: '007',
-      financeId: '007',
-      clientfileId: '007',
+      dimiss: '',
+      type: 'updates',
+      financeId: FirstCustomer.finance.id,
+      clientfileId: FirstCustomer.clientfile.id,
+      to: '',
+      from: '',
+      userId: user?.id,
     }
   })
   const data2 = await prisma.notificationsUser.create({
     data: {
-      title: `Thie is where you will get notified for:`,
+      title: 'Welcome new user! MESSAGES',
+      content: 'Welcome new user! MESSAGES',
       read: 'false',
+      dimiss: '',
       type: 'messages',
-      content: 'messages',
-      userId: '007',
-      financeId: '007',
-      clientfileId: '007',
+      financeId: FirstCustomer.finance.id,
+      clientfileId: FirstCustomer.clientfile.id,
+      to: '',
+      from: '',
+      userId: user?.id,
     }
   })
   const data3 = await prisma.notificationsUser.create({
     data: {
-      title: `Thie is where you will get notified for:`,
+      title: 'Welcome new user! NEW LEAD',
+      content: 'Welcome new user! NEW LEAD',
       read: 'false',
-      type: 'updates',
-      content: `updates on clients files`,
-      userId: '007',
-      financeId: '007',
-      clientfileId: '007',
+      dimiss: '',
+      type: 'New Lead',
+      financeId: FirstCustomer.finance.id,
+      clientfileId: FirstCustomer.clientfile.id,
+      to: '',
+      from: '',
+      userId: user?.id,
     }
   })
   return (data, data2, data3)
 
 }
 export async function ClientApts() {
+  const user = await prisma.user.findFirst({ where: { role: { symbol: "ADMIN" } }, });
+
   const aptsData = [
     {
-      contactMethod: "aaass",
-      apptDay: "aaass",
-      apptTime: "aaass",
-      appointment: "aaass",
-      completed: "aaass",
-      apptStatus: "aaass",
-      apptType: "aaass",
-      notes: "aaass",
-      userId: "aaass",
+      title: 'Welcome new user! NEW LEAD',
+      content: 'Welcome new user! NEW LEAD',
+      read: 'false',
+      dimiss: '',
+      type: 'New Lead',
+      financeId: FirstCustomer.finance.id,
+      clientfileId: FirstCustomer.clientfile.id,
+      to: '',
+      from: '',
+      userId: user?.id,
     },
     {
-      contactMethod: "aaass",
-      apptDay: "aaasasds",
-      apptTime: "aaaasds",
-      appointment: "aaass",
-      completed: "aaass",
-      apptStatus: "aaasdass",
-      apptType: "aaass",
-      notes: "aaasassasd",
-      userId: "aaasasds",
+      title: 'Welcome new user! MESSAGES',
+      content: 'Welcome new user! MESSAGES',
+      read: 'false',
+      dimiss: '',
+      type: 'messages',
+      financeId: FirstCustomer.finance.id,
+      clientfileId: FirstCustomer.clientfile.id,
+      to: '',
+      from: '',
+      userId: user?.id,
     },
     {
-      contactMethod: "aaass",
-      apptDay: "aaasasasdds",
-      apptTime: "aaaaasdsasasdds",
-      appointment: "aaass",
-      completed: "aaaasdasdss",
-      apptStatus: "aaasdass",
-      apptType: "aaass",
-      notes: "aaasassasdadasd",
-      userId: "aaasasds",
+      title: 'Welcome new user! UPDATES',
+      content: 'Welcome new user! UPDATES',
+      read: 'false',
+      dimiss: '',
+      type: 'updates',
+      financeId: FirstCustomer.finance.id,
+      clientfileId: FirstCustomer.clientfile.id,
+      to: '',
+      from: '',
+      userId: user?.id,
     },
   ];
   for (const clientApts of aptsData) {

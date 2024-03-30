@@ -38,7 +38,7 @@ import {
 } from "~/other/dropdown-menu";
 import { ScrollArea } from "~/other/scrollarea";
 import { ItemText } from "@radix-ui/react-select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
 import { UserPlus } from "lucide-react";
 import { ListSelection2 } from '~/routes/quoteUtils/listSelection'
@@ -58,12 +58,32 @@ export default function AddCustomer() {
     const { name, value, checked, type } = e.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
-  // <Input type="hidden" name="financeId" defaultValue={user.id} />
   const [brandId, setBrandId] = useState('');
+  const [modelList, setModelList] = useState();
 
   const handleBrand = (e) => {
     setBrandId(e.target.value);
+    console.log(brandId, modelList)
   };
+
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(`/api/modelList/${brandId}`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      return res.json();
+    }
+
+    if (brandId.length > 3) {
+      const fetchData = async () => {
+        const result = await getData();
+        setModelList(result);
+        console.log(brandId, result); // Log the updated result
+      };
+      fetchData();
+    }
+  }, [brandId]);
   const errors = useActionData() as Record<string, string | null>;
   const fetcher = useFetcher()
   const data = useActionData()
@@ -119,7 +139,7 @@ export default function AddCustomer() {
               className=" mt-3 "
               placeholder="Brand (required)"
               type="text"
-              list="ListOptions"
+              list="ListOptions2"
               name="brand"
               onChange={handleBrand}
 
@@ -141,6 +161,19 @@ export default function AddCustomer() {
               <option value="Spyder" />
               <option value="Yamaha" />
             </datalist>
+            {modelList && (
+              <>
+                <Input
+                  className=" mt-3 "
+                  placeholder="Model" type="text" list="ListOptions2" name="model"
+                />
+                <datalist id="ListOptions2">
+                  {modelList.models.map((item, index) => (
+                    <option key={index} value={item.model} />
+                  ))}
+                </datalist>
+              </>
+            )}
 
           </div>
           <Input type="hidden" name="iRate" defaultValue={10.99} />

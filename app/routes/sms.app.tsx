@@ -640,16 +640,73 @@ const ChatApp = (item) => {
                         </p>
                       </div>
                     </li>
-                    <p>{smsMenu}</p>
                   </>
                 );
               })}
             </ul>
           )}
           {sms === false && (
-            <>
-              {channelContent}
-            </>
+            <ul className="top-0 overflow-y-scroll grow" >
+              {conversationsData.map((item, index) => {
+                const activeChannel = item.conversationSid === selectedChannelSid;
+                const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
+                const currentDate = new Date().setHours(0, 0, 0, 0);
+                const itemDate = new Date(item.createdDate).setHours(0, 0, 0, 0);
+                let formattedDate;
+                if (itemDate === currentDate) {
+                  formattedDate = new Date(item.createdDate).toLocaleTimeString();
+                } else {
+                  formattedDate = new Date(item.createdDate).toLocaleDateString();
+                }
+                const lastMessageList = messagesConvo[messagesConvo.length - 1];
+                return (
+                  <>
+                    <li
+                      key={index}
+                      onClick={async (event) => {
+                        const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+                        const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+                        const conversationSid = item.conversationSid; // Replace with the actual conversationSid
+                        const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
+                        const credentials = `${accountSid}:${authToken}`;
+                        const base64Credentials = btoa(credentials);
+                        fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
+                          .then(response => response.json())
+                          .then(data => {
+                            setMessagesConvo(data.messages);
+                          })
+                          .catch(error => console.error('Error:', error));
+                        setSelectedChannelSid(item.conversationSid);
+                        setChannelName(item.author || item.sid)
+                        console.log(smsMenu, 'smsMenu')
+                        if (size === 'md' || size === 'sm') {
+                          toggleFullScreen();
+                        }
+                        console.log(selectedChannelSid)
+                      }}
+                      className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
+                      <div className=' w-[95%] '>
+                        <input type='hidden' name='conversationSid' defaultValue={item} />
+                        <input type='hidden' name='intent' defaultValue='getConversation' />
+                        <div className="m-2 flex items-center justify-between">
+                          <span className="text-lg font-bold text-white">
+                            <strong>{item.author || item.author}</strong>
+                          </span>
+                          <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                            {formattedDate}
+                          </p>
+                        </div>
+                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                          {conversationsData && conversationsData.length > 0 && conversationsData[0].body
+                            ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
+                            : ''}
+                        </p>
+                      </div>
+                    </li>
+                  </>
+                );
+              })}
+            </ul>
           )}
         </div>
         <div className={`rightPanel flex flex-col space-y-2 border border-[#ffffff4d]   lg:w-[75%] lg:max-w-[75%] ${size > 750 && smsMenu === 'false' ? 'md:w-full sm:w-full ' : 'md:hidden sm:hidden'}`}>

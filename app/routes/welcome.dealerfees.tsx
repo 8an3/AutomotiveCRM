@@ -11,6 +11,8 @@ import { saveDailyWorkPlan } from '~/utils/dailyPDF/create.server'
 import { getSession } from "~/sessions/auth-session.server";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from '~/models'
+import { GetUser } from "~/utils/loader.server";
+
 
 export function invariant(
   condition: any,

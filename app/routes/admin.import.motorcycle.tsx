@@ -7,11 +7,20 @@ import {
 } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import { prisma } from '~/libs';
-import type { ActionArgs, UploadHandler } from '@remix-run/node';
+import type { ActionArgs, ActionFunction, UploadHandler } from '@remix-run/node';
 import { useEffect, useState, useRef } from 'react';
 
 
+export const action: ActionFunction = async ({ request }) => {
+  // Your action logic here
 
+  return json({ ok: 200 }, {
+    headers: {
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Referrer-Policy': 'same-origin'
+    }
+  });
+};
 
 export default function Index() {
 

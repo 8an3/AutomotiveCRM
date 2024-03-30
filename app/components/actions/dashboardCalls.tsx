@@ -69,7 +69,6 @@ export function Unauthorized(refreshToken) {
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-  console.log(email, 'email2q341234')
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
@@ -158,6 +157,30 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   } else { console.log('Authorized'); }
 
 
+
+  // wish list loader
+  const wishList = await prisma.wishList.findMany({ where: { userId: user?.id }, })
+  const inventory = await prisma.inventoryMotorcycle.findMany({
+    select: { make: true, model: true, status: true, }
+  })
+  const filteredEmails = [];
+  wishList.forEach(wishListItem => {
+    inventory.forEach(inventoryItem => {
+      if (
+        wishListItem.brand === inventoryItem.make &&
+        wishListItem.model === inventoryItem.model &&
+        inventoryItem.status === 'available'
+      ) {
+        filteredEmails.push(wishListItem.email);
+      }
+    });
+  });
+  if (filteredEmails.length > 0) {
+    console.log('no mtaches found')
+  }
+  console.log(filteredEmails, 'wishlistMatches');
+  const wishlistMatches = filteredEmails
+
   if (brand === "Manitou") {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(user.email);
@@ -168,6 +191,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       deFees,
       manOptions,
       sliderWidth,
+      wishlistMatches,
       user,
       financeNotes,
       dashBoardCustURL,
@@ -192,6 +216,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       finance,
       deFees,
       manOptions,
+      wishlistMatches,
       sliderWidth,
       user,
       financeNotes,
@@ -217,6 +242,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       finance,
       deFees,
       sliderWidth,
+      wishlistMatches,
       user,
       financeNotes,
       financeNewLead,
@@ -243,6 +269,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       modelData,
       finance,
       deFees,
+      wishlistMatches,
       bmwMoto,
       latestNotes,
       bmwMoto2,
@@ -269,6 +296,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       ok: true,
       modelData,
       finance,
+      wishlistMatches,
       deFees,
       sliderWidth,
       user,
@@ -307,7 +335,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNewLead,
       notifications,
       getTemplates,
-      refreshToken, tokens, request
+      refreshToken, tokens, request, wishlistMatches
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -335,8 +363,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         getWishList,
         notifications,
         webLeadData,
-        refreshToken, tokens, request
-
+        refreshToken, tokens, request, wishlistMatches
       }, {
         headers: {
           "Set-Cookie": await commitSession(session2),
@@ -646,7 +673,9 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         lastName: formData.lastName,
         email: formData.email,
         phone: formData.phone,
+        brand: formData.brand,
         model: formData.model,
+        brand2: formData.brand2,
         model2: formData.model2,
         notes: formData.notes,
       }

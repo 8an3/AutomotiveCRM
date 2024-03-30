@@ -1,4 +1,4 @@
-import { GetUser } from "~/utils/loader.server";
+//import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 
 export async function GetUser(email) {
@@ -20,9 +20,7 @@ export async function GetUser(email) {
       omvicNumber: true,
       lastSubscriptionCheck: true,
       refreshToken: true,
-      activixActivated: true,
-      activixEmail: true,
-      activisUserId: true,
+
 
       role: { select: { symbol: true, name: true } },
     },

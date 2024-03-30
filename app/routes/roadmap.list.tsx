@@ -38,9 +38,9 @@ export default function Roadmap() {
 	const todoRoadmap = [
 		{ type: "issue", desc: "API file upload does not work in production folder API is already in use by platfo procidor move API/file upload to dealerapi/fileupload - wip - might work better convert to base64 for storage and then convert again if its downlaoded" },
 		{ type: "issue", desc: "move staff chat to sms messenger" },
+		{ type: "issue", desc: "to get notified when new useed units come in for customers wish list" },
 		{ type: "issue", desc: "need to redo email templates in overview - wip check bottom of file" },
 		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - wip" },
-		{ type: "issue", desc: "need mileage for new vehciles for printing paperwork" },
 
 
 		{ type: "admin", desc: "export customers" },
@@ -138,6 +138,8 @@ export default function Roadmap() {
 		{ type: "issue", desc: "add customer on dashboard needs to be updated to be the same as on calendar" },
 		{ type: "sales process", desc: "update finance mgr lock so that the sales person can have a in queue timer" },
 		{ type: "issue", desc: "add ping system for notes - COMPLETED BUT NEEDS TESTING" },
+		{ type: "issue", desc: "need mileage for new vehciles for printing paperwork" },
+		{ type: "issue", desc: "to get notified when new useed units come in for customers wish list - just generate brand / model list to choose from instead of letting them type it in" },
 		{ type: "paid feature", desc: "sms messenger" },
 		{ type: "dealer onboarding", desc: "each dealer will have their own server on vercel, own database on planetscale, and so forth find a way to automate this even though it doesnt take any time to do so" },
 		{ type: "quote", desc: "find source with API with up-to-date model information - Kelly Black Book - they have the product take picutre of blue ages for now and just ocr scan - just going to use dealer binders of dealers that sign up - alkmost completed" },
