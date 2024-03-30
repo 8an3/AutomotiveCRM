@@ -140,6 +140,8 @@ const financeFormSchema = z.object({
   accessories: zfd.numeric(z.number().optional()),
   options: zfd.text(z.string().optional()),
   brand: zfd.text(z.string().optional()),
+  notified: zfd.text(z.string().optional()),
+
   model1: zfd.text(z.string().optional()),
   commodity: zfd.text(z.string().optional()),
   activixId: zfd.text(z.string().optional()),

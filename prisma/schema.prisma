@@ -773,6 +773,7 @@ model WishList {
   brand2        String?
   model2        String?
   wishListNotes String?
+  notified      String?
 }
 
 model Part {
