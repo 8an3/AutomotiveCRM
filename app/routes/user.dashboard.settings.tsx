@@ -692,6 +692,32 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                 <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
 
               </div>
+              {user.activixActivated === 'yes' && (
+                <>
+                  <div className="grid gap-2 mt-2">
+                    <Label htmlFor="area">Activix Email</Label>
+                    <Input
+                      defaultValue={user.activixEmail}
+                      placeholder="activix@email.com"
+                      type="text"
+                      name="activixEmail"
+                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                 focus:outline-none  focus:text-[#02a9ff]    mx-1"
+                    />
+                  </div>
+                  <div className="grid gap-2 mt-2">
+                    <Label htmlFor="area">Dealer Account Id</Label>
+                    <Input
+                      defaultValue={user.activixEmail}
+                      placeholder="activix@email.com"
+                      type="text"
+                      name="activixEmail"
+                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                  focus:outline-none  focus:text-[#02a9ff]    mx-1"
+                    />
+                  </div>
+                </>
+              )}
               <Input type='hidden' name="email" defaultValue={user.email} />
               <Input type='hidden' name="userEmail" defaultValue={user.email} />
             </CardContent>
@@ -803,11 +829,8 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (intent === 'activixActivated') {
     const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
-    const activix = await prisma.user.update({
-      where: { email: Input.userEmail },
-      data: { activixActivated: Input.activixActivated }
-    })
-    const integration = await prisma.userIntergration.findUnique({ where: { userEmail: Input.userEmail } });
+    // const activix = await prisma.user.update({      where: { email: Input.userEmail },      data: {        activixActivated: Input.activixActivated,        activixEmail: Input.activixEmail,     }    })
+    const integration = await prisma.userIntergration.findUnique({ where: { userEmail: Input.userEmail, } });
     let actiData;
     try {
       const response = await axios.get(`https://api.crm.activix.ca/v2/account?include[]=users`, {
@@ -817,9 +840,10 @@ export const action: ActionFunction = async ({ request }) => {
           'Authorization': `Bearer ${accessToken}`,
         }
       });
+      console.log(response, response.data, 'response in settings')
       const users = response.data.users;
       const userEmail = Input.userEmail;
-      const userObject = users.find(user => user.email === userEmail);
+      const userObject = (users && users.find(user => user.email === userEmail)) || [];
 
       if (userObject) {
         console.log('Matching object found:', userObject);
@@ -834,6 +858,8 @@ export const action: ActionFunction = async ({ request }) => {
               userEmail: Input.userEmail,
               activixId: userObject.id.toString(),
               activixActivated: Input.activixActivated,
+              activixEmail: Input.activixEmail,
+              dealerAccountId: Input.dealerAccountId?.toString(),
             }
           });
           break;
@@ -844,6 +870,9 @@ export const action: ActionFunction = async ({ request }) => {
               userEmail: Input.userEmail,
               activixId: userObject.id.toString(),
               activixActivated: Input.activixActivated,
+              activixEmail: Input.activixEmail,
+              dealerAccountId: Input.dealerAccountId?.toString(),
+
             }
           });
           return actiData;

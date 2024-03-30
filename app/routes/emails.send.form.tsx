@@ -45,6 +45,7 @@ import { CompleteLastAppt } from '~/components/actions/dashboardCalls'
 import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
 import { getSession } from "~/sessions/auth-session.server";
 import { EmailFunction } from "~/routes/dummyroute";
+import { GetUser } from "~/utils/loader.server";
 
 
 
@@ -82,7 +83,8 @@ export const action: ActionFunction = async ({
   if (!userSession) { return json({ status: 302, redirect: '/login' }); };
 
   const email = userSession.get("email")
-  const user = await getUserByEmail(email)
+
+  const user = await GetUser(email)
   if (!user) { return json({ status: 302, redirect: '/login' }) };
   console.log(user, 'email')
   const userId = user?.id;

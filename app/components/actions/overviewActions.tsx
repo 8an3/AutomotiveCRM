@@ -234,9 +234,9 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 financeId
         },
         data: {
-            //  clientfileId: formData.clientfileId,
-            //dashboardId: formData.dashboardId,
-            //  financeId: formData.financeId,
+            clientfileId: formData.clientfileId,
+            dashboardId: formData.dashboardId,
+            financeId: formData.financeId,
             email: formData.email,
             firstName: formData.firstName,
             lastName: formData.lastName,

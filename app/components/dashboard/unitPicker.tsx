@@ -982,7 +982,10 @@ export function UnitPickerTable({ finance, }) {
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   className='cursor-pointer border-black bg-white p-4 capitalize text-black hover:text-[#02a9ff]'
-                  onClick={() => handleRowClick(row)}
+                  onClick={() => {
+                    handleRowClick(row)
+                    console.log(row, 'row')
+                  }}
 
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -1028,6 +1031,7 @@ export function UnitPickerTable({ finance, }) {
         <input type='hidden' name='financeId' defaultValue={finance?.id} />
         <input type='hidden' name='year' defaultValue={selectedModel?.year} />
         <input type='hidden' name='color' defaultValue={selectedModel?.color} />
+        <input type='hidden' name='model1' defaultValue={selectedModel?.modelName} />
         <input type='hidden' name='model' defaultValue={selectedModel?.model} />
         <input type='hidden' name='vin' defaultValue={selectedModel?.vin} />
         <input type='hidden' name='bikeStatus' defaultValue={selectedModel?.status} />
@@ -1051,7 +1055,7 @@ export function UnitPickerTable({ finance, }) {
           value='updateFinanceWanted'
           onClick={() => {
             toast.message('Unit has been saved to contract.', {
-              description: `${selectedModel.firstName}, ${selectedModel.lastName}`,
+              description: `${finance.firstName}, ${finance.lastName}`,
             })
           }}
         >
@@ -1209,7 +1213,7 @@ export default function UnitPicker({ data }) {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="z-50 bg-background/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
-        <Dialog.Content className="z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y  md:w-[50%] max-w-[80%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none text-black">
+        <Dialog.Content className="z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y  md:w-[95%] max-w-[80%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none text-black">
           <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
             Confirm Unit for Current Client
 

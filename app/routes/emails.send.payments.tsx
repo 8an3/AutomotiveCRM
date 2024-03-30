@@ -14,6 +14,7 @@ import { createDashData } from '~/utils/dashboard/create.server';
 import { updateDashData } from '~/utils/dashboard/update.server';
 import FullBreakdown from './emails/custom/paymentsBreakdown'
 import ReactDOMServer from 'react-dom/server';
+import { GetUser } from "~/utils/loader.server";
 
 import {
   Body,
@@ -82,7 +83,7 @@ export async function action({ request, params }: DataFunctionArgs) {
   function fillTemplate(templateString, templateVars) {
     return templateString.replace(/\${(.*?)}/g, (_, g) => templateVars[g]);
   }
-
+  console.log(finance, deFees, formPayload, 'iinside email')
   const clientData = {
     // clientFname: "Bob",
 
@@ -270,6 +271,9 @@ export async function action({ request, params }: DataFunctionArgs) {
       monthly = finance?.oth60WOptions || '';
       break;
     default:
+      weekly = finance?.weekly || '';
+      biweekly = finance?.biweekly || '';
+      monthly = finance?.on60 || '';
   }
 
 

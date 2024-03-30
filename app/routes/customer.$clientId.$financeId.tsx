@@ -26,12 +26,17 @@ import UpdateAppt from "~/components/dashboard/calls/actions/updateAppt";
 import { getMergedFinance, getMergedFinanceOnFinance } from "~/utils/dashloader/dashloader.server";
 import { getComsOverview } from "~/utils/communications/communications.server";
 import { prisma } from "~/libs";
-import { commitSession as commitIds, getSession as getIds } from '~/utils/misc.user.server';
+import { commitSession as commitIds, getSession as getIds, SetClient66 } from '~/utils/misc.user.server';
 import { getSession } from "~/sessions/auth-session.server";
-import { SetClient66, requireAuthCookie } from '~/utils/misc.user.server';
 import { UpdateLeadBasic, UpdateLeadApiOnly, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, UpdateNoteCreateTask, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "./api.activix";
 import axios from "axios";
 import { GetUser } from "~/utils/loader.server";
+import second from '~/styles/second.css'
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: second },
+  { rel: "icon", type: "image/svg", href: '/user.svg' },
+];
 
 async function GetMergedWithActivix(financeId) {
   try {

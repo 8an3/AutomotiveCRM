@@ -210,20 +210,20 @@ export default function ClientVehicleCard({ data, }) {
                           )}
 
                           <p>Status</p>
-                          {clientUnit.statusBike && clientUnit.statusBike ? (
-                            <p className='text-right'>{clientUnit.statusBike}</p>
+                          {data.statusBike && data.statusBike ? (
+                            <p className='text-right'>{data.statusBike}</p>
                           ) : (
                             <p className='text-right'>N/A</p>
                           )}
                           <p>Location</p>
-                          {clientUnit.location ? (
-                            <p className='text-right'>{clientUnit.location}</p>
+                          {data.location ? (
+                            <p className='text-right'>{data.location}</p>
                           ) : (
                             <p className='text-right'>N/A</p>
                           )}
                           <p>Mileage</p>
-                          {clientUnit.mileage ? (
-                            <p className='text-right'>{clientUnit.mileage}</p>
+                          {data.mileage ? (
+                            <p className='text-right'>{data.mileage}</p>
                           ) : (
                             <p className='text-right'>N/A</p>
                           )}

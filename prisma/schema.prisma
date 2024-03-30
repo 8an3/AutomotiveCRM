@@ -42,17 +42,15 @@ model User {
   customerId            String?  @unique
   returning             Boolean? @default(false)
   subscriptionId        String?
-  activixActivated      String?
-  activixEmail          String?
-  activisUserId         String?
 
   role          UserRole           @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
   profile       UserProfile        @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  password      UserPassword?      @relation("UserPassword")
+  // password      UserPassword?      @relation("UserPassword")
   images        Image[]            @relation("Images")
   notifications UserNotification[] @relation("UserNotifications")
   notes         Note[]             @relation("UserNotes")
   noteImages    NoteImage[]        @relation("UserNoteImages")
+  //UserPassword  UserPassword?
 
   @@index([roleId])
   @@index([profileId])
@@ -65,6 +63,8 @@ model userIntergration {
   userEmail        String   @unique
   activixId        String?
   activixActivated String?
+  dealerAccountId  String?
+  activixEmail     String?
 }
 
 model DealerCustomer {
@@ -196,10 +196,10 @@ model UserPassword {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  hash String
+  hash String?
 
   userId String @unique
-  user   User   @relation("UserPassword", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  //user   User   @relation("UserPassword", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@index([userId])
 }

@@ -179,6 +179,9 @@ export async function loader({ params, request }: DataFunctionArgs) {
     console.log(response)*/
 
   return json({ labelData, API_KEY, user, tokens, getTemplates, request, emailDetails, unreadEmails, refreshToken }, {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
   });
 }
 

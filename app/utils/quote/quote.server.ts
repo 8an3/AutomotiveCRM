@@ -11,7 +11,7 @@ export async function QuoteServer(clientData, financeId, email, financeData, das
   delete clientData.userEmail
   let createActivixLead
   if (user?.activixActivated === 'yes') { createActivixLead = await QuoteCreateLead(formData) }
-  console.log(createActivixLead.data.id, 'data.id')
+  // console.log(createActivixLead.data.id, 'data.id')
   try {
     const existingClientFile = await prisma.clientfile.findUnique({ where: { email: email, }, });
     let clientFileId;
@@ -79,7 +79,7 @@ export async function QuoteServer(clientData, financeId, email, financeData, das
           userEmail: user?.email,
           dashboardId: dashboard.id,
           financeId: finance.id,
-          clientfileId: clientFileId,
+          clientfileId: newClientFile.id,
         },
       });
       console.log('addFinanceId', addFinanceId)
@@ -194,7 +194,58 @@ export async function QuoteServerActivix(clientData, financeId, email, financeDa
           activixId: activixId
         },
       });
+      if (!existingClientFile) {
+        console.log('!existingClientFile')
+        const newClientFile = await prisma.clientfile.create({
+          data: {
+            ...clientData,
+            userId: user.id,
+          }
+        });
+        clientFileId = newClientFile.id;
+        console.log(clientFileId, "ClientFile record created successfully");
+        const finance = await prisma.finance.create({
+          data: {
+            ...financeData,
+            userEmail: user.email,
+          }
+        });
 
+        const dashboard = await prisma.dashboard.create({
+          data: {
+            ...dashData,
+            userEmail: user.email,
+
+            clientfileId: clientFileId,
+            financeId: finance.id, // Assuming the financeId is a foreign key in the dashboard table
+          },
+        });
+
+        const addFinanceId = await prisma.finance.update({
+          where: {
+            id: finance.id,
+          },
+          data: {
+            userEmail: user?.email,
+            dashboardId: dashboard.id,
+            financeId: finance.id,
+            clientfileId: newClientFile.id,
+          },
+        });
+        console.log('addFinanceId', addFinanceId)
+        const addFinanceId2 = await prisma.clientfile.update({
+          where: {
+            id: clientFileId
+          },
+          data: {
+            userId: user.id,
+
+            financeId: finance.id
+          }
+        })
+        console.log('addFinanceId2', addFinanceId2)
+        return { finance, dashboard, addFinanceId, addFinanceId2 };
+      }
 
       return { finance, dashboard, addFinanceId, newActivix };
     }

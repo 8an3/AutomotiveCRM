@@ -136,9 +136,9 @@ export async function quoteAction({ params, request }: ActionArgs) {
     const finance = await prisma.finance.update({
       where: { id: formData.financeId },
       data: {
-        //  clientfileId: formData.clientfileId,
-        //dashboardId: formData.dashboardId,
-        //  financeId: formData.financeId,
+        clientfileId: formData.clientfileId,
+        dashboardId: formData.dashboardId,
+        financeId: formData.financeId,
         email: formData.email,
         firstName: formData.firstName,
         lastName: formData.lastName,

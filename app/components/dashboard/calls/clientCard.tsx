@@ -10,6 +10,7 @@ import { ClientResultFunction, ClientStateFunction } from '~/components/lists/cl
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "~/other/sheet"
 import MesasageContent from "./messageContent";
 import { ButtonLoading } from "~/components/ui/button-loading";
+import { testLeademail, testLeadPhone } from '~/routes/api.activix';
 
 type ValuePiece = Date | null;
 
@@ -113,14 +114,14 @@ export default function ClientCard({ data }) {
         let ClientDetails = [
             { name: "firstName", value: data.firstName, placeHolder: "First Name" },
             { name: "lastName", value: data.lastName, placeHolder: "Last Name" },
-            { name: "phone", value: data.phone, placeHolder: "Phone" },
+            { name: "phone", value: data.phone, placeHolder: "Phone - +16136136134" },
             { name: "email", value: data.email, placeHolder: "Email" },
             { name: "address", value: data.address, placeHolder: "Address" },
             { name: "city", value: data.city, placeHolder: "City" },
             { name: "province", value: data.province, placeHolder: "Province" },
             { name: "postal", value: data.postal, placeHolder: "Postal Code" },
             { name: "dl", value: data.dl, placeHolder: "Driver License" },
-            { name: "dob", value: data.dob, placeHolder: "1988-06-15" },
+            { name: "dob", value: data.dob, placeHolder: "DOB - 1988-06-15" },
         ];
         return ClientDetails;
     }
@@ -289,7 +290,8 @@ export default function ClientCard({ data }) {
                     </Form>
                     <div className=' mt-3'>
 
-                        <Link to={`/customer/${data.clientfileId}/${data.id}`}>
+
+                        <a href={`/customer/${data.clientfileId}/${data.id}`} target="_blank">
                             <ButtonLoading
                                 size="lg"
                                 type="submit"
@@ -301,7 +303,24 @@ export default function ClientCard({ data }) {
                             >
                                 Client File
                             </ButtonLoading>
-                        </Link>
+                        </a>
+                        {data.activixId && (
+                            <a href={`https://crm.activix.ca/leads/${data.activixId}`} target="_blank">
+                                <ButtonLoading
+                                    size="lg"
+                                    type="submit"
+                                    className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                                    name="intent"
+                                    value="clientProfile"
+                                    isSubmitting={isSubmitting}
+                                    loadingText="Naivigating to Client File.."
+                                >
+                                    Activix File
+                                </ButtonLoading>
+                            </a>
+                        )}
+
+
                         <fetcher.Form method="post"  >
                             <input type='hidden' name='financeId' value={data.id} />
                             <input type='hidden' name='brand' value={data.brand} />
@@ -335,7 +354,7 @@ export default function ClientCard({ data }) {
                     </div>
 
                 </SheetContent>
-            </Sheet>
+            </Sheet >
         </>
     )
 }

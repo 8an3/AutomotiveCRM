@@ -64,7 +64,7 @@ export async function getMergedFinanceOnFinanceUniqueFInanceId(financeId) {
 
     const dashData = await prisma.dashboard.findUnique({
       where: {
-        financeId: finance?.id,
+        financeId: financeId,
       },
     });
     //  console.log('dashData:', dashData); // Debugging line

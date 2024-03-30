@@ -54,8 +54,8 @@ import Sidebar from "~/components/shared/sidebar";
 import { model } from "~/models";
 import UnitPicker from '../components/dashboard/unitPicker'
 import NotificationSystem from "./notifications";
-import second from '~/styles/second.css'
 import FinanceTurnover from "~/components/dashboard/calls/financeTurnover";
+import second from '~/styles/second.css'
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: second },

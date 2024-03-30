@@ -22,6 +22,7 @@ export async function GetUser(email) {
       refreshToken: true,
       activixActivated: true,
       activixEmail: true,
+      activisUserId: true,
 
       role: { select: { symbol: true, name: true } },
     },

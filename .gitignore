@@ -2,8 +2,7 @@ _*.md
 ._*
 .cache
 .DS_Store
-.env
-.env*.local
+
 .output
 .pnp.js
 .pnpm-debug.log*

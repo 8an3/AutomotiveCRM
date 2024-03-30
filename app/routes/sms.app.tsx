@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState, RefObject } from "react";
 import { Loader2 } from "../icons";
-import { Outlet, useFetcher, useLoaderData, useActionData, Form, useLocation, useSubmit } from '@remix-run/react';
+import { Outlet, useFetcher, useLoaderData, useActionData, Form, useLocation, useSubmit, useMatch } from '@remix-run/react';
 import { Textarea } from '../ui/textarea';
 import { setMessages, setSelectedChannel } from '~/actions/actions';
 import axios from "axios";
@@ -13,12 +13,16 @@ import { model } from "../models";
 import { getSession } from "~/sessions/auth-session.server";
 
 import ChatMessages from '../components/sms/ChatMessage';
-import { MessageSquarePlus } from 'lucide-react';
+import { ChevronLeft, MessageSquarePlus } from 'lucide-react';
 import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, ButtonLoading } from "~/components/ui";
 import financeFormSchema from "./overviewUtils/financeFormSchema";
 import { useDispatch, connect, useSelector } from 'react-redux';
 import { toast } from "sonner"
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/dashboard.svg' },
+
+];
 
 async function getToken(
   username: string,
@@ -264,8 +268,8 @@ const ChatApp = (item) => {
   const handleChange = (event) => {
     const selectedTemplate = templates.find(template => template.title === event.target.value);
     setSelectedTemplate(selectedTemplate);
-  };
 
+  };
   React.useEffect(() => {
     if (selectedTemplate) {
       setText(selectedTemplate.body);
@@ -296,6 +300,58 @@ const ChatApp = (item) => {
   const [channelName, setChannelName] = useState('');
   const [from, setFrom] = useState('');
   const [conversation_sid, setConversation_sid] = useState('');
+
+  const [smsMenu, setSmsMenu] = useState('true');
+  const [sms, setSms] = useState(true);
+  const [size, setSize] = useState(751);
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  const toggleFullScreen = () => {
+    console.log(smsMenu, 'smsMenu', size, 'size', isLargeScreen, '  isLargeScreen')
+    if (size < 750) {
+      console.log('toggleFullScreen space reqs')
+      if (smsMenu === 'true') { setSmsMenu('false') }
+      if (smsMenu === 'false') { setSmsMenu('true') }
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => { setSize(window.innerWidth); };
+    window.addEventListener('resize', handleResize);
+    return () => { window.removeEventListener('resize', handleResize); };
+  }, []);
+
+  useEffect(() => {
+    const lgMediaQuery = window.matchMedia('(min-width: 1025px)');
+    const mdMediaQuery = window.matchMedia('(min-width: 750px)');
+    const smMediaQuery = window.matchMedia('(min-width: 250px)');
+
+    const handleScreenSizeChange = () => {
+      setIsLargeScreen(lgMediaQuery.matches);
+      //  setSmsMenu(mdMediaQuery.matches ? 'true' : '');
+      setSmsMenu(smMediaQuery.matches && smsMenu !== 'false' ? 'true' : '');
+    };
+
+    handleScreenSizeChange(); // Initial call to set initial state
+
+    const lgListener = (e) => handleScreenSizeChange();
+    const mdListener = (e) => handleScreenSizeChange();
+    const smListener = (e) => handleScreenSizeChange();
+
+    lgMediaQuery.addEventListener('change', lgListener);
+    mdMediaQuery.addEventListener('change', mdListener);
+    smMediaQuery.addEventListener('change', smListener);
+    console.log(smsMenu, 'smsMenu', size, 'size', isLargeScreen, '  isLargeScreen')
+
+    return () => {
+      lgMediaQuery.removeEventListener('change', lgListener);
+      mdMediaQuery.removeEventListener('change', mdListener);
+      smMediaQuery.removeEventListener('change', mdListener);
+    };
+  }, []);
+
+
+
 
   const { key } = useLocation();
   useEffect(
@@ -425,9 +481,17 @@ const ChatApp = (item) => {
     channelContent = (
       <div onClick={() => { }} id="OpenChannel" className='text-white'>
         <div className="flex justify-between border-b border-[#3b3b3b]">
-          <span className="text-lg font-bold text-white m-2">
-            <strong>{channelName}</strong>
-          </span>
+          <div className='flex align-middle'>
+
+            <button onClick={toggleFullScreen} className='mx-2 lg:hidden cursor-pointer hover:border-[#02a9ff] text-white'>
+              <ChevronLeft color="#ffffff" strokeWidth={1.5} />
+            </button>
+
+            <span className="text-lg font-bold text-white m-2">
+              <strong>{channelName}</strong>
+            </span>
+          </div>
+
           <select
             className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  m-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
             onChange={handleChange}>
@@ -485,109 +549,122 @@ const ChatApp = (item) => {
   }
   if (loggedIn) {
     return (
-      <div className="mx-auto mt-[65px] flex h-[93%] w-[95%] border border-[#3b3b3b] bg-black">
-        <div className="flex flex-col w-[25%] max-w-[25%] space-y-2 border border-[#ffffff4d]">
+      <div className="mx-auto mt-[65px] h-[93%] w-[95%] border border-[#3b3b3b] bg-black flex">
+
+        <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d] lg:w-[25%] lg:max-w-[25%] w-full ${size > 750 && smsMenu === 'true' ? 'md:w-full sm:w-full ' : 'md:hidden sm:hidden'}`}>
+
           <div className="tabListSZ mx-auto flex w-full border-b border-[#3b3b3b]">
             <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
-              <TabsList className="grid w-auto grid-cols-3">
+              <TabsList className="grid w-auto grid-cols-2">
                 <TabsTrigger
                   onClick={() => {
-
+                    setSms(true)
                   }}
                   value="SMS">
                   SMS
                 </TabsTrigger>
                 <TabsTrigger
                   onClick={() => {
+                    setSms(false)
 
                   }}
                   value="Staff Chat">
-                  Staff Chat
+                  Staff Chat {size} {smsMenu} {isLargeScreen}
                 </TabsTrigger>
-                <TabsTrigger
+                {/*   <TabsTrigger
                   onClick={() => {
 
                   }}
                   value="Facebook">
-                  Facebook
-                </TabsTrigger>
+                 Facebook
+                </TabsTrigger>*/}
 
               </TabsList>
             </Tabs>
           </div>
-          <ul className="top-0 overflow-y-scroll grow" >
-            {conversationsData.map((item, index) => {
-              const activeChannel = item.conversationSid === selectedChannelSid;
-              const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
-              const currentDate = new Date().setHours(0, 0, 0, 0);
-              const itemDate = new Date(item.createdDate).setHours(0, 0, 0, 0);
-              let formattedDate;
-              if (itemDate === currentDate) {
-                formattedDate = new Date(item.createdDate).toLocaleTimeString();
-              } else {
-                formattedDate = new Date(item.createdDate).toLocaleDateString();
-              }
-              const lastMessageList = messagesConvo[messagesConvo.length - 1];
-              return (
-                <li
-                  key={index}
-                  onClick={async (event) => {
-                    /*
-                    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
-                    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
-                    const conversationSid = item.conversationSid
-
-                    const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}`;
-                    const credentials = `${accountSid}:${authToken}`;
-                    const base64Credentials = btoa(credentials);
-
-                    const andThennn = fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
-                    console.log(andThennn, 'and then? no and then!!! and thennnn???')
-                          */
-                    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
-                    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
-                    const conversationSid = item.conversationSid; // Replace with the actual conversationSid
-                    const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
-                    const credentials = `${accountSid}:${authToken}`;
-                    const base64Credentials = btoa(credentials);
-
-                    fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
-                      .then(response => response.json())
-                      .then(data => {
-                        setMessagesConvo(data.messages);
-                      })
-                      .catch(error => console.error('Error:', error));
-                    setSelectedChannelSid(item.conversationSid);
-                    setChannelName(item.author || item.sid)
-                    console.log(selectedChannelSid)
-                  }}
-                  className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
-                  <div className=' w-[95%] '>
-                    <input type='hidden' name='conversationSid' defaultValue={item} />
-                    <input type='hidden' name='intent' defaultValue='getConversation' />
-                    <div className="m-2 flex items-center justify-between">
-                      <span className="text-lg font-bold text-white">
-                        <strong>{item.author || item.author}</strong>
-                      </span>
-                      <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
-                        {formattedDate}
-                      </p>
-                    </div>
-                    <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
-                      {conversationsData && conversationsData.length > 0 && conversationsData[0].body
-                        ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
-                        : ''}
-                    </p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          {sms === true && (
+            <ul className="top-0 overflow-y-scroll grow" >
+              {conversationsData.map((item, index) => {
+                const activeChannel = item.conversationSid === selectedChannelSid;
+                const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
+                const currentDate = new Date().setHours(0, 0, 0, 0);
+                const itemDate = new Date(item.createdDate).setHours(0, 0, 0, 0);
+                let formattedDate;
+                if (itemDate === currentDate) {
+                  formattedDate = new Date(item.createdDate).toLocaleTimeString();
+                } else {
+                  formattedDate = new Date(item.createdDate).toLocaleDateString();
+                }
+                const lastMessageList = messagesConvo[messagesConvo.length - 1];
+                return (
+                  <>
+                    <li
+                      key={index}
+                      onClick={async (event) => {
+                        const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+                        const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+                        const conversationSid = item.conversationSid; // Replace with the actual conversationSid
+                        const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
+                        const credentials = `${accountSid}:${authToken}`;
+                        const base64Credentials = btoa(credentials);
+                        fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
+                          .then(response => response.json())
+                          .then(data => {
+                            setMessagesConvo(data.messages);
+                          })
+                          .catch(error => console.error('Error:', error));
+                        setSelectedChannelSid(item.conversationSid);
+                        setChannelName(item.author || item.sid)
+                        console.log(smsMenu, 'smsMenu')
+                        if (size === 'md' || size === 'sm') {
+                          toggleFullScreen();
+                        }
+                        console.log(selectedChannelSid)
+                      }}
+                      className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
+                      <div className=' w-[95%] '>
+                        <input type='hidden' name='conversationSid' defaultValue={item} />
+                        <input type='hidden' name='intent' defaultValue='getConversation' />
+                        <div className="m-2 flex items-center justify-between">
+                          <span className="text-lg font-bold text-white">
+                            <strong>{item.author || item.author}</strong>
+                          </span>
+                          <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                            {formattedDate}
+                          </p>
+                        </div>
+                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                          {conversationsData && conversationsData.length > 0 && conversationsData[0].body
+                            ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
+                            : ''}
+                        </p>
+                      </div>
+                    </li>
+                    <p>{smsMenu}</p>
+                  </>
+                );
+              })}
+            </ul>
+          )}
+          {sms === false && (
+            <>
+              {channelContent}
+            </>
+          )}
         </div>
-        <div className="grid h-[100%] w-[75%] max-w-[75%] grid-cols-1 space-y-2 border border-[#ffffff4d]">
-          {channelContent}
+        <div className={`rightPanel flex flex-col space-y-2 border border-[#ffffff4d]   lg:w-[75%] lg:max-w-[75%] ${size > 750 && smsMenu === 'false' ? 'md:w-full sm:w-full ' : 'md:hidden sm:hidden'}`}>
+          {sms === true && (
+            <>
+              {channelContent}
+            </>
+          )}
+          {sms === false && (
+            <>
+              {channelContent}
+            </>
+          )}
         </div>
-      </div >
+      </div>
     );
   }
 

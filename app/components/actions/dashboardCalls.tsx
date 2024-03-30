@@ -20,7 +20,7 @@ import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getMergedFinance } from "~/utils/dashloader/dashloader.server";
 import { EmailFunction } from "~/routes/dummyroute";
 import { model } from "~/models";
-import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
+import { getSession, commitSession } from '~/sessions/auth-session.server';
 import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
 import { google } from 'googleapis';
@@ -69,7 +69,7 @@ export function Unauthorized(refreshToken) {
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-
+  console.log(email, 'email2q341234')
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
@@ -124,7 +124,17 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   };
   const latestNotes = await fetchLatestNotes(finance);
   let tokens = session2.get("accessToken")
-  const refreshToken = session2.get("refreshToken")
+  const refreshToken = user.refreshToken  //session2.get("refreshToken")
+  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  // new
+  let cookie = createCookie("session_66", {
+    secrets: ['secret'],
+    // 30 days
+    maxAge: 30 * 24 * 60 * 60,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
   const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
     headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
   });
@@ -135,15 +145,8 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     tokens = unauthorizedAccess
 
     session.set("accessToken", tokens);
-    await commitSession(session);
-    let cookie = createCookie("session_66", {
-      secrets: ['secret'],
-      // 30 days
-      maxAge: 30 * 24 * 60 * 60,
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-    });
+    await commitSession(session2);
+
     const cookies = cookie.serialize({
       email: email,
       refreshToken: refreshToken,
@@ -174,6 +177,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       latestNotes,
       notifications,
       refreshToken, tokens, request
+    }, {
+      headers: {
+        "Set-Cookie": await commitSession(session2),
+      },
     });
   }
   if (brand === "Switch") {
@@ -195,6 +202,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       notifications,
       dashBoardCustURL,
       refreshToken, tokens, request
+    }, {
+      headers: {
+        "Set-Cookie": await commitSession(session2),
+      },
     });
   }
 
@@ -215,6 +226,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       notifications,
       dashBoardCustURL,
       refreshToken, tokens, request
+    }, {
+      headers: {
+        "Set-Cookie": await commitSession(session2),
+      },
     });
   }
 
@@ -241,6 +256,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       refreshToken, tokens,
       dashBoardCustURL,
       request
+    }, {
+      headers: {
+        "Set-Cookie": await commitSession(session2),
+      },
     });
   }
 
@@ -261,6 +280,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       notifications,
       dashBoardCustURL,
       refreshToken, tokens, request
+    }, {
+      headers: {
+        "Set-Cookie": await commitSession(session2),
+      },
     });
   }
 
@@ -285,6 +308,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       notifications,
       getTemplates,
       refreshToken, tokens, request
+    }, {
+      headers: {
+        "Set-Cookie": await commitSession(session2),
+      },
     });
   } else {
     let modelData;
@@ -310,6 +337,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         webLeadData,
         refreshToken, tokens, request
 
+      }, {
+        headers: {
+          "Set-Cookie": await commitSession(session2),
+        },
       });
     }
     return json({
@@ -330,6 +361,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       notifications,
       webLeadData,
       refreshToken, tokens, request
+    }, {
+      headers: {
+        "Set-Cookie": await commitSession(session2),
+      },
     });
   }
 }
@@ -405,8 +440,9 @@ export async function TwoDays(followUpDay3, formData, financeId, user) {
 
     direction: 'Outgoing',
     resultOfcall: 'Attempted',
-    userId,
+    userId: user.Id,
   };
+  const userId = user.Id
   const formPayload = formData
   const dashboardId = formData.dashboardId
   const nextAppointment = newDate
@@ -1301,6 +1337,174 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
           throw error;  // re-throw the error so it can be handled by the caller
         }
     }
+  }
+  if (intent === "updateFinanceWanted") {
+    const financeData = {
+
+      email: formData.email,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      name: formData.name,
+      address: formData.address,
+      city: formData.city,
+      postal: formData.postal,
+      province: formData.province,
+      dl: formData.dl,
+      typeOfContact: formData.typeOfContact,
+      timeToContact: formData.timeToContact,
+      iRate: formData.iRate,
+      months: formData.months,
+      discount: formData.discount,
+      total: formData.total,
+      onTax: formData.onTax,
+      on60: formData.on60,
+      biweekly: formData.biweekly,
+      weekly: formData.weekly,
+      weeklyOth: formData.weeklyOth,
+      biweekOth: formData.biweekOth,
+      oth60: formData.oth60,
+      weeklyqc: formData.weeklyqc,
+      biweeklyqc: formData.biweeklyqc,
+      qc60: formData.qc60,
+      deposit: formData.deposit,
+      biweeklNatWOptions: formData.biweeklNatWOptions,
+      weeklylNatWOptions: formData.weeklylNatWOptions,
+      nat60WOptions: formData.nat60WOptions,
+      weeklyOthWOptions: formData.weeklyOthWOptions,
+      biweekOthWOptions: formData.biweekOthWOptions,
+      oth60WOptions: formData.oth60WOptions,
+      biweeklNat: formData.biweeklNat,
+      weeklylNat: formData.weeklylNat,
+      nat60: formData.nat60,
+      qcTax: formData.qcTax,
+      otherTax: formData.otherTax,
+      totalWithOptions: formData.totalWithOptions,
+      otherTaxWithOptions: formData.otherTaxWithOptions,
+      desiredPayments: formData.desiredPayments,
+      freight: formData.freight,
+      admin: formData.admin,
+      commodity: formData.commodity,
+      pdi: formData.pdi,
+      discountPer: formData.discountPer,
+      userLoanProt: formData.userLoanProt,
+      userTireandRim: formData.userTireandRim,
+      userGap: formData.userGap,
+      userExtWarr: formData.userExtWarr,
+      userServicespkg: formData.userServicespkg,
+      deliveryCharge: formData.deliveryCharge,
+      vinE: formData.vinE,
+      lifeDisability: formData.lifeDisability,
+      rustProofing: formData.rustProofing,
+      userOther: formData.userOther,
+      paintPrem: formData.paintPrem,
+      licensing: formData.licensing,
+      stockNum: formData.stockNum,
+      options: formData.options,
+      accessories: formData.accessories,
+      labour: formData.labour,
+      year: formData.year,
+      brand: formData.brand,
+      model: formData.model,
+      model1: formData.model1,
+      color: formData.color,
+      modelCode: formData.modelCode,
+      msrp: formData.msrp,
+      userEmail: formData.userEmail,
+      tradeValue: formData.tradeValue,
+      tradeDesc: formData.tradeDesc,
+      tradeColor: formData.tradeColor,
+      tradeYear: formData.tradeYear,
+      tradeMake: formData.tradeMake,
+      tradeVin: formData.tradeVin,
+      tradeTrim: formData.tradeTrim,
+      tradeMileage: formData.tradeMileage,
+      bikeStatus: formData.bikeStatus,
+      trim: formData.trim,
+      vin: formData.vin,
+      lien: formData.lien,
+    }
+    const dashData = {
+      userEmail: formData.userEmail,
+      referral: formData.referral,
+      visited: formData.visited,
+      bookedApt: formData.bookedApt,
+      aptShowed: formData.aptShowed,
+      aptNoShowed: formData.aptNoShowed,
+      testDrive: formData.testDrive,
+      metService: formData.metService,
+      metManager: formData.metManager,
+      metParts: formData.metParts,
+      sold: formData.sold,
+      depositMade: formData.depositMade,
+      refund: formData.refund,
+      turnOver: formData.turnOver,
+      financeApp: formData.financeApp,
+      approved: formData.approved,
+      signed: formData.signed,
+      pickUpSet: formData.pickUpSet,
+      demoed: formData.demoed,
+      delivered: formData.delivered,
+      // lastContact: lastContact,
+      status: formData.status,
+      //  customerState: customerState,
+      result: formData.result,
+      timesContacted: formData.timesContacted,
+      nextAppointment: formData.nextAppointment,
+      completeCall: formData.completeCall,
+      followUpDay: formData.followUpDay,
+      state: formData.state,
+      deliveredDate: formData.deliveredDate,
+      notes: formData.notes,
+      visits: formData.visits,
+      progress: formData.progress,
+      metSalesperson: formData.metSalesperson,
+      metFinance: formData.metFinance,
+      financeApplication: formData.financeApplication,
+      pickUpDate: pickUpDate,
+      pickUpTime: formData.pickUpTime,
+      depositTakenDate: formData.depositTakenDate,
+      docsSigned: formData.docsSigned,
+      tradeRepairs: formData.tradeRepairs,
+      seenTrade: formData.seenTrade,
+      lastNote: formData.lastNote,
+      dLCopy: formData.dLCopy,
+      insCopy: formData.insCopy,
+      testDrForm: formData.testDrForm,
+      voidChq: formData.voidChq,
+      loanOther: formData.loanOther,
+      signBill: formData.signBill,
+      ucda: formData.ucda,
+      tradeInsp: formData.tradeInsp,
+      customerWS: formData.customerWS,
+      otherDocs: formData.otherDocs,
+      urgentFinanceNote: formData.urgentFinanceNote,
+      funded: formData.funded,
+      countsInPerson: formData.countsInPerson,
+      countsPhone: formData.countsPhone,
+      countsSMS: formData.countsSMS,
+      countsOther: formData.countsOther,
+      countsEmail: formData.countsEmail,
+    }
+    const fullName = user.username;
+    const words = fullName.split(' ');
+    const firstName = words[0];
+    const lastName = words[1];
+
+    const newData = {
+      ...financeData,
+      ...dashData
+    }
+    const updateLocal = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: { ...financeData, }
+    })
+    const updateLocalDash = await prisma.dashboard.update({
+      where: { financeId: formData.financeId },
+      data: { ...dashData, }
+    })
+    // const lead = await UpdateLeadWantedVeh(formData)
+    //console.log(lead, 'lead')
+    return json({ updateLocal, updateLocalDash })
   }
   // create
   if (intent === "createQuote") {

@@ -51,17 +51,17 @@ const FeaturePop = ({ finance, user }) => {
                 <PrintSpec />
               </div>
               <ModelPage />
-
-              <Button className=" border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
-                <a href="/leads/sales" target="_blank"  >
+              <a className="w-full mx-auto" href="/leads/sales" target="_blank"  >
+                <Button className="w-full border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
                   Dashboard
-                </a>
-              </Button>
-              <Button className=" border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
-                <a href={`/customer/${finance.clientfileId}/${finance.id}`} target="_blank">
+                </Button>
+              </a>
+              <a className="w-full mx-auto" href={`/customer/${finance.clientfileId}/${finance.id}`} target="_blank">
+                <Button className=" w-full border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
                   Client File
-                </a>
-              </Button>
+                </Button>
+              </a>
+
               <Form method='post' >
                 <input type='hidden' name='intent' value='financeTurnover' />
                 <input type='hidden' name='locked' value={lockedValue} />
@@ -69,11 +69,11 @@ const FeaturePop = ({ finance, user }) => {
 
                 <ButtonLoading
                   size="lg"
-                  className="w-auto cursor-pointer ml-auto p-5 hover:text-[#02a9ff]"
+                  className="w-full cursor-pointer ml-auto p-5 hover:text-[#02a9ff]"
                   type="submit"
                   isSubmitting={isSubmitting}
                   onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
-                  loadingText="Updating client info..."
+                  loadingText="Notifying finance managers..."
                 >
                   Finance Turnover
                 </ButtonLoading>

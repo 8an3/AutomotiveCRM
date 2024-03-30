@@ -4,6 +4,7 @@ import ScriptForm from "./emails/contact/scriptForm";
 import { prisma } from "~/libs";
 import ContactForm from "./emails/contact/contact";
 import { model } from '~/models'
+import { GetUser } from "~/utils/loader.server";
 
 import {
     Body, Container, Head, Row, Column, Heading, Hr, Html, Preview, Tailwind, Text, Section,
@@ -22,25 +23,8 @@ export const action: ActionFunction = async ({ request, params }) => {
 
     const email = userSession.get("email")
 
-    const user = await prisma.user.findUnique({
-        where: { email: email },
-        select: {
-            id: true,
-            name: true,
-            username: true,
-            email: true,
-            subscriptionId: true,
-            customerId: true,
-            returning: true,
-            phone: true,
-            dealer: true,
-            position: true,
-            roleId: true,
-            profileId: true,
-            omvicNumber: true,
-            role: { select: { symbol: true, name: true } },
-        },
-    });
+
+    const user = await GetUser(email)
     const userEmail = formPayload.userEmail
     const userFname = formPayload.userFname
     const customContent = formPayload.customContent

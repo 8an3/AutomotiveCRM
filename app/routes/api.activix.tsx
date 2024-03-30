@@ -9,7 +9,22 @@ import { prisma } from "~/libs";
 import axios from 'axios';
 import { toast } from "sonner"
 
-const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+
+export async function loader({ request, params }: LoaderFunction) {
+  const session2 = await getSession(request.headers.get("Cookie"));
+  const email = session2.get("email")
+
+  const user = await GetUser(email)
+  /// console.log(user, account, 'wquiote loadert')
+  if (!user) { redirect('/login') }
+  const userIntergration = await prisma.userIntergration.findUnique({ where: { userEmail: user?.email } })
+  const activixId = userIntergration.activixId
+  const accessToken = process.env.API_ACTIVIX
+
+  return json({ activixId, user, accessToken })
+}
+
+//const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
 
 // need update vehicle and need to add vehicle id to my db for reference qwhen updating
 export async function UpdateFinanceRecord(activixData, finance) {
@@ -230,6 +245,7 @@ export async function CreateFinanceRecoprd(activixData, finance) {
 }
 
 export async function SyncLeadData(user, financeData) {
+  const { activixId, accessToken } = useLoaderData()
   let currentPage = 1;
   const response = await axios.get(`https://api.crm.activix.ca/v2/leads?include[]=emails&include[]=phones`, {
     params: {
@@ -268,6 +284,7 @@ export async function SyncLeadData(user, financeData) {
 }
 
 export async function GetAccount() {
+  const { activixId, accessToken } = useLoaderData()
 
   const account = await axios.get(`https://api.crm.activix.ca/v2/account`, {
     headers: {
@@ -288,10 +305,10 @@ export async function GetAccount() {
   return account
 }
 export async function GetLeads() {
+  const { activixId, accessToken } = useLoaderData()
 
   const endpoint = 'leads'
 
-  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
   const response = await axios.get(`https://api.crm.activix.ca/v2/${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -315,8 +332,9 @@ export async function GetLeads() {
 
 }
 export async function CreateVehicle(formData) {
-  const response = await axios.post(`https://api.crm.activix.ca/v2/lead-vehicles`, {
+  const { activixId, accessToken } = useLoaderData()
 
+  const response = await axios.post(`https://api.crm.activix.ca/v2/lead-vehicles`, {
     lead_id: Number(formData.activixId),
     make: formData.brand,
     model: formData.model,
@@ -345,6 +363,7 @@ export async function CreateVehicle(formData) {
   return response
 }
 export async function CreateLead(formData, user, createQuoteServer) {
+  const { activixId, accessToken } = useLoaderData()
 
   const nameParts = user.username.split(' ');
   const firstName = nameParts[0];
@@ -697,6 +716,7 @@ export async function CreateLead(formData, user, createQuoteServer) {
 
 }
 export async function QuoteCreateLead(formData) {
+  const { activixId, accessToken } = useLoaderData()
 
   const response = await axios.post(`https://api.crm.activix.ca/v2/leads`,
     {
@@ -744,9 +764,7 @@ export async function QuoteCreateLead(formData) {
 }
 
 export async function UpdateLead(formData,) {
-  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-
-
+  const { activixId, accessToken } = useLoaderData()
   const response = await axios.put(`https://api.crm.activix.ca/v2/leads/${activixId.activixId}`,
     {
       first_name: formData.firstName,
@@ -776,6 +794,8 @@ export async function UpdateLead(formData,) {
 
 }
 export async function CreateLeadActivix(formData,) {
+  const { activixId, accessToken } = useLoaderData()
+
   let phoneNumber = `${formData.phone}`// formData.phone;
   //if (!phoneNumber.tartsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
 
@@ -958,12 +978,14 @@ export async function CreateLeadActivix(formData,) {
 }
 // client card
 export async function UpdateLeadBasic(formData, user) {
+  const { activixId, accessToken } = useLoaderData()
+
   console.log(formData, 'formdata inside api')
   const nameParts = user.username.split(' ');
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(' ');
   const response = await axios.put(
-    `https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
+    `https://api.crm.activix.ca/v2/leads/${activixId}`,
     {
       first_name: formData.firstName,
       last_name: formData.lastName,
@@ -1002,12 +1024,14 @@ export async function UpdateLeadBasic(formData, user) {
 
 }
 export async function UpdateLeadApiOnly(formData, user) {
+  const { activixId, accessToken } = useLoaderData()
+
   console.log(formData, 'formdata inside api')
   const nameParts = user.username.split(' ');
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(' ');
   const response = await axios.put(
-    `https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
+    `https://api.crm.activix.ca/v2/leads/${activixId}`,
     {
       first_name: formData.firstName,
       last_name: formData.lastName,
@@ -1048,9 +1072,11 @@ export async function UpdateLeadApiOnly(formData, user) {
 
 }
 async function UpdateLocalLead(financeData) {
+  const { activixId, accessToken } = useLoaderData()
+
   async function CallActi() {
     try {
-      const response = await axios.get(`https://api.crm.activix.ca/v2/leads/${financeData.activixId}?include[]=emails&include[]=phones&include[]=vehicles&include[]=events`, {
+      const response = await axios.get(`https://api.crm.activix.ca/v2/leads/${activixId}?include[]=emails&include[]=phones&include[]=vehicles&include[]=events`, {
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${accessToken}`, }
       });
       return response.data; // Return response data directly
@@ -1252,12 +1278,14 @@ async function UpdateLocalLead(financeData) {
   return null
 }
 export async function UpdateLeadStatus(formData, user) {
+  const { activixId, accessToken } = useLoaderData()
+
   console.log(formData)
   const nameParts = user.username.split(' ');
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(' ');
   const response = await axios.put(
-    `https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
+    `https://api.crm.activix.ca/v2/leads/${activixId}`,
     {
       status: formData.status,
       address_line1: formData.address,
@@ -1288,12 +1316,14 @@ export async function UpdateLeadStatus(formData, user) {
 
 }
 export async function UpdateLeadResult(formData, user) {
+  const { activixId, accessToken } = useLoaderData()
+
   console.log(formData)
   const nameParts = user.username.split(' ');
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(' ');
   const response = await axios.put(
-    `https://api.crm.activix.ca/v2/leads/${formData.activixId}`,
+    `https://api.crm.activix.ca/v2/leads/${activixId}`,
     {
       result: formData.result,
       address_line1: formData.address,
@@ -1325,6 +1355,8 @@ export async function UpdateLeadResult(formData, user) {
 }
 // client card
 export async function UpdateLeadPhone(formData) {
+  const { activixId, accessToken } = useLoaderData()
+
   let phoneNumber = formData.phone;
   // if (!phoneNumber.startsWith('+1')) { phoneNumber = '+1 ' + phoneNumber }
   const phones = await axios.put(
@@ -1355,9 +1387,7 @@ export async function UpdateLeadPhone(formData) {
 }
 // client card
 export async function UpdateLeademail(formData) {
-  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-
-
+  const { activixId, accessToken } = useLoaderData()
   const emails = await axios.put(
     `https://api.crm.activix.ca/v2/lead-emails/${formData.emailId}`,
     {
@@ -1385,8 +1415,69 @@ export async function UpdateLeademail(formData) {
   return emails
 
 }
+export async function TestLeademail(formData) {
+  const { activixId, accessToken } = useLoaderData()
+
+  const emails = await axios.post(
+    `https://api.crm.activix.ca/v1/leads/email/${activixId}`,
+    {
+      subject: '<p>test</p>',
+      body: '<p>test1234asdf</p>',
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
+
+  return emails
+
+}
+export async function TestLeadPhone(formData) {
+  const { activixId, accessToken } = useLoaderData()
+
+  const emails = await axios.post(
+    `https://api.crm.activix.ca/v1/voice/outbound/${activixId}`,
+    {
+      subject: '<p>test</p>',
+      body: '<p>test</p>',
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+    });
+
+  return emails
+
+}
 export async function UpdateLeadWantedVeh(formData) {
-  const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${formData.activixId}`,
+  const { activixId, accessToken } = useLoaderData()
+  const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${activixId}`,
     {
       make: formData.brand,
       model: formData.model,
@@ -1414,8 +1505,8 @@ export async function UpdateLeadWantedVeh(formData) {
 
 }
 export async function UpdateLeadEchangeVeh(formData) {
-  const activixId = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-  const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${activixId.activixId}`,
+  const { activixId, accessToken } = useLoaderData()
+  const vehicles = await axios.put(`https://api.crm.activix.ca/v2/lead-vehicles/${activixId}`,
     {
       make: formData.brand,
       model: formData.model,
@@ -1442,8 +1533,10 @@ export async function UpdateLeadEchangeVeh(formData) {
 
 }
 export async function CreateCommunications(formData) {
+  const { activixId, accessToken } = useLoaderData()
+
   console.log(formData, 'ionside coimms api server activix')
-  const leadId = formData.leadId
+  const leadId = formData.activix
   const startat = new Date();
   const start_at = startat.toISOString().replace(/\.\d{3}Z$/, '-04:00');
   let bodyData = {}
@@ -1456,7 +1549,7 @@ export async function CreateCommunications(formData) {
       call_status: "calling",
       description: 'Called customer from the dashboard.',
       executed_at: start_at,
-      executed_by: 143041,
+      executed_by: activixId,
     }
   }
 
@@ -1468,7 +1561,7 @@ export async function CreateCommunications(formData) {
       call_status: "calling",
       description: 'Texted customer from the dashboard.',
       executed_at: start_at,
-      executed_by: 143041,
+      executed_by: activixId,
     }
   }
   if (formData.contactMethod === 'email') {
@@ -1482,7 +1575,7 @@ export async function CreateCommunications(formData) {
       email_user: formData.userEmail,
       description: 'Sent email from the dashboard.',
       executed_at: start_at,
-      executed_by: 143041,
+      executed_by: activixId,
     }
   }
   const response = await axios.post(`https://api.crm.activix.ca/v2/communications`,
@@ -1511,9 +1604,7 @@ export async function CreateCommunications(formData) {
   return response
 }
 export async function UpdateCommunications(formData) {
-
-  const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-  const activixId = finance?.activixId
+  const { activixId, accessToken } = useLoaderData()
   const endpoint = 'communications'
   let bodyData = {}
   const date = new Date().toISOString()
@@ -1526,7 +1617,7 @@ export async function UpdateCommunications(formData) {
       "call_status": "calling",
       "description": formData.title + ' ' + formData.note,
       "executed_at": date,
-      "executed_by": 17162,
+      "executed_by": activixId,
     }
   }
 
@@ -1538,7 +1629,7 @@ export async function UpdateCommunications(formData) {
       "call_status": "attempted",
       "description": `SMS - ${formData.body}`,
       "executed_at": date,
-      "executed_by": 17162,
+      "executed_by": activixId,
     }
   }
   if (formData.contactMethod === 'email') {
@@ -1551,7 +1642,7 @@ export async function UpdateCommunications(formData) {
       "email_user": formData.userEmail,
       "description": formData.customContent,
       "executed_at": date,
-      "executed_by": 17162,
+      "executed_by": activixId,
     }
   }
   const response = await axios.put(`https://api.crm.activix.ca/v2/${endpoint}/${activixId}`, { bodyData, }, {
@@ -1576,12 +1667,13 @@ export async function UpdateCommunications(formData) {
   return response
 }
 export async function CreateTask(formData, start_at, end_at) {
+  const { activixId, accessToken } = useLoaderData()
+
   const response = await axios.post(`https://api.crm.activix.ca/v2/events`,
     {
       lead_id: formData.activixId,
-      owner: {
-        first_name: 'Skyler',
-        last_name: 'Zanth API'
+      "owner": {
+        "id": activixId,
       },
       title: formData.title,
       type: "appointment",
@@ -1612,11 +1704,12 @@ export async function CreateTask(formData, start_at, end_at) {
 
 }
 export async function CreateCompleteEvent(formData, start_at, end_at) {
+  const { activixId, accessToken } = useLoaderData()
+
   const response = await axios.post(`https://api.crm.activix.ca/v2/events`, {
     lead_id: formData.activixId,
-    owner: {
-      first_name: 'Skyler',
-      last_name: 'Zanth API'
+    "owner": {
+      "id": activixId,
     },
     title: formData.title,
     type: "appointment",
@@ -1660,7 +1753,7 @@ export async function CreateCompleteEvent(formData, start_at, end_at) {
       start_at: getEvent.data.data.events[0].start_at,
       title: getEvent.data.data.events[0].title,
       type: getEvent.data.data.events[0].type,
-      owner_id: 143041,
+      owner_id: activixId,
     },
     {
       headers: {
@@ -1677,15 +1770,14 @@ export async function CreateCompleteEvent(formData, start_at, end_at) {
 
 }
 export async function CompleteTask(formData, dateTimeString,) {
-  const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-  const activixId = finance?.activixId
+  const { activixId, accessToken } = useLoaderData()
+
   const endpoint = 'tasks'
   const response = await axios.put(`https://api.crm.activix.ca/v2/${endpoint}/${activixId}`,
     {
       lead_id: formData.activixId,
-      owner: {
-        first_name: 'Skyler',
-        last_name: 'Zanth API'
+      "owner": {
+        "id": activixId,
       },
       completed: true,
       completed_at: new Date().toISOString(),
@@ -1717,14 +1809,14 @@ export async function CompleteTask(formData, dateTimeString,) {
 
 }
 export async function UpdateTask(formData, dateTimeString,) {
-  const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-  const activixId = finance?.activixId
+  const { activixId, accessToken } = useLoaderData()
+
   const endpoint = 'tasks'
   const response = await axios.put(`https://api.crm.activix.ca/v2/${endpoint}/${activixId}`,
     {
       "lead_id": formData.activixId,
       "owner": {
-        "id": 143041,
+        "id": activixId,
       },
       "title": formData.title,
       "type": formData.contactMethod,
@@ -1753,6 +1845,8 @@ export async function UpdateTask(formData, dateTimeString,) {
 
 }
 export async function ListAllTasks() {
+  const { activixId, accessToken } = useLoaderData()
+
   const endpoint = 'tasks'
   const response = await axios.get(`https://api.crm.activix.ca/v2/${endpoint}`,
     {
@@ -1778,6 +1872,8 @@ export async function ListAllTasks() {
 
 }
 export async function SaveTasks() {
+  const { activixId, accessToken } = useLoaderData()
+
   const actiTasksList = await ListAllTasks();
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email");
@@ -1816,13 +1912,14 @@ export async function SaveTasks() {
   return savedTasks;
 }
 export async function CreateNote(formData) {
+  const { activixId, accessToken } = useLoaderData()
+
   const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
   const endpoint = `leads/${finance?.activixId}/notes`
-  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
   const response = await axios.post(`https://api.crm.activix.ca/v2/${endpoint}`,
     {
       content: formData.customContent,
-      user_id: 17162,
+      user_id: activixId,
       lead_id: formData.activixId,
     },
     {
@@ -1848,13 +1945,15 @@ export async function CreateNote(formData) {
 
 }
 export async function UpdateNote(formData) {
+  const { activixId, accessToken } = useLoaderData()
+
   const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
 
   const endpoint = `leads/${finance?.activixId}/notes/${formData.noteId}`
   const response = await axios.put(`https://api.crm.activix.ca/v2/${endpoint}`,
     {
       "content": formData.customContent,
-      "user_id": 17162,
+      "user_id": activixId,
       "lead_id": formData.activixId,
     }, {
     headers: {
@@ -1880,6 +1979,7 @@ export async function UpdateNote(formData) {
 }
 export async function UpdateClientFromActivix(finance) {
   const leadId = Number(finance.activixId)
+  const { activixId, accessToken } = useLoaderData()
 
   const getEvent = await axios.get(
     `https://api.crm.activix.ca/v2/leads/${leadId}?include[]=emails&include[]=phones&include[]=vehicles&include[]=events`,
@@ -1891,10 +1991,11 @@ export async function UpdateClientFromActivix(finance) {
       },
     }
   );
+  return getEvent
 }
 // doesnt work
 export async function CreateEvent(body) {
-  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+  const { activixId, accessToken } = useLoaderData()
   const response = await axios.post(`https://api.crm.activix.ca/v2/events`, {
     body,
     // lead_id: 42132008,
@@ -1928,7 +2029,7 @@ export async function CreateEvent(body) {
   return response
 }
 export default function TestActivix() {
-  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+  const { activixId, accessToken } = useLoaderData()
 
   const { processedDataList } = useLoaderData()
 
@@ -2080,7 +2181,7 @@ export default function TestActivix() {
     <div>
       <h1>Your List</h1>
       <ul>
-        {formDataList.map((formData, index) => (
+        {formData.map((formData, index) => (
           <li key={index}>
             <p>{formData.activixId}</p>
             <p>{formData.financeManager}</p>
@@ -2244,8 +2345,8 @@ export default function TestActivix() {
   data: {
     id: 58300174,
     lead_id: 42132008,
-    user_id: 143041,
-    created_by: 143041,
+    user_id: activixId,
+    created_by: activixId,
     created_at: '2024-02-15T09:00:32+00:00',    updated_at: '2024-02-15T09:00:32+00:00',    executed_at: '2024-02-15T06:00:00+00:00',
     method: 'phone',
     type: 'outgoing',
