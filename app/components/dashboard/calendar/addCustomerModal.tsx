@@ -139,7 +139,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                     name="address"
                   />
                   <Input
-                    className=" mt-1 "
+                    className=" mt-3 "
                     placeholder="Brand (required)"
                     type="text"
                     list="ListOptions1"

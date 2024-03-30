@@ -84,12 +84,16 @@ export default function CustMaIN() {
 }
 
 
-export function Sidebar2() {
+export async function Sidebar2() {
   const { clientfileId, financeId, finance, user } = useLoaderData()
   const { firstParam, clientId } = useParams();
   //console.log(finance)as
   let newFinance;
-  if (user.activixActivated === 'yes') {
+  const userIntegration = await prisma.userIntergration.findUnique({
+    where: { userEmail: user?.email }
+  })
+  const activixActivated = userIntegration.activixActivated
+  if (activixActivated === 'yes') {
     newFinance = finance
   } else {
     newFinance = finance

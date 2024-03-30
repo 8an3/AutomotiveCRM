@@ -201,7 +201,11 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     const lastContact = new Date().toISOString();
     const today = new Date()
     formData = { ...formData, lastContact, pickUpDate: 'TBD', }
-    if (user.activixActivated === 'yes') {
+    const userIntegration = await prisma.userIntergration.findUnique({
+        where: { userEmail: user?.email }
+    })
+    const activixActivated = userIntegration.activixActivated
+    if (activixActivated === 'yes') {
         const updateActivix = await UpdateLead(formData)
         console.log(updateActivix, 'updateActivix')
     }

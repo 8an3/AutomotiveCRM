@@ -353,7 +353,11 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   if (intent === 'addAppt') {
     const createApt = createClientApts(formData)
     const LastContacted = LastContacted(formData)
-    if (user.activixActivated === 'yes') {
+    const userIntegration = await prisma.userIntergration.findUnique({
+      where: { userEmail: user?.email }
+    })
+    const activixActivated = userIntegration.activixActivated
+    if (activixActivated === 'yes') {
       await CreateTask(formData)
     }
 
@@ -375,7 +379,11 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     const apptId = formData.messageId
     formData = { ...formData, completed, apptStatus, customerState }
     const updateApt = await UpdateAppt(formData, apptId)
-    if (user.activixActivated === 'yes') {
+    const userIntegration = await prisma.userIntergration.findUnique({
+      where: { userEmail: user?.email }
+    })
+    const activixActivated = userIntegration.activixActivated
+    if (activixActivated === 'yes') {
       await UpdateTask(formData)
     }
     if (user?.activixActivated === 'yes') {
@@ -582,7 +590,11 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     const finance = []
     const updateClient = await updateFinanceWithDashboard(financeId, financeData, finance)
 
-    if (user.activixActivated === 'yes') {
+    const userIntegration = await prisma.userIntergration.findUnique({
+      where: { userEmail: user?.email }
+    })
+    const activixActivated = userIntegration.activixActivated
+    if (activixActivated === 'yes') {
       await UpdateLeadWantedVeh(formData)
     }
     return json({ updateClient, })
@@ -630,7 +642,11 @@ export const action: ActionFunction = async ({ req, request, params }) => {
       },
     });
 
-    if (user.activixActivated === 'yes') {
+    const userIntegration = await prisma.userIntergration.findUnique({
+      where: { userEmail: user?.email }
+    })
+    const activixActivated = userIntegration.activixActivated
+    if (activixActivated === 'yes') {
       await UpdateLeadBasic(formData)
     }
     return json({ updateDealProgress })

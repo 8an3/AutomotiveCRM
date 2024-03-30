@@ -5,6 +5,7 @@ import { google } from 'googleapis'
 import * as querystring from 'querystring';
 import { prisma } from "~/libs";
 import bcrypt from "bcryptjs";
+import { GetUser } from "~/utils/loader.server";
 
 
 const oauth2Client = new google.auth.OAuth2(
@@ -51,7 +52,8 @@ export async function loader({ request, params, req }: LoaderFunction) {
   session.set("name", name);
   session.set("email", email);
   // console.log(userRes.data.emailAddress)
-  let user = await prisma.user.findUnique({ where: { email: email } })
+  let user = await GetUser(email)
+
 
 
   if (user) {

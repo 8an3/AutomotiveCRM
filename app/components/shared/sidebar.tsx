@@ -102,12 +102,7 @@ export default function Sidebar() {
               >
                 User Nav
               </Tabs.Trigger>
-              <Tabs.Trigger
-                className="bg-white2 text-white px-5 cursor-pointer h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  select-none   hover:text-[#02a9ff] data-[state=active]:text-[#02a9ff] data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
-                value="Notes"
-              >
-                Staff Chat
-              </Tabs.Trigger>
+
               <Tabs.Trigger
                 className="bg-white2 text-white px-5 h-[45px]  cursor-pointer flex-1 flex items-center justify-center text-[15px] leading-none  select-none  hover:text-[#02a9ff] data-[state=active]:text-[#02a9ff] data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
                 value="Contact"

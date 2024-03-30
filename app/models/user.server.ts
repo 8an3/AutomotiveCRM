@@ -81,18 +81,18 @@ export const query = {
       },
     });
   },
-  getByUsername({ username }: Pick<User, "username">) {
-    return prisma.user.findUnique({
-      where: { username },
-      include: {
-        role: true,
-        profile: true,
-        notes: {
-          orderBy: { updatedAt: "desc" },
+  /**  getByUsername({ username }: Pick<User, "username">) {
+      return prisma.user.findUnique({
+        where: { username },
+        include: {
+          role: true,
+          profile: true,
+          notes: {
+            orderBy: { updatedAt: "desc" },
+          },
         },
-      },
-    });
-  },
+      });
+    }, */
   getByEmail({ email }: Pick<User, "email">) {
     return prisma.user.findUnique({
       where: { email },
