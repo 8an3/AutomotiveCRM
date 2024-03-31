@@ -49,7 +49,13 @@ async function getToken(
     throw new Error(`ERROR received from ${requestAddress}: ${error}\n`);
   }
 }
+function checkForMobileDevice(userAgent) {
+  // Example patterns to check for mobile devices
+  const mobileDevicePatterns = ['iPhone', 'Android', 'Mobile'];
 
+  // Check if the User-Agent contains any of the mobile device patterns
+  return mobileDevicePatterns.some(pattern => userAgent.includes(pattern));
+}
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
@@ -205,8 +211,11 @@ export async function loader({ request, params }: LoaderFunction) {
     }
   }
 
+  const userAgent = request.headers.get('User-Agent');
+  const isMobileDevice = checkForMobileDevice(userAgent);
+
   console.log(conversationsData);
-  return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates, conversationsData, })
+  return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates, conversationsData, isMobileDevice })
 }
 
 export async function action({ request, }: ActionFunction) {
@@ -254,7 +263,8 @@ export async function action({ request, }: ActionFunction) {
 
 
 const ChatApp = (item) => {
-  const { convoList, callToken, newToken, user, getText, getTemplates, conversationsData, username, } = useLoaderData()
+  const { convoList, callToken, newToken, user, getText, getTemplates, conversationsData, username, isMobileDevice } = useLoaderData()
+  console.log(isMobileDevice, 'isMobileDevice')
   const [templates, setTemplates] = useState(getTemplates);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   // const dispatch = useDispatch();
@@ -323,13 +333,13 @@ const ChatApp = (item) => {
 
   useEffect(() => {
     const lgMediaQuery = window.matchMedia('(min-width: 1025px)');
-    const mdMediaQuery = window.matchMedia('(min-width: 750px)');
+    const mdMediaQuery = window.matchMedia('(min-width: 500px)');
     const smMediaQuery = window.matchMedia('(min-width: 250px)');
 
     const handleScreenSizeChange = () => {
       setIsLargeScreen(lgMediaQuery.matches);
       //  setSmsMenu(mdMediaQuery.matches ? 'true' : '');
-      setSmsMenu(smMediaQuery.matches && smsMenu !== 'false' ? 'true' : '');
+      // setSmsMenu(smMediaQuery.matches && smsMenu !== 'false' ? 'true' : '');
     };
 
     handleScreenSizeChange(); // Initial call to set initial state
@@ -547,11 +557,14 @@ const ChatApp = (item) => {
     // If channels is not an array or doesn't exist, handle it accordingly
     return <p>No channels available.</p>;
   }
+  // <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d]   ${size < 750 && smsMenu === 'true' ? 'w-full md:w-[25%] ' : 'md:hidden sm:hidden'}`}>
+  //<div className={`rightPanel flex flex-col space-y-2 border border-[#ffffff4d]     ${size < 750 && smsMenu === 'false' ? 'w-full md:w-[75%]   ' : 'md:hidden sm:hidden'}`}>
+
   if (loggedIn) {
     return (
       <div className="mx-auto mt-[65px] h-[93%] w-[95%] border border-[#3b3b3b] bg-black flex">
 
-        <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d] lg:w-[25%] lg:max-w-[25%] w-full ${size > 750 && smsMenu === 'true' ? 'md:w-full sm:w-full ' : 'md:hidden sm:hidden'}`}>
+        <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d]  w-[25%] `}>
 
           <div className="tabListSZ mx-auto flex w-full border-b border-[#3b3b3b]">
             <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
@@ -709,7 +722,7 @@ const ChatApp = (item) => {
             </ul>
           )}
         </div>
-        <div className={`rightPanel flex flex-col space-y-2 border border-[#ffffff4d]   lg:w-[75%] lg:max-w-[75%] ${size > 750 && smsMenu === 'false' ? 'md:w-full sm:w-full ' : 'md:hidden sm:hidden'}`}>
+        <div className={`rightPanel flex flex-col space-y-2 border border-[#ffffff4d]   w-[75%] `}>
           {sms === true && (
             <>
               {channelContent}
@@ -724,7 +737,11 @@ const ChatApp = (item) => {
       </div>
     );
   }
-
+  if (isMobileDevice === true) {
+    <>
+      <p>
+        mobile device</p></>
+  }
   return <Loader2 className="animate-spin" />;
 }
 
