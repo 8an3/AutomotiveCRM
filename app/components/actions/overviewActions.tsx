@@ -204,19 +204,20 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     const userIntegration = await prisma.userIntergration.findUnique({
         where: { userEmail: user?.email }
     })
-    const activixActivated = userIntegration.activixActivated
-    if (activixActivated === 'yes') {
-        const updateActivix = await UpdateLead(formData)
-        console.log(updateActivix, 'updateActivix')
+    if (userIntegration) {
+        const activixActivated = userIntegration.activixActivated
+        if (activixActivated === 'yes') {
+            const updateActivix = await UpdateLead(formData)
+            console.log(updateActivix, 'updateActivix')
+        }
     }
-
     if (formPayload.intent === 'emailPayments') {
         return redirect('/dashboard/features/emailPayments'),
-            { headers: { "Set-Cookie": await commitPref(session) } }
+            { headers: { "Set-Cookie": await commitPref(session66) } }
     }
     if (formPayload.intent === 'emailPDF') {
         return redirect('/dashboard/features/emailClientSpecAndModel'),
-            { headers: { "Set-Cookie": await commitPref(session) } }
+            { headers: { "Set-Cookie": await commitPref(session66) } }
     }
 
     if (formPayload.financeTurnover === true) {

@@ -13,7 +13,8 @@ import axios from 'axios';
 const oauth2Client = new google.auth.OAuth2(
   "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
   "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",
-  "http://localhost:3000/google/callback"
+  process.env.GOOGLE_PROD_CALLBACK_URL
+  // "http://localhost:3000/google/callback"
 );
 export default oauth2Client;
 

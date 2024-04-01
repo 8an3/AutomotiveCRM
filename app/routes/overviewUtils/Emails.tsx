@@ -26,6 +26,7 @@ import {
 import { ScrollArea } from "~/other/scrollarea"
 
 const EmailSheet = (finance) => {
+    console.groupCollapsed(finance, 'emailsheet')
     return (
         <Sheet variant='left'>
             <SheetTrigger asChild>

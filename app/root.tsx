@@ -1,4 +1,4 @@
-import { json, redirect } from "@remix-run/node";
+import { json, redirect, createCookie } from "@remix-run/node";
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useNavigation, isRouteErrorResponse, useRouteError, useParams, Form, useLocation, useFetcher, useSubmit, } from "@remix-run/react";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
 import { IconoirProvider, } from "iconoir-react";
@@ -18,7 +18,7 @@ import font from '~/styles/font.css'
 import slider from '~/styles/slider.css'
 import { Toaster, toast } from 'sonner'
 import { getUserByEmail } from '~/utils/user/get'
-import { getSession } from "./sessions/auth-session.server";
+import { getSession, commitSession } from "./sessions/auth-session.server";
 import { prisma } from "./libs";
 import { Loader2 } from "~/icons";
 import { GlobalLoading } from "./components/ui/globalLoading";
@@ -29,6 +29,7 @@ import { Provider } from 'react-redux';
 import store from './store'; // Import the Redux store
 
 import { GetUser } from "~/utils/loader.server";
+import { Unauthorized } from "./routes/email.server";
 
 
 export const links: LinksFunction = () => [
@@ -69,10 +70,47 @@ export async function loader({ request }: LoaderArgs) {
     user,
   } satisfies RootLoaderData;
   // console.log(user, userSession, 'user and userSession root loader')
+  // google auth
+  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  let tokens = userSession.get("accessToken")
+  // new
+  const refreshToken = userSession.get("refreshToken")
+  let cookie = createCookie("session_66", {
+    secrets: ['secret'],
+    // 30 days
+    maxAge: 30 * 24 * 60 * 60,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
+    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
+  });
+  console.log(userRes, 'userRes')
+  // new
+  if (userRes.status === 401) {
+    const unauthorizedAccess = await Unauthorized(refreshToken)
+    tokens = unauthorizedAccess
 
-  return json({ loaderData, })
+    userSession.set("accessToken", tokens);
+    await commitSession(userSession);
 
+    const cookies = cookie.serialize({
+      email: email,
+      refreshToken: refreshToken,
+      accessToken: tokens,
+    })
+    await cookies
+    console.log(tokens, 'authorized tokens')
+
+  } else { console.log('Authorized'); }
+  return json({ loaderData, API_KEY, user, tokens, request, refreshToken }, {
+    headers: {
+      "Set-Cookie": await commitSession(userSession),
+    },
+  });
 }
+
 
 export default function App() {
   const location = useLocation()

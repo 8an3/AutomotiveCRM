@@ -45,10 +45,10 @@ const TempPayments = ({
           <Container style={container}>
             <Section style={box}>
 
-            <EmailContent model2={model2} customerName={customerName} userPhone={userPhone} userEmail={userEmail} />
+              <EmailContent model2={model2} customerName={customerName} userPhone={userPhone} userEmail={userEmail} />
 
 
-            <ContentPayments deposit={deposit} monthly={monthly} biweekly={biweekly} weekly={weekly} months={months} />
+              <ContentPayments deposit={deposit} monthly={monthly} biweekly={biweekly} weekly={weekly} months={months} />
 
 
               <Hr style={hr} />

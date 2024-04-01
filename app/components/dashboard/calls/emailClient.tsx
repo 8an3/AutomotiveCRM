@@ -526,7 +526,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                     )}
                   </div>
                   <div className="p-1">
-                    <div className="mr-auto px-2   mt-auto grid grid-cols-1 border border-black rounded-md">
+                    <div className="mr-auto px-2   mt-auto grid grid-cols-1  rounded-md">
                       {/*  <RichTextExample /> */}
 
                       <div

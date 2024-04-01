@@ -671,11 +671,9 @@ export function Example({ content, handleUpdate, }: {
                 <div className="flex">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline"> <p
-
-                        className="text-[#fff]   hover:text-[#02a9ff]">
+                      <Button variant="outline" className='text-[#fff]   hover:text-[#02a9ff] border border-white py-2 px-3  rounded-md'>
                         New Template
-                      </p></Button>
+                      </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[90%] bg-black">
                       <DialogHeader>
@@ -798,7 +796,6 @@ export function Example({ content, handleUpdate, }: {
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-
                 </div>
 
                 {filteredDropDown?.map((item, index) => (
@@ -825,8 +822,7 @@ export function Example({ content, handleUpdate, }: {
                     }}
                   >
                     <div className="m-2 flex items-center justify-between">
-                      <p className="text-lg font-bold text-[#fff]">{item.title}</p>
-                      <p className="text-sm text-[#ffffff7c] ">  {new Date(item.date).toLocaleString()}</p>
+                      <p className="text-lg font-bold text-[#fff] text-left">{item.title}</p>
                     </div>
                     <p className="my-2 ml-2 text-sm text-[#ffffffc9]">{item.subject}</p>
                     <p className="my-2 ml-2 text-sm text-[#ffffff70]">{item.snippet}</p>
@@ -1091,14 +1087,14 @@ export function Example({ content, handleUpdate, }: {
                                 <div
                                   className={cn(
                                     "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
-                                    "bg-white text-black transition-all align-center justify-center",
+                                    "bg-black text-white transition-all align-center justify-center",
                                     "sm:sticky sm:top-[120px]",
                                   )}
                                 >
                                   <select
                                     name="clientAtr"
                                     onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                                    className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '
+                                    className='bg-black border border-white  text-white  focus:border-[#60b9fd] rounded-md p-2 '
                                   >
                                     <option value="">Client</option>
                                     {Object.entries(clientAtr).map(([title, value]) => (
@@ -1110,7 +1106,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="wantedVehAttr"
                                     onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-                                    className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '   >
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '   >
                                     <option value="">Wanted Veh</option>
                                     {Object.entries(wantedVehAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1121,7 +1117,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="tradeVehAttr"
                                     onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-                                    className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '         >
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '         >
                                     <option value="">Trade Veh</option>
                                     {Object.entries(tradeVehAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1132,7 +1128,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="salesPersonAttr"
                                     onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-                                    className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '          >
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '          >
                                     <option value="">Sales Person</option>
                                     {Object.entries(salesPersonAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1143,7 +1139,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="FandIAttr"
                                     onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-                                    className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
                                     <option value="">F & I Manager</option>
                                     {Object.entries(FandIAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1154,7 +1150,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="dealerInfo"
                                     onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-                                    className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
                                     <option value="">Dealer Info</option>
                                     {Object.entries(dealerInfo).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1165,7 +1161,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="financeInfo"
                                     onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-                                    className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
                                     <option value="">Finance Info</option>
                                     {Object.entries(financeInfo).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1178,7 +1174,7 @@ export function Example({ content, handleUpdate, }: {
                                 <div
                                   className={cn(
                                     "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-                                    "bg-white text-black transition-all justify-center",
+                                    "bg-black text-white transition-all justify-center",
                                     // "sm:sticky sm:top-[80px]",
                                   )}
                                 >
@@ -1187,7 +1183,7 @@ export function Example({ content, handleUpdate, }: {
                                     onClick={() => editor.chain().focus().toggleBold().run()}
                                     className={editor.isActive("bold") ? buttonActive : buttonInactive}
                                   >
-                                    <IconMatch className="size-4" icon="editor-bold" />
+                                    <IconMatch color="#fff" className="size-4" icon="editor-bold" />
                                   </button>
                                   <button
                                     type="button"
@@ -1204,7 +1200,7 @@ export function Example({ content, handleUpdate, }: {
                                     <IconMatch className="size-4" icon="editor-strikethrough" />
                                   </button>
 
-                                  <Minus color="#ffffff" strokeWidth={1.5} />
+                                  <Minus color="#000" strokeWidth={1.5} />
                                   <button
                                     type="button"
                                     onClick={handleSetLink}
@@ -1220,12 +1216,12 @@ export function Example({ content, handleUpdate, }: {
                                   >
                                     <IconMatch className="size-4" icon="editor-link-unlink" />
                                   </button>
-                                  <Minus color="#ffffff" strokeWidth={1.5} />
+                                  <Minus color="#000" strokeWidth={1.5} />
                                   <button
                                     onClick={() => editor.chain().focus().toggleBlockquote().run()}
                                     className={editor.isActive('blockquote') ? 'is-active' : ''}
                                   >
-                                    <Quote strokeWidth={0.75} />
+                                    <Quote strokeWidth={1.5} />
                                   </button>
                                   <button
                                     onClick={() => editor.chain().focus().toggleCode().run()}
@@ -1258,14 +1254,14 @@ export function Example({ content, handleUpdate, }: {
                                   >
                                     <Brackets strokeWidth={1.5} />
                                   </button>
-                                  <Minus color="#ffffff" strokeWidth={1.5} />
+                                  <Minus color="#000" strokeWidth={1.5} />
                                   <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
                                     <ScanLine strokeWidth={1.5} />
                                   </button>
                                   <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-                                    <WrapText strokeWidth={0.75} />
+                                    <WrapText strokeWidth={1.5} />
                                   </button>
-                                  <Minus color="#ffffff" strokeWidth={1.5} />
+                                  <Minus color="#000" strokeWidth={1.5} />
                                   <button
                                     onClick={() => editor.chain().focus().undo().run()}
                                     disabled={
@@ -1290,41 +1286,41 @@ export function Example({ content, handleUpdate, }: {
                                   >
                                     <Redo strokeWidth={1.5} />
                                   </button>
-                                  <Minus color="#ffffff" strokeWidth={1.5} />
+                                  <Minus color="#000" strokeWidth={1.5} />
                                   <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}>
-                                    <AlignLeft strokeWidth={0.75} />
+                                    <AlignLeft strokeWidth={1.5} />
                                   </button>
                                   <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}>
-                                    <AlignCenter strokeWidth={0.75} />
+                                    <AlignCenter strokeWidth={1.5} />
                                   </button>
                                   <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}>
-                                    <AlignRight strokeWidth={0.75} />
+                                    <AlignRight strokeWidth={1.5} />
                                   </button>
                                   <button onClick={() => editor.chain().focus().setTextAlign('justify').run()} className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}>
-                                    <AlignJustify strokeWidth={0.75} />
+                                    <AlignJustify strokeWidth={1.5} />
                                   </button>
-                                  <Minus color="#ffffff" strokeWidth={1.5} />
+                                  <Minus color="#000" strokeWidth={1.5} />
                                   <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
-                                    <Highlighter strokeWidth={0.75} />
+                                    <Highlighter strokeWidth={1.5} />
                                   </button>
-                                  <Minus color="#ffffff" strokeWidth={1.5} />
+                                  <Minus color="#000" strokeWidth={1.5} />
                                   <button
                                     onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                                     className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
                                   >
-                                    <Heading1 strokeWidth={0.75} />
+                                    <Heading1 strokeWidth={1.5} />
                                   </button>
                                   <button
                                     onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
                                     className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
                                   >
-                                    <Heading2 strokeWidth={0.75} />
+                                    <Heading2 strokeWidth={1.5} />
                                   </button>
                                   <button
                                     onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
                                     className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
                                   >
-                                    <Heading3 strokeWidth={0.75} />
+                                    <Heading3 strokeWidth={1.5} />
                                   </button>
                                 </div>
                                 <div>
@@ -1390,7 +1386,7 @@ export function Example({ content, handleUpdate, }: {
                                         name="clientAtr"
 
                                         onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                                        className='bg-black border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+                                        className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
                                       >
                                         <option value="">Client</option>
                                         {Object.entries(clientAtr).map(([title, value]) => (
@@ -1404,7 +1400,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(wantedVehAttr[event.target.value]);
                                         }}
-                                        className='bg-black border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                                        className='bg-slate12 border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                                         <option value="">Wanted Veh</option>
                                         {Object.entries(wantedVehAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1417,7 +1413,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(tradeVehAttr[event.target.value]);
                                         }}
-                                        className='bg-black border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                                        className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                                         <option value="">Trade Veh</option>
                                         {Object.entries(tradeVehAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1430,7 +1426,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(salesPersonAttr[event.target.value]);
                                         }}
-                                        className='bg-black border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
+                                        className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
                                         <option value="">Sales Person</option>
                                         {Object.entries(salesPersonAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1443,7 +1439,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(FandIAttr[event.target.value]);
                                         }}
-                                        className='bg-black border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
+                                        className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
                                         <option value="">F & I Manager</option>
                                         {Object.entries(FandIAttr).map(([title, value]) => (
                                           <option key={title} value={title}>

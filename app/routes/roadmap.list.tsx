@@ -36,10 +36,10 @@ export const meta: MetaFunction = ({ data }) => {
 export default function Roadmap() {
 
 	const todoRoadmap = [
-		{ type: "issue", desc: "API file upload does not work in production folder API is already in use by platfo procidor move API/file upload to dealerapi/fileupload - wip - might work better convert to base64 for storage and then convert again if its downlaoded" },
+		{ type: "issue", desc: "API file upload will be released once google approves gmail as its still in the process right now" },
 		{ type: "issue", desc: "move staff chat to sms messenger" },
-		{ type: "issue", desc: "to get notified when new useed units come in for customers wish list" },
-		{ type: "issue", desc: "need to redo email templates in overview - wip check bottom of file" },
+		{ type: "issue", desc: "google auth fixed need to verify put in root" },
+		{ type: "issue", desc: "need to redo email templates in overview - wip move email templates to template section??? and just have a email client in its place then it would really just be three choices instead of 100 and something because it would just take whatewver payments that are saved" },
 		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - wip" },
 
 
@@ -144,6 +144,7 @@ export default function Roadmap() {
 		{ type: "dealer onboarding", desc: "each dealer will have their own server on vercel, own database on planetscale, and so forth find a way to automate this even though it doesnt take any time to do so" },
 		{ type: "quote", desc: "find source with API with up-to-date model information - Kelly Black Book - they have the product take picutre of blue ages for now and just ocr scan - just going to use dealer binders of dealers that sign up - alkmost completed" },
 		{ type: "issue", desc: "email not currently working in overview" },
+		{ type: "issue", desc: "to get notified when new useed units come in for customers wish list" },
 		{ type: "issue", desc: "lien payout - COMPLETED BUT NEEDS TESTING" },
 		{ type: "issue", desc: "csv upload for prodcuts and inventory" },
 		{ type: "communications", desc: "set up whatsap for dealing with dealer customers affiliate marketers" },

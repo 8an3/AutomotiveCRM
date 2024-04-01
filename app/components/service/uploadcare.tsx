@@ -44,8 +44,7 @@ export function UploadcareWidget(props: UploadcareWidgetProps) {
     isDemo,
     isAlwaysShowDebug = false,
   } = props;
-
-  const { ENV } = useRootLoaderData();
+  const UPLOADCARE_PUBLIC_KEY = 'bb36affbdc81a01aa616'
   const [widgetFileState, setWidgetFileState] = useState({});
 
   function handleChange(fileObject: FileInfo | FileGroup) {
@@ -60,17 +59,17 @@ export function UploadcareWidget(props: UploadcareWidgetProps) {
 
   return (
     <div className="stack-start">
-      {!ENV.UPLOADCARE_PUBLIC_KEY && (
+      {!UPLOADCARE_PUBLIC_KEY && (
         <Alert variant="warning">
           Sorry, the upload feature is currently unavailable.
         </Alert>
       )}
 
-      {ENV.UPLOADCARE_PUBLIC_KEY && (
+      {UPLOADCARE_PUBLIC_KEY && (
         <div className="queue-center h-8 w-full">
           <Widget
             publicKey={
-              isDemo ? "demopublickey" : publicKey || ENV.UPLOADCARE_PUBLIC_KEY
+              isDemo ? "demopublickey" : publicKey || UPLOADCARE_PUBLIC_KEY
             }
             onChange={handleChange}
             multiple={multiple}
@@ -91,7 +90,7 @@ export function UploadcareWidget(props: UploadcareWidgetProps) {
         </div>
       )}
 
-      {ENV.UPLOADCARE_PUBLIC_KEY && (
+      {UPLOADCARE_PUBLIC_KEY && (
         <Debug
           name="widgetProps,widgetFileState"
           isAlwaysShow={isAlwaysShowDebug}

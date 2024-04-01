@@ -19,7 +19,7 @@ import {
 } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { Undo, Redo, List, ScanLine, Eraser, Code, ListPlus, Brackets, Pilcrow, Minus } from 'lucide-react';
+import { Undo, Redo, List, ScanLine, Eraser, Code, ListPlus, Brackets, Pilcrow, Minus, AlignLeft, AlignCenter, AlignRight, AlignJustify, Highlighter, WrapText, Quote, Heading1, Heading2, Heading3 } from 'lucide-react';
 
 import { IconMatch } from "./icons"
 import { buttonVariants } from "../ui/button"
@@ -347,253 +347,102 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
 
   if (!editor) return null
   return (
-    <>
-      <div
-        className={cn(
-          "z-10 mb-5 w-[95%] mt-2 flex flex-wrap max-auto items-center gap-1 rounded-md p-1 border border-black mx-auto",
-          "bg-white text-black transition-all justify-center",
-          // "sm:sticky sm:top-[80px]",
-        )}
-      >
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={editor.isActive("bold") ? buttonActive : buttonInactive}
-        >
-          <IconMatch className="size-4" icon="editor-bold" />
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={editor.isActive("italic") ? buttonActive : buttonInactive}
-        >
-          <IconMatch className="size-4" icon="editor-italic" />
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={editor.isActive("strike") ? buttonActive : buttonInactive}
-        >
-          <IconMatch className="size-4" icon="editor-strikethrough" />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
-        >
-          H1
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
-        >
-          H2
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
-        >
-          H3
-        </button>
-        <Minus color="#ffffff" strokeWidth={1.5} />
-        <button
-          type="button"
-          onClick={handleSetLink}
-          className={editor.isActive("link") ? buttonActive : buttonInactive}
-        >
-          <IconMatch className="size-4" icon="editor-link" />
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().unsetLink().run()}
-          disabled={!editor.isActive("link")}
-          className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
-        >
-          <IconMatch className="size-4" icon="editor-link-unlink" />
-        </button>
-        <Minus color="#ffffff" strokeWidth={1.5} />
-        <button
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={editor.isActive('blockquote') ? 'is-active' : ''}
-        >
-          toggleBlockquote
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleCode().run()}
-          disabled={
-            !editor.can()
-              .chain()
-              .focus()
-              .toggleCode()
-              .run()
-          }
-          className={editor.isActive('code') ? 'is-active' : ''}
-        >
-          <Code strokeWidth={1.5} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editor.isActive('bulletList') ? 'is-active' : ''}
-        >
-          <List strokeWidth={1.5} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editor.isActive('orderedList') ? 'is-active' : ''}
-        >
-          <ListPlus strokeWidth={1.5} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={editor.isActive('codeBlock') ? 'is-active' : ''}
-        >
-          <Brackets strokeWidth={1.5} />
-        </button>
-        <Minus color="#ffffff" strokeWidth={1.5} />
-        <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-          <ScanLine strokeWidth={1.5} />
-        </button>
-        <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-          hard break
-        </button>
-        <Minus color="#ffffff" strokeWidth={1.5} />
-        <button
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={
-            !editor.can()
-              .chain()
-              .focus()
-              .undo()
-              .run()
-          }
-        >
-          <Undo strokeWidth={1.5} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={
-            !editor.can()
-              .chain()
-              .focus()
-              .redo()
-              .run()
-          }
-        >
-          <Redo strokeWidth={1.5} />
-        </button>
-        <Minus color="#ffffff" strokeWidth={1.5} />
-        <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}>
-          left
-        </button>
-        <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}>
-          center
-        </button>
-        <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}>
-          right
-        </button>
-        <button onClick={() => editor.chain().focus().setTextAlign('justify').run()} className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}>
-          justify
-        </button>
-        <Minus color="#ffffff" strokeWidth={1.5} />
-        <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
-          highlight
-        </button>
-        <Minus color="#ffffff" strokeWidth={1.5} />
-      </div>
-      <div
-        className={cn(
-          "z-10 mt-2 mb-2 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1 border border-black mx-auto",
-          "bg-white text-black transition-all align-center justify-center",
-          "sm:sticky sm:top-[120px]",
-        )}
-      >
-        <select
-          name="clientAtr"
-          onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '
-        >
-          <option value="">Client</option>
-          {Object.entries(clientAtr).map(([title, value]) => (
-            <option key={title} value={title}>
-              {title}
-            </option>
-          ))}
-        </select>
-        <select
-          name="wantedVehAttr"
-          onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '   >
-          <option value="">Wanted Veh</option>
-          {Object.entries(wantedVehAttr).map(([title, value]) => (
-            <option key={title} value={title}>
-              {title}
-            </option>
-          ))}
-        </select>
-        <select
-          name="tradeVehAttr"
-          onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '         >
-          <option value="">Trade Veh</option>
-          {Object.entries(tradeVehAttr).map(([title, value]) => (
-            <option key={title} value={title}>
-              {title}
-            </option>
-          ))}
-        </select>
-        <select
-          name="salesPersonAttr"
-          onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '          >
-          <option value="">Sales Person</option>
-          {Object.entries(salesPersonAttr).map(([title, value]) => (
-            <option key={title} value={title}>
-              {title}
-            </option>
-          ))}
-        </select>
-        <select
-          name="FandIAttr"
-          onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
-          <option value="">F & I Manager</option>
-          {Object.entries(FandIAttr).map(([title, value]) => (
-            <option key={title} value={title}>
-              {title}
-            </option>
-          ))}
-        </select>
-        <select
-          name="dealerInfo"
-          onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
-          <option value="">Dealer Info</option>
-          {Object.entries(dealerInfo).map(([title, value]) => (
-            <option key={title} value={title}>
-              {title}
-            </option>
-          ))}
-        </select>
-        <select
-          name="financeInfo"
-          onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
-          <option value="">Finance Info</option>
-          {Object.entries(financeInfo).map(([title, value]) => (
-            <option key={title} value={title}>
-              {title}
-            </option>
-          ))}
-        </select>
+    <div className="p-1">
+      <div className="mr-auto px-2   mt-auto grid grid-cols-1 border border-black rounded-md">
+        {/*  <RichTextExample /> */}
 
-      </div>
-
-      <div>
-        <BubbleMenu
-          editor={editor}
-          tippyOptions={{ duration: 100 }}
+        <div
           className={cn(
-            "flex items-center gap-1 rounded-md p-1 bg-white",
-            "  text-black shadow dark:bg-slate10",
+            "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
+            "bg-black text-white transition-all align-center justify-center",
+            "sm:sticky sm:top-[120px]",
+          )}
+        >
+          <select
+            name="clientAtr"
+            onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
+            className='bg-black border border-white  text-white  focus:border-[#60b9fd] rounded-md p-2 '
+          >
+            <option value="">Client</option>
+            {Object.entries(clientAtr).map(([title, value]) => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+          <select
+            name="wantedVehAttr"
+            onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
+            className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '   >
+            <option value="">Wanted Veh</option>
+            {Object.entries(wantedVehAttr).map(([title, value]) => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+          <select
+            name="tradeVehAttr"
+            onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
+            className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '         >
+            <option value="">Trade Veh</option>
+            {Object.entries(tradeVehAttr).map(([title, value]) => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+          <select
+            name="salesPersonAttr"
+            onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
+            className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '          >
+            <option value="">Sales Person</option>
+            {Object.entries(salesPersonAttr).map(([title, value]) => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+          <select
+            name="FandIAttr"
+            onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
+            className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+            <option value="">F & I Manager</option>
+            {Object.entries(FandIAttr).map(([title, value]) => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+          <select
+            name="dealerInfo"
+            onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
+            className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+            <option value="">Dealer Info</option>
+            {Object.entries(dealerInfo).map(([title, value]) => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+          <select
+            name="financeInfo"
+            onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
+            className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+            <option value="">Finance Info</option>
+            {Object.entries(financeInfo).map(([title, value]) => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+
+        </div>
+        <div
+          className={cn(
+            "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
+            "bg-black text-white transition-all justify-center",
+            // "sm:sticky sm:top-[80px]",
           )}
         >
           <button
@@ -601,7 +450,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={editor.isActive("bold") ? buttonActive : buttonInactive}
           >
-            <IconMatch className="size-4" icon="editor-bold" />
+            <IconMatch color="#fff" className="size-4" icon="editor-bold" />
           </button>
           <button
             type="button"
@@ -617,6 +466,8 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
           >
             <IconMatch className="size-4" icon="editor-strikethrough" />
           </button>
+
+          <Minus color="#000" strokeWidth={1.5} />
           <button
             type="button"
             onClick={handleSetLink}
@@ -632,104 +483,250 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
           >
             <IconMatch className="size-4" icon="editor-link-unlink" />
           </button>
-
-        </BubbleMenu>
-      </div>
-
-      <div>
-        <BubbleMenu
-          editor={editor}
-          tippyOptions={{ duration: 100 }}
-          className={cn(
-            "flex items-center gap-1 rounded-md p-1 bg-white",
-            "  text-black shadow dark:bg-slate10",
-          )}
-        >
-          <select
-            name="clientAtr"
-            onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-            className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '
+          <Minus color="#000" strokeWidth={1.5} />
+          <button
+            onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            className={editor.isActive('blockquote') ? 'is-active' : ''}
           >
-            <option value="">Client</option>
-            {Object.entries(clientAtr).map(([title, value]) => (
-              <option key={title} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-          <select
-            name="wantedVehAttr"
-            onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-            className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '   >
-            <option value="">Wanted Veh</option>
-            {Object.entries(wantedVehAttr).map(([title, value]) => (
-              <option key={title} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-          <select
-            name="tradeVehAttr"
-            onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-            className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '         >
-            <option value="">Trade Veh</option>
-            {Object.entries(tradeVehAttr).map(([title, value]) => (
-              <option key={title} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-          <select
-            name="salesPersonAttr"
-            onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-            className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '          >
-            <option value="">Sales Person</option>
-            {Object.entries(salesPersonAttr).map(([title, value]) => (
-              <option key={title} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-          <select
-            name="FandIAttr"
-            onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-            className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
-            <option value="">F & I Manager</option>
-            {Object.entries(FandIAttr).map(([title, value]) => (
-              <option key={title} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-          <select
-            name="dealerInfo"
-            onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-            className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
-            <option value="">Dealer Info</option>
-            {Object.entries(dealerInfo).map(([title, value]) => (
-              <option key={title} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-          <select
-            name="financeInfo"
-            onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-            className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
-            <option value="">Finance Info</option>
-            {Object.entries(financeInfo).map(([title, value]) => (
-              <option key={title} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-        </BubbleMenu>
+            <Quote strokeWidth={1.5} />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleCode().run()}
+            disabled={
+              !editor.can()
+                .chain()
+                .focus()
+                .toggleCode()
+                .run()
+            }
+            className={editor.isActive('code') ? 'is-active' : ''}
+          >
+            <Code strokeWidth={1.5} />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            className={editor.isActive('bulletList') ? 'is-active' : ''}
+          >
+            <List strokeWidth={1.5} />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            className={editor.isActive('orderedList') ? 'is-active' : ''}
+          >
+            <ListPlus strokeWidth={1.5} />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            className={editor.isActive('codeBlock') ? 'is-active' : ''}
+          >
+            <Brackets strokeWidth={1.5} />
+          </button>
+          <Minus color="#000" strokeWidth={1.5} />
+          <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+            <ScanLine strokeWidth={1.5} />
+          </button>
+          <button onClick={() => editor.chain().focus().setHardBreak().run()}>
+            <WrapText strokeWidth={1.5} />
+          </button>
+          <Minus color="#000" strokeWidth={1.5} />
+          <button
+            onClick={() => editor.chain().focus().undo().run()}
+            disabled={
+              !editor.can()
+                .chain()
+                .focus()
+                .undo()
+                .run()
+            }
+          >
+            <Undo strokeWidth={1.5} />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().redo().run()}
+            disabled={
+              !editor.can()
+                .chain()
+                .focus()
+                .redo()
+                .run()
+            }
+          >
+            <Redo strokeWidth={1.5} />
+          </button>
+          <Minus color="#000" strokeWidth={1.5} />
+          <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}>
+            <AlignLeft strokeWidth={1.5} />
+          </button>
+          <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}>
+            <AlignCenter strokeWidth={1.5} />
+          </button>
+          <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}>
+            <AlignRight strokeWidth={1.5} />
+          </button>
+          <button onClick={() => editor.chain().focus().setTextAlign('justify').run()} className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}>
+            <AlignJustify strokeWidth={1.5} />
+          </button>
+          <Minus color="#000" strokeWidth={1.5} />
+          <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
+            <Highlighter strokeWidth={1.5} />
+          </button>
+          <Minus color="#000" strokeWidth={1.5} />
+          <button
+            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+          >
+            <Heading1 strokeWidth={1.5} />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
+          >
+            <Heading2 strokeWidth={1.5} />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+            className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
+          >
+            <Heading3 strokeWidth={1.5} />
+          </button>
+        </div>
+        <div>
+          <BubbleMenu
+            editor={editor}
+            tippyOptions={{ duration: 100 }}
+            className={cn(
+              "flex items-center gap-1 rounded-md p-1 bg-white",
+              "  text-black shadow dark:bg-slate10",
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className={editor.isActive("bold") ? buttonActive : buttonInactive}
+            >
+              <IconMatch className="size-4" icon="editor-bold" />
+            </button>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className={editor.isActive("italic") ? buttonActive : buttonInactive}
+            >
+              <IconMatch className="size-4" icon="editor-italic" />
+            </button>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleStrike().run()}
+              className={editor.isActive("strike") ? buttonActive : buttonInactive}
+            >
+              <IconMatch className="size-4" icon="editor-strikethrough" />
+            </button>
+            <button
+              type="button"
+              onClick={handleSetLink}
+              className={editor.isActive("link") ? buttonActive : buttonInactive}
+            >
+              <IconMatch className="size-4" icon="editor-link" />
+            </button>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().unsetLink().run()}
+              disabled={!editor.isActive("link")}
+              className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
+            >
+              <IconMatch className="size-4" icon="editor-link-unlink" />
+            </button>
+
+          </BubbleMenu>
+        </div>
+
+        <div>
+          <BubbleMenu
+            editor={editor}
+            tippyOptions={{ duration: 100 }}
+            className={cn(
+              "flex items-center gap-1 rounded-md p-1 bg-white",
+              "  text-black shadow dark:bg-slate10",
+            )}
+          >
+            <div className="grid grid-cols-2 w-full items-center justify-between  ">
+              <select
+                name="clientAtr"
+
+                onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
+                className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+              >
+                <option value="">Client</option>
+                {Object.entries(clientAtr).map(([title, value]) => (
+                  <option key={title} value={title}>
+                    {title}
+                  </option>
+                ))}
+              </select>
+              <select
+                name="wantedVehAttr"
+                onChange={(event) => {
+                  handleDropdownChange(wantedVehAttr[event.target.value]);
+                }}
+                className='bg-slate12 border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                <option value="">Wanted Veh</option>
+                {Object.entries(wantedVehAttr).map(([title, value]) => (
+                  <option key={title} value={title}>
+                    {title}
+                  </option>
+                ))}
+              </select>
+              <select
+                name="tradeVehAttr"
+                onChange={(event) => {
+                  handleDropdownChange(tradeVehAttr[event.target.value]);
+                }}
+                className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                <option value="">Trade Veh</option>
+                {Object.entries(tradeVehAttr).map(([title, value]) => (
+                  <option key={title} value={title}>
+                    {title}
+                  </option>
+                ))}
+              </select>
+              <select
+                name="salesPersonAttr"
+                onChange={(event) => {
+                  handleDropdownChange(salesPersonAttr[event.target.value]);
+                }}
+                className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
+                <option value="">Sales Person</option>
+                {Object.entries(salesPersonAttr).map(([title, value]) => (
+                  <option key={title} value={title}>
+                    {title}
+                  </option>
+                ))}
+              </select>
+              <select
+                name="FandIAttr"
+                onChange={(event) => {
+                  handleDropdownChange(FandIAttr[event.target.value]);
+                }}
+                className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
+                <option value="">F & I Manager</option>
+                {Object.entries(FandIAttr).map(([title, value]) => (
+                  <option key={title} value={title}>
+                    {title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </BubbleMenu>
+        </div>
+        <br />
+        <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
+        <br />
+
+
+        <input type='hidden' defaultValue={text} name='body' />
+        <br />
+
       </div>
-      <br />
-      <EditorContent editor={editor} content={content} className="mt-5 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
-      <br />
-      <article className="w-[95%] prose-config whitespace-pre-wrap text-white">{parseHTML(editor.getHTML())}</article>
-    </>
+    </div>
   )
 }
 

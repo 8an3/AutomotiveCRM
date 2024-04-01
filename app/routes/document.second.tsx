@@ -7,6 +7,7 @@ import { redirect, json } from "@remix-run/node";
 import { model } from '~/models';
 import { getSession } from '~/sessions/auth-session.server';
 import { prisma } from "~/libs";
+import { GetUser } from "~/utils/loader.server";
 
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));

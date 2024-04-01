@@ -356,15 +356,23 @@ export async function quoteAction({ params, request }: ActionArgs) {
       const userIntegration = await prisma.userIntergration.findUnique({
         where: { userEmail: user?.email }
       })
-      const activixActivated = userIntegration.activixActivated
-      if (activixActivated === null || activixActivated === undefined) {
-        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
-      } else if (activixActivated === 'yes') {
-        createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
-      } else {
-        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
+      if (userIntegration) {
+        const activixActivated = userIntegration.activixActivated
+        if (activixActivated === null || activixActivated === undefined) {
+          createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
+        } else if (activixActivated === 'yes') {
+          createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
+        } else {
+          createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
+        }
+        return json({ createQuoteServer, }), redirect(`/overview/${brand}`)
       }
-      return json({ createQuoteServer, }), redirect(`/overview/${brand}`)
+      else {
+        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
+        return json({ createQuoteServer, }), redirect(`/overview/${brand}`)
+
+      }
+
     }
   }
 }
