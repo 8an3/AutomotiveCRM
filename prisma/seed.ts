@@ -28,9 +28,9 @@ async function seed() {
   await seedCanam();
   await seedUsers();
   await seed24Harley();
-  await DealerFeesAdminCreate();
-  await DealerInfo();
-  await SeedDealerFees()
+  await ${ dealerName } FeesAdminCreate();
+  await ${ dealerName } Info();
+  await Seed${ dealerName } Fees()
   await SeedLockFinanceTerminals()
   //await FirstFinance()
 }
@@ -92,43 +92,43 @@ export async function SeedLockFinanceTerminals() {
   })
   return data
 }
-export async function SeedDealerFees() {
-  const data = await prisma.dealerFees.create({
+export async function Seed${ dealerName } Fees() {
+  const data = await prisma.${ dealerName }Fees.create({
     data: {
-      dealer: 'Freedom H-D',
-      dealerAddress: '1963 Merivale Rd',
-      dealerProv: 'Ottawa, ON, K2G 1G1',
-      dealerPhone: '613-736-8899',
-      omvicNumber: '123456',
-      userLoanProt: 0,
-      userTireandRim: '0',
-      userGap: 0,
-      userExtWarr: '0',
-      userServicespkg: 0,
-      vinE: 0,
-      lifeDisability: 0,
-      rustProofing: 0,
-      userLicensing: 59,
-      userFinance: '64.05',
-      userDemo: '0',
-      userGasOnDel: '0',
-      userOMVIC: '0',
-      userOther: 0,
-      userTax: '13',
-      userAirTax: '0',
-      userTireTax: '0',
-      userGovern: '0',
-      userPDI: '625',
-      userLabour: '128',
-      userMarketAdj: '0',
-      userCommodity: '0',
-      destinationCharge: 0,
-      userFreight: '1250',
-      userAdmin: '699',
-      userEmail: 'skylerzanth@gmail.com'
-    },
+      ${ dealerName }: 'Freedom H-D',
+        ${ dealerName } Address: '1963 Merivale Rd',
+          ${ dealerName } Prov: 'Ottawa, ON, K2G 1G1',
+            ${ dealerName } Phone: '613-736-8899',
+              omvicNumber: '123456',
+                userLoanProt: 0,
+                  userTireandRim: '0',
+                    userGap: 0,
+                      userExtWarr: '0',
+                        userServicespkg: 0,
+                          vinE: 0,
+                            lifeDisability: 0,
+                              rustProofing: 0,
+                                userLicensing: 59,
+                                  userFinance: '64.05',
+                                    userDemo: '0',
+                                      userGasOnDel: '0',
+                                        userOMVIC: '0',
+                                          userOther: 0,
+                                            userTax: '13',
+                                              userAirTax: '0',
+                                                userTireTax: '0',
+                                                  userGovern: '0',
+                                                    userPDI: '625',
+                                                      userLabour: '128',
+                                                        userMarketAdj: '0',
+                                                          userCommodity: '0',
+                                                            destinationCharge: 0,
+                                                              userFreight: '1250',
+                                                                userAdmin: '699',
+                                                                  userEmail: 'skylerzanth@gmail.com'
+},
   });
-  return data
+return data
 }
 export async function seedNotes() {
   // ---------------------------------------------------------------------------
@@ -370,56 +370,56 @@ export async function FirstCustomer() {
   })
   return json({ finance, dashboard, clientfile, finance2 })
 }
-export async function DealerInfo() {
-  const data = await prisma.dealerInfo.create({
+export async function ${ dealerName } Info() {
+  const data = await prisma.${ dealerName }Info.create({
     data: {
-      dealerName: 'Freedom H-D',
-      dealerAddress: '1234 Road Rd',
-      dealerCity: 'Ottawa',
-      dealerProv: 'ON',
-      dealerPostal: 'k0C1g1',
-      dealerPhone: '6137877777'
-    }
-  })
-  return data
+      ${ dealerName } Name: 'Freedom H-D',
+        ${ dealerName } Address: '1234 Road Rd',
+          ${ dealerName } City: 'Ottawa',
+            ${ dealerName } Prov: 'ON',
+              ${ dealerName } Postal: 'k0C1g1',
+                ${ dealerName } Phone: '6137877777'
 }
-export async function DealerFeesAdminCreate() {
-  const data = await prisma.dealerFeesAdmin.create({
-    data: {
-      dealer: 'Freedom H-D',
-      dealerAddress: '1234 Road Rd',
-      dealerProv: 'Ottawa, ON, K0C1G1',
-      dealerPhone: '6137877777',
-
-      omvicNumber: '515115',
-      userLoanProt: 0,
-      userTireandRim: '0',
-      userGap: 0,
-      userExtWarr: '0',
-      userServicespkg: 0,
-      vinE: 0,
-      lifeDisability: 0,
-      rustProofing: 0,
-      userLicensing: 55,
-      userFinance: '0',
-      userDemo: '0',
-      userGasOnDel: '0',
-      userOMVIC: '0',
-      userOther: 0,
-      userTax: '13',
-      userAirTax: '0',
-      userTireTax: '0',
-      userGovern: '0',
-      userPDI: '0',
-      userLabour: '156',
-      userMarketAdj: '0',
-      userCommodity: '0',
-      destinationCharge: 0,
-      userFreight: '0',
-      userAdmin: '0'
-    }
   })
-  return data
+return data
+}
+export async function ${ dealerName } FeesAdminCreate() {
+  const data = await prisma.${ dealerName }FeesAdmin.create({
+    data: {
+      ${ dealerName }: 'Freedom H-D',
+        ${ dealerName } Address: '1234 Road Rd',
+          ${ dealerName } Prov: 'Ottawa, ON, K0C1G1',
+            ${ dealerName } Phone: '6137877777',
+
+              omvicNumber: '515115',
+                userLoanProt: 0,
+                  userTireandRim: '0',
+                    userGap: 0,
+                      userExtWarr: '0',
+                        userServicespkg: 0,
+                          vinE: 0,
+                            lifeDisability: 0,
+                              rustProofing: 0,
+                                userLicensing: 55,
+                                  userFinance: '0',
+                                    userDemo: '0',
+                                      userGasOnDel: '0',
+                                        userOMVIC: '0',
+                                          userOther: 0,
+                                            userTax: '13',
+                                              userAirTax: '0',
+                                                userTireTax: '0',
+                                                  userGovern: '0',
+                                                    userPDI: '0',
+                                                      userLabour: '156',
+                                                        userMarketAdj: '0',
+                                                          userCommodity: '0',
+                                                            destinationCharge: 0,
+                                                              userFreight: '0',
+                                                                userAdmin: '0'
+}
+  })
+return data
 
 }
 export async function FirstMsgNotification() {
@@ -540,47 +540,7 @@ export async function ClientApts() {
     });
   }
 }
-console.info("Seed Script...");
 
-export async function seedScript() {
-  const scriptData = [
-    {
-      email: "",
-      name: "",
-      content: "test",
-      category: "test",
-      subCat: "test",
-    },
-    {
-      email: "",
-      name: "",
-      content:
-        "May I ask if you're ready to make a purchase today, and if so, could you please let me know how you'd like to proceed?",
-      category: "question",
-      subCat: "question",
-    },
-    {
-      email: "",
-      name: "",
-      content:
-        "Before we proceed with pricing, I wanted to ask a few questions. Firstly, are you looking to purchase the GTI 130 outright or finance it? If financing, what is your monthly budget that would make you feel comfortable? Additionally, there are a variety of accessories that can be included in the financing, what specific accessories were you interested in adding to to it? I'm here to help you every step of the  way and ensure that you get the perfect bike to fit your needs and budget. I look forward to hearing back from you and assisting you in any  way I can.",
-      category: "qualifying",
-      subCat: "qualifying",
-    },
-  ];
-  for (const script of scriptData) {
-    const { email, content, category, subCat } = script;
-
-    await prisma.script.create({
-      data: {
-        email,
-        content,
-        category,
-        subCat,
-      },
-    });
-  }
-}
 console.info("Seed BMW...");
 export async function seedBMW() {
   const bmwmotoData = [
@@ -2119,13 +2079,13 @@ export async function seedHarley() {
       msrp: 28349,
     },
     {
-      model: "Street Glide - Vivid Black - FLHX",
+      model: "${model} - Vivid Black - FLHX",
 
       color: "",
       msrp: 27499,
     },
     {
-      model: "Street Glide - Color - FLHX",
+      model: "${model} - Color - FLHX",
 
       color: "",
       msrp: 28349,
@@ -2183,37 +2143,37 @@ export async function seedHarley() {
       msrp: 39199,
     },
     {
-      model: "Street Glide Special - Vivid Black - FLHXS",
+      model: "${model} Special - Vivid Black - FLHXS",
       color: "",
       msrp: 34299,
     },
     {
-      model: "Street Glide Special - Color - FLHXS",
+      model: "${model} Special - Color - FLHXS",
       color: "",
       msrp: 35149,
     },
     {
-      model: "Street Glide Special - 2 Tone - FLHXS",
+      model: "${model} Special - 2 Tone - FLHXS",
       color: "",
       msrp: 36099,
     },
     {
-      model: "Street Glide Special - Vivid Black w/ Black Finish - FLHXS",
+      model: "${model} Special - Vivid Black w/ Black Finish - FLHXS",
       color: "",
       msrp: 35599,
     },
     {
-      model: "Street Glide Special -  Color  w/ Black Finish - FLHXS",
+      model: "${model} Special -  Color  w/ Black Finish - FLHXS",
       color: "",
       msrp: 36449,
     },
     {
-      model: "Street Glide Special -  2 Tone w/ Black Finish - FLHXS",
+      model: "${model} Special -  2 Tone w/ Black Finish - FLHXS",
       color: "",
       msrp: 37399,
     },
     {
-      model: "Street Glide Special - 120th Ann w/ Black Finish - FLHXS",
+      model: "${model} Special - 120th Ann w/ Black Finish - FLHXS",
       color: "",
       msrp: 39199,
     },
@@ -2303,30 +2263,30 @@ export async function seedHarley() {
       msrp: 41399,
     },
     {
-      model: "Street Glide ST - Vivid Black - FLHXST",
+      model: "${model} ST - Vivid Black - FLHXST",
 
       color: "",
       msrp: 37799,
     },
     {
-      model: "Street Glide ST - Color - FLHXST",
+      model: "${model} ST - Color - FLHXST",
 
       color: "",
       msrp: 38749,
     },
     {
-      model: "Street Glide ST - 2 Tone - FLHXST",
+      model: "${model} ST - 2 Tone - FLHXST",
 
       color: "",
       msrp: 41399,
     },
     {
-      model: "CVO Street Glide - Custom Color",
+      model: "CVO ${model} - Custom Color",
       color: "",
       msrp: 52399,
     },
     {
-      model: "CVO Street Glide - Custom 2 Tone",
+      model: "CVO ${model} - Custom 2 Tone",
       color: "",
       msrp: 59899,
     },
@@ -9634,20 +9594,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "For insurance, whether it's bikes or any motorcycle, call David Bodnar. I've been with him now for 8 years and he's with the times. If anything changes I can just text him whatever the details are, like an ownership, and he will quote/write it up immediately. He handles all of his customers like this and his rates are the best too. I switched to him because my company dropped me due to my zx-10rr, ever since switching it hasn't cost me more than $950. I've switched everything to him because of his rates, every person that calls him.... switches seriously. Office 905-364-4007 cell 289-380-3824 david.bodnar@thebig.ca. For the person reading this don't take this as a plug. But whatever market your in, get a guy for these types of overcomes. If you live in Ontario, you now have one. I've been working with David for years. He has helped me and I have helped him. It's been a great relationship. If you don't live in Ontario try to find someone like him. He took the approach of selling motorcycle insurance for no profit... at the time of writing this. A lot of agents wish they had someone like me. I opened a city up to him that he didn't have access to. He was so successful in my city that I would hear about him from other people that I had never met. I was his first client in the city, this is a common objection so i pushed him hard on my clients because he helped me so much with my insurance. ",
-      userEmail: "skylerzanth@gmail.com",
-      category: "information",
-      type: "text",
-      subject: "Insurance Broker",
-      title: "Insurance",
-      dept: "sales",
-      label: "",
-      review:
-        "For insurance, whether it's bikes or any motorcycle, call David Bodnar. I've been with him now for 8 years and he's with...",
-      fromEmail: "skylerzanth@gmail.com",
-    },
-    {
-      body: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our Street Glide, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the Street Glide. Let me know what you need and I'll be happy to help you.",
+      body: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our ${model}, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the ${model}. Let me know what you need and I'll be happy to help you.",
       userEmail: "skylerzanth@gmail.com",
       category: "overcome",
       type: "email",
@@ -9660,7 +9607,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our Street Glide, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the Street Glide. Let me know what you need and I'll be happy to help you.",
+      body: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our ${model}, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the ${model}. Let me know what you need and I'll be happy to help you.",
       userEmail: "skylerzanth@gmail.com",
       category: "overcome",
       type: "text",
@@ -9738,7 +9685,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "I want to express my gratitude once more for choosing us, { Client - First name }. I hope you find great joy in your { Current Vehicle - Model } for the years ahead. If you ever have questions, encounter any issues, or anything else comes to mind, please don't hesitate to reach out. I'm here and more than willing to assist. Even if you believe it's something minor, I value your feedback to ensure your purchase was absolutely perfect.",
+      body: "I want to express my gratitude once more for choosing us, ${firstName}. I hope you find great joy in your ${model} for the years ahead. If you ever have questions, encounter any issues, or anything else comes to mind, please don't hesitate to reach out. I'm here and more than willing to assist. Even if you believe it's something minor, I value your feedback to ensure your purchase was absolutely perfect.",
       userEmail: "skylerzanth@gmail.com",
       category: "Automation ",
       type: "text",
@@ -9749,7 +9696,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "Hey {Client - First Name} It was great talking to you about the {Wanted vehicle - Model} you are interested in.  If any questions or concerns come up let me know and I will be more than happy to address them. I'll follow up with you in a couple of days to give you time to consider any parts or accessories you would like to add. If you want to move forward before I follow up, text or call me and we can lock it in for you.",
+      body: "Hey ${firstName} It was great talking to you about the {Wanted vehicle - Model} you are interested in.  If any questions or concerns come up let me know and I will be more than happy to address them. I'll follow up with you in a couple of days to give you time to consider any parts or accessories you would like to add. If you want to move forward before I follow up, text or call me and we can lock it in for you.",
       userEmail: "skylerzanth@gmail.com",
       category: "Automation ",
       type: "text",
@@ -9760,7 +9707,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "Hey { Client - First name } It was great talking to you about the { Wanted Vehicle - Model }. If any questions come up let me know and I will be more than happy to address them.",
+      body: "Hey ${firstName} It was great talking to you about the { Wanted Vehicle - Model }. If any questions come up let me know and I will be more than happy to address them.",
       userEmail: "skylerzanth@gmail.com",
       category: "Automation ",
       type: "text",
@@ -9771,7 +9718,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "Hey { Client - First name } its { User - First name } from dealer, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
+      body: "Hey ${firstName} its ${userFname} from ${dealerName}, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       userEmail: "skylerzanth@gmail.com",
       category: "Automation ",
       type: "text",
@@ -9782,7 +9729,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "Hey { Client - First name } it's me from dealer, you requested that rep get in contact with you about the { Current Vehicle - Model } you were looking at online. When is a good time for me to call you back, would later on today work or tomorrow?",
+      body: "Hey ${firstName} it's me from ${dealerName}, you requested that rep get in contact with you about the ${model} you were looking at online. When is a good time for me to call you back, would later on today work or tomorrow?",
       userEmail: "skylerzanth@gmail.com",
       category: "Automation ",
       type: "text",
@@ -9793,7 +9740,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "Hey { Client - First name } it's me from dealer, I just called but your probably tied up. When is a good time for us to talk about the { Current Vehicle - Model }, would later this afternoon work, or is tomorrow better?",
+      body: "Hey ${firstName} it's me from ${dealerName}, I just called but your probably tied up. When is a good time for us to talk about the ${model}, would later this afternoon work, or is tomorrow better?",
       userEmail: "skylerzanth@gmail.com",
       category: "Automation ",
       type: "text",
@@ -9815,34 +9762,34 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the Street Glide. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
+      body: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the ${model}. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
       userEmail: "skylerzanth@gmail.com",
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 1",
+      title: "wanted to check in and see if you had any further questions or concerns about the ${model}",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the Street Glide. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let me know if you're interested and we can discuss next steps.",
+      body: "I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the ${model}. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let me know if you're interested and we can discuss next steps.",
       userEmail: "skylerzanth@gmail.com",
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 2",
+      title: "noticed you haven't responded to my previous email",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the Street Glide is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
+      body: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the ${model} is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
       userEmail: "skylerzanth@gmail.com",
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 3",
+      title: "purchasing a motorcycle can be a big decision",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
@@ -9853,7 +9800,7 @@ export async function seedTemplates() {
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 4",
+      title: "To ensure that you have the opportunity to view and secure the unit",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
@@ -9864,51 +9811,51 @@ export async function seedTemplates() {
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 5",
+      title: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
+      body: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the ${model} is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
       userEmail: "skylerzanth@gmail.com",
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 6",
+      title: "I understand that deciding on a motorcycle purchase is a significant decision. However,",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the Street Glide as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the Street Glide, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
+      body: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the ${model} as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the ${model}, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
       userEmail: "skylerzanth@gmail.com",
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 9",
+      title: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life.",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the Street Glide have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the Street Glide for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the Street Glide can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
+      body: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the ${model} have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the ${model} for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the ${model} can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
       userEmail: "skylerzanth@gmail.com",
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 8",
+      title: "I completely understand that making a decision like this can be a significant step.",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
+      body: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the ${model} is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The ${model} is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the ${model} is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
       userEmail: "skylerzanth@gmail.com",
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 7",
+      title: "I understand that you might have some concerns,",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
@@ -9919,7 +9866,7 @@ export async function seedTemplates() {
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 10",
+      title: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license.",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
@@ -9930,7 +9877,7 @@ export async function seedTemplates() {
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 11",
+      title: "It seems like you might have some concerns about the deal we're working on,",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
@@ -9941,7 +9888,7 @@ export async function seedTemplates() {
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 11",
+      title: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
@@ -9952,13 +9899,13 @@ export async function seedTemplates() {
       category: "Close",
       type: "text",
       subject: "",
-      title: "needs title 12",
+      title: "If your worried about the finance numbers we can sit you down with our finance manager",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: `Hey it's $ {user.username} from $ {dFees.dealer}, you requested to have a rep contact you about the { Current Vehicle - Model } on facebook. When is a good time for me to call you back, would later on today work or tomorrow? If text is the only way of contact, that would be good as well.`,
+      body: "Hey it's ${userFname} from $ ${dealerName}, you requested to have a rep contact you about the ${model} on facebook. When is a good time for me to call you back, would later on today work or tomorrow? If text is the only way of contact, that would be good as well.",
       userEmail: "skylerzanth@gmail.com",
       category: "Texts",
       type: "text",
@@ -9991,7 +9938,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "Hey { Client - Civility } { Client - First name }, it's { User - First name } from { Dealer - Name }. It was nice meeting you today. Do not hesitate if you have any questions. Have a great day!",
+      body: "Hey ${firstName}, it's ${userFname} from ${dealerName}. It was nice meeting you today. Do not hesitate if you have any questions. Have a great day!",
       userEmail: "skylerzanth@gmail.com",
       category: "Texts",
       type: "text",
@@ -10013,40 +9960,29 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: `Hey its $ {user.username} from $ {dFees.dealer} you put in a request on line to take advantage of the current promotions, which unit were you looking for?`,
+      body: "Hey its ${userFname} from ${dealerName} you put in a request on line to take advantage of the current promotions, which unit were you looking for?",
       userEmail: "skylerzanth@gmail.com",
       category: "Texts",
       type: "text",
       subject: "",
-      title: "Needs Name1",
+      title: "you put in a request on line to take advantage",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: `Hey its $ {user.username} from $ {dFees.dealer} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?`,
+      body: "Hey its ${userFname} from ${dealerName} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?",
       userEmail: "skylerzanth@gmail.com",
       category: "Texts",
       type: "text",
       subject: "",
-      title: "Needs Name2",
+      title: "you requested that rep get in contact with you about the unit",
       dept: "sales",
       label: "",
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: `Hey its $ {user.username} from $ {dFees.dealer} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?`,
-      userEmail: "skylerzanth@gmail.com",
-      category: "Texts",
-      type: "text",
-      subject: "",
-      title: "Needs Name2",
-      dept: "sales",
-      label: "",
-      fromEmail: "skylerzanth@gmail.com",
-    },
-    {
-      body: `Hey its $ {user.username} from $ {dFees.dealer} I just called but your probably tied up give me a call or text when you can and we can go over that unit you were looking for`,
+      body: "Hey its ${userFname} from ${dealerName} I just called but your probably tied up give me a call or text when you can and we can go over that unit you were looking for",
       userEmail: "skylerzanth@gmail.com",
       category: "Texts",
       type: "text",
@@ -10057,7 +9993,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "Hey { Client - First name } its { User - First name } from Freedom, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
+      body: "Hey ${firstName} its ${userFname} from ${dealerName}, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       userEmail: "skylerzanth@gmail.com",
       category: "Texts",
       type: "text",
@@ -10068,7 +10004,7 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@gmail.com",
     },
     {
-      body: "As the holidays approach, I understand that many folks might be considering waiting until after Christmas to make a move on their new bike purchase. While I'm more than happy to assist you {Client - First Name} whenever you decide, I wanted to ensure you're aware of the incredible promotions currently available. Our used bikes are now priced at what we paid for them on trade, presenting an unbeatable opportunity for savvy buyers. For new bikes, we're offering promotional rates as low as 1.99%, coupled with generous discounts. These rates are so remarkable that I don't foresee them being this low until next winter. If you choose to wait until after Christmas, I'll be ready to assist you. However, given the exceptional nature of these deals, waiting might mean missing out on substantial savings.  Feel free to reach out if you have any questions or if you'd like to discuss these promotions further. Looking forward to helping you make the best decision for your bike purchase! If I don't see or talk to you again before the Holidays, Merry Christmas {Client - First Name}.",
+      body: "As the holidays approach, I understand that many folks might be considering waiting until after Christmas to make a move on their new bike purchase. While I'm more than happy to assist you ${firstName} whenever you decide, I wanted to ensure you're aware of the incredible promotions currently available. Our used bikes are now priced at what we paid for them on trade, presenting an unbeatable opportunity for savvy buyers. For new bikes, we're offering promotional rates as low as 1.99%, coupled with generous discounts. These rates are so remarkable that I don't foresee them being this low until next winter. If you choose to wait until after Christmas, I'll be ready to assist you. However, given the exceptional nature of these deals, waiting might mean missing out on substantial savings.  Feel free to reach out if you have any questions or if you'd like to discuss these promotions further. Looking forward to helping you make the best decision for your bike purchase! If I don't see or talk to you again before the Holidays, Merry Christmas ${firstName}.",
       userEmail: "skylerzanth@gmail.com",
       category: "follow-up",
       type: "email",

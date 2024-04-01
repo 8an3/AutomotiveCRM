@@ -17,6 +17,7 @@ import { SetToken66, requireAuthCookie, SetClient66 } from '~/utils/misc.user.se
 import { X } from 'lucide-react';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { GetUser } from "~/utils/loader.server";
+import { SendPayments, FullBreakdown, FullBreakdownWOptions } from '~/routes/email.server';
 //import { UpdateLead } from '~/routes/api.activix';
 const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
 
@@ -41,6 +42,7 @@ export async function overviewLoader({ request, params }: LoaderFunction) {
 
     const session = await getPref(request.headers.get("Cookie"))
     const sliderWidth = session.get('sliderWidth')
+    const tokens = session.get('accessToken')
     session.set("userId", userId)
     session.set("financeId", financeId)
     await commitPref(session)
@@ -57,37 +59,37 @@ export async function overviewLoader({ request, params }: LoaderFunction) {
         const modelData = await getDataByModelManitou(finance);
         const manOptions = await getLatestOptionsManitou(email)
         // console.log(modelData, manOptions)
-        return json({ ok: true, modelData, finance, deFees, manOptions, sliderWidth, records, notifications })
+        return json({ ok: true, modelData, finance, deFees, manOptions, sliderWidth, records, notifications, user, tokens })
     }
     if (brand === 'Switch') {
         const modelData = await getDataByModel(finance);
         const manOptions = await getLatestOptionsManitou(email)
         //  console.log(modelData, manOptions)
-        return json({ ok: true, modelData, finance, deFees, manOptions, sliderWidth, records, notifications })
+        return json({ ok: true, modelData, finance, deFees, manOptions, sliderWidth, records, notifications, user, tokens })
     }
     if (brand === 'Kawasaki') {
         const modelData = await getDataKawasaki(finance);
-        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications })
+        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens })
     }
     if (brand === 'BMW-Motorrad') {
         const financeId = finance?.id
         const bmwMoto = await getLatestBMWOptions(financeId)
         const bmwMoto2 = await getLatestBMWOptions2(financeId)
         const modelData = await getDataBmwMoto(finance);
-        return json({ ok: true, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, records, notifications })
+        return json({ ok: true, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, records, notifications, user, tokens })
     }
     if (brand === 'Triumph') {
         const modelData = await getDataTriumph(finance);
-        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications })
+        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens })
     }
     if (brand === 'Harley-Davidson') {
         const modelData = await getDataHarley(finance);
-        console.log(modelData, 'modeldata')
-        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications })
+        console.log(user, tokens, 'user, tokens ')
+        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens })
     }
     else {
         const modelData = await getDataByModel(finance)
-        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications })
+        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens })
     }
 }
 
@@ -177,6 +179,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     const financeId = formData.financeId        //console.log(DataForm, 'dataform')
     const sliderWidth = formData.sliderWidth
     // const token66 = await SetToken66(sliderWidth)
+    const tokens = userSession.get('accessToken')
 
     if (formPayload.intent === 'financeTurnover') {
         const locked = Boolean(formPayload.locked);
@@ -219,7 +222,21 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
         return redirect('/dashboard/features/emailClientSpecAndModel'),
             { headers: { "Set-Cookie": await commitPref(session66) } }
     }
-
+    if (formPayload.intent === 'sendPayments') {
+        console.log(user, tokens, 'inside handesendpayments')
+        const send = SendPayments(tokens, user)
+        return send
+    }
+    if (formPayload.intent === 'FullBreakdown') {
+        console.log(user, tokens, 'inside handesendpayments')
+        const send = FullBreakdown(tokens, user)
+        return send
+    }
+    if (formPayload.intent === 'FullBreakdownW/Options') {
+        console.log(user, tokens, 'inside handesendpayments')
+        const send = FullBreakdownWOptions(tokens, user)
+        return send
+    }
     if (formPayload.financeTurnover === true) {
         const finance = await prisma.lockFinanceTerminals.update({
             where: {

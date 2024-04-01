@@ -38,7 +38,8 @@ export default function Roadmap() {
 	const todoRoadmap = [
 		{ type: "issue", desc: "API file upload will be released once google approves gmail as its still in the process right now" },
 		{ type: "issue", desc: "move staff chat to sms messenger" },
-		{ type: "issue", desc: "google auth fixed need to verify put in root" },
+		{ type: "issue", desc: "need to change how to load overview, need to pull your own by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
+		{ type: "issue", desc: "google auth fixed need to verify, put in root" },
 		{ type: "issue", desc: "need to redo email templates in overview - wip move email templates to template section??? and just have a email client in its place then it would really just be three choices instead of 100 and something because it would just take whatewver payments that are saved" },
 		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - wip" },
 

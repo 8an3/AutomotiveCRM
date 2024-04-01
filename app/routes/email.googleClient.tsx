@@ -2,7 +2,7 @@ import { Container } from "@radix-ui/themes";
 
 import NotificationSystem from "./notifications";
 import slider from '~/styles/slider.css'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
+import { Accordion, AccordionContenSendEmailt, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
 import { toast } from "sonner"
 import { Archive, MailWarning, DollarSign, Clock, MailCheck, Twitter, RefreshCw, FormInput, Inbox, Reply, ReplyAll, Forward, MoreVertical, Star, Folder, MailQuestion, ShieldAlert, MessageCircle, Loader2, } from "lucide-react";
 import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, ButtonLoading } from "~/components/ui";

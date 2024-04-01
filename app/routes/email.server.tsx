@@ -9,6 +9,22 @@ import type { oauth2_v2 } from 'googleapis';
 import { DataFunctionArgs, json, redirect, type LoaderFunction, createCookie } from '@remix-run/node';
 import { RefreshToken } from "~/services/google-auth.server";
 import axios from 'axios';
+import { getMergedFinanceOnFinance, getMergedFinanceOnFinanceUniqueFInanceId } from "~/utils/client/getLatestFinance.server";
+import { Body, Container, Head, Row, Column, Heading, Hr, Img, Html, Preview, Tailwind, Link, Text, Section, } from "@react-email/components";
+import { getLatestFinance, getLatestFinance2, getLatestFinanceManitou, getDataKawasaki, getLatestBMWOptions, getLatestBMWOptions2, getDataBmwMoto, getDataByModel, getDataHarley, getDataTriumph, findQuoteById, findDashboardDataById, getDataByModelManitou, getLatestOptionsManitou } from "~/utils/finance/get.server";
+import Payments from "./emails/custom/payments";
+import Options from "./emails/custom/options";
+import WPdf from "./emails/custom/paymentswPdf";
+import OptionsWBreakdown from "./emails/custom/OptionsWBreakdown";
+import OptionsWSpec from "./emails/custom/OptionsWPDF";
+import TempPayments from "./emails/custom/tempPayments";
+import TempPaymentsBreakdown from "./emails/custom/tempPaymentsBreakdown";
+import TempPaymentsBreakdownPDF from "./emails/custom/tempPaymentsBreakdownPDF";
+import TempOptions from "./emails/custom/tempOptions";
+import TempOptionsWPDF from "./emails/custom/tempOptionsWPDF";
+import TempOptionsWBreakdown from "./emails/custom/tempOptionsWBreakdown";
+import FullCustom from "./emails/custom/fullCustom";
+import { getDealerFeesbyEmail } from "~/utils/user.server";
 
 const oauth2Client = new google.auth.OAuth2(
   "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
@@ -23,8 +39,6 @@ const gmail = google.gmail({
   auth: oauth2Client,
 });
 const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
-
-
 
 const getAccessToken = async (refreshToken) => {
   try {
@@ -43,7 +57,6 @@ const getAccessToken = async (refreshToken) => {
     console.log(err);
   }
 };
-
 
 export function Unauthorized(refreshToken) {
   console.log('Unauthorized');
@@ -108,10 +121,6 @@ export async function TokenRegen(request) {
   }
   return googleTokens
 }
-
-
-
-
 export async function SendEmail(user, to, subject, text, tokens) {
   console.log(to, subject, text, tokens, 'inside sendmail')
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
@@ -138,7 +147,6 @@ export async function SendEmail(user, to, subject, text, tokens) {
     return response.data;
   } catch (error) { console.error('Error sending email:', error); throw error; }
 }
-
 export async function GetUserEmails() {
   const res = await gmail.users.messages.list({ userId: 'me' });
   console.log(res.data);
@@ -362,120 +370,515 @@ export async function GetEmailsFromFolder(oauth2Client: any, label: string) {
     console.error('Error listing messages:', error);
   }
 }
-/**
- *
- *
- *
-export async function loader({ params, request }: DataFunctionArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
-  const email = session.get("email")
-  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
 
+export async function SendPayments(tokens, user) {
+  const email = user.email
+  console.log(tokens, user, 'wquiote loadert')
+  if (!user) { redirect('/login') }
+  console.log('email action')
+  let finance = await getMergedFinanceOnFinance(email)
+  const deFees = await getDealerFeesbyEmail(email)
+  const brand = finance?.brand || '';
+  console.log('iinside email')
+  const clientData = {
+    // clientFname: "Bob",
 
-    const user = await prisma.user.findUnique({
-        where: { email: email },
-        select: {
-          id: true,
-          name: true,
-          username: true,
-          email: true,
-          subscriptionId: true,
-          customerId: true,
-          returning: true,
-          phone: true,
-          dealer: true,
-          position: true,
-          roleId: true,
-          profileId: true,
-          omvicNumber: true,
-          role: { select: { symbol: true, name: true } },
-        },
-      });
-  const tokens = session.get("accessToken")
-  let refreshToken
-  refreshToken = session.get("refreshToken")
-  if (!refreshToken) {
-    const newUser = await prisma.user.findUnique({
-      where: {
-        email: user.email
-      }
-    })
-    refreshToken = newUser.refreshToken
+    //clientTitle: finance.clientTitle,
+    clientFname: finance.firstName,
+    clientLname: finance.lastName,
+    clientFullName: finance.firstName + ' ' + finance.lastName,
+    clientPhone: finance.phone,
+    clientEmail: finance.email,
+    //clientCompanyName: finance.clientCompanyName,
+    clientCell: finance.phone,
+    clientAddress: finance.address,
+    clientCity: finance.city,
+    clientProvince: finance.province,
+    clientPostalCode: finance.postal,
+    //  clientCountry: finance.country,
+    year: finance.year,
+    brand: finance.brand,
+    model: finance.model,
+    trim: finance.trim,
+    stockNumber: finance.stockNum,
+    vin: finance.vin,
+    color: finance.color,
+    // balance: finance.balance,
+    tradeYear: finance.tradeYear,
+    tradeMake: finance.tradeMake,
+    tradeDesc: finance.tradeDesc,
+    tradeTrim: finance.tradeTrim,
+    tradeVin: finance.tradeVin,
+    tradeColor: finance.tradeColor,
+    tradeValue: finance.tradeValue,
+    tradeMileage: finance.tradeMileage,
+    firstName: user?.name.split(' ')[0],
+    userFullName: user?.name,
+    userPhone: user?.phone,
+    userEmail: finance.userEmail,
+    userCell: user?.phone,
+    /*fAndIInstitution: finance.fAndIInstitution,
+    fAndIFullName: finance.fAndIFullName,
+    fAndIEmail: finance.fAndIEmail,
+    fAndIFullName: finance.fAndIFullName,
+    fAndIPhone: finance.fAndIPhone,
+    fAndICell: finance.fAndICell,
+    */
   }
-  oauth2Client.setCredentials({
-    access_token: tokens,
-    refresh_token: refreshToken
-  });
+  let modelData = ''
+  if (brand === 'Kawasaki') {
+    modelData = await getDataKawasaki(finance);
+  }
+  const financeModel = finance?.model || '';
+  const userLabour = deFees?.userLabour || '';
+  const userOMVIC = deFees?.userOMVIC || '';
+  const userLicensing = deFees?.userLicensing || '';
+  const userExtWarr = deFees?.userExtWarr || '';
+  const userServicespkg = deFees?.userServicespkg || '';
+  const vinE = deFees?.vinE || '';
+  const rustProofing = deFees?.rustProofing || '';
+  const userGap = deFees?.userGap || '';
+  const userLoanProt = deFees?.userLoanProt || '';
+  const userTireandRim = deFees?.userTireandRim || '';
+  const userOther = deFees?.userOther || '';
+  const dealer = deFees?.dealer || '';
+  const pdi = deFees?.userPDI || '';
+  const userAirTax = deFees?.userAirTax || '';
+  const userDemo = deFees?.userDemo || '';
+  const userMarketAdj = deFees?.userMarketAdj || '';
+  const userGasOnDel = deFees?.userGasOnDel || '';
+  const destinationCharge = deFees?.destinationCharge || '';
+  const userFinance = deFees?.userFinance || '';
+  const userGovern = deFees?.userGovern || '';
+  const userTireTax = deFees?.userTireTax || '';
+  const admin = deFees?.userAdmin || '';
+  const commodity = deFees?.userCommodity || '';
+  const discount = finance?.discount || '';
+  const discountPer = finance?.discountPer || '';
+  const painPrem = finance?.paintPrem || '';
+  const onTax = finance?.onTax || '';
+  const total = finance?.total || '';
+  const months = finance?.months || '';
+  const stockNum = finance?.stockNum || '';
+  const year = finance?.year || '';
+  const deposit = finance?.deposit || '';
+  const licensing = finance?.licensing || '';
+  const labour = finance?.labour || '';
+  const accessories = finance?.accessories || '';
+  const msrp = finance?.msrp || '';
+  const tradeValue = finance?.tradeValue || '';
+  const modelCode = finance?.modelCode || '';
+  const customerName = finance?.name || '';
+  const custEmail = finance?.email || '';
+  const qcTax = finance?.qcTax || '';
+  const weeklyqc = finance?.weeklyqc || '';
+  const biweeklyqc = finance?.biweeklyqc || '';
+  const qc60 = finance?.qc60 || '';
+  const weeklyOth = finance?.weeklyOth || '';
+  const biweekOth = finance?.biweekOth || '';
+  const oth60 = finance?.oth60 || '';
+  const biweeklNat = finance?.biweeklNat || '';
+  const weeklylNat = finance?.weeklylNat || '';
+  const nat60 = finance?.nat60 || '';
+  const userEmail = user?.email || '';
+  const userPhone = user?.phone || '';
+  const userFname = user?.name || '';
+  const totalWithOptions = finance?.totalWithOptions || '';
+  const otherTaxWithOptions = finance?.otherTaxWithOptions || '';
+  const otherTax = finance?.otherTax || '';
+  const weeklyOthWOptions = finance?.weeklyOthWOptions || '';
+  const biweekOthWOptions = finance?.biweekOthWOptions || '';
+  const oth60WOptions = finance?.oth60WOptions || '';
+  const biweeklNatWOptions = finance?.biweeklNatWOptions || '';
+  const nat60WOptions = finance?.nat60WOptions || '';
+  const weeklylNatWOptions = finance?.weeklylNatWOptions || '';
+  const model2 = finance?.model || '';
+  const subject = `Payments for ${finance.model}`
+  const to = finance.email || '';
+  const preview = `Payments for ${finance.model}`
+  let body = ''
+  let topPart = ''
+  let weekly = ''
+  let biweekly = ''
+  let monthly = ''
+  let payments = ''
+  let display = ''
+  switch (payments) {
+    case 'ontario':
+      weekly = finance?.weekly || '';
+      biweekly = finance?.biweekly || '';
+      monthly = finance?.on60 || '';
+      break;
+    case 'ontarioWOptions':
+      weekly = finance?.weekly || '';
+      biweekly = finance?.biweekly || '';
+      monthly = finance?.on60 || '';
+      break;
+    case 'native':
+      weekly = finance?.weeklyqc || '';
+      biweekly = finance?.biweeklyqc || '';
+      monthly = finance?.qc60 || '';
+      break;
+    case 'nativeWOptions':
+      weekly = finance?.weeklylNatWOptions || '';
+      biweekly = finance?.biweeklNatWOptions || '';
+      monthly = finance?.nat60WOptions || '';
+      break;
+    case 'other':
+      weekly = finance?.weeklyOth || '';
+      biweekly = finance?.biweekOth || '';
+      monthly = finance?.oth60 || '';
+      break;
+    case 'otherWOptions':
+      weekly = finance?.weeklyOthWOptions || '';
+      biweekly = finance?.biweekOthWOptions || '';
+      monthly = finance?.oth60WOptions || '';
+      break;
+    default:
+      weekly = finance?.weekly || '';
+      biweekly = finance?.biweekly || '';
+      monthly = finance?.on60 || '';
+  }
 
-  const gmail = google.gmail({
-    version: 'v1',
-    auth: oauth2Client,
-  });
+  console.log(to, subject, tokens, 'inside sendmail');
+  const USER_ID = user.email;
+  const ACCESS_TOKEN = tokens;
+  const TO_ADDRESS = to;
+  const EMAIL_CONTENT = `From: ${USER_ID}\r\n` +
+    `To: ${TO_ADDRESS}\r\n` +
+    `Subject: ${subject}\r\n` +
+    `Content-Type: text/html; charset=utf-8\r\n\r\n` +  // Change content type to text/html
+    `<html>
+      <head>
+        <style>
+          /* Inline CSS styles */
+          .container {
+            background-color: #ffffff;
+            margin: 0 auto;
+            padding: 20px 0 48px;
+            margin-bottom: 64px;
+          }
+          .paragraph {
+            font-size: 16px;
+            line-height: 24px;
+            text-align: left;
+          }
+          .hr {
+            border-color: #e6ebf1;
+            margin: 20px 0;
+          }
+          .main {
+            background-color: #f6f9fc;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;
+          }
+          .box {
+            padding: 0 48px;
+          }
+        </style>
+      </head>
+      <body style="background-color: #f6f9fc; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Ubuntu,sans-serif;">
+        <div class="container" style="background-color: #ffffff; margin: 0 auto; padding: 20px 0 48px; margin-bottom: 64px;">
+          <div class="box" style="padding: 0 48px;">
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: left;">
+              Hey ${customerName},
+            </p>
 
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: left;">
+              I hope this message finds you well. I wanted to express my appreciation for the opportunity to meet with you and discuss your upcoming purchase of the ${model2}. It was a pleasure learning about your preferences and requirements.
+              As promised, I have attached the pricing details for the ${model2} to this email. Please review the payments below --
+              </p>
+            <p class="paragraph" style="font-size: 24px; text-align: left; font-weight: thin;">
+              Payments
+            </p>
+            <hr class="hr" style="border-color: #e6ebf1; margin: 20px 0;">
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: left;">
+              With ${deposit} down, over ${months} months, your payments are:
+            </p>
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: center;">
+            ${weekly} / Weekly
+          </p>
+          <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: center;">
+          ${biweekly} / Bi-weekly
+        </p>
+        <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: center;">
+        ${monthly} / Monthly
+      </p>
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: left;">
+              Thank you for considering us for your needs. Your satisfaction is our top priority, and I look forward to assisting you further. I value your interest in our products, and I'm here to assist you every step of the way. If you decide to move forward with your purchase, call me right away. Otherwise, I will follow up with you in a couple of days to ensure a smooth and timely process. You can reach me via email at ${userEmail} or directly on my cell phone at ${userPhone} for any inquiries or to secure your purchase.
+            </p>
+          </div>
+        </div>
+      </body>
+    </html>`;
 
-  const res = await gmail.users.messages.list({ userId: 'me' });
-  console.log(res.data);
-  return res
+  const BASE64_ENCODED_CONTENT = btoa(unescape(encodeURIComponent(EMAIL_CONTENT)));
+  const url = `https://gmail.googleapis.com/gmail/v1/users/${USER_ID}/messages/send?key=${API_KEY}`;
+  try {
+    const response = await axios.post(url, { raw: BASE64_ENCODED_CONTENT }, {
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) { console.error('Error sending email:', error); throw error; }
+  return null
 }
 
-export async function action({ params, request }: DataFunctionArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
-  const email = session.get("email")
-  const formPayload = Object.fromEntries(await request.formData());
+export async function FullBreakdown(tokens, user) {
+  const email = user.email
+  console.log(tokens, user, 'wquiote loadert')
+  if (!user) { redirect('/login') }
+  console.log('email action')
+  let finance = await getMergedFinanceOnFinance(email)
+  const deFees = await getDealerFeesbyEmail(email)
+  const brand = finance?.brand || '';
+  console.log('iinside email')
+  const clientData = {
+    // clientFname: "Bob",
 
-  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+    //clientTitle: finance.clientTitle,
+    clientFname: finance.firstName,
+    clientLname: finance.lastName,
+    clientFullName: finance.firstName + ' ' + finance.lastName,
+    clientPhone: finance.phone,
+    clientEmail: finance.email,
+    //clientCompanyName: finance.clientCompanyName,
+    clientCell: finance.phone,
+    clientAddress: finance.address,
+    clientCity: finance.city,
+    clientProvince: finance.province,
+    clientPostalCode: finance.postal,
+    //  clientCountry: finance.country,
+    year: finance.year,
+    brand: finance.brand,
+    model: finance.model,
+    trim: finance.trim,
+    stockNumber: finance.stockNum,
+    vin: finance.vin,
+    color: finance.color,
+    // balance: finance.balance,
+    tradeYear: finance.tradeYear,
+    tradeMake: finance.tradeMake,
+    tradeDesc: finance.tradeDesc,
+    tradeTrim: finance.tradeTrim,
+    tradeVin: finance.tradeVin,
+    tradeColor: finance.tradeColor,
+    tradeValue: finance.tradeValue,
+    tradeMileage: finance.tradeMileage,
+    firstName: user?.name.split(' ')[0],
+    userFullName: user?.name,
+    userPhone: user?.phone,
+    userEmail: finance.userEmail,
+    userCell: user?.phone,
+    /*fAndIInstitution: finance.fAndIInstitution,
+    fAndIFullName: finance.fAndIFullName,
+    fAndIEmail: finance.fAndIEmail,
+    fAndIFullName: finance.fAndIFullName,
+    fAndIPhone: finance.fAndIPhone,
+    fAndICell: finance.fAndICell,
+    */
+  }
+  let modelData = ''
+  if (brand === 'Kawasaki') {
+    modelData = await getDataKawasaki(finance);
+  }
+  const financeModel = finance?.model || '';
+  const userLabour = deFees?.userLabour || '';
+  const userOMVIC = deFees?.userOMVIC || '';
+  const userLicensing = deFees?.userLicensing || '';
+  const userExtWarr = deFees?.userExtWarr || '';
+  const userServicespkg = deFees?.userServicespkg || '';
+  const vinE = deFees?.vinE || '';
+  const rustProofing = deFees?.rustProofing || '';
+  const userGap = deFees?.userGap || '';
+  const userLoanProt = deFees?.userLoanProt || '';
+  const userTireandRim = deFees?.userTireandRim || '';
+  const userOther = deFees?.userOther || '';
+  const dealer = deFees?.dealer || '';
+  const pdi = deFees?.userPDI || '';
+  const userAirTax = deFees?.userAirTax || '';
+  const userDemo = deFees?.userDemo || '';
+  const userMarketAdj = deFees?.userMarketAdj || '';
+  const userGasOnDel = deFees?.userGasOnDel || '';
+  const destinationCharge = deFees?.destinationCharge || '';
+  const userFinance = deFees?.userFinance || '';
+  const userGovern = deFees?.userGovern || '';
+  const userTireTax = deFees?.userTireTax || '';
+  const admin = deFees?.userAdmin || '';
+  const commodity = deFees?.userCommodity || '';
+  const discount = finance?.discount || '';
+  const discountPer = finance?.discountPer || '';
+  const painPrem = finance?.paintPrem || '';
+  const onTax = finance?.onTax || '';
+  const total = finance?.total || '';
+  const months = finance?.months || '';
+  const stockNum = finance?.stockNum || '';
+  const year = finance?.year || '';
+  const deposit = finance?.deposit || '';
+  const licensing = finance?.licensing || '';
+  const labour = finance?.labour || '';
+  const accessories = finance?.accessories || '';
+  const msrp = finance?.msrp || '';
+  const tradeValue = finance?.tradeValue || '';
+  const modelCode = finance?.modelCode || '';
+  const customerName = finance?.name || '';
+  const custEmail = finance?.email || '';
+  const qcTax = finance?.qcTax || '';
+  const weeklyqc = finance?.weeklyqc || '';
+  const biweeklyqc = finance?.biweeklyqc || '';
+  const qc60 = finance?.qc60 || '';
+  const weeklyOth = finance?.weeklyOth || '';
+  const biweekOth = finance?.biweekOth || '';
+  const oth60 = finance?.oth60 || '';
+  const biweeklNat = finance?.biweeklNat || '';
+  const weeklylNat = finance?.weeklylNat || '';
+  const nat60 = finance?.nat60 || '';
+  const userEmail = user?.email || '';
+  const userPhone = user?.phone || '';
+  const userFname = user?.name || '';
+  const totalWithOptions = finance?.totalWithOptions || '';
+  const otherTaxWithOptions = finance?.otherTaxWithOptions || '';
+  const otherTax = finance?.otherTax || '';
+  const weeklyOthWOptions = finance?.weeklyOthWOptions || '';
+  const biweekOthWOptions = finance?.biweekOthWOptions || '';
+  const oth60WOptions = finance?.oth60WOptions || '';
+  const biweeklNatWOptions = finance?.biweeklNatWOptions || '';
+  const nat60WOptions = finance?.nat60WOptions || '';
+  const weeklylNatWOptions = finance?.weeklylNatWOptions || '';
+  const model2 = finance?.model || '';
+  const subject = `Payments for ${finance.model}`
+  const to = finance.email || '';
+  const preview = `Payments for ${finance.model}`
+  let body = ''
+  let topPart = ''
+  let weekly = ''
+  let biweekly = ''
+  let monthly = ''
+  let payments = ''
+  let display = ''
+  switch (payments) {
+    case 'ontario':
+      weekly = finance?.weekly || '';
+      biweekly = finance?.biweekly || '';
+      monthly = finance?.on60 || '';
+      break;
+    case 'ontarioWOptions':
+      weekly = finance?.weekly || '';
+      biweekly = finance?.biweekly || '';
+      monthly = finance?.on60 || '';
+      break;
+    case 'native':
+      weekly = finance?.weeklyqc || '';
+      biweekly = finance?.biweeklyqc || '';
+      monthly = finance?.qc60 || '';
+      break;
+    case 'nativeWOptions':
+      weekly = finance?.weeklylNatWOptions || '';
+      biweekly = finance?.biweeklNatWOptions || '';
+      monthly = finance?.nat60WOptions || '';
+      break;
+    case 'other':
+      weekly = finance?.weeklyOth || '';
+      biweekly = finance?.biweekOth || '';
+      monthly = finance?.oth60 || '';
+      break;
+    case 'otherWOptions':
+      weekly = finance?.weeklyOthWOptions || '';
+      biweekly = finance?.biweekOthWOptions || '';
+      monthly = finance?.oth60WOptions || '';
+      break;
+    default:
+      weekly = finance?.weekly || '';
+      biweekly = finance?.biweekly || '';
+      monthly = finance?.on60 || '';
+  }
 
+  console.log(to, subject, tokens, 'inside sendmail');
+  const USER_ID = user.email;
+  const ACCESS_TOKEN = tokens;
+  const TO_ADDRESS = to;
+  const EMAIL_CONTENT = `From: ${USER_ID}\r\n` +
+    `To: ${TO_ADDRESS}\r\n` +
+    `Subject: ${subject}\r\n` +
+    `Content-Type: text/html; charset=utf-8\r\n\r\n` +  // Change content type to text/html
+    `<html>
+      <head>
+        <style>
+          /* Inline CSS styles */
+          .container {
+            background-color: #ffffff;
+            margin: 0 auto;
+            padding: 20px 0 48px;
+            margin-bottom: 64px;
+          }
+          .paragraph {
+            font-size: 16px;
+            line-height: 24px;
+            text-align: left;
+          }
+          .hr {
+            border-color: #e6ebf1;
+            margin: 20px 0;
+          }
+          .main {
+            background-color: #f6f9fc;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;
+          }
+          .box {
+            padding: 0 48px;
+          }
+        </style>
+      </head>
+      <body style="background-color: #f6f9fc; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Ubuntu,sans-serif;">
+        <div class="container" style="background-color: #ffffff; margin: 0 auto; padding: 20px 0 48px; margin-bottom: 64px;">
+          <div class="box" style="padding: 0 48px;">
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: left;">
+              Hey ${customerName},
+            </p>
 
-    const user = await prisma.user.findUnique({
-        where: { email: email },
-        select: {
-          id: true,
-          name: true,
-          username: true,
-          email: true,
-          subscriptionId: true,
-          customerId: true,
-          returning: true,
-          phone: true,
-          dealer: true,
-          position: true,
-          roleId: true,
-          profileId: true,
-          omvicNumber: true,
-          role: { select: { symbol: true, name: true } },
-        },
-      });
-  const tokens = session.get("accessToken")
-  let refreshToken
-  refreshToken = session.get("refreshToken")
-  if (!refreshToken) {
-    const newUser = await prisma.user.findUnique({
-      where: {
-        email: user.email
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: left;">
+              I hope this message finds you well. I wanted to express my appreciation for the opportunity to meet with you and discuss your upcoming purchase of the ${model2}. It was a pleasure learning about your preferences and requirements.
+              As promised, I have attached the pricing details for the ${model2} to this email. Please review the payments below --
+              </p>
+            <p class="paragraph" style="font-size: 24px; text-align: left; font-weight: thin;">
+              Payments
+            </p>
+            <hr class="hr" style="border-color: #e6ebf1; margin: 20px 0;">
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: left;">
+              With ${deposit} down, over ${months} months, your payments are:
+            </p>
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: center;">
+            ${weekly} / Weekly
+          </p>
+          <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: center;">
+          ${biweekly} / Bi-weekly
+        </p>
+        <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: center;">
+        ${monthly} / Monthly
+      </p>
+            <p class="paragraph" style="font-size: 16px; line-height: 24px; text-align: left;">
+              Thank you for considering us for your needs. Your satisfaction is our top priority, and I look forward to assisting you further. I value your interest in our products, and I'm here to assist you every step of the way. If you decide to move forward with your purchase, call me right away. Otherwise, I will follow up with you in a couple of days to ensure a smooth and timely process. You can reach me via email at ${userEmail} or directly on my cell phone at ${userPhone} for any inquiries or to secure your purchase.
+            </p>
+          </div>
+        </div>
+      </body>
+    </html>`;
+
+  const BASE64_ENCODED_CONTENT = btoa(unescape(encodeURIComponent(EMAIL_CONTENT)));
+  const url = `https://gmail.googleapis.com/gmail/v1/users/${USER_ID}/messages/send?key=${API_KEY}`;
+  try {
+    const response = await axios.post(url, { raw: BASE64_ENCODED_CONTENT }, {
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       }
-    })
-    refreshToken = newUser.refreshToken
-  }
-  oauth2Client.setCredentials({
-    access_token: tokens,
-    refresh_token: refreshToken
-  });
-
-  const gmail = google.gmail({
-    version: 'v1',
-    auth: oauth2Client,
-  });
-
-  const intent = formPayload.intent
-
-  if (intent === 'listMessages') {
-    const res = await gmail.users.messages.list({ userId: 'me' });
-    console.log(res.data);
-    return res
-  }
-
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) { console.error('Error sending email:', error); throw error; }
+  return null
 }
- */
-/**
- *
- */
