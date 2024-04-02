@@ -63,21 +63,24 @@ const EmailSheet = (finance) => {
 
                         <Form method='post' >
                             <input type="hidden" name="financeId" value={finance.id} />
+                            <input type="hidden" name="template" value='justPayments' />
                             <Button
                                 type='submit'
                                 name='intent'
                                 value='sendPayments'
-                                className={`my-2 text-black border border-black mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border'
                             >
                                 Send Payments
                             </Button>
                         </Form>
                         <Form method='post' >
                             <input type="hidden" name="financeId" value={finance.id} />
+                            <input type="hidden" name="template" value='FullBreakdown' />
+
                             <Button
                                 type='submit'
                                 name='intent'
-                                value='FullBreakdown'
+                                value='sendPayments'
                                 className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border'
                             >
                                 Full Breakdown
@@ -85,11 +88,13 @@ const EmailSheet = (finance) => {
                             </Button>
                         </Form>
                         <Form method='post' >
-                            <input type="hidden" name="financeId" value={finance.id} />
+                            <input type="hidden" name="template" value='justPayments' />
+                            <input type="hidden" name="financeId" value='FullBreakdownWOptions' />
                             <Button
+                                disabled
                                 type='submit'
                                 name='intent'
-                                value='FullBreakdownW/Options'
+                                value='sendPayments'
                                 className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border'
                             >
                                 Full Breakdown W/ Options
