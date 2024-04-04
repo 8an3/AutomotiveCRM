@@ -28,7 +28,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   const user = await GetUser(email)
-
+  console.log(user, 'settings')
   if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const userEmail = user?.email
@@ -285,7 +285,9 @@ export function StatsTable({ statsData, comsRecords }) {
 }
 
 
-async function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
+async function ProfileForm() {
+  const { user, deFees, dataPDF, statsData, comsRecords } = useLoaderData()
+
   let finance = ''
   let data = ''
   const fetcher = useFetcher()
@@ -373,13 +375,11 @@ async function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
   return (
     <Tabs defaultValue="dealerFees" className="w-[95%] mx-auto " >
 
-      <TabsList className="grid w-full grid-cols-4 rounded-md">
+      <TabsList className="grid w-full grid-cols-3 rounded-md">
         <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
         <TabsTrigger className='rounded-md' value="account">Account</TabsTrigger>
         <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>
-        {user.email === 'skylerzanth@gmail.com' && (
-          <TabsTrigger className='rounded-md' value="dailyPdf">Daily PDF</TabsTrigger>
-        )}
+
       </TabsList>
       <TabsContent value="stats" className='rounded-md'>
         <Card className='rounded-md text-white'>

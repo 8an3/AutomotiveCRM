@@ -3,6 +3,7 @@ import { Button, RemixNavLink, } from "~/components";
 import { useLoaderData, Outlet } from "@remix-run/react";
 import { getSession } from '~/sessions/auth-session.server';
 import { prisma } from "~/libs";
+import { GetUser } from "~/utils/loader.server";
 
 import { requireUserSession } from "~/helpers";
 import { model } from "~/models";
