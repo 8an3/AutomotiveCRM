@@ -66,8 +66,8 @@ export async function loader({ request }: LoaderArgs) {
 
   const loaderData = {
     ENV,
-    userSession,
-    user,
+    //  userSession,
+    // user,
   } satisfies RootLoaderData;
   // console.log(user, userSession, 'user and userSession root loader')
   // google auth
@@ -104,7 +104,7 @@ export async function loader({ request }: LoaderArgs) {
     console.log(tokens, 'authorized tokens')
 
   } else { console.log('Authorized'); }
-  return json({ loaderData, API_KEY, user, tokens, request, refreshToken }, {
+  return json({ loaderData, API_KEY, user, tokens, refreshToken }, {
     headers: {
       "Set-Cookie": await commitSession(userSession),
     },
