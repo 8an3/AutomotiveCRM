@@ -42,9 +42,9 @@ model User {
   customerId            String?  @unique
   returning             Boolean? @default(false)
   subscriptionId        String?
-  activixActivated  String?
-   activixEmail  String?
-   activisUserId String?
+  activixActivated      String?
+  activixEmail          String?
+  activisUserId         String?
 
   role          UserRole           @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
   profile       UserProfile        @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -303,11 +303,13 @@ model StaffChat {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  message String?
-  sender  String?
-  to      String?
-  room    String?
-  token   String?
+  message    String?
+  sender     String?
+  senderName String?
+  to         String?
+  toName     String?
+  room       String?
+  token      String?
 }
 
 model Note {
