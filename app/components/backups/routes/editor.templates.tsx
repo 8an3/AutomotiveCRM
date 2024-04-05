@@ -1,18 +1,13 @@
+/* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 // https://github.com/remix-run/examples/tree/main/file-and-cloudinary-upload
-import React, { useState, useEffect, useRef } from "react";
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
 import { json, } from "@remix-run/node";
 import {
   Form,
-  useActionData,
-  useFetcher,
   useLoaderData,
-  useRouteLoaderData,
-  useSubmit,
-  useTransition,
 } from "@remix-run/react";
+import { EditorTiptapContextViewHTML, EditorTiptapHook } from "~/components/libs/editor-tiptap"
 import { Button, Input, ScrollArea } from "~/components/ui/index";
-//import { authenticator } from "~/services";
 import { model } from "~/models";
 import { getTemplatesByEmail, templateServer } from "~/utils/emailTemplates/template.server";
 import { Badge } from "~/components/ui/badge";
@@ -33,13 +28,8 @@ import {
   AccordionTrigger,
 } from "~/ui/accordion";
 import { Textarea } from "~/other/textarea";
-import { faker } from "@faker-js/faker";
-import DefaultEditor from "~/components/emailClient/editors/default";
 import { ClientOnly } from "remix-utils";
-import NewTemplate from "../components/backups/editor.newtemplate";
 import financeFormSchema from "~/routes/overviewUtils/financeFormSchema";
-import { useRootLoaderData } from "~/hooks";
-import RichTextExample from "./email";
 import {
   Select,
   SelectContent,
@@ -49,7 +39,7 @@ import {
 } from "~/components/ui/select"
 import { Toaster, toast } from 'sonner'
 import DebouncedInput from "~/components/dashboard/calls/DebouncedInput";
-
+import { prisma } from "~/libs";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import {
   Dialog,
@@ -60,11 +50,38 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog"
-import { GetUser } from "~/utils/loader.server";
-import { prisma } from "~/libs";
-
+import { conform, useForm, useInputEvent } from "@conform-to/react"
 import { getSession } from '~/sessions/auth-session.server'
+import ExampleTiptap from "./tiptap";
+import Highlight from "@tiptap/extension-highlight"
+import Link from "@tiptap/extension-link"
+import Placeholder from "@tiptap/extension-placeholder"
+import Typography from "@tiptap/extension-typography"
+import Underline from "@tiptap/extension-underline"
+import TextAlign from '@tiptap/extension-text-align'
+import ListItem from '@tiptap/extension-list-item'
+import TaskItem from '@tiptap/extension-task-item'
+import { Color } from '@tiptap/extension-color'
+import TextStyle from '@tiptap/extension-text-style'
+import Document from '@tiptap/extension-document'
+import {
+  BubbleMenu,
+  EditorContent,
+  EditorProvider,
+  useCurrentEditor,
+  useEditor,
+  type Content,
+} from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { Undo, Redo, List, ScanLine, Eraser, Code, ListPlus, Brackets, Pilcrow, Minus, AlignLeft, AlignCenter, AlignRight, AlignJustify, Highlighter, WrapText, Quote, Heading1, Heading2, Heading3 } from 'lucide-react';
 
+import { IconMatch } from "../components/libs/icons"
+import { buttonVariants } from "../components/ui/button"
+import { cn } from "../components/ui/utils"
+import { parseHTML } from "~/utils/html"
+import { fixUrl } from "~/utils/url"
+import { GetUser } from "~/utils/loader.server";
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -73,9 +90,7 @@ export async function loader({ request, params }: LoaderFunction) {
 
   const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) { redirect('/login') }
 
 
   let userMail = email
@@ -96,13 +111,8 @@ export const action = async ({ request }: ActionArgs) => {
 
 
   const user = await GetUser(email)
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) { redirect('/login') }
 
-  const userEmail = user?.email;
-  const userId = user?.id;
   const intent = formData.intent;
   const date = new Date().toISOString()
   const id = formData.id
@@ -163,30 +173,25 @@ export const action = async ({ request }: ActionArgs) => {
   return (user)
 };
 
-export function Example() {
+
+export function Example({ content, handleUpdate, }: {
+  content?: Content | string
+  handleUpdate?: (htmlString: string) => void
+}) {
   const [textEditor, setTextEditor] = useState("");
   // const { user } = useRootLoaderData()
   const { getTemplates, user } = useLoaderData();
   const [data, setData] = useState(getTemplates); //EmailLoader);
-  console.log(getTemplates, data);
-  const [isOpen, setIsOpen] = useState(false);
-  const [email, setEmail] = useState("");
   const [selectedLine, setSelectedLine] = useState(null);
   const [details, setDetails] = useState(false);
-  const [dynamic, setDynamic] = useState(false);
   const [newTemplate, setNewTemplate] = useState(false);
-
-
-
 
   const depts = [...new Set(data.map((item) => item.dept))];
   const categories = [...new Set(data.map((item) => item.category))];
   const types = [...new Set(data.map((item) => item.type))];
   const emails = [...new Set(data.map((item) => item.userEmail))];
   const titles = [...new Set(data.map((item) => item.title))];
-
   const [searchTemplates, setSearchTemplates] = useState()
-
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedType, setSelectedType] = useState("");
@@ -202,9 +207,155 @@ export function Example() {
   );
   const timerRef = React.useRef(0);
 
-  React.useEffect(() => {
-    return () => clearTimeout(timerRef.current);
+  React.useEffect(() => { return () => clearTimeout(timerRef.current); }, []);
+
+  const textareaRef = useRef();
+  function insertAtCursor(text) {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const value = textarea.value;
+      const newValue = value.slice(0, start) + text + value.slice(end);
+      textarea.value = newValue;
+    }
+  }
+  function handleDropdownChange(value) { insertAtCursor(value); }
+  /// ---------------
+  const [text, setText] = React.useState('');
+  const [paragraph, setParagraph] = useState([{ type: 'paragraph', children: [{ text: 'A line of text in a paragraph.' }], },]);
+  const [contentValue, setContentValue] = useState(text)
+  const contentRef = useRef<HTMLInputElement>(null)
+  const contentControl = useInputEvent({ ref: contentRef })
+
+  function handleUpdateContent(text: string) {
+    console.log('contrente', text)
+    setContentValue(text)
+  }
+
+
+  const content2 = contentValue
+
+  const handleLineClick = (index, item) => {
+    setSelectedLine(null);
+    setNewTemplate(false);
+    console.log('contrente', item)
+    setContentValue(item.body)
+    if (newTempState === false) {
+      setNewTempState(true)
+    }
+    setTimeout(() => {
+      setSelectedLine(index);
+    }, 0);
+  };
+  useEffect(() => {
+    if (text) {
+      window.localStorage.setItem("templateEmail", text);
+    }
+  }, [text]);
+  const [title, setTitle] = useState('')
+  const [subject, setSubject] = useState('')
+  const [department, setDepartment] = useState('')
+  const [type2, setType2] = useState('')
+  const [category, setCategory] = useState('')
+  const [cc, setCC] = useState('')
+  const [bcc, setBCC] = useState('')
+  const [attachments, setAttachments] = useState('')
+  const [label, setLabel] = useState('')
+  const [id, setId] = useState('')
+  const [oldTempState, setOldTempState] = useState(false)
+  const [newTempState, setNewTempState] = useState(false)
+
+
+  /**   <Textarea
+
+   name="body"
+  className="h-[500px]"
+    placeholder="Type your email here."
+      ref={textareaRef}
+     />
+     <Textarea
+
+       name="body"
+         className="h-[500px]"
+     placeholder="Type your email here."
+          ref={textareaRef}
+        />
+
+      <Textarea
+      defaultValue={text}
+    name="body"
+     className="h-[400px]"
+     placeholder="Type your email here."
+        ref={textareaRef} />
+       <input type='hidden' name='body2' value={paragraph} />
+
+
+            <input
+                                         type="hidden"
+                                         name="textEditor"
+                                         value={textEditor}
+                                       />
+        */
+
+  const CustomDocument = Document.extend({ content: 'taskList', })
+  const CustomTaskItem = TaskItem.extend({ content: 'inline*', })
+  useEffect(() => {
+    const text = window.localStorage.getItem("templateEmail");
+    setText(text);
   }, []);
+  const editor = useEditor({
+    content,
+    extensions: [
+      Highlight,
+      Typography,
+      Underline,
+      CustomDocument,
+      CustomTaskItem,
+      Color.configure({ types: [TextStyle.name, ListItem.name] }),
+      TextStyle,
+      StarterKit.configure({
+        bulletList: { keepMarks: true, keepAttributes: false, },
+        orderedList: { keepMarks: true, keepAttributes: false, },
+      }),
+      TextAlign.configure({ types: ['heading', 'paragraph'], }),
+      Placeholder.configure({ placeholder: () => { return "Write something..." }, }),
+      Link.configure({ HTMLAttributes: { rel: "noopener noreferrer", target: "_blank", class: "prose-a-styles", }, }),
+    ],
+    editorProps: { attributes: { class: "prose-config" } },
+    onUpdate({ editor }) {
+      setText(editor.getHTML())
+      if (handleUpdate) {
+        handleUpdate(editor.getHTML())
+      }
+    },
+
+  })
+
+
+  const buttonActive = cn(buttonVariants({ variant: "default", size: "xs", isIcon: true }))
+  const buttonInactive = cn(buttonVariants({ variant: "ghost", size: "xs", isIcon: true }))
+
+  const handleSetLink = useCallback(() => {
+    if (!editor) return null
+
+    const previousUrl = editor.getAttributes("link").href as string
+    const url = window.prompt("URL", previousUrl)
+
+    if (url === null) return
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run()
+      return
+    }
+
+    const fixedUrl = fixUrl(url)
+    editor.chain().focus().extendMarkRange("link").setLink({ href: fixedUrl }).run()
+  }, [editor])
+
+  const [financeList, setFinanceList] = useState([])
+
+  const [dynamicAttributes, setDynamic] = useState()
+
 
   const clientAtr =
   {
@@ -231,6 +382,59 @@ export function Example() {
     "VIN": "${vin}",
     'Color': '${color}',
     'Balance': '${balance}',
+    'packageNumber': '${packageNumber}',
+    'packagePrice': '${packagePrice}',
+    'stockNumber': '${stockNumber}',
+    'type': '${type}',
+    'class': '${class}',
+    'year': '${year}',
+    'make': '${make}',
+    'model': '${model}',
+    'modelName': '${modelName}',
+    'submodel': '${submodel}',
+    'subSubmodel': '${subSubmodel}',
+    'price': '${price}',
+    'exteriorColor': '${exteriorColor}',
+    'mileage': '${mileage}',
+    'consignment': '${consignment}',
+    'onOrder': '${onOrder}',
+    'expectedOn': '${expectedOn}',
+    'status': '${status}',
+    'orderStatus': '${orderStatus}',
+    'hdcFONumber': '${hdcFONumber}',
+    'hdmcFONumber': '${hdmcFONumber}',
+    'vin': '${vin}',
+    'age': '${age}',
+    'floorPlanDueDate': '${floorPlanDueDate}',
+    'location': '${location}',
+    'stocked': '${stocked}',
+    'stockedDate': '${stockedDate}',
+    'isNew': '${isNew}',
+    'actualCost': '${actualCost}',
+    'mfgSerialNumber': '${mfgSerialNumber}',
+    'engineNumber': '${engineNumber}',
+    'plates': '${plates}',
+    'keyNumber': '${keyNumber}',
+    'length': '${length}',
+    'width': '${width}',
+    'engine': '${engine}',
+    'fuelType': '${fuelType}',
+    'power': '${power}',
+    'chassisNumber': '${chassisNumber}',
+    'chassisYear': '${chassisYear}',
+    'chassisMake': '${chassisMake}',
+    'chassisModel': '${chassisModel}',
+    'chassisType': '${chassisType}',
+    'registrationState': '${registrationState}',
+    'registrationExpiry': '${registrationExpiry}',
+    'grossWeight': '${grossWeight}',
+    'netWeight': '${netWeight}',
+    'insuranceCompany': '${insuranceCompany}',
+    'policyNumber': '${policyNumber}',
+    'insuranceAgent': '${insuranceAgent}',
+    'insuranceStartDate': '${insuranceStartDate}',
+    'insuranceEndDate': '${insuranceEndDate}',
+    'sold': '${sold}',
   }
   const tradeVehAttr = {
     'Year': "${tradeYear}",
@@ -257,89 +461,134 @@ export function Example() {
     'Phone # or EXT': "${fAndIPhone}",
     'Cell #': "${fAndICell}",
   }
+  const dealerInfo = {
+    'dealerName': '${dealerName}',
+    'dealerAddress': '${dealerAddress}',
+    'dealerCity': '${dealerCity}',
+    'dealerProv': '${dealerProv}',
+    'dealerPostal': '${dealerPostal}',
+    'dealerPhone': '${dealerPhone}',
+    'userLoanProt': '${userLoanProt}',
+    'userTireandRim': '${userTireandRim}',
+    'userGap': '${userGap}',
+    'userExtWarr': '${userExtWarr}',
+    'userServicespkg': '${userServicespkg}',
+    'vinE': '${vinE}',
+    'lifeDisability': '${lifeDisability}',
+    'rustProofing': '${rustProofing}',
+    'userLicensing': '${userLicensing}',
+    'userFinance': '${userFinance}',
+    'userDemo': '${userDemo}',
+    'userGasOnDel': '${userGasOnDel}',
+    'userOMVIC': '${userOMVIC}',
+    'userOther': '${userOther}',
+    'userTax': '${userTax}',
+    'userAirTax': '${userAirTax}',
+    'userTireTax': '${userTireTax}',
+    'userGovern': '${userGovern}',
+    'userPDI': '${userPDI}',
+    'userLabour': '${userLabour}',
+    'userMarketAdj': '${userMarketAdj}',
+    'userCommodity': '${userCommodity}',
+    'destinationCharge': '${destinationCharge}',
+    'userFreight': '${userFreight}',
+    'userAdmin': '${userAdmin}',
+  }
+  const financeInfo = {
+    'financeManager': '${financeManager}',
+    'email': '${email}',
+    'firstName': '${firstName}',
+    'mileage': '${mileage}',
+    'lastName': '${lastName}',
+    'phone': '${phone}',
+    'name': '${name}',
+    'address': '${address}',
+    'city': '${city}',
+    'postal': '${postal}',
+    'province': '${province}',
+    'dl': '${dl}',
+    'typeOfContact': '${typeOfContact}',
+    'timeToContact': '${timeToContact}',
+    'iRate': '${iRate}',
+    'months': '${months}',
+    'discount': '${discount}',
+    'total': '${total}',
+    'onTax': '${onTax}',
+    'on60': '${on60}',
+    'biweekly': '${biweekly}',
+    'weekly': '${weekly}',
+    'weeklyOth': '${weeklyOth}',
+    'biweekOth': '${biweekOth}',
+    'oth60': '${oth60}',
+    'weeklyqc': '${weeklyqc}',
+    'biweeklyqc': '${biweeklyqc}',
+    'qc60': '${qc60}',
+    'deposit': '${deposit}',
+    'biweeklNatWOptions': '${biweeklNatWOptions}',
+    'weeklylNatWOptions': '${weeklylNatWOptions}',
+    'nat60WOptions': '${nat60WOptions}',
+    'weeklyOthWOptions': '${weeklyOthWOptions}',
+    'biweekOthWOptions': '${biweekOthWOptions}',
+    'oth60WOptions': '${oth60WOptions}',
+    'biweeklNat': '${biweeklNat}',
+    'weeklylNat': '${weeklylNat}',
+    'nat60': '${nat60}',
+    'qcTax': '${qcTax}',
+    'otherTax': '${otherTax}',
+    'totalWithOptions': '${totalWithOptions}',
+    'otherTaxWithOptions': '${otherTaxWithOptions}',
+    'desiredPayments': '${desiredPayments}',
+    'freight': '${freight}',
+    'admin': '${admin}',
+    'commodity': '${commodity}',
+    'pdi': '${pdi}',
+    'discountPer': '${discountPer}',
+    'userLoanProt': '${userLoanProt}',
+    'userTireandRim': '${userTireandRim}',
+    'userGap': '${userGap}',
+    'userExtWarr': '${userExtWarr}',
+    'userServicespkg': '${userServicespkg}',
+    'deliveryCharge': '${deliveryCharge}',
+    'vinE': '${vinE}',
+    'lifeDisability': '${lifeDisability}',
+    'rustProofing': '${rustProofing}',
+    'userOther': '${userOther}',
+    'paintPrem': '${paintPrem}',
+    'licensing': '${licensing}',
+    'stockNum': '${stockNum}',
+    'options': '${options}',
+    'accessories': '${accessories}',
+    'labour': '${labour}',
+    'year': '${year}',
+    'brand': '${brand}',
+    'model': '${model}',
+    'model1': '${model1}',
+    'color': '${color}',
+    'modelCode': '${modelCode}',
+    'msrp': '${msrp}',
+    'userEmail': '${userEmail}',
+    'tradeValue': '${tradeValue}',
+    'tradeDesc': '${tradeDesc}',
+    'tradeColor': '${tradeColor}',
+    'tradeYear': '${tradeYear}',
+    'tradeMake': '${tradeMake}',
+    'tradeVin': '${tradeVin}',
+    'tradeTrim': '${tradeTrim}',
+    'tradeMileage': '${tradeMileage}',
+    'trim': '${trim}',
+    'vin': '${vin}',
+    'leadNote': '${leadNote}',
+    'sendToFinanceNow': '${sendToFinanceNow}',
+    'dealNumber': '${dealNumber}',
+    'bikeStatus': '${bikeStatus}',
+    'lien': '${lien}',
+  }
   const [textareaValue, setTextareaValue] = useState("");
-  const textareaRef = useRef();
-  function insertAtCursor(text) {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const value = textarea.value;
-      const newValue = value.slice(0, start) + text + value.slice(end);
-      textarea.value = newValue;
-    }
-  }
+
   function handleDropdownChange(value) {
-    insertAtCursor(value);
+    setText(value);
   }
-  /// ---------------
-  const [text, setText] = React.useState('');
-
-  const [cursorPosition, setCursorPosition] = React.useState(null);
-
-
-  const [paragraph, setParagraph] = useState([
-    {
-      type: 'paragraph',
-      children: [{ text: 'A line of text in a paragraph.' }],
-    },
-  ]);
-  const handleLineClick = (index) => {
-    setSelectedLine(null);
-    setNewTemplate(false);
-
-    if (newTempState === false) {
-      setNewTempState(true)
-    }
-    setTimeout(() => {
-      setSelectedLine(index);
-    }, 0);
-  };
-
-  const handleNewClick = () => {
-    setSelectedLine(null);
-
-    setTimeout(() => {
-      setNewTemplate(true);
-    }, 0);
-  };
-
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    // You can also add any search logic here
-  };
-
-  const [title, setTitle] = useState('')
-  const [subject, setSubject] = useState('')
-  const [department, setDepartment] = useState('')
-  const [type2, setType2] = useState('')
-  const [category, setCategory] = useState('')
-  const [cc, setCC] = useState('')
-  const [bcc, setBCC] = useState('')
-  const [attachments, setAttachments] = useState('')
-  const [label, setLabel] = useState('')
-  const [id, setId] = useState('')
-  const [oldTempState, setOldTempState] = useState(false)
-  const [newTempState, setNewTempState] = useState(false)
-
-  const newTemplateClick = () => {
-    if (newTempState === false) {
-      setOldTempState(true)
-    } else {
-      setOldTempState(false)
-    }
-  }
-
-  const oldTemplateClick = () => {
-    if (newTempState === false) {
-      setOldTempState(true)
-    } else {
-      setOldTempState(false)
-    }
-  }
-  const handleCompose = () => {
-
-  }
+  if (!editor) return null
   return (
     <>
       <div className=" mx-auto mb-[5px] mt-10">
@@ -422,13 +671,11 @@ export function Example() {
                 <div className="flex">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline"> <p
-
-                        className="text-[#fff]   hover:text-[#02a9ff]">
+                      <Button variant="outline" className='text-[#fff]   hover:text-[#02a9ff] border border-white py-2 px-3  rounded-md'>
                         New Template
-                      </p></Button>
+                      </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[825px] bg-black">
+                    <DialogContent className="sm:max-w-[90%] bg-black">
                       <DialogHeader>
                         <DialogTitle className='text-white'>New Template</DialogTitle>
                         <DialogDescription className='text-white'>
@@ -436,21 +683,21 @@ export function Example() {
                         </DialogDescription>
                       </DialogHeader>
                       <div className=" w-full h-full p-3">
-                        <div className={` bg-slate12 w-full  items-center   rounded-md  `}  >
+                        <div className={` bg-black w-full  items-center   rounded-md  `}  >
                           <div className="flex flex-col space-y-4 mt-2 ">
                             <div
-                              className={`border-[#ffffff4d]  bg-slate12  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
+                              className={`border-[#ffffff4d]  bg-black  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
                             >
                               {/* Your content here */}
                               <Form method="post">
-                                <div className="bg-slate12 ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
+                                <div className="bg-black ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
                                   {/* Row 1 */}
                                   <div className="relative">
-                                    <Input name="title" className="text-[#fff] border-[#fff] bg-slate12 block w-full pl-[115px]" type="text" />
+                                    <Input name="title" className="text-[#fff] border-[#fff] bg-black block w-full pl-[115px]" type="text" />
                                     <label className="absolute left-2 top-[6px] text-[#fff]">Template Title:</label>
                                   </div>
                                   <div className="relative ">
-                                    <Input name="subject" className="text-[#fff] border-[#fff] bg-slate12 block w-full h-10 pl-[65px]" type="text" />
+                                    <Input name="subject" className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[65px]" type="text" />
                                     <label className="absolute left-2 top-2 text-[#fff]">Subject:</label>
                                   </div>
                                   {/* Row 2 */}
@@ -483,17 +730,12 @@ export function Example() {
                                     </div>
                                   </div>
                                   <div className="relative">
-                                    <Input name="category" type="text" className="text-[#fff] border-[#fff] bg-slate12 block w-full h-10 pl-[80px]" />
+                                    <Input name="category" type="text" className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[80px]" />
                                     <label className="absolute left-2 top-2 text-[#fff]">Category:</label>
                                   </div>
                                   {/* Row 3 */}
                                   <div className="py-1 flex justify-between">
-                                    <div
-                                      onClick={() => setDynamic(!dynamic)}
-                                      className="flex cursor-pointer items-center hover:text-[#02a9ff]"
-                                    >
-                                      <p className="text-bold text-[#fff] hover:text-[#02a9ff]">Dynamic Attributes</p>
-                                    </div>
+
                                     <div
                                       onClick={() => setDetails(!details)}
                                       className="flex cursor-pointer items-center hover:text-[#02a9ff]"
@@ -515,88 +757,7 @@ export function Example() {
                                       </div>
                                     </div>
                                   )}
-                                  {dynamic && (
-                                    <>
-                                      <div className="grid grid-cols-2 w-full items-center justify-between  ">
-                                        <select
-                                          name="clientAtr"
-                                          onChange={(event) => {
-                                            handleDropdownChange(clientAtr[event.target.value]);
-                                          }}
-                                          className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
-                                        >
-                                          <option value="">Client</option>
-                                          {Object.entries(clientAtr).map(([title, value]) => (
-                                            <option key={title} value={title}>
-                                              {title}
-                                            </option>
-                                          ))}
-                                        </select>
 
-                                        <select
-                                          name="wantedVehAttr"
-                                          onChange={(event) => {
-                                            handleDropdownChange(wantedVehAttr[event.target.value]);
-                                          }}
-                                          className='bg-slate12 border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '
-
-                                        >
-                                          <option value="">Wanted Veh</option>
-                                          {Object.entries(wantedVehAttr).map(([title, value]) => (
-                                            <option key={title} value={title}>
-                                              {title}
-                                            </option>
-                                          ))}
-                                        </select>
-                                        <select
-                                          name="tradeVehAttr"
-                                          onChange={(event) => {
-                                            handleDropdownChange(tradeVehAttr[event.target.value]);
-                                          }}
-                                          className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '
-
-                                        >
-                                          <option value="">Trade Veh</option>
-                                          {Object.entries(tradeVehAttr).map(([title, value]) => (
-                                            <option key={title} value={title}>
-                                              {title}
-                                            </option>
-                                          ))}
-                                        </select>
-                                        <select
-                                          name="salesPersonAttr"
-                                          onChange={(event) => {
-                                            handleDropdownChange(salesPersonAttr[event.target.value]);
-                                          }}
-                                          className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '
-
-                                        >
-                                          <option value="">Sales Person</option>
-                                          {Object.entries(salesPersonAttr).map(([title, value]) => (
-                                            <option key={title} value={title}>
-                                              {title}
-                                            </option>
-                                          ))}
-                                        </select>
-                                        <select
-                                          name="FandIAttr"
-                                          onChange={(event) => {
-                                            handleDropdownChange(FandIAttr[event.target.value]);
-                                          }}
-                                          className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '
-
-                                        >
-                                          <option value="">F & I Manager</option>
-                                          {Object.entries(FandIAttr).map(([title, value]) => (
-                                            <option key={title} value={title}>
-                                              {title}
-                                            </option>
-                                          ))}
-                                        </select>
-
-                                      </div>
-                                    </>
-                                  )}
                                   <Input
                                     name="intent"
                                     type="hidden"
@@ -607,24 +768,13 @@ export function Example() {
                                     type="hidden"
                                     defaultValue={user?.email}
                                   />
-
                                   <div className=" p-1">
                                     <div className="mr-auto px-2">
                                       {/*  <RichTextExample /> */}
-                                      <Textarea
+                                      <EditorTiptapHook content={contentValue} handleUpdate={handleUpdateContent} />
 
-                                        name="body"
-                                        className="h-[500px]"
-                                        placeholder="Type your email here."
-                                        ref={textareaRef}
-                                      />
                                       <input type='hidden' name='body2' value={paragraph} />
-
-                                      <input
-                                        type="hidden"
-                                        name="textEditor"
-                                        value={textEditor}
-                                      />
+                                      <input type="hidden" name="textEditor" value={textEditor} />
                                       <br />
                                       <Button
                                         variant='outline'
@@ -646,7 +796,6 @@ export function Example() {
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-
                 </div>
 
                 {filteredDropDown?.map((item, index) => (
@@ -668,14 +817,12 @@ export function Example() {
                       setAttachments(item.attachments)
                       setLabel(item.label)
                       setId(item.id)
-                      handleLineClick(index)
-                      console.log(item, 'item', selectedLine,)
-
+                      handleLineClick(index, item)
+                      editor.commands.setContent(item.body)
                     }}
                   >
                     <div className="m-2 flex items-center justify-between">
-                      <p className="text-lg font-bold text-[#fff]">{item.title}</p>
-                      <p className="text-sm text-[#ffffff7c] ">  {new Date(item.date).toLocaleString()}</p>
+                      <p className="text-lg font-bold text-[#fff] text-left">{item.title}</p>
                     </div>
                     <p className="my-2 ml-2 text-sm text-[#ffffffc9]">{item.subject}</p>
                     <p className="my-2 ml-2 text-sm text-[#ffffff70]">{item.snippet}</p>
@@ -698,21 +845,21 @@ export function Example() {
           <div className="w-2/3 h-[100%] border border-[#ffffff4d]  ">
             {oldTempState === true ? (
               <div className=" w-full h-full p-3">
-                <div className={` bg-slate12 w-full  items-center  overflow-x-scroll  rounded-md  `}  >
+                <div className={` bg-black w-full  items-center  overflow-x-scroll  rounded-md  `}  >
                   <div className="flex flex-col space-y-4 mt-[50px] ">
                     <div
-                      className={`border-[#ffffff4d]  bg-slate12  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
+                      className={`border-[#ffffff4d]  bg-black  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
                     >
                       {/* Your content here */}
                       <Form method="post">
-                        <div className="bg-slate12 ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
+                        <div className="bg-black ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
                           {/* Row 1 */}
                           <div className="relative">
-                            <Input name="title" className="text-[#fff] border-[#fff] bg-slate12 block w-full pl-[115px]" type="text" />
+                            <Input name="title" className="text-[#fff] border-[#fff] bg-black block w-full pl-[115px]" type="text" />
                             <label className="absolute left-2 top-[6px] text-[#fff]">Template Title:</label>
                           </div>
                           <div className="relative ">
-                            <Input name="subject" className="text-[#fff] border-[#fff] bg-slate12 block w-full h-10 pl-[65px]" type="text" />
+                            <Input name="subject" className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[65px]" type="text" />
                             <label className="absolute left-2 top-2 text-[#fff]">Subject:</label>
                           </div>
                           {/* Row 2 */}
@@ -745,17 +892,12 @@ export function Example() {
                             </div>
                           </div>
                           <div className="relative">
-                            <Input name="category" type="text" className="text-[#fff] border-[#fff] bg-slate12 block w-full h-10 pl-[80px]" />
+                            <Input name="category" type="text" className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[80px]" />
                             <label className="absolute left-2 top-2 text-[#fff]">Category:</label>
                           </div>
                           {/* Row 3 */}
                           <div className="py-1 flex justify-between">
-                            <div
-                              onClick={() => setDynamic(!dynamic)}
-                              className="flex cursor-pointer items-center hover:text-[#02a9ff]"
-                            >
-                              <p className="text-bold text-[#fff] hover:text-[#02a9ff]">Dynamic Attributes</p>
-                            </div>
+
                             <div
                               onClick={() => setDetails(!details)}
                               className="flex cursor-pointer items-center hover:text-[#02a9ff]"
@@ -777,88 +919,7 @@ export function Example() {
                               </div>
                             </div>
                           )}
-                          {dynamic && (
-                            <>
-                              <div className="grid grid-cols-2 w-full items-center justify-between  ">
-                                <select
-                                  name="clientAtr"
-                                  onChange={(event) => {
-                                    handleDropdownChange(clientAtr[event.target.value]);
-                                  }}
-                                  className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
-                                >
-                                  <option value="">Client</option>
-                                  {Object.entries(clientAtr).map(([title, value]) => (
-                                    <option key={title} value={title}>
-                                      {title}
-                                    </option>
-                                  ))}
-                                </select>
 
-                                <select
-                                  name="wantedVehAttr"
-                                  onChange={(event) => {
-                                    handleDropdownChange(wantedVehAttr[event.target.value]);
-                                  }}
-                                  className='bg-slate12 border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '
-
-                                >
-                                  <option value="">Wanted Veh</option>
-                                  {Object.entries(wantedVehAttr).map(([title, value]) => (
-                                    <option key={title} value={title}>
-                                      {title}
-                                    </option>
-                                  ))}
-                                </select>
-                                <select
-                                  name="tradeVehAttr"
-                                  onChange={(event) => {
-                                    handleDropdownChange(tradeVehAttr[event.target.value]);
-                                  }}
-                                  className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '
-
-                                >
-                                  <option value="">Trade Veh</option>
-                                  {Object.entries(tradeVehAttr).map(([title, value]) => (
-                                    <option key={title} value={title}>
-                                      {title}
-                                    </option>
-                                  ))}
-                                </select>
-                                <select
-                                  name="salesPersonAttr"
-                                  onChange={(event) => {
-                                    handleDropdownChange(salesPersonAttr[event.target.value]);
-                                  }}
-                                  className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '
-
-                                >
-                                  <option value="">Sales Person</option>
-                                  {Object.entries(salesPersonAttr).map(([title, value]) => (
-                                    <option key={title} value={title}>
-                                      {title}
-                                    </option>
-                                  ))}
-                                </select>
-                                <select
-                                  name="FandIAttr"
-                                  onChange={(event) => {
-                                    handleDropdownChange(FandIAttr[event.target.value]);
-                                  }}
-                                  className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '
-
-                                >
-                                  <option value="">F & I Manager</option>
-                                  {Object.entries(FandIAttr).map(([title, value]) => (
-                                    <option key={title} value={title}>
-                                      {title}
-                                    </option>
-                                  ))}
-                                </select>
-
-                              </div>
-                            </>
-                          )}
                           <Input
                             name="intent"
                             type="hidden"
@@ -873,13 +934,9 @@ export function Example() {
                           <div className=" p-1">
                             <div className="mr-auto px-2">
                               {/*  <RichTextExample /> */}
-                              <Textarea
+                              <input defaultValue={text} />
 
-                                name="body"
-                                className="h-[500px]"
-                                placeholder="Type your email here."
-                                ref={textareaRef}
-                              />
+                              <EditorTiptapHook content={contentValue} handleUpdate={handleUpdateContent} />
                               <input type='hidden' name='body2' value={paragraph} />
 
                               <input
@@ -907,22 +964,22 @@ export function Example() {
               <div className=" w-full h-full p-3">
                 <ScrollArea>
                   <div
-                    className={` bg-slate12 w-full  items-center  overflow-x-hidden  rounded-md  `}  >
+                    className={` bg-black w-full  items-center  overflow-x-hidden  rounded-md  `}  >
 
                     <div className="flex flex-col space-y-4 mt-[50px] ">
                       <div
-                        className={`border-[#fff]  bg-slate12  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
+                        className={`border-[#fff]  bg-black  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
                       >
 
                         {/* Your content here */}
                         <Form method="post">
 
 
-                          <div className="bg-slate12 ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
+                          <div className="bg-black ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
                             {/* Row 1 */}
                             <div className="relative">
                               <Input name="title" defaultValue={title}
-                                className="text-[#fff] border-[#fff] bg-slate12 block w-full pl-[145px]"
+                                className="text-[#fff] border-[#fff] bg-black block w-full pl-[145px]"
                                 type="text" />
                               <label className="absolute left-2 top-[6px] text-[#fff]">Template Title:</label>
                             </div>
@@ -930,7 +987,7 @@ export function Example() {
                               <Input
                                 name="subject"
                                 defaultValue={subject}
-                                className="text-[#fff] border-[#fff] bg-slate12 block w-full h-10 pl-[85px]"
+                                className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[85px]"
                                 type="text" />
                               <label className="absolute left-2 top-2 text-[#fff]">Subject:</label>
                             </div>
@@ -967,19 +1024,14 @@ export function Example() {
                               <Input
                                 name="category"
                                 type="text"
-                                defaultValue={category}
-                                className="text-[#fff] border-[#fff] bg-slate12 block w-full h-10 pl-[100px]"
+                                defaultValue={subject}
+                                className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[100px]"
                               />
                               <label className="absolute left-2 top-2 text-[#fff]">Category:</label>
                             </div>
                             {/* Row 3 */}
                             <div className="py-1 flex justify-between">
-                              <div
-                                onClick={() => setDynamic(!dynamic)}
-                                className="flex cursor-pointer items-center hover:text-[#02a9ff]"
-                              >
-                                <p className="text-bold text-[#fff] hover:text-[#02a9ff]">Dynamic Attributes</p>
-                              </div>
+
                               <div
                                 onClick={() => setDetails(!details)}
                                 className="flex cursor-pointer items-center hover:text-[#02a9ff]"
@@ -1012,88 +1064,7 @@ export function Example() {
                                 </div>
                               </div>
                             )}
-                            {dynamic && (
-                              <>
-                                <div className="grid grid-cols-2 w-full items-center justify-between  ">
-                                  <select
-                                    name="clientAtr"
-                                    onChange={(event) => {
-                                      handleDropdownChange(clientAtr[event.target.value]);
-                                    }}
-                                    className='bg-slate12 text-[#fff] border-2 border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
-                                  >
-                                    <option value="">Client</option>
-                                    {Object.entries(clientAtr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
 
-                                  <select
-                                    name="wantedVehAttr"
-                                    onChange={(event) => {
-                                      handleDropdownChange(wantedVehAttr[event.target.value]);
-                                    }}
-                                    className='bg-slate12 text-[#fff] border-2  rounded-md ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '
-
-                                  >
-                                    <option value="">Wanted Veh</option>
-                                    {Object.entries(wantedVehAttr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <select
-                                    name="tradeVehAttr"
-                                    onChange={(event) => {
-                                      handleDropdownChange(tradeVehAttr[event.target.value]);
-                                    }}
-                                    className='bg-slate12 text-[#fff] border-2  rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '
-
-                                  >
-                                    <option value="">Trade Veh</option>
-                                    {Object.entries(tradeVehAttr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <select
-                                    name="salesPersonAttr"
-                                    onChange={(event) => {
-                                      handleDropdownChange(salesPersonAttr[event.target.value]);
-                                    }}
-                                    className='bg-slate12 text-[#fff] border-2  rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '
-
-                                  >
-                                    <option value="">Sales Person</option>
-                                    {Object.entries(salesPersonAttr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <select
-                                    name="FandIAttr"
-                                    onChange={(event) => {
-                                      handleDropdownChange(FandIAttr[event.target.value]);
-                                    }}
-                                    className='bg-slate12 text-[#fff] border-2  border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '
-
-                                  >
-                                    <option value="">F & I Manager</option>
-                                    {Object.entries(FandIAttr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-
-                                </div>
-                              </>
-                            )}
                             <Input
                               name="intent"
                               type="hidden"
@@ -1109,69 +1080,384 @@ export function Example() {
                               type="hidden"
                               defaultValue={id}
                             />
-
-
-
                             <div className="p-1">
-                              <div className="mr-auto px-2 align-content-end place-items-end place-content-end  flex mt-auto justify-self-end justify-items-end justify-end
-                              flex-wrap-reverse
-                              ">
+                              <div className="mr-auto px-2   mt-auto grid grid-cols-1 border border-black rounded-md">
                                 {/*  <RichTextExample /> */}
-                                <Textarea
-                                  defaultValue={text}
-                                  name="body"
-                                  className="h-[400px]"
-                                  placeholder="Type your email here."
-                                  ref={textareaRef} />
-                                <input type='hidden' name='body2' value={paragraph} />
 
+                                <div
+                                  className={cn(
+                                    "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
+                                    "bg-black text-white transition-all align-center justify-center",
+                                    "sm:sticky sm:top-[120px]",
+                                  )}
+                                >
+                                  <select
+                                    name="clientAtr"
+                                    onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
+                                    className='bg-black border border-white  text-white  focus:border-[#60b9fd] rounded-md p-2 '
+                                  >
+                                    <option value="">Client</option>
+                                    {Object.entries(clientAtr).map(([title, value]) => (
+                                      <option key={title} value={title}>
+                                        {title}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <select
+                                    name="wantedVehAttr"
+                                    onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '   >
+                                    <option value="">Wanted Veh</option>
+                                    {Object.entries(wantedVehAttr).map(([title, value]) => (
+                                      <option key={title} value={title}>
+                                        {title}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <select
+                                    name="tradeVehAttr"
+                                    onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '         >
+                                    <option value="">Trade Veh</option>
+                                    {Object.entries(tradeVehAttr).map(([title, value]) => (
+                                      <option key={title} value={title}>
+                                        {title}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <select
+                                    name="salesPersonAttr"
+                                    onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '          >
+                                    <option value="">Sales Person</option>
+                                    {Object.entries(salesPersonAttr).map(([title, value]) => (
+                                      <option key={title} value={title}>
+                                        {title}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <select
+                                    name="FandIAttr"
+                                    onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    <option value="">F & I Manager</option>
+                                    {Object.entries(FandIAttr).map(([title, value]) => (
+                                      <option key={title} value={title}>
+                                        {title}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <select
+                                    name="dealerInfo"
+                                    onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    <option value="">Dealer Info</option>
+                                    {Object.entries(dealerInfo).map(([title, value]) => (
+                                      <option key={title} value={title}>
+                                        {title}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <select
+                                    name="financeInfo"
+                                    onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
+                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    <option value="">Finance Info</option>
+                                    {Object.entries(financeInfo).map(([title, value]) => (
+                                      <option key={title} value={title}>
+                                        {title}
+                                      </option>
+                                    ))}
+                                  </select>
 
-                                <input
-                                  type="hidden"
-                                  name="textEditor"
-                                  value={textEditor}
-                                />
-                                <br />
-                                <div className="flex justify-between">
-                                  <Button
-                                    variant='outline'
-                                    onClick={() =>
-                                      toast.success(`Saved Template.`)
-                                    }
-                                    className="border-[#fff] text-[#fff] cursor-pointer border uppercase px-4 py-3">
-                                    Save
-                                  </Button>
-                                  <Form method="post">
-                                    <input type='hidden' name='intent' value='deleteTemplate' />
-                                    <input type='hidden' name='id' value={id} />
-                                    <Button onClick={() =>
-                                      toast.success(`Deleted Template.`)
-                                    }
-                                      className="cursor-pointer p-2 hover:text-[#02a9ff]"
-                                      type='submit'>
-
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="20"
-                                        height="20"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="#fff"
-                                        strokeWidth="2.5"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="lucide lucide-trash-2"
-                                      >
-                                        <path d="M3 6h18" />
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                        <line x1="10" x2="10" y1="11" y2="17" />
-                                        <line x1="14" x2="14" y1="11" y2="17" />
-                                      </svg>
-                                    </Button>
-
-                                  </Form>
                                 </div>
+                                <div
+                                  className={cn(
+                                    "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
+                                    "bg-black text-white transition-all justify-center",
+                                    // "sm:sticky sm:top-[80px]",
+                                  )}
+                                >
+                                  <button
+                                    type="button"
+                                    onClick={() => editor.chain().focus().toggleBold().run()}
+                                    className={editor.isActive("bold") ? buttonActive : buttonInactive}
+                                  >
+                                    <IconMatch color="#fff" className="size-4" icon="editor-bold" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => editor.chain().focus().toggleItalic().run()}
+                                    className={editor.isActive("italic") ? buttonActive : buttonInactive}
+                                  >
+                                    <IconMatch className="size-4" icon="editor-italic" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => editor.chain().focus().toggleStrike().run()}
+                                    className={editor.isActive("strike") ? buttonActive : buttonInactive}
+                                  >
+                                    <IconMatch className="size-4" icon="editor-strikethrough" />
+                                  </button>
+
+                                  <Minus color="#000" strokeWidth={1.5} />
+                                  <button
+                                    type="button"
+                                    onClick={handleSetLink}
+                                    className={editor.isActive("link") ? buttonActive : buttonInactive}
+                                  >
+                                    <IconMatch className="size-4" icon="editor-link" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => editor.chain().focus().unsetLink().run()}
+                                    disabled={!editor.isActive("link")}
+                                    className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
+                                  >
+                                    <IconMatch className="size-4" icon="editor-link-unlink" />
+                                  </button>
+                                  <Minus color="#000" strokeWidth={1.5} />
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                                    className={editor.isActive('blockquote') ? 'is-active' : ''}
+                                  >
+                                    <Quote strokeWidth={1.5} />
+                                  </button>
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleCode().run()}
+                                    disabled={
+                                      !editor.can()
+                                        .chain()
+                                        .focus()
+                                        .toggleCode()
+                                        .run()
+                                    }
+                                    className={editor.isActive('code') ? 'is-active' : ''}
+                                  >
+                                    <Code strokeWidth={1.5} />
+                                  </button>
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleBulletList().run()}
+                                    className={editor.isActive('bulletList') ? 'is-active' : ''}
+                                  >
+                                    <List strokeWidth={1.5} />
+                                  </button>
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                                    className={editor.isActive('orderedList') ? 'is-active' : ''}
+                                  >
+                                    <ListPlus strokeWidth={1.5} />
+                                  </button>
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                                    className={editor.isActive('codeBlock') ? 'is-active' : ''}
+                                  >
+                                    <Brackets strokeWidth={1.5} />
+                                  </button>
+                                  <Minus color="#000" strokeWidth={1.5} />
+                                  <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                                    <ScanLine strokeWidth={1.5} />
+                                  </button>
+                                  <button onClick={() => editor.chain().focus().setHardBreak().run()}>
+                                    <WrapText strokeWidth={1.5} />
+                                  </button>
+                                  <Minus color="#000" strokeWidth={1.5} />
+                                  <button
+                                    onClick={() => editor.chain().focus().undo().run()}
+                                    disabled={
+                                      !editor.can()
+                                        .chain()
+                                        .focus()
+                                        .undo()
+                                        .run()
+                                    }
+                                  >
+                                    <Undo strokeWidth={1.5} />
+                                  </button>
+                                  <button
+                                    onClick={() => editor.chain().focus().redo().run()}
+                                    disabled={
+                                      !editor.can()
+                                        .chain()
+                                        .focus()
+                                        .redo()
+                                        .run()
+                                    }
+                                  >
+                                    <Redo strokeWidth={1.5} />
+                                  </button>
+                                  <Minus color="#000" strokeWidth={1.5} />
+                                  <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}>
+                                    <AlignLeft strokeWidth={1.5} />
+                                  </button>
+                                  <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}>
+                                    <AlignCenter strokeWidth={1.5} />
+                                  </button>
+                                  <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}>
+                                    <AlignRight strokeWidth={1.5} />
+                                  </button>
+                                  <button onClick={() => editor.chain().focus().setTextAlign('justify').run()} className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}>
+                                    <AlignJustify strokeWidth={1.5} />
+                                  </button>
+                                  <Minus color="#000" strokeWidth={1.5} />
+                                  <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
+                                    <Highlighter strokeWidth={1.5} />
+                                  </button>
+                                  <Minus color="#000" strokeWidth={1.5} />
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                                    className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+                                  >
+                                    <Heading1 strokeWidth={1.5} />
+                                  </button>
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                                    className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
+                                  >
+                                    <Heading2 strokeWidth={1.5} />
+                                  </button>
+                                  <button
+                                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                                    className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
+                                  >
+                                    <Heading3 strokeWidth={1.5} />
+                                  </button>
+                                </div>
+                                <div>
+                                  <BubbleMenu
+                                    editor={editor}
+                                    tippyOptions={{ duration: 100 }}
+                                    className={cn(
+                                      "flex items-center gap-1 rounded-md p-1 bg-white",
+                                      "  text-black shadow dark:bg-slate10",
+                                    )}
+                                  >
+                                    <button
+                                      type="button"
+                                      onClick={() => editor.chain().focus().toggleBold().run()}
+                                      className={editor.isActive("bold") ? buttonActive : buttonInactive}
+                                    >
+                                      <IconMatch className="size-4" icon="editor-bold" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => editor.chain().focus().toggleItalic().run()}
+                                      className={editor.isActive("italic") ? buttonActive : buttonInactive}
+                                    >
+                                      <IconMatch className="size-4" icon="editor-italic" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => editor.chain().focus().toggleStrike().run()}
+                                      className={editor.isActive("strike") ? buttonActive : buttonInactive}
+                                    >
+                                      <IconMatch className="size-4" icon="editor-strikethrough" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={handleSetLink}
+                                      className={editor.isActive("link") ? buttonActive : buttonInactive}
+                                    >
+                                      <IconMatch className="size-4" icon="editor-link" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => editor.chain().focus().unsetLink().run()}
+                                      disabled={!editor.isActive("link")}
+                                      className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
+                                    >
+                                      <IconMatch className="size-4" icon="editor-link-unlink" />
+                                    </button>
+
+                                  </BubbleMenu>
+                                </div>
+
+                                <div>
+                                  <BubbleMenu
+                                    editor={editor}
+                                    tippyOptions={{ duration: 100 }}
+                                    className={cn(
+                                      "flex items-center gap-1 rounded-md p-1 bg-white",
+                                      "  text-black shadow dark:bg-slate10",
+                                    )}
+                                  >
+                                    <div className="grid grid-cols-2 w-full items-center justify-between  ">
+                                      <select
+                                        name="clientAtr"
+
+                                        onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
+                                        className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+                                      >
+                                        <option value="">Client</option>
+                                        {Object.entries(clientAtr).map(([title, value]) => (
+                                          <option key={title} value={title}>
+                                            {title}
+                                          </option>
+                                        ))}
+                                      </select>
+                                      <select
+                                        name="wantedVehAttr"
+                                        onChange={(event) => {
+                                          handleDropdownChange(wantedVehAttr[event.target.value]);
+                                        }}
+                                        className='bg-slate12 border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                                        <option value="">Wanted Veh</option>
+                                        {Object.entries(wantedVehAttr).map(([title, value]) => (
+                                          <option key={title} value={title}>
+                                            {title}
+                                          </option>
+                                        ))}
+                                      </select>
+                                      <select
+                                        name="tradeVehAttr"
+                                        onChange={(event) => {
+                                          handleDropdownChange(tradeVehAttr[event.target.value]);
+                                        }}
+                                        className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                                        <option value="">Trade Veh</option>
+                                        {Object.entries(tradeVehAttr).map(([title, value]) => (
+                                          <option key={title} value={title}>
+                                            {title}
+                                          </option>
+                                        ))}
+                                      </select>
+                                      <select
+                                        name="salesPersonAttr"
+                                        onChange={(event) => {
+                                          handleDropdownChange(salesPersonAttr[event.target.value]);
+                                        }}
+                                        className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
+                                        <option value="">Sales Person</option>
+                                        {Object.entries(salesPersonAttr).map(([title, value]) => (
+                                          <option key={title} value={title}>
+                                            {title}
+                                          </option>
+                                        ))}
+                                      </select>
+                                      <select
+                                        name="FandIAttr"
+                                        onChange={(event) => {
+                                          handleDropdownChange(FandIAttr[event.target.value]);
+                                        }}
+                                        className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
+                                        <option value="">F & I Manager</option>
+                                        {Object.entries(FandIAttr).map(([title, value]) => (
+                                          <option key={title} value={title}>
+                                            {title}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                  </BubbleMenu>
+                                </div>
+                                <br />
+                                <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
+                                <br />
+
+
+                                <input type='hidden' defaultValue={text} name='body' />
+                                <br />
+
                               </div>
                             </div>
                           </div>

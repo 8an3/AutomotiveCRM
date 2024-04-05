@@ -23,7 +23,6 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import NotificationSystem from "./notifications";
 import Sidebar from '~/components/shared/sidebar';
 import { GetUser } from "~/utils/loader.server";
-import { prisma } from "~/libs";
 
 export const links: LinksFunction = () => [{ rel: "icon", type: "image/svg", href: '/calculator.svg' },]
 
@@ -47,7 +46,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-const user = await GetUser(email)
+  const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
   const userId = user?.id
@@ -363,7 +362,8 @@ export function PaymentCalc({ outletSize }) {
     (parseFloat(deFees.userTax) / 100 + 1)
   ).toFixed(2)
 
-  const licensing = parseInt(formData.licensing.toString())
+  //const licensing = parseInt(formData.licensing.toString() + lien)
+  const licensing = parseInt(formData.licensing) + parseInt(formData.lien)
   const conversionOth = (parseFloat(othConv) / 100 + 1).toFixed(2);
   const othTax = conversionOth
 
@@ -379,21 +379,21 @@ export function PaymentCalc({ outletSize }) {
   const loanAmountQC = parseFloat(qcTax)
   const loanAmountNAT = parseFloat(native)
   const loadAmountNATWOptions = totalWithOptions
-  const loanAmountOther = parseFloat(otherTax) || 0
-  const loanAmountOtherOptions = parseFloat(otherTaxWithOptions) || 0
+  const loanAmountOther = parseFloat(otherTax)
+  const loanAmountOtherOptions = parseFloat(otherTaxWithOptions);
 
   const iRateCon = parseFloat(iRate);
   const conversion = iRateCon / 100;
   const monthlyInterestRate = conversion / 12;
 
-  const loanPrincipalON = loanAmountON - downPayment + lien;
-  const loanPrincipalQC = loanAmountQC - downPayment + lien;
+  const loanPrincipalON = loanAmountON - downPayment
+  const loanPrincipalQC = loanAmountQC - downPayment
 
-  const loanPrincipalNAT = loanAmountNAT - downPayment + lien;
-  const loanPrincipalNATWOptions = loadAmountNATWOptions - downPayment + lien;
+  const loanPrincipalNAT = loanAmountNAT - downPayment
+  const loanPrincipalNATWOptions = loadAmountNATWOptions - downPayment
 
-  const loanPrincipalOth = loanAmountOther - downPayment + lien;
-  const loanPrincipalOthWOptions = loanAmountOtherOptions - downPayment + lien;
+  const loanPrincipalOth = loanAmountOther - downPayment
+  const loanPrincipalOthWOptions = loanAmountOtherOptions - downPayment
 
   // payments
   const on60 = parseFloat(((monthlyInterestRate * loanPrincipalON) / (1 - Math.pow(1 + monthlyInterestRate, -numberOfMonths))).toFixed(2));

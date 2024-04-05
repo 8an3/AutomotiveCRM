@@ -32,11 +32,9 @@ import {
 } from "~/schemas";
 import { createSitemap } from "~/utils";
 import { getSession } from "~/sessions/auth-session.server";
-
+import { prisma } from "~/libs";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { z } from "zod";
-import { GetUser } from "~/utils/loader.server";
-import { prisma } from "~/libs";
 
 export const handle = createSitemap();
 
@@ -45,7 +43,7 @@ export const loader = async ({ request }) => {
   const email = session.get("email")
 
 
-const user = await GetUser(email)
+  const user = await GetUser(email)
   /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')

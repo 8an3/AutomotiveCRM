@@ -10,10 +10,8 @@ import { model } from "~/models";
 
 
 import stylesheet from '~/styles/tailwind.css'
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
-
 
 
 

@@ -1,11 +1,11 @@
 import { Form, useActionData, useFetcher, useLoaderData, useNavigation } from '@remix-run/react'
-import { Separator, Button, Input, Label } from '~/components/ui/index'
+import { Separator, Button, Input, Label, Switch, Checkbox } from '~/components/ui/index'
 import { json, redirect, type ActionFunction, type DataFunctionArgstype, type MetaFunction, type LoaderFunction, } from '@remix-run/node'
 import DailySheet from '~/components/formToPrint/dailyWorkPlan'
 import { getUserById, updateUser, updateDealerFees, getDealerFeesbyEmail, getDealerFeesbyEmailAdmin } from '~/utils/user.server'
 import financeFormSchema from './overviewUtils/financeFormSchema';
 import { toast } from "sonner"
-import React from 'react';
+import React, { useState } from 'react';
 import { getMergedFinance } from '~/utils/dashloader/dashloader.server'
 import { deleteDailyPDF } from '~/utils/dailyPDF/delete.server'
 import { saveDailyWorkPlan } from '~/utils/dailyPDF/create.server'
@@ -21,24 +21,18 @@ import { getSession, commitSession, destroySession } from '../sessions/auth-sess
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
+import axios from 'axios'
 
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
-
   const user = await GetUser(email)
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
+
+  if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
-
-
   const userEmail = user?.email
   const deFees = await prisma.dealerFees.findUnique({ where: { userEmail: user.email } });
-
   const userId = user?.id
   const dataPDF = await getDailyPDF(userEmail)
   const statsData = await getMergedFinance(userEmail)
@@ -365,16 +359,21 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
   const navigation = useNavigation();
 
   const isSubmitting = navigation.state === "submitting";
+  const [activixActivated, setActivixActivated] = useState(user.activixActivated === 'yes');
+
+  const handleCheckboxChange = () => {
+    // Update the state based on the opposite value of the current state
+    setActivixActivated(!activixActivated);
+  };
+
   return (
     <Tabs defaultValue="dealerFees" className="w-[95%] mx-auto " >
 
-      <TabsList className="grid w-full grid-cols-4 rounded-md">
+      <TabsList className="grid w-full grid-cols-3 rounded-md">
         <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
         <TabsTrigger className='rounded-md' value="account">Account</TabsTrigger>
         <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>
-        {user.email === 'skylerzanth@gmail.com' && (
-          <TabsTrigger className='rounded-md' value="dailyPdf">Daily PDF</TabsTrigger>
-        )}
+
       </TabsList>
       <TabsContent value="stats" className='rounded-md'>
         <Card className='rounded-md text-white'>
@@ -525,10 +524,10 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2 bg-slate11 text-white">
-            <fetcher.Form method="post" className=' mt-2'>
-              <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
+            <fetcher.Form method="post" className=''>
+              <div className="grid sm:grid-cols-3 grid-cols-1  gap-2">
 
-                <div className="grid gap-2  ">
+                <div className="grid gap-2 mt-2 ">
                   <Label htmlFor="area">Name</Label>
                   <Input
                     className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
@@ -540,7 +539,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                   />
                 </div>
 
-                <div className="grid gap-2">
+                <div className="grid gap-2 mt-2">
                   <Label htmlFor="area">Phone</Label>
                   <Input
                     defaultValue={phone}
@@ -552,7 +551,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                   />
                 </div>
 
-                <div className="grid gap-2">
+                <div className="grid gap-2 mt-2">
                   <Label htmlFor="area" className=''>Email</Label>
                   <Input
                     className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
@@ -576,7 +575,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                 </div>
               </div>
               <p className="text-slate4 text-sm mt-10">
-                Dealer Information - This will only be for the contracts.
+                Dealer Information - This will only be for contracts.
               </p>
               <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
 
@@ -666,178 +665,75 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
           </CardContent>
         </Card>
 
-      </TabsContent>
-      <TabsContent value="dailyPdf" className='rounded-md'>
-        <Card>
-          <CardHeader className='bg-myColor-900'>
-            <CardTitle className='text-white'>
-              Daily PDF
-            </CardTitle>
-            <CardDescription>
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2 bg-slate11 text-white">
+        <Card className='rounded-md text-white mt-5 w-1/3'>
+          <Form method='post' >
+            <CardHeader className='bg-myColor-900'>
+              <CardTitle className='text-white'>Feature Settings</CardTitle>
+              <CardDescription className='text-white'>Manage your cookie settings here.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-6 text-white space-y-2 bg-slate11">
+              <div className="flex items-center justify-between space-x-2">
+                <Label htmlFor="necessary" className="flex flex-col space-y-1 mt-2">
+                  <span>Activix Integration</span>
+                  <span className="font-normal leading-snug text-muted-foreground">
+                    Will unlock featues and functions that will only benefit users who currently use activix. Essentially replacing activix as a crm, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers.
+                  </span>
+                </Label>
+                <input
+                  className='scale-150 p-3'
+                  type='checkbox'
+                  id='necessary'
+                  name='activixActivated'
+                  checked={activixActivated}
+                  onChange={handleCheckboxChange}
+                />
+                <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
 
-
-
-            <Form method="post">
-
-              <div className="grid  grid-cols-1 gap-12 mt-3">
-                <div>
-                  <div>
-                    <p>Guest Interactions:</p>
-                  </div>
-                  <div className='grid grid-cols-4 space-between'>
-                    <Input
-                      placeholder="Todays Goal"
-                      name="todaysGoalGuest"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Todays Actual"
-                      name="todaysActualGuest"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Difference"
-                      name="differenceGuest"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Months Goal"
-                      name="monthsGoalGuest"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <p>Test Rides:</p>
-                  </div>
-                  <div className='grid grid-cols-4'>
-
-                    <Input
-                      placeholder="Todays Goal"
-                      name="todaysGoalTestDrives"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Todays Actual"
-                      name="todaysActualTestDrives"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Difference"
-                      name="differenceTestDrives"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Months Goal"
-                      name="monthsGoalTestDrives"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <p>Write-Ups:</p>
-                  </div>
-                  <div className='grid grid-cols-4 space-between'>
-                    <Input
-                      placeholder="Todays Goal"
-                      name="todaysGoalWriteUps"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Todays Actual"
-                      name="todaysActualWriteUps"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Difference"
-                      name="differenceWriteUps"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                    <Input
-                      placeholder="Months Goal"
-                      name="monthsGoalWriteUps"
-                      className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <p>Deliveries:</p>
-                    <div className='grid grid-cols-4 space-between'>
-
-                      <Input
-                        placeholder="Todays Goal"
-                        name="todaysGoalDeliveries"
-                        className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      <Input
-                        placeholder="Todays Actual"
-                        name="todaysActualDeliveries"
-                        className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      <Input
-                        placeholder="Difference"
-                        name="differenceDeliveries"
-                        className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      <Input
-                        placeholder="Months Goal"
-                        name="monthsGoalDeliveries"
-                        className="bg-myColor-900 px-5 h-8 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      <Input
-                        type='hidden'
-                        name="userEmail"
-                        defaultValue={user.email}
-                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-     focus:outline-none
-
-
-     focus:text-[#02a9ff]
-      mx-1"
-                      />
-                    </div>
-                  </div>
-
-                  <p className='mt-5'>Sales Focus and Training:</p>
-                  <p>Ask questions, select the right bike, go for the close to see where in the sales process they are at, sit on and present features and benefites, offer test drive, trial close: sit down and write up, negotiate, handle objections, obtain commitment in some way or form, turn over to finance</p>
-                  <p className='mt-5'>Sales Tasks:</p>
-                  <p>follow up with todays tasks in crm</p>
-                  <p>ensure all listings on socials are up to date</p>
-                  <p>complete appts or reschedule if they were no shows</p>
-                  <p>have sit down with SM to discuss sales oppurtunities</p>
-
-                  <Button type="submit" name='intent' value='dailyPDF' className="bg-[#02a9ff] mt-3 mb-10 w-[75px] mx-1 text-white active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all duration-150"
-                  >
-                    Save
-                  </Button>
-                  <DailySheet dataPDF={dataPDF} />
-                </div>
               </div>
-            </Form>
-
-          </CardContent>
+              {user.activixActivated === 'yes' && (
+                <>
+                  <div className="grid gap-2 mt-2">
+                    <Label htmlFor="area">Activix Email</Label>
+                    <Input
+                      defaultValue={user.activixEmail}
+                      placeholder="activix@email.com"
+                      type="text"
+                      name="activixEmail"
+                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                 focus:outline-none  focus:text-[#02a9ff]    mx-1"
+                    />
+                  </div>
+                  <div className="grid gap-2 mt-2">
+                    <Label htmlFor="area">Dealer Account Id</Label>
+                    <Input
+                      defaultValue={user.activixEmail}
+                      placeholder="activix@email.com"
+                      type="text"
+                      name="activixEmail"
+                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                  focus:outline-none  focus:text-[#02a9ff]    mx-1"
+                    />
+                  </div>
+                </>
+              )}
+              <Input type='hidden' name="email" defaultValue={user.email} />
+              <Input type='hidden' name="userEmail" defaultValue={user.email} />
+            </CardContent>
+            <CardFooter className='text-white bg-slate11'>
+              <ButtonLoading
+                size="lg"
+                className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                type="submit"
+                name='intent'
+                value='activixActivated'
+                isSubmitting={isSubmitting}
+                onClick={() => toast.success(`Update complete.`)}
+                loadingText="Updating information..."
+              >
+                Update
+              </ButtonLoading>
+            </CardFooter>
+          </Form>
         </Card>
       </TabsContent>
     </Tabs >
@@ -845,7 +741,6 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
 }
 
 export const action: ActionFunction = async ({ request }) => {
-  console.log('settings')
   const formPayload = Object.fromEntries(await request.formData())
   const Input = financeFormSchema.parse(formPayload)
   const intent = formPayload.intent
@@ -929,16 +824,68 @@ export const action: ActionFunction = async ({ request }) => {
     return ({ savedaily, delete2 })
 
   }
-  return null
-}
 
+  if (intent === 'activixActivated') {
+    const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+    // const activix = await prisma.user.update({      where: { email: Input.userEmail },      data: {        activixActivated: Input.activixActivated,        activixEmail: Input.activixEmail,     }    })
+    const integration = await prisma.userIntergration.findUnique({ where: { userEmail: Input.userEmail, } });
+    let actiData;
+    try {
+      const response = await axios.get(`https://api.crm.activix.ca/v2/account?include[]=users`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      });
+      console.log(response, response.data, 'response in settings')
+      const users = response.data.users;
+      const userEmail = Input.userEmail;
+      const userObject = (users && users.find(user => user.email === userEmail)) || [];
+
+      if (userObject) {
+        console.log('Matching object found:', userObject);
+      } else {
+        console.log('No matching object found');
+      }
+
+      switch (!integration) {
+        case true:
+          actiData = await prisma.userIntergration.create({
+            data: {
+              userEmail: Input.userEmail,
+              activixId: userObject.id.toString(),
+              activixActivated: Input.activixActivated,
+              activixEmail: Input.activixEmail,
+              dealerAccountId: Input.dealerAccountId?.toString(),
+            }
+          });
+          break;
+        default:
+          actiData = await prisma.userIntergration.update({
+            where: { userEmail: Input.userEmail },
+            data: {
+              userEmail: Input.userEmail,
+              activixId: userObject.id.toString(),
+              activixActivated: Input.activixActivated,
+              activixEmail: Input.activixEmail,
+              dealerAccountId: Input.dealerAccountId?.toString(),
+
+            }
+          });
+          return actiData;
+      }
+      return actiData;
+    } catch (error) {
+      console.error('Error occurred while fetching account data:', error);
+      // Handle error here
+    }
+  }
+}
 export const meta: MetaFunction = () => {
   return [
     { title: 'User Settings - Dealer Sales Assistant' },
-    {
-      property: "og:title",
-      content: "Your very own assistant!",
-    },
+    { property: "og:title", content: "Your very own assistant!", },
     {
       name: "description",
       content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
@@ -949,21 +896,14 @@ export const meta: MetaFunction = () => {
 
 export default function Mainbody() {
   const { user, deFees, dataPDF, statsData, comsRecords } = useLoaderData()
-  const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
-
+  const userIsAllowed = getUserIsAllowed(user, ["ADMIN"]);
+  console.log(userIsAllowed, user, user.role); // Expected output: true
   return (
     <>
       <div className="flex h-[100%] w-[98vw] left-0">
         <div className="w-[300px] rounded-lg h-[95%] bg-slate12 text-slate2  ">
           <hr className="solid" />
-          <RemixNavLink to={`/welcome/quote`}>
-            <Button
-              variant="link"
-              className="w-full justify-start cursor-pointer text-white "
-            >
-              Walkthrough
-            </Button>
-          </RemixNavLink>
+
           {userIsAllowed ? (
             <>
               <RemixNavLink to={`/admin`}>
@@ -979,6 +919,14 @@ export default function Mainbody() {
               className="w-full justify-start cursor-pointer text-white"
             >
               Change Password
+            </Button>
+          </RemixNavLink>
+          <RemixNavLink to={`/user/docs`}>
+            <Button
+              variant="link"
+              className="w-full justify-start cursor-pointer text-white"
+            >
+              Docs
             </Button>
           </RemixNavLink>
           <RemixNavLink to={`/logout`}>

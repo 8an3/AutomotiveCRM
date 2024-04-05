@@ -6,11 +6,9 @@ import { getDealerFeesbyEmail, updateDealerFees, updateUser } from '~/utils/user
 import * as Toast from '@radix-ui/react-toast';
 import React from 'react';
 import WelcomeDealerFeesSection from './welcome.dealerfees'
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
-
 
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));

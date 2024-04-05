@@ -1,7 +1,6 @@
 import React, { Fragment, useMemo, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Calendar, Views, DateLocalizer, momentLocalizer } from 'react-big-calendar'
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 // Storybook cannot alias this, so you would use 'react-big-calendar/lib/addons/dragAndDrop'
 import { getSession } from '~/sessions/auth-session.server';

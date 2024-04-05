@@ -1,5 +1,5 @@
 export const KawasakiList = () => (
-	<datalist id="ListOptions">
+	<datalist id="ListOptions2">
 		<option value="KX65" />
 		<option value="KX85" />
 		<option value="KX112" />

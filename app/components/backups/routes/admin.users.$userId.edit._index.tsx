@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components";
-
+import { prisma } from "~/libs";
 import { model } from "~/models";
 import { schemaAdminUserUpdate } from "~/schemas";
 import { createSitemap, invariant } from "~/utils";
@@ -27,8 +27,6 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { z } from "zod";
 import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
 import { requireAuthCookie } from '~/utils/misc.user.server';
-import { GetUser } from "~/utils/loader.server";
-import { prisma } from "~/libs";
 
 
 

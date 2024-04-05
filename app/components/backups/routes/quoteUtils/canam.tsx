@@ -1,5 +1,5 @@
 export const ListOptions = () => (
-	<datalist id="ListOptions">
+	<datalist id="ListOptions2">
 		<option value="outlander 450 viper red 0005apa00" />
 		<option value="outlander 450 tundra green 0005apb00" />
 		<option value="outlander 570 viper red 0002tpa00" />

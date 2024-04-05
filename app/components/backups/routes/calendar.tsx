@@ -9,8 +9,8 @@ import { model } from '../models'
 import { getSession } from '../sessions/auth-session.server';
 import { json, redirect } from "@remix-run/node";
 import NotificationSystem from "./notifications";
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
+import { GetUser } from "~/utils/loader.server";
 
 
 const CalendarIcon = () => { <CalendarDays strokeWidth={1.5} /> }

@@ -38,9 +38,9 @@ export default function Roadmap() {
 	const todoRoadmap = [
 		{ type: "issue", desc: "API file upload will be released once google approves gmail as its still in the process right now" },
 		{ type: "issue", desc: "move staff chat to sms messenger" },
+		{ type: "issue", desc: "roles based access" },
+		{ type: "issue", desc: "everything google on hold - google is asking for requirments that they were never upfront about" },
 		{ type: "issue", desc: "need to change how to load overview, need to pull your own by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
-		{ type: "issue", desc: "google auth fixed need to verify, put in root" },
-		{ type: "issue", desc: "need to redo email templates in overview - wip move email templates to template section??? and just have a email client in its place then it would really just be three choices instead of 100 and something because it would just take whatewver payments that are saved" },
 		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - wip" },
 
 
@@ -56,12 +56,10 @@ export default function Roadmap() {
 		{ type: "Automation", desc: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
 		{ type: "Automation", desc: "for lead rotation, if customer pending after an hour it goes up onto a free for all board so anyone can respond to him" },
 		{ type: "Automation", desc: "sales person schedule for lead rotation" },
-		{ type: "Automation", desc: "have it so you can tag a customers file so when a test drive cmoes around it just reminds you to get them on  ti or on wish ist" },
 		{ type: "Automation", desc: "customer set time before delivery of what to bring" },
 		{ type: "Automation", desc: "auto email at 5, 2.5 months and 30, 7 days before consent expires, 2 years if bought, 6 months if not" },
 		{ type: "Automation", desc: "customer 2 months after pick up to make sure everything is still good" },
 
-		{ type: "wip - crm integration", desc: "complete first integration" },
 
 		{ type: "customer", desc: "have your own csi reporting for the dealer that can be sent to customers" },
 
@@ -83,12 +81,12 @@ export default function Roadmap() {
 
 		{ type: "dealer onboarding", desc: "initial data can be put into seed file filed out by dealer" },
 		{ type: "dealer onboarding", desc: "new sales page with upgrades" },
+		{ type: "dealer onboarding", desc: "automate on boarding" },
 		{ type: "dealer onboarding", desc: "quote how-to" },
 		{ type: "dealer onboarding", desc: "sales dashboard how-to" },
 		{ type: "dealer onboarding", desc: "calendar how-to" },
-		{ type: "dealer onboarding", desc: "script how-to" },
+		{ type: "dealer onboarding", desc: "automation how-to" },
 		{ type: "dealer onboarding", desc: "template how-to" },
-		{ type: "dealer onboarding", desc: "payment calc how-to" },
 		{ type: "dealer onboarding", desc: "inventory how-to" },
 		{ type: "dealer onboarding", desc: "document builder how-to" },
 		{ type: "dealer onboarding", desc: "sales process start to finsih" },
@@ -140,10 +138,16 @@ export default function Roadmap() {
 		{ type: "sales process", desc: "update finance mgr lock so that the sales person can have a in queue timer" },
 		{ type: "issue", desc: "add ping system for notes - COMPLETED BUT NEEDS TESTING" },
 		{ type: "issue", desc: "need mileage for new vehciles for printing paperwork" },
+		{ type: "wip - crm integration", desc: "complete first integration" },
+		{ type: "Automation", desc: "have it so you can tag a customers file so when a test drive cmoes around it just reminds you to get them on  ti or on wish ist" },
+		{ type: "dealer onboarding", desc: "script how-to" },
+		{ type: "dealer onboarding", desc: "payment calc how-to" },
+		{ type: "issue", desc: "need to redo email templates in overview - wip move email templates to template section??? and just have a email client in its place then it would really just be three choices instead of 100 and something because it would just take whatewver payments that are saved" },
 		{ type: "issue", desc: "to get notified when new useed units come in for customers wish list - just generate brand / model list to choose from instead of letting them type it in" },
 		{ type: "paid feature", desc: "sms messenger" },
 		{ type: "dealer onboarding", desc: "each dealer will have their own server on vercel, own database on planetscale, and so forth find a way to automate this even though it doesnt take any time to do so" },
 		{ type: "quote", desc: "find source with API with up-to-date model information - Kelly Black Book - they have the product take picutre of blue ages for now and just ocr scan - just going to use dealer binders of dealers that sign up - alkmost completed" },
+		{ type: "issue", desc: "google auth fixed need to verify, put in root " },
 		{ type: "issue", desc: "email not currently working in overview" },
 		{ type: "issue", desc: "to get notified when new useed units come in for customers wish list" },
 		{ type: "issue", desc: "lien payout - COMPLETED BUT NEEDS TESTING" },

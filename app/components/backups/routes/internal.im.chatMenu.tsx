@@ -6,13 +6,12 @@ import { eventStream, useEventSource } from "remix-utils";
 import { emitter } from "../services/emitter";
 import { getSession } from '../sessions/auth-session.server'
 import { model } from "../models";
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { XCircle } from "lucide-react";
 import { Textarea } from "~/other/textarea";
 import NotificationTemplate from './notifications'
 import useSWR, { SWRConfig, mutate } from 'swr';
-
+import { GetUser } from "~/utils/loader.server";
 
 
 

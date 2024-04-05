@@ -98,7 +98,6 @@ export async function action({ params, request }) {
     // console.log("financeId:", financeId); // Add this line
 
     let clientAptsData = {
-      title: formData.title,
       start: newDate,
       contactMethod: formData.contactMethod,
       completed: formData.completed,

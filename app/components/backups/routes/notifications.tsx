@@ -8,13 +8,13 @@ import { getSession } from '../sessions/auth-session.server'
 import { model } from "../models";
 import { toast } from "sonner";
 import { useRootLoaderData } from '~/hooks/use-root-loader-data';
-
+import { GetUser } from "~/utils/loader.server";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover"
-
+import { prisma } from "~/libs";
 import {
   Tabs,
   TabsContent,
@@ -24,8 +24,6 @@ import {
 import { Bell, BellRing, BookOpenCheck, Milestone, X } from 'lucide-react';
 import { Button, Input, Label } from "../components/ui";
 import useSWR, { SWRConfig, mutate } from 'swr';
-import { GetUser } from "~/utils/loader.server";
-import { prisma } from "~/libs";
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -129,28 +127,28 @@ export default function NotificationSystem() {
           <Bell color="#02a9ff" strokeWidth={1.5} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[600px] bg-[#1c2024] justify-center items-center  mx-auto mr-10">
+      <PopoverContent className="w-[600px] bg-[#1c2024] justify-center items-center  mx-auto mr-10 max-h-[75%] overflow-y-scroll">
         <Tabs defaultValue="Msgs" className="w-[580PX] mx-auto justify-center items-center">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="Msgs" className="text-sm">Msgs</TabsTrigger>
             <TabsTrigger value="Updates" className="text-sm">Updates</TabsTrigger>
             <TabsTrigger value="NewLeads" className="text-sm">New Leads</TabsTrigger>
           </TabsList>
-          <TabsContent value="Msgs">
+          <TabsContent value="Msgs" >
             <Suspense fallback={<NotificationSkeleton />}>
               <Await resolve={userMessages}>
                 {(userMessages) => <NotificationTemplate data={userMessages} mutate={mutate} url1={url1} />}
               </Await>
             </Suspense>
           </TabsContent>
-          <TabsContent value="Updates">
+          <TabsContent value="Updates"  >
             <Suspense fallback={<NotificationSkeleton />}>
               <Await resolve={newUpdates}>
                 {(newUpdates) => <UpdateMesages data={newUpdates} mutate={mutate} url2={url2} />}
               </Await>
             </Suspense>
           </TabsContent>
-          <TabsContent value="NewLeads">
+          <TabsContent value="NewLeads" >
             <Suspense fallback={<NotificationSkeleton />}>
               <Await resolve={notificationsNewLead}>
                 {(notificationsNewLead) => <NotificationsNewLead data={notificationsNewLead} mutate={mutate} url3={url3} />}

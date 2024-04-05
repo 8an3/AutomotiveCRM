@@ -1,4 +1,4 @@
-
+import { prisma } from "~/libs";
 
 async function fetchDataFromApi(apiUrl) {
   try {

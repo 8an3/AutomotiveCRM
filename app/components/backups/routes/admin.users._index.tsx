@@ -41,13 +41,11 @@ import { requireUserRole, requireUserSession } from "~/helpers";
 import { parse } from "@conform-to/react";
 
 import { Plus, Trash } from "~/icons";
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
-
 
 export const handle = createSitemap();
 

@@ -2,28 +2,47 @@ import { requireUserSession } from "~/helpers";
 //import { authenticator } from "~/services";
 import { prisma } from "~/libs";
 import { type LoaderFunctionArgs, type ActionArgs, json, redirect } from '@remix-run/node'
-import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
+import { getSession, destroySession } from '../sessions/auth-session.server';
 
+import { model } from '../models'
+import { GetUser } from "~/utils/loader.server";
 
 
 
 export async function action({ request }: ActionArgs) {
-  const userSession = await sessionGet(request.headers.get("Cookie"));
+  const session = await getSession(request.headers.get("Cookie"));
 
-  if (!userSession) { return json({ status: 302, redirect: '/login' }); };
+  if (!session) { return json({ status: 302, redirect: '/' }); };
 
-  if (!userSession) { return redirect('/login') }
-  const email = userSession.get("email")
-  const user = await getUserByEmail(email)
-  if (!user) { return json({ status: 302, redirect: '/login' }) };
+  if (!session) { return redirect('/') }
+  const email = session.get("email")
 
-}
-export async function loader({ request, params }: LoaderFunctionArgs) {
-  const userSession = await authenticator.isAuthenticated(request, { failureRedirect: "/login", }); const user = await model.user.query.getForSession({ id: userSession.id });
-
+  const user = await GetUser(email)
   if (!user) {
-    return redirect('/login')
+    return json({ status: 302, redirect: '/' })
+  }
+  else {
+    return redirect('/', {
+      headers: {
+        "Set-Cookie": await destroySession(session),
+      },
+    });
+  }
+}
+
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+
+
+  const user = await GetUser(email)
+  if (!user) {
+    return redirect('/')
   } else {
-    return redirect('/emails')
+    return redirect('/', {
+      headers: {
+        "Set-Cookie": await destroySession(session),
+      },
+    });
   }
 }

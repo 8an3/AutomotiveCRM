@@ -5,7 +5,6 @@ import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { model } from "~/models";
 
-
 // ----- for the sms on the dashboard
 
 export async function action({ params, request }) {

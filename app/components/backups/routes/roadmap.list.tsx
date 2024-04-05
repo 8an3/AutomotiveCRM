@@ -36,12 +36,12 @@ export const meta: MetaFunction = ({ data }) => {
 export default function Roadmap() {
 
 	const todoRoadmap = [
-		{ type: "issue", desc: "API file upload does not work in production folder API is already in use by platfo procidor move API/file upload to dealerapi/fileupload - wip" },
+		{ type: "issue", desc: "API file upload will be released once google approves gmail as its still in the process right now" },
 		{ type: "issue", desc: "move staff chat to sms messenger" },
-		{ type: "issue", desc: "email not currently working in overview" },
-		{ type: "issue", desc: "lien payout - COMPLETED BUT NEEDS TESTING" },
+		{ type: "issue", desc: "everything google on hold - google is asking for requirments that they were never upfront about" },
+		{ type: "issue", desc: "need to change how to load overview, need to pull your own by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
 		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - wip" },
-		{ type: "issue", desc: "add ping system for notes - COMPLETED BUT NEEDS TESTING" },
+
 
 		{ type: "admin", desc: "export customers" },
 		{ type: "admin", desc: "export parts" },
@@ -55,77 +55,41 @@ export default function Roadmap() {
 		{ type: "Automation", desc: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
 		{ type: "Automation", desc: "for lead rotation, if customer pending after an hour it goes up onto a free for all board so anyone can respond to him" },
 		{ type: "Automation", desc: "sales person schedule for lead rotation" },
-		{ type: "Automation", desc: "have it so you can tag a customers file so when a test drive cmoes around it just reminds you to get them on  ti or on wish ist" },
 		{ type: "Automation", desc: "customer set time before delivery of what to bring" },
 		{ type: "Automation", desc: "auto email at 5, 2.5 months and 30, 7 days before consent expires, 2 years if bought, 6 months if not" },
 		{ type: "Automation", desc: "customer 2 months after pick up to make sure everything is still good" },
 
-		{ type: "wip - crm integration", desc: "complete first integration" },
 
 		{ type: "customer", desc: "have your own csi reporting for the dealer that can be sent to customers" },
 
 		{ type: "crm - > dealer", desc: "redesign subscription page to include 2 optoinns for stand alone sales people and dealers" },
 
-		{ type: "communications", desc: "set up whatsap for dealing with dealer customers affiliate marketers" },
-		{ type: "communications", desc: "whats app integration" },
-		{ type: "communications", desc: "fb msgr integration" },
 		{ type: "communications", desc: "mass email/sms - wip" },
 		{ type: "communications", desc: "email / sms campaigns" },
 
 		{ type: "dash", desc: "cross platform ad manager, post it once here and push it to different providors" },
 		{ type: "dash", desc: "sales manager dash since they seem to know Activix less than the salespeople" },
 		{ type: "dash", desc: "dynamic dashboard widgets" },
-		{ type: "dash", desc: "dash switcher in settings to change from integration to integration or not" },
 
 		{ type: "dealer", desc: "calendar to set store hours" },
+		{ type: "dealer", desc: "invite user section where it send an email with links to the crm and " },
 
 		{ type: "email", desc: "webhook for incoming emails, save notifiation and messeages" },
 
-		{ type: "google", desc: "utilize other services from google, notes, to-do, sms, voice chat, call recording, video calling, teaam chat?, tasks and plans,  " },
-		{ type: 'google', desc: 'has a push notiications for new incoming emails' },
-		{ type: 'google', desc: 'tasks' },
-		{ type: 'google', desc: 'Calendar' },
-		{ type: 'google', desc: 'Keep note' },
-
-
-		{ type: "quote", desc: "find source with API with up-to-date model information - Kelly Black Book - they have the product take picutre of blue ages for now and just ocr scan" },
-		{ type: "quote", desc: "Save form to LOCAL STORASGE(CHECK REMIX SITE FOR SOLUTIONp) incase something happens to connection or if they srep awway from their computer that way whenever you come back the form is filled out the way you left it" },
-		{ type: "quote", desc: "set up parts pages - started - Manitou done - switch started" },
-
-
-		{ type: "sales", desc: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
-		{ type: "sales", desc: "sales bot 2 - customer onboarding" },
-		{ type: "sales", desc: "sales bot 3 - after sales" },
-		{ type: "sales", desc: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
-
 		{ type: "sales - campaigns", desc: "https://developers.klaviyo.com/en/reference/get_campaigns" },
 
-		{ type: "dealer onboarding", desc: "each dealer will have their own server on vercel, own database on planetscale, and so forth find a way to automate this even though it doesnt take any time to do so" },
 		{ type: "dealer onboarding", desc: "initial data can be put into seed file filed out by dealer" },
 		{ type: "dealer onboarding", desc: "new sales page with upgrades" },
+		{ type: "dealer onboarding", desc: "automate on boarding" },
 		{ type: "dealer onboarding", desc: "quote how-to" },
 		{ type: "dealer onboarding", desc: "sales dashboard how-to" },
 		{ type: "dealer onboarding", desc: "calendar how-to" },
-		{ type: "dealer onboarding", desc: "script how-to" },
+		{ type: "dealer onboarding", desc: "automation how-to" },
 		{ type: "dealer onboarding", desc: "template how-to" },
-		{ type: "dealer onboarding", desc: "payment calc how-to" },
 		{ type: "dealer onboarding", desc: "inventory how-to" },
 		{ type: "dealer onboarding", desc: "document builder how-to" },
 		{ type: "dealer onboarding", desc: "sales process start to finsih" },
 		{ type: "dealer onboarding", desc: "free simple install with insructions, fee for total install - for dealer that already have an it team it would save them money" },
-
-		{ type: "ai", desc: "predictive analysis of sales trends" },
-		{ type: "ai", desc: "to add onto the last one - unit sold in territories, report already out there owners of dealers get them" },
-		{ type: "ai", desc: "Ai assistant to book apointments, complete and etc " },
-		{ type: "ai", desc: "customter analysis, retention, customer $ worth, visits, and more" },
-		{ type: "ai", desc: "Predictive Customer Behavior Modeling, Utilize advanced machine learning models to predict future customer behaviors and preferences based on historical data. ie percentages on how liuekly the customer can be closed if asked at that time" },
-
-		{ type: "paid feature", desc: "*** currently working - need to attach to components and find a way to turn on or off pending payment by customer ***" },
-		{ type: "paid feature", desc: "speech to text for quicker input - done in components folder" },
-		{ type: "paid feature", desc: "AI writing partner for emails, templates and scripts - done in components folder" },
-		{ type: 'paid feature', desc: 'have ai take in last 5 emails with customer and suggest your next communication/script - not done yet but easy enough to complete in components folder' },
-		{ type: 'paid feature', desc: 'vercel has a nice write up on this to do in their platform - ai - wip - https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts' },
-		{ type: "paid feature", desc: "sms messenger" },
 
 		{ type: "service", desc: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
 		{ type: "service", desc: "service writer dash" },
@@ -138,12 +102,58 @@ export default function Roadmap() {
 		{ type: "parts", desc: "parts dash" },
 		{ type: "parts", desc: "shpping and receiving dash" },
 		{ type: "parts", desc: "parts specfic page to print label, make changes etc, have search table that switch from table to part view using use state like the one in newleads" },
+
+		{ type: "sales", desc: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
+		{ type: "sales", desc: "sales bot 2 - customer onboarding" },
+		{ type: "sales", desc: "sales bot 3 - after sales" },
+		{ type: "sales", desc: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
+		{ type: "communications", desc: "fb msgr integration" },
+
+		{ type: "quote", desc: "Save form to LOCAL STORASGE(CHECK REMIX SITE FOR SOLUTIONp) incase something happens to connection or if they srep awway from their computer that way whenever you come back the form is filled out the way you left it" },
+		{ type: "quote", desc: "set up parts pages - started - Manitou done - switch started" },
+
+		{ type: "google", desc: "utilize other services from google, notes, to-do, sms, voice chat, call recording, video calling, teaam chat?, tasks and plans,  " },
+		{ type: 'google', desc: 'has a push notiications for new incoming emails' },
+		{ type: 'google', desc: 'tasks' },
+		{ type: 'google', desc: 'Calendar' },
+		{ type: 'google', desc: 'Keep note' },
+
+		{ type: "ai", desc: "predictive analysis of sales trends" },
+		{ type: "ai", desc: "to add onto the last one - unit sold in territories, report already out there owners of dealers get them" },
+		{ type: "ai", desc: "Ai assistant to book apointments, complete and etc " },
+		{ type: "ai", desc: "customter analysis, retention, customer $ worth, visits, and more" },
+		{ type: "ai", desc: "Predictive Customer Behavior Modeling, Utilize advanced machine learning models to predict future customer behaviors and preferences based on historical data. ie percentages on how liuekly the customer can be closed if asked at that time" },
+
+		{ type: "paid feature", desc: "*** currently working - need to attach to components and find a way to turn on or off pending payment by customer ***" },
+		{ type: "paid feature", desc: "speech to text for quicker input - done in components folder" },
+		{ type: "paid feature", desc: "AI writing partner for emails, templates and scripts - done in components folder" },
+		{ type: 'paid feature', desc: 'have ai take in last 5 emails with customer and suggest your next communication/script - not done yet but easy enough to complete in components folder' },
+		{ type: 'paid feature', desc: 'vercel has a nice write up on this to do in their platform - ai - wip - https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts' },
 	];
 
 
 	const DoneRoadMap = [
 		{ type: "issue", desc: "add customer on dashboard needs to be updated to be the same as on calendar" },
 		{ type: "sales process", desc: "update finance mgr lock so that the sales person can have a in queue timer" },
+		{ type: "issue", desc: "add ping system for notes - COMPLETED BUT NEEDS TESTING" },
+		{ type: "issue", desc: "need mileage for new vehciles for printing paperwork" },
+		{ type: "wip - crm integration", desc: "complete first integration" },
+		{ type: "Automation", desc: "have it so you can tag a customers file so when a test drive cmoes around it just reminds you to get them on  ti or on wish ist" },
+		{ type: "dealer onboarding", desc: "script how-to" },
+		{ type: "dealer onboarding", desc: "payment calc how-to" },
+		{ type: "issue", desc: "need to redo email templates in overview - wip move email templates to template section??? and just have a email client in its place then it would really just be three choices instead of 100 and something because it would just take whatewver payments that are saved" },
+		{ type: "issue", desc: "to get notified when new useed units come in for customers wish list - just generate brand / model list to choose from instead of letting them type it in" },
+		{ type: "paid feature", desc: "sms messenger" },
+		{ type: "dealer onboarding", desc: "each dealer will have their own server on vercel, own database on planetscale, and so forth find a way to automate this even though it doesnt take any time to do so" },
+		{ type: "quote", desc: "find source with API with up-to-date model information - Kelly Black Book - they have the product take picutre of blue ages for now and just ocr scan - just going to use dealer binders of dealers that sign up - alkmost completed" },
+		{ type: "issue", desc: "google auth fixed need to verify, put in root " },
+		{ type: "issue", desc: "email not currently working in overview" },
+		{ type: "issue", desc: "to get notified when new useed units come in for customers wish list" },
+		{ type: "issue", desc: "lien payout - COMPLETED BUT NEEDS TESTING" },
+		{ type: "issue", desc: "csv upload for prodcuts and inventory" },
+		{ type: "communications", desc: "set up whatsap for dealing with dealer customers affiliate marketers" },
+		{ type: "dash", desc: "dash switcher in settings to change from integration to integration or not" },
+		{ type: "communications", desc: "whats app integration" },
 		{ type: "issue", desc: "put customer coms in cuterom file not bike file - DID NOT COMPLETE REVISIT AFTER BETA " },
 		{ type: "notifications", desc: "push notifications - cheat way to do it in terms of cost and coding - just send a email along with the in app notfication as long as your phone is hooked up to your computer, you will get notified through your phone and computer" },
 		{ type: "issue", desc: "last note column" },

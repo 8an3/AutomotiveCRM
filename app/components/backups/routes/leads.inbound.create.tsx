@@ -1,8 +1,8 @@
 // In your route file
 import { PrismaClient } from "@prisma/client";
 import { type ActionFunction } from "@remix-run/node";
+import { prisma } from "~/libs";
 
-let prisma = new PrismaClient();
 
 // post
 export let action: ActionFunction = async ({ request }) => {

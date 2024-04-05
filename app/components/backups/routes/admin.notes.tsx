@@ -15,10 +15,8 @@ import { Plus, Trash } from "~/icons";
 import { model } from "~/models";
 import { createSitemap, formatPluralItems } from "~/utils";
 import { getSession } from '~/sessions/auth-session.server';
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { requireAuthCookie } from '~/utils/misc.user.server';
-
 
 import type { ActionArgs } from "@remix-run/node";
 

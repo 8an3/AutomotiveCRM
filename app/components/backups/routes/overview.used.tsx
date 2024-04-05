@@ -85,6 +85,7 @@ export function Overview({ outletSize }) {
     destinationCharge: parseFloat(deFees.destinationCharge) || 0,
     userMarketAdj: parseFloat(deFees.userMarketAdj) || 0,
     userOther: parseFloat(deFees.userOther) || 0,
+    lien: 0,
 
     userExtWarr: parseFloat(deFees.userExtWarr) || 0,
     userServicespkg: parseFloat(deFees.userServicespkg) || 0,
@@ -727,6 +728,7 @@ export function Overview({ outletSize }) {
   const msrp = parseFloat(formData.msrp.toString());
   const accessories = parseFloat(formData.accessories.toString()) || 0;
   const totalLabour = parseFloat(formData.labour.toString()) * parseFloat(formData.userLabour.toString()) || 0;
+  const lien = parseFloat(formData.lien.toString()) || 0;
   const othConv = parseFloat(formData.othTax.toString());
   const downPayment = parseFloat(formData.deposit.toString()) || 0;
   const discount = parseFloat(formData.discount.toString()) || 0;
@@ -883,7 +885,7 @@ export function Overview({ outletSize }) {
     (parseFloat(deFees.userTax) / 100 + 1)
   ).toFixed(2)
 
-  const licensing = parseInt(formData.licensing.toString())
+  const licensing = parseInt(formData.licensing) + parseInt(formData.lien)
   const conversionOth = (parseFloat(othConv) / 100 + 1).toFixed(2);
   const othTax = conversionOth
 
@@ -1659,6 +1661,20 @@ export function Overview({ outletSize }) {
                   autoComplete="tradeValue"
                   defaultValue={tradeValue}
                   onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className=" mt-2 ">
+              <div className="grid w-full max-w-sm items-center gap-1.5">
+                <label htmlFor="deposit">Lien</label>
+                <Input
+                  className="w-20 h-8"
+                  name="lien"
+                  id="lien"
+                  autoComplete="lien"
+                  defaultValue={lien}
+                  onChange={handleChange}
+                  type='number'
                 />
               </div>
             </div>

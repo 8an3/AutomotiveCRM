@@ -6,11 +6,10 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { LinksFunction, LoaderFunction } from '@remix-run/node'
-import { type ActionFunction, type DataFunctionArgs, json, redirect, } from '@remix-run/node';
+import { type ActionFunction, type DataFunctionArgs, json, redirect, createCookie, } from '@remix-run/node';
 import { model } from '~/models';
 import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigate, useNavigation } from '@remix-run/react'
 import { getAllFinanceAptsForCalendar, getSingleFinanceAppts } from '~/utils/financeAppts/get.server';
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { Flex, Text, Button, Card, Heading, Container, IconButton } from '@radix-ui/themes';
 import { UserPlus, Gauge, CalendarCheck, Search, ChevronRightIcon, Circle, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
@@ -21,7 +20,10 @@ import clsx from 'clsx'
 import AddCustomerModal from '~/components/dashboard/calendar/addCustomerModal'
 import { AddAppt } from '~/components/dashboard/calendar/addAppt';
 import { SearchCustomerModal } from '~/components/dashboard/calendar/searchCustomerModal'
-import { getSession } from '~/sessions/auth-session.server';
+import axios from 'axios';
+import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
+import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
+import { GetUser } from "~/utils/loader.server";
 
 
 export const links: LinksFunction = () => [
@@ -29,6 +31,7 @@ export const links: LinksFunction = () => [
 ]
 
 export async function CompleteLastAppt(userId, financeId) {
+  console.log('CompleteLastAppt')
   const lastApt = await prisma.clientApts.findFirst({
     where: { financeId: financeId },
     orderBy: {
@@ -54,6 +57,172 @@ export async function CompleteLastAppt(userId, financeId) {
     return finance
   }
 }
+export async function TwoDays(followUpDay3, formData, financeId, user) {
+  const lastContact = new Date().toISOString();
+  let customerState = formData.customerState;
+  if (customerState === "Pending") {
+    customerState = "Attempted";
+  }
+
+
+  const followUpDay2 = parseInt(followUpDay3);
+  console.log('followUpDay:', followUpDay2);  // Add this line
+
+  function addDays(days) {
+    let currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + days);
+    return currentDate;
+  }
+
+  let newDate = addDays(followUpDay2);
+  newDate = new Date(newDate).toISOString();
+  console.log('financeId:', financeId);  // Add this line
+
+  let clientAptsData = {
+    title: formData.title,
+    start: newDate,
+
+    //end: formData.end,
+    contactMethod: formData.contactMethod,
+    completed: formData.completed,
+    apptStatus: formData.apptStatus,
+    apptType: formData.apptType,
+    note: formData.note,
+    unit: formData.unit,
+    brand: formData.brand,
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    email: formData.email,
+    phone: formData.phone,
+    address: formData.address,
+    financeId: formData.financeId,
+    //description,
+    userName: user?.name,
+    messageTitle: 'Contacted by Instant Function',
+
+    direction: 'Outgoing',
+    resultOfcall: 'Attempted',
+    userId,
+  };
+  const formPayload = formData
+  const dashboardId = formData.dashboardId
+  const nextAppointment = newDate
+  const followUpDay = newDate
+  const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, dashboardId }
+  const updating = await updateFinance23(financeId, formData, formPayload);
+  const createFollowup = await createfinanceApt(user, clientAptsData, formData)
+  const completeApt = await CompleteLastAppt(userId, financeId)
+  //  console.log('hittind 2 days from noiw', formData, followUpDay, completeApt, createClientFinanceAptData)
+  return json({ updating, completeApt, createFollowup });
+}
+export async function FollowUpApt(formData, user, userId) {
+  const lastContact = new Date().toISOString();
+  let customerState = formData.customerState;
+  if (customerState === "Pending") {
+    customerState = "Attempted";
+  }
+
+  let newDate = new Date(formData.followUpDay1).toISOString();
+
+  let clientAptsData = {
+    title: formData.title,
+    start: newDate,
+
+    //end: formData.end,
+    contactMethod: formData.contactMethod,
+    completed: formData.completed,
+    apptStatus: formData.apptStatus,
+    apptType: formData.apptType,
+    note: formData.note,
+    unit: formData.unit,
+    brand: formData.brand,
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    email: formData.email,
+    phone: formData.phone,
+    address: formData.address,
+    financeId: formData.financeId,
+    //description,
+    userName: user?.name,
+    messageTitle: 'Contacted by Instant Function',
+
+    direction: 'Outgoing',
+    resultOfcall: 'Attempted',
+    userId,
+  };
+  setTimeout(() => {
+    if (selectedChannel) {
+
+    }
+  }, []);
+
+  const nextAppointment = newDate
+  const followUpDay = newDate
+  const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, dashboardId }
+  const updating = await updateFinance23(financeId, formData3, formPayload);
+
+
+  const createFollowup = await createfinanceApt(financeId, clientAptsData)
+
+
+  const completeApt = await CompleteLastAppt(userId, financeId)
+  //  console.log('hittind 2 days from noiw', formData, followUpDay, completeApt, createClientFinanceAptData)
+  return json({ updating, completeApt, createFollowup });
+}
+export async function ComsCount(financeId, commType) {
+  const record = await prisma.communications.findUnique({
+    where: { financeId: financeId },
+  });
+  if (record) {
+    await prisma.communications.update({
+      where: { financeId: financeId },
+      data: { [commType]: record[commType] + 1 },
+    });
+  } else {
+    await prisma.communications.create({
+      data: { financeId: financeId, [commType]: 1 },
+    });
+  }
+  return json({ ok: true });
+}
+export async function ConvertDynamic(finance) {
+  function replaceTemplateValues(template, values) {
+    let result = template;
+    for (const key in values) {
+      result = result.replace(new RegExp(`\\$\\{${key}\\}`, 'g'), values[key]);
+    }
+    return result;
+  }
+
+  const values = {
+    clientFname: finance.firstName,
+    clientLname: finance.lastName,
+    clientEmail: finance.email,
+    clientFullName: finance.firstName + ' ' + finance.lastName,
+    clientPhone: finance.phone,
+    clientAddress: finance.address,
+    clientCity: finance.city,
+    clientState: finance.state,
+    clientPostalCode: finance.postalCode,
+    year: finance.year,
+    make: finance.make,
+    model: finance.model,
+    vin: finance.vin,
+    stockNumber: finance.stockNumber,
+    price: finance.price,
+    tradeYear: finance.tradeYear,
+    tradeMake: finance.tradeMake,
+    tradeModel: finance.tradeModel,
+    tradeVin: finance.tradeVin,
+    tradeColor: finance.tradeColor,
+    tradeValue: finance.tradeValue,
+    tradeMileage: finance.tradeMileage,
+  }
+  const template = `Hello ${clientFname}, your ${model} has been shipped.`;
+
+  const emailBody = replaceTemplateValues(template, values);
+  return emailBody
+}
 
 export async function action({ request }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData());
@@ -75,12 +244,8 @@ export async function action({ request }: ActionFunction) {
       data: {
         completed: 'yes',
         resultOfcall: formData.resultOfcall,
-        title: formData.title,
-        resourceId: Number(formData.resourceId),
         note: formData.note,
         financeId: formData.financeId,
-        address: formData.address,
-        apptStatus: formData.apptStatus,
       },
       where: {
         id: formData.aptId,
@@ -120,7 +285,7 @@ export async function action({ request }: ActionFunction) {
         apptStatus: 'Completed',
       },
       where: {
-        id: formData.id,
+        id: formData.aptId,
       },
     });
     console.log('updated by 2daysfrom now')
@@ -250,7 +415,7 @@ export async function action({ request }: ActionFunction) {
         apptStatus: 'Completed',
       },
       where: {
-        id: formData.id,
+        id: formData.aptId,
       },
     });
     console.log('updated by scheduleFUp')
@@ -271,7 +436,7 @@ export async function action({ request }: ActionFunction) {
         email: formData.email,
         phone: formData.phone,
         address: formData.address,
-        userId: userId,
+        userEmail: user.email,
         //  description: formData.description,
         userName: formData.username,
         attachments: formData.attachments,
@@ -405,7 +570,7 @@ export async function action({ request }: ActionFunction) {
         address: formData.address,
         userId: formData.clientId,
         //  description: formData.description,
-        userName: formData.userName,
+        userName: user.username,
         attachments: formData.attachments,
         //  direction: formData.direction,
         resultOfcall: formData.resultOfcall,

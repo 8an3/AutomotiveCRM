@@ -1,6 +1,5 @@
 import { json, redirect, type ActionFunction, type DataFunctionArgs } from "@remix-run/node";
 import { Resend } from "resend";
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { deleteBMW, deleteFinance, deleteManitou } from '~/utils/finance/delete.server';
 import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, } from "~/utils/finance/create.server";
@@ -108,11 +107,15 @@ export async function EmailFunction(request, params, user, financeId, formPayloa
   let customContent = formPayload.customContent
   let filledContent = ''
   if (referrerPath === '/overview/$' || referrerPath === '/dashboard/calls' || referrerPath === '/leads') {
-    const templateString = formPayload.customContent //'Hello ${clientFname}, just wanted to follow up to our conversations...';
-    const templateVars = clientData
-    filledContent = fillTemplate(templateString, templateVars);
-    console.log(filledContent); // "Hey Bob, just wanted to follow up to our conversations..."
-    customContent = filledContent
+    try {
+      const templateString = formPayload.customContent //'Hello ${clientFname}, just wanted to follow up to our conversations...';
+      const templateVars = clientData
+      filledContent = fillTemplate(templateString, templateVars);
+      console.log(filledContent); // "Hey Bob, just wanted to follow up to our conversations..."
+      customContent = filledContent
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   let modelData = ''

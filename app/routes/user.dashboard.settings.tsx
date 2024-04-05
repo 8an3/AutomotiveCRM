@@ -28,7 +28,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   const user = await GetUser(email)
-  console.log(user, 'settings')
+
   if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const userEmail = user?.email
@@ -285,9 +285,7 @@ export function StatsTable({ statsData, comsRecords }) {
 }
 
 
-async function ProfileForm() {
-  const { user, deFees, dataPDF, statsData, comsRecords } = useLoaderData()
-
+function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
   let finance = ''
   let data = ''
   const fetcher = useFetcher()
@@ -361,11 +359,7 @@ async function ProfileForm() {
   const navigation = useNavigation();
 
   const isSubmitting = navigation.state === "submitting";
-  const userIntegration = await prisma.userIntergration.findUnique({
-    where: { userEmail: user?.email }
-  })
-  const userActivixActivated = userIntegration.activixActivated
-  const [activixActivated, setActivixActivated] = useState(userActivixActivated === 'yes');
+  const [activixActivated, setActivixActivated] = useState(user.activixActivated === 'yes');
 
   const handleCheckboxChange = () => {
     // Update the state based on the opposite value of the current state
@@ -696,7 +690,7 @@ async function ProfileForm() {
                 <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
 
               </div>
-              {activixActivated === 'yes' && (
+              {user.activixActivated === 'yes' && (
                 <>
                   <div className="grid gap-2 mt-2">
                     <Label htmlFor="area">Activix Email</Label>

@@ -2,14 +2,17 @@ import { Container } from "@radix-ui/themes";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import React from "react";
 import { getSession } from '~/sessions/auth-session.server';
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
 import NotificationSystem from "./notifications";
+import secondary from '~/styles/secondary.css'
+import { GetUser } from "~/utils/loader.server";
 
-
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: secondary },
+];
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")

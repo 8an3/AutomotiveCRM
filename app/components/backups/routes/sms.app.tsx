@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState, RefObject } from "react";
 import { Loader2 } from "../icons";
-import { Outlet, useFetcher, useLoaderData, useActionData, Form, useLocation, useSubmit } from '@remix-run/react';
+import { Outlet, useFetcher, useLoaderData, useActionData, Form, useLocation, useSubmit, useMatch } from '@remix-run/react';
 import { Textarea } from '../ui/textarea';
 import { setMessages, setSelectedChannel } from '~/actions/actions';
 import axios from "axios";
@@ -13,13 +13,16 @@ import { model } from "../models";
 import { getSession } from "~/sessions/auth-session.server";
 
 import ChatMessages from '../components/sms/ChatMessage';
-import { MessageSquarePlus } from 'lucide-react';
+import { ChevronLeft, MessageSquarePlus } from 'lucide-react';
 import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, ButtonLoading } from "~/components/ui";
 import financeFormSchema from "./overviewUtils/financeFormSchema";
 import { useDispatch, connect, useSelector } from 'react-redux';
 import { toast } from "sonner"
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/dashboard.svg' },
 
+];
 
 async function getToken(
   username: string,
@@ -46,7 +49,13 @@ async function getToken(
     throw new Error(`ERROR received from ${requestAddress}: ${error}\n`);
   }
 }
+function checkForMobileDevice(userAgent) {
+  // Example patterns to check for mobile devices
+  const mobileDevicePatterns = ['iPhone', 'Android', 'Mobile'];
 
+  // Check if the User-Agent contains any of the mobile device patterns
+  return mobileDevicePatterns.some(pattern => userAgent.includes(pattern));
+}
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
@@ -202,8 +211,11 @@ export async function loader({ request, params }: LoaderFunction) {
     }
   }
 
+  const userAgent = request.headers.get('User-Agent');
+  const isMobileDevice = checkForMobileDevice(userAgent);
+
   console.log(conversationsData);
-  return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates, conversationsData, })
+  return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates, conversationsData, isMobileDevice })
 }
 
 export async function action({ request, }: ActionFunction) {
@@ -218,6 +230,7 @@ export async function action({ request, }: ActionFunction) {
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const intent = formData.intent
+
   if (intent === 'getConversation') {
     const sid = formData.conversationSid
     const convoId = sid
@@ -250,7 +263,8 @@ export async function action({ request, }: ActionFunction) {
 
 
 const ChatApp = (item) => {
-  const { convoList, callToken, newToken, user, getText, getTemplates, conversationsData, username, } = useLoaderData()
+  const { convoList, callToken, newToken, user, getText, getTemplates, conversationsData, username, isMobileDevice } = useLoaderData()
+  console.log(isMobileDevice, 'isMobileDevice')
   const [templates, setTemplates] = useState(getTemplates);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   // const dispatch = useDispatch();
@@ -264,8 +278,8 @@ const ChatApp = (item) => {
   const handleChange = (event) => {
     const selectedTemplate = templates.find(template => template.title === event.target.value);
     setSelectedTemplate(selectedTemplate);
-  };
 
+  };
   React.useEffect(() => {
     if (selectedTemplate) {
       setText(selectedTemplate.body);
@@ -296,6 +310,39 @@ const ChatApp = (item) => {
   const [channelName, setChannelName] = useState('');
   const [from, setFrom] = useState('');
   const [conversation_sid, setConversation_sid] = useState('');
+
+  const [smsMenu, setSmsMenu] = useState('true');
+  const [sms, setSms] = useState(true);
+  const [size, setSize] = useState(751);
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [conversation, SetConversation] = useState('list');
+
+  const handleConversationClick = (conversationId) => {
+    setSelectedConversation(conversationId);
+    if (conversation !== 'list') {
+      SetConversation('list')
+    }
+    if (conversation === 'list') {
+      SetConversation('conversation')
+    }
+  };
+
+
+
+  // Function to handle resizing and change conversation layout
+  const handleScreenSizeChange = () => {
+    const isLargeScreen = window.innerWidth >= 1025;
+    SetConversation(isLargeScreen ? 'largeScreen' : 'list');
+  };
+
+  useEffect(() => {
+    handleScreenSizeChange();
+    window.addEventListener('resize', handleScreenSizeChange);
+    return () => window.removeEventListener('resize', handleScreenSizeChange);
+  }, []);
+
 
   const { key } = useLocation();
   useEffect(
@@ -425,9 +472,17 @@ const ChatApp = (item) => {
     channelContent = (
       <div onClick={() => { }} id="OpenChannel" className='text-white'>
         <div className="flex justify-between border-b border-[#3b3b3b]">
-          <span className="text-lg font-bold text-white m-2">
-            <strong>{channelName}</strong>
-          </span>
+          <div className='flex align-middle'>
+
+            <Button variant='outline' onClick={() => SetConversation('list')}>
+              <ChevronLeft color="#ffffff" strokeWidth={1.5} />
+            </Button>
+
+            <span className="text-lg font-bold text-white m-2">
+              <strong>{channelName}</strong>
+            </span>
+          </div>
+
           <select
             className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  m-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
             onChange={handleChange}>
@@ -441,7 +496,7 @@ const ChatApp = (item) => {
 
         </div>
 
-        <div className='relative w-[100%] max-h-[950px] h-auto ' >
+        <div className='relative w-[100%] max-h-[950px] h-auto overflow-y-scroll' >
           <ChatMessages identity={`+1${user.phone}`} messages={messagesConvo} messagesRef={messagesRef} />
         </div>
         <div className="mt-auto   rounded-md  border-[#3b3b3b]">
@@ -480,117 +535,359 @@ const ChatApp = (item) => {
   }
 
   if (!Array.isArray(channels) || channels.length === 0) {
-    // If channels is not an array or doesn't exist, handle it accordingly
     return <p>No channels available.</p>;
   }
+
   if (loggedIn) {
     return (
-      <div className="mx-auto mt-[65px] flex h-[93%] w-[95%] border border-[#3b3b3b] bg-black">
-        <div className="flex flex-col w-[25%] max-w-[25%] space-y-2 border border-[#ffffff4d]">
-          <div className="tabListSZ mx-auto flex w-full border-b border-[#3b3b3b]">
-            <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
-              <TabsList className="grid w-auto grid-cols-3">
-                <TabsTrigger
-                  onClick={() => {
+      <>
+        {conversation === 'largeScreen' && (
 
-                  }}
-                  value="SMS">
-                  SMS
-                </TabsTrigger>
-                <TabsTrigger
-                  onClick={() => {
+          <div className="mx-auto mt-[65px] h-[93%] w-[95%] border border-[#3b3b3b] bg-black flex">
 
-                  }}
-                  value="Staff Chat">
-                  Staff Chat
-                </TabsTrigger>
-                <TabsTrigger
-                  onClick={() => {
+            <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d]  w-[25%] `}>
 
-                  }}
-                  value="Facebook">
-                  Facebook
-                </TabsTrigger>
+              <div className="tabListSZ mx-auto flex w-full border-b border-[#3b3b3b]">
+                <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
+                  <TabsList className="grid w-auto grid-cols-2">
+                    <TabsTrigger
+                      onClick={() => {
+                        setSms(true)
+                      }}
+                      value="SMS">
+                      SMS
+                    </TabsTrigger>
+                    <TabsTrigger
+                      onClick={() => {
+                        setSms(false)
 
-              </TabsList>
-            </Tabs>
+                      }}
+                      value="Staff Chat">
+                      Staff Chat {size} {smsMenu} {isLargeScreen}
+                    </TabsTrigger>
+                    {/*   <TabsTrigger
+          onClick={() => {
+
+          }}
+          value="Facebook">
+         Facebook
+        </TabsTrigger>*/}
+
+                  </TabsList>
+                </Tabs>
+              </div>
+              {sms === true && (
+                <ul className="top-0 overflow-y-scroll grow" >
+                  {conversationsData.map((item, index) => {
+                    const activeChannel = item.conversationSid === selectedChannelSid;
+                    const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
+                    const currentDate = new Date().setHours(0, 0, 0, 0);
+                    const itemDate = new Date(item.createdDate).setHours(0, 0, 0, 0);
+                    let formattedDate;
+                    if (itemDate === currentDate) {
+                      formattedDate = new Date(item.createdDate).toLocaleTimeString();
+                    } else {
+                      formattedDate = new Date(item.createdDate).toLocaleDateString();
+                    }
+                    const lastMessageList = messagesConvo[messagesConvo.length - 1];
+                    return (
+                      <>
+                        <li
+                          key={index}
+                          onClick={async (event) => {
+                            const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+                            const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+                            const conversationSid = item.conversationSid; // Replace with the actual conversationSid
+                            const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
+                            const credentials = `${accountSid}:${authToken}`;
+                            const base64Credentials = btoa(credentials);
+                            fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
+                              .then(response => response.json())
+                              .then(data => {
+                                setMessagesConvo(data.messages);
+                              })
+                              .catch(error => console.error('Error:', error));
+                            setSelectedChannelSid(item.conversationSid);
+                            setChannelName(item.author || item.sid)
+                            console.log(smsMenu, 'smsMenu')
+
+                            console.log(selectedChannelSid)
+                          }}
+                          className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
+                          <div className=' w-[95%] '>
+                            <input type='hidden' name='conversationSid' defaultValue={item} />
+                            <input type='hidden' name='intent' defaultValue='getConversation' />
+                            <div className="m-2 flex items-center justify-between">
+                              <span className="text-lg font-bold text-white">
+                                <strong>{item.author || item.author}</strong>
+                              </span>
+                              <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                {formattedDate}
+                              </p>
+                            </div>
+                            <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                              {conversationsData && conversationsData.length > 0 && conversationsData[0].body
+                                ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
+                                : ''}
+                            </p>
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
+                </ul>
+              )}
+              {sms === false && (
+                <ul className="top-0 overflow-y-scroll grow" >
+                  {conversationsData.map((item, index) => {
+                    const activeChannel = item.conversationSid === selectedChannelSid;
+                    const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
+                    const currentDate = new Date().setHours(0, 0, 0, 0);
+                    const itemDate = new Date(item.createdDate).setHours(0, 0, 0, 0);
+                    let formattedDate;
+                    if (itemDate === currentDate) {
+                      formattedDate = new Date(item.createdDate).toLocaleTimeString();
+                    } else {
+                      formattedDate = new Date(item.createdDate).toLocaleDateString();
+                    }
+                    const lastMessageList = messagesConvo[messagesConvo.length - 1];
+                    return (
+                      <>
+                        <li
+                          key={index}
+                          onClick={async (event) => {
+                            const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+                            const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+                            const conversationSid = item.conversationSid; // Replace with the actual conversationSid
+                            const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
+                            const credentials = `${accountSid}:${authToken}`;
+                            const base64Credentials = btoa(credentials);
+                            fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
+                              .then(response => response.json())
+                              .then(data => {
+                                setMessagesConvo(data.messages);
+                              })
+                              .catch(error => console.error('Error:', error));
+                            setSelectedChannelSid(item.conversationSid);
+                            setChannelName(item.author || item.sid)
+                            console.log(smsMenu, 'smsMenu')
+
+                            console.log(selectedChannelSid)
+                          }}
+                          className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
+                          <div className=' w-[95%] '>
+                            <input type='hidden' name='conversationSid' defaultValue={item} />
+                            <input type='hidden' name='intent' defaultValue='getConversation' />
+                            <div className="m-2 flex items-center justify-between">
+                              <span className="text-lg font-bold text-white">
+                                <strong>{item.author || item.author}</strong>
+                              </span>
+                              <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                {formattedDate}
+                              </p>
+                            </div>
+                            <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                              {conversationsData && conversationsData.length > 0 && conversationsData[0].body
+                                ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
+                                : ''}
+                            </p>
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+            <div className={`rightPanel flex flex-col space-y-2 border border-[#ffffff4d]   w-[75%] `}>
+              {sms === true && (
+                <>
+                  {channelContent}
+                </>
+              )}
+              {sms === false && (
+                <>
+                  {channelContent}
+                </>
+              )}
+            </div>
           </div>
-          <ul className="top-0 overflow-y-scroll grow" >
-            {conversationsData.map((item, index) => {
-              const activeChannel = item.conversationSid === selectedChannelSid;
-              const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
-              const currentDate = new Date().setHours(0, 0, 0, 0);
-              const itemDate = new Date(item.createdDate).setHours(0, 0, 0, 0);
-              let formattedDate;
-              if (itemDate === currentDate) {
-                formattedDate = new Date(item.createdDate).toLocaleTimeString();
-              } else {
-                formattedDate = new Date(item.createdDate).toLocaleDateString();
-              }
-              const lastMessageList = messagesConvo[messagesConvo.length - 1];
-              return (
-                <li
-                  key={index}
-                  onClick={async (event) => {
-                    /*
-                    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
-                    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
-                    const conversationSid = item.conversationSid
+        )}
+        {conversation === 'conversation' && (
+          <div className="w-full mt-[100px]">
+            {channelContent}
+          </div>
+        )}
 
-                    const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}`;
-                    const credentials = `${accountSid}:${authToken}`;
-                    const base64Credentials = btoa(credentials);
+        {conversation === 'list' && (
+          <div className="">
+            <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d]  w-full `}>
 
-                    const andThennn = fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
-                    console.log(andThennn, 'and then? no and then!!! and thennnn???')
-                          */
-                    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
-                    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
-                    const conversationSid = item.conversationSid; // Replace with the actual conversationSid
-                    const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
-                    const credentials = `${accountSid}:${authToken}`;
-                    const base64Credentials = btoa(credentials);
+              <div className="tabListSZ mx-auto flex w-full border-b border-[#3b3b3b]">
+                <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
+                  <TabsList className="grid w-auto grid-cols-2">
+                    <TabsTrigger
+                      onClick={() => {
+                        setSms(true)
+                      }}
+                      value="SMS">
+                      SMS
+                    </TabsTrigger>
+                    <TabsTrigger
+                      onClick={() => {
+                        setSms(false)
 
-                    fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
-                      .then(response => response.json())
-                      .then(data => {
-                        setMessagesConvo(data.messages);
-                      })
-                      .catch(error => console.error('Error:', error));
-                    setSelectedChannelSid(item.conversationSid);
-                    setChannelName(item.author || item.sid)
-                    console.log(selectedChannelSid)
-                  }}
-                  className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
-                  <div className=' w-[95%] '>
-                    <input type='hidden' name='conversationSid' defaultValue={item} />
-                    <input type='hidden' name='intent' defaultValue='getConversation' />
-                    <div className="m-2 flex items-center justify-between">
-                      <span className="text-lg font-bold text-white">
-                        <strong>{item.author || item.author}</strong>
-                      </span>
-                      <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
-                        {formattedDate}
-                      </p>
-                    </div>
-                    <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
-                      {conversationsData && conversationsData.length > 0 && conversationsData[0].body
-                        ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
-                        : ''}
-                    </p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-        <div className="grid h-[100%] w-[75%] max-w-[75%] grid-cols-1 space-y-2 border border-[#ffffff4d]">
-          {channelContent}
-        </div>
-      </div >
+                      }}
+                      value="Staff Chat">
+                      Staff Chat {size} {smsMenu} {isLargeScreen}
+                    </TabsTrigger>
+                    {/*   <TabsTrigger
+onClick={() => {
+
+}}
+value="Facebook">
+Facebook
+</TabsTrigger>*/}
+
+                  </TabsList>
+                </Tabs>
+              </div>
+              {sms === true && (
+                <ul className="top-0 overflow-y-scroll grow" >
+                  {conversationsData.map((item, index) => {
+                    const activeChannel = item.conversationSid === selectedChannelSid;
+                    const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
+                    const currentDate = new Date().setHours(0, 0, 0, 0);
+                    const itemDate = new Date(item.createdDate).setHours(0, 0, 0, 0);
+                    let formattedDate;
+                    if (itemDate === currentDate) {
+                      formattedDate = new Date(item.createdDate).toLocaleTimeString();
+                    } else {
+                      formattedDate = new Date(item.createdDate).toLocaleDateString();
+                    }
+                    const lastMessageList = messagesConvo[messagesConvo.length - 1];
+                    return (
+                      <>
+                        <li
+                          key={index}
+                          onClick={async (event) => {
+                            const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+                            const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+                            const conversationSid = item.conversationSid; // Replace with the actual conversationSid
+                            const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
+                            const credentials = `${accountSid}:${authToken}`;
+                            const base64Credentials = btoa(credentials);
+                            fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
+                              .then(response => response.json())
+                              .then(data => {
+                                setMessagesConvo(data.messages);
+                              })
+                              .catch(error => console.error('Error:', error));
+                            setSelectedChannelSid(item.conversationSid);
+                            setChannelName(item.author || item.sid)
+                            console.log(smsMenu, 'smsMenu')
+                            handleConversationClick(item.conversationSid)
+                            console.log(selectedChannelSid)
+                          }}
+                          className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
+                          <div className=' w-[95%] '>
+                            <input type='hidden' name='conversationSid' defaultValue={item} />
+                            <input type='hidden' name='intent' defaultValue='getConversation' />
+                            <div className="m-2 flex items-center justify-between">
+                              <span className="text-lg font-bold text-white">
+                                <strong>{item.author || item.author}</strong>
+                              </span>
+                              <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                {formattedDate}
+                              </p>
+                            </div>
+                            <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                              {conversationsData && conversationsData.length > 0 && conversationsData[0].body
+                                ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
+                                : ''}
+                            </p>
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
+                </ul>
+              )}
+              {sms === false && (
+                <ul className="top-0 overflow-y-scroll grow" >
+                  {conversationsData.map((item, index) => {
+                    const activeChannel = item.conversationSid === selectedChannelSid;
+                    const channelItemClassName = `channel-item${activeChannel ? ' channel-item--active' : ''}`;
+                    const currentDate = new Date().setHours(0, 0, 0, 0);
+                    const itemDate = new Date(item.createdDate).setHours(0, 0, 0, 0);
+                    let formattedDate;
+                    if (itemDate === currentDate) {
+                      formattedDate = new Date(item.createdDate).toLocaleTimeString();
+                    } else {
+                      formattedDate = new Date(item.createdDate).toLocaleDateString();
+                    }
+                    const lastMessageList = messagesConvo[messagesConvo.length - 1];
+                    return (
+                      <>
+                        <li
+                          key={index}
+                          onClick={async (event) => {
+                            const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+                            const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+                            const conversationSid = item.conversationSid; // Replace with the actual conversationSid
+                            const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
+                            const credentials = `${accountSid}:${authToken}`;
+                            const base64Credentials = btoa(credentials);
+                            fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
+                              .then(response => response.json())
+                              .then(data => {
+                                setMessagesConvo(data.messages);
+                              })
+                              .catch(error => console.error('Error:', error));
+                            setSelectedChannelSid(item.conversationSid);
+                            setChannelName(item.author || item.sid)
+                            console.log(smsMenu, 'smsMenu')
+
+                            console.log(selectedChannelSid)
+                          }}
+                          className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}                    >
+                          <div className=' w-[95%] '>
+                            <input type='hidden' name='conversationSid' defaultValue={item} />
+                            <input type='hidden' name='intent' defaultValue='getConversation' />
+                            <div className="m-2 flex items-center justify-between">
+                              <span className="text-lg font-bold text-white">
+                                <strong>{item.author || item.author}</strong>
+                              </span>
+                              <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                {formattedDate}
+                              </p>
+                            </div>
+                            <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                              {conversationsData && conversationsData.length > 0 && conversationsData[0].body
+                                ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
+                                : ''}
+                            </p>
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          </div >
+        )}
+      </>
+
+
     );
-  }
 
+  }
+  if (isMobileDevice === true) {
+    <>
+      <p>
+        mobile device</p></>
+  }
   return <Loader2 className="animate-spin" />;
 }
 

@@ -27,7 +27,6 @@ import { model } from '~/models'
 import { getSession } from "~/sessions/auth-session.server";
 import { put } from '@vercel/blob';
 
-
 import type { PutBlobResult } from '@vercel/blob';
 
 export function AvatarUploadPage() {

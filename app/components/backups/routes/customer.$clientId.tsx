@@ -11,7 +11,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
 export default function CustomerProfile() {
   return (
     <div className="w-full">
-      <div className="mx-auto bg-slate12 " >
+      <div className="mx-auto bg-black " >
         <Outlet />
       </div>
     </div>

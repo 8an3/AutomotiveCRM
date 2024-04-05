@@ -106,16 +106,9 @@ const FullCustom = ({
 											</Link>
 										</Column>
 									</Section>
-
 								</>
 							)}
-
 						</Section>
-
-
-
-
-
 					</Container>
 				</Body>
 			</Tailwind>

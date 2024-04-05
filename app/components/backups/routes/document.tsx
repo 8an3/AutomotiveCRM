@@ -2,13 +2,11 @@ import { Container } from "@radix-ui/themes";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import React from "react";
 import { getSession } from '~/sessions/auth-session.server';
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
 import NotificationSystem from "./notifications";
-
 
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));

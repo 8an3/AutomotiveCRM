@@ -2,14 +2,14 @@ import { Container } from "@radix-ui/themes";
 
 import NotificationSystem from "./notifications";
 import slider from '~/styles/slider.css'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
+import { Accordion, AccordionContenSendEmailt, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
 import { toast } from "sonner"
 import { Archive, MailWarning, DollarSign, Clock, MailCheck, Twitter, RefreshCw, FormInput, Inbox, Reply, ReplyAll, Forward, MoreVertical, Star, Folder, MailQuestion, ShieldAlert, MessageCircle, Loader2, } from "lucide-react";
 import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, ButtonLoading } from "~/components/ui";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { DataFunctionArgs, json, redirect, type LoaderFunction, createCookie, LinksFunction } from '@remix-run/node';
 import { model } from "~/models";
-import { Outlet, useLoaderData, useNavigation, Form } from '@remix-run/react';
+import { Outlet, useLoaderData, useNavigation, Form, useLocation } from '@remix-run/react';
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, } from "~/components/ui/context-menu"
@@ -31,20 +31,17 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card"
 import axios from "axios";
+import { EditorTiptapHook, Editor, onUpdate } from "~/components/libs/editor-tiptap";
 
 
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: slider },];
 
-
-
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: slider },
-];
 
 export async function loader({ params, request }: DataFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
   const user = await GetUser(email)
+
   if (!user) { redirect('/login') }
   const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
   let tokens = session.get("accessToken")
@@ -182,8 +179,12 @@ export async function loader({ params, request }: DataFunctionArgs) {
     console.log(response)*/
 
   return json({ labelData, API_KEY, user, tokens, getTemplates, request, emailDetails, unreadEmails, refreshToken }, {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
   });
 }
+
 export async function action({ params, request }: DataFunctionArgs) {
   const formPayload = Object.fromEntries(await request.formData());
   let formData = financeFormSchema.parse(formPayload)
@@ -240,7 +241,6 @@ export default function EmailClient() {
   const [unread, setUnread] = useState('')
   const [inbox, setInbox] = useState(emailDetails.messagesUnread)
   const [reply, setReply] = useState(false)
-  const [text, setText] = useState('');
   const [composeEmail, setComposeEmail] = useState(false);
   const [which, setWhich] = useState('');
   const [RenameFolderInput, setRenameFolderInput] = useState(false);
@@ -257,6 +257,13 @@ export default function EmailClient() {
   const [openReply, setOpenReply] = useState(false)
   const [subject, setSubject] = useState('')
 
+  let content;
+  let handleUpdate;
+  const editor = Editor(content, handleUpdate)
+  const [text, setText] = useState('')
+  const someFunction = () => {
+    onUpdate({ editor, setText, handleUpdate });
+  };
   const newEmails = unreadEmails.map(email => ({
     ...email,
     subject: email.subject?.value || null
@@ -421,14 +428,10 @@ export default function EmailClient() {
       setSubject(selectedTemplate.subject);
     }
   }, [selectedTemplate]);
-  const HandleGewtLabel = async (label) => {
-    // const res2 = await getUserEmails(oauth2Client);
-    //const res = await sendEmail(oauth2Client);
-    //console.log('test', res, 'test')
 
+  async function HandleGewtLabel(label) {
     const labelData = await GetLabel(label)
     return labelData
-
   }
   const HandleSendEmail = async (user, to, subject, text) => {
     return sendEmail
@@ -941,6 +944,11 @@ export default function EmailClient() {
     fetchAndRenderEmails();
   }, [label]);
 
+  const host = useLocation();
+
+
+
+
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
   const MyIFrameComponent = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -954,9 +962,15 @@ export default function EmailClient() {
           }
         }
       };
+      const currentHost = typeof window !== 'undefined' ? window.location.host : null;
 
       if (iFrameRef.current) {
-        iFrameRef.current.src = 'http://localhost:3000/body';
+        if (currentHost === 'localhost:3000') {
+          iFrameRef.current.src = 'http://localhost:3000/body';
+        }
+        if (currentHost === 'dealersalesassistant.ca') {
+          iFrameRef.current.src = 'https://www.dealersalesassistant.ca/body';
+        }
         window.addEventListener('message', handleHeightMessage);
       }
 
@@ -996,6 +1010,11 @@ export default function EmailClient() {
                           {template.title}
                         </option>
                       ))} */
+
+
+
+
+
   return (
     <>
       <div className="!border-1 !mx-auto !bg-black flex !w-[95%] !h-[90vh] !border !border-[#3b3b3b] mt-[60px]">
@@ -1243,7 +1262,12 @@ export default function EmailClient() {
             )}
             {reply && (
               <div className="border-l mb-2 items-end justify-end rounded-md border-t border-[#3b3b3b]">
-                <Textarea value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)} className="m-2 mx-auto h-[200px] w-[98%]" placeholder="Reply to email..." />
+
+                {/*<Textarea value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)} className="m-2 mx-auto h-[200px] w-[98%]" placeholder="Reply to email..." />*/}
+                <EditorTiptapHook onChange={someFunction} />
+
+                <input type='hidden' defaultValue={text} name='body' />
+
                 <div className="mx-2 flex justify-between">
                   <div className="flex">
                     <select
@@ -1352,14 +1376,11 @@ export default function EmailClient() {
               </div>
             </div>
             <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#3b3b3b]">
-              <Textarea
-                value={text}
-                ref={textareaRef}
-                name='body'
-                onChange={(e) => setText(e.target.value)}
-                className="m-2 mx-auto h-[850px] w-[98%]"
-                placeholder="Reply to email..."
-              />
+
+              <EditorTiptapHook onChange={someFunction} />
+
+              <input type='hidden' defaultValue={text} name='body' />
+
               <div className="mx-2 flex justify-between">
                 <div className="flex">
 

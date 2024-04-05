@@ -9,12 +9,10 @@ import { CheckSub } from '~/utils/checksub.server'
 import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { google } from 'googleapis'
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import bcrypt from "bcryptjs";
 import axios from "axios";
 import { querystring } from 'querystring'
-
 
 interface CleanupFunction {
   (): void;

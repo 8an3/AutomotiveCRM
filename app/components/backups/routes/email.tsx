@@ -2,7 +2,6 @@ import { Container } from "@radix-ui/themes";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import React from "react";
 import { getSession } from '~/sessions/auth-session.server';
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
@@ -10,7 +9,7 @@ import { LinksFunction, json } from "@remix-run/node";
 import NotificationSystem from "./notifications";
 import slider from '~/styles/slider.css'
 import secondary from '~/styles/secondary.css'
-
+import { GetUser } from "~/utils/loader.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },

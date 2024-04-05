@@ -9,19 +9,20 @@ import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
 import NotificationSystem from "./notifications";
 import slider from '~/styles/slider.css'
+import secondary from '~/styles/secondary.css'
+
 
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
+  { rel: "stylesheet", href: secondary },
 ];
 
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
-
   const user = await GetUser(email)
-  /// console.log(user, account, 'wquiote loadert')
+
   const notifications = await prisma.notificationsUser.findMany({
     where: {
       userId: user.id,
@@ -40,7 +41,7 @@ export default function Quote() {
   //
   return (
     <>
-      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-black border-gray-300   ">
+      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-black border-gray-300 overflow-y-scroll">
         <Sidebar user={user} />
         <NotificationSystem notifications={notifications} />
         <Outlet />

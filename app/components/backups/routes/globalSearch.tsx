@@ -5,7 +5,6 @@ import { Button, Input, Label } from "../components/ui";
 import Sidebar from "../components/shared/sidebar";
 //import { authenticator } from "~/services";
 import { model } from "~/models";
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { Bell, BellRing, BookOpenCheck, Milestone, X } from 'lucide-react';
 import dayjs from "dayjs";
@@ -22,7 +21,6 @@ import {
 } from "~/components/ui/tabs"
 import { useEffect, useState } from "react";
 import { getSession } from "~/sessions/auth-session.server";
-
 
 const Footer = () => {
   return <p className='text-[#fff] text-center'> DSA </p>;

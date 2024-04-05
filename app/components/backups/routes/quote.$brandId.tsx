@@ -118,7 +118,7 @@ export default function Quote() {
   const isSubmitting = navigation.state === "submitting";
   //console.log(userEmail, user, 'userquote')
   function BusyIndicator() {
-    const promise = () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Sonner' }), 2000));
+    // const promise = () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Sonner' }), 2000));
 
     React.useEffect(() => {
       if (isSubmitting) {
@@ -156,7 +156,10 @@ export default function Quote() {
               </div>
               <div className="grid gap-1 mr-2 font-thin">
                 <Label className="flex font-thin items-end mt-1 " htmlFor="area">Phone</Label>
-                <Input className=" mt-1 " placeholder="Phone" name="phone" type="number" />
+                <Input className=" mt-1 " placeholder="Phone" name="phone" />
+                {errors?.phone ? (
+                  <em className="text-[#ff0202] text-right">{errors.phone}</em>
+                ) : null}
               </div>
               <div className="grid gap-1 font-thin">
                 <Label className="flex font-thin mt-1 justify-end " htmlFor="area">Email (required)</Label>

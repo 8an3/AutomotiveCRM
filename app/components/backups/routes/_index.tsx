@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, } from 'react'
 import canamIndex from './logos/canamIndex.png'
 import manitouIndex from './logos/manitouIndex.png'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter, } from '~/components/ui/card'
@@ -12,11 +12,18 @@ import Salestracker from './images/salestracker.png'
 import Features from './images/features.png'
 import Dealerfees from './images/dealerfees.png'
 import harleyDavidson from './logos/hd.png'
+import activix from './logos/activix.svg'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion"
 import Parts from './images/parts.png'
 import Quoeimage from '../../images/quote.png'
 import { useRootLoaderData } from "~/hooks";
 import Indexvideo from './images/proof40secs.mp4'
-import { Input, Button, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, } from "~/components/ui/index"
+import { Input, Button, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, Label, Separator, Badge, RemixNavLinkText, } from "~/components/ui/index"
 import index from '~/styles/index.css'
 import {
   Carousel,
@@ -27,15 +34,23 @@ import {
 } from "../components/ui/carousel"
 import { getSession, } from "../sessions/auth-session.server";
 import { model } from "~/models";
-import React from 'react'
 import { NavigationMenuSales } from '~/components/shared/navMenu'
 import { AlertCircle } from 'lucide-react'
-
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "~/components/ui/tabs"
+import secondary from '~/styles/indexSecondary.css'
+import { prisma } from "~/libs";
 
 
 export const links: LinksFunction = () => [
-  // { rel: "stylesheet", href: styles },
   { rel: "stylesheet", href: index },
+  { rel: "stylesheet", href: secondary },
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
 ]
 
 export async function loader({ request }: LoaderArgs) {
@@ -89,23 +104,17 @@ export default function Index() {
         <NavigationMenuSales />
         <AlertBox />
         <NewHeader />
-        <Price />
-
-
-        <Feature1 />
-        <Brands />
-
-        <Mission />
+        <NewSection />
+        <Footer />
       </div>
-      <FAQ />
     </>
   )
 }
 function AlertBox() {
   return (
-    <div className='bg-black mt-3 flex justify-center mx-auto ite'>
-      <div className='rounded-md border border-white w-[75%]'>
-        <div className='p-3 m-3 flex items-center justify-center'>
+    <div className='ite mx-auto mt-3 flex justify-center bg-black'>
+      <div className='w-[75%] rounded-md border border-white'>
+        <div className='m-3 flex items-center justify-center p-3'>
           <AlertCircle color="#ffffff" />
           <div className='ml-3'>
             <p className='text-white'>
@@ -120,15 +129,14 @@ function AlertBox() {
     </div>
   )
 }
-
 function NewHeader() {
   return (
-    <div className='bg-black' >
-      <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+    <div className='bg-black mt-[60px]' >
+      <div className="mx-auto max-w-2xl py-[55px] ">
 
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight text-slate1 sm:text-6xl">
-            Generate vehicle pricing in less than 60 seconds
+            Generate vehicle pricing in less than 60 seconds or saving your sales people 125+ mins a day, individually
           </h1>
           <p className="mt-6 text-lg leading-8 text-slate1">
             Experience crystal-clear and effortlessly legible displays of weekly, bi-weekly, and monthly payment options, all while receiving a detailed breakdown of every dollar involved in the deal.
@@ -136,42 +144,21 @@ function NewHeader() {
           <p className="mt-6 text-lg leading-8 text-slate1">
             Inquire about a free demo of our new CRM! Garaunteed better results than any other crm on the market. Developed and tested by a team of sales professionals, instead of programmers and developers who never sold a car in their life.
           </p>
-          <Form method="post" action="/emails/send/contact" className='flex items-center mt-5  justify-center'>
-            <Input name="email" placeholder="example@gmail.com" className='mr-2 w-[300px] bg-black text-white border-white border focus:border-[#02a9ff]' />
+          <Form method="post" action="/emails/send/contact" className='mt-5 flex items-center  justify-center'>
+            <Input name="email" placeholder="example@gmail.com" className='mr-2 w-[300px] border border-white bg-black text-white focus:border-[#02a9ff]' />
 
-            <Button name='intent' value='demoInquiry' type='submit' className=" bg-[#02a9ff] w-[75px] ml-2  mr-2 text-white  active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+            <Button name='intent' value='demoInquiry' type='submit' className=" ml-2 mr-2 w-[75px]  rounded bg-[#02a9ff]  text-center text-xs font-bold   uppercase  text-white shadow outline-none transition-all duration-150  ease-linear hover:shadow-md focus:outline-none active:bg-black"
             >
               Email
             </Button>
           </Form>
-          <div className='mt-[295px]'>
-            <p className="mt-6 text-lg leading-8 text-slate1">
-              What if you could save up to or more than 130 mins a day?
-            </p>
-            <p className="mt-6 text-lg leading-8 text-slate1">
-              It sounds rediculous, I know... but you can test how much time your current crm wastes. Send a mass email to 20 people and time how long it takes to, 1: complete the call along with any notes or anything else you need to put in. 2: schedule the follow-up call, properly, leaving yourself good notes to have a great follow up and not have to dig through previous calls to get a sense of where the customer is at. You can cheat this and say it doesnt take long. On average it would take 1:30 to 2:00 each call, unless your driven and good with the crm you have, you can get it down to a min. If your slow on the computer, this number sky rockets horribly.
-            </p>
-            <p className="mt-6 text-lg leading-8 text-slate1">
-              You can easily do 100 calls a day in sales, between texts, emails, calls and so on. Even more if no ones picking up. So at BEST your wasting 100 mins a day. At your WORST, you can waste in excess of 200 mins. We all drag our heels at times, I get it.
-            </p>
-            <p className="mt-6 text-lg leading-8 text-slate1">
-              What if you could get that process down to 10 secs? Or even down to one?  At 10 secs, your wasting 16.6 mins a day, instead 100-200 mins. If someone doesn't answer your call or text, its 1 second. This is just on that one process we talked about... what about all the other ways crm's prolonged your sales process?
-            </p>
-            <Link to='/crm' >
-              <Button className="mt-3 bg-[#02a9ff] ml-2  p-3 mr-2 text-white w-[150px] active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
-              >
-                More Details
-              </Button>
-            </Link>
-          </div>
+
 
         </div>
       </div>
     </div>
   )
 }
-
-
 const sections = [
   {
     title: "Want to see it in action?",
@@ -269,15 +256,15 @@ export function Feature1() {
       <Carousel className=" mx-auto my-auto  w-[95%]" opts={{ loop: true, }}>
         <CarouselContent className=" rounded-md ">
           {sections.map((item, index) => (
-            <CarouselItem className='border-slate1   h-auto' key={index}>
+            <CarouselItem className='h-auto   border-slate1' key={index}>
               <div className="p-1">
-                <Card className='border-slate1 h-auto'>
-                  <CardContent className="flex  rounded-md p-6  bg-myColor-900 justify-center">
+                <Card className='h-auto border-slate1'>
+                  <CardContent className="flex  justify-center rounded-md  bg-myColor-900 p-6">
                     <div className='grid grid-cols-2 items-center justify-between'>
                       <div className='justify-center'>
-                        <h2 className="text-2xl text-center font-semibold text-slate1 text-center my-auto top-[50%]">{item.title}</h2>
+                        <h2 className="top-[50%] my-auto text-center text-2xl font-semibold text-slate1">{item.title}</h2>
                         {item.paragraphs.map((paragraph, i) => (
-                          <p className='text-slate1 text-center' key={i}>{paragraph}</p>
+                          <p className='text-center text-slate1' key={i}>{paragraph}</p>
                         ))}
                       </div>
                       <img alt="logo" width='450' height='450' src={item.image} className='ml-[50px]' />
@@ -294,23 +281,22 @@ export function Feature1() {
     </>
   )
 }
-
 export function Price() {
   return (
     <>
       {/* pricing */}
-      <div className='grid grid-cols-1 mb-[100px] mt-10 items-center mx-auto text-center' >
-        <h2 className="font-sans text-3xl sm:mt-0 text-center font-bold text-slate1 sm:text-4xl mx-auto">
+      <div className='mx-auto mb-[100px] mt-10 grid grid-cols-1 items-center text-center' >
+        <h2 className="mx-auto text-center font-sans text-3xl font-bold text-slate1 sm:mt-0 sm:text-4xl">
           Subscription Plan
         </h2>
-        <h3 className='text-slate1 text-2xl'>
+        <h3 className='text-2xl text-slate1'>
           Cancel Anytime with No Penalties. Your Plan Includes Full Access to All Our Features.
         </h3>
         <h4 className="font-medium text-slate1">
           Subscribe Now for Just $19.95 Per Month.
         </h4>
         <a href='https://buy.stripe.com/14k6pTg9J0IV0G4fYZ' target="_blank">
-          <Button type="submit" name='_action' value='subscribe' variant='outline' className=' my-2 mx-auto text-slate1 border-slate1' >
+          <Button type="submit" name='_action' value='subscribe' variant='outline' className=' mx-auto my-2 border-slate1 text-slate1' >
             Subscribe Now
           </Button>
         </a>
@@ -321,43 +307,43 @@ export function Price() {
 export function Mission() {
   return (
     <>
-      <Card className='w-[90%] mx-auto mt-[100px] border-slate1'>
+      <Card className='mx-auto w-[90%] border-black'>
         <CardContent>
 
-          <div className=' mt-5 mx-auto text-center mb-[50px] my-auto'>
-            <h2 className="font-sans text-3xl sm:mt-0 text-center font-bold text-slate1 sm:text-4xl mx-auto mt-10">
+          <div className=' mx-auto mb-[50px] text-center'>
+            <h2 className="mx-auto text-center font-sans text-3xl font-bold text-white sm:mt-0 sm:text-4xl">
               Mission Statement
             </h2>
-            <hr className="solid text-slate1 " />
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <hr className="solid text-black " />
+            <p className="m-auto mt-5 text-left text-white">
               Our mission is clear: We aim to empower salespeople everywhere with tools and resources that transcend the traditional approach of relying solely on salesmanship training. Whether it's your first day or your tenth year in sales, our goal is to provide universally accessible solutions that lead to improved sales performance.
             </p>
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <p className="m-auto mt-5 text-left text-white">
               Our commitment goes beyond streamlining sales processes. In development, we're crafting a comprehensive dashboard that significantly reduces the time required to complete customer interactions and schedule follow-ups. This dashboard is designed to seamlessly integrate with various CRM systems, ensuring that you have all the necessary information at your fingertips for well-informed follow-up calls. No more navigating between pages or seeking additional resources; everything you need will be readily available to enhance your efficiency.
             </p>
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <p className="m-auto mt-5 text-left text-white">
               We firmly reject the notion of relying on vague or mystical 'secrets' to enhance sales performance, and we challenge the idea that only seasoned oratory experts can excel in sales. There is no mystical formula to sales success; it's a matter of equipping individuals with the right knowledge at the right time in their sales journey.
             </p>
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <p className="m-auto mt-5 text-left text-white">
               We believe that every person has the potential to become a highly effective sales professional. This is not an abstract hope or wishful thinking; it's a verifiable fact. We've seen remarkable transformations, even among individuals who have faced significant challenges, such as those with criminal backgrounds. Instead of treating them with harsh judgment, we've taken a different approach, guiding them toward sales excellence and, in turn, improving various aspects of their lives.
             </p>
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <p className="m-auto mt-5 text-left text-white">
               Our approach stands in stark contrast to traditional sales presentations where the speaker hopes that attendees will absorb even a small fraction of their teachings. We don't aspire for a handful out of a thousand to improve. Our mission is to empower each and every person to enhance their sales skills. We firmly believe that, given the right tools and guidance, anyone can become a successful salesperson.
             </p>
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <p className="m-auto mt-5 text-left text-white">
               While we could charge premium prices similar to CRM systems once fully developed, our commitment to accessibility remains unwavering. We understand that affordability should not be a barrier to access the tools needed for continuous growth. Every salesperson deserves to have the resources required for success, a principle that drives us to offer our solution at an accessible price point.
             </p>
 
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <p className="m-auto mt-5 text-left text-white">
               We are committed to a simple principle: We won't offer anything that hasn't undergone rigorous testing on the sales floor. We understand that our real-world experience as current sales professionals provides our tools with a unique advantage over others in the industry.
             </p>
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <p className="m-auto mt-5 text-left text-white">
               While exceptional sales coaches exist, the passage of time can sometimes lead to a disconnect from the practical realities of the sales process. We're not suggesting that you should forego further sales training; in fact, we recognize the immense value that proper training can bring when absorbed effectively.
             </p>
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <p className="m-auto mt-5 text-left text-white">
               What we promise is this: We won't present you with tools or strategies that we haven't personally used ourselves. Our commitment is rooted in the belief that only by testing and validating every aspect of our solutions in the real sales environment can we truly deliver tools that work effectively for you.
             </p>
-            <p className="m-auto text-slate1 mt-5 text-left">
+            <p className="m-auto mt-5 text-left text-white">
               Although we currently focus primarily on the power sports industry, our vision extends far beyond. We plan to expand into the automotive industry and beyond, with a singular purpose: to assist salespeople everywhere. Our mission is to empower you and every other sales professional out there to reach new heights in your career.
             </p>
           </div>
@@ -367,6 +353,10 @@ export function Mission() {
   )
 }
 export const logos = [
+  {
+    src: activix,
+    alt: 'Activix',
+  },
   {
     src: "https://searchlogovector.com/wp-content/uploads/2020/04/ski-doo-logo-vector.png",
     alt: 'Ski-Doo',
@@ -427,15 +417,15 @@ export const logos = [
 ]
 export function Brands() {
   return (
-    <div className='mx-5 mt-[100px]'>
+    <div className='mx-5'>
 
-      <h2 className="font-sans mx-auto text-3xl font-bold tracking-tight text-slate1 sm:text-4xl sm:leading-none max-w-lg mb-6">
-        Current Brands with Ongoing Additions.<br className="sm:block hidden" />
+      <h2 className="mx-auto mb-6 max-w-lg font-sans text-3xl font-bold tracking-tight text-slate1 sm:text-4xl sm:leading-none">
+        Current Brands with Ongoing Additions.<br className="hidden sm:block" />
       </h2>
-      <Card className='w-[90%] mx-auto bg-slate1'>
+      <Card className='mx-auto w-[90%] bg-slate1'>
         <CardContent className='bg-slate1'>
           <div className="mx-auto mt-8 max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap justify-center gap-8 rounded-3xl bg-slate-100 py-4 dark:bg-slate-200">
+            <div className="bg-slate-100 dark:bg-slate-200 flex flex-wrap justify-center gap-8 rounded-3xl py-4">
               <TooltipProvider>
                 {logos.map(img => (
                   <Tooltip key={img.href}>
@@ -468,29 +458,39 @@ export function Brands() {
 }
 export function FAQ() {
   return (
-    <div className='w-[95vw] mx-auto mt-[100px]'>
+    <div className='mx-auto mt-[100px] w-[95vw]'>
       <div className="mt-5">
-        <h2 className="font-sans text-3xl sm:mt-0 text-center font-bold text-slate1 sm:text-4xl mx-auto">
+        <h2 className="mx-auto text-center font-sans text-3xl font-bold text-slate1 sm:mt-0 sm:text-4xl">
           FAQ
         </h2>
       </div>
+      <Accordion type="single" collapsible className="w-full text-white">
+        {faqItems.map((item, index) => (
+          <AccordionItem key={index} value={index}>
+            <AccordionTrigger>{item.question}</AccordionTrigger>
+            <AccordionContent>
+              {item.answer}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
 
+      </Accordion>
       <Carousel className=" mx-auto my-auto  w-[95%]" opts={{
         loop: true,
       }}>
         <CarouselContent className=" rounded-md ">
 
           {faqItems.map((item, index) => (
-            <CarouselItem className='border-slate1   h-auto' key={index}>
+            <CarouselItem className='h-auto   border-slate1' key={index}>
 
               <div className="p-1">
-                <Card className='border-slate1 h-auto'>
+                <Card className='h-auto border-slate1'>
 
-                  <CardContent className="flex  rounded-md p-6  bg-myColor-900 justify-center">
+                  <CardContent className="flex  justify-center rounded-md  bg-myColor-900 p-6">
 
                     <div>
                       <h2 className="text-2xl font-semibold text-slate1">{item.question}</h2>
-                      <hr className='text-slate1 mb-3' />
+                      <hr className='mb-3 text-slate1' />
                       <p className='text-slate1'>{item.answer}</p>
                     </div>
                   </CardContent>
@@ -541,3 +541,316 @@ const faqItems = [
     answer: "The challenge of providing a universal dealer sheet that works for all brands and dealers is indeed complex. It requires a standardized layout that accommodates the diverse needs and preferences of various dealerships, while also ensuring that it's user-friendly and informative for both salespeople and other members of the staff. Here are a few reasons why creating such a universal layout can be challenging:  Brand-Specific Information: Different brands may have unique details and specifications that need to be highlighted. What works for one brand may not be suitable for another.  Dealer Preferences: Dealerships often have specific preferences for how they present information to staff. Some may prefer a more detailed breakdown, while others opt for a simpler approach.  Staff Expectations: Staff preferences can vary widely. Some may want a comprehensive breakdown, while others prefer a more streamlined presentation.  To address these challenges and provide a solution that works for all, it's essential to collaborate closely with dealerships and brands to gather feedback and refine the layout continually. Flexibility and customization options within the layout can also be key to accommodating different needs.  Ultimately, the goal should be to create a standardized dealer sheet that serves as a baseline while allowing for customization to meet specific brand and dealer requirements. This approach can help ensure that the solution benefits a wide range of stakeholders in the automotive industry."
   },
 ];
+function NewSection() {
+  const [sales, setSales] = useState(false)
+  const [dealer, setDealer] = useState(false)
+
+  return (
+    <>
+
+      {sales === false && dealer === false && (
+        <div className='mx-auto grid grid-cols-2 justify-center mb-[40px]  mt-[75px]'>
+
+          <div className='p-1 mx-auto h-[900px] w-[550px] rounded-md border border-white cursor-pointer hover:border-[#02a9ff]' onClick={() => {
+            setSales(true)
+          }}>
+            <h1 className='mt-[40px] text-center text-white  bold text-4xl'>Sales People</h1>
+            <Separator className='text-white' />
+            <p className='px-[40px] py-[15px] text-center  text-myColor-200 '>
+              Experience the only CRM on the market designed to empower every salesperson, regardless of your current CRM provider. While we may not have every integration yet, if your current provider isn't on our list, sign up, and we'll prioritize integrating it promptly.
+            </p>
+            <br className='my-1' />
+            <p className='px-[40px]  py-[10px] text-center  text-myColor-200 '>
+              Say goodbye to countless hours wasted on repetitive tasks in your dealership without needing management's permission. Our CRM acts like a new "skin" or interface, replacing your dashboard to make your job more efficient and help you outsell everyone else. Whether you want to achieve more or prefer spending time on other activities, our CRM adapts to your needs.
+            </p>
+            <br className='my-1' />
+            <p className='px-[40px]  py-[10px] text-center  text-myColor-200 '>
+              While the salesperson's version may lack some functionalities compared to the full dealership version, convincing management to change the entire CRM system might be as challenging as selling cars in Thailand without speaking the language.
+            </p>
+            <br className='my-1' />
+            <p className='px-[40px] py-[10px]  text-center  text-myColor-200 '>
+              However, adopting our CRM will significantly elevate your sales game, surpassing the impact of the last five sales training sessions. Guaranteed to be the most significant change in your career, whether you're a newcomer, a sales superstar, or a seasoned salesperson who isn't tech-savvy. You'll undoubtedly see a remarkable increase—Just read the upcoming story about wasting time with mass emails.
+            </p>
+            <p className='px-[40px] py-[10px]  text-center  text-myColor-200 '>
+              Click on the card to continue.
+            </p>
+          </div>
+
+          <div className='p4 mx-auto h-[900px] w-[550px] cursor-pointer   rounded-md border border-white text-white hover:border-[#02a9ff]'
+            onClick={() => {
+              setDealer(true)
+            }}>
+            <h1 className='mt-[40px] text-center text-white  bold text-4xl'>For Dealers</h1>
+            <div className="text-center">
+              <p className="px-8 py-5 text-myColor-200">
+                Increase your revenue and streamline training for new hires by using our CRM. It's not just easier for your employees but also provides an excellent way to present and upsell to every customer.
+              </p>
+              <br className="my-1" />
+              <p className="px-8 py-3 text-myColor-200">
+                Experience quicker sales with fewer customer questions. The easy-to-read information about the deal makes customers happier. Your sales team can effortlessly close deals without getting hung up on questions or uncertainty through the process.
+              </p>
+              <br className="my-1" />
+              <p className="px-8 py-3 text-myColor-200">
+                Eliminate paperwork for your salespeople. Our system handles all necessary paperwork, allowing your sales team to hit print, and the system takes care of the rest. Save time and boost profits across any dealership.
+              </p>
+              <br className="my-1" />
+              <p className="px-8 py-3 text-myColor-200">
+                Discover more benefits by exploring our system. Stay tuned for an in-depth video covering the entire system and addressing how the industry has done us wrong. If you're here, you're already moving in the right direction. To top it off, we have one advatange none of the CRM providors have.
+              </p>
+            </div>
+            <p className='px-[40px] py-[10px]  text-center  text-myColor-200 '>
+              Click on the card to continue.
+            </p>
+          </div>
+        </div>
+      )}
+
+
+      {sales === true && (
+        <>
+          <Tabs defaultValue="account" className="w-2/3 mx-auto justify-center">
+            <TabsList className="grid w-full grid-cols-6">
+              <TabsTrigger value="account">Why</TabsTrigger>
+              <TabsTrigger value="Action">In Action</TabsTrigger>
+              <TabsTrigger value="Brands">Brands Integrated</TabsTrigger>                <TabsTrigger value="Mission">Mission</TabsTrigger>
+              <TabsTrigger value="FAQ">FAQ</TabsTrigger>
+              <TabsTrigger value="Price">Price</TabsTrigger>
+            </TabsList>
+            <TabsContent value="account">
+              <Card className='bg-white'>
+                <CardHeader>
+                  <CardTitle className="text-lg leading-8 text-black">  It was never my intention on taking this so far and building a full fledge CRM that competes with the largest brands, but...</CardTitle>
+                  <CardDescription className="text-lg leading-8 text-black">
+                    There are some serious flaws with-in the industry, and so many people who make the decisions to design them, dont use them and can't see how they waste as much time as they do.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <p className="text-lg leading-8 text-black">
+                    What if you could save up to or more than 130 mins a day?
+                  </p>
+                  <p className="mt-6 text-lg leading-8 text-black">
+                    It sounds rediculous, I know... but you can test how much time your current crm wastes. Send a mass email to 20 people and time how long it takes to, 1: complete the call along with any notes or anything else you need to put in. 2: schedule the follow-up call, properly, leaving yourself good notes to have a great follow up and not have to dig through previous calls to get a sense of where the customer is at. You can cheat this and say it doesnt take long. On average it would take 1:30 to 2:00 each call, unless your driven and good with the crm you have, you can get it down to a min. If your slow on the computer, this number sky rockets horribly.
+                  </p>
+                  <p className="mt-6 text-lg leading-8 text-black">
+                    You can easily do 100 calls a day in sales, between texts, emails, calls and so on. Even more if no ones picking up. So at BEST your wasting 100 mins a day. At your WORST, you can waste in excess of 200 mins. We all drag our heels at times, I get it.
+                  </p>
+                  <p className="mt-6 text-lg leading-8 text-black">
+                    What if you could get that process down to 10 secs? Or even down to one?  At 10 secs, your wasting 16.6 mins a day, instead 100-200 mins. If someone doesn't answer your call or text, its 1 second. This is just on that one process we talked about... what about all the other ways crm's prolonged your sales process?
+                  </p>
+                </CardContent>
+
+              </Card>
+            </TabsContent>
+            <TabsContent value="Action">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Password</CardTitle>
+                  <CardDescription>
+                    Change your password here. After saving, you'll be logged out.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Feature1 />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Brands">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Current Brands</CardTitle>
+                  <CardDescription>
+                    With more being added consistently.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Brands />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Mission">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Our mission to you</CardTitle>
+                  <CardDescription>
+                    The people making the software, are the ones selling with it.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Mission />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="FAQ">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Got questions?</CardTitle>
+                  <CardDescription>
+                    If anything is still not answered, reach out. We will have a solution for any challenge.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <>
+
+                    <FAQ />
+
+                  </>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Price">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Pricing</CardTitle>
+                  <CardDescription>
+                    Change your password here. After saving, you'll be logged out.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Price />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </>
+      )}
+      {dealer === true && (
+        <>
+          <Tabs defaultValue="account" className="w-2/3 mx-auto justify-center">
+            <TabsList className="grid w-full grid-cols-6">
+              <TabsTrigger value="account">Why</TabsTrigger>
+              <TabsTrigger value="Action">In Action</TabsTrigger>
+              <TabsTrigger value="Brands">Brands Integrated</TabsTrigger>                <TabsTrigger value="Mission">Mission</TabsTrigger>
+              <TabsTrigger value="FAQ">FAQ</TabsTrigger>
+              <TabsTrigger value="Price">Price</TabsTrigger>
+            </TabsList>
+            <TabsContent value="account">
+              <Card className='bg-white'>
+                <CardHeader>
+                  <CardTitle className="text-lg leading-8 text-black">  It was never my intention on taking this so far and building a full fledge CRM that competes with the largest brands, but...</CardTitle>
+                  <CardDescription className="text-lg leading-8 text-black">
+                    There are some serious flaws with-in the industry, and so many people who make the decisions to design them, dont use them and can't see how they waste as much time as they do.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <p className="text-lg leading-8 text-black">
+                    What if you could save up to or more than 130 mins a day?
+                  </p>
+                  <p className="mt-6 text-lg leading-8 text-black">
+                    It sounds rediculous, I know... but you can test how much time your current crm wastes. Send a mass email to 20 people and time how long it takes to, 1: complete the call along with any notes or anything else you need to put in. 2: schedule the follow-up call, properly, leaving yourself good notes to have a great follow up and not have to dig through previous calls to get a sense of where the customer is at. You can cheat this and say it doesnt take long. On average it would take 1:30 to 2:00 each call, unless your driven and good with the crm you have, you can get it down to a min. If your slow on the computer, this number sky rockets horribly.
+                  </p>
+                  <p className="mt-6 text-lg leading-8 text-black">
+                    You can easily do 100 calls a day in sales, between texts, emails, calls and so on. Even more if no ones picking up. So at BEST your wasting 100 mins a day. At your WORST, you can waste in excess of 200 mins. We all drag our heels at times, I get it.
+                  </p>
+                  <p className="mt-6 text-lg leading-8 text-black">
+                    What if you could get that process down to 10 secs? Or even down to one?  At 10 secs, your wasting 16.6 mins a day, instead 100-200 mins. If someone doesn't answer your call or text, its 1 second. This is just on that one process we talked about... what about all the other ways crm's prolonged your sales process?
+                  </p>
+                </CardContent>
+
+              </Card>
+            </TabsContent>
+            <TabsContent value="Action">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Password</CardTitle>
+                  <CardDescription>
+                    Change your password here. After saving, you'll be logged out.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+
+
+
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Brands">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Current Brands</CardTitle>
+                  <CardDescription>
+                    With more being added consistently.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Brands />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Mission">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Our mission to you</CardTitle>
+                  <CardDescription>
+                    The people making the software, are the ones selling with it.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Mission />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="FAQ">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Got questions?</CardTitle>
+                  <CardDescription>
+                    If anything is still not answered, reach out. We will have a solution for any challenge.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <FAQ />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Price">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Password</CardTitle>
+                  <CardDescription>
+                    Change your password here. After saving, you'll be logged out.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+
+
+
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </>
+      )}
+    </>
+  )
+}
+function Footer() {
+  return (
+    <>
+      <div className="mt-[100px] ">
+        <div className='bg-slate11 text-white'>
+          <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
+            <p>Dealer Sales Assistant</p>
+          </div>
+
+          <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
+            <RemixNavLinkText to='/' className='mt-[100px]'>
+              <p className='hover:underline'>Home</p>
+            </RemixNavLinkText>
+            <RemixNavLinkText to='/roadmap'>
+              <p className='hover:underline'>Roadmap</p>
+            </RemixNavLinkText>
+            <RemixNavLinkText to='/crm'>
+              <p className='hover:underline'>CRM</p>
+            </RemixNavLinkText>
+            <RemixNavLinkText to='/contact'>
+              <p className='hover:underline'>Contact</p>
+            </RemixNavLinkText>
+            <RemixNavLinkText to='/privacy' className='mb-[50px]'>
+              <p className='hover:underline'>Privacy Policy</p>
+            </RemixNavLinkText>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}

@@ -6,7 +6,6 @@ import { Button } from "~/components";
 import { ActionFunction, LoaderArgs, LoaderFunction, json } from "@remix-run/node";
 import { saveMyDocument } from "~/utils/docTemplates/create.server";
 import { v4 as uuidv4 } from 'uuid';
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { getSession } from "~/sessions/auth-session.server";
 import { requireAuthCookie } from '~/utils/misc.user.server';
@@ -19,8 +18,6 @@ export const action: ActionFunction = async ({ request, req, params }) => {
 
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-  import { GetUser } from "~/utils/loader.server";
-  import { prisma } from "~/libs";
 
 
   const user = await GetUser(email)

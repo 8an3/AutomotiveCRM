@@ -24,15 +24,25 @@ import {
     SelectValue,
 } from "~/other/select"
 import { ScrollArea } from "~/other/scrollarea"
+import { SendEmail, SendPayments } from "../email.server"
 
 const EmailSheet = (finance) => {
+    const { user, tokens } = useLoaderData()
+    console.groupCollapsed(finance, 'emailsheet')
+    console.log(user, tokens, 'emails popup')
+    function handleSendPayments() {
+        console.log(user, tokens, 'inside handesendpayments')
+        const send = SendPayments(tokens, user)
+        return send
+    }
     return (
         <Sheet variant='left'>
             <SheetTrigger asChild>
-                <Button className='rounded-md border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border' >
-                    Emails</Button>
+                <Button className='rounded-md border border-black  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border' >
+                    Emails
+                </Button>
             </SheetTrigger>
-            <SheetContent side='right' className='bg-slate1 text-slate12 w-[500px] mt-3 ml-3 mr-3' >
+            <SheetContent side='right' className='bg-slate1 text-black w-[500px] mt-3 ml-3 mr-3' >
                 <div className="grid gap-2">
                     <div className="space-y-2">
                         <h4 className="font-medium leading-none">
@@ -50,58 +60,44 @@ const EmailSheet = (finance) => {
                         <hr className="solid" />
                     </div>
                     <div className="w-[95%]">
-                        <Form method="post" action="/emails/send/payments">
+
+                        <Form method='post' >
                             <input type="hidden" name="financeId" value={finance.id} />
-                            <Select name="emailType">
-                                <SelectTrigger className=" mt-2 rounded-[0px] border">
-                                    <SelectValue placeholder="Select an email..." />
-                                </SelectTrigger>
-                                <SelectContent className="">
-                                    <ScrollArea className="h-[300px] w-[350px] rounded-md text-slate12 bg-slate1 p-4 border border-slate12">
-                                        <SelectGroup>
-                                            <SelectLabel>Payments </SelectLabel>
-                                            <SelectItem value="">Select None</SelectItem>
-                                            <SelectItem value="paymentsTemp">Payments</SelectItem>{/* 1*/}
-                                            <SelectItem value="wBreakdownTemp">W/ Full Breakdown</SelectItem>{/*2 */}
-                                            <SelectItem value="wSpecTemp">W/ Full Breakdown & Spec</SelectItem>{/* 3*/}
-                                        </SelectGroup>
-                                        <SelectGroup>
-                                            <SelectLabel>Options</SelectLabel>
-                                            <SelectItem value="wOptionsTemp">W/ Options</SelectItem>{/* 4*/}
-                                            <SelectItem value="optionsWBreakdownTemp">Options W/ Full Breakdown</SelectItem>{/* 5*/}
-                                            <SelectItem value="optionsWSpecTemp"> Options W/ Full Breakdown & Spec</SelectItem>{/*6 */}
-                                        </SelectGroup>
-                                        <hr className="solid" />
-                                        <SelectGroup>
-                                            <SelectLabel>No Tax</SelectLabel>
-                                            <SelectItem value="paymentsNoTaxTemp">Payments</SelectItem>{/* 7*/}
-                                            <SelectItem value="wBreakdownNoTaxTemp">W/ Full Breakdown</SelectItem>{/* 8*/}
-                                            <SelectItem value="wSpecNoTaxTemp">W/ Full Breakdown & Spec</SelectItem>{/*9 */}
-                                        </SelectGroup>
-                                        <SelectGroup>
-                                            <SelectLabel>Options</SelectLabel>
-                                            <SelectItem value="wOptionsNoTaxTemp">W/ Options</SelectItem>{/* 10*/}
-                                            <SelectItem value="optionsWBreakdownNoTaxTemp">Options W/ Full Breakdown</SelectItem>{/*11 */}
-                                            <SelectItem value="optionsWSpecNoTaxTemp"> Options W/ Full Breakdown & Spec</SelectItem>{/*12 */}
-                                        </SelectGroup>
-                                        <hr className="solid" />
-                                        <SelectGroup>
-                                            <SelectLabel>Custom Tax</SelectLabel>
-                                            <SelectItem value="paymentsCustomTemp">Payments</SelectItem>{/*13 */}
-                                            <SelectItem value="wBreakdownCustomTemp">W/ Full Breakdown</SelectItem>{/*14 */}
-                                            <SelectItem value="wSpecCustomTemp">W/ Full Breakdown & Spec</SelectItem>{/* 15*/}
-                                        </SelectGroup>
-                                        <SelectGroup>
-                                            <SelectLabel>Options</SelectLabel>
-                                            <SelectItem value="wOptionsCustomTemp">W/ Options</SelectItem>{/*16 */}
-                                            <SelectItem value="optionsWBreakdownCustomTemp">Options W/ Full Breakdown</SelectItem>{/*17 */}
-                                            <SelectItem value="optionsWSpecCustomTemp"> Options W/ Full Breakdown & Spec</SelectItem>{/*18 */}
-                                        </SelectGroup>
-                                    </ScrollArea>
-                                </SelectContent>
-                            </Select>
-                            <Button className="mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" name="intent" value="justpaymentsCustom" >
-                                Email
+                            <input type="hidden" name="template" value='justPayments' />
+                            <Button
+                                type='submit'
+                                name='intent'
+                                value='sendPayments'
+                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border'
+                            >
+                                Send Payments
+                            </Button>
+                        </Form>
+                        <Form method='post' >
+                            <input type="hidden" name="financeId" value={finance.id} />
+                            <input type="hidden" name="template" value='FullBreakdown' />
+
+                            <Button
+                                type='submit'
+                                name='intent'
+                                value='sendPayments'
+                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border'
+                            >
+                                Full Breakdown
+
+                            </Button>
+                        </Form>
+                        <Form method='post' >
+                            <input type="hidden" name="template" value='justPayments' />
+                            <input type="hidden" name="financeId" value='FullBreakdownWOptions' />
+                            <Button
+                                disabled
+                                type='submit'
+                                name='intent'
+                                value='sendPayments'
+                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border'
+                            >
+                                Full Breakdown W/ Options
                             </Button>
                         </Form>
                         <div className="space-y-2 mt-4">
@@ -171,7 +167,17 @@ const EmailSheet = (finance) => {
                                 Email
                             </Button>
                         </Form>
-
+                        <Form method='post' >
+                            <input type="hidden" name="financeId" value={finance.id} />
+                            <Button
+                                type='submit'
+                                name='intent'
+                                value='sendPayments'
+                                className={` text-black border border-black mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                            >
+                                Send Payments
+                            </Button>
+                        </Form>
 
                     </div>
                 </div>

@@ -2,7 +2,6 @@ import type { LoaderFunction } from '@remix-run/node';
 import { useEffect } from 'react';
 import { model } from '~/models';
 import { getSession } from '~/sessions/auth-session.server';
-import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 
 async function SaveToLocal(convoId) {

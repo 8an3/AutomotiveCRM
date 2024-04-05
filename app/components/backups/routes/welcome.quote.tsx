@@ -32,7 +32,7 @@ export default function Dealerfees() {
                         If any issues questions come up, your more than welcome to send them in and we will answer them as soon as possible.
                     </p>
                     <p className=" text-sm">
-                        For more detailed walkthroughs, they will be in your menu under Walkthrough.
+                        For more detailed walkthroughs, they will be in your settings under docs.
                     </p>
 
                 </div>

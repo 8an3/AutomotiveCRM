@@ -20,7 +20,6 @@ import { model } from "../models";
 import { getSession } from "~/sessions/auth-session.server";
 
 
-
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")

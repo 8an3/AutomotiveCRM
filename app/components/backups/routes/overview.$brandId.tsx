@@ -85,7 +85,6 @@ export function Overview({ outletSize }) {
     destinationCharge: parseFloat(deFees.destinationCharge) || 0,
     userMarketAdj: parseFloat(deFees.userMarketAdj) || 0,
     userOther: parseFloat(deFees.userOther) || 0,
-
     userExtWarr: parseFloat(deFees.userExtWarr) || 0,
     userServicespkg: parseFloat(deFees.userServicespkg) || 0,
     vinE: parseFloat(deFees.vinE) || 0,
@@ -886,7 +885,7 @@ export function Overview({ outletSize }) {
     (parseFloat(deFees.userTax) / 100 + 1)
   ).toFixed(2)
 
-  const licensing = parseInt(formData.licensing.toString())
+  const licensing = parseInt(formData.licensing) + parseInt(formData.lien)
   const conversionOth = (parseFloat(othConv) / 100 + 1).toFixed(2);
   const othTax = conversionOth
 
