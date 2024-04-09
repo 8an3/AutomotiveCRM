@@ -27,12 +27,17 @@ import axios from 'axios'
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-  const user = await GetUser(email)
+  let user = await GetUser(email)
 
   if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const userEmail = user?.email
   const deFees = await prisma.dealerFees.findUnique({ where: { userEmail: user.email } });
+  const integration = await prisma.userIntergration.findUnique({ where: { userEmail: user.email } });
+  user = {
+    ...user,
+    ...integration,
+  }
   const userId = user?.id
   const dataPDF = await getDailyPDF(userEmail)
   const statsData = await getMergedFinance(userEmail)
