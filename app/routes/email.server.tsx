@@ -38,7 +38,7 @@ const gmail = google.gmail({
   version: 'v1',
   auth: oauth2Client,
 });
-const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+const API_KEY = process.env.GOOGLE_API_KEY
 
 const getAccessToken = async (refreshToken) => {
   try {
@@ -82,7 +82,7 @@ export async function TokenRegen(request) {
 
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
-  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  const API_KEY = process.env.GOOGLE_API_KEY
   let tokens = session.get("accessToken")
   // new
   const refreshToken = session.get("refreshToken")
@@ -123,7 +123,7 @@ export async function TokenRegen(request) {
 }
 export async function SendEmail(user, to, subject, text, tokens) {
   console.log(to, subject, text, tokens, 'inside sendmail')
-  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  const API_KEY = process.env.GOOGLE_API_KEY
   const USER_ID = user.email;
   const ACCESS_TOKEN = tokens;
   const TO_ADDRESS = to;

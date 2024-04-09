@@ -539,7 +539,7 @@ export async function TokenRegen(request) {
 
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
-  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  const API_KEY = process.env.GOOGLE_API_KEY
   let tokens = session.get("accessToken")
   // new
   const refreshToken = session.get("refreshToken")

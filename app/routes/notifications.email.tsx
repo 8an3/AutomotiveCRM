@@ -7,7 +7,7 @@ export async function loader({ request, params }: LoaderFunction) {
 
   try {
     let fetchedEmails;
-    const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+    const API_KEY = process.env.GOOGLE_API_KEY
 
     const session = await getSession(request.headers.get("Cookie"));
     const email = session.get("email")

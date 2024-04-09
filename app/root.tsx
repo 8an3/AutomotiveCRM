@@ -61,17 +61,17 @@ export async function loader({ request }: LoaderArgs) {
   const email = userSession.get("email")
   if (!email) { return json({ ENV, }); }
 
-  const user = await GetUser(email)
+  let user = await GetUser(email)
   if (!user) { return redirect(`/logout`); }
 
   const loaderData = {
     ENV,
-    //  userSession,
-    // user,
+    userSession,
+    user,
   } satisfies RootLoaderData;
   // console.log(user, userSession, 'user and userSession root loader')
   // google auth
-  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  const API_KEY = process.env.GOOGLE_API_KEY
   let tokens = userSession.get("accessToken")
   // new
   const refreshToken = userSession.get("refreshToken")

@@ -20,6 +20,7 @@ export async function GetUser(email) {
       omvicNumber: true,
       lastSubscriptionCheck: true,
       refreshToken: true,
+      profile: true,
 
 
       role: { select: { symbol: true, name: true } },

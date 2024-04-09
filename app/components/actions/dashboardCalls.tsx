@@ -124,7 +124,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const latestNotes = await fetchLatestNotes(finance);
   let tokens = session2.get("accessToken")
   const refreshToken = user.refreshToken  //session2.get("refreshToken")
-  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  const API_KEY = process.env.GOOGLE_API_KEY
   // new
   let cookie = createCookie("session_66", {
     secrets: ['secret'],
@@ -639,7 +639,7 @@ export async function TokenRegen(request) {
 
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
-  const API_KEY = 'AIzaSyCsE7VwbVNO4Yw6PxvAfx8YPuKSpY9mFGo'
+  const API_KEY = process.env.GOOGLE_API_KEY
   let tokens = session.get("accessToken")
   // new
   const refreshToken = session.get("refreshToken")
