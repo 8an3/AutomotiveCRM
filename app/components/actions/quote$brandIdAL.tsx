@@ -12,7 +12,7 @@ import { getSession } from '~/sessions/auth-session.server';
 import { model } from "~/models";
 import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.server'
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
-import { UpdateLead, CreateVehicle } from '~/routes/api.activix';
+import { UpdateLead, CreateVehicle } from '~/routes/_authorized.api.activix';
 import { getSession as sixSession, commitSession as sixCommit, destroySession } from '~/utils/misc.user.server'
 
 export function invariant(

@@ -10,7 +10,7 @@ import NotificationSystem from "./_authorized.notifications";
 import slider from '~/styles/slider.css'
 import secondary from '~/styles/secondary.css'
 import { GetUser } from "~/utils/loader.server";
-import { msal } from "@azure/msal-node";
+import { useMsal } from '@azure/msal-react';
 //MSAL configuration
 
 const CLIENT_ID = process.env.MICRO_APP_ID
@@ -29,16 +29,26 @@ function ensureScope(scope) {
     msalRequest.scopes.push(scope);
   }
 }
-//Initialize MSAL client
-const msalClient = new msal.PublicClientApplication(msalConfig);
+async function MSAL() {
+  //Initialize MSAL client
+  const msal = useMsal();
+  const msalClient = new msal.PublicClientApplication(msalConfig);
+  return msalClient
+}
 
 // Log the user in
 async function signIn() {
+  const msalClient = MSAL()
   const authResult = await msalClient.loginPopup(msalRequest);
   sessionStorage.setItem('msalAccount', authResult.account.username);
 }
+
+
+
 //Get token from Graph
 async function getToken() {
+  const msalClient = MSAL()
+
   let account = sessionStorage.getItem('msalAccount');
   if (!account) {
     throw new Error(

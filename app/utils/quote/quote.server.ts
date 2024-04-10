@@ -1,6 +1,6 @@
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
-import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.activix';
+import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/_authorized.api.activix';
 export async function QuoteServer(clientData, financeId, email, financeData, dashData) {
   const user = await prisma.user.findUnique({ where: { email: clientData.userEmail } })
   const formData = {

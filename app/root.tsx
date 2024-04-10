@@ -29,7 +29,7 @@ import { Provider } from 'react-redux';
 import store from './store'; // Import the Redux store
 
 import { GetUser } from "~/utils/loader.server";
-import { Unauthorized } from "./routes/email.server";
+import { Unauthorized } from "./routes/_authorized.email.server";
 
 
 export const links: LinksFunction = () => [
@@ -275,7 +275,7 @@ import { model } from "~/models";
 import { cn, createCacheHeaders, createMetaData, formatRelativeTime, getEnv } from "~/utils";
 import type { ActionArgs, ActionFunction, HeadersFunction, LinksFunction, LoaderArgs, V2_MetaDescriptor, V2_MetaFunction, } from "@remix-run/node";
 import { useRootLoaderData, type RootLoaderData } from "~/hooks";
-import GlobalSearch from "./routes/globalSearch";
+import GlobalSearch from "./routes/_authorized.globalSearch";
 import {
   Tabs,
   TabsContent,

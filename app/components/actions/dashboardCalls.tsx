@@ -24,7 +24,7 @@ import { getSession, commitSession } from '~/sessions/auth-session.server';
 import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
 import { google } from 'googleapis';
-import oauth2Client, { SendEmail, } from "~/routes/email.server";
+import oauth2Client, { SendEmail, } from "~/routes/_authorized.email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { QuoteServer } from "~/utils/quote/quote.server";

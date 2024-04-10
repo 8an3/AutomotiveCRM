@@ -1,4 +1,4 @@
-import { Filter, DebouncedInput, invariant, type Payment, type TableMeta, defaultColumn, fuzzyFilter, fuzzySort } from '~/routes/leads.sales'
+import { Filter, DebouncedInput, invariant, type Payment, type TableMeta, defaultColumn, fuzzyFilter, fuzzySort } from '~/routes/_authorized.leads.sales'
 import React, { HTMLAttributes, HTMLProps, useState, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Form, Link, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
@@ -26,7 +26,7 @@ import ClientStatusCard from '~/components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '~/components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '~/components/dashboard/calls/2DaysFromNow';
 import { dashboardAction, dashboardLoader } from "~/components/actions/dashboardCalls";
-import { DocumentInputs } from '~/routes/dashboard.customer.$custId'
+import { DocumentInputs } from '~/routes/_authorized.dashboard.customer.$custId'
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
 import { ListSelection2 } from '~/routes/quoteUtils/listSelection'
@@ -40,7 +40,7 @@ import { Badge } from "~/ui/badge";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { ArrowDownCircle, ArrowDownUp, ArrowRightCircle } from 'lucide-react';
-import DnDResource from '~/routes/calendar.sales';
+import DnDResource from '~/routes/_authorized.calendar.sales';
 import {
   Dialog,
   DialogContent,

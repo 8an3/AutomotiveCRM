@@ -15,7 +15,7 @@ import { model } from "~/models";
 //import { authenticator } from "~/services";
 import { v4 as uuidv4 } from "uuid";
 import { commitSession, getSession } from '~/utils/pref.server';
-import UploadFile from '~/routes/uploadFile'
+import UploadFile from '~/routes/_authorized.uploadFile'
 
 
 export default function Print() {

@@ -23,6 +23,7 @@ module.exports = {
   serverModuleFormat: "cjs",
   serverDependenciesToBundle: [
     "axios",
+    "@azure/msal-react",
   ],
   tailwind: true,
 

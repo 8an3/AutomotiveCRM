@@ -24,7 +24,7 @@ import {
     SelectValue,
 } from "~/other/select"
 import { ScrollArea } from "~/other/scrollarea"
-import { SendEmail, SendPayments } from "../email.server"
+import { SendEmail, SendPayments } from "../_authorized.email.server"
 
 const EmailSheet = (finance) => {
     const { user, tokens } = useLoaderData()

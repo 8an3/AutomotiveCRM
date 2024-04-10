@@ -3,7 +3,7 @@ import { Form, Link, Outlet, useActionData, useFetcher, useLoaderData, useSubmit
 import React, { useEffect, useRef, useState } from "react";
 import * as Tabs from '@radix-ui/react-tabs'
 import * as Toast from '@radix-ui/react-toast';
-import { Overview } from '~/routes/overview.$brandId'
+import { Overview } from '~/routes/_authorized.overview.$brandId'
 import { RemixNavLink, Input, Separator, Button, TextArea, Label, } from "~/components";
 import PrintAndDocs from "~/components/dashboardCustId/printAndDocs";
 import Print from "~/components/dashboardCustId/print"

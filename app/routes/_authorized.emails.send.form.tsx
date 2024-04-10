@@ -44,7 +44,7 @@ import { CompleteLastAppt } from '~/components/actions/dashboardCalls'
 //import { UploadFileAction } from "~/routes/dealer.api.fileUpload";
 import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
 import { getSession } from "~/sessions/auth-session.server";
-import { EmailFunction } from "~/routes/dummyroute";
+import { EmailFunction } from "~/routes/_authorized.dummyroute";
 import { GetUser } from "~/utils/loader.server";
 
 

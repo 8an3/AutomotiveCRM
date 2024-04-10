@@ -10,7 +10,7 @@ import { ClientResultFunction, ClientStateFunction } from '~/components/lists/cl
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "~/other/sheet"
 import MesasageContent from "./messageContent";
 import { ButtonLoading } from "~/components/ui/button-loading";
-import { testLeademail, testLeadPhone } from '~/routes/api.activix';
+import { testLeademail, testLeadPhone } from '~/routes/_authorized.api.activix';
 
 type ValuePiece = Date | null;
 
