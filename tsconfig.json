@@ -18,6 +18,6 @@
       "~/*": ["./app/*"]
     }
   },
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "app/utils/graphql/authConfig.server.ts.bk", "app/routes/roadmap.list.tsx.bk", "app/routes/faq.tsx.bk", "app/routes/roadmap.tsx.bk"],
   "ts-node": { "swc": true }
 }

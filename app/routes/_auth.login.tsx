@@ -14,7 +14,7 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card"
 import { Toaster, toast } from 'sonner'
 import { redirectIfLoggedInLoader, setAuthOnResponse } from "~/utils/misc.user.server";
-import { FcGoogle } from "react-icons/fc";
+import { TfiMicrosoft } from "react-icons/tfi";
 
 
 
@@ -91,13 +91,13 @@ export default function Route() {
 
       <div className="w-[50%]">
         <div className='flex items-center justify-center text-center'>
-          <Form action="/google" method="post">
+          <Form action="/microsoft" method="post">
             <div className=" fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
               <h1 className="text-white">Welcome to D.S.A.</h1>
-              <p className="text-white mt-5">Continue with your google account to login</p>
+              <p className="text-white mt-5">Continue with your microsoft account to login</p>
               <Button variant='outline' className='w-auto rounded-xl mt-5 border border-white px-8 py-5 text-xl text-white '>
-                <p className='mr-1'> Login with </p>
-                <FcGoogle className='text-[28px]' /><p>oogle</p>
+                <p className='mr-1'> Login with your</p>
+                <TfiMicrosoft className='text-[28px]' /><p> account</p>
               </Button>
               <hr className="solid mt-5 text-white mb-5" />
               <Link to='/privacy'>

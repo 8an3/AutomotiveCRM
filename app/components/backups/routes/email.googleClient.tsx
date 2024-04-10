@@ -1,6 +1,6 @@
 import { Container } from "@radix-ui/themes";
 
-import NotificationSystem from "./notifications";
+import NotificationSystem from "./_authorized.notifications";
 import slider from '~/styles/slider.css'
 import { Accordion, AccordionContenSendEmailt, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
 import { toast } from "sonner"

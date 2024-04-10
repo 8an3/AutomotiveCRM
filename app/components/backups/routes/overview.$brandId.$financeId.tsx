@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useFetcher, useLoaderData, useParams, } from '@remix-run/react'
 import { useEffect, useState } from 'react'
-import { Overview } from './overview.$brandId'
+import { Overview } from './_authorized.overview.$brandId'
 import AccordionDemo from '~/other/AccordionDemo';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "../other/accordion"
-import NotificationSystem from "./notifications";
+import NotificationSystem from "./_authorized.notifications";
 
 export function OverviewFinanceId({ outletSize }) {
   return (

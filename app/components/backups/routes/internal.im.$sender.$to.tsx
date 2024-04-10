@@ -10,7 +10,7 @@ import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { Input } from "../components/ui/input";
 import { XCircle } from "lucide-react";
-import NotificationSystem from "./notifications";
+import NotificationSystem from "./_authorized.notifications";
 import useSWR, { SWRConfig, mutate } from 'swr';
 
 

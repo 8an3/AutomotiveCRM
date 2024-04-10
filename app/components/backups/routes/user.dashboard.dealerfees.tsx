@@ -5,7 +5,7 @@ import financeFormSchema from './overviewUtils/financeFormSchema'
 import { getDealerFeesbyEmail, updateDealerFees, updateUser } from '~/utils/user.server'
 import * as Toast from '@radix-ui/react-toast';
 import React from 'react';
-import WelcomeDealerFeesSection from './welcome.dealerfees'
+import WelcomeDealerFeesSection from './_authorized.welcome.dealerfees'
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';

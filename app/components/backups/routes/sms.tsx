@@ -4,7 +4,7 @@ import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
 import { type LinksFunction, json, type LoaderFunction } from "@remix-run/node";
-import NotificationSystem from "./notifications";
+import NotificationSystem from "./_authorized.notifications";
 
 import ChatApp from "../components/sms/bkdonotuse";
 import { useEffect } from 'react'

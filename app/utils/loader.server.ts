@@ -2,7 +2,7 @@
 import { prisma } from "~/libs";
 
 export async function GetUser(email) {
-  const user = await prisma.user.findUnique({
+  let oldUser = await prisma.user.findUnique({
     where: { email: email },
     select: {
       id: true,
@@ -26,5 +26,11 @@ export async function GetUser(email) {
       role: { select: { symbol: true, name: true } },
     },
   });
+  const integrationSec = await prisma.userIntergration.findUnique({ where: { userEmail: oldUser?.email } });
+
+  const user = {
+    ...oldUser,
+    ...integrationSec
+  }
   return user
 }

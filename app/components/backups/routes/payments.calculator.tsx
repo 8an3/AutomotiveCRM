@@ -20,7 +20,7 @@ import { getDataKawasaki, getLatestBMWOptions, getLatestBMWOptions2, getDataBmwM
 import { json, type ActionFunction, type DataFunctionArgs, type LoaderFunction, redirect, type LinksFunction } from '@remix-run/node'
 import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
-import NotificationSystem from "./notifications";
+import NotificationSystem from "./_authorized.notifications";
 import Sidebar from '~/components/shared/sidebar';
 import { GetUser } from "~/utils/loader.server";
 

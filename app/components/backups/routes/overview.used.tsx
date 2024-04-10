@@ -36,7 +36,7 @@ import {
 } from "~/components";
 import Sidebar from "~/components/shared/sidebar";
 // <Sidebar />
-import NotificationSystem from "./notifications";
+import NotificationSystem from "./_authorized.notifications";
 
 
 export let action = overviewAction;

@@ -1,7 +1,7 @@
 /* eslint-disable tailwindcss/classnames-order */
 import { Form, Link, Outlet, useActionData, useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import * as Toast from '@radix-ui/react-toast';
-import { Overview } from './overview.$brandId'
+import { Overview } from './_authorized.overview.$brandId'
 import { RemixNavLink, Input, Separator, Button, TextArea, Label, } from "~/components";
 import { getMergedFinanceOnFinance } from "~/utils/dashloader/dashloader.server";
 import { getSession } from "~/utils/pref.server";

@@ -19,19 +19,11 @@ import { useEffect, useRef, useState } from 'react';
 import Chat from "~/components/shared/chat";
 import { prisma } from "~/libs";
 
-export const loader: LoaderFunction = async ({ request, params }) => {
-  let userSession = await getSession(request.headers.get("Cookie"));
-  let email = userSession.get("email");
-  const integrationSec = await prisma.userIntergration.findUnique({ where: { userEmail: email } });
-  let user = await model.user.query.getForSession({ email });
-
-  return json({ user, email, integrationSec })
-}
 export let action = rootAction
 
+
 export default function Sidebar() {
-  const { integrationSec } = useLoaderData();
-  // console.log(user, 'sidebar user')
+  // const { integrationSec } = useLoaderData();
 
   const location = useLocation();
   let fetcher = useFetcher()
@@ -40,14 +32,7 @@ export default function Sidebar() {
   const { user } = useRootLoaderData();
   const userIsFinance = getUserIsAllowed(user, ["FINANCE"]);
 
-  const [integration, setIntegration] = useState([])
-  async function Integration() {
-    const integration = await prisma.userIntergration.findUnique({ where: { userEmail: user.email } });
-    setIntegration(integration)
-    return integration
-  }
 
-  const setp = Integration()
   //const adminUser = getUserIsAllowed(user, ["ADMIN", "MANAGER",]);
   // const financeUser = getUserIsAllowed(user, ["ADMIN", "MANAGER", "FINANCE"]);
   //const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
@@ -76,8 +61,6 @@ export default function Sidebar() {
       };
     }
   }, [iFrameRef,]);
-  // <Chat />
-  //
   return (
     <>
       <Sheet >
@@ -376,7 +359,7 @@ export default function Sidebar() {
                     </Button>
                   </RemixNavLink>
                 </Dialog.Close>
-                {integrationSec.activixActivated !== 'yes' && (
+                {user.activixActivated !== 'yes' && (
                   <Dialog.Close asChild>
                     <RemixNavLink to={`/leads/sales`}>
                       <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
@@ -395,7 +378,7 @@ export default function Sidebar() {
                     </RemixNavLink>
                   </Dialog.Close>
                 )}
-                {integrationSec.activixActivated === 'yes' && (
+                {user.activixActivated === 'yes' && (
                   <Dialog.Close asChild>
                     <RemixNavLink to={`/leads/activix`}>
                       <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >

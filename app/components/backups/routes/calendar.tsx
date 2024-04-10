@@ -8,7 +8,7 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from '../models'
 import { getSession } from '../sessions/auth-session.server';
 import { json, redirect } from "@remix-run/node";
-import NotificationSystem from "./notifications";
+import NotificationSystem from "./_authorized.notifications";
 import { prisma } from "~/libs";
 import { GetUser } from "~/utils/loader.server";
 

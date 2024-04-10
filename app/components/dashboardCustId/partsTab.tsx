@@ -1,7 +1,7 @@
 /* eslint-disable tailwindcss/classnames-order */
 import { Form, Link, Outlet, useActionData, useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
 import * as Toast from '@radix-ui/react-toast';
-import { Overview } from './overview.$brandId'
+import { Overview } from './_authorized.overview.$brandId'
 import { RemixNavLink, Input, Separator, Button, TextArea, Label, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, CardContent, Card, CardHeader } from "~/components";
 import { getMergedFinanceOnFinance } from "~/utils/dashloader/dashloader.server";
 import { commitSession as commitPref, getSession as getPref } from '~/utils/pref.server';
