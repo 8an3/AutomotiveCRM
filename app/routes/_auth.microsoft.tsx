@@ -1,12 +1,180 @@
-// app/routes/auth/microsoft.tsx
-import { type LoaderFunction, redirect, type ActionArgs } from "@remix-run/node";
-import { authenticator } from "~/services/auth.server";
-import { useLoaderData } from '@remix-run/react';
-import MSALInstance from '~/utils/microsoft/config.server'
-import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+import { LoaderFunction, redirect, type ActionArgs } from "@remix-run/node";
+import { getSession, commitSession } from "../sessions/auth-session.server";
+import { json } from "@remix-run/node";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
-import bcrypt from "bcryptjs";
+import { CheckUser, SignIn } from "~/utils/microsoft/appContext.server";
+import { useMsal } from '@azure/msal-react';
+import MSAL, { FirstSignIn } from "~/routes/twoAppContext";
+import { authenticator } from "~/services/auth.server";
+
+export const loader = () => redirect("/login");
+
+export const action = ({ request }: ActionArgs) => {
+  return authenticator.authenticate("microsoft", request);
+};
+
+
+
+/*
+const MICRO_APP_ID = process.env.MICRO_APP_ID;
+const MICRO_TENANT_ID = process.env.MICRO_TENANT_ID; //'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6' //
+
+
+export let action: LoaderFunction = async ({ request, response, }) => {
+  try {
+    const url = await FirstSignIn(MSAL)
+    console.log(url)
+    return redirect('/microsoft/callback')
+
+  } catch (error) {
+    console.error('Error in loader:', error);
+    return {
+      status: 500,
+      props: {
+        error: 'Internal Server Error',
+      },
+    };
+  }
+};
+
+
+/**old sign in \
+ *
+ *
+ *
+ *  const msal = MSAL
+  const session = await getSession(request.headers.get("Cookie"));
+
+  const email = session.get("email")
+
+  let user = await GetUser(email)
+  user = await SignIn()
+
+  if (user) {
+    console.log('1')
+
+    const check = await CheckUser(user)
+    console.log('2')
+
+    if (!check) {
+      console.log('3')
+      return redirect('/microsoft/callback')
+    }
+    console.log('4')
+    return redirect('/microsoft/callback')
+  }
+  else {
+    console.log('5')
+    return null
+  }
+ */
+
+/**
+ *
+ *
+ *
+ *  const params = {
+    client_id: MICRO_APP_ID,
+    response_type: 'code',
+    redirect_uri: 'http://localhost:3000/callback',
+    response_mode: 'query',
+    scope: 'offline_access user.read mail.read User.ReadWrite mailboxsettings.read mail.readwrite Mail.Send Notes.ReadWrite.All calendars.readwrite',
+    state: '12345'
+  };
+ *
+ *
+let url = `https://login.microsoftonline.com/${MICRO_TENANT_ID}/oauth2/v2.0/authorize?client_id=${params.client_id}&response_type=${params.response_type}&redirect_uri=${params.redirect_uri}&response_mode=${params.response_mode}&scope=${params.scope}&state=${params.state}`;
+
+  try {
+    const response = await fetch(`https://login.microsoftonline.com/${MICRO_TENANT_ID}/oauth2/v2.0/authorize?client_id=${params.client_id}&response_type=${params.response_type}&redirect_uri=${params.redirect_uri}&response_mode=${params.response_mode}&scope=${params.scope}&state=${params.state}`, {
+      method: 'GET',
+    })
+
+
+ if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    console.log(response.status, response)
+    const responseUrl = response.url;
+    const urlObject = new URL(responseUrl);
+    const code = urlObject.searchParams.get('code');
+
+    if (code) {
+      const session = await getSession(request.headers.get("Cookie"));
+      session.set("accessCode", code);
+      await commitSession(session);
+
+      console.log('Authorization code:', code);
+
+      // Construct a successful response with appropriate headers
+      const headers = { "Set-Cookie": await commitSession(session) };
+      return new Response('Authorization code saved', { status: 200, headers });
+    } else {
+      console.log('Authorization code not found in URL');
+      // Return a response indicating that the authorization code was not found
+      return new Response('Authorization code not found', { status: 404 });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    // Return a response indicating an internal server error
+    return new Response('Internal server error', { status: 500 });
+  }
+
+
+
+
+
+
+
+
+
+
+import { type LoaderFunction, redirect } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+import { google } from 'googleapis';
+import EmailClient from './email';
+
+const oauth2Client = new google.auth.OAuth2(
+  "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
+  "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",
+  //"http://localhost:3000/google/callback"
+  process.env.GOOGLE_PROD_CALLBACK_URL
+
+);
+
+const gmail = google.gmail({
+  version: 'v1',
+  auth: oauth2Client
+});
+
+const scopes = [
+  'https://mail.google.com/',
+];
+
+export let action: LoaderFunction = async ({ request }) => {
+  try {
+    const url = oauth2Client.generateAuthUrl({
+      scope: scopes,
+      email: EmailClient,
+    });
+    console.log(url)
+    return redirect(url)
+
+  } catch (error) {
+    console.error('Error in loader:', error);
+    return {
+      status: 500,
+      props: {
+        error: 'Internal Server Error',
+      },
+    };
+  }
+};
+
+
+
+
 
 var microRequest = {
   scopes: [
@@ -433,49 +601,4 @@ export const action = async ({ request }: ActionArgs) => {
   })
   // return authenticator.authenticate("microsoft", request);
 };
-
-
-/**
-import { type LoaderFunction, redirect } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
-import { google } from 'googleapis';
-import EmailClient from './email';
-
-const oauth2Client = new google.auth.OAuth2(
-  "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
-  "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",
-  //"http://localhost:3000/google/callback"
-  process.env.GOOGLE_PROD_CALLBACK_URL
-
-);
-
-const gmail = google.gmail({
-  version: 'v1',
-  auth: oauth2Client
-});
-
-const scopes = [
-  'https://mail.google.com/',
-];
-
-export let action: LoaderFunction = async ({ request }) => {
-  try {
-    const url = oauth2Client.generateAuthUrl({
-      access_type: 'offline',
-      scope: scopes,
-      email: EmailClient,
-    });
-    console.log(url)
-    return redirect(url)
-
-  } catch (error) {
-    console.error('Error in loader:', error);
-    return {
-      status: 500,
-      props: {
-        error: 'Internal Server Error',
-      },
-    };
-  }
-};
- */
+*/

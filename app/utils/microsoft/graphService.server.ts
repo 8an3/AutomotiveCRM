@@ -19,7 +19,7 @@ function ensureClient(authProvider: AuthCodeMSALBrowserAuthenticationProvider) {
   return graphClient;
 }
 
-export async function getUser(authProvider: AuthCodeMSALBrowserAuthenticationProvider): Promise<User> {
+export async function GetUser(authProvider: AuthCodeMSALBrowserAuthenticationProvider): Promise<User> {
   ensureClient(authProvider);
   const user: User = await graphClient!.api('/me')
     .select('id,displayName,mail,mailboxSettings,userPrincipalName')

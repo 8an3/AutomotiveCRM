@@ -31,6 +31,18 @@ import store from './store'; // Import the Redux store
 import { GetUser } from "~/utils/loader.server";
 import { Unauthorized } from "./routes/_authorized.email.server";
 
+import { type Configuration, PublicClientApplication } from "@azure/msal-browser";
+import { MsalProvider } from '@azure/msal-react'
+
+const MICRO_APP_ID = '0fa1346a-ab27-4b54-bffd-e76e9882fcfe' || '' //process.env.MICRO_APP_ID || ''
+
+const configuration: Configuration = {
+  auth: {
+    clientId: MICRO_APP_ID,
+    authority: `https://login.microsoftonline.com/fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6`,
+    redirectUri: 'http://localhost:3000/microsoft/callback',
+  }
+};
 
 export const links: LinksFunction = () => [
   // { rel: "stylesheet", href: styles },
@@ -70,7 +82,7 @@ export async function loader({ request }: LoaderArgs) {
     user,
   } satisfies RootLoaderData;
   // console.log(user, userSession, 'user and userSession root loader')
-  // google auth
+  /* google auth
   const API_KEY = process.env.GOOGLE_API_KEY
   let tokens = userSession.get("accessToken")
   // new
@@ -104,12 +116,15 @@ export async function loader({ request }: LoaderArgs) {
     console.log(tokens, 'authorized tokens')
 
   } else { console.log('Authorized'); }
-  return json({ loaderData, API_KEY, user, tokens, refreshToken }, {
+  */
+  return json({ loaderData, user, }, {
     headers: {
       "Set-Cookie": await commitSession(userSession),
     },
   });
 }
+
+const pca = new PublicClientApplication(configuration);
 
 
 export default function App() {
@@ -132,27 +147,30 @@ export default function App() {
         <Links />
       </head>
       <body id="__remix" >
-        <Provider store={store}>
-          <FinanceIdContext.Provider value={financeId}>
-            <TooltipProvider>
-              <IconoirProvider iconProps={{ strokeWidth: 2, width: "1.5em", height: "1.5em" }}  >
-                <>
-                  <Outlet />
-                  <Toaster richColors />
-                  {configDev.isDevelopment && configDev.features.debugScreens && (
-                    <TailwindIndicator />
-                  )}
-                </>
-              </IconoirProvider>
-            </TooltipProvider>
-            <VercelAnalytics />
-            <ScrollRestoration />
-            <Scripts />
-            <LiveReload />
-            <GlobalLoading />
+        <MsalProvider instance={pca}>
 
-          </FinanceIdContext.Provider>
-        </Provider>
+          <Provider store={store}>
+            <FinanceIdContext.Provider value={financeId}>
+              <TooltipProvider>
+                <IconoirProvider iconProps={{ strokeWidth: 2, width: "1.5em", height: "1.5em" }}  >
+                  <>
+                    <Outlet />
+                    <Toaster richColors />
+                    {configDev.isDevelopment && configDev.features.debugScreens && (
+                      <TailwindIndicator />
+                    )}
+                  </>
+                </IconoirProvider>
+              </TooltipProvider>
+              <VercelAnalytics />
+              <ScrollRestoration />
+              <Scripts />
+              <LiveReload />
+              <GlobalLoading />
+
+            </FinanceIdContext.Provider>
+          </Provider>
+        </MsalProvider>
 
       </body >
     </html >

@@ -12,8 +12,9 @@ import { AuthCodeMSALBrowserAuthenticationProvider } from '@microsoft/microsoft-
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 
-import { getUser } from './graphService.server';
+import { GetUser } from './graphService.server';
 import config from './config.server';
+import { json } from '@remix-run/node';
 
 // <AppContextSnippet>
 export interface AppUser {
@@ -88,30 +89,28 @@ function useProvideAppContext() {
     }
   );
 
-  useEffect(() => {
-    const checkUser = async () => {
-      if (!user) {
-        try {
-          // Check if user is already signed in
-          const account = msal.instance.getActiveAccount();
-          if (account) {
-            // Get the user from Microsoft Graph
-            const user = await getUser(authProvider);
+  const checkUser = async () => {
+    if (!user) {
+      try {
+        // Check if user is already signed in
+        const account = msal.instance.getActiveAccount();
+        if (account) {
+          // Get the user from Microsoft Graph
+          const user = await getUser(authProvider);
 
-            setUser({
-              displayName: user.displayName || '',
-              email: user.mail || user.userPrincipalName || '',
-              timeFormat: user.mailboxSettings?.timeFormat || 'h:mm a',
-              timeZone: user.mailboxSettings?.timeZone || 'UTC'
-            });
-          }
-        } catch (err: any) {
-          displayError(err.message);
+          setUser({
+            displayName: user.displayName || '',
+            email: user.mail || user.userPrincipalName || '',
+            timeFormat: user.mailboxSettings?.timeFormat || 'h:mm a',
+            timeZone: user.mailboxSettings?.timeZone || 'UTC'
+          });
         }
+      } catch (err: any) {
+        displayError(err.message);
       }
-    };
-    checkUser();
-  });
+    }
+  };
+  checkUser();
 
   const signIn = async () => {
     await msal.instance.loginPopup({
@@ -144,3 +143,75 @@ function useProvideAppContext() {
     authProvider
   };
 }
+
+export async function SignIn(msal) {
+
+  const authProvider = new AuthCodeMSALBrowserAuthenticationProvider(
+    msal.instance as PublicClientApplication,
+    {
+      account: msal.instance.getActiveAccount()!,
+      scopes: config.scopes,
+      interactionType: InteractionType.Popup,
+    }
+  );
+
+  await msal.instance.loginPopup({
+    scopes: config.scopes,
+    prompt: 'select_account',
+  });
+
+  let user = await GetUser(authProvider);
+  user = {
+    displayName: user.displayName || '',
+    email: user.mail || user.userPrincipalName || '',
+    timeFormat: user.mailboxSettings?.timeFormat || '',
+    timeZone: user.mailboxSettings?.timeZone || 'UTC'
+  }
+  console.log(user, 'signin in config')
+  return json({ user })
+};
+
+export async function CheckUser(user) {
+  const msal = useMsal();
+  console.log(user, 'CheckUser in config')
+
+  const displayError = (message: string, debug?: string) => {
+    return json({ message, debug });
+  }
+
+  const clearError = () => {
+    return json(undefined);
+  }
+
+  const authProvider = new AuthCodeMSALBrowserAuthenticationProvider(
+    msal.instance as PublicClientApplication,
+    {
+      account: msal.instance.getActiveAccount()!,
+      scopes: config.scopes,
+      interactionType: InteractionType.Popup
+    }
+  );
+  if (!user) {
+    try {
+      // Check if user is already signed in
+      const account = msal.instance.getActiveAccount();
+      if (account) {
+        // Get the user from Microsoft Graph
+        let user = await GetUser(authProvider);
+        user = {
+          displayName: user.displayName || '',
+          email: user.mail || user.userPrincipalName || '',
+          timeFormat: user.mailboxSettings?.timeFormat || '',
+          timeZone: user.mailboxSettings?.timeZone || 'UTC'
+        }
+        console.log(user, 'CheckUser in config2')
+
+        return json({ user })
+
+      }
+    } catch (err: any) {
+      displayError(err.message);
+    }
+  }
+  else return user
+};

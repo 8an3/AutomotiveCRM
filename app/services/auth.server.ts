@@ -6,67 +6,32 @@ import { prisma } from "~/libs";
 import { getSession, commitSession, destroySession, authSessionStorage } from '../sessions/auth-session.server'
 import type { User } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { redirect } from "@remix-run/node";
-
+import { json, redirect } from "@remix-run/node";
 
 export let authenticator = new Authenticator<User>(authSessionStorage);
-const CLIENT_ID = process.env.MICRO_APP_ID
-const TENANT_ID = process.env.MICRO_TENANT_ID
-const CLIENT_SECRET = process.env.MICRO_CLIENT_SECRET
 
 let microsoftStrategy = new MicrosoftStrategy(
   {
-    clientId: CLIENT_ID,
-    clientSecret: CLIENT_SECRET,
-    redirectUri: "http://localhost:3000/auth/microsoft/callback",
-    tenantId: TENANT_ID, // optional - necessary for organization without multitenant (see below)
-    scope: "openid profile email", // optional
-    prompt: "login", // optional
+    clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
+    clientSecret: "rut8Q~s5LpXMnEjujrxkcJs9H3KpUzxO~LfAOc-D",
+    redirectUri: "http://localhost:3000/microsoft/callback",
+    tenantId: 'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6',
+    //scope: ['openid', 'profile', 'email'],
+    scope: 'openid email profile Calendars.ReadWrite Mail.Read MailboxSettings.Read Notes.ReadWrite Calendars.ReadWrite.Shared Mail.ReadWrite Mail.Send MailboxSettings.ReadWrite Notes.ReadWrite.All offline_access Tasks.ReadWrite.Shared User.Read User.ReadBasic.All User.ReadWrite',
+    prompt: "login",
   },
   async ({ accessToken, extraParams, profile }) => {
-    /** const queryParams23 = new URL(request.url).searchParams;
-     const code23 = queryParams23.get('code')
-     //console.log(queryParams23, code23, '23 and 23')
-     console.log(request.headers, 'request.headers');
-     console.log(request, 'request');
-     const url = new URL(request.url);
-     console.log(url, 'url auth google callback', url.hostname)
- 
-     const { tokens } = await oauth2Client.getToken(code23);
-     console.log('tokens', tokens)
-     oauth2Client.setCredentials(tokens);
-     const userRes = await gmail.users.getProfile({ userId: 'me' });
- 
-     let session = await getSession(request.headers.get("Cookie"));
-     console.log(request.headers, 'request.headers');
-     console.log(request, 'request');
- 
-     session.set("accessToken", tokens.access_token);
-     session.set("refreshToken", tokens.refresh_token);
-     session.set("expires_in", tokens.expires_in);
-         session.set("name", name);
-     session.set("email", email);
-     // console.log(userRes.data.emailAddress)
-     const name = userRes.data.name
-      const remember = true;
-     const userId = await prisma.user.findUnique({ where: { email: email }, })
-     session.set("userid", userId?.id);
-     await commitSession(session);
-     return redirect('/checksubscription', {
-       headers: { "Set-Cookie": await commitSession(session) },
-     });
-   }
- );
- 
- expires_in: tokens.expires_in,
-     */
+    console.log(accessToken, profile.emails[0].value, profile, 'first')
     const email = profile.emails[0].value
     let user = await GetUser(email)
     if (user) {
+      console.log('found user')
       await prisma.user.update({ where: { email: email }, data: { refreshToken: accessToken /**cant remember if there is a refresh token */ } })
     }
 
     if (!user) {
+      console.log('user not found')
+
       const password = 'doesntMatterWeHaveOauth12321223123'
       const hashedPassword = await bcrypt.hash(password, 10);
       const defaultUserRole = await prisma.userRole.findFirst({
@@ -75,8 +40,8 @@ let microsoftStrategy = new MicrosoftStrategy(
 
       user = await prisma.user.create({
         data: {
-          name: email.split('@')[0],
-          username: email?.split('@')[0],
+          name: profile.displayName,
+          username: profile.name.givenName,
           email: email,
           // password: { create: { hash: hashedPassword } },
           role: { connect: { id: defaultUserRole?.id } },
@@ -127,8 +92,8 @@ let microsoftStrategy = new MicrosoftStrategy(
       const clientfile = await prisma.clientfile.create({
         data: {
           email: 'skylerzanth@gmail.com',
-          firstName: 'Skyler',
-          lastName: 'zanth',
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
           phone: '+16138980991',
           name: 'skyler zanth',
           address: '1234 st',
@@ -136,7 +101,7 @@ let microsoftStrategy = new MicrosoftStrategy(
           postal: 'k1j23V2',
           province: 'ON',
           dl: 'HS02QI3J0DF',
-          userId: user.email
+          userId: email
         }
       })
       const finance = await prisma.finance.create({
@@ -146,11 +111,11 @@ let microsoftStrategy = new MicrosoftStrategy(
           // dashboardId: 'clrkwvd0h00023aljgsywagtb',
           // financeId: 'clrkwvcwo00013aljooz2z4g8',
           financeManager: null,
-          email: 'skylerzanth@gmail.com',
-          firstName: 'skyler',
-          lastName: 'zanth',
+          email: email,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
           phone: '+16138980991',
-          name: 'skyler zanth',
+          name: profile.displayName,
           address: '1234 st',
           city: 'Otawa',
           postal: 'k1j23V2',
@@ -234,11 +199,11 @@ let microsoftStrategy = new MicrosoftStrategy(
         data: {
           financeId: finance.id,
           //    financeManager: 'skylerzanth@gmail.com',
-          email: 'skylerzanth@gmail.com',
-          firstName: 'skyler',
-          lastName: 'zanth',
+          email: email,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
           phone: '6136134',
-          name: 'skyler zanth',
+          name: profile.displayName,
           address: '1234 st',
           city: 'Otawa',
           postal: 'k1j23V2',
@@ -327,8 +292,8 @@ let microsoftStrategy = new MicrosoftStrategy(
           // clientfileId: client.id,
           dashboardId: dashboard.id,
           financeId: finance.id,
-          financeManager: 'skylerzanth@gmail.com',
-          userEmail: user.email,
+          financeManager: email,
+          userEmail: email,
         }
       })
       const aptsData = [
@@ -413,14 +378,7 @@ let microsoftStrategy = new MicrosoftStrategy(
       }
     }
 
-    let secret = process.env.COOKIE_SECRET || "default";
-    if (secret === "default") {
-      console.warn(
-        "🚨 No COOKIE_SECRET environment variable set, using default. The app is insecure in production.",
-      );
-      secret = "default-secret";
-    }
-    return redirect('/checksubscription');
+    return user
   }
 );
 

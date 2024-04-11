@@ -15,6 +15,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, 
 import { Toaster, toast } from 'sonner'
 import { redirectIfLoggedInLoader, setAuthOnResponse } from "~/utils/misc.user.server";
 import { TfiMicrosoft } from "react-icons/tfi";
+import { useMsal } from "@azure/msal-react";
+import { authenticator } from "~/services/auth.server";
 
 
 
@@ -58,8 +60,8 @@ export async function action({ request }: DataFunctionArgs) {
   if (result.error) {
     return forbidden({ ...submission, error: result.error });
   }
-  await authenticator.authenticate("user-pass", request, {
-    successRedirect: getRedirectTo(request) || "/user/dashboard",
+  await authenticator.authenticate("microsoft", request, {
+    successRedirect: getRedirectTo(request) || "/user/dashboard/settings",
     failureRedirect: "/login",
   });
   return json(submission);
@@ -86,30 +88,38 @@ export default function Route() {
 
     return null; // Return null because this component doesn't render anything
   }
-  return (
-    <div className="w-full  grid grid-cols-1">
+  const { instance, accounts, inProgress } = useMsal();
 
+  return (
+    <div className="grid  w-full grid-cols-1">
       <div className="w-[50%]">
         <div className='flex items-center justify-center text-center'>
+          {/*
+              onClick={() => instance.loginPopup()}
+
+          */}
           <Form action="/microsoft" method="post">
-            <div className=" fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+
+            <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
               <h1 className="text-white">Welcome to D.S.A.</h1>
-              <p className="text-white mt-5">Continue with your microsoft account to login</p>
-              <Button variant='outline' className='w-auto rounded-xl mt-5 border border-white px-8 py-5 text-xl text-white '>
-                <p className='mr-1'> Login with your</p>
-                <TfiMicrosoft className='text-[28px]' /><p> account</p>
+              <p className="mt-5 text-white">Continue with your microsoft account to login</p>
+              <Button
+                variant='outline'
+                className='mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-white '
+              >
+                <p className='mr-1'>Login with your</p>
+                <TfiMicrosoft className='text-[28px]' /> <p className="ml-2">account</p>
               </Button>
-              <hr className="solid mt-5 text-white mb-5" />
+              <hr className="solid mb-5 mt-5 text-white" />
               <Link to='/privacy'>
                 <p className='text-white'>To review our Privacy Policy</p>
-
               </Link>
             </div>
           </Form>
+
         </div>
       </div>
     </div >
-
   );
 }
 /**    <Form method='post' >

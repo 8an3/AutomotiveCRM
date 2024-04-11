@@ -22,11 +22,8 @@ export const authSessionStorage = createCookieSessionStorage({
     httpOnly: true,
     path: "/",
     sameSite: "lax",
-    maxAge: remember
-      ? convertDaysToSeconds(7) // EDITME: Set max age for session persistence
-      : undefined,
-    secrets: [envPrivate.REMIX_SESSION_SECRET],
-    secure: env.NODE_ENV === "production",
+    secrets: ["s3cr3t"],
+    secure: process.env.NODE_ENV === "production",
   },
 });
 

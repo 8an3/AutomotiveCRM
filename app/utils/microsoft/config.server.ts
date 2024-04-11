@@ -1,6 +1,7 @@
 import { PublicClientApplication } from "@azure/msal-browser";
+import { useMsal } from '@azure/msal-react';
 
-export default async function MSALInstance() {
+export async function MSALInstance() {
 
   const msalConfig = {
     auth: {
@@ -16,12 +17,28 @@ export default async function MSALInstance() {
         "Notes.ReadWrite.All",
       ],
     }
-    //  redirectUri: 'https://email-client-kohl.vercel.app',
   };
 
   const msalInstance = new PublicClientApplication(msalConfig);
   return await msalInstance.initialize();
 }
+
+
+const config = {
+  appId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
+  redirectUri: 'http://localhost:3000',
+  //redirectUri: 'https://email-client-kohl.vercel.app',
+  scopes: [
+    "User.ReadWrite",
+    "mailboxsettings.read",
+    "calendars.readwrite",
+    "mail.readwrite",
+    "Mail.Send",
+    "Notes.ReadWrite.All",
+  ],
+};
+export default config;
+
 /** Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 

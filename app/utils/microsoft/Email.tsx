@@ -5,7 +5,7 @@ import { add, endOfWeek, format, getDay, parseISO, startOfWeek } from 'date-fns'
 import { RiDraftLine } from "react-icons/ri";
 import { HiOutlineTemplate } from "react-icons/hi";
 import { composeEmail, createMailFolder, createtestFolder, deleteMessage, forwardEmail, getAllFolders, getDrafts, getDraftsList, getEmailById, getEmailById2, getEmailList, getEmails, getFolders, getInbox, getInboxList, getJunk, getJunkList, getList, getSent, getTrash, getTrashList, getUserWeekCalendar, gettestFolderList, listAttachment, messageDone, messageRead, messageUnRead, replyAllEmail, replyMessage, testInbox, } from './GraphService';
-import { useAppContext } from './AppContext';
+import { useAppContext } from '../../routes/twoAppContext';
 import { Controller, useController, useForm } from "react-hook-form";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import React from "react";
@@ -143,7 +143,7 @@ export default function Test() {
                 // console.log(foldersArray, 'foldersArray')
                 setFolders(foldersArray);
             }
-        }; 
+        };
 
         fetchFolders();
     }, []);
@@ -484,10 +484,10 @@ export default function Test() {
                         className="mh-8 justify-between  hover:text-[#02a9ff]  p-1 text-[14px]   focus:transform focus:translate-y-[-10px] "
                         onClick={app.signOut!}
                     >
-                            <span className='ml-1 hidden md:block'>
-                                Sign-out
-                            </span>
-                            
+                        <span className='ml-1 hidden md:block'>
+                            Sign-out
+                        </span>
+
                     </button>
                 </div>
             </div>
@@ -589,7 +589,7 @@ export default function Test() {
                                                             </div>
                                                         )}
 
-                                                        <div className={`relative mx-auto mt-[20px] text-[12px] max-h-[50vh] overflow-y-scroll transition-all duration-500 ml-3 mr-3 text-[#f1f6ff] ${isOpen ?   'h-[50vh]' : 'h-[50vh] '}`}> 
+                                                        <div className={`relative mx-auto mt-[20px] text-[12px] max-h-[50vh] overflow-y-scroll transition-all duration-500 ml-3 mr-3 text-[#f1f6ff] ${isOpen ? 'h-[50vh]' : 'h-[50vh] '}`}>
                                                             {/* This is the third row */}
                                                             <div className='whitespace-pre-wrap text-[#f1f6ff] w-full' dangerouslySetInnerHTML={{ __html: message.body.content }} />
                                                         </div>

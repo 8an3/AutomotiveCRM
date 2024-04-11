@@ -1,17 +1,476 @@
-// app/routes/auth/microsoft/callback.tsx
-import type { LoaderArgs } from "@remix-run/node";
+import { type LoaderFunction, type DataFunctionArgs, type LoaderArgs, redirect, createCookieSessionStorage, json, createCookie } from "@remix-run/node"
+import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+import { google } from 'googleapis'
+import * as querystring from 'querystring';
+import { prisma } from "~/libs";
+import bcrypt from "bcryptjs";
+import { GetUser } from "~/utils/loader.server";
+import axios from 'axios';
+import MSAL, { FirstSignIn, SecondSignIn } from "~/routes/twoAppContext";
+import { PublicClientApplication } from "@azure/msal-browser";
 import { authenticator } from "~/services/auth.server";
+import { invariant } from "~/utils";
 
-export const loader = ({ request }: LoaderArgs) => {
-  return authenticator.authenticate("microsoft", request, {
-    successRedirect: "/dashboard",
-    failureRedirect: "/login",
-  });
+
+const MICRO_APP_ID = process.env.MICRO_APP_ID || ''
+const MICRO_TENANT_ID = process.env.MICRO_TENANT_ID || ''
+const MICRO_CLIENT_SECRET = process.env.MICRO_CLIENT_SECRET || ''
+
+
+const scopes = [
+  "user.readwrite",
+  "mailboxsettings.read",
+  "calendars.readwrite",
+  "mail.readwrite",
+  "mail.send",
+  "notes.readwrite.all",
+]
+
+const config = {
+  auth: {
+    clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
+    authority: `https://login.microsoftonline.com/fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6`,
+    redirectUri: 'http://localhost:3000/microsoft/callback',
+  }
 };
 
+export async function loader({ request, params }: LoaderFunction) {
+  ///const msalInstance = new PublicClientApplication(config);
+  /*  const userSession = await authenticator.isAuthenticated(request);
+    console.log(userSession, 'usersession')
+    if (!userSession) {
+      await authenticator.logout(request, { redirectTo: "/login" });
+    }
+    invariant(userSession, "User Session is not available");
+
+    // Get user data from database
+    let user = await prisma.user.findUnique({ where: { id: userSession.id } });
+  */
+
+  const queryParams = new URLSearchParams(request.url);
+  const code = queryParams.get('code');
+  /// console.log(code, queryParams, 'code')
+  const queryParams23 = new URL(request.url).searchParams;
+  const token = queryParams23.get('code')
+  /// console.log(  token, '23 and 23')
+  // console.log(request.headers, 'request.headers');
+  // console.log(request, 'request');
+  // const url = new URL(request.url);
+  //  console.log(token, 'url auth google callback',)
 
 
-/**
+
+  let session = await getSession(request.headers.get("Cookie")) || '';
+  let accessToken = token //|| session.get("accessCode") || ''
+  // let data = await SecondSignIn()
+  /// if (!accessToken) {    accessToken = user?.refreshToken || ''  }
+  console.log('tokens', accessToken, 'tokens',)
+
+  let activeAccount;
+  let accounts;
+  let email;
+
+
+
+
+  console.log('activeAccount', activeAccount)
+  console.log('accounts', accounts)
+
+  session.set("accessToken", accessToken);
+  //session.set("refreshToken", tokens.refresh_token);
+  //session.set("expires_in", tokens.expires_in);
+  // const email = userRes.data.emailAddress
+  //const name = userRes.data.name
+  // session.set("name", name);
+  // session.set("email", email);
+  // console.log(userRes.data.emailAddress)
+  let user = await GetUser(email)
+  console.log(user, 'user end')
+  return authenticator.authenticate("microsoft", request, {
+    successRedirect: "/quote/Harley-Davidson",
+  });
+
+
+  if (user) {
+    await prisma.user.update({ where: { email: email }, data: { expires_in: tokens.expires_in, refreshToken: tokens.refresh_token } })
+  }
+
+  if (!user) {
+    const password = 'doesntMatterWeHaveOauth12321223123'
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const defaultUserRole = await prisma.userRole.findFirst({
+      where: { symbol: "NORMAL" },
+    });
+
+    user = await prisma.user.create({
+      data: {
+        name: email.split('@')[0],
+        username: email?.split('@')[0],
+        email: email,
+        // password: { create: { hash: hashedPassword } },
+        role: { connect: { id: defaultUserRole?.id } },
+        profile: {
+          create: {
+            headline: "I am new here",
+            bio: "This is my profile bio.",
+          },
+        },
+
+      }
+    })
+    await prisma.dealerFees.create({
+      data: {
+        dealer: 'Auto Sales',
+        dealerAddress: '1234 sales st',
+        dealerProv: 'ON',
+        dealerPhone: '+14164164167',
+        omvicNumber: '123456',
+        userLoanProt: 0,
+        userTireandRim: '0',
+        userGap: 0,
+        userExtWarr: '0',
+        userServicespkg: 0,
+        vinE: 0,
+        lifeDisability: 0,
+        rustProofing: 0,
+        userLicensing: 55,
+        userFinance: '0',
+        userDemo: '0',
+        userGasOnDel: '0',
+        userOMVIC: '12.5',
+        userOther: 0,
+        userTax: '13',
+        userAirTax: '0',
+        userTireTax: '10.86',
+        userGovern: '0',
+        userPDI: '0',
+        userLabour: '128',
+        userMarketAdj: '0',
+        userCommodity: '0',
+        destinationCharge: 0,
+        userFreight: '0',
+        userAdmin: '699',
+        userEmail: email,
+      }
+    })
+    const clientfile = await prisma.clientfile.create({
+      data: {
+        email: 'skylerzanth@gmail.com',
+        firstName: 'Skyler',
+        lastName: 'zanth',
+        phone: '+16138980991',
+        name: 'skyler zanth',
+        address: '1234 st',
+        city: 'Otawa',
+        postal: 'k1j23V2',
+        province: 'ON',
+        dl: 'HS02QI3J0DF',
+        userId: user.email
+      }
+    })
+    const finance = await prisma.finance.create({
+      data: {
+        ///  id: 'clrkwvcwo00013aljooz2z4g8',
+        clientfileId: clientfile.id,
+        // dashboardId: 'clrkwvd0h00023aljgsywagtb',
+        // financeId: 'clrkwvcwo00013aljooz2z4g8',
+        financeManager: null,
+        email: 'skylerzanth@gmail.com',
+        firstName: 'skyler',
+        lastName: 'zanth',
+        phone: '+16138980991',
+        name: 'skyler zanth',
+        address: '1234 st',
+        city: 'Otawa',
+        postal: 'k1j23V2',
+        province: 'ON',
+        dl: 'HS02QI3J0DF',
+        typeOfContact: 'phone',
+        timeToContact: 'Morning',
+        iRate: '10.99',
+        months: '60',
+        discount: '0',
+        total: null,
+        onTax: null,
+        on60: null,
+        biweekly: null,
+        weekly: null,
+        weeklyOth: null,
+        biweekOth: null,
+        oth60: null,
+        weeklyqc: null,
+        biweeklyqc: null,
+        qc60: null,
+        deposit: '0',
+        biweeklNatWOptions: null,
+        weeklylNatWOptions: null,
+        nat60WOptions: null,
+        weeklyOthWOptions: null,
+        biweekOthWOptions: null,
+        oth60WOptions: null,
+        biweeklNat: null,
+        weeklylNat: null,
+        nat60: null,
+        qcTax: null,
+        otherTax: null,
+        totalWithOptions: null,
+        otherTaxWithOptions: null,
+        desiredPayments: null,
+        freight: null,
+        admin: null,
+        commodity: null,
+        pdi: null,
+        discountPer: null,
+        userLoanProt: null,
+        userTireandRim: null,
+        userGap: null,
+        userExtWarr: null,
+        userServicespkg: null,
+        deliveryCharge: null,
+        vinE: null,
+        lifeDisability: null,
+        rustProofing: null,
+        userOther: null,
+        paintPrem: null,
+        licensing: null,
+        stockNum: null,
+        options: null,
+        accessories: null,
+        labour: null,
+        year: null,
+        brand: 'Harley-Davidson',
+        model: 'Low Rider S - Color - FXLRS',
+        model1: null,
+        color: null,
+        modelCode: null,
+        msrp: null,
+        userEmail: 'skylerzanth@gmail.com',
+        tradeValue: '0',
+        tradeDesc: null,
+        tradeColor: null,
+        tradeYear: null,
+        tradeMake: null,
+        tradeVin: null,
+        tradeTrim: null,
+        tradeMileage: null,
+        trim: null,
+        vin: null,
+        leadNote: null,
+
+      }
+    })
+    const dashboard = await prisma.dashboard.create({
+      data: {
+        financeId: finance.id,
+        //    financeManager: 'skylerzanth@gmail.com',
+        email: 'skylerzanth@gmail.com',
+        firstName: 'skyler',
+        lastName: 'zanth',
+        phone: '6136134',
+        name: 'skyler zanth',
+        address: '1234 st',
+        city: 'Otawa',
+        postal: 'k1j23V2',
+        province: 'ON',
+        dl: 'HS02QI3J0DF',
+        typeOfContact: 'phone',
+        timeToContact: 'Morning',
+        iRate: '10.99',
+        months: '60',
+        discount: '0',
+        total: null,
+        onTax: null,
+        on60: null,
+        biweekly: null,
+        weekly: null,
+        weeklyOth: null,
+        biweekOth: null,
+        oth60: null,
+        weeklyqc: null,
+        biweeklyqc: null,
+        qc60: null,
+        deposit: '0',
+        biweeklNatWOptions: null,
+        weeklylNatWOptions: null,
+        nat60WOptions: null,
+        weeklyOthWOptions: null,
+        biweekOthWOptions: null,
+        oth60WOptions: null,
+        biweeklNat: null,
+        weeklylNat: null,
+        nat60: null,
+        qcTax: null,
+        otherTax: null,
+        totalWithOptions: null,
+        otherTaxWithOptions: null,
+        desiredPayments: null,
+        freight: null,
+        admin: null,
+        commodity: null,
+        pdi: null,
+        discountPer: null,
+        userLoanProt: null,
+        userTireandRim: null,
+        userGap: null,
+        userExtWarr: null,
+        userServicespkg: null,
+        deliveryCharge: null,
+        vinE: null,
+        lifeDisability: null,
+        rustProofing: null,
+        userOther: null,
+        paintPrem: null,
+        licensing: null,
+        stockNum: null,
+        options: null,
+        accessories: null,
+        labour: null,
+        year: null,
+        brand: 'Harley-Davidson',
+        model: 'Low Rider S - Color - FXLRS',
+        model1: null,
+        color: null,
+        modelCode: null,
+        msrp: null,
+        userEmail: 'skylerzanth@gmail.com',
+        tradeValue: '0',
+        tradeDesc: null,
+        tradeColor: null,
+        tradeYear: null,
+        tradeMake: null,
+        tradeVin: null,
+        tradeTrim: null,
+        tradeMileage: null,
+        trim: null,
+        vin: null,
+        leadNote: null,
+
+      }
+    })
+
+    const finance2 = await prisma.finance.update({
+      where: {
+        id: finance.id
+      },
+      data: {
+        // clientfileId: client.id,
+        dashboardId: dashboard.id,
+        financeId: finance.id,
+        financeManager: 'skylerzanth@gmail.com',
+        userEmail: user.email,
+      }
+    })
+    const aptsData = [
+      {
+        title: 'Welcome new user! NEW LEAD',
+        content: 'Welcome new user! NEW LEAD',
+        read: 'false',
+        dimiss: '',
+        type: 'New Lead',
+        financeId: finance.id,
+        clientfileId: clientfile.id,
+        to: '',
+        from: '',
+        userId: user?.id,
+      },
+      {
+        title: 'Welcome new user! MESSAGES',
+        content: 'Welcome new user! MESSAGES',
+        read: 'false',
+        dimiss: '',
+        type: 'messages',
+        financeId: finance.id,
+        clientfileId: clientfile.id,
+        to: '',
+        from: '',
+        userId: user?.id,
+      },
+      {
+        title: 'Welcome new user! UPDATES',
+        content: 'Welcome new user! UPDATES',
+        read: 'false',
+        dimiss: '',
+        type: 'updates',
+        financeId: finance.id,
+        clientfileId: clientfile.id,
+        to: '',
+        from: '',
+        userId: user?.id,
+      },
+      {
+        title: 'Welcome new user! EMAIL',
+        content: 'Welcome new user! EMAIL',
+        read: 'false',
+        dimiss: '',
+        type: 'email',
+        financeId: finance.id,
+        clientfileId: clientfile.id,
+        to: '',
+        from: '',
+        userId: user?.id,
+      },
+
+    ];
+    for (const clientApts of aptsData) {
+      const {
+        financeId,
+        contactMethod,
+        apptDay,
+        apptTime,
+        appointment,
+        completed,
+        apptStatus,
+        apptType,
+        notes,
+        userId,
+      } = clientApts;
+
+      await prisma.clientApts.create({
+        data: {
+          financeId,
+          contactMethod,
+          apptDay,
+          apptTime,
+          appointment,
+          completed,
+          apptStatus,
+          apptType,
+          notes,
+          userId,
+        },
+      });
+    }
+  }
+
+  let secret = process.env.COOKIE_SECRET || "default";
+  if (secret === "default") {
+    console.warn(
+      "🚨 No COOKIE_SECRET environment variable set, using default. The app is insecure in production.",
+    );
+    secret = "default-secret";
+  }
+  const remember = true;
+  const userId = await prisma.user.findUnique({ where: { email: email }, })
+  session.set("userid", userId?.id);
+  await commitSession(session);
+
+  return redirect('/checksubscription', {
+    headers: {
+      "Set-Cookie":
+        await commitSession(session)
+
+    },
+  });
+}
+
+
+
+/**.
+ *
+ * // Line breaks for legibility only
+
+
+
 import { type LoaderFunction, type DataFunctionArgs, type LoaderArgs, redirect, createCookieSessionStorage, json, createCookie } from "@remix-run/node"
 import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
 import { google } from 'googleapis'

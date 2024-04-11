@@ -2,6 +2,9 @@
 import { prisma } from "~/libs";
 
 export async function GetUser(email) {
+  if (!email) {
+    return null
+  }
   let oldUser = await prisma.user.findUnique({
     where: { email: email },
     select: {
