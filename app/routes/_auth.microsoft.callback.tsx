@@ -9,105 +9,136 @@ import axios from 'axios';
 import MSAL, { FirstSignIn, SecondSignIn } from "~/routes/twoAppContext";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { authenticator } from "~/services/auth.server";
-import { invariant } from "~/utils";
+import { requireUserSessiontwo } from "~/helpers";
+import { useEffect, useState } from "react";
+import { useLoaderData } from "@remix-run/react";
+import type { User } from "@prisma/client";
 
 
-const MICRO_APP_ID = process.env.MICRO_APP_ID || ''
-const MICRO_TENANT_ID = process.env.MICRO_TENANT_ID || ''
-const MICRO_CLIENT_SECRET = process.env.MICRO_CLIENT_SECRET || ''
+export const loader = async ({ request, response }: LoaderArgs) => {
 
+  return authenticator
+    .authenticate(request, {
+      successRedirect: "/checksubscription",
+      failureRedirect: "/login",
+    })
+    .then((userSession) => {
+      // Authentication successful
 
-const scopes = [
-  "user.readwrite",
-  "mailboxsettings.read",
-  "calendars.readwrite",
-  "mail.readwrite",
-  "mail.send",
-  "notes.readwrite.all",
-]
+    })
+    .catch((error) => {
+      console.error("Authentication error:", error);
+      // Handle authentication error, e.g., redirect to failureRedirect
 
-const config = {
-  auth: {
-    clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
-    authority: `https://login.microsoftonline.com/fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6`,
-    redirectUri: 'http://localhost:3000/microsoft/callback',
-  }
+    });
 };
 
+/*
 export async function loader({ request, params }: LoaderFunction) {
-  ///const msalInstance = new PublicClientApplication(config);
-  /*  const userSession = await authenticator.isAuthenticated(request);
-    console.log(userSession, 'usersession')
-    if (!userSession) {
-      await authenticator.logout(request, { redirectTo: "/login" });
-    }
-    invariant(userSession, "User Session is not available");
-
-    // Get user data from database
-    let user = await prisma.user.findUnique({ where: { id: userSession.id } });
-  */
-
-  const queryParams = new URLSearchParams(request.url);
-  const code = queryParams.get('code');
-  /// console.log(code, queryParams, 'code')
-  const queryParams23 = new URL(request.url).searchParams;
-  const token = queryParams23.get('code')
-  /// console.log(  token, '23 and 23')
-  // console.log(request.headers, 'request.headers');
-  // console.log(request, 'request');
-  // const url = new URL(request.url);
-  //  console.log(token, 'url auth google callback',)
+  console.log('callback loader')
 
 
+  authenticator.authenticate("microsoft", request, {
+    successRedirect: "/checksubscription",
+    failureRedirect: "/checksubscription",
+  })
 
-  let session = await getSession(request.headers.get("Cookie")) || '';
-  let accessToken = token //|| session.get("accessCode") || ''
-  // let data = await SecondSignIn()
-  /// if (!accessToken) {    accessToken = user?.refreshToken || ''  }
+  const userSession = await authenticator.isAuthenticated(request, {
+    successRedirect: '/checksubscription',
+  })
+  // Update the session with the new access token, refresh token, and expiration
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  const user = await GetUser(email)
+
+  session.set("user", user)
+  session.set("refreshToken", user?.refreshToken)
+
+  return json({
+    ok: true, user: userSession,
+  }, {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  })
+}
+/**
+const id = userSession.id
+
+console.log(user, 'user')
+const queryParams23 = new URL(request.url).searchParams;
+const token = queryParams23.get('code')
+console.log(user, 'user end')
+
+let accessToken = token
+
+session.set("accessToken", accessToken);
+
+console.log('callback loader2')
+
+return ({ session, headers, accessToken, user })
+} */
+
+export default async function GetProfile() {
+  console.log('callback default')
+
+  const { session, headers, accessToken, user } = useLoaderData()
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const storedProfile = window.localStorage.getItem("profile");
+    setProfile(storedProfile); // Update the state with the retrieved profile
+  }, []); // Empty dependency array ensures useEffect runs once on component mount
+  console.log(profile, user, 'user end')
+
+
+  const displayName = user?.name
+  const givenName = user?.firstName
+  const familyName = user?.lastName
+
+  const email = user?.emails[0].value
   console.log('tokens', accessToken, 'tokens',)
-
-  let activeAccount;
-  let accounts;
-  let email;
-
-
-
-
-  console.log('activeAccount', activeAccount)
-  console.log('accounts', accounts)
-
-  session.set("accessToken", accessToken);
-  //session.set("refreshToken", tokens.refresh_token);
-  //session.set("expires_in", tokens.expires_in);
-  // const email = userRes.data.emailAddress
-  //const name = userRes.data.name
-  // session.set("name", name);
-  // session.set("email", email);
-  // console.log(userRes.data.emailAddress)
-  let user = await GetUser(email)
-  console.log(user, 'user end')
-  return authenticator.authenticate("microsoft", request, {
-    successRedirect: "/quote/Harley-Davidson",
+  session.set("name", givenName);
+  session.set("email", email);
+  const authUser = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      dealer: true,
+      position: true,
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      lastSubscriptionCheck: true,
+      refreshToken: true,
+      profile: true,
+      role: { select: { symbol: true, name: true } },
+    },
   });
 
-
-  if (user) {
-    await prisma.user.update({ where: { email: email }, data: { expires_in: tokens.expires_in, refreshToken: tokens.refresh_token } })
+  if (authUser) {
+    await prisma.user.update({ where: { email: email }, data: { refreshToken: accessToken } })
   }
 
-  if (!user) {
-    const password = 'doesntMatterWeHaveOauth12321223123'
-    const hashedPassword = await bcrypt.hash(password, 10);
+  if (!authUser) {
+    console.log('user not found')
+
     const defaultUserRole = await prisma.userRole.findFirst({
       where: { symbol: "NORMAL" },
     });
 
-    user = await prisma.user.create({
+    await prisma.user.create({
       data: {
-        name: email.split('@')[0],
-        username: email?.split('@')[0],
+        name: profile.displayName,
+        username: profile.name.givenName,
         email: email,
-        // password: { create: { hash: hashedPassword } },
         role: { connect: { id: defaultUserRole?.id } },
         profile: {
           create: {
@@ -118,41 +149,46 @@ export async function loader({ request, params }: LoaderFunction) {
 
       }
     })
-    await prisma.dealerFees.create({
-      data: {
-        dealer: 'Auto Sales',
-        dealerAddress: '1234 sales st',
-        dealerProv: 'ON',
-        dealerPhone: '+14164164167',
-        omvicNumber: '123456',
-        userLoanProt: 0,
-        userTireandRim: '0',
-        userGap: 0,
-        userExtWarr: '0',
-        userServicespkg: 0,
-        vinE: 0,
-        lifeDisability: 0,
-        rustProofing: 0,
-        userLicensing: 55,
-        userFinance: '0',
-        userDemo: '0',
-        userGasOnDel: '0',
-        userOMVIC: '12.5',
-        userOther: 0,
-        userTax: '13',
-        userAirTax: '0',
-        userTireTax: '10.86',
-        userGovern: '0',
-        userPDI: '0',
-        userLabour: '128',
-        userMarketAdj: '0',
-        userCommodity: '0',
-        destinationCharge: 0,
-        userFreight: '0',
-        userAdmin: '699',
-        userEmail: email,
-      }
-    })
+    let dealerFees = await prisma.dealerFees.findFirst({
+      where: { userEmail: email },
+    });
+    if (!dealerFees) {
+      dealerFees = await prisma.dealerFees.create({
+        data: {
+          dealer: 'Auto Sales',
+          dealerAddress: '1234 sales st',
+          dealerProv: 'ON',
+          dealerPhone: '+14164164167',
+          omvicNumber: '123456',
+          userLoanProt: 0,
+          userTireandRim: '0',
+          userGap: 0,
+          userExtWarr: '0',
+          userServicespkg: 0,
+          vinE: 0,
+          lifeDisability: 0,
+          rustProofing: 0,
+          userLicensing: 55,
+          userFinance: '0',
+          userDemo: '0',
+          userGasOnDel: '0',
+          userOMVIC: '12.5',
+          userOther: 0,
+          userTax: '13',
+          userAirTax: '0',
+          userTireTax: '10.86',
+          userGovern: '0',
+          userPDI: '0',
+          userLabour: '128',
+          userMarketAdj: '0',
+          userCommodity: '0',
+          destinationCharge: 0,
+          userFreight: '0',
+          userAdmin: '699',
+          userEmail: email,
+        }
+      })
+    }
     const clientfile = await prisma.clientfile.create({
       data: {
         email: 'skylerzanth@gmail.com',
@@ -165,7 +201,7 @@ export async function loader({ request, params }: LoaderFunction) {
         postal: 'k1j23V2',
         province: 'ON',
         dl: 'HS02QI3J0DF',
-        userId: user.email
+        userId: authUser.email
       }
     })
     const finance = await prisma.finance.create({
@@ -348,7 +384,7 @@ export async function loader({ request, params }: LoaderFunction) {
       }
     })
 
-    const finance2 = await prisma.finance.update({
+    await prisma.finance.update({
       where: {
         id: finance.id
       },
@@ -357,7 +393,7 @@ export async function loader({ request, params }: LoaderFunction) {
         dashboardId: dashboard.id,
         financeId: finance.id,
         financeManager: 'skylerzanth@gmail.com',
-        userEmail: user.email,
+        userEmail: authUser.email,
       }
     })
     const aptsData = [
@@ -371,7 +407,7 @@ export async function loader({ request, params }: LoaderFunction) {
         clientfileId: clientfile.id,
         to: '',
         from: '',
-        userId: user?.id,
+        userId: authUser?.id,
       },
       {
         title: 'Welcome new user! MESSAGES',
@@ -383,7 +419,7 @@ export async function loader({ request, params }: LoaderFunction) {
         clientfileId: clientfile.id,
         to: '',
         from: '',
-        userId: user?.id,
+        userId: authUser?.id,
       },
       {
         title: 'Welcome new user! UPDATES',
@@ -395,7 +431,7 @@ export async function loader({ request, params }: LoaderFunction) {
         clientfileId: clientfile.id,
         to: '',
         from: '',
-        userId: user?.id,
+        userId: authUser?.id,
       },
       {
         title: 'Welcome new user! EMAIL',
@@ -407,7 +443,7 @@ export async function loader({ request, params }: LoaderFunction) {
         clientfileId: clientfile.id,
         to: '',
         from: '',
-        userId: user?.id,
+        userId: authUser?.id,
       },
 
     ];
@@ -441,7 +477,6 @@ export async function loader({ request, params }: LoaderFunction) {
       });
     }
   }
-
   let secret = process.env.COOKIE_SECRET || "default";
   if (secret === "default") {
     console.warn(
@@ -449,7 +484,6 @@ export async function loader({ request, params }: LoaderFunction) {
     );
     secret = "default-secret";
   }
-  const remember = true;
   const userId = await prisma.user.findUnique({ where: { email: email }, })
   session.set("userid", userId?.id);
   await commitSession(session);
@@ -462,9 +496,6 @@ export async function loader({ request, params }: LoaderFunction) {
     },
   });
 }
-
-
-
 /**.
  *
  * // Line breaks for legibility only

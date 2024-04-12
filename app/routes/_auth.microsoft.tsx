@@ -1,21 +1,13 @@
-import { LoaderFunction, redirect, type ActionArgs } from "@remix-run/node";
-import { getSession, commitSession } from "../sessions/auth-session.server";
-import { json } from "@remix-run/node";
-import { GetUser } from "~/utils/loader.server";
-import { prisma } from "~/libs";
-import { CheckUser, SignIn } from "~/utils/microsoft/appContext.server";
-import { useMsal } from '@azure/msal-react';
-import MSAL, { FirstSignIn } from "~/routes/twoAppContext";
+// app/routes/auth/microsoft.tsx
+import type { ActionArgs } from "@remix-run/node";
 import { authenticator } from "~/services/auth.server";
+import { redirect } from "@remix-run/node";
 
 export const loader = () => redirect("/login");
 
 export const action = ({ request }: ActionArgs) => {
   return authenticator.authenticate("microsoft", request);
 };
-
-
-
 /*
 const MICRO_APP_ID = process.env.MICRO_APP_ID;
 const MICRO_TENANT_ID = process.env.MICRO_TENANT_ID; //'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6' //
@@ -74,14 +66,7 @@ export let action: LoaderFunction = async ({ request, response, }) => {
  *
  *
  *
- *  const params = {
-    client_id: MICRO_APP_ID,
-    response_type: 'code',
-    redirect_uri: 'http://localhost:3000/callback',
-    response_mode: 'query',
-    scope: 'offline_access user.read mail.read User.ReadWrite mailboxsettings.read mail.readwrite Mail.Send Notes.ReadWrite.All calendars.readwrite',
-    state: '12345'
-  };
+ *
  *
  *
 let url = `https://login.microsoftonline.com/${MICRO_TENANT_ID}/oauth2/v2.0/authorize?client_id=${params.client_id}&response_type=${params.response_type}&redirect_uri=${params.redirect_uri}&response_mode=${params.response_mode}&scope=${params.scope}&state=${params.state}`;

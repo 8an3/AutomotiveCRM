@@ -1,5 +1,5 @@
 import { json, redirect, createCookie } from "@remix-run/node";
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useNavigation, isRouteErrorResponse, useRouteError, useParams, Form, useLocation, useFetcher, useSubmit, } from "@remix-run/react";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useNavigation, isRouteErrorResponse, useRouteError, useParams, Form, useLocation, useFetcher, useSubmit, useNavigate, } from "@remix-run/react";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
 import { IconoirProvider, } from "iconoir-react";
 import React, { useEffect, useState } from "react";
@@ -31,18 +31,24 @@ import store from './store'; // Import the Redux store
 import { GetUser } from "~/utils/loader.server";
 import { Unauthorized } from "./routes/_authorized.email.server";
 
-import { type Configuration, PublicClientApplication } from "@azure/msal-browser";
-import { MsalProvider } from '@azure/msal-react'
+import { MsalProvider, useIsAuthenticated } from "@azure/msal-react";
+import { PublicClientApplication, EventType } from "@azure/msal-browser";
+import { msalConfig } from "~/utils/microsoft/config.server";
+import { authenticator } from "~/services/auth.server";
 
-const MICRO_APP_ID = '0fa1346a-ab27-4b54-bffd-e76e9882fcfe' || '' //process.env.MICRO_APP_ID || ''
+const MICRO_APP_ID = '54a5sd54asd4-54as5d4asd5-54as5dads' || ''
 
 const configuration: Configuration = {
   auth: {
     clientId: MICRO_APP_ID,
-    authority: `https://login.microsoftonline.com/fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6`,
+    authority: `https://login.microsoftonline.com/54a5sd54asd4-54as5d4asd5-54as5dads`,
     redirectUri: 'http://localhost:3000/microsoft/callback',
   }
 };
+
+const pca = new PublicClientApplication(configuration);
+
+
 
 export const links: LinksFunction = () => [
   // { rel: "stylesheet", href: styles },
@@ -67,14 +73,15 @@ export const headers: HeadersFunction = () => {
 };
 
 export async function loader({ request }: LoaderArgs) {
+  const user = await authenticator.isAuthenticated(request)
+
   const ENV = getEnv();
   // const userSession = await authenticator.isAuthenticated(request);
   const userSession = await getSession(request.headers.get("Cookie"));
   const email = userSession.get("email")
   if (!email) { return json({ ENV, }); }
 
-  let user = await GetUser(email)
-  if (!user) { return redirect(`/logout`); }
+
 
   const loaderData = {
     ENV,
@@ -117,6 +124,8 @@ export async function loader({ request }: LoaderArgs) {
 
   } else { console.log('Authorized'); }
   */
+
+
   return json({ loaderData, user, }, {
     headers: {
       "Set-Cookie": await commitSession(userSession),
@@ -124,19 +133,13 @@ export async function loader({ request }: LoaderArgs) {
   });
 }
 
-const pca = new PublicClientApplication(configuration);
 
 
 export default function App() {
   const location = useLocation()
-  const navigation = useNavigation();
   const [financeId, setFinanceId] = useState(null);
 
-  useEffect(() => {
-    if (navigation.state === "loading") NProgress.done();
-    if (navigation.state === "idle") NProgress.done();
-    else NProgress.start();
-  }, [navigation.state]);
+
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -148,6 +151,11 @@ export default function App() {
       </head>
       <body id="__remix" >
         <MsalProvider instance={pca}>
+          {/*
+        instance={msalInstance}>
+         {isAuthenticated ? <p>signed in</p> :  <p>signed out</p>}
+
+        */}
 
           <Provider store={store}>
             <FinanceIdContext.Provider value={financeId}>
@@ -276,6 +284,189 @@ export function ErrorBoundary() {
   }
 }
 
+function callResourceApi(res, authResponse, templateParams, scenarioConfig) {
+  // Get scenario specific resource API
+  const resourceApi = require(RESOURCE_API_PATH)(scenarioConfig.resourceApi);
+  const username = authResponse.account.username;
+
+  // Call graph after successfully acquiring token
+  resourceApi.call(authResponse.accessToken, (authResponse, endpoint) => {
+    // Successful silent request
+    templateParams = {
+      ...templateParams,
+      username,
+      profile: JSON.stringify(authResponse, null, 4)
+    };
+    res.render("authenticated", templateParams);
+  });
+}
+
+const getTokenSilent = function (scenarioConfig, clientApplication, port, msalTokenCache) {
+  // Initialize express application object
+  const app = express();
+  // Initialize express router
+  const router = require("express-promise-router")();
+  configureExpressApp(app, router);
+
+  // Set the port that the express server will listen on
+  const serverPort = port || SERVER_PORT;
+
+  // Extract token request configuration from the scenarioConfig object passed in
+  const requestConfig = scenarioConfig.request;
+
+  /**
+   * App Routes
+   */
+
+  // Home Route
+  router.get('/', (req, res) => {
+    // if redirectUri is set to the main route "/", redirect to "/redirect" route for handling authZ code
+    if (req.query.code) return res.redirect(url.format({ pathname: "/redirect", query: req.query }));
+
+    res.render("login", { showSignInButton: true });
+  });
+
+  // This route performs interactive login to acquire and cache an Access Token/ID Token
+  router.get('/login', (req, res) => {
+    clientApplication.getAuthCodeUrl(requestConfig.authCodeUrlParameters)
+      .then((response) => {
+        res.redirect(response);
+      })
+      .catch((error) => console.log(JSON.stringify(error)));
+  });
+
+  /**
+   * Silent Login route
+   *
+   * This route attempts to login a user silently by checking
+   * the persisted cache for accounts.
+   */
+  router.get('/silentAcquireToken', async (req, res) => {
+    // Retrieve all cached accounts
+    const accounts = await msalTokenCache.getAllAccounts();
+
+    if (accounts.length > 0) {
+      const account = accounts[0];
+      // Set global homeAccountId of the first cached account found
+      app.locals.homeAccountId = account.homeAccountId;
+      // Build silent token request
+      const silentRequest = { ...requestConfig.silentRequest, account: account };
+
+      let templateParams = { showLoginButton: false };
+
+      /**
+       * MSAL Usage
+       * The code below demonstrates the correct usage pattern of the ClientApplicaiton.acquireTokenSilent API.
+       *
+       * In this code block, the application uses MSAL to obtain an Access Token from the MSAL Cache. If successful,
+       * the response contains an `accessToken` property. Said property contains a string representing an encoded Json Web Token
+       * which can be added to the `Authorization` header in a protected resource request to demonstrate authorization.
+       */
+      clientApplication.acquireTokenSilent(silentRequest)
+        .then((authResponse) => {
+          app.locals.authResponse = authResponse;
+          templateParams.acquiredTokenSilently = true
+          res.render("authenticated", templateParams);
+        })
+        .catch((error) => {
+          console.log(error);
+          templateParams.couldNotAcquireToken = true;
+          res.render("authenticated", templateParams)
+        });
+    } else {
+      // If there are no cached accounts, render the login page
+      res.render("login", { failedSilentLogin: true, showSignInButton: true });
+    }
+  });
+
+  // Second leg of Auth Code grant
+  router.get('/redirect', (req, res) => {
+    const tokenRequest = { ...requestConfig.tokenRequest, code: req.query.code };
+    clientApplication.acquireTokenByCode(tokenRequest).then((response) => {
+      app.locals.homeAccountId = response.account.homeAccountId;
+      const templateParams = { showLoginButton: false, username: response.account.username, profile: false };
+      res.render("authenticated", templateParams);
+    }).catch((error) => {
+      console.log(error);
+      res.status(500).send(error);
+    });
+  });
+
+  // Displays all cached accounts
+  router.get('/allAccounts', async (req, res) => {
+    const accounts = await msalTokenCache.getAllAccounts();
+    const formattedAccounts = accounts.map((account) => {
+      let tenantProfiles = [];
+      account.tenantProfiles.forEach((profile) => {
+        tenantProfiles.push(profile);
+      });
+      return { ...account, tenantProfiles };
+    });
+    if (formattedAccounts.length > 0) {
+      res.render("authenticated", { accounts: JSON.stringify(formattedAccounts, null, 4) })
+    } else if (formattedAccounts.length === 0) {
+      res.render("authenticated", { accounts: JSON.stringify(formattedAccounts), noAccounts: true, showSignInButton: true });
+    } else {
+      res.render("authenticated", { failedToGetAccounts: true, showSignInButton: true })
+    }
+  });
+
+  // Call a resource API with an Access Token silently obtained from the MSAL Cache
+  router.get('/graphCall', async (req, res) => {
+
+    if (!app.locals.authResponse) {
+      return res.redirect('/silentAcquireToken');
+    }
+
+    let templateParams = { showLoginButton: false };
+    return callResourceApi(res, app.locals.authResponse, templateParams, scenarioConfig);
+  });
+
+  return app.listen(serverPort, () => console.log(`Msal Node Silent Flow Sample app listening on port ${serverPort}!`));
+};
+
+
+/**
+* The code below checks if the script is being executed manually or in automation.
+* If the script was executed manually, it will initialize a PublicClientApplication object
+* and execute the sample application.
+*/
+if (argv.$0 === "index.js") {
+  const loggerOptions = {
+    loggerCallback(loglevel, message, containsPii) {
+      console.log(message);
+    },
+    piiLoggingEnabled: false,
+    logLevel: msal.LogLevel.Verbose,
+  }
+
+  // Build MSAL ClientApplication Configuration object
+  const clientConfig = {
+    auth: {
+      clientId: config.authOptions.clientId,
+      authority: config.authOptions.authority,
+      redirectUri: config.authOptions.redirectUri,
+      clientSecret: process.env.CLIENT_SECRET,
+      knownAuthorities: config.authOptions.knownAuthorities
+    },
+    cache: {
+      cachePlugin
+    },
+    // Uncomment the code below to enable the MSAL logger
+    /*
+     *   system: {
+     *    loggerOptions: loggerOptions
+     *   }
+     */
+  };
+
+  // Create an MSAL PublicClientApplication object
+  const publicClientApplication = new msal.PublicClientApplication(clientConfig);
+  const msalTokenCache = publicClientApplication.getTokenCache();
+
+  // Execute sample application with the configured MSAL PublicClientApplication
+  return getTokenSilent(config, publicClientApplication, null, msalTokenCache);
+}
 
 /***
  *              <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">

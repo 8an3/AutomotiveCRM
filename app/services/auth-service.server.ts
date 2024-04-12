@@ -1,10 +1,10 @@
 import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { model } from "~/models";
-import { authSessionStorage } from "~/sessions/auth-session.server";
+import { sessionStorage } from "~/sessions/session.server";
 import type { UserSession } from "~/helpers";
 
-export const authenticator = new Authenticator<UserSession>(authSessionStorage);
+export const authenticator = new Authenticator<UserSession>(sessionStorage);
 
 authenticator.use(
   new FormStrategy(async ({ form }) => {

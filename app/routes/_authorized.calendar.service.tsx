@@ -11,11 +11,13 @@ import { json, redirect } from '@remix-run/node';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { getAllFinanceAptsForCalendar, getSingleFinanceAppts } from '~/utils/financeAppts/get.server';
 import moment from 'moment';
+import { GetUser } from "~/utils/loader.server";
 
 const DragAndDropCalendar = withDragAndDrop(Calendar)
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
+
 
 
   const user = await GetUser(email)

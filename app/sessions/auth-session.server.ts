@@ -1,19 +1,10 @@
-import { createCookieSessionStorage } from "@remix-run/node";
+import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
-import {
-  convertDaysToSeconds,
-  getEnv,
-  getEnvPrivate,
-  invariant,
-} from "~/utils";
+import type { Password, User } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
-const env = getEnv();
-const envPrivate = getEnvPrivate();
-
-invariant(envPrivate.REMIX_SESSION_SECRET, "REMIX_SESSION_SECRET must be set");
-
-// TODO: Integrate on register and login flow
-const remember = true;
+import { prisma } from "~/libs/prisma.server";
+export type { User } from "@prisma/client";
 
 // Export the whole sessionStorage object
 export const authSessionStorage = createCookieSessionStorage({
@@ -22,10 +13,38 @@ export const authSessionStorage = createCookieSessionStorage({
     httpOnly: true,
     path: "/",
     sameSite: "lax",
-    secrets: ["s3cr3t"],
+    secrets: ["s3cr3tqwe45"],
     secure: process.env.NODE_ENV === "production",
   },
 });
 
-// You can also export the methods individually for your own usage
-export const { getSession, commitSession, destroySession } = authSessionStorage;
+export const { getSession, commitSession, destroySession } = authSessionStorage
+/**
+export function getSession(request: Request): Promise<Session> {
+  return authSessionStorage.getSession(request.headers.get('Cookie'))
+}
+
+export async function getSessionUser(request: Request) {
+  const session = await getSession(request)
+  return session.get('user') as UserProfile
+}
+
+export async function getLoggedInUser(request: Request) {
+  const user = await getSessionUser(request)
+  if (user) return user
+  throw needLogin(request)
+}
+
+export async function needLogin(request: Request) {
+  const { pathname, search } = new URL(request.url)
+  const session = await getSession(request)
+  session.set('redirect', `${pathname}${search}`)
+  return redirect(LOGIN_URL, {
+    headers: {  await authenticator.isAuthenticated(request, {
+    successRedirect: '/checksubscription',
+  })
+      'Set-Cookie': await commitSession(session),
+    },
+  })
+}
+ */

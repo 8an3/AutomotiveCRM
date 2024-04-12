@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 import type { LoaderArgs, DataFunctionArgs } from "@remix-run/node";
 
 import { Form, Link, useParams, useMatches, useNavigation, useLocation, useLoaderData } from "@remix-run/react";
-import React, { useId } from "react";
+import React, { useEffect, useId, useState } from "react";
 import { badRequest, forbidden } from "remix-utils";
 import { Alert, ButtonLoading, Debug, InputPassword, Layout, PageHeader, emixForm, RemixLinkText, } from "~/components";
 import { configSite } from "~/configs";
@@ -15,14 +15,40 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, 
 import { Toaster, toast } from 'sonner'
 import { redirectIfLoggedInLoader, setAuthOnResponse } from "~/utils/misc.user.server";
 import { TfiMicrosoft } from "react-icons/tfi";
-import { useMsal } from "@azure/msal-react";
-import { authenticator } from "~/services/auth.server";
+import { authenticator, getSession, commitSession } from "~/services/auth.server";
+//import { getSession, commitSession } from "~/sessions/auth-session.server";
+import { GetUser } from "~/utils/loader.server";
+import type { User } from '@prisma/client'
+import { prisma } from "~/libs";
+import { useMsalAuthentication, AuthenticatedTemplate, UnauthenticatedTemplate, useAccount, useMsal } from "@azure/msal-react";
+import { callMsGraph } from "~/utils/microsoft/MsGraphApiCall";
 
-
+export async function getUserByEmail(email: User['email']) {
+  return prisma.user.findUnique({
+    where: { email },
+  })
+}
 
 export async function loader({ request }: LoaderArgs) {
+  await authenticator.isAuthenticated(request, {
+    successRedirect: '/checksubscription',
+  })
+
+  const session = await getSession(request.headers.get("Cookie"));
+  const email =  session.get("email")
+  let accessToken
+  if (email) {
+    const user = await GetUser(email)
+    accessToken = user?.refreshToken
+    session.set('refreshToken', accessToken)
+  }  else {
+    console.log('no user')
+  }
+  if (!accessToken) {
+    accessToken = session.get("accessToken")
+  }
+  console.log(email, accessToken, 'loader')
   const domain = request.headers.get('host');
-  console.log(domain, 'url url')
 
   const headerHeadingText = getRandomText([
     "Hello again!",
@@ -36,13 +62,22 @@ export async function loader({ request }: LoaderArgs) {
     `Use your ${configSite.name} account to continue`,
   ]);
 
+
+
   return json({
     domain,
+    accessToken,
+    email,
     redirectIfLoggedInLoader,
     headerHeadingText,
     headerDescriptionText,
-  });
-
+  },
+    {
+      headers: {
+        'Set-Cookie': await commitSession(session),
+      },
+    },
+  )
 }
 export async function action({ request }: DataFunctionArgs) {
   const clonedRequest = request.clone();
@@ -71,24 +106,22 @@ export async function action({ request }: DataFunctionArgs) {
 
 export default function Route() {
   const navigation = useNavigation();
-  const { domain } = useLoaderData()
-  // const isSubmitting = navigation.state === "submitting";
-  const isSubmitting = navigation.formAction === "/login";
-  function BusyIndicator() {
-    const promise = () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Sonner' }), 2000));
-    React.useEffect(() => {
-      toast.promise(promise, {
-        loading: 'Loading...',
-        success: (data) => {
-          return `Welcome back!`;
-        },
-        error: 'Error',
-      });
-    }, []);
+/**
+  const { instance, accounts } = useMsal();
+  const [graphData, setGraphData] = useState(null);
 
-    return null; // Return null because this component doesn't render anything
+  function RequestProfileData() {
+      // Silently acquires an access token which is then attached to a request for MS Graph data
+      instance
+          .acquireTokenSilent({
+              ...loginRequest,
+              account: accounts[0],
+          })
+          .then((response) => {
+              callMsGraph(response.accessToken).then((response) => setGraphData(response));
+          });
   }
-  const { instance, accounts, inProgress } = useMsal();
+ */
 
   return (
     <div className="grid  w-full grid-cols-1">
@@ -98,30 +131,40 @@ export default function Route() {
               onClick={() => instance.loginPopup()}
 
           */}
-          <Form action="/microsoft" method="post">
+          <AuthenticatedTemplate>
+            <p>Signed in.</p>
 
-            <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-              <h1 className="text-white">Welcome to D.S.A.</h1>
-              <p className="mt-5 text-white">Continue with your microsoft account to login</p>
-              <Button
-                variant='outline'
-                className='mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-white '
-              >
-                <p className='mr-1'>Login with your</p>
-                <TfiMicrosoft className='text-[28px]' /> <p className="ml-2">account</p>
-              </Button>
-              <hr className="solid mb-5 mt-5 text-white" />
-              <Link to='/privacy'>
-                <p className='text-white'>To review our Privacy Policy</p>
-              </Link>
-            </div>
-          </Form>
+
+          </AuthenticatedTemplate>
+
+          <UnauthenticatedTemplate>
+
+            <Form action="/microsoft" method="post">
+              <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+                <h1 className="text-white">Welcome to D.S.A.</h1>
+                <p className="mt-5 text-white">Continue with your microsoft account to login</p>
+                <Button
+
+                  variant='outline'
+                  className='mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-white '
+                >
+                  <p className='mr-1'>Login with your</p>
+                  <TfiMicrosoft className='text-[28px]' /> <p className="ml-2">account</p>
+                </Button>
+                <hr className="solid mb-5 mt-5 text-white" />
+                <Link to='/privacy'>
+                  <p className='text-white'>To review our Privacy Policy</p>
+                </Link>
+              </div>
+            </Form>
+          </UnauthenticatedTemplate>
 
         </div>
       </div>
     </div >
   );
 }
+
 /**    <Form method='post' >
 
           <div className="space-y-1">

@@ -13,7 +13,18 @@ import type { Prisma, UserRole } from "@prisma/client";
 export type UserSession = {
   id: string;
   email: string;
-
+  username: string;
+  subscriptionId: string;
+  customerId: string;
+  returning: string;
+  phone: string;
+  dealer: string;
+  position: string;
+  roleId: string;
+  profileId: string;
+  omvicNumber: string;
+  lastSubscriptionCheck: string;
+  refreshToken: string;
 };
 
 // User Data is a more complete user data that can be retrieved,
@@ -60,6 +71,37 @@ export async function requireUserSession(
     userSession,
     user,
     userIsAllowed,
+  };
+}
+
+export async function requireUserSessiontwo(
+  request: Request,
+) {
+  // Get user session from app cookie
+  //const userSession = await authenticator.isAuthenticated(request, {
+  // failureRedirect: "/login",
+  //});
+  const userSession = await sessionGet(request.headers.get("Cookie"));
+
+
+
+  if (!userSession) {
+    await authenticator.logout(request, { redirectTo: "/login" });
+  }
+  invariant(userSession, "User Session is not available");
+
+  // Get user data from database
+  //const user = await model.user.query.getForSession({ id: userSession.id });
+  const email = userSession.get("email")
+  const user = await getUserByEmail(email)
+  if (!user) {
+    await authenticator.logout(request, { redirectTo: "/login" });
+  }
+  invariant(user, "User is not available");
+
+  return {
+    userSession,
+    user,
   };
 }
 

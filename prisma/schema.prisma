@@ -59,6 +59,16 @@ model User {
   @@index([profileId])
 }
 
+model microCache {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  userEmail         String   @unique
+  accessToken       String?
+  accessTokenExpiry String?
+  refreshToken      String?
+}
+
 model userIntergration {
   id               String   @id @default(cuid())
   createdAt        DateTime @default(now())
