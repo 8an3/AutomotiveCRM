@@ -3,7 +3,7 @@
 import { DataFunctionArgs, LoaderArgs, LoaderFunction, json, redirect } from "@remix-run/node";
 import { model } from "~/models";
 import { schemaUserLogin } from "~/schemas";
-import { authenticator } from '~/services/auth.server'
+import { authenticator } from '~/services/auth'
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { badRequest, forbidden } from "remix-utils";
 import { createMetaData, getRandomText, getRedirectTo, useRedirectTo, } from "~/utils";

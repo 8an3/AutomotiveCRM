@@ -1,5 +1,5 @@
-import { type LoaderFunction, type DataFunctionArgs, type LoaderArgs, redirect, createCookieSessionStorage, json, createCookie } from "@remix-run/node"
-import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+import { type LoaderFunction, type DataFunctionArgs, type LoaderArgs, redirect, createCookieSessionStorage, json, createCookie, type ActionFunction } from "@remix-run/node"
+import { getSession, commitSession, authSessionStorage } from '../sessions/auth-session.server'
 import { google } from 'googleapis'
 import * as querystring from 'querystring';
 import { prisma } from "~/libs";
@@ -8,29 +8,41 @@ import { GetUser } from "~/utils/loader.server";
 import axios from 'axios';
 import MSAL, { FirstSignIn, SecondSignIn } from "~/routes/twoAppContext";
 import { PublicClientApplication } from "@azure/msal-browser";
-import { authenticator } from "~/services/auth.server";
+//import { authenticator } from "~/services/auth.server";
 import { requireUserSessiontwo } from "~/helpers";
 import { useEffect, useState } from "react";
 import { useLoaderData } from "@remix-run/react";
 import type { User } from "@prisma/client";
+import { authenticator, } from "~/services/auth";
+
+
+export const action: ActionFunction = async ({ request }) => {
+  // Your action logic here
+
+  return json({ ok: 200 }, {
+    headers: {
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Referrer-Policy': 'same-origin'
+    }
+  });
+};
 
 
 export const loader = async ({ request, response }: LoaderArgs) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  const accessToken = session.get("accessToken")
+  const id_token = session.get("id_token")
+  console.log('sessoin data23232', email, accessToken, id_token)
 
-  return authenticator
-    .authenticate(request, {
-      successRedirect: "/checksubscription",
-      failureRedirect: "/login",
-    })
-    .then((userSession) => {
-      // Authentication successful
+  const userSession = await authenticator.authenticate("microsoft", request, {
+    successRedirect: "/checksubscription",
+    failureRedirect: "/login",
+    //headers: session
+  })
+  console.log(userSession, 'usersession')
+  return userSession
 
-    })
-    .catch((error) => {
-      console.error("Authentication error:", error);
-      // Handle authentication error, e.g., redirect to failureRedirect
-
-    });
 };
 
 /*

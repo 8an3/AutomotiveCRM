@@ -34,11 +34,11 @@ import { Unauthorized } from "./routes/_authorized.email.server";
 import { MsalProvider, useIsAuthenticated } from "@azure/msal-react";
 import { PublicClientApplication, EventType } from "@azure/msal-browser";
 import { msalConfig } from "~/utils/microsoft/config.server";
-import { authenticator } from "~/services/auth.server";
+import { authenticator } from "~/services/auth";
 
 const MICRO_APP_ID = '54a5sd54asd4-54as5d4asd5-54as5dads' || ''
 
-const configuration: Configuration = {
+const configuration = {
   auth: {
     clientId: MICRO_APP_ID,
     authority: `https://login.microsoftonline.com/54a5sd54asd4-54as5d4asd5-54as5dads`,
@@ -136,11 +136,7 @@ export async function loader({ request }: LoaderArgs) {
 
 
 export default function App() {
-  const location = useLocation()
   const [financeId, setFinanceId] = useState(null);
-
-
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -151,12 +147,6 @@ export default function App() {
       </head>
       <body id="__remix" >
         <MsalProvider instance={pca}>
-          {/*
-        instance={msalInstance}>
-         {isAuthenticated ? <p>signed in</p> :  <p>signed out</p>}
-
-        */}
-
           <Provider store={store}>
             <FinanceIdContext.Provider value={financeId}>
               <TooltipProvider>
@@ -175,13 +165,11 @@ export default function App() {
               <Scripts />
               <LiveReload />
               <GlobalLoading />
-
             </FinanceIdContext.Provider>
           </Provider>
         </MsalProvider>
-
-      </body >
-    </html >
+      </body>
+    </html>
   );
 }
 
@@ -284,6 +272,12 @@ export function ErrorBoundary() {
   }
 }
 
+
+/**
+* The code below checks if the script is being executed manually or in automation.
+* If the script was executed manually, it will initialize a PublicClientApplication object
+* and execute the sample application.
+*
 function callResourceApi(res, authResponse, templateParams, scenarioConfig) {
   // Get scenario specific resource API
   const resourceApi = require(RESOURCE_API_PATH)(scenarioConfig.resourceApi);
@@ -316,7 +310,7 @@ const getTokenSilent = function (scenarioConfig, clientApplication, port, msalTo
 
   /**
    * App Routes
-   */
+
 
   // Home Route
   router.get('/', (req, res) => {
@@ -340,7 +334,7 @@ const getTokenSilent = function (scenarioConfig, clientApplication, port, msalTo
    *
    * This route attempts to login a user silently by checking
    * the persisted cache for accounts.
-   */
+
   router.get('/silentAcquireToken', async (req, res) => {
     // Retrieve all cached accounts
     const accounts = await msalTokenCache.getAllAccounts();
@@ -361,7 +355,7 @@ const getTokenSilent = function (scenarioConfig, clientApplication, port, msalTo
        * In this code block, the application uses MSAL to obtain an Access Token from the MSAL Cache. If successful,
        * the response contains an `accessToken` property. Said property contains a string representing an encoded Json Web Token
        * which can be added to the `Authorization` header in a protected resource request to demonstrate authorization.
-       */
+
       clientApplication.acquireTokenSilent(silentRequest)
         .then((authResponse) => {
           app.locals.authResponse = authResponse;
@@ -425,13 +419,7 @@ const getTokenSilent = function (scenarioConfig, clientApplication, port, msalTo
   return app.listen(serverPort, () => console.log(`Msal Node Silent Flow Sample app listening on port ${serverPort}!`));
 };
 
-
-/**
-* The code below checks if the script is being executed manually or in automation.
-* If the script was executed manually, it will initialize a PublicClientApplication object
-* and execute the sample application.
-*/
-if (argv.$0 === "index.js") {
+* if (argv.$0 === "index.js") {
   const loggerOptions = {
     loggerCallback(loglevel, message, containsPii) {
       console.log(message);
@@ -457,7 +445,7 @@ if (argv.$0 === "index.js") {
      *   system: {
      *    loggerOptions: loggerOptions
      *   }
-     */
+
   };
 
   // Create an MSAL PublicClientApplication object
@@ -467,6 +455,8 @@ if (argv.$0 === "index.js") {
   // Execute sample application with the configured MSAL PublicClientApplication
   return getTokenSilent(config, publicClientApplication, null, msalTokenCache);
 }
+*/
+
 
 /***
  *              <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">

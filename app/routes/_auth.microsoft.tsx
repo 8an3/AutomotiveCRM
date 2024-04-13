@@ -1,13 +1,28 @@
 // app/routes/auth/microsoft.tsx
 import type { ActionArgs } from "@remix-run/node";
-import { authenticator } from "~/services/auth.server";
-import { redirect } from "@remix-run/node";
+import { authenticator } from "~/services/auth";
+import { json, redirect } from "@remix-run/node";
+import { getSession, commitSession, authSessionStorage } from '../sessions/auth-session.server'
 
 export const loader = () => redirect("/login");
 
-export const action = ({ request }: ActionArgs) => {
-  return authenticator.authenticate("microsoft", request);
+export const action = async ({ request }: ActionArgs) => {
+  const sessionData = await getSession(request.headers.get("Cookie"));
+
+  const session = await authenticator.authenticate("microsoft", request, {
+    successRedirect: "/checksubscription",
+    failureRedirect: "/login",
+    //  headers: session
+
+  })
+  return json({ session }, {
+    headers: {
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Referrer-Policy': 'same-origin'
+    }
+  });
 };
+
 /*
 const MICRO_APP_ID = process.env.MICRO_APP_ID;
 const MICRO_TENANT_ID = process.env.MICRO_TENANT_ID; //'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6' //

@@ -1,5 +1,5 @@
 import { model } from "~/models";
-import { authenticator } from "~/services/auth.server";
+import { authenticator } from "~/services/auth";
 import { getSession } from "~/sessions/auth-session.server";
 import { invariant } from "~/utils";
 import { prisma } from "~/libs";

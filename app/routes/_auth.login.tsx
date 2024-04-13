@@ -15,8 +15,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, 
 import { Toaster, toast } from 'sonner'
 import { redirectIfLoggedInLoader, setAuthOnResponse } from "~/utils/misc.user.server";
 import { TfiMicrosoft } from "react-icons/tfi";
-import { authenticator, getSession, commitSession } from "~/services/auth.server";
-//import { getSession, commitSession } from "~/sessions/auth-session.server";
+import { authenticator, } from "~/services/auth";
+import { getSession, commitSession, authSessionStorage } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
 import type { User } from '@prisma/client'
 import { prisma } from "~/libs";
@@ -30,18 +30,22 @@ export async function getUserByEmail(email: User['email']) {
 }
 
 export async function loader({ request }: LoaderArgs) {
-  await authenticator.isAuthenticated(request, {
-    successRedirect: '/checksubscription',
-  })
+
 
   const session = await getSession(request.headers.get("Cookie"));
-  const email =  session.get("email")
+  await authenticator.isAuthenticated(request, {
+    successRedirect: "/dashboard",
+  });
+  let error = session.get(authenticator.sessionErrorKey);
+  if (error) { return json({ error }); }
+  const email = session.get("email")
+  console.log(session, email, 'sessoin data')
   let accessToken
   if (email) {
     const user = await GetUser(email)
     accessToken = user?.refreshToken
     session.set('refreshToken', accessToken)
-  }  else {
+  } else {
     console.log('no user')
   }
   if (!accessToken) {
@@ -99,29 +103,33 @@ export async function action({ request }: DataFunctionArgs) {
     successRedirect: getRedirectTo(request) || "/user/dashboard/settings",
     failureRedirect: "/login",
   });
-  return json(submission);
-}
-
-
+  return json((submission), {
+    headers: {
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Referrer-Policy': 'same-origin'
+    }
+  }
+  )
+};
 
 export default function Route() {
   const navigation = useNavigation();
-/**
-  const { instance, accounts } = useMsal();
-  const [graphData, setGraphData] = useState(null);
+  /**
+    const { instance, accounts } = useMsal();
+    const [graphData, setGraphData] = useState(null);
 
-  function RequestProfileData() {
-      // Silently acquires an access token which is then attached to a request for MS Graph data
-      instance
-          .acquireTokenSilent({
-              ...loginRequest,
-              account: accounts[0],
-          })
-          .then((response) => {
-              callMsGraph(response.accessToken).then((response) => setGraphData(response));
-          });
-  }
- */
+    function RequestProfileData() {
+        // Silently acquires an access token which is then attached to a request for MS Graph data
+        instance
+            .acquireTokenSilent({
+                ...loginRequest,
+                account: accounts[0],
+            })
+            .then((response) => {
+                callMsGraph(response.accessToken).then((response) => setGraphData(response));
+            });
+    }
+   */
 
   return (
     <div className="grid  w-full grid-cols-1">

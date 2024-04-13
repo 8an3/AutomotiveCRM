@@ -3,7 +3,7 @@ import { MicrosoftStrategy } from "remix-auth-microsoft";
 import { Authenticator } from "remix-auth";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
-import {  getSession as sixsix,  commitSession as sevenseven,  destroySession,  authSessionStorage,} from "../sessions/auth-session.server";
+import { getSession, commitSession, destroySession, authSessionStorage, } from "../sessions/auth-session.server";
 import type { User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { type LoaderFunction, json, redirect } from "@remix-run/node";
@@ -29,9 +29,31 @@ export let sessionStorage = createCookieSessionStorage({
   },
 });
 
-export let { getSession, commitSession, destroySession } = sessionStorage;
+//export let { getSession, commitSession, destroySession } = sessionStorage;
+type UserSession = {
+  id: string;
+  username: string;
+  subscriptionId: string;
+  customerId: string;
+  returning: boolean | null;
+  phone: string;
+  dealer: string;
+  position: string;
+  roleId: string;
+  profileId: string;
+  omvicNumber: string;
+  lastSubscriptionCheck: string;
+  refreshToken: string;
+  accessToken: string;
+  id_token: string;
+  email: string;
+  user: string;
+};
+export const authenticator = new Authenticator<UserSession>(authSessionStorage, {
+  sessionErrorKey: "my-error-key",
+  sessionKey: "accessToken",
 
-export const authenticator = new Authenticator(sessionStorage)
+});
 
 const microsoftStrategy = new MicrosoftStrategy(
   {
@@ -40,24 +62,26 @@ const microsoftStrategy = new MicrosoftStrategy(
     redirectUri: "http://localhost:3000/microsoft/callback",
     tenantId: "fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6",
     scope: ['openid', 'profile', 'email', 'offline_access'],
-   /* scope:
-      "email openid profile offline_access calendars.readwrite mail.read mailboxsettings.read notes.readwrite calendars.readWrite.shared  mail.readwrite mail.send  mailboxsettings.readwrite notes.readwrite.all tasks.readwrite.shared user.read user.readbasic.all user.readwrite",
-      */
+    /* scope:
+       "email openid profile offline_access calendars.readwrite mail.read mailboxsettings.read notes.readwrite calendars.readWrite.shared  mail.readwrite mail.send  mailboxsettings.readwrite notes.readwrite.all tasks.readwrite.shared user.read user.readbasic.all user.readwrite",
+       */
     prompt: "login",
-    },
-  async ({ accessToken, extraParams, profile, request }) => {
-    console.log(accessToken, extraParams, profile)
+  },
+  async ({ accessToken, extraParams, profile, request, done }) => {
 
+    const email = profile.emails[0].value
 
-    let user = await prisma.user.findUnique({
+    // console.log(accessToken, 'accesstoiken', extraParams.id_token, 'idtoken')
+
+    let userProfile = await prisma.user.findUnique({
       where: { email: profile.emails[0].value },
     });
 
-    if (!user) {
+    if (!userProfile) {
       const defaultUserRole = await prisma.userRole.findFirst({
         where: { symbol: "NORMAL" },
       });
-      user = await prisma.user.create({
+      userProfile = await prisma.user.create({
         data: {
           name: profile.name.givenName + " " + profile.name.familyName,
           username: profile.displayName,
@@ -72,9 +96,9 @@ const microsoftStrategy = new MicrosoftStrategy(
           },
         },
       });
-      if (!user) throw new Error("Unable to create user.");
+      if (!userProfile) throw new Error("Unable to create user.");
     }
-    if (user) {
+    if (userProfile) {
       await prisma.user.update({
         where: {
           email: profile.emails[0].value,
@@ -84,17 +108,29 @@ const microsoftStrategy = new MicrosoftStrategy(
         },
       });
     }
+    // session.set("email", email)
+    // session.set('idToken', extraParams.id_token)
+    // session.set('accessToken', accessToken)
+    const user = await prisma.user.findUnique({ where: { email: email } })
 
-    console.log(accessToken, extraParams, profile)
+    let session = await getSession(request.headers.get("cookie"));
+    // and store the user data
+    session.set(authenticator.sessionKey, user);
+    let headers = new Headers({ "Set-Cookie": await commitSession(session) });
+    console.log('3', user)
 
-    return ({ profile: userSession }, {
-      headers: {
-        "Set-Cookie": await sevenseven(session),
-      },
-    })
-  },
+    if (user) return redirect("/checksubscription", { headers });
 
+    await commitSession(session)
+    console.log('4')
+    const id_token = extraParams.id_token
+    return done(null, profile, accessToken, id_token)
+
+  }
 )
+
+// return userSession //
+
 
 authenticator.use(microsoftStrategy);
 
