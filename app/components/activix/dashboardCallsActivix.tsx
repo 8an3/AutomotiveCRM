@@ -866,7 +866,6 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       userName: user?.name,
       lead_id: formData.activixId,
       method: 'email',
-      type: 'outgoing',
       date: new Date().toISOString(),
     }
     const to = formData.customerEmail

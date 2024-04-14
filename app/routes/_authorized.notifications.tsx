@@ -84,8 +84,6 @@ let url1 = '/notifications/messages'
 
 export default function NotificationSystem() {
 
-  const { user } = useLoaderData()
-
   const $form = useRef<HTMLFormElement>(null);
   const { key } = useLocation();
   useEffect(

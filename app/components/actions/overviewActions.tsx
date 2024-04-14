@@ -18,16 +18,16 @@ import { X } from 'lucide-react';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { GetUser } from "~/utils/loader.server";
 import { SendPayments, } from '~/routes/_authorized.email.server';
+import GetUserFromRequest from "~/utils/auth/getUser";
+
+
 //import { UpdateLead } from '~/routes/_authorized.api.activix';
 const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
 
 export async function overviewLoader({ request, params }: LoaderFunction) {
-    const session2 = await getSession(request.headers.get("Cookie"));
+    const user = await GetUserFromRequest(request);
+    if (!user) { return redirect('/login'); }
     const email = session2.get("email")
-
-    const user = await GetUser(email)
-    /// console.log(user, account, 'wquiote loadert')
-    if (!user) { redirect('/login') }
 
     const userId = user?.id
     let finance = await prisma.finance.findFirst({
@@ -52,79 +52,48 @@ export async function overviewLoader({ request, params }: LoaderFunction) {
             userId: user.id,
         }
     })
-    //   console.log(finance, 'overviewLoader')
     if (brand === 'Manitou') {
-        // const { finance, dashboard, clientfile, } = await getClientFinanceAndDashData(financeId)
-
         const modelData = await getDataByModelManitou(finance);
         const manOptions = await getLatestOptionsManitou(email)
-        // console.log(modelData, manOptions)
-        return json({ ok: true, modelData, finance, deFees, manOptions, sliderWidth, records, notifications, user, tokens })
+        return json({ ok: true, modelData, finance, deFees, manOptions, sliderWidth, records, notifications, user, tokens, email })
     }
     if (brand === 'Switch') {
         const modelData = await getDataByModel(finance);
         const manOptions = await getLatestOptionsManitou(email)
-        //  console.log(modelData, manOptions)
-        return json({ ok: true, modelData, finance, deFees, manOptions, sliderWidth, records, notifications, user, tokens })
+        return json({ ok: true, modelData, finance, deFees, manOptions, sliderWidth, records, notifications, user, tokens, email })
     }
     if (brand === 'Kawasaki') {
         const modelData = await getDataKawasaki(finance);
-        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens })
+        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens, email })
     }
     if (brand === 'BMW-Motorrad') {
         const financeId = finance?.id
         const bmwMoto = await getLatestBMWOptions(financeId)
         const bmwMoto2 = await getLatestBMWOptions2(financeId)
         const modelData = await getDataBmwMoto(finance);
-        return json({ ok: true, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, records, notifications, user, tokens })
+        return json({ ok: true, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, records, notifications, user, tokens, email })
     }
     if (brand === 'Triumph') {
         const modelData = await getDataTriumph(finance);
-        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens })
+        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens, email })
     }
     if (brand === 'Harley-Davidson') {
         const modelData = await getDataHarley(finance);
         console.log(user, tokens, 'user, tokens ')
-        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens })
+        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens, email })
     }
     else {
         const modelData = await getDataByModel(finance)
-        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens })
+        return json({ ok: true, modelData, finance, deFees, sliderWidth, records, notifications, user, tokens, email })
     }
 }
 
 export async function financeIdLoader({ financeId, request }) {
+    let user = await GetUserFromRequest(request);
+    if (!user) { return redirect('/login'); }
     const session2 = await getSession(request.headers.get("Cookie"));
     const email = session2.get("email")
 
-
-    const user = await prisma.user.findUnique({
-        where: { email: email },
-        select: {
-            id: true,
-            name: true,
-            username: true,
-            email: true,
-            subscriptionId: true,
-            customerId: true,
-            returning: true,
-            phone: true,
-            dealer: true,
-            position: true,
-            roleId: true,
-            profileId: true,
-            omvicNumber: true,
-            role: { select: { symbol: true, name: true } },
-        },
-    });
-    /// console.log(user, account, 'wquiote loadert')
-    if (!user) {
-        redirect('/login')
-    }
-
-    console.log(user, 'email')
-    // const userSession = await authenticator.isAuthenticated(request, {  });
-    //const user = await model.user.query.getForSession({ id: userSession.id });
     const deFees = await getDealerFeesbyEmail(email)
     const session = await getSession(request.headers.get("Cookie"))
     const sliderWidth = session.get('sliderWidth')

@@ -1,9 +1,10 @@
 //import { GetUser } from "~/utils/loader.server";
+import { redirect } from "@remix-run/node";
 import { prisma } from "~/libs";
 
 export async function GetUser(email) {
   if (!email) {
-    return null
+    return redirect('/login')
   }
   let oldUser = await prisma.user.findUnique({
     where: { email: email },
@@ -16,7 +17,6 @@ export async function GetUser(email) {
       customerId: true,
       returning: true,
       phone: true,
-      dealer: true,
       position: true,
       roleId: true,
       profileId: true,
@@ -24,8 +24,7 @@ export async function GetUser(email) {
       lastSubscriptionCheck: true,
       refreshToken: true,
       profile: true,
-
-
+      idToken: true,
       role: { select: { symbol: true, name: true } },
     },
   });

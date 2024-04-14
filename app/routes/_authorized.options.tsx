@@ -38,7 +38,6 @@ export const meta: MetaFunction = () => {
 export default function Quote() {
 	return (
 		<>
-			<Sidebar />
 			<div className="flex min-h-screen px-4 sm:px-6 lg:px-8">
 				<div className="w-full overflow-hidden rounded-lg ">
 					<div className="md:flex my-auto mx-auto">

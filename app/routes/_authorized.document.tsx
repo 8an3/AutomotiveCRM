@@ -34,8 +34,7 @@ export default function Quote() {
   return (
     <>
       <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3   border-gray-300 font-bold uppercase  ">
-        <Sidebar user={user} />
-        <NotificationSystem notifications={notifications} />
+
         <Outlet />
       </div>
     </>

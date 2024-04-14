@@ -33,11 +33,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
             customerId: true,
             returning: true,
             phone: true,
-            dealer: true,
             position: true,
             roleId: true,
             profileId: true,
             omvicNumber: true,
+            refreshToken: true,
+            idToken: true,
             role: { select: { symbol: true, name: true } },
         },
     });
@@ -79,8 +80,6 @@ export default function Quote() {
 
     return (
         <>
-            <Sidebar />
-            <NotificationSystem notifications={notifications} />
 
             <div className="flex h-[100vh] px-4 sm:px-6 lg:px-8 bg-slate1">
                 <div className="w-full overflow-hidden rounded-lg ">

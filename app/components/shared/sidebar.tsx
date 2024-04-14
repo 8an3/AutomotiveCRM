@@ -18,49 +18,36 @@ import { useRootLoaderData } from '~/hooks/use-root-loader-data';
 import { useEffect, useRef, useState } from 'react';
 import Chat from "~/components/shared/chat";
 import { prisma } from "~/libs";
+import { GetUser } from "~/utils/loader.server";
 
 export let action = rootAction
 
 
-export default function Sidebar() {
-  // const { integrationSec } = useLoaderData();
-
-  const location = useLocation();
+export default function Sidebar(user, email) {
   let fetcher = useFetcher()
-  // const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
-  const isUserDashboard = location.pathname.includes('/user/dashboard')
-  const { user } = useRootLoaderData();
+  const [activixActivated, setActivixActivated] = useState('');
+  const activixActivatedRef = useRef(''); // useRef to store mutable value
+  useEffect(() => {
+    async function fetchData() {
+      const userIntegration = await prisma.userIntergration.findUnique({ where: { userEmail: email } });
+      const storedActivixActivated = userIntegration?.activixActivated;
+      setActivixActivated(storedActivixActivated);
+      activixActivatedRef.current = storedActivixActivated;
+    }
+    fetchData();
+  }, []);
+
+
   const userIsFinance = getUserIsAllowed(user, ["FINANCE"]);
 
-
+  // Check if data is still loading
+  if (email === null || user === null) {
+    return <div>Loading...</div>;
+  }
   //const adminUser = getUserIsAllowed(user, ["ADMIN", "MANAGER",]);
   // const financeUser = getUserIsAllowed(user, ["ADMIN", "MANAGER", "FINANCE"]);
   //const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
-  const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
 
-  useEffect(() => {
-    if (iFrameRef?.current) {
-      iFrameRef.current.src = 'http://localhost:3000/internal/im/lobby';
-      //  iFrameRef.current.src = 'http://localhost:3002/customer-forms';
-      //  const userId = user.id
-      //  let merged = { finance }
-      //  let merged = { finance }
-      // Function to convert values to strings
-
-      const handleLoad = () => {
-        //   const data = { merged, user, userId };
-        const data = 'hey'
-        iFrameRef.current?.contentWindow?.postMessage(data, '*');
-      };
-
-      iFrameRef.current.addEventListener('load', handleLoad);
-
-      // Clean up the event listener when the component is unmounted
-      return () => {
-        iFrameRef.current?.removeEventListener('load', handleLoad);
-      };
-    }
-  }, [iFrameRef,]);
   return (
     <>
       <Sheet >
@@ -359,7 +346,7 @@ export default function Sidebar() {
                     </Button>
                   </RemixNavLink>
                 </Dialog.Close>
-                {user.activixActivated !== 'yes' && (
+                {activixActivated !== 'yes' && (
                   <Dialog.Close asChild>
                     <RemixNavLink to={`/leads/sales`}>
                       <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
@@ -378,7 +365,7 @@ export default function Sidebar() {
                     </RemixNavLink>
                   </Dialog.Close>
                 )}
-                {user.activixActivated === 'yes' && (
+                {activixActivated === 'yes' && (
                   <Dialog.Close asChild>
                     <RemixNavLink to={`/leads/activix`}>
                       <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >

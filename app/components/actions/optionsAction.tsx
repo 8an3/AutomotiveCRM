@@ -18,15 +18,15 @@ import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from '~/models'
-
-import { GetUser } from "~/utils/loader.server";
-import { authenticator } from '~/services';
+import GetUserFromRequest from "~/utils/auth/getUser";
 
 
 export async function optionsLoader({ request, params }: LoaderFunctionArgs) {
-    const userSession = await authenticator.isAuthenticated(request, { failureRedirect: "/login", });
+    let session = await getSession(request.headers.get("Cookie"));
+    const email = session.get('email')
+    const user = await GetUserFromRequest(request);
+    if (!user) { return redirect('/login'); }
 
-    const user = await GetUser(email)
 
     const finance = await getLatestFinance2(email)
 

@@ -10,6 +10,8 @@ import { createMetaData, getRandomText, getRedirectTo, useRedirectTo, } from "~/
 import { getSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
 import financeFormSchema from './overviewUtils/financeFormSchema';
+import GetUserFromRequest from "~/utils/auth/getUser";
+import { GetUser } from "~/utils/loader.server";
 
 
 export async function loader({ request, params }: LoaderFunction) {
@@ -23,10 +25,10 @@ export async function action({ request }: DataFunctionArgs) {
   const email = formPayload.email;
   console.log('requestfice')
 
-  const requestfice = await authenticator.authenticate("user-pass", request, {
-    successRedirect: "/user/dashboard",
-    failureRedirect: "/login",
-  });
+  const user = await GetUserFromRequest(request);
+  if (!user) { return redirect('/login'); }
+
+
   console.log('requestfice', requestfice)
 
   let validatedData;
@@ -57,11 +59,7 @@ export async function action({ request }: DataFunctionArgs) {
   // Assuming result.error indicates an error during the user lookup
   if (result.error) {
     return forbidden({ ...validatedData, error: result.error });
+
+    return json(result);
   }
-  await authenticator.authenticate("user-pass", request, {
-    successRedirect: getRedirectTo(request) || "/user/dashboard",
-    failureRedirect: "/login",
-  });
-  return json(result);
-}
 

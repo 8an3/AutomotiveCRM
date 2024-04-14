@@ -6,6 +6,13 @@ import { CheckIcon } from "@radix-ui/react-icons"
 
 import { cn } from "~/components/ui/utils"
 
+export type CheckboxProps = Omit<
+  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>,
+  'type'
+> & {
+  type?: string
+}
+
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>

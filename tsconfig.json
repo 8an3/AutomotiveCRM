@@ -6,7 +6,11 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2019"
+    ],
     "moduleResolution": "node",
     "noEmit": true, // Remix takes care of building everything in `remix build`.
     "noErrorTruncation": true,
@@ -15,9 +19,22 @@
     "strict": true,
     "target": "ES2019",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": [
+        "./app/*"
+      ]
     }
   },
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "app/utils/graphql/authConfig.server.ts.bk", "app/routes/roadmap.list.tsx.bk", "app/routes/faq.tsx.bk", "app/routes/roadmap.tsx.bk"],
-  "ts-node": { "swc": true }
+  "include": [
+    "remix.env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "app/utils/graphql/authConfig.server.ts.bk",
+    "app/routes/roadmap.list.tsx.bk",
+    "app/routes/faq.tsx.bk",
+    "app/routes/roadmap.tsx.bk",
+    "app/routes/_auth.microStrat.js"
+  ],
+  "ts-node": {
+    "swc": true
+  }
 }

@@ -1,17 +1,9 @@
 import { Links, Meta, Outlet, useLoaderData } from '@remix-run/react'
-import { type MetaFunction, redirect, type LoaderFunctionArgs, json } from '@remix-run/node'
-import { requireUserSession } from "~/helpers";
-
-import { model } from '~/models'
-import WidthSlider from '~/components/shared/slider'
-//import { getSession } from '~/utils/pref.server'
-import { Theme, ThemePanel } from '@radix-ui/themes';
+import { type MetaFunction, redirect, type LoaderFunctionArgs, json, type LinksFunction } from '@remix-run/node'
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
-import Sidebar from "~/components/shared/sidebar";
-import { requireAuthCookie } from '~/utils/misc.user.server';
-import NotificationSystem from "./_authorized.notifications";
 import slider from '~/styles/slider.css'
+import { GetUser } from '~/utils/loader.server';
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: slider },
@@ -20,40 +12,20 @@ export const links: LinksFunction = () => [
 export async function loader({ request, params }: LoaderFunctionArgs) {
     const session = await getSession(request.headers.get("Cookie"));
     const email = session.get("email")
-
-
-    const user = await prisma.user.findUnique({
-        where: { email: email },
-        select: {
-            id: true,
-            name: true,
-            username: true,
-            email: true,
-            subscriptionId: true,
-            customerId: true,
-            returning: true,
-            phone: true,
-            dealer: true,
-            position: true,
-            roleId: true,
-            profileId: true,
-            omvicNumber: true,
-            role: { select: { symbol: true, name: true } },
-        },
-    });
+    let user = await GetUser(email)
 
     const notifications = await prisma.notificationsUser.findMany({
         where: {
-            userId: user.id,
+            userId: user?.id,
         }
     })
     if (user?.subscriptionId === 'active' || user?.subscriptionId === 'trialing') {
         const session = await getSession(request.headers.get("Cookie"))
         const sliderWidth = session.get('sliderWidth')
-        return json({ sliderWidth, notifications })
+        return json({ email, user, sliderWidth, notifications })
     }
 
-    return json({ notifications }, redirect('/subscribe'))
+    return json({ email, user, notifications })
 }
 
 
@@ -74,13 +46,11 @@ export const meta: MetaFunction = () => {
 
 export default function Quote() {
     const { sliderWidth } = useLoaderData()
-    const { notifications } = useLoaderData()
 
 
     return (
         <>
-            <Sidebar />
-            <NotificationSystem notifications={notifications} />
+
 
             <div className="flex h-[100vh] px-4 sm:px-6 lg:px-8 bg-slate1">
                 <div className="w-full overflow-hidden rounded-lg ">

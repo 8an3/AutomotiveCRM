@@ -10,7 +10,7 @@ import { type LoaderFunction, json, redirect } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { useLoaderData } from "@remix-run/react";
 import { model } from "~/models";
-import type { UserSession } from "~/helpers";
+//import type { UserSession } from "~/helpers";
 // https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node
 // app/services/session.server.ts
 import { createCookieSessionStorage } from "@remix-run/node";
@@ -49,11 +49,7 @@ type UserSession = {
   email: string;
   user: string;
 };
-export const authenticator = new Authenticator<UserSession>(authSessionStorage, {
-  sessionErrorKey: "my-error-key",
-  sessionKey: "accessToken",
-
-});
+export const authenticator = new Authenticator<UserSession>(authSessionStorage);
 
 const microsoftStrategy = new MicrosoftStrategy(
   {

@@ -342,13 +342,13 @@ export const loader = async ({ request, params }) => {
       return json({ request, user, deFees, Dealerfees, FinanceOptions });
     }
     else {
-      return ({ DealerInfo, user })
+      return json({ DealerInfo, user })
 
     }
     deFees = await prisma.dealerFees.findUnique({
       where: { userEmail: user?.email },
     });
-    return user
+    return json({ user })
   }
 }
 

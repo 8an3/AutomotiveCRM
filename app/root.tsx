@@ -1,53 +1,31 @@
 import { json, redirect, createCookie } from "@remix-run/node";
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useNavigation, isRouteErrorResponse, useRouteError, useParams, Form, useLocation, useFetcher, useSubmit, useNavigate, } from "@remix-run/react";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteError, } from "@remix-run/react";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
-import { IconoirProvider, } from "iconoir-react";
+import { IconoirProvider } from "iconoir-react";
 import React, { useEffect, useState } from "react";
-import { Debug, Layout, PageHeader, TailwindIndicator, TooltipProvider, } from "~/components"; // Toaster goes here
+import { Debug, Layout, PageHeader, TailwindIndicator, TooltipProvider, } from "~/components";
 import { configDev, configSite } from "~/configs";
-import { model } from "~/models";
-//import { authenticator } from "~/services";
 import { cn, createCacheHeaders, createMetaData, getEnv } from "~/utils";
 import type { HeadersFunction, LinksFunction, LoaderArgs, V2_MetaDescriptor, V2_MetaFunction, } from "@remix-run/node";
 import { type RootLoaderData } from "~/hooks";
-import { Theme } from '@radix-ui/themes';
-import FinanceIdContext from '~/other/financeIdContext';
-import tailwind from '~/styles/tailwind.css';
-import font from '~/styles/font.css'
-
-import slider from '~/styles/slider.css'
-import { Toaster, toast } from 'sonner'
-import { getUserByEmail } from '~/utils/user/get'
+import { Theme } from "@radix-ui/themes";
+import FinanceIdContext from "~/other/financeIdContext";
+import tailwind from "~/styles/tailwind.css";
+import font from "~/styles/font.css";
+import slider from "~/styles/slider.css";
+import { Toaster } from "sonner";
 import { getSession, commitSession } from "./sessions/auth-session.server";
-import { prisma } from "./libs";
-import { Loader2 } from "~/icons";
 import { GlobalLoading } from "./components/ui/globalLoading";
-import NProgress from "nprogress";
 import nProgressStyles from "~/styles/loader.css";
-import rbc from '~/styles/rbc.css'
-import { Provider } from 'react-redux';
-import store from './store'; // Import the Redux store
+import rbc from "~/styles/rbc.css";
+import { Provider } from "react-redux";
+import store from "./store";
+import ProvideAppContext from "./routes/_auth.appContext";
+import { MsalProvider } from "@azure/msal-react";
 
-import { GetUser } from "~/utils/loader.server";
-import { Unauthorized } from "./routes/_authorized.email.server";
-
-import { MsalProvider, useIsAuthenticated } from "@azure/msal-react";
-import { PublicClientApplication, EventType } from "@azure/msal-browser";
-import { msalConfig } from "~/utils/microsoft/config.server";
-import { authenticator } from "~/services/auth";
-
-const MICRO_APP_ID = '54a5sd54asd4-54as5d4asd5-54as5dads' || ''
-
-const configuration = {
-  auth: {
-    clientId: MICRO_APP_ID,
-    authority: `https://login.microsoftonline.com/54a5sd54asd4-54as5d4asd5-54as5dads`,
-    redirectUri: 'http://localhost:3000/microsoft/callback',
-  }
-};
-
-const pca = new PublicClientApplication(configuration);
-
+//import GetUserFromRequest from "~/utils/auth/getUser";
+//const user = await GetUserFromRequest(request);
+//if (!user) { return redirect('/login'); }
 
 
 export const links: LinksFunction = () => [
@@ -56,9 +34,9 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: font },
   { rel: "stylesheet", href: rbc },
   { rel: "stylesheet", href: slider },
-  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
-  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
-  { rel: "apple-touch-icon", sizes: "180x180", href: "/money180.svg", },
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg" },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg" },
+  { rel: "apple-touch-icon", sizes: "180x180", href: "/money180.svg" },
   { rel: "stylesheet", href: nProgressStyles },
 ];
 
@@ -73,67 +51,29 @@ export const headers: HeadersFunction = () => {
 };
 
 export async function loader({ request }: LoaderArgs) {
-  const user = await authenticator.isAuthenticated(request)
+  const user = await GetUserFromRequest(request);
+  if (!user) { return redirect('/login'); }
 
   const ENV = getEnv();
-  // const userSession = await authenticator.isAuthenticated(request);
   const userSession = await getSession(request.headers.get("Cookie"));
-  const email = userSession.get("email")
-  if (!email) { return json({ ENV, }); }
-
-
+  const email = userSession.get("email");
+  if (!email) {
+    return json({ ENV });
+  }
 
   const loaderData = {
     ENV,
     userSession,
     user,
   } satisfies RootLoaderData;
-  // console.log(user, userSession, 'user and userSession root loader')
-  /* google auth
-  const API_KEY = process.env.GOOGLE_API_KEY
-  let tokens = userSession.get("accessToken")
-  // new
-  const refreshToken = userSession.get("refreshToken")
-  let cookie = createCookie("session_66", {
-    secrets: ['secret'],
-    // 30 days
-    maxAge: 30 * 24 * 60 * 60,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-  });
-  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
-    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
-  });
-  console.log(userRes, 'userRes')
-  // new
-  if (userRes.status === 401) {
-    const unauthorizedAccess = await Unauthorized(refreshToken)
-    tokens = unauthorizedAccess
 
-    userSession.set("accessToken", tokens);
-    await commitSession(userSession);
-
-    const cookies = cookie.serialize({
-      email: email,
-      refreshToken: refreshToken,
-      accessToken: tokens,
-    })
-    await cookies
-    console.log(tokens, 'authorized tokens')
-
-  } else { console.log('Authorized'); }
-  */
-
-
-  return json({ loaderData, user, }, {
-    headers: {
-      "Set-Cookie": await commitSession(userSession),
-    },
-  });
+  return json(
+    { loaderData, user },
+    {
+      headers: { "Set-Cookie": await commitSession(userSession) },
+    }
+  );
 }
-
-
 
 export default function App() {
   const [financeId, setFinanceId] = useState(null);
@@ -145,28 +85,37 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body id="__remix" >
+      <body id="__remix">
         <MsalProvider instance={pca}>
-          <Provider store={store}>
-            <FinanceIdContext.Provider value={financeId}>
-              <TooltipProvider>
-                <IconoirProvider iconProps={{ strokeWidth: 2, width: "1.5em", height: "1.5em" }}  >
-                  <>
-                    <Outlet />
-                    <Toaster richColors />
-                    {configDev.isDevelopment && configDev.features.debugScreens && (
-                      <TailwindIndicator />
-                    )}
-                  </>
-                </IconoirProvider>
-              </TooltipProvider>
-              <VercelAnalytics />
-              <ScrollRestoration />
-              <Scripts />
-              <LiveReload />
-              <GlobalLoading />
-            </FinanceIdContext.Provider>
-          </Provider>
+          <ProvideAppContext>
+            <Provider store={store}>
+              <FinanceIdContext.Provider value={financeId}>
+                <TooltipProvider>
+                  <IconoirProvider
+                    iconProps={{
+                      strokeWidth: 2,
+                      width: "1.5em",
+                      height: "1.5em",
+                    }}
+                  >
+                    <>
+                      <Outlet />
+                      <Toaster richColors />
+                      {configDev.isDevelopment &&
+                        configDev.features.debugScreens && (
+                          <TailwindIndicator />
+                        )}
+                    </>
+                  </IconoirProvider>
+                </TooltipProvider>
+                <VercelAnalytics />
+                <ScrollRestoration />
+                <Scripts />
+                <LiveReload />
+                <GlobalLoading />
+              </FinanceIdContext.Provider>
+            </Provider>
+          </ProvideAppContext>
         </MsalProvider>
       </body>
     </html>
@@ -190,7 +139,7 @@ export function RootDocumentBoundary({
         {title && <title>{title}</title>}
         <Links />
       </head>
-      <body >
+      <body>
         {children}
         <VercelAnalytics />
         <ScrollRestoration />
@@ -271,7 +220,6 @@ export function ErrorBoundary() {
     );
   }
 }
-
 
 /**
 * The code below checks if the script is being executed manually or in automation.
@@ -456,7 +404,6 @@ const getTokenSilent = function (scenarioConfig, clientApplication, port, msalTo
   return getTokenSilent(config, publicClientApplication, null, msalTokenCache);
 }
 */
-
 
 /***
  *              <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">

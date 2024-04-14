@@ -30,11 +30,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
             customerId: true,
             returning: true,
             phone: true,
-            dealer: true,
             position: true,
             roleId: true,
             profileId: true,
             omvicNumber: true,
+            refreshToken: true,
+            idToken: true,
             role: { select: { symbol: true, name: true } },
         },
     });

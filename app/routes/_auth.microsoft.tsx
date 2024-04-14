@@ -2,10 +2,34 @@
 import type { ActionArgs } from "@remix-run/node";
 import { authenticator } from "~/services/auth";
 import { json, redirect } from "@remix-run/node";
+
 import { getSession, commitSession, authSessionStorage } from '../sessions/auth-session.server'
+import { GetAuthorizationUrl } from "./_auth.auth";
+// https//learn.microsoft.com/en-us/entra/identity-platform/app-sign-in-flow
+// https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-on-behalf-of-flow
+//export const loader = () => redirect("/login");
 
-export const loader = () => redirect("/login");
+export const loader = async ({ request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const user = session.get('user');
+  return json({ user });
+};
 
+export const action = async ({ request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get('email');
+  if (!email) {
+    console.log('no email microsoft')
+    const url = GetAuthorizationUrl()
+    return redirect(url)
+  }
+  if (email) {
+    console.log('got email microsoft')
+    return redirect('/checksubscription');
+  }
+  return redirect('/')
+}
+/*
 export const action = async ({ request }: ActionArgs) => {
   const sessionData = await getSession(request.headers.get("Cookie"));
 

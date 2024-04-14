@@ -1,47 +1,14 @@
 import { CheckSub } from '~/utils/checksub.server'
 import { redirect, json, type LoaderFunctionArgs } from "@remix-run/node";
-import { requireAuthCookie } from '~/utils/misc.user.server';
-import { model } from "~/models";
-
 import { getSession, commitSession } from '~/sessions/auth-session.server';
 import { updateUser } from '~/utils/user.server';
-
-import { prisma } from "~/libs";
-import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
-
-
-
-
-
+import { GetUser } from '~/utils/loader.server';
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
     const session2 = await getSession(request.headers.get("Cookie"));
     const email = session2.get("email")
-
-
-    const user = await prisma.user.findUnique({
-        where: { email: email },
-        select: {
-            id: true,
-            name: true,
-            username: true,
-            email: true,
-            subscriptionId: true,
-            customerId: true,
-            returning: true,
-            phone: true,
-            dealer: true,
-            position: true,
-            roleId: true,
-            profileId: true,
-            omvicNumber: true,
-            role: { select: { symbol: true, name: true } },
-        },
-    });
-    /// console.log(user, account, 'wquiote loadert')
-    if (!user) {
-        redirect('/login')
-    }
+    let user = await GetUser(email)
+    if (!user) { redirect('/login') }
 
     console.log(user, 'email')
     await CheckSub({ user });

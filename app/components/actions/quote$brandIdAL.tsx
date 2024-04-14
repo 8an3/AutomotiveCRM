@@ -387,27 +387,19 @@ export function quotebrandIdActionLoader({ params, request }: DataFunctionArgs) 
 export async function quoteLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-
-
-  const user = await GetUser(email)  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
-
+  const user = await GetUser(email)
+  if (!user) { redirect('/login') }
   const session = await getPref(request.headers.get("Cookie"));
   const sliderWidth = session.get('sliderWidth')
-
   const userId = user?.id
-
-
   const urlSegments = new URL(request.url).pathname.split('/');
   const financeId = urlSegments[urlSegments.length - 1];
   if (financeId.length > 2) {
     const finance = await findQuoteById(financeId);
-    return json({ ok: true, finance, sliderWidth, financeId, userId })
+    return json({ ok: true, finance, sliderWidth, financeId, userId, email, user })
   }
   else {
-    return json({ ok: true, sliderWidth, userId })
+    return json({ ok: true, sliderWidth, userId, email, user })
   }
 }
 

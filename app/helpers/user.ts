@@ -1,4 +1,4 @@
-import { model } from "~/models";
+import { type model } from "~/models";
 import { authenticator } from "~/services/auth";
 import { getSession } from "~/sessions/auth-session.server";
 import { invariant } from "~/utils";
@@ -25,6 +25,7 @@ export type UserSession = {
   omvicNumber: string;
   lastSubscriptionCheck: string;
   refreshToken: string;
+  idToken: string;
 };
 
 // User Data is a more complete user data that can be retrieved,

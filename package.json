@@ -57,6 +57,8 @@
     "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "zod": "^3.21.4",
+    "zod-form-data": "^2.0.1",
     "@faker-js/faker": "^8.3.1",
     "@fontsource/archivo": "^4.5.11",
     "@fontsource/chivo-mono": "^4.5.1",
@@ -114,6 +116,7 @@
     "@remix-run/vercel": "^1.18.1",
     "@remix-validated-form/with-zod": "^2.0.5",
     "@remixicon/react": "^4.2.0",
+    "@sentry/remix": "^7.110.0",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.9",
     "@tanstack/match-sorter-utils": "^8.8.4",
@@ -217,8 +220,6 @@
     "usehooks-ts": "^2.9.1",
     "voca": "^1.4.0",
     "windows-iana": "^5.1.0",
-    "zod": "^3.21.4",
-    "zod-form-data": "^2.0.1",
     "zodix": "0.4.0"
   },
   "devDependencies": {

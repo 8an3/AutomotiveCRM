@@ -1236,8 +1236,6 @@ export function Overview({ outletSize }) {
 
   return (
     <>
-      <Sidebar />
-      <NotificationSystem notifications={notifications} />
 
       <div className='mt-3' >
         <ImageSelect />

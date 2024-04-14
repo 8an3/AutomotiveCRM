@@ -12,7 +12,7 @@ datasource db {
 // https://www.prisma.io/docs/concepts/components/preview-features/client-preview-features
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "fullTextIndex", "metrics", "orderByNulls", "filteredRelationCount", "fieldReference", "extendedWhereUnique", "views", "jsonProtocol"]
+  previewFeatures = ["fullTextSearch", "fullTextIndex", "metrics", "views"]
 }
 
 generator docs {
@@ -35,7 +35,7 @@ model User {
   refreshToken          String?
   expires_in            String?
   omvicNumber           String?
-  dealer                String?
+  idToken               String?
   position              String?
   roleId                String
   profileId             String   @unique
@@ -57,6 +57,19 @@ model User {
 
   @@index([roleId])
   @@index([profileId])
+}
+
+model microsoftAccount {
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  email            String   @unique
+  username         String?
+  microId          String?
+  name             String?
+  givenName        String?
+  familyName       String?
+  identityProvider String?
 }
 
 model microCache {

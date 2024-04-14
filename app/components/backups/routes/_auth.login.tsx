@@ -1,5 +1,5 @@
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import type { LoaderArgs, DataFunctionArgs } from "@remix-run/node";
 
 import { Form, Link, useParams, useMatches, useNavigation, useLocation, useLoaderData } from "@remix-run/react";
@@ -15,6 +15,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, 
 import { Toaster, toast } from 'sonner'
 import { redirectIfLoggedInLoader, setAuthOnResponse } from "~/utils/misc.user.server";
 import { FcGoogle } from "react-icons/fc";
+import { getSession, destroySession } from "~/sessions/auth-session.server";
 
 
 
@@ -58,11 +59,20 @@ export async function action({ request }: DataFunctionArgs) {
   if (result.error) {
     return forbidden({ ...submission, error: result.error });
   }
-  await authenticator.authenticate("user-pass", request, {
-    successRedirect: getRedirectTo(request) || "/user/dashboard",
-    failureRedirect: "/login",
-  });
-  return json(submission);
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email");
+  const user = await GetUser(email);
+
+  if (!user) {
+    await destroySession(session);
+    return null;
+  }
+  if (user) {
+    return redirect('/checkscription')
+  }
+
+
+  return json(submission, user);
 }
 
 

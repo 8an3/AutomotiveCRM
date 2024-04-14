@@ -3,7 +3,6 @@
 import { DataFunctionArgs, LoaderArgs, json } from "@remix-run/node";
 import { model } from "~/models";
 import { schemaUserLogin } from "~/schemas";
-import { authenticator } from '~/services/auth'
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { badRequest, forbidden } from "remix-utils";
 import { createMetaData, getRandomText, getRedirectTo, useRedirectTo, } from "~/utils";
@@ -11,11 +10,14 @@ import { getSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
 import financeFormSchema from './overviewUtils/financeFormSchema';
 import axios from 'axios';
+import GetUserFromRequest from "~/utils/auth/getUser";
+import { GetUser } from "~/utils/loader.server";
 
 export async function loader({ request }: LoaderArgs) {
   const userSession = await getSession(request.headers.get("Cookie"));
   const email = userSession.get("email");
-  const user = await prisma.user.findUnique({ where: { email: email } })
+  const user = await GetUserFromRequest(request);
+  if (!user) { return redirect('/login'); }
 
   const formData = new FormData();
   formData.append('email', user.email);

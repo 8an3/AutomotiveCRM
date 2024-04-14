@@ -16,7 +16,7 @@ import { Toaster, toast } from 'sonner'
 import { redirectIfLoggedInLoader, setAuthOnResponse } from "~/utils/misc.user.server";
 import { TfiMicrosoft } from "react-icons/tfi";
 import { authenticator, } from "~/services/auth";
-import { getSession, commitSession, authSessionStorage } from "~/sessions/auth-session.server";
+import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
 import type { User } from '@prisma/client'
 import { prisma } from "~/libs";
@@ -30,27 +30,35 @@ export async function getUserByEmail(email: User['email']) {
 }
 
 export async function loader({ request }: LoaderArgs) {
+  let session = await getSession(request.headers.get("Cookie"));
+  let user;
+  if (session) {
+    const email = session.get('email')
+    user = await GetUser(email)
+    if (user) {
+      return getRedirectTo('/checksubscription')
+    } else {
+      await destroySession(session)
+      return getRedirectTo('/login')
+    }
+  }
+  let email = session.get("email")
+  let accessToken = session.get("accessToken")
 
+  await authenticator.isAuthenticated(request, { successRedirect: "/checksubscription", });
+  if (session.data.length < 5000) { await destroySession(session); session = await getSession(request.headers.get("Cookie")); }
 
-  const session = await getSession(request.headers.get("Cookie"));
-  await authenticator.isAuthenticated(request, {
-    successRedirect: "/dashboard",
-  });
   let error = session.get(authenticator.sessionErrorKey);
   if (error) { return json({ error }); }
-  const email = session.get("email")
   console.log(session, email, 'sessoin data')
-  let accessToken
   if (email) {
-    const user = await GetUser(email)
-    accessToken = user?.refreshToken
-    session.set('refreshToken', accessToken)
-  } else {
+    user = await GetUser(email)
+    console.log('user logged in')
+  }
+  if (!email) {
     console.log('no user')
   }
-  if (!accessToken) {
-    accessToken = session.get("accessToken")
-  }
+
   console.log(email, accessToken, 'loader')
   const domain = request.headers.get('host');
 

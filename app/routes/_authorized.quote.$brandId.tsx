@@ -19,11 +19,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
 
-  let user = await model.user.query.getForSession({ email: email });
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
+  let user = await GetUser(email);
+  if (!user) { redirect('/login') }
 
   const sliderWidth = session.get('sliderWidth')
   let modelList;
@@ -91,17 +88,16 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
 
   const userId = user?.id
-  user = await prisma.user.findUnique({ where: { email: email } });
 
   const urlSegments = new URL(request.url).pathname.split('/');
   const financeId = urlSegments[urlSegments.length - 1];
   if (financeId.length > 32) {
     const finance = await findQuoteById(financeId);
-    return json({ ok: true, finance, sliderWidth, financeId, userId, modelList, user })
+    return json({ finance, sliderWidth, financeId, userId, modelList, user, email })
   }
 
   else {
-    return json({ ok: true, sliderWidth, userId, modelList, user })
+    return json({ email, sliderWidth, userId, modelList, user })
   }
 }
 
@@ -109,17 +105,16 @@ export let action = quoteAction
 
 export default function Quote() {
   let { brandId } = useParams()
-  const { userId, modelList, user } = useLoaderData()
+  const { userId, modelList, user, email } = useLoaderData()
 
   const userEmail = user?.email
-
+  useEffect(() => {
+    window.sessionStorage.setItem("email", userEmail);
+  }, [userEmail]);
   const errors = useActionData() as Record<string, string | null>;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-  //console.log(userEmail, user, 'userquote')
   function BusyIndicator() {
-    // const promise = () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Sonner' }), 2000));
-
     React.useEffect(() => {
       if (isSubmitting) {
         toast.success('Quote has been created')
@@ -127,9 +122,6 @@ export default function Quote() {
     }, [isSubmitting]);
   }
 
-  useEffect(() => {
-    window.localStorage.setItem("user", user);
-  }, []);
 
   return (
     <>

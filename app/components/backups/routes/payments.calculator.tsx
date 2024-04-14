@@ -1332,8 +1332,7 @@ export default function PaymentsCalc() {
           scaling="90%"
           radius="medium"
         >
-          <Sidebar user={user} />
-          <NotificationSystem notifications={notifications} />
+
           <div className="flex min-h-screen px-4 sm:px-6 lg:px-8 bg-slate1">
             <div className="w-full overflow-hidden rounded-lg">
               <div className="md:flex my-auto mx-auto">

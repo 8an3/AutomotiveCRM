@@ -44,6 +44,7 @@ export async function scriptsLoader({ request, params }: LoaderFunction) {
   const scripts = await getScriptsListItems();
   return json({
     ok: true,
+    email,
     user,
     closes,
     scripts,
