@@ -1,3 +1,4 @@
+
 namespace Validator {
   export function required(x: any, name?: string) {
     if (x === undefined || x === null || x === "") {

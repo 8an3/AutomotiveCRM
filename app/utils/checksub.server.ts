@@ -16,7 +16,7 @@ export async function CheckSub({ user }) {
             const subscriptionId = subscriptions.data[0].status;
             console.log('2')
             if (subscriptionId === "trialing") {
-                console.log('3')
+                console.log('3', email)
                 console.log("subscriptionId", subscriptionId)
                 await updateUser({ email: email, subscriptionId: subscriptionId, customerId: customerId })
                 return redirect('/checksubscription')

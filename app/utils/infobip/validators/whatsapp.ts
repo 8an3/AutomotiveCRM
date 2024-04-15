@@ -1,3 +1,4 @@
+
 import { Validator } from '../validator';
 
 export function validateWhatsappSend(message: any) {

@@ -21,12 +21,22 @@ import rbc from "~/styles/rbc.css";
 import { Provider } from "react-redux";
 import store from "./store";
 import ProvideAppContext from "./routes/_auth.appContext";
+// MSAL imports
 import { MsalProvider } from "@azure/msal-react";
+import { type IPublicClientApplication } from "@azure/msal-browser";
+import { CustomNavigationClient } from "./utils/NavigationClient";
+
+import GetUserFromRequest from "~/utils/auth/getUser";
+
 
 //import GetUserFromRequest from "~/utils/auth/getUser";
 //const user = await GetUserFromRequest(request);
 //if (!user) { return redirect('/login'); }
 
+
+type AppProps = {
+  pca: IPublicClientApplication;
+};
 
 export const links: LinksFunction = () => [
   // { rel: "stylesheet", href: styles },
@@ -75,8 +85,11 @@ export async function loader({ request }: LoaderArgs) {
   );
 }
 
-export default function App() {
+export default function App({ pca }: AppProps) {
   const [financeId, setFinanceId] = useState(null);
+  /**const navigate = useNavigate();
+  const navigationClient = new CustomNavigationClient(navigate);
+  pca.setNavigationClient(navigationClient); */
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -86,8 +99,8 @@ export default function App() {
         <Links />
       </head>
       <body id="__remix">
-        <MsalProvider instance={pca}>
-          <ProvideAppContext>
+       {/*  <MsalProvider instance={pca}>
+         <ProvideAppContext>   */}
             <Provider store={store}>
               <FinanceIdContext.Provider value={financeId}>
                 <TooltipProvider>
@@ -115,8 +128,8 @@ export default function App() {
                 <GlobalLoading />
               </FinanceIdContext.Provider>
             </Provider>
-          </ProvideAppContext>
-        </MsalProvider>
+         {/*   </ProvideAppContext>
+        </MsalProvider> */}
       </body>
     </html>
   );

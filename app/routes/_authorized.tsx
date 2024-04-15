@@ -1,7 +1,6 @@
 import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react'
 import { json, redirect, type LoaderFunction } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
-import { authenticator, } from "~/services/auth";
 import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { UseRefreshToken } from './_auth.auth';
 import { GetUser } from "~/utils/loader.server";
@@ -56,7 +55,7 @@ export async function loader({ request, params, req }: LoaderFunction) {
 }
 
 
-
+/*
 export default function AppProvider() {
   const { user, email } = useLoaderData()
 
@@ -69,9 +68,25 @@ export default function AppProvider() {
     </>
 
   );
+
+   <p>authenticated</p>
+          </AuthenticatedTemplate>
+
+          <UnauthenticatedTemplate>
+            <p clasNamew='text-center'>Please sign-in to see your profile information.</p>
+          </UnauthenticatedTemplate>
+      </>
+          <AuthenticatedTemplate>
+
+} */
+export default function Home() {
+  const { user, email } = useLoaderData()
+
+  return (
+      <>
+          <Sidebar user={user} email={email} />
+      <NotificationSystem />
+      <Outlet />
+      </>
+  );
 }
-/** <AuthenticatedTemplate>
-      </AuthenticatedTemplate>
-      <UnauthenticatedTemplate>
-        <p>Not currently signed in.</p>
-      </UnauthenticatedTemplate> */

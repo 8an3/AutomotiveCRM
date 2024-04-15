@@ -48,8 +48,8 @@
     "@ariakit/react": "0.1.8",
     "@azure/identity": "^4.0.1",
     "@azure/msal-browser": "^3.11.1",
-    "@azure/msal-node": "^2.6.6",
-    "@azure/msal-react": "^2.0.14",
+    "@azure/msal-node": "^2.7.0",
+    "@azure/msal-react": "^2.0.15",
     "@balavishnuvj/remix-seo": "^1.0.2",
     "@conform-to/dom": "^0.6.1",
     "@conform-to/react": "^0.6.1",
@@ -57,8 +57,6 @@
     "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "zod": "^3.21.4",
-    "zod-form-data": "^2.0.1",
     "@faker-js/faker": "^8.3.1",
     "@fontsource/archivo": "^4.5.11",
     "@fontsource/chivo-mono": "^4.5.1",
@@ -220,6 +218,8 @@
     "usehooks-ts": "^2.9.1",
     "voca": "^1.4.0",
     "windows-iana": "^5.1.0",
+    "zod": "^3.21.4",
+    "zod-form-data": "^2.0.1",
     "zodix": "0.4.0"
   },
   "devDependencies": {
