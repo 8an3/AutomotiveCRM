@@ -2,11 +2,11 @@ import React from "react"
 import { Outlet, useLoaderData } from "@remix-run/react";
 import stylesheet from '~/styles/styles.css'
 import { UserPlus, CalendarDays, CalendarCheck, Search, ChevronRightIcon, Circle, CalendarPlus } from 'lucide-react'
-import Sidebar from "../components/shared/sidebar";
+import Sidebar from "~/components/shared/sidebar";
 // <Sidebar />
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from '../models'
-import { getSession } from '../sessions/auth-session.server';
+import { getSession } from '~/sessions/auth-session.server';
 import { json, redirect } from "@remix-run/node";
 import NotificationSystem from "./_authorized.notifications";
 import { prisma } from "~/libs";

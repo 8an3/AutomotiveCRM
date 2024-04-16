@@ -1,6 +1,6 @@
 
 import { type LoaderFunction, type DataFunctionArgs, type LoaderArgs, redirect, createCookieSessionStorage, json, createCookie } from "@remix-run/node"
-import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
 import { google } from 'googleapis'
 import * as querystring from 'querystring';
 import { prisma } from "~/libs";

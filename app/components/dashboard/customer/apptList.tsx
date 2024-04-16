@@ -9,7 +9,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { getAllFinanceApts, getAllFinanceApts2, getFinanceAppts } from '~/utils/financeAppts/get.server';
 import { createSalesInput } from '~/utils/salestracker.server';
-import financeFormSchema from '~/routes/overviewUtils/financeFormSchema';
+import financeFormSchema from '~/overviewUtils/financeFormSchema';
 
 import { model } from "~/models";
 import {

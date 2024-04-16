@@ -1,6 +1,6 @@
 import { prisma } from "~/libs";
 import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
-import { getSession } from '../sessions/auth-session.server'
+import { getSession } from '~/sessions/auth-session.server'
 import { GetUser } from "~/utils/loader.server";
 
 export async function loader({ request, params }: LoaderFunction) {

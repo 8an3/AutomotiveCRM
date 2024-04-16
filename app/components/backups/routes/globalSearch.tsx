@@ -1,8 +1,8 @@
 import { useRootLoaderData } from "~/hooks";
 import { Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useNavigation, isRouteErrorResponse, useRouteError, useParams, Form, useFormAction, useLocation, useFetcher, } from "@remix-run/react";
 import { ActionFunction, DataFunctionArgs, type LoaderFunction, json, redirect } from "@remix-run/node";
-import { Button, Input, Label } from "../components/ui";
-import Sidebar from "../components/shared/sidebar";
+import { Button, Input, Label } from "~/components/ui";
+import Sidebar from "~/components/shared/sidebar";
 //import { authenticator } from "~/services";
 import { model } from "~/models";
 import { prisma } from "~/libs";

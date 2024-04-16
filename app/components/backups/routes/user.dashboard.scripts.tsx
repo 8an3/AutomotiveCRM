@@ -11,7 +11,7 @@ import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuIt
 import { Copy } from 'lucide-react';
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { Toaster, toast } from 'sonner'
-import financeFormSchema from './overviewUtils/financeFormSchema';
+import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { type ActionFunction } from '@remix-run/node';
 import { prisma } from '~/libs';
 import { model } from "~/models";

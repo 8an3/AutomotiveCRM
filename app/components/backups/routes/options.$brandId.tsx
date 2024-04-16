@@ -1,6 +1,6 @@
 import { Form, useLoaderData, useParams, useResolvedPath, } from '@remix-run/react'
 import EquipManitou from './optionsutils/manitou'
-import { ImageSelect } from './overviewUtils/imageselect'
+import { ImageSelect } from '~/overviewUtils/imageselect'
 import {
     Tabs, TabsContent, TabsList, TabsTrigger, Popover, PopoverContent, PopoverTrigger, Accordion, AccordionContent, AccordionItem, AccordionTrigger, Input, Label, Separator, Button, Card, CardContent,
 } from "~/components/ui/index"
@@ -14,7 +14,7 @@ import {
     updateBMWOptions,
     updateBMWOptions2, updateFinance,
 } from '~/utils/finance/update.server'
-import financeFormSchema from '~/routes/overviewUtils/financeFormSchema';
+import financeFormSchema from '~/overviewUtils/financeFormSchema';
 
 import { model } from '~/models'
 import { EquipBMW } from './optionsutils/bmwmoto'

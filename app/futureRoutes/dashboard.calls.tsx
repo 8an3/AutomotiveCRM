@@ -10,7 +10,7 @@ import ClientStatusCard from '~/components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '~/components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '~/components/dashboard/calls/2DaysFromNow';
 import { dashboardAction, dashboardLoader } from "~/components/actions/dashboardCalls";
-import { DocumentInputs } from '~/routes/_authorized.dashboard.customer.$custId'
+import { DocumentInputs } from '~/routes/_authorized/dealer/dashboard.customer.$custId'
 import { type rankItem, type compareItems, type RankingInfo, } from '@tanstack/match-sorter-utils'
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 import { Column, Table, useReactTable, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, getPaginationRowModel, sortingFns, getSortedRowModel, type FilterFn, type SortingFn, type ColumnDef, flexRender, FilterFns, } from '@tanstack/react-table'

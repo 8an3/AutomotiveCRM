@@ -10,7 +10,7 @@ import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
 import Sidebar from "~/components/shared/sidebar";
 import { requireAuthCookie } from '~/utils/misc.user.server';
-import NotificationSystem from ~/routes/_authorized / internal / notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 import slider from '~/styles/slider.css'
 
 export const links: LinksFunction = () => [

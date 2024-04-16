@@ -196,7 +196,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const user = await getUserByEmail(email)
   console.log(user, 'email')
   //await authenticator.isAuthenticated(request, {
-  ///  successRedirect: "/checksubscription",
+  ///  successRedirect: "/dealer/checksubscription",
   //});
 
   const headerHeadingText = getRandomText([

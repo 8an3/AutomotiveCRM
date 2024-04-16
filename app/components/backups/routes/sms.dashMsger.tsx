@@ -26,7 +26,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "~/components/ui/tabs"
-import financeFormSchema from "./overviewUtils/financeFormSchema";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { model } from "../models";

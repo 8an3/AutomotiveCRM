@@ -2,7 +2,7 @@ import { useLoaderData, Form, useActionData } from '@remix-run/react'
 import { type MetaFunction, json, redirect, type ActionFunction, type LoaderFunction, } from '@remix-run/node'
 import { Input, Label, Separator, Button, } from '~/components/ui/index'
 import { prisma } from "~/libs";
-import financeFormSchema from './overviewUtils/financeFormSchema'
+import financeFormSchema from '~/overviewUtils/financeFormSchema'
 import { createDealerfees, getDealerFeesbyEmail, updateDealerFees, updateUser } from '~/utils/user.server'
 import * as Toast from '@radix-ui/react-toast';
 import React from 'react';

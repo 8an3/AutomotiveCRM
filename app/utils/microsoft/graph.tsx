@@ -1,4 +1,4 @@
-import { GetToken, EnsureScope } from "../../routes/twoAppContext";
+import { GetToken, EnsureScope } from "routes/twoAppContext";
 import { MicrosoftGraph } from "@microsoft/microsoft-graph-client"
 import { graphConfig } from "./_auth/microsoft";
 

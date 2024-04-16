@@ -1,4 +1,4 @@
-import { wrapAccessor } from '../../utils/accessors'
+import { wrapAccessor } from '~/utils/accessors'
 import { createFactory } from 'react'
 
 export const dragAccessors = {

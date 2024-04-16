@@ -28,7 +28,7 @@ import {
 import { useRootLoaderData } from "~/hooks";
 import { formatRelativeTime } from "~/utils";
 import { ArrowRight } from "iconoir-react";
-import ConversationsApp from "../../shared/api.sms.msgr";
+import ConversationsApp from "shared/api.sms.msgr";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/other/tabs";
 import * as Toolbar from "@radix-ui/react-toolbar";
 import {

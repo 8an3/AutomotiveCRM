@@ -31,8 +31,8 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "../components/ui/carousel"
-import { getSession, } from "../sessions/auth-session.server";
+} from "~/components/ui/carousel"
+import { getSession, } from "~/sessions/auth-session.server";
 import { model } from "~/models";
 import { NavigationMenuSales } from '~/components/shared/navMenu'
 import { AlertCircle } from 'lucide-react'

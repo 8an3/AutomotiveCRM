@@ -1,6 +1,6 @@
 import { useLoaderData, useRouteLoaderData } from '@remix-run/react'
 import { Button } from "~/components/ui/index"
-import { utilsLoader } from '../../routes/overviewUtils/actions'
+import { utilsLoader } from '~/overviewUtils/actions'
 import jsPDF from 'jspdf'
 
 import { deleteBMW, deleteFinance, deleteManitou } from '~/utils/finance/delete.server';

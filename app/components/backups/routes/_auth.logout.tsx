@@ -1,7 +1,7 @@
 import { requireUserSession } from "~/helpers";
 import { prisma } from "~/libs";
 import { type LoaderFunctionArgs, type ActionArgs, json, redirect } from '@remix-run/node'
-import { getSession, destroySession } from '../sessions/auth-session.server';
+import { getSession, destroySession } from '~/sessions/auth-session.server';
 import GetUserFromRequest from "~/utils/auth/getUser";
 
 export async function action({ request }: ActionArgs) {

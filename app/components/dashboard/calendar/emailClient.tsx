@@ -2,7 +2,7 @@ import { Input, Button, TextArea, } from "~/components/ui/index";
 import { useLoaderData, Form, useFetcher, useLocation, useNavigation } from "@remix-run/react";
 import { PhoneOutcome, MenuScale, Mail, MessageText, User, ArrowDown, Calendar as CalendarIcon, WebWindowClose, } from "iconoir-react";
 import { dashboardLoader } from "~/components/actions/dashboardCalls";
-import financeFormSchema from "~/routes/overviewUtils/financeFormSchema";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import React, { useEffect, useRef, useState } from 'react';
 import { model } from "~/models";
 import { authenticator } from "~/services/auth-service.server";

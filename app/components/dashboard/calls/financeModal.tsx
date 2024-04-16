@@ -32,7 +32,7 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 
 import { toast } from "sonner"
 import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
-import ManitouOptions from '~/routes/overviewUtils/manitouOptions'
+import ManitouOptions from '~/overviewUtils/manitouOptions'
 
 // dashboard
 import { dashboardAction, dashboardLoader } from "~/components/actions/dashboardCalls";
@@ -43,8 +43,8 @@ import * as Dialog from '@radix-ui/react-dialog';
 
 // <Sidebar />
 import * as Tooltip from '@radix-ui/react-tooltip';
-import DealerFeesDisplay from '~/routes/overviewUtils/dealerFeesDisplay'
-import BMWOptions from '~/routes/overviewUtils/bmwOptions'
+import DealerFeesDisplay from '~/overviewUtils/dealerFeesDisplay'
+import BMWOptions from '~/overviewUtils/bmwOptions'
 import { quotebrandIdActionLoader } from '~/components/actions/quote$brandIdAL'
 import LogCall from "./logCall"
 import EmailClient from "./emailClient"

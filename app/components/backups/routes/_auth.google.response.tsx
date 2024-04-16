@@ -9,7 +9,7 @@ import { badRequest, forbidden } from "remix-utils";
 import { createMetaData, getRandomText, getRedirectTo, useRedirectTo, } from "~/utils";
 import { getSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
-import financeFormSchema from './overviewUtils/financeFormSchema';
+import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import GetUserFromRequest from "~/utils/auth/getUser";
 import { GetUser } from "~/utils/loader.server";
 

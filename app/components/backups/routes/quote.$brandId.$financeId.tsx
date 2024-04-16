@@ -2,7 +2,7 @@ import { Form, useLoaderData, useParams, } from '@remix-run/react'
 import { Input, Label, Button, Separator } from '~/components/ui/index'
 import { quoteAction, quoteLoader } from '~/components/actions/quoteAction'
 import { type MetaFunction } from '@remix-run/node'
-import { ImageSelect } from './overviewUtils/imageselect'
+import { ImageSelect } from '~/overviewUtils/imageselect'
 import { ListSelection } from './quoteUtils/listSelection'
 import { useRootLoaderData } from "~/hooks";
 import { last } from 'voca'

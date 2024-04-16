@@ -1,31 +1,31 @@
 import React, { HTMLAttributes, HTMLProps, useState, useEffect } from 'react'
 import { Form, Link, Outlet, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
-import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label } from "../components/ui/index";
+import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label } from "~/components/ui/index";
 import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
 import { getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns } from "@tanstack/react-table";
 import type { Table, Column, SortingFn, ColumnDef, ColumnFiltersState, SortingState, VisibilityState, FilterFn, ExpandedState, FilterFns, } from "@tanstack/react-table";
 import { toast } from "sonner"
 import EditWishList from '~/components/dashboard/wishlist/WishListEdit';
-import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "../components/ui/table"
+import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
 import { type LinksFunction, type DataFunctionArgs } from '@remix-run/node';
 import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
-import { type dashBoardType } from "../components/dashboard/schema";
-import { DataTableColumnHeader } from "../components/dashboard/calls/header"
+import { type dashBoardType } from "~/components/dashboard/schema";
+import { DataTableColumnHeader } from "~/components/dashboard/calls/header"
 import ClientCard from '~/components/dashboard/calls/clientCard';
 import ClientVehicleCard from '~/components/dashboard/calls/clientVehicleCard';
 import EmailClient from '~/components/dashboard/calls/emailClient';
 import ClientStatusCard from '~/components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '~/components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '~/components/dashboard/calls/2DaysFromNow';
-import { dashboardAction, dashboardLoader } from "../components/activix/dashboardCallsActivix";
-import IndeterminateCheckbox from "../components/dashboard/calls/InderterminateCheckbox"
+import { dashboardAction, dashboardLoader } from "~/components/activix/dashboardCallsActivix";
+import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
 import { ListSelection2 } from './quoteUtils/listSelection'
 import { ButtonLoading } from "~/components/ui/button-loading";
-import AttemptedOrReached from "../components/dashboard/calls/setAttOrReached";
-import ContactTimesByType from "../components/dashboard/calls/ContactTimesByType";
-import LogCall from "../components/dashboard/calls/logCall";
-import Logtext from "../components/dashboard/calls/logText";
+import AttemptedOrReached from "~/components/dashboard/calls/setAttOrReached";
+import ContactTimesByType from "~/components/dashboard/calls/ContactTimesByType";
+import LogCall from "~/components/dashboard/calls/logCall";
+import Logtext from "~/components/dashboard/calls/logText";
 import { Badge } from "../ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "~/components/ui/dialog"
 import second from '~/styles/second.css'
@@ -1565,7 +1565,7 @@ export function MainDashbaord() {
                             <input type='hidden' name='locked' value={lockedValue} />
                             <input type='hidden' name='financeId' value={data.id} />
                         </Form>
-        
+
                  *
                 */
                 return <>

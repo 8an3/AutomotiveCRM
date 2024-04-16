@@ -15,7 +15,7 @@ import { getSession } from "~/sessions/auth-session.server";
 import ChatMessages from '~/components/sms/ChatMessage';
 import { ChevronLeft, MessageSquarePlus } from 'lucide-react';
 import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, ButtonLoading } from "~/components/ui";
-import financeFormSchema from "./overviewUtils/financeFormSchema";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { useDispatch, connect, useSelector } from 'react-redux';
 import { toast } from "sonner"
 

@@ -9,7 +9,7 @@ import {
   getEnvPrivate,
   invariant,
 } from "~/utils";
-import { getSession, commitSession } from "../sessions/auth-session.server";
+import { getSession, commitSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
 
 

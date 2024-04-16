@@ -1,6 +1,6 @@
-import { Http } from "../utils/infobip/http";
-import { type InfobipAuth } from "../utils/infobip/auth";
-import { Validator } from "../utils/infobip/validator";
+import { Http } from "~/utils/infobip/http";
+import { type InfobipAuth } from "~/utils/infobip/auth";
+import { Validator } from "~/utils/infobip/validator";
 
 const endpoints: any = {
   domain: '/email/1/domains',

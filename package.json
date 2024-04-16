@@ -111,6 +111,7 @@
     "@remix-run/node": "^1.18.1",
     "@remix-run/react": "^1.18.1",
     "@remix-run/server-runtime": "^1.18.1",
+    "@remix-run/v1-route-convention": "^0.1.4",
     "@remix-run/vercel": "^1.18.1",
     "@remix-validated-form/with-zod": "^2.0.5",
     "@remixicon/react": "^4.2.0",

@@ -2,7 +2,7 @@ import { Input, Button, TextArea, } from "~/components/ui/index";
 import { useLoaderData, Form, useFetcher, useLocation, useNavigation } from "@remix-run/react";
 import { PhoneOutcome, MenuScale, Mail, MessageText, User, ArrowDown, Calendar as CalendarIcon, WebWindowClose, } from "iconoir-react";
 import { dashboardLoader } from "~/components/actions/dashboardCalls";
-import financeFormSchema from "~/routes/overviewUtils/financeFormSchema";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { model } from "~/models";
 import { authenticator } from "~/services/auth-service.server";
 import { type ActionFunction, json, LoaderFunction } from "@remix-run/node";
@@ -32,7 +32,7 @@ import {
   DialogTrigger,
 
 } from "~/components/ui/dialog"
-import { SendEmail, TokenRegen } from "~/routes/_authorized/internal/email.server";
+import { SendEmail, TokenRegen } from "~/routes/__authorized/dealer/email.server";
 import Highlight from "@tiptap/extension-highlight"
 import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"

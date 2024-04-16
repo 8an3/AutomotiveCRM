@@ -1,6 +1,6 @@
 import UcdaInputs from "~/components/formToPrint/ucdaInputs";
-import { PrintSpec } from "~/routes/overviewUtils/printSpec";
-import { ModelPage } from '~/routes/overviewUtils/modelPage'
+import { PrintSpec } from "~/overviewUtils/printSpec";
+import { ModelPage } from '~/overviewUtils/modelPage'
 import { PrintDealer } from "~/components/formToPrint/printDealer"
 import PrintContract from "~/components/formToPrint/printContact"
 import React, { useEffect, useRef, useState } from "react";
@@ -15,7 +15,7 @@ import { model } from "~/models";
 //import { authenticator } from "~/services";
 import { v4 as uuidv4 } from "uuid";
 import { commitSession, getSession } from '~/utils/pref.server';
-import UploadFile from '~/routes/_authorized.uploadFile'
+import UploadFile from '~/routes/__authorized/dealer/uploadFile'
 
 
 export default function Print() {

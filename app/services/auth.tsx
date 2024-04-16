@@ -3,7 +3,7 @@ import { MicrosoftStrategy } from "remix-auth-microsoft";
 import { Authenticator } from "remix-auth";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
-import { getSession, commitSession, destroySession, authSessionStorage, } from "../sessions/auth-session.server";
+import { getSession, commitSession, destroySession, authSessionStorage, } from "~/sessions/auth-session.server";
 import type { User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { type LoaderFunction, json, redirect } from "@remix-run/node";
@@ -115,7 +115,7 @@ const microsoftStrategy = new MicrosoftStrategy(
     let headers = new Headers({ "Set-Cookie": await commitSession(session) });
     console.log('3', user)
 
-    if (user) return redirect("/checksubscription", { headers });
+    if (user) return redirect("/dealer/checksubscription", { headers });
 
     await commitSession(session)
     console.log('4')
@@ -927,7 +927,7 @@ export async function loader({ request, params }: LoaderFunction) {
 }
 /**
 import { Authenticator, SessionStrategy, AuthorizationError } from "remix-auth";
-import { getSession, commitSession, destroySession, sessionStorage } from '../sessions/session.server'
+import { getSession, commitSession, destroySession, sessionStorage } from '~/sessions/session.server'
 import { FormStrategy } from "remix-auth-form";
 import { model } from "~/models";
 import type { UserSession } from "~/helpers";

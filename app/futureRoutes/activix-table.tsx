@@ -5,12 +5,12 @@ import { Flex, Text, TextArea, TextField, Heading, Select } from '@radix-ui/them
 
 import { ScrollArea } from "~/other/scrollarea";
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, type SortingState, getSortedRowModel, sortingFns, SortingFn, FilterFns, FilterFn, type VisibilityState, getFilteredRowModel, type ColumnFiltersState, } from "@tanstack/react-table";
-import { DataTablePagination } from "../components/dashboard/calls/pagination";
+import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/other/table";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/other/dropdown-menu";
 import { Form, Link, useFetcher, useLoaderData, useTransition, } from "@remix-run/react";
-import AddCustomer from "../components/dashboard/calls/addCustomer";
-import Filter from "../components/dashboard/calls/Filter";
+import AddCustomer from "~/components/dashboard/calls/addCustomer";
+import Filter from "~/components/dashboard/calls/Filter";
 import { format } from 'date-fns';
 import {
   RankingInfo,

@@ -41,7 +41,7 @@ import { ItemText } from "@radix-ui/react-select";
 import { useEffect, useState } from "react";
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
 import { UserPlus } from "lucide-react";
-import { ListSelection2 } from '~/routes/quoteUtils/listSelection'
+import { ListSelection2 } from '~/quoteUtils/listSelection'
 
 export default function AddCustomer() {
   const { user } = useRootLoaderData();

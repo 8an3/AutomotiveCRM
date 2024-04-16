@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ChatChannel from "./ChatChannel";
 import ChannelsList from "./ChannelList";
-import { Loader2 } from "../../icons";
+import { Loader2 } from "icons";
 import { Outlet, useLoaderData, useFetcher, Form, useLocation } from '@remix-run/react';
 import { TextArea } from '../ui/textarea';
 
@@ -18,7 +18,7 @@ import {
 import { json, type LinksFunction, type LoaderFunction } from '@remix-run/node';
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
-import { model } from "../../models";
+import { model } from "models";
 import { getSession } from "~/sessions/auth-session.server";
 import slider from '~/styles/slider.css'
 import secondary from '~/styles/secondary.css'

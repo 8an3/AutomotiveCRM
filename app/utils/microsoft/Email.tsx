@@ -1,14 +1,13 @@
 import { Input, } from "./components/ui/input";
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { Event, Message } from '@microsoft/microsoft-graph-types';
 import { add, endOfWeek, format, getDay, parseISO, startOfWeek } from 'date-fns';
 import { RiDraftLine } from "react-icons/ri";
 import { HiOutlineTemplate } from "react-icons/hi";
 import { composeEmail, createMailFolder, createtestFolder, deleteMessage, forwardEmail, getAllFolders, getDrafts, getDraftsList, getEmailById, getEmailById2, getEmailList, getEmails, getFolders, getInbox, getInboxList, getJunk, getJunkList, getList, getSent, getTrash, getTrashList, getUserWeekCalendar, gettestFolderList, listAttachment, messageDone, messageRead, messageUnRead, replyAllEmail, replyMessage, testInbox, } from './GraphService';
-import { useAppContext } from '../../routes/twoAppContext';
+import { useAppContext } from '~/routes/_authorized/dealer/twoAppContext';
 import { Controller, useController, useForm } from "react-hook-form";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import React from "react";
 import './email.css'
 
 import 'react-quill/dist/quill.snow.css'; // import styles

@@ -13,7 +13,7 @@ import { useLoaderData, Form, useFetcher, useLocation } from "@remix-run/react";
 import { PhoneOutcome, MenuScale, Mail, MessageText, User, ArrowDown, Calendar as CalendarIcon, WebWindowClose, } from "iconoir-react";
 import { dashboardLoader } from "~/components/actions/dashboardCalls";
 import { response } from "express";
-import financeFormSchema from "~/routes/overviewUtils/financeFormSchema";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import React, { useEffect, useRef, useState } from 'react';
 import * as Toast from "@radix-ui/react-toast";
 import {

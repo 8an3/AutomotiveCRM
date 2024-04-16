@@ -1,7 +1,7 @@
 
 import { useLoaderData, Form } from '@remix-run/react'
 import { type MetaFunction, json, redirect, type ActionFunction, LoaderFunction, } from '@remix-run/node'
-import financeFormSchema from './overviewUtils/financeFormSchema'
+import financeFormSchema from '~/overviewUtils/financeFormSchema'
 import { getDealerFeesbyEmail, updateDealerFees, updateUser } from '~/utils/user.server'
 import * as Toast from '@radix-ui/react-toast';
 import React from 'react';

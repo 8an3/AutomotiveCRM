@@ -4,7 +4,7 @@ import { Form, Link, useLoaderData, useLocation } from "@remix-run/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useEventSource } from "remix-utils";
 import { emitter } from "../services/emitter";
-import { getSession } from '../sessions/auth-session.server'
+import { getSession } from '~/sessions/auth-session.server'
 import { model } from "../models";
 import { prisma } from "~/libs";
 import { XCircle } from "lucide-react";
@@ -74,7 +74,7 @@ export async function action({ request }: LoaderArgs) {
   return json({ message, saved, saveMesage });
 }
 
-let url = '/internal/im/messages'
+let url = '/dealer/im/messages'
 const fetcher = url => fetch(url).then(r => r.json())
 
 export default function IMLobby() {
@@ -120,7 +120,7 @@ export default function IMLobby() {
 
         <div className="email flex h-full w-[100%]  flex-col">
           <div className="flex border-b border-[#3b3b3b] text-white p-2 justify-between">
-            <p> Staff Chat</p> <Link to='/internal/im/chatMenu'>
+            <p> Staff Chat</p> <Link to='/dealer/im/chatMenu'>
               <button><XCircle /></button>
             </Link>
           </div>

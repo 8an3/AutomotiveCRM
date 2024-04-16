@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, 
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/components/ui/tabs"
 import { Form, useActionData, useFetcher, useLoaderData, useNavigation, Outlet } from '@remix-run/react'
 import { json, redirect, type ActionFunction, type DataFunctionArgstype, type MetaFunction, type LoaderFunction, } from '@remix-run/node'
-import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
 import { model } from "~/models";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";

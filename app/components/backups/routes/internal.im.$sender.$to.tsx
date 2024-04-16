@@ -4,13 +4,13 @@ import { Form, Link, useLoaderData, useLocation, useParams } from "@remix-run/re
 import React, { useEffect, useRef, useState } from "react";
 import { useEventSource, eventStream } from "remix-utils";
 import { emitter } from "../services/emitter";
-import { getSession } from '../sessions/auth-session.server'
+import { getSession } from '~/sessions/auth-session.server'
 import { model } from "../models";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
-import { Input } from "../components/ui/input";
+import { Input } from "~/components/ui/input";
 import { XCircle } from "lucide-react";
-import NotificationSystem from ~/routes/_authorized / internal / notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 import useSWR, { SWRConfig, mutate } from 'swr';
 
 
@@ -93,7 +93,7 @@ export async function action({ request }: LoaderArgs) {
 }
 
 
-let url = '/internal/im/roomMessages'
+let url = '/dealer/im/roomMessages'
 const fetcher = url => fetch(url).then(r => r.json())
 
 
@@ -143,7 +143,7 @@ export default function Component() {
 
         <div className="email flex h-full w-[100%]  flex-col">
           <div className="flex border-b border-[#3b3b3b] text-white p-2 justify-between">
-            <p> {to}</p> <Link to='/internal/im/chatMenu'>
+            <p> {to}</p> <Link to='/dealer/im/chatMenu'>
               <button><XCircle /></button>
             </Link>
           </div>

@@ -17,7 +17,7 @@ import type {
 } from "@tanstack/react-table";
 import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
 import { prisma } from "~/libs";
-import financeFormSchema from "~/routes/overviewUtils/financeFormSchema";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
 //import { authenticator } from "~/services";
 import { model } from "~/models";
 import { getSession } from "~/sessions/auth-session.server";

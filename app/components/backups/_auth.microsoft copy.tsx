@@ -2,7 +2,7 @@
 import type { ActionArgs } from "@remix-run/node";
 import { authenticator } from "~/services/auth";
 import { json, redirect } from "@remix-run/node";
-import { getSession, commitSession, authSessionStorage } from '../../sessions/auth-session.server'
+import { getSession, commitSession, authSessionStorage } from '../~/sessions/auth-session.server'
 // https//learn.microsoft.com/en-us/entra/identity-platform/app-sign-in-flow
 // https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-on-behalf-of-flow
 export const loader = () => redirect("/login");
@@ -12,7 +12,7 @@ export const action = async ({ request }: ActionArgs) => {
   const sessionData = await getSession(request.headers.get("Cookie"));
 
   //const session = await authenticator.authenticate("microsoft", request, {
-  //  successRedirect: "/checksubscription",
+  //  successRedirect: "/dealer/checksubscription",
   //  failureRedirect: "/login",
   //  headers: session
   // })
@@ -34,7 +34,7 @@ export const action = async ({ request }: ActionArgs) => {
   const sessionData = await getSession(request.headers.get("Cookie"));
 
   const session = await authenticator.authenticate("microsoft", request, {
-    successRedirect: "/checksubscription",
+    successRedirect: "/dealer/checksubscription",
     failureRedirect: "/login",
     //  headers: session
 

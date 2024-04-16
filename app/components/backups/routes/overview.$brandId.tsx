@@ -4,14 +4,14 @@
 import { overviewLoader, overviewAction, financeIdLoader } from '~/components/actions/overviewActions'
 import { useFetcher, useLoaderData, useNavigation, useParams, useRouteLoaderData, useActionData } from '@remix-run/react'
 import React, { useEffect, useState } from 'react'
-import { ImageSelect } from './overviewUtils/imageselect'
-import EmailSheet from './overviewUtils/Emails'
-import FeaturePop from './overviewUtils/FeaturePop'
-import BMWOptions from './overviewUtils/bmwOptions'
-import ManitouOptions from './overviewUtils/manitouOptions'
-import DisplayModel from './overviewUtils/modelDisplay'
-import DealerFeesDisplay from './overviewUtils/dealerFeesDisplay'
-import ContactInfoDisplay from './overviewUtils/contactInfoDisplay'
+import { ImageSelect } from '~/overviewUtils/imageselect'
+import EmailSheet from '~/overviewUtils/Emails'
+import FeaturePop from '~/overviewUtils/FeaturePop'
+import BMWOptions from '~/overviewUtils/bmwOptions'
+import ManitouOptions from '~/overviewUtils/manitouOptions'
+import DisplayModel from '~/overviewUtils/modelDisplay'
+import DealerFeesDisplay from '~/overviewUtils/dealerFeesDisplay'
+import ContactInfoDisplay from '~/overviewUtils/contactInfoDisplay'
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Input, Button, Checkbox } from "~/components/ui/index"
 import { toast } from "sonner"
@@ -35,7 +35,7 @@ import {
 } from "~/components";
 import Sidebar from "~/components/shared/sidebar";
 // <Sidebar />
-import NotificationSystem from ~/routes/_authorized / internal / notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 
 
 export let action = overviewAction;
@@ -1178,56 +1178,56 @@ export function Overview({ outletSize }) {
         const button5 = document.getElementById('myButton5');
         const button6 = document.getElementById('button6');
         if (button5) {
-            button5.addEventListener('mousedown', function() {
+            button5.addEventListener('mousedown', function () {
                 this.style.transform = 'translateY(1.5px)';
             });
 
-            button5.addEventListener('mouseup', function() {
+            button5.addEventListener('mouseup', function () {
                 this.style.transform = 'translateY(-1.5px)';
             });
         }
         if (button) {
-            button.addEventListener('mousedown', function() {
+            button.addEventListener('mousedown', function () {
                 this.style.transform = 'translateY(1.5px)';
             });
 
-            button.addEventListener('mouseup', function() {
+            button.addEventListener('mouseup', function () {
                 this.style.transform = 'translateY(-1.5px)';
             });
         }
         if (button2) {
-            button2.addEventListener('mousedown', function() {
+            button2.addEventListener('mousedown', function () {
                 this.style.transform = 'translateY(1.5px)';
             });
 
-            button2.addEventListener('mouseup', function() {
+            button2.addEventListener('mouseup', function () {
                 this.style.transform = 'translateY(-1.5px)';
             });
         }
         if (button3) {
-            button3.addEventListener('mousedown', function() {
+            button3.addEventListener('mousedown', function () {
                 this.style.transform = 'translateY(1.5px)';
             });
 
-            button3.addEventListener('mouseup', function() {
+            button3.addEventListener('mouseup', function () {
                 this.style.transform = 'translateY(-1.5px)';
             });
         }
         if (button4) {
-            button4.addEventListener('mousedown', function() {
+            button4.addEventListener('mousedown', function () {
                 this.style.transform = 'translateY(1.5px)';
             });
 
-            button4.addEventListener('mouseup', function() {
+            button4.addEventListener('mouseup', function () {
                 this.style.transform = 'translateY(-1.5px)';
             });
         }
         if (button6) {
-            button6.addEventListener('mousedown', function() {
+            button6.addEventListener('mousedown', function () {
                 this.style.transform = 'translateY(1.5px)';
             });
 
-            button6.addEventListener('mouseup', function() {
+            button6.addEventListener('mouseup', function () {
                 this.style.transform = 'translateY(-1.5px)';
             });
         }

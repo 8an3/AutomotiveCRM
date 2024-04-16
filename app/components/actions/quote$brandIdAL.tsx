@@ -1,4 +1,4 @@
-import financeFormSchema from '~/routes/overviewUtils/financeFormSchema';
+import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { type DataFunctionArgs, type V2_MetaFunction, type ActionFunction, json, redirect, type ActionArgs, LoaderFunction } from '@remix-run/node'
 import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
 import { financeIdLoader, overviewLoader } from "./overviewActions";
@@ -10,9 +10,9 @@ import { prisma } from "~/libs";
 import { commitSession as commitPref, getSession as getPref } from "~/utils/pref.server";
 import { getSession } from '~/sessions/auth-session.server';
 import { model } from "~/models";
-import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '../../routes/api.server'
+import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '~/routes/_authorized/dealer/api.server'
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
-import { UpdateLead, CreateVehicle } from '~/routes/_authorized.api.activix';
+import { UpdateLead, CreateVehicle } from '~/routes/__authorized/dealer/api.activix';
 import { getSession as sixSession, commitSession as sixCommit, destroySession } from '~/utils/misc.user.server'
 
 export function invariant(

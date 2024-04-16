@@ -3,7 +3,7 @@ import { eventStream } from "remix-utils";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { model } from "../models";
-import { getSession } from '../sessions/auth-session.server'
+import { getSession } from '~/sessions/auth-session.server'
 import { emitter } from "~/services/emitter";
 
 export async function loader({ request }: LoaderArgs) {

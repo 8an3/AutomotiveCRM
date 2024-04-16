@@ -24,7 +24,7 @@ import {
   truncateText,
 } from "~/utils";
 
-import { cn, } from '../utils/misc'
+import { cn, } from '~/utils/misc'
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 
 export const handle = createSitemap();

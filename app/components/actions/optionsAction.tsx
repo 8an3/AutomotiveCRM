@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { zfd } from 'zod-form-data'
 import { redirect, json, type ActionFunction, type DataFunctionArgs, } from '@remix-run/node'
 import { useParams } from '@remix-run/react';
-import financeFormSchema from '../../routes/overviewUtils/financeFormSchema';
+import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { requireUserSession } from '~/helpers';
 
 import { model } from '~/models'

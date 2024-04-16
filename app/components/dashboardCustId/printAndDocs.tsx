@@ -1,6 +1,6 @@
 import UcdaInputs from "~/components/formToPrint/ucdaInputs";
-import { PrintSpec } from "~/routes/overviewUtils/printSpec";
-import { ModelPage } from '~/routes/overviewUtils/modelPage'
+import { PrintSpec } from "~/overviewUtils/printSpec";
+import { ModelPage } from '~/overviewUtils/modelPage'
 import { PrintDealer } from "~/components/formToPrint/printDealer"
 import PrintContract from "~/components/formToPrint/printContact"
 import React, { useEffect, useRef, useState } from "react";

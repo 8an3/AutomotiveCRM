@@ -1,3 +1,7 @@
+const {
+  createRoutesFromFolders,
+} = require("@remix-run/v1-route-convention");
+
 // to determine if we're on the local development server
 const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -17,16 +21,19 @@ module.exports = {
   // so we default back to the standard build output.
   server: process.env.NODE_ENV === "development" ? undefined : "./server.ts",
   serverBuildPath: "api/index.js",
-  // appDirectory: "app",
-  // assetsBuildDirectory: "public/build",
-  // publicPath: "/build/",
+  appDirectory: "app",
+  assetsBuildDirectory: "public/build",
+  publicPath: "/build/",
   serverModuleFormat: "cjs",
   serverDependenciesToBundle: [
     "axios",
     "@azure/msal-react",
   ],
   tailwind: true,
-
+  routes(defineRoutes) {
+    // uses the v1 convention, works in v1.15+ and v2
+    return createRoutesFromFolders(defineRoutes);
+  },
   future: {
     v2_dev: true,
     v2_errorBoundary: true,
@@ -36,3 +43,12 @@ module.exports = {
     v2_routeConvention: true,
   },
 };
+exports.appDirectory = "./app";
+
+/**
+ *  routes(defineRoutes) {
+   return defineRoutes((route) => {
+     route("/", "_index.tsx", { index: true });
+   });
+ },
+ */

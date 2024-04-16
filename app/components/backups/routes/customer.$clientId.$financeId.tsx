@@ -16,7 +16,7 @@ import { ClientTab } from "~/components/dashboardCustId/clientTab";
 import { PartsTab } from "~/components/dashboardCustId/partsTab";
 import { SalesTab } from "~/components/dashboardCustId/salesTab";
 import { SalesComms } from "~/components/dashboardCustId/salesComs";
-import financeFormSchema from "./overviewUtils/financeFormSchema";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { updateClientFileRecord, updateFinanceWithDashboard } from "~/utils/finance/update.server";
 import SaveFinanceNote from "~/components/dashboard/calls/actions/createFinanceNote";
 import DeleteCustomer from "~/components/dashboard/calls/actions/DeleteCustomer";

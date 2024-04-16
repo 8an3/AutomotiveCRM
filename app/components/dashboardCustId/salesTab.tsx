@@ -3,7 +3,7 @@ import { Form, Link, Outlet, useActionData, useFetcher, useLoaderData, useSubmit
 import React, { useEffect, useRef, useState } from "react";
 import * as Tabs from '@radix-ui/react-tabs'
 import * as Toast from '@radix-ui/react-toast';
-import { Overview } from '~/routes/_authorized.overview.$brandId'
+import { Overview } from '~/routes/__authorized/dealer/overview.$brandId'
 import { RemixNavLink, Input, Separator, Button, TextArea, Label, } from "~/components";
 import PrintAndDocs from "~/components/dashboardCustId/printAndDocs";
 import Print from "~/components/dashboardCustId/print"
@@ -11,7 +11,7 @@ import { getMergedFinanceOnFinance } from "~/utils/dashloader/dashloader.server"
 import { commitSession as commitPref, getSession as getPref } from '~/utils/pref.server';
 import { json } from "@remix-run/node";
 import { getClientFileById } from "~/utils/finance/get.server";
-import FinanceOverview from "~/routes/_authorized/internal/customer.finance.overview";
+import FinanceOverview from "~/routes/__authorized/dealer/customer.finance.overview";
 import FinanceTab from "./financeTab";
 import {
   Select,

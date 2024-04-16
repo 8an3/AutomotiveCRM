@@ -1,23 +1,15 @@
 /* eslint-disable tailwindcss/classnames-order */
 /* eslint-disable jsx-a11y/alt-text */
 import { Form, Link, useLoaderData, useLocation, useFetcher } from '@remix-run/react';
-import { RemixNavLink, Input, Separator, Button, } from "../../components"
-import { TextArea, } from "../../components/ui"
-import { Google, UserSquare, } from "iconoir-react";
 import { rootAction, useUserLoader } from './actions';
-import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "../../other/sheet"
-import { getUserIsAllowed } from "~/helpers";
-import * as Dialog from '@radix-ui/react-dialog';
-import * as Tabs from '@radix-ui/react-tabs';
-import { Textarea } from '../../other/textarea';
 import { ActionFunction, type DataFunctionArgs, json, redirect, type LoaderFunction } from "@remix-run/node";
-import { getSession } from "../../sessions/auth-session.server";
-import { model } from "../../models";
+import { getSession } from "~/sessions/auth-session.server";
+import { model } from "~/models";
 import { toast } from 'sonner';
 import { prisma } from "~/libs";
 
 import { MessageSquare } from 'lucide-react';
-import { requireAuthCookie } from '../../utils/misc.user.server';
+import { requireAuthCookie } from '~/utils/misc.user.server';
 import { useEffect, useRef, useState } from 'react';
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -54,7 +46,7 @@ export default function Chat() {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
       if (iFrameRef?.current) {
-        iFrameRef.current.src = 'http://localhost:3000/internal/im/lobby';
+        iFrameRef.current.src = 'http://localhost:3000/dealer/im/lobby';
         //iFrameRef.current.src = 'http://localhost:3002/customerGen';
       }
     });
@@ -81,7 +73,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (iFrameRef?.current) {
-      iFrameRef.current.src = 'http://localhost:3000/internal/im/chatMenu';
+      iFrameRef.current.src = 'http://localhost:3000/dealer/im/chatMenu';
       //  iFrameRef.current.src = 'http://localhost:3002/customer-forms';
       //  const userId = user.id
       //  let merged = { finance }

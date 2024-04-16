@@ -4,7 +4,7 @@ import { ActionArgs, type DataFunctionArgs, json, type MetaFunction, type Loader
 import { ButtonLoading, } from "../components";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
-import { ImageSelect } from './overviewUtils/imageselect'
+import { ImageSelect } from '~/overviewUtils/imageselect'
 import { quoteAction, quoteLoader } from '~/components/actions/quote$brandIdAL'
 import React, { useRef, useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner'

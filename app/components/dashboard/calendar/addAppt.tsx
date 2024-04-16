@@ -32,7 +32,7 @@ import {
   rankItem,
   compareItems,
 } from '@tanstack/match-sorter-utils'
-import { ListSelection2 } from '~/routes/quoteUtils/listSelection'
+import { ListSelection2 } from '~/quoteUtils/listSelection'
 
 
 

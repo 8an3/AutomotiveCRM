@@ -1,7 +1,7 @@
-import { AuthType } from "../utils/infobip/auth-type";
-import { EmailStatus } from "../utils/infobip/email-status-type";
-import { InfobipAuth } from "../utils/infobip/auth";
-import { Validator } from "../utils/infobip/validator";
+import { AuthType } from "~/utils/infobip/auth-type";
+import { EmailStatus } from "~/utils/infobip/email-status-type";
+import { InfobipAuth } from "~/utils/infobip/auth";
+import { Validator } from "~/utils/infobip/validator";
 //import { WhatsApp } from "../futureRoutes/client.whatsapp";
 import { SMS } from "./client.sms";
 import { Auth } from "./client.auth";

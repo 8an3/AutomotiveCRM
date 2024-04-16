@@ -3,7 +3,7 @@ import { Separator, Button, Input, Label, Switch, Checkbox } from '~/components/
 import { json, redirect, type ActionFunction, type DataFunctionArgstype, type MetaFunction, type LoaderFunction, } from '@remix-run/node'
 import DailySheet from '~/components/formToPrint/dailyWorkPlan'
 import { getUserById, updateUser, updateDealerFees, getDealerFeesbyEmail, getDealerFeesbyEmailAdmin } from '~/utils/user.server'
-import financeFormSchema from './overviewUtils/financeFormSchema';
+import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { toast } from "sonner"
 import React, { useState } from 'react';
 import { getMergedFinance } from '~/utils/dashloader/dashloader.server'
@@ -17,7 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/components/ui/tabs"
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
-import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";

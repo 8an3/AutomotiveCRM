@@ -7,8 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog"
-import { Input, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label } from "../../../components/ui/index";
+} from "~/components/ui/dialog"
+import { Input, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label } from "~/components/ui/index";
 import { toast } from "sonner"
 
 export default function EditWishList({ data }) {

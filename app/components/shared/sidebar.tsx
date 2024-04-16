@@ -102,7 +102,7 @@ export default function Sidebar(user, email) {
               </h3>
               <hr className="solid" />
               <div className='p-3'>
-                <RemixNavLink to='/quote/Kawasaki' >
+                <RemixNavLink to='/dealer/quote/Kawasaki' >
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Kawasaki
@@ -110,21 +110,21 @@ export default function Sidebar(user, email) {
                   </SheetClose>
                 </RemixNavLink>
 
-                <RemixNavLink to='/quote/Manitou'>
+                <RemixNavLink to='/dealer/quote/Manitou'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Manitou
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Sea-Doo'>
+                <RemixNavLink to='/dealer/quote/Sea-Doo'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Sea-Doo
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Switch'>
+                <RemixNavLink to='/dealer/quote/Switch'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Sea-Doo Switch
@@ -138,49 +138,49 @@ export default function Sidebar(user, email) {
               <hr className="solid text-white " />
               <div className='p-3 text-white '>
 
-                <RemixNavLink to='/quote/Can-Am'>
+                <RemixNavLink to='/dealer/quote/Can-Am'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Can-Am
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Can-Am-SXS'>
+                <RemixNavLink to='/dealer/quote/Can-Am-SXS'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Can-Am SXS
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/KTM'>
+                <RemixNavLink to='/dealer/quote/KTM'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       KTM
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Kawasaki'>
+                <RemixNavLink to='/dealer/quote/Kawasaki'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Kawasaki
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Ski-Doo'>
+                <RemixNavLink to='/dealer/quote/Ski-Doo'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Ski-Doo
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Suzuki'>
+                <RemixNavLink to='/dealer/quote/Suzuki'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Suzuki
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Triumph'>
+                <RemixNavLink to='/dealer/quote/Triumph'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Triumph
@@ -194,63 +194,63 @@ export default function Sidebar(user, email) {
               <hr className="solid" />
               <div className='p-3'>
 
-                <RemixNavLink to='/quote/BMW-Motorrad'>
+                <RemixNavLink to='/dealer/quote/BMW-Motorrad'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       BMW Motorrad
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Harley-Davidson'>
+                <RemixNavLink to='/dealer/quote/Harley-Davidson'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Harley-Davidson
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Kawasaki'>
+                <RemixNavLink to='/dealer/quote/Kawasaki'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Kawasaki
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/KTM'>
+                <RemixNavLink to='/dealer/quote/KTM'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       KTM
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Indian'>
+                <RemixNavLink to='/dealer/quote/Indian'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Indian
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Yamaha'>
+                <RemixNavLink to='/dealer/quote/Yamaha'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Yamaha
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Suzuki'>
+                <RemixNavLink to='/dealer/quote/Suzuki'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Suzuki
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Spyder'>
+                <RemixNavLink to='/dealer/quote/Spyder'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Spyder
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Triumph'>
+                <RemixNavLink to='/dealer/quote/Triumph'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Triumph
@@ -264,7 +264,7 @@ export default function Sidebar(user, email) {
               </h3>
               <hr className="solid" />
               <div className='p-3'>
-                <RemixNavLink to='/quote/used'>
+                <RemixNavLink to='/dealer/quote/used'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Used
@@ -290,7 +290,7 @@ export default function Sidebar(user, email) {
               </h3>
               <hr className="solid text-white" />
               <div className='p-3'>
-                <RemixNavLink to='/quote/Harley-DavidsonMY24'>
+                <RemixNavLink to='/dealer/quote/Harley-DavidsonMY24'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Harley-Davidson
@@ -303,14 +303,14 @@ export default function Sidebar(user, email) {
               </h3>
               <hr className="solid text-white" />
               <div className='p-3'>
-                <RemixNavLink to='/quote/Can-Am-SXS-MY24'>
+                <RemixNavLink to='/dealer/quote/Can-Am-SXS-MY24'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Can-Am sXs
                     </Button>
                   </SheetClose>
                 </RemixNavLink>
-                <RemixNavLink to='/quote/Ski-Doo-MY24'>
+                <RemixNavLink to='/dealer/quote/Ski-Doo-MY24'>
                   <SheetClose asChild>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Ski-Doo
@@ -327,7 +327,7 @@ export default function Sidebar(user, email) {
             >
               <div className="flex flex-col items-start">
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/email/googleClient`}>
+                  <RemixNavLink to={`/dealer/email/googleClient`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -337,7 +337,7 @@ export default function Sidebar(user, email) {
                   </RemixNavLink>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/sms/app`}>
+                  <RemixNavLink to={`/dealer/sms/app`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -348,7 +348,7 @@ export default function Sidebar(user, email) {
                 </Dialog.Close>
                 {activixActivated !== 'yes' && (
                   <Dialog.Close asChild>
-                    <RemixNavLink to={`/leads/sales`}>
+                    <RemixNavLink to={`/dealer/leads/sales`}>
                       <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
                         Dashboard
                       </Button>
@@ -358,7 +358,7 @@ export default function Sidebar(user, email) {
 
                 {userIsFinance && (
                   <Dialog.Close asChild>
-                    <RemixNavLink to={`/leads/finance`}>
+                    <RemixNavLink to={`/dealer/leads/finance`}>
                       <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
                         Finance Dashboard
                       </Button>
@@ -367,7 +367,7 @@ export default function Sidebar(user, email) {
                 )}
                 {activixActivated === 'yes' && (
                   <Dialog.Close asChild>
-                    <RemixNavLink to={`/leads/activix`}>
+                    <RemixNavLink to={`/dealer/leads/activix`}>
                       <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
                         Activix Dashboard
                       </Button>
@@ -375,14 +375,14 @@ export default function Sidebar(user, email) {
                   </Dialog.Close>
                 )}
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/calendar/sales`}>
+                  <RemixNavLink to={`/dealer/calendar/sales`}>
                     <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
                       Calendar
                     </Button>
                   </RemixNavLink>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/payments/calculator`}>
+                  <RemixNavLink to={`/dealer/payments/calculator`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer mt-5"
@@ -393,7 +393,7 @@ export default function Sidebar(user, email) {
                 </Dialog.Close>
 
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/inventory/motorcycle`}>
+                  <RemixNavLink to={`/dealer/inventory/motorcycle`}>
                     <Button
                       variant="link"
                       className="w-full justify-start cursor-pointer mt-5 text-white "
@@ -403,7 +403,7 @@ export default function Sidebar(user, email) {
                   </RemixNavLink>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/document/second`}>
+                  <RemixNavLink to={`/dealer/document/second`}>
                     <Button
                       variant="link"
                       className="w-full justify-start cursor-pointer mt-5 text-white "
@@ -413,7 +413,7 @@ export default function Sidebar(user, email) {
                   </RemixNavLink>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/editor/templates`}>
+                  <RemixNavLink to={`/dealer/editor/templates`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer "
@@ -423,7 +423,7 @@ export default function Sidebar(user, email) {
                   </RemixNavLink>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/user/dashboard/scripts`}>
+                  <RemixNavLink to={`/dealer/user/dashboard/scripts`}>
                     <Button variant="link" className="w-full mt-5 justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
                       Scripts
                     </Button>
@@ -431,7 +431,7 @@ export default function Sidebar(user, email) {
                 </Dialog.Close>
 
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/user/dashboard/salestracker`}>
+                  <RemixNavLink to={`/dealer/user/dashboard/salestracker`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -441,7 +441,7 @@ export default function Sidebar(user, email) {
                   </RemixNavLink>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/roadmap`}>
+                  <RemixNavLink to={`/dealer/roadmap`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -451,7 +451,7 @@ export default function Sidebar(user, email) {
                   </RemixNavLink>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/user/dashboard/settings`}>
+                  <RemixNavLink to={`/dealer/user/dashboard/settings`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -477,7 +477,7 @@ export default function Sidebar(user, email) {
                     <hr className="solid" />
                     <>
                       <Dialog.Close asChild>
-                        <RemixNavLink to={`/automation`}>
+                        <RemixNavLink to={`/dealer/automation`}>
                           <Button
                             variant="link"
                             className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -487,7 +487,7 @@ export default function Sidebar(user, email) {
                         </RemixNavLink>
                       </Dialog.Close>
                       <Dialog.Close asChild>
-                        <RemixNavLink to={`/admanager`}>
+                        <RemixNavLink to={`/dealer/admanager`}>
                           <Button
                             variant="link"
                             className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -497,7 +497,7 @@ export default function Sidebar(user, email) {
                         </RemixNavLink>
                       </Dialog.Close>
                       <Dialog.Close asChild>
-                        <RemixNavLink to={`/user/dashboard/notes`}>
+                        <RemixNavLink to={`/dealer/user/dashboard/notes`}>
                           <Button
                             variant="link"
                             className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -507,7 +507,7 @@ export default function Sidebar(user, email) {
                         </RemixNavLink>
                       </Dialog.Close>
                       <Dialog.Close asChild>
-                        <RemixNavLink to={`/user/dashboard/notes`}>
+                        <RemixNavLink to={`/dealer/user/dashboard/notes`}>
                           <Button
                             variant="link"
                             className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -556,7 +556,7 @@ export default function Sidebar(user, email) {
                     </div>
                   </div>
                   <hr className="solid mt-4 mb-4" />
-                  <fetcher.Form method="post" action='/emails/send/contact'>
+                  <fetcher.Form method="post" action='/dealer/emails/send/contact'>
                     <TextArea
                       placeholder="Type your message here."
                       name="customContent"

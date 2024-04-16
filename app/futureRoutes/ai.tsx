@@ -1,9 +1,9 @@
 
 
 import { useState } from "react";
-import { useChat } from "../components/ai/hook.chat";
-import { useInput } from "../components/ai/hook.input";
-import { ask, processChatResponse } from "../components/ai/repos.chat";
+import { useChat } from "~/components/ai/hook.chat";
+import { useInput } from "~/components/ai/hook.input";
+import { ask, processChatResponse } from "~/components/ai/repos.chat";
 import React from "react";
 
 const ChatMessages = ({ messages }) => {

@@ -26,7 +26,7 @@ import {
 import { env } from 'process';
 import axios from 'axios';
 import { ButtonLoading } from "~/components/ui/button-loading";
-import { SyncLeadData } from "~/routes/_authorized/internal/api.activix";
+import { SyncLeadData } from "~/routes/__authorized/dealer/api.activix";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 

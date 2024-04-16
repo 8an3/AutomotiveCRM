@@ -1,5 +1,5 @@
 import { google } from 'googleapis';
-import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { model } from "~/models";
@@ -12,18 +12,18 @@ import axios from 'axios';
 import { getMergedFinanceOnFinance, getMergedFinanceOnFinanceUniqueFInanceId } from "~/utils/client/getLatestFinance.server";
 import { Body, Container, Head, Row, Column, Heading, Hr, Img, Html, Preview, Tailwind, Link, Text, Section, } from "@react-email/components";
 import { getLatestFinance, getLatestFinance2, getLatestFinanceManitou, getDataKawasaki, getLatestBMWOptions, getLatestBMWOptions2, getDataBmwMoto, getDataByModel, getDataHarley, getDataTriumph, findQuoteById, findDashboardDataById, getDataByModelManitou, getLatestOptionsManitou } from "~/utils/finance/get.server";
-import Payments from "./emails/custom/payments";
-import Options from "./emails/custom/options";
-import WPdf from "./emails/custom/paymentswPdf";
-import OptionsWBreakdown from "./emails/custom/OptionsWBreakdown";
-import OptionsWSpec from "./emails/custom/OptionsWPDF";
-import TempPayments from "./emails/custom/tempPayments";
-import TempPaymentsBreakdown from "./emails/custom/tempPaymentsBreakdown";
-import TempPaymentsBreakdownPDF from "./emails/custom/tempPaymentsBreakdownPDF";
-import TempOptions from "./emails/custom/tempOptions";
-import TempOptionsWPDF from "./emails/custom/tempOptionsWPDF";
-import TempOptionsWBreakdown from "./emails/custom/tempOptionsWBreakdown";
-import FullCustom from "./emails/custom/fullCustom";
+import Payments from "~/emails/custom/payments";
+import Options from "~/emails/custom/options";
+import WPdf from "~/emails/custom/paymentswPdf";
+import OptionsWBreakdown from "~/emails/custom/OptionsWBreakdown";
+import OptionsWSpec from "~/emails/custom/OptionsWPDF";
+import TempPayments from "~/emails/custom/tempPayments";
+import TempPaymentsBreakdown from "~/emails/custom/tempPaymentsBreakdown";
+import TempPaymentsBreakdownPDF from "~/emails/custom/tempPaymentsBreakdownPDF";
+import TempOptions from "~/emails/custom/tempOptions";
+import TempOptionsWPDF from "~/emails/custom/tempOptionsWPDF";
+import TempOptionsWBreakdown from "~/emails/custom/tempOptionsWBreakdown";
+import FullCustom from "~/emails/custom/fullCustom";
 import { getDealerFeesbyEmail } from "~/utils/user.server";
 
 const oauth2Client = new google.auth.OAuth2(

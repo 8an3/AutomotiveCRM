@@ -4,7 +4,7 @@ import { Form, Link, useLoaderData, useLocation } from "@remix-run/react";
 import React, { useEffect, useRef, useState } from "react";
 import { eventStream, useEventSource } from "remix-utils";
 import { emitter } from "../services/emitter";
-import { getSession } from '../sessions/auth-session.server'
+import { getSession } from '~/sessions/auth-session.server'
 import { model } from "../models";
 import { prisma } from "~/libs";
 import { XCircle } from "lucide-react";
@@ -66,7 +66,7 @@ export default function Component() {
 
 
   const [messages, setMessages] = useState<string[]>([]);
-  const lastMessage = useEventSource("/internal/im/see/chat");
+  const lastMessage = useEventSource("/dealer/im/see/chat");
 
   useEffect(() => {
     async function fetchInitialMessages() {
@@ -94,9 +94,9 @@ export default function Component() {
 
         <div className="emailList w-[100%] border-r border-[#3b3b3b]">
           <div className="flex border-b border-[#3b3b3b] text-white p-2 justify-between">
-            <p>Staff Chat</p>    <Link to="/internal/im/lobby" ><XCircle /></Link>
+            <p>Staff Chat</p>    <Link to="/dealer/im/lobby" ><XCircle /></Link>
           </div>
-          <Link to="/internal/im/lobby">
+          <Link to="/dealer/im/lobby">
 
             <div className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]   `}  >
               <p className="text-white p-3">Lobby</p>
@@ -105,7 +105,7 @@ export default function Component() {
           {staffMembers && staffMembers.length > 0 && staffMembers.map((staffMember, index) => {
             return (
               <div key={index}>
-                <Link to={`/internal/im/${user.email}/${staffMember.email}`} >
+                <Link to={`/dealer/im/${user.email}/${staffMember.email}`} >
                   <div className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]   `}  >
                     <p className="text-white p-3">{staffMember.name}</p>
                   </div>

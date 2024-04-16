@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import clsx from 'clsx'
-import { accessor as get } from '../../utils/accessors'
+import { accessor as get } from '~/utils/accessors'
 import { DnDContext } from './DnDContext'
 
 class EventWrapper extends React.Component {

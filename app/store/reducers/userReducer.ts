@@ -2,7 +2,7 @@ import { User } from "@twilio/conversations";
 
 import { ActionType } from "../action-types";
 import { Action } from "../actions";
-import { usersMap } from "../../conversations-objects";
+import { usersMap } from "conversations-objects";
 
 export type ReduxUser = {
   identity: string;

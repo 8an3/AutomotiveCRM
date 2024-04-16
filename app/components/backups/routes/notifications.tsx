@@ -4,7 +4,7 @@ import { Form, Link, useLoaderData, useLocation, Await, useFetcher, useSubmit } 
 import React, { useEffect, useRef, useState, Suspense } from "react";
 import { useEventSource } from "remix-utils";
 import { emitter } from "../services/emitter";
-import { getSession } from '../sessions/auth-session.server'
+import { getSession } from '~/sessions/auth-session.server'
 import { model } from "../models";
 import { toast } from "sonner";
 import { useRootLoaderData } from '~/hooks/use-root-loader-data';
@@ -22,7 +22,7 @@ import {
   TabsTrigger,
 } from "~/components/ui/tabs"
 import { Bell, BellRing, BookOpenCheck, Milestone, X } from 'lucide-react';
-import { Button, Input, Label } from "../components/ui";
+import { Button, Input, Label } from "~/components/ui";
 import useSWR, { SWRConfig, mutate } from 'swr';
 
 export async function loader({ request, params }: LoaderFunction) {

@@ -7,7 +7,7 @@ import {
 } from "@remix-run/node";
 
 import { model } from "~/models";
-import financeFormSchema from "~/routes/overviewUtils/financeFormSchema";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
 //import { authenticator } from "~/services";
 import {
   findDashboardDataById,

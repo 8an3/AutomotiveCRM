@@ -6,13 +6,13 @@ import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import React, { type SetStateAction, type MouseEvent, useCallback, type Dispatch, useState, useRef, useEffect } from "react"
 
-import { type IEventInfo } from "../../../routes/calendar.sales"
+import { type IEventInfo } from "../routes/calendar.sales"
 import { Link, Form, useLoaderData, useSubmit, useFetcher } from '@remix-run/react'
 import { Button, Input, Label } from "~/components/ui";
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import AddCustomer from '~/components/dashboard/calls/addCustomer'
-import financeFormSchema from '../routes/overviewUtils/financeFormSchema';
+import financeFormSchema from '.~/overviewUtils/financeFormSchema';
 import AddEventModal from "~/components/backups/AddEventModal"
 
 import 'moment-timezone'
@@ -26,7 +26,7 @@ import enUS from "date-fns/locale/en-US"
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import EventInfo from "~/components/dashboard/calendar/EventInfo"
 import AddDatePickerEventModal from "~/components/backups/createApptModal2222"
-import stylesheet from './overviewUtils/styles2.css'
+import stylesheet from '~/overviewUtils/styles2.css'
 import { commitSession, getSession } from "~/utils/pref.server";
 import updateFinance23 from '~/components/dashboard/calls/actions/updateFinance'
 import { createfinanceApt } from '~/utils/financeAppts/create.server'

@@ -1,5 +1,5 @@
 import { json, type ActionFunction, createCookie, type LoaderFunction, redirect, } from "@remix-run/node";
-import financeFormSchema from "~/routes/overviewUtils/financeFormSchema";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
 ////import { authenticator } from "~/services";
 import { findDashboardDataById, findQuoteById, getDataBmwMoto, getDataByModel, getDataByModelManitou, getDataHarley, getDataKawasaki, getDataTriumph, getLatestBMWOptions, getLatestBMWOptions2, getLatestOptionsManitou, getRecords, } from "~/utils/finance/get.server";
 import { getDealerFeesbyEmail } from "~/utils/user.server";
@@ -24,7 +24,6 @@ import { getSession, commitSession } from '~/sessions/auth-session.server';
 import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
 import { google } from 'googleapis';
-import oauth2Client, { SendEmail, } from "~/routes/_authorized/internal/email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { QuoteServer } from "~/utils/quote/quote.server";
@@ -49,23 +48,16 @@ const getAccessToken = async (refreshToken) => {
     console.log(err);
   }
 };
+
 export function Unauthorized(refreshToken) {
   console.log('Unauthorized');
   const newAccessToken = getAccessToken(refreshToken)
 
   console.log(newAccessToken, 'newAccessToken', refreshToken, 'refreshToken')
-
-  oauth2Client.setCredentials({
-    //  refresh_token: refreshToken,
-    access_token: newAccessToken,
-  });
-  google.options({ auth: oauth2Client });
-  //  const userRes = await gmail.users.getProfile({ userId: 'me' });
-  //console.log(userRes, 'userRes')
-
   const tokens = newAccessToken
   return tokens
 }
+
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")

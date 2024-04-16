@@ -1,5 +1,5 @@
 import { JSONValue, Participant, ParticipantType } from "@twilio/conversations";
-import { participantsMap } from "../../conversations-objects";
+import { participantsMap } from "conversations-objects";
 
 import { ActionType } from "../action-types";
 import { Action } from "../actions";

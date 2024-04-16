@@ -1,10 +1,10 @@
-import { Http } from "../utils/infobip/http";
-import { type InfobipAuth } from "../utils/infobip/auth";
-import { Validator } from "../utils/infobip/validator";
+import { Http } from "~/utils/infobip/http";
+import { type InfobipAuth } from "~/utils/infobip/auth";
+import { Validator } from "~/utils/infobip/validator";
 import {
   validateWhatsappSend,
   validateWhatsappTemplateCreate,
-} from "../utils/infobip/validators/whatsapp";
+} from "~/utils/infobip/validators/whatsapp";
 
 const sendEndpoints: any = {
   template: "/whatsapp/1/message/template",

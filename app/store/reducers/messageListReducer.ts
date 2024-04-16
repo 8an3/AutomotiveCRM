@@ -1,5 +1,5 @@
 import { DeliveryAmount, JSONValue, Message } from "@twilio/conversations";
-import { mediaMap, messagesMap } from "../../conversations-objects";
+import { mediaMap, messagesMap } from "conversations-objects";
 import { ActionType } from "../action-types";
 import { Action } from "../actions";
 
@@ -58,13 +58,13 @@ const reduxifyMessage = (message: Message | ReduxMessage): ReduxMessage => ({
   dateCreated: message.dateCreated,
   aggregatedDeliveryReceipt: message.aggregatedDeliveryReceipt
     ? {
-        total: message.aggregatedDeliveryReceipt.total,
-        sent: message.aggregatedDeliveryReceipt.sent,
-        delivered: message.aggregatedDeliveryReceipt.delivered,
-        read: message.aggregatedDeliveryReceipt.read,
-        undelivered: message.aggregatedDeliveryReceipt.undelivered,
-        failed: message.aggregatedDeliveryReceipt.failed,
-      }
+      total: message.aggregatedDeliveryReceipt.total,
+      sent: message.aggregatedDeliveryReceipt.sent,
+      delivered: message.aggregatedDeliveryReceipt.delivered,
+      read: message.aggregatedDeliveryReceipt.read,
+      undelivered: message.aggregatedDeliveryReceipt.undelivered,
+      failed: message.aggregatedDeliveryReceipt.failed,
+    }
     : null,
   attachedMedia:
     message.attachedMedia?.map((el) => ({

@@ -1,5 +1,5 @@
 import { type LoaderFunction, type DataFunctionArgs, type LoaderArgs, redirect, createCookieSessionStorage, json, createCookie, type ActionFunction } from "@remix-run/node"
-import { getSession, commitSession, authSessionStorage } from '../../sessions/auth-session.server'
+import { getSession, commitSession, authSessionStorage } from '../~/sessions/auth-session.server'
 import { google } from 'googleapis'
 import * as querystring from 'querystring';
 import { prisma } from "~/libs";
@@ -36,7 +36,7 @@ export const loader = async ({ request, response }: LoaderArgs) => {
   console.log('sessoin data23232', email, accessToken, id_token)
 
   const userSession = await authenticator.authenticate("microsoft", request, {
-    successRedirect: "/checksubscription",
+    successRedirect: "/dealer/checksubscription",
     failureRedirect: "/login",
     //headers: session
   })
@@ -51,8 +51,8 @@ export async function loader({ request, params }: LoaderFunction) {
 
 
   authenticator.authenticate("microsoft", request, {
-    successRedirect: "/checksubscription",
-    failureRedirect: "/checksubscription",
+    successRedirect: "/dealer/checksubscription",
+    failureRedirect: "/dealer/checksubscription",
   })
 
   const userSession = await authenticator.isAuthenticated(request, {
@@ -515,7 +515,7 @@ export default async function GetProfile() {
 
 
 import { type LoaderFunction, type DataFunctionArgs, type LoaderArgs, redirect, createCookieSessionStorage, json, createCookie } from "@remix-run/node"
-import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
+import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
 import { google } from 'googleapis'
 import * as querystring from 'querystring';
 import { prisma } from "~/libs";

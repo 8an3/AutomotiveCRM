@@ -10,10 +10,10 @@ import { Input, Button, Separator, Checkbox, PopoverTrigger, PopoverContent, Pop
 import React, { type SetStateAction, type MouseEvent, type Dispatch, useState, useRef, useEffect } from "react"
 import MesasageContent from "../calls/messageContent";
 import styled from 'styled-components';
-import { type IEventInfo } from "../../backups/calendar.sales"
+import { type IEventInfo } from "backups/calendar.sales"
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
-import { ListSelection2 } from '~/routes/quoteUtils/listSelection'
+import { ListSelection2 } from '~/quoteUtils/listSelection'
 
 interface IProps {
   open: boolean

@@ -1,4 +1,4 @@
-import FeaturePop from "~/routes/overviewUtils/FeaturePop";
+import FeaturePop from "~/overviewUtils/FeaturePop";
 import AccCard from "./AccCard";
 import Servicard from "./Servicard";
 import PartsCard from "./partsCard";

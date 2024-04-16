@@ -1,4 +1,4 @@
-import { conversationsMap } from "../../conversations-objects";
+import { conversationsMap } from "conversations-objects";
 import { ActionType } from "../action-types";
 import { Action } from "../actions";
 
@@ -92,8 +92,8 @@ const reducer = (
         (convo: ReduxConversation) => {
           return convo.friendlyName
             ? convo.friendlyName
-                .toLowerCase()
-                .includes(searchString.toLowerCase())
+              .toLowerCase()
+              .includes(searchString.toLowerCase())
             : false;
         }
       );
