@@ -7,7 +7,7 @@ import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
-import NotificationSystem from "./_authorized.notifications";
+import NotificationSystem from ~/routes/_authorized / internal / notifications";
 import slider from '~/styles/slider.css'
 import secondary from '~/styles/secondary.css'
 

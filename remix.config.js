@@ -4,7 +4,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 // to show environment condition
 if (isDevelopment) {
   console.info({
-    message: `⏪ Rewinds is running`,
+    message: `@DSA is running...`,
     NODE_ENV: process.env.NODE_ENV,
   });
 }

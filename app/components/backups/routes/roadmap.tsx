@@ -6,7 +6,7 @@ import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
-import NotificationSystem from "./_authorized.notifications";
+import NotificationSystem from ~/routes/_authorized / internal / notifications";
 import Roadmap from "./roadmap.list";
 export const loader = async ({ request }) => {
 	const session = await getSession(request.headers.get("Cookie"));

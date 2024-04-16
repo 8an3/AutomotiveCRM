@@ -1,6 +1,6 @@
 import { Container } from "@radix-ui/themes";
 
-import NotificationSystem from "./_authorized.notifications";
+import NotificationSystem from ~/routes/_authorized / internal / notifications";
 import slider from '~/styles/slider.css'
 import { Accordion, AccordionContenSendEmailt, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
 import { toast } from "sonner"
@@ -21,7 +21,7 @@ import { Textarea } from "~/other/textarea";
 import { getSession, commitSession, destroySession } from '../sessions/auth-session.server'
 import { google } from 'googleapis';
 import Sidebar from "~/components/shared/sidebar";
-import getAccessToken, { ensureClient, GetLabel, SetToUnread, SendEmail, MoveEmail, MoveToInbox, SetToTrash2, SaveDraft, Unauthorized } from "~/routes/_authorized.email.server";
+import getAccessToken, { ensureClient, GetLabel, SetToUnread, SendEmail, MoveEmail, MoveToInbox, SetToTrash2, SaveDraft, Unauthorized } from "~/routes/_authorized/internal/email.server";
 import { templateServer } from "~/utils/emailTemplates/template.server";
 import { Cross2Icon } from '@radix-ui/react-icons';
 import financeFormSchema from "./overviewUtils/financeFormSchema";

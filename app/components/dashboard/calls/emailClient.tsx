@@ -32,7 +32,7 @@ import {
   DialogTrigger,
 
 } from "~/components/ui/dialog"
-import { SendEmail, TokenRegen } from "~/routes/_authorized.email.server";
+import { SendEmail, TokenRegen } from "~/routes/_authorized/internal/email.server";
 import Highlight from "@tiptap/extension-highlight"
 import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"

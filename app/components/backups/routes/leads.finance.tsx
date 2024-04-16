@@ -48,18 +48,18 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import { toast } from "sonner"
-import EditWishList from '../components/dashboard/wishlist/WishListEdit';
+import EditWishList from '~/components/dashboard/wishlist/WishListEdit';
 import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "../components/ui/table"
 import { type LinksFunction } from '@remix-run/node';
 import { compareItems, type RankingInfo, rankItem, } from '@tanstack/match-sorter-utils'
 import { type dashBoardType } from "../components/dashboard/schema";
 import { DataTableColumnHeader } from "../components/dashboard/calls/header"
-import ClientCard from '../components/dashboard/calls/clientCard';
-import ClientVehicleCard from '../components/dashboard/calls/clientVehicleCard';
-import EmailClient from '../components/dashboard/calls/emailClient';
-import ClientStatusCard from '../components/dashboard/calls/ClientStatusCard';
-import CompleteCall from '../components/dashboard/calls/completeCall';
-import TwoDaysFromNow from '../components/dashboard/calls/2DaysFromNow';
+import ClientCard from '~/components/dashboard/calls/clientCard';
+import ClientVehicleCard from '~/components/dashboard/calls/clientVehicleCard';
+import EmailClient from '~/components/dashboard/calls/emailClient';
+import ClientStatusCard from '~/components/dashboard/calls/ClientStatusCard';
+import CompleteCall from '~/components/dashboard/calls/completeCall';
+import TwoDaysFromNow from '~/components/dashboard/calls/2DaysFromNow';
 import { dashboardAction, dashboardLoader } from "../components/actions/dashboardCalls";
 import { CalendarCheck } from "lucide-react";
 import AttemptedOrReached from "../components/dashboard/calls/setAttOrReached";

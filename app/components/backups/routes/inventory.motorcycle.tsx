@@ -15,7 +15,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "~/components/ui/dialog"
-import NotificationSystem from "./_authorized.notifications";
+import NotificationSystem from ~/routes/_authorized / internal / notifications";
 import { model } from '~/models'
 
 import { useEffect, useState } from "react";

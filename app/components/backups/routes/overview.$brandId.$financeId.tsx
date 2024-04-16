@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { Overview } from './_authorized.overview.$brandId'
 import AccordionDemo from '~/other/AccordionDemo';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "../other/accordion"
-import NotificationSystem from "./_authorized.notifications";
+import NotificationSystem from ~/routes/_authorized / internal / notifications";
 
 export function OverviewFinanceId({ outletSize }) {
   return (

@@ -11,7 +11,7 @@ import { getMergedFinanceOnFinance } from "~/utils/dashloader/dashloader.server"
 import { commitSession as commitPref, getSession as getPref } from '~/utils/pref.server';
 import { json } from "@remix-run/node";
 import { getClientFileById } from "~/utils/finance/get.server";
-import FinanceOverview from "~/routes/_authorized.customer.finance.overview";
+import FinanceOverview from "~/routes/_authorized/internal/customer.finance.overview";
 import FinanceTab from "./financeTab";
 import {
   Select,

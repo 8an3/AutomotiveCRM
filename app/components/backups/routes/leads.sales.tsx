@@ -9,7 +9,7 @@ import type {
     Table, Column, SortingFn, ColumnDef, ColumnFiltersState, SortingState, VisibilityState, FilterFn, ExpandedState, FilterFns,
 } from "@tanstack/react-table";
 import { toast } from "sonner"
-import EditWishList from '../components/dashboard/wishlist/WishListEdit';
+import EditWishList from '~/components/dashboard/wishlist/WishListEdit';
 import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "../components/ui/table"
 import { type LinksFunction, type DataFunctionArgs } from '@remix-run/node';
 import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
@@ -18,12 +18,12 @@ import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorte
 import { DataTable } from "../components/data-table"
 import { type dashBoardType } from "../components/dashboard/schema";
 import { DataTableColumnHeader } from "../components/dashboard/calls/header"
-import ClientCard from '../components/dashboard/calls/clientCard';
-import ClientVehicleCard from '../components/dashboard/calls/clientVehicleCard';
-import EmailClient from '../components/dashboard/calls/emailClient';
-import ClientStatusCard from '../components/dashboard/calls/ClientStatusCard';
-import CompleteCall from '../components/dashboard/calls/completeCall';
-import TwoDaysFromNow from '../components/dashboard/calls/2DaysFromNow';
+import ClientCard from '~/components/dashboard/calls/clientCard';
+import ClientVehicleCard from '~/components/dashboard/calls/clientVehicleCard';
+import EmailClient from '~/components/dashboard/calls/emailClient';
+import ClientStatusCard from '~/components/dashboard/calls/ClientStatusCard';
+import CompleteCall from '~/components/dashboard/calls/completeCall';
+import TwoDaysFromNow from '~/components/dashboard/calls/2DaysFromNow';
 import { dashboardAction, dashboardLoader } from "../components/actions/dashboardCalls";
 import { DocumentInputs } from '~/routes/_authorized.dashboard.customer.$custId'
 import IndeterminateCheckbox from "../components/dashboard/calls/InderterminateCheckbox"
@@ -52,7 +52,7 @@ import {
 import Sidebar from "~/components/shared/sidebar";
 // <Sidebar />
 import { model } from "~/models";
-import UnitPicker from '../components/dashboard/unitPicker'
+import UnitPicker from '~/components/dashboard/unitPicker'
 import NotificationSystem from "./_authorized.notifications";
 import FinanceTurnover from "~/components/dashboard/calls/financeTurnover";
 import second from '~/styles/second.css'

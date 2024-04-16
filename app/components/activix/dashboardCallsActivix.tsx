@@ -24,10 +24,10 @@ import { getSession, commitSession, getSession as getToken66, commitSession as c
 import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
 import { google } from 'googleapis';
-import oauth2Client, { SendEmail, Unauthorized, } from "~/routes/_authorized.email.server";
+import oauth2Client, { SendEmail, Unauthorized, } from "~/routes/_authorized/internal/email.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
-import { CreateNote, UpdateNote, CreateCommunications, CreateCompleteEvent, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData, UpdateLeadBasic, UpdateLeadPhone, UpdateLeademail, UpdateLeadWantedVeh, UpdateLeadEchangeVeh, UpdateLeadStatus } from "~/routes/_authorized.api.activix";
+import { CreateNote, UpdateNote, CreateCommunications, CreateCompleteEvent, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData, UpdateLeadBasic, UpdateLeadPhone, UpdateLeademail, UpdateLeadWantedVeh, UpdateLeadEchangeVeh, UpdateLeadStatus } from "~/routes/_authorized/internal/api.activix";
 import { QuoteServer } from '~/utils/quote/quote.server';
 import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
 import { GetUser } from "~/utils/loader.server";
