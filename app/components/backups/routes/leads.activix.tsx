@@ -30,7 +30,7 @@ import { Badge } from "../ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "~/components/ui/dialog"
 import second from '~/styles/second.css'
 import { DataTable } from '~/components/activix/data-table';
-import WishList from '~/components/dashboard/shared/wishList'
+import WishList from '~/components/dashboard/wishlist/wishList'
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: second },

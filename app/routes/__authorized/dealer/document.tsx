@@ -1,4 +1,26 @@
-import { Container } from "@radix-ui/themes";
+import { Outlet, useLoaderData } from '@remix-run/react';
+import { ClientOnly } from "remix-utils";
+
+export default function Root() {
+  return (
+    <ClientOnly fallback={<SimplerStaticVersion />} >
+      {() => (
+        <Outlet />
+      )}
+    </ClientOnly>
+  );
+}
+function SimplerStaticVersion() {
+  return (
+    <p>Not working contact support...</p>
+  )
+}
+
+
+
+
+/**
+ * import { Container } from "@radix-ui/themes";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import React from "react";
 import { getSession } from '~/sessions/auth-session.server';
@@ -40,3 +62,5 @@ export default function Quote() {
     </>
   );
 }
+
+ */

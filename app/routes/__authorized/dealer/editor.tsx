@@ -32,15 +32,10 @@ export const loader = async ({ request }) => {
 }
 
 export default function Quote() {
-  const { notifications, user } = useLoaderData()
-  // <Sidebar user = { user } />
-  // <NotificationSystem notifications={notifications} />
-  //
   return (
     <>
       <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-black border-gray-300 font-bold   ">
-        <Sidebar />
-        <NotificationSystem />
+
         <Outlet />
       </div>
     </>

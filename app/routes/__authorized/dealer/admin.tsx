@@ -38,14 +38,10 @@ export const loader = async ({ request }) => {
   const email = session.get("email")
 
   let user = await prisma.user.findUnique({
-    where: {
-      email: email
-    }
+    where: { email: email }
   });
   /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) { redirect('/login') }
   if (email) {
     try {
       user = await prisma.user.findUnique({

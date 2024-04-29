@@ -3,8 +3,8 @@ import { EmailStatus } from "~/utils/infobip/email-status-type";
 import { InfobipAuth } from "~/utils/infobip/auth";
 import { Validator } from "~/utils/infobip/validator";
 //import { WhatsApp } from "../futureRoutes/client.whatsapp";
-import { SMS } from "./client.sms";
-import { Auth } from "./client.auth";
+import { SMS } from "./client/sms";
+import { Auth } from "./client/auth";
 //import { Email } from "./client.email";
 //import { TwoFA } from "../futureRoutes/client.2fa";
 import {

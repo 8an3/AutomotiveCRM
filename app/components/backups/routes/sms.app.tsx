@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState, RefObject } from "react";
 import { Loader2 } from "../icons";
 import { Outlet, useFetcher, useLoaderData, useActionData, Form, useLocation, useSubmit, useMatch } from '@remix-run/react';
 import { Textarea } from '../ui/textarea';
-import { setMessages, setSelectedChannel } from '~/actions/actions';
+import { setMessages, setSelectedChannel } from '~/components/actions/actions';
 import axios from "axios";
 import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
 import { json, type LinksFunction, type LoaderFunction, type ActionFunction, } from '@remix-run/node';

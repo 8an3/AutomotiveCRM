@@ -6,6 +6,7 @@ import PrintContract from "~/components/formToPrint/printContact"
 import React, { useEffect, useRef, useState } from "react";
 import { RemixNavLink, Input, Separator, Button, TextArea, Label, } from "~/components";
 import { useLoaderData } from "@remix-run/react";
+import CustomerGen from "~/routes/__authorized/dealer/document/customerGen";
 
 export default function PrintAndDocs() {
   const { user, finance, merged, filename, financeId } = useLoaderData();
@@ -69,7 +70,7 @@ export default function PrintAndDocs() {
             </div>
           </div>
           <div className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-slate11 z-50">
-            <MyIFrameComponent />
+            <CustomerGen />
           </div>
         </div>
       </div>

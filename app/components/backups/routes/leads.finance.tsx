@@ -84,7 +84,7 @@ import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { ButtonLoading } from "~/components/ui/button-loading";
 import useSWR from 'swr';
 import LastNote from '~/components/dashboard/calls/lastNote';
-import WishList from '~/components/dashboard/shared/wishList'
+import WishList from '~/components/dashboard/wishlist/wishList'
 
 export let loader = dashboardLoader
 

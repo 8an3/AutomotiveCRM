@@ -327,7 +327,7 @@ export default function Sidebar(user, email) {
             >
               <div className="flex flex-col items-start">
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/dealer/email/googleClient`}>
+                  <RemixNavLink to={`/dealer/email/client`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"
@@ -403,7 +403,7 @@ export default function Sidebar(user, email) {
                   </RemixNavLink>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/dealer/document/second`}>
+                  <RemixNavLink to={`/dealer/document/builder`}>
                     <Button
                       variant="link"
                       className="w-full justify-start cursor-pointer mt-5 text-white "
@@ -441,7 +441,7 @@ export default function Sidebar(user, email) {
                   </RemixNavLink>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <RemixNavLink to={`/dealer/roadmap`}>
+                  <RemixNavLink to={`/roadmap`}>
                     <Button
                       variant="link"
                       className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"

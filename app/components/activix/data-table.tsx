@@ -26,7 +26,7 @@ import {
 import { env } from 'process';
 import axios from 'axios';
 import { ButtonLoading } from "~/components/ui/button-loading";
-import { SyncLeadData } from "~/routes/__authorized/dealer/api.activix";
+import { SyncLeadData } from "~/routes/__authorized/dealer/api/activix";
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 
@@ -648,7 +648,7 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
           <ButtonLoading
             size="lg"
             onClick={() => {
-              navigate("/lead/activix/sync");
+              navigate("/leads/activix/sync");
             }} className="w-auto cursor-pointer ml-3  hover:text-[#02a9ff] text-[#02a9ff] border-[#02a9ff]"
             isSubmitting={isSubmitting}
             loadingText="Naivigating to Client File.."

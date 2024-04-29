@@ -18,14 +18,14 @@ export async function CheckSub({ user }) {
             if (subscriptionId === "trialing") {
                 console.log('3', email)
                 console.log("subscriptionId", subscriptionId)
-                await updateUser({ email: email, subscriptionId: subscriptionId, customerId: customerId })
-                return redirect('/checksubscription')
+                const update = await updateUser({ email: email, subscriptionId: subscriptionId, customerId: customerId })
+                return update
             }
             else if (subscriptionId === "active") {
                 //console.log("subscriptionId", subscriptionId)
                 console.log('4')
-                await updateUser({ email: email, subscriptionId: subscriptionId, customerId: customerId })
-                return redirect('/checksubscription')
+                const update = await updateUser({ email: email, subscriptionId: subscriptionId, customerId: customerId })
+                return update
             }
         }
     } else {

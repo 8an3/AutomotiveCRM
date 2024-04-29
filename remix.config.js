@@ -28,6 +28,7 @@ module.exports = {
   serverDependenciesToBundle: [
     "axios",
     "@azure/msal-react",
+    "Path2D"
   ],
   tailwind: true,
   routes(defineRoutes) {

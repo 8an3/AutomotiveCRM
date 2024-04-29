@@ -52,11 +52,11 @@ import {
 import Sidebar from "~/components/shared/sidebar";
 // <Sidebar />
 import { model } from "~/models";
-import UnitPicker from '~/components/dashboard/unitPicker'
+import UnitPicker from '~/components/dashboard/unitPicker/unitPicker'
 import NotificationSystem from "./_authorized.notifications";
 import FinanceTurnover from "~/components/dashboard/calls/financeTurnover";
 import second from '~/styles/second.css'
-import WishList from '~/components/dashboard/shared/wishList'
+import WishList from '~/components/dashboard/wishlist/wishList'
 
 
 export const links: LinksFunction = () => [

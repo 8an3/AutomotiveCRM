@@ -1,6 +1,6 @@
 import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect, } from "@remix-run/node";
-import { Form, Link, useLoaderData, useLocation, Await, useFetcher, useSubmit } from "@remix-run/react";
+import { Form, Link, useLoaderData, useLocation, Await, useFetcher, useSubmit, useNavigate } from "@remix-run/react";
 import React, { useEffect, useRef, useState, Suspense } from "react";
 import { useEventSource } from "remix-utils";
 import { emitter } from "~/services/emitter";
@@ -24,6 +24,7 @@ import {
 import { Bell, BellRing, BookOpenCheck, Milestone, X } from 'lucide-react';
 import { Button, Input, Label } from "~/components/ui";
 import useSWR, { SWRConfig, mutate } from 'swr';
+import EmailMessages from "./notifications/email";
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -77,10 +78,10 @@ function NotificationSkeleton() {
   )
 }
 
-let url4 = '/notifications/email'
-let url3 = '/notifications/newLead'
-let url2 = '/notifications/updates'
-let url1 = '/notifications/messages'
+let url4 = 'http://localhost:3000/dealer/email/newEmails'
+let url3 = 'http://localhost:3000/dealer/notifications/newLead'
+let url2 = 'http://localhost:3000/dealer/notifications/updates'
+let url1 = 'http://localhost:3000/dealer/notifications/messages'
 
 export default function NotificationSystem() {
 
@@ -117,6 +118,9 @@ export default function NotificationSystem() {
     { refreshInterval: 300000 }
   );
 
+  const combined = {
+    ...userMessages, ...notificationsEmail
+  }
 
   return (
     <Popover>
@@ -135,7 +139,7 @@ export default function NotificationSystem() {
           <TabsContent value="Msgs" >
             <Suspense fallback={<NotificationSkeleton />}>
               <Await resolve={userMessages}>
-                {(userMessages) => <NotificationTemplate data={userMessages} mutate={mutate} url1={url1} />}
+                {(combined) => <NotificationTemplate data={combined} mutate={mutate} url1={url1} url4={url4} />}
               </Await>
             </Suspense>
           </TabsContent>
@@ -160,8 +164,43 @@ export default function NotificationSystem() {
 
 }
 
-function NotificationTemplate({ data, mutate, url1 }) {
-  const notifications = data.userMessages
+
+export async function GetEmails(accessToken) {
+  const response = await fetch(`https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages`, {// or https://graph.microsoft.com/v1.0/me/messages
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+  return data;
+}
+
+export async function GetEmailsCount(accessToken) {
+  const response = await fetch(`https://graph.microsoft.com/v1.0/me/mailFolders/inbox`, {// or https://graph.microsoft.com/v1.0/me/messages
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+  return data;
+}
+
+
+function NotificationTemplate({ data, mutate, url1, url4 }) {
+  const [notifications, setNotifications] = useState(data.userMessages)
+  const [emails, setEmails] = useState([])
+  const [emailsCount, setEmailsCount] = useState(0)
+  const [idToken, setIdToken] = useState(EmailMessages)
   const location = useLocation()
   const pathname = location.pathname
   let fetcher = useFetcher()
@@ -178,66 +217,138 @@ function NotificationTemplate({ data, mutate, url1 }) {
     });
     mutate()
   };
+  useEffect(() => {
+    const GetEmailsData = async () => {
+      const getEmails = await GetEmails(idToken)
+      const getEmailsCount = await GetEmailsCount(idToken)
+      setEmails(getEmails.value)
+      setEmailsCount(getEmailsCount.value)
+    }
+    GetEmailsData()
+  }, [idToken]);
+
   console.log(notifications, ' in notifications fist tab')
   return (
-    <ul>
-      {notifications && notifications.length > 0 ? (
-        notifications.map((notification) => (
-          <li key={notification.id} className={`rounded-md shadow mt-2 mx-auto ${notification.isRead ? 'bg-[#454954]' : 'bg-[#45495486]'}`}>
-            <div className="grid grid-cols-10 ">
-              <div className="col-span-9 p-3" onClick={() => { handleRowClick(notification); }} >
-                <div className="flex justify-between" >
-                  <h2 className='text-[#fff]'>
-                    {notification.title}
-                  </h2>
-                  <p className='text-[#ffffffad] text-sm mt-auto'>
-                    {new Date(notification.createdAt).toLocaleString()}
+    <>
+      <ul>
+        {emails && emails.length > 0 ? (
+          emails.map((notification) => (
+            <li key={notification.id} className={`rounded-md shadow mt-2 mx-auto ${notification.isRead ? 'bg-[#454954]' : 'bg-[#45495486]'}`}>
+              <p>{emailsCount} , emailsCount</p>
+              <div className="grid grid-cols-10 ">
+                <div className="col-span-9 p-3" onClick={() => { handleRowClick(notification); }} >
+                  <div className="flex justify-between" >
+                    <h2 className='text-[#fff]'>
+                      {notification.title}
+                    </h2>
+                    <p className='text-[#ffffffad] text-sm mt-auto'>
+                      {new Date(notification.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <p className='text-[#fff]'>
+                    {notification.content}
                   </p>
                 </div>
-                <p className='text-[#fff]'>
-                  {notification.content}
-                </p>
+
+
+                <div className="col-span-1">
+                  <fetcher.Form method='post' className=" justify-end items-end">
+                    <input type='hidden' name='financeId' value={notification.financeId} />
+                    <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                    <input type='hidden' name='id' value={notification.id} />
+                    <input type='hidden' name='path' value={pathname} />
+                    <input type='hidden' name='intent' value='dimiss' />
+
+                    <input type='hidden' name='userId' value={notification.userId} />
+                    <Button className='text-[#fff] '>
+                      <X color="#02a9ff" size={20} strokeWidth={1.5} />
+                    </Button>
+                  </fetcher.Form>
+                  <fetcher.Form method='post'>
+                    <input type='hidden' name='financeId' value={notification.financeId} />
+                    <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                    <input type='hidden' name='id' value={notification.id} />
+                    <input type='hidden' name='userId' value={notification.userId} />
+                    <input type='hidden' name='path' value={pathname} />
+                    <input type='hidden' name='intent' value='read' />
+                    <Button className='text-[#fff] justify-center  items-center'>
+                      <BookOpenCheck size={20} color="#02a9ff" strokeWidth={1.5} />
+                    </Button>
+                  </fetcher.Form>
+                  <Link to={`/dealer/customer/${notification.clientfileId}/${notification.financeId}`} >
+                    <Button className='text-[#fff] justify-center  items-center'>
+                      <Milestone size={20} color="#02a9ff" strokeWidth={1.5} />
+                    </Button>
+                  </Link>
+                </div>
               </div>
+            </li>
+          ))
+        ) : (
+          <p className='text-[#fff]'>No notifications</p>
+        )
+        }
+      </ul >
+      <ul>
+        {notifications && notifications.length > 0 ? (
+          notifications.map((notification) => (
+            <li key={notification.id} className={`rounded-md shadow mt-2 mx-auto ${notification.isRead ? 'bg-[#454954]' : 'bg-[#45495486]'}`}>
+              <div className="grid grid-cols-10 ">
+                <div className="col-span-9 p-3" onClick={() => { handleRowClick(notification); }} >
+                  <div className="flex justify-between" >
+                    <h2 className='text-[#fff]'>
+                      {notification.title}
+                    </h2>
+                    <p className='text-[#ffffffad] text-sm mt-auto'>
+                      {new Date(notification.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <p className='text-[#fff]'>
+                    {notification.content}
+                  </p>
+                </div>
 
 
-              <div className="col-span-1">
-                <fetcher.Form method='post' className=" justify-end items-end">
-                  <input type='hidden' name='financeId' value={notification.financeId} />
-                  <input type='hidden' name='clientfileId' value={notification.clientfileId} />
-                  <input type='hidden' name='id' value={notification.id} />
-                  <input type='hidden' name='path' value={pathname} />
-                  <input type='hidden' name='intent' value='dimiss' />
+                <div className="col-span-1">
+                  <fetcher.Form method='post' className=" justify-end items-end">
+                    <input type='hidden' name='financeId' value={notification.financeId} />
+                    <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                    <input type='hidden' name='id' value={notification.id} />
+                    <input type='hidden' name='path' value={pathname} />
+                    <input type='hidden' name='intent' value='dimiss' />
 
-                  <input type='hidden' name='userId' value={notification.userId} />
-                  <Button className='text-[#fff] '>
-                    <X color="#02a9ff" size={20} strokeWidth={1.5} />
-                  </Button>
-                </fetcher.Form>
-                <fetcher.Form method='post'>
-                  <input type='hidden' name='financeId' value={notification.financeId} />
-                  <input type='hidden' name='clientfileId' value={notification.clientfileId} />
-                  <input type='hidden' name='id' value={notification.id} />
-                  <input type='hidden' name='userId' value={notification.userId} />
-                  <input type='hidden' name='path' value={pathname} />
-                  <input type='hidden' name='intent' value='read' />
-                  <Button className='text-[#fff] justify-center  items-center'>
-                    <BookOpenCheck size={20} color="#02a9ff" strokeWidth={1.5} />
-                  </Button>
-                </fetcher.Form>
-                <Link to={`/customer/${notification.clientfileId}/${notification.financeId}`} >
-                  <Button className='text-[#fff] justify-center  items-center'>
-                    <Milestone size={20} color="#02a9ff" strokeWidth={1.5} />
-                  </Button>
-                </Link>
+                    <input type='hidden' name='userId' value={notification.userId} />
+                    <Button className='text-[#fff] '>
+                      <X color="#02a9ff" size={20} strokeWidth={1.5} />
+                    </Button>
+                  </fetcher.Form>
+                  <fetcher.Form method='post'>
+                    <input type='hidden' name='financeId' value={notification.financeId} />
+                    <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                    <input type='hidden' name='id' value={notification.id} />
+                    <input type='hidden' name='userId' value={notification.userId} />
+                    <input type='hidden' name='path' value={pathname} />
+                    <input type='hidden' name='intent' value='read' />
+                    <Button className='text-[#fff] justify-center  items-center'>
+                      <BookOpenCheck size={20} color="#02a9ff" strokeWidth={1.5} />
+                    </Button>
+                  </fetcher.Form>
+                  <Link to={`/dealer/customer/${notification.clientfileId}/${notification.financeId}`} >
+                    <Button className='text-[#fff] justify-center  items-center'>
+                      <Milestone size={20} color="#02a9ff" strokeWidth={1.5} />
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          </li>
-        ))
-      ) : (
-        <p className='text-[#fff]'>No notifications</p>
-      )
-      }
-    </ul >
+            </li>
+          ))
+        ) : (
+          <p className='text-[#fff]'>No notifications</p>
+        )
+        }
+      </ul >
+    </>
+
   )
 }
 

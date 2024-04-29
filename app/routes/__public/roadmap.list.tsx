@@ -29,12 +29,12 @@ export const meta: MetaFunction = ({ data }) => {
 export default function Roadmap() {
 
 	const todoRoadmap = [
-		{ type: "issue", desc: "API file upload will be released once google approves gmail as its still in the process right now" },
+		{ type: "done needs testing", desc: "roles based access - done needs testing" },
+		{ type: "done needs testing", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
+		{ type: "done needs testing", desc: "have all features off of the same platform/project - done needs testing" },
+		{ type: "done needs testing", desc: "API file upload will be released once google approves gmail as its still in the process right now - done needs testing" },
 		{ type: "issue", desc: "move staff chat to sms messenger" },
-		{ type: "issue", desc: "roles based access" },
-		{ type: "issue", desc: "everything google on hold - google is asking for requirments that they were never upfront about" },
 		{ type: "issue", desc: "need to change how to load overview, need to pull your own by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
-		{ type: "issue", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - wip" },
 
 
 		{ type: "admin", desc: "export customers" },
@@ -127,11 +127,13 @@ export default function Roadmap() {
 
 
 	const DoneRoadMap = [
+		{ type: "issue", desc: "add ping system for notes - COMPLETED BUT NEEDS TESTING" },
+
 		{ type: "issue", desc: "add customer on dashboard needs to be updated to be the same as on calendar" },
 		{ type: "sales process", desc: "update finance mgr lock so that the sales person can have a in queue timer" },
-		{ type: "issue", desc: "add ping system for notes - COMPLETED BUT NEEDS TESTING" },
 		{ type: "issue", desc: "need mileage for new vehciles for printing paperwork" },
 		{ type: "wip - crm integration", desc: "complete first integration" },
+		{ type: "issue", desc: "everything google on hold - google is asking for requirments that they were never upfront about" },
 		{ type: "Automation", desc: "have it so you can tag a customers file so when a test drive cmoes around it just reminds you to get them on  ti or on wish ist" },
 		{ type: "dealer onboarding", desc: "script how-to" },
 		{ type: "dealer onboarding", desc: "payment calc how-to" },

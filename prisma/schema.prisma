@@ -32,10 +32,8 @@ model User {
   email                 String   @unique(map: "User.email_unique")
   phone                 String?  @unique
   lastSubscriptionCheck String?
-  refreshToken          String?
   expires_in            String?
   omvicNumber           String?
-  idToken               String?
   position              String?
   roleId                String
   profileId             String   @unique
@@ -70,16 +68,6 @@ model microsoftAccount {
   givenName        String?
   familyName       String?
   identityProvider String?
-}
-
-model microCache {
-  id                String   @id @default(cuid())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  userEmail         String   @unique
-  accessToken       String?
-  accessTokenExpiry String?
-  refreshToken      String?
 }
 
 model userIntergration {
@@ -1082,10 +1070,9 @@ model Dashboard {
   customerWS         String?
   otherDocs          String?
   deposit            String?
-
-  urgentFinanceNote String?
-  funded            String?
-  leadSource        String?
+  urgentFinanceNote  String?
+  funded             String?
+  leadSource         String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -23,8 +23,8 @@ import { InfoEmpty, SubmitDocument, Plus } from "~/icons";
 import type { z } from "zod";
 
 import type { LoaderArgs, ActionArgs } from "@remix-run/node";
-import Route2 from "~/routes/__authorized/dealer/user.notes._index";
-import Route3 from "~/routes/__authorized/dealer/user.notes.new._index";
+import Route2 from "~/routes/__authorized/dealer/user/notes._index";
+import Route3 from "~/routes/__authorized/dealer/user/notes.new._index";
 
 export const handle = createSitemap("/notes", 0.8);
 

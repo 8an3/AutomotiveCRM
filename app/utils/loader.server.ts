@@ -22,9 +22,10 @@ export async function GetUser(email) {
       profileId: true,
       omvicNumber: true,
       lastSubscriptionCheck: true,
-      refreshToken: true,
       profile: true,
-      idToken: true,
+      activisUserId: true,
+      activixEmail: true,
+      activixActivated: true,
       role: { select: { symbol: true, name: true } },
     },
   });

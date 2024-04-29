@@ -70,6 +70,7 @@ export async function loader({ request }: LoaderArgs) {
   if (!email) {
     return json({ ENV });
   }
+  const referrer = request.headers.get('referer');
 
   const loaderData = {
     ENV,
@@ -78,7 +79,7 @@ export async function loader({ request }: LoaderArgs) {
   } satisfies RootLoaderData;
 
   return json(
-    { loaderData, user },
+    { loaderData, user, referrer },
     {
       headers: { "Set-Cookie": await commitSession(userSession) },
     }
@@ -99,36 +100,36 @@ export default function App({ pca }: AppProps) {
         <Links />
       </head>
       <body id="__remix">
-       {/*  <MsalProvider instance={pca}>
+        {/*  <MsalProvider instance={pca}>
          <ProvideAppContext>   */}
-            <Provider store={store}>
-              <FinanceIdContext.Provider value={financeId}>
-                <TooltipProvider>
-                  <IconoirProvider
-                    iconProps={{
-                      strokeWidth: 2,
-                      width: "1.5em",
-                      height: "1.5em",
-                    }}
-                  >
-                    <>
-                      <Outlet />
-                      <Toaster richColors />
-                      {configDev.isDevelopment &&
-                        configDev.features.debugScreens && (
-                          <TailwindIndicator />
-                        )}
-                    </>
-                  </IconoirProvider>
-                </TooltipProvider>
-                <VercelAnalytics />
-                <ScrollRestoration />
-                <Scripts />
-                <LiveReload />
-                <GlobalLoading />
-              </FinanceIdContext.Provider>
-            </Provider>
-         {/*   </ProvideAppContext>
+        <Provider store={store}>
+          <FinanceIdContext.Provider value={financeId}>
+            <TooltipProvider>
+              <IconoirProvider
+                iconProps={{
+                  strokeWidth: 2,
+                  width: "1.5em",
+                  height: "1.5em",
+                }}
+              >
+                <>
+                  <Outlet />
+                  <Toaster richColors />
+                  {configDev.isDevelopment &&
+                    configDev.features.debugScreens && (
+                      <TailwindIndicator />
+                    )}
+                </>
+              </IconoirProvider>
+            </TooltipProvider>
+            <VercelAnalytics />
+            <ScrollRestoration />
+            <Scripts />
+            <LiveReload />
+            <GlobalLoading />
+          </FinanceIdContext.Provider>
+        </Provider>
+        {/*   </ProvideAppContext>
         </MsalProvider> */}
       </body>
     </html>

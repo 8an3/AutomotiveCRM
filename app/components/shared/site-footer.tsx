@@ -22,9 +22,6 @@ export function SiteFooter() {
       )}
     >
 
-
-
-
     </footer>
   );
 }
