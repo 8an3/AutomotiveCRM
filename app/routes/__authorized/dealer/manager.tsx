@@ -36,8 +36,8 @@ const sidebarNavItems = [
     to: "/dealer/manager/csi",
   },
   {
-    title: "Appearance",
-    to: "/dealer/manager/dashboard",
+    title: "Store Hours",
+    to: "/dealer/manager/storeHours",
   },
   {
     title: "Notifications",
@@ -68,7 +68,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
           <aside className="-mx-4 lg:w-1/5">
             <SidebarNav items={sidebarNavItems} />
           </aside>
-          <div className="flex-1 lg:max-w-2xl">
+          <div className="flex-1 ">
             <Outlet />
           </div>
         </div>

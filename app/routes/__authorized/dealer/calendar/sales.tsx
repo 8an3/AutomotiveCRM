@@ -961,8 +961,8 @@ export default function DnDResource() {
   const ViewNamesGroup = ({ views: viewNames, view, messages, onView }) => {
     return viewNames.map((name) => (
       <Button
-        type="button"
         key={name}
+        type="button"
         className={clsx({ 'rbc-active': view === name })}
         onClick={() => onView(name)}
       >

@@ -46,15 +46,19 @@ export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
   { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
 ]
+const dealerName = process.env.DEALER_NAME
 
 export async function loader({ request }: LoaderArgs) {
   const userSession = await getSession(request.headers.get("Cookie"))
   const email = userSession.get("email")
+  if (dealerName !== 'Dealer Sales Assistant') {
+    return redirect('/auth/login')
+  }
   if (email) {
     let user = await GetUser(email);
     throw user && redirect("/quote/Harley-Davidson");
   };
-  ;
+
   return null
 }
 
@@ -71,7 +75,6 @@ export default function Index() {
   return (
     <>
       <div className='bg-black'>
-        <NavigationMenuSales />
         <AlertBox />
         <NewHeader />
         <NewSection />

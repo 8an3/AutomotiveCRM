@@ -33,6 +33,7 @@ export default function Roadmap() {
 		{ type: "done needs testing", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
 		{ type: "done needs testing", desc: "have all features off of the same platform/project - done needs testing" },
 		{ type: "done needs testing", desc: "API file upload will be released once google approves gmail as its still in the process right now - done needs testing" },
+
 		{ type: "issue", desc: "move staff chat to sms messenger" },
 		{ type: "issue", desc: "need to change how to load overview, need to pull your own by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
 

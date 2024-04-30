@@ -27,10 +27,6 @@ export async function loader({ request }: LoaderFunction) {
 }
 
 
-export const meta = {
-  title: "Manager",
-  description: "Advanced form functionality for managers.",
-}
 
 const sidebarNavItems = [
   {
@@ -74,7 +70,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
           <aside className="-mx-4 lg:w-1/5">
             <SidebarNav items={sidebarNavItems} />
           </aside>
-          <div className="flex-1 lg:max-w-2xl">
+          <div className="flex-1">
             <Outlet />
           </div>
         </div>

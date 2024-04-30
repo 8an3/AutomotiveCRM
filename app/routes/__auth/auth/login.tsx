@@ -10,7 +10,7 @@ import { redirect } from "@remix-run/node"; // or cloudflare/deno
 import { Button } from '~/components';
 import { useEffect } from 'react';
 
-
+const dealerName = process.env.DEALER_NAME
 export default function Welcome() {
   const app = useAppContext();
   const { instance } = useMsal();
@@ -50,7 +50,7 @@ export default function Welcome() {
               <div className="flex items-center justify-center text-center">
 
                 <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-                  <h1 className="text-white">Welcome to D.S.A.</h1>
+                  <h1 className="text-white">Welcome to {dealerName} CRM</h1>
                   <p className="mt-5 text-white">
                     Log-in
                   </p>
@@ -76,7 +76,8 @@ export default function Welcome() {
             <div className="flex items-center justify-center text-center">
 
               <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-                <h1 className="text-white">Welcome to D.S.A.</h1>
+                <h1 className="text-white">Welcome to {dealerName} CRM</h1>
+
                 <p className="mt-5 text-white">
                   Are you sure you want to log out?
                 </p>

@@ -19,128 +19,114 @@ export async function action({ request, }: ActionFunctionArgs) {
   const dealerName = formPayload.dealerName
   function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-  const createFirstRepo = async (newDealerRepoName) => {
-    const YOUR_GITHUB_TOKEN = process.env.PERSONAL_ACCESS_TOKEN;
-    const templateOwner = '8an3';
-    const templateRepo = 'thesalespersonscrmm';
-    const newRepoName = newDealerRepoName;
-    const newRepoOwner = '8an3';
+  const envVar = [
+    {
+      key: 'DEALER_NAME',
+      target: 'production',
+      type: 'system',
+      value: dealerName
+    },
+    {
+      key: 'REMIX_DEV_EMAIL',
+      target: 'production',
+      type: 'system',
+      value: "skylerzanth@outlook.com"
+    },
+    {
+      key: 'REMIX_ADMIN_EMAIL',
+      target: 'production',
+      type: 'system',
+      value: formPayload.dealerEmailAdmin,
+    },
+    {
 
-    const apiUrl = `https://api.github.com/repos/${templateOwner}/${templateRepo}/generate`;
+      key: 'MICRO_APP_ID',
+      target: 'production',
+      type: 'system',
+      value: `0fa1346a-ab27-4b54-bffd-e76e9882fcfe`,
+    },
+    {
+      key: 'MICRO_TENANT_ID',
+      target: 'production',
+      type: 'system',
+      value: `fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6`,
+    },
+    {
+      key: 'MICRO_CLIENT_SECRET',
+      target: 'production',
+      type: 'system',
+      value: `rut8Q~s5LpXMnEjujrxkcJs9H3KpUzxO~LfAOc-D`,
+    },
+    {
+      key: 'CLIENT_ID',
+      target: 'production',
+      type: 'system',
+      value: `0fa1346a-ab27-4b54-bffd-e76e9882fcfe`,
+    },
+    {
+      key: 'TENANT_ID',
+      target: 'production',
+      type: 'system',
+      value: `fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6`,
+    },
+    {
+      key: 'CLIENT_SECRET',
+      target: 'production',
+      type: 'system',
+      value: `rut8Q~s5LpXMnEjujrxkcJs9H3KpUzxO~LfAOc-D`,
+    },
+    {
+      key: 'REMIX_SESSION_SECRET',
+      target: 'production',
+      type: 'system',
+      value: '3847ad8f0be06852c4b92b030fe1efe3',
+    },
+    {
+      key: 'REMIX_ADMIN_EMAIL',
+      target: 'production',
+      type: 'system',
+      value: 'skylerzanth@outlook.com',
+    },
+    {
+      key: 'REMIX_ADMIN_PASSWORD',
+      target: 'production',
+      type: 'system',
+      value: 'Ch3w8acca66',
+    },
+    {
+      key: 'COOKIE_SECRET',
+      target: 'production',
+      type: 'system',
+      value: 'cookiesecret_sauce66',
+    },
+    {
+      key: 'REMIX_APP_NAME',
+      target: 'production',
+      type: 'system',
+      value: 'dealersalesassistant',
+    },
+    {
+      key: 'DATABASE_URL',
+      target: 'production',
+      type: 'system',
+      value: 'postgres://default:Ub6EtAvk5jqV@ep-cool-wood-a44zvgt4-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require',
+    },
+    {
+      key: 'STRIPE_SECRET_KEY',
+      target: 'production',
+      type: 'system',
+      value: 'sk_live_pNtrt5zYNjHQtYrSrINfKyAJ',
+    },
+    {
+      key: 'API_ACTIVIX',
+      target: 'production',
+      type: 'system',
+      value: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk',
+    },
+  ]
 
-    const config = { headers: { 'Accept': 'application/vnd.github.baptiste-preview+json', 'Authorization': `token ${YOUR_GITHUB_TOKEN}`, }, };
-
-    const data = { name: newRepoName, owner: newRepoOwner, };
-    return axios.post(apiUrl, data, config).then(response => { console.log('Repository created successfully:', response.data); })
-      .catch(error => { console.error('Error creating repository:', error.response.data); });
-  };
-  const createSecondRepo = async (newDealerRepoName) => {
-    const YOUR_GITHUB_TOKEN = process.env.PERSONAL_ACCESS_TOKEN;
-    const templateOwner = '8an3';
-    const templateRepo = 'third';
-    const newRepoName = newDealerRepoName;
-    const newRepoOwner = '8an3';
-
-    const apiUrl = `https://api.github.com/repos/${templateOwner}/${templateRepo}/generate`;
-
-    const config = { headers: { 'Accept': 'application/vnd.github.baptiste-preview+json', 'Authorization': `token ${YOUR_GITHUB_TOKEN}`, }, };
-
-    const data = { name: newRepoName, owner: newRepoOwner, };
-    return axios.post(apiUrl, data, config).then(response => { console.log('Repository created successfully:', response.data); })
-      .catch(error => { console.error('Error creating repository:', error.response.data); });
-  };
-  const createThirdRepo = async (newDealerRepoName) => {
-    const YOUR_GITHUB_TOKEN = process.env.PERSONAL_ACCESS_TOKEN;
-    const templateOwner = '8an3';
-    const templateRepo = 'crmsat';
-    const newRepoName = newDealerRepoName;
-    const newRepoOwner = '8an3';
-
-    const apiUrl = `https://api.github.com/repos/${templateOwner}/${templateRepo}/generate`;
-
-    const config = { headers: { 'Accept': 'application/vnd.github.baptiste-preview+json', 'Authorization': `token ${YOUR_GITHUB_TOKEN}`, }, };
-
-    const data = { name: newRepoName, owner: newRepoOwner, };
-    return axios.post(apiUrl, data, config).then(response => { console.log('Repository created successfully:', response.data); })
-      .catch(error => { console.error('Error creating repository:', error.response.data); });
-  };
-  const createAxios = async (newDealerRepoName) => {
-    const apiUrl = 'https://api.planetscale.com/v1/organizations/skylerzanth/databases';
-    const planetScale_token = process.env.PLANETSCALE_TOKEN;
-    const config = {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${planetScale_token}`,
-      },
-    };
-
-    const requestData = {
-      // Include your request payload here
-      "name": newDealerRepoName,
-      "plan": 'hobby',
-    };
-
-    try {
-      const response = await axios.post(apiUrl, requestData, config);
-      console.log('Database created successfully:', response.data);
-      return response
-    } catch (error) {
-      console.error('Error creating database:', error.response.data);
-    }
-  };
-  const createSecondAxios = async (newDealerRepoName) => {
-    const apiUrl = 'https://api.planetscale.com/v1/organizations/skylerzanth/databases';
-    const planetScale_token = process.env.PLANETSCALE_TOKEN;
-    const config = {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${planetScale_token}`,
-      },
-    };
-
-    const requestData = {
-      // Include your request payload here
-      "name": newDealerRepoName,
-      "plan": 'hobby',
-    };
-
-    try {
-      const response = await axios.post(apiUrl, requestData, config);
-      console.log('Database created successfully:', response.data);
-      return response
-    } catch (error) {
-      console.error('Error creating database:', error.response.data);
-    }
-  };
-  const createThirdAxios = async (newDealerRepoName) => {
-    const apiUrl = 'https://api.planetscale.com/v1/organizations/skylerzanth/databases';
-    const planetScale_token = process.env.PLANETSCALE_TOKEN;
-    const config = {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${planetScale_token}`,
-      },
-    };
-
-    const requestData = {
-      // Include your request payload here
-      "name": newDealerRepoName,
-      "plan": 'hobby',
-    };
-
-    try {
-      const response = await axios.post(apiUrl, requestData, config);
-      console.log('Database created successfully:', response.data);
-      return response
-    } catch (error) {
-      console.error('Error creating database:', error.response.data);
-    }
-  };
-  const createFirstVercel = async (newDealerRepoName, createFirst, createFirstPlanet) => {
-    const vercelToken = process.env.VERCEL_TOKEN;
+  const createFirstVercel = async (newDealerRepoName) => {
+    const vercelToken = process.env.BLOB_READ_WRITE_TOKEN;
 
     const apiUrl = 'https://api.vercel.com/v9/projects';
 
@@ -153,65 +139,10 @@ export async function action({ request, }: ActionFunctionArgs) {
 
     const projectData = {
       name: newDealerRepoName,
-      environmentVariables: [
-        {
-          key: 'GOOGLE_PROD_CALLBACK_URL',
-          target: 'production',
-          type: 'system',
-          value: `${createFirst.name}/google/callback`,
-        },
-        {
-          key: 'REMIX_SESSION_SECRET',
-          target: 'production',
-          type: 'system',
-          value: '3847ad8f0be06852c4b92b030fe1efe3',
-        },
-        {
-          key: 'REMIX_ADMIN_EMAIL',
-          target: 'production',
-          type: 'system',
-          value: 'skylerzanth@gmail.com',
-        },
-        {
-          key: 'REMIX_ADMIN_PASSWORD',
-          target: 'production',
-          type: 'system',
-          value: 'Ch3w8acca66',
-        },
-        {
-          key: 'COOKIE_SECRET',
-          target: 'production',
-          type: 'system',
-          value: 'cookiesecret_sauce66',
-        },
-        {
-          key: 'REMIX_APP_NAME',
-          target: 'production',
-          type: 'system',
-          value: 'dealersalesassistant',
-        },
-        {
-          key: 'DATABASE_URL',
-          target: 'production',
-          type: 'system',
-          value: createFirstPlanet.url,
-        },
-        {
-          key: 'STRIPE_SECRET_KEY',
-          target: 'production',
-          type: 'system',
-          value: 'sk_live_pNtrt5zYNjHQtYrSrINfKyAJ',
-        },
-        {
-          key: 'API_ACTIVIX',
-          target: 'production',
-          type: 'system',
-          value: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk',
-        },
-      ],
+      environmentVariables: envVar,
       framework: 'remix',
       gitRepository: {
-        repo: newDealerRepoName,
+        repo: 'https://github.com/8an3/thesalespersonscrmm.git',
         type: 'github',
       },
       publicSource: true,
@@ -220,13 +151,13 @@ export async function action({ request, }: ActionFunctionArgs) {
 
     try {
       const response = await axios.post(apiUrl, projectData, config);
-      console.log('Project created successfully:', response.data);
+      console.log('Project created successfully:', response.data, response);
     } catch (error) {
       console.error('Error creating project:', error.response.data);
     }
   };
 
-  const createSecondVercel = async (newDealerRepoName, createSec, createSecondPlanet) => {
+  const createSecondVercel = async (newDealerRepoName) => {
 
     const vercelToken = process.env.VERCEL_TOKEN;
 
@@ -241,152 +172,10 @@ export async function action({ request, }: ActionFunctionArgs) {
 
     const projectData = {
       name: newDealerRepoName,
-      environmentVariables: [
-        {
-          key: 'GOOGLE_PROD_CALLBACK_URL',
-          target: 'production',
-          type: 'system',
-          value: `${createSec.name}/google/callback`,
-        },
-        {
-          key: 'REMIX_SESSION_SECRET',
-          target: 'production',
-          type: 'system',
-          value: '3847ad8f0be06852c4b92b030fe1efe3',
-        },
-        {
-          key: 'REMIX_ADMIN_EMAIL',
-          target: 'production',
-          type: 'system',
-          value: 'skylerzanth@gmail.com',
-        },
-        {
-          key: 'REMIX_ADMIN_PASSWORD',
-          target: 'production',
-          type: 'system',
-          value: 'Ch3w8acca66',
-        },
-        {
-          key: 'COOKIE_SECRET',
-          target: 'production',
-          type: 'system',
-          value: 'cookiesecret_sauce66',
-        },
-        {
-          key: 'REMIX_APP_NAME',
-          target: 'production',
-          type: 'system',
-          value: 'dealersalesassistant',
-        },
-        {
-          key: 'DATABASE_URL',
-          target: 'production',
-          type: 'system',
-          value: createSecondPlanet.url,
-        },
-        {
-          key: 'STRIPE_SECRET_KEY',
-          target: 'production',
-          type: 'system',
-          value: 'sk_live_pNtrt5zYNjHQtYrSrINfKyAJ',
-        },
-        {
-          key: 'API_ACTIVIX',
-          target: 'production',
-          type: 'system',
-          value: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk',
-        },
-      ],
+      environmentVariables: envVar,
       framework: 'remix',
       gitRepository: {
-        repo: newDealerRepoName,
-        type: 'github',
-      },
-      publicSource: true,
-      skipGitConnectDuringLink: true,
-    };
-
-    try {
-      const response = await axios.post(apiUrl, projectData, config);
-      console.log('Project created successfully:', response.data);
-    } catch (error) {
-      console.error('Error creating project:', error.response.data);
-    }
-  };
-  const createThirdVercel = async (newDealerRepoName, createThird, createThirdPlanet) => {
-
-    const vercelToken = process.env.VERCEL_TOKEN;
-
-    const apiUrl = 'https://api.vercel.com/v9/projects';
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${vercelToken}`,
-      },
-    };
-
-    const projectData = {
-      name: newDealerRepoName,
-      environmentVariables: [
-        {
-          key: 'GOOGLE_PROD_CALLBACK_URL',
-          target: 'production',
-          type: 'system',
-          value: `${createThird.name}/google/callback`,
-        },
-        {
-          key: 'REMIX_SESSION_SECRET',
-          target: 'production',
-          type: 'system',
-          value: '3847ad8f0be06852c4b92b030fe1efe3',
-        },
-        {
-          key: 'REMIX_ADMIN_EMAIL',
-          target: 'production',
-          type: 'system',
-          value: 'skylerzanth@gmail.com',
-        },
-        {
-          key: 'REMIX_ADMIN_PASSWORD',
-          target: 'production',
-          type: 'system',
-          value: 'Ch3w8acca66',
-        },
-        {
-          key: 'COOKIE_SECRET',
-          target: 'production',
-          type: 'system',
-          value: 'cookiesecret_sauce66',
-        },
-        {
-          key: 'REMIX_APP_NAME',
-          target: 'production',
-          type: 'system',
-          value: 'dealersalesassistant',
-        },
-        {
-          key: 'DATABASE_URL',
-          target: 'production',
-          type: 'system',
-          value: createThirdPlanet.url,
-        },
-        {
-          key: 'STRIPE_SECRET_KEY',
-          target: 'production',
-          type: 'system',
-          value: 'sk_live_pNtrt5zYNjHQtYrSrINfKyAJ',
-        },
-        {
-          key: 'API_ACTIVIX',
-          target: 'production',
-          type: 'system',
-          value: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk',
-        },
-      ],
-      framework: 'remix',
-      gitRepository: {
-        repo: newDealerRepoName,
+        repo: 'https://github.com/8an3/thesalespersonscrmm.git',
         type: 'github',
       },
       publicSource: true,
@@ -404,56 +193,14 @@ export async function action({ request, }: ActionFunctionArgs) {
 
 
   if (intent === 'createDealer') {
-    const createFirst = await createFirstRepo(dealerName)
-    //  const createSec = await createSecondRepo(dealerName)
-    //  const createThird = await createThirdRepo(dealerName)
-    console.log(createFirst)
+    const createFirstFirst = await createFirstVercel(dealerName)
+    console.log(createFirstFirst)
     await delay(50);
-    const createFirstPlanet = await createAxios(dealerName)
-    //  const createSecondPlanet = await createSecondAxios(dealerName)
-    //  const createThirdPlanet = await createThirdAxios(dealerName)
-    await delay(50);
-    const createFirstVercel = await createFirstVercel(dealerName, createFirst, createFirstPlanet)
-    // const createSecondVercel = await createSecondVercel(dealerName, createSec, createSecondPlanet)
-    // const createThirdVercel = await createThirdVercel(dealerName, createThird, createThirdPlanet)
-    console.log(createFirstVercel)
+    const createSecondSecond = await createSecondVercel(dealerName)
+    console.log(createSecondSecond)
 
-    const adminUserRole = await prisma.userRole.findFirst({ where: { symbol: "ADMIN" }, });
-    invariant(adminUserRole, "User Role with symbol ADMIN is not found");
-    const hashedPassword2 = await bcrypt.hash('adminAccess', 10);
-    const user = await prisma.user.create({
-      data: {
-        email: formPayload.dealerEmail,
-        password: { create: { hash: hashedPassword2 } },
-        name: "DealerAdmin",
-        username: "DealerAdmin",
-        phone: formPayload.dealerPhone,
-        role: { connect: { id: adminUserRole.id } },
-        profile: {
-          create: {
-            headline: "I am Admin",
-            bio: "The administrator of this app.",
-          },
-        },
 
-      },
-    });
-    const dealer = await prisma.dealerCustomer.create({
-      data: {
-        dealerName: formPayload.dealerName,
-        dealerPhone: formPayload.dealerPhone,
-        dealerAddress: formPayload.dealerAddress,
-        dealerCity: formPayload.dealerCity,
-        dealerProvince: formPayload.dealerProvince,
-        dealerPostal: formPayload.dealerPostal,
-        dealerEmail: formPayload.dealerEmail,
-        planetScale: createFirstPlanet.url,
-        vercel: createFirstVercel.project.url,
-        github: createFirst.url,
-
-      }
-    })
-    return ({ user, createFirst, createFirstVercel, createFirstPlanet, dealer })
+    return ({ createFirstFirst, createSecondSecond })
   }
   return null
 
@@ -633,9 +380,13 @@ export default function DashboardPage() {
                             <Label htmlFor="email" className='text-white'>Dealer Email</Label>
                             <Input type="text" id="email" name="dealerEmail" />
                           </div>
+                          <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="email" className='text-white'>Dealer Admin Email</Label>
+                            <Input type="text" id="email" name="dealerEmailAdmin" />
+                          </div>
                           <ButtonLoading
                             size="lg"
-                            value='updateFinance'
+                            value='createDealer'
                             className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff] text-white border border-white"
                             name="intent"
                             type="submit"
@@ -669,3 +420,33 @@ export default function DashboardPage() {
     </>
   )
 }
+/**  const createFirstRepo = async (newDealerRepoName) => {
+    const YOUR_GITHUB_TOKEN = process.env.PERSONAL_ACCESS_TOKEN;
+    const templateOwner = '8an3';
+    const templateRepo = 'thesalespersonscrmm';
+    const newRepoName = newDealerRepoName;
+    const newRepoOwner = '8an3';
+
+    const apiUrl = `https://api.github.com/repos/${templateOwner}/${templateRepo}/generate`;
+
+    const config = { headers: { 'Accept': 'application/vnd.github.baptiste-preview+json', 'Authorization': `token ${YOUR_GITHUB_TOKEN}`, }, };
+
+    const data = { name: newRepoName, owner: newRepoOwner, };
+    return axios.post(apiUrl, data, config).then(response => { console.log('Repository created successfully:', response.data); })
+      .catch(error => { console.error('Error creating repository:', error.response.data); });
+  };
+  const createSecondRepo = async (newDealerRepoName) => {
+    const YOUR_GITHUB_TOKEN = process.env.PERSONAL_ACCESS_TOKEN;
+    const templateOwner = '8an3';
+    const templateRepo = 'crmsat';
+    const newRepoName = newDealerRepoName;
+    const newRepoOwner = '8an3';
+
+    const apiUrl = `https://api.github.com/repos/${templateOwner}/${templateRepo}/generate`;
+
+    const config = { headers: { 'Accept': 'application/vnd.github.baptiste-preview+json', 'Authorization': `token ${YOUR_GITHUB_TOKEN}`, }, };
+
+    const data = { name: newRepoName, owner: newRepoOwner, };
+    return axios.post(apiUrl, data, config).then(response => { console.log('Repository created successfully:', response.data); })
+      .catch(error => { console.error('Error creating repository:', error.response.data); });
+  }; */

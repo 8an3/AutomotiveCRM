@@ -13,12 +13,16 @@ export default function CSI() {
   const departments = ['Sales', 'Service Dept.', 'Accessory Dept', 'Management'];
   const initialInputs = departments.map(() => [{ question: '', answerFormat: '', customMultipleChoiceAnswer: '', customMultipleChoiceAnswers: [] }]);
   const [inputs, setInputs] = useState(initialInputs);
+  const [inputsData, setInputsData] = useState();
+
 
   // Function to handle input change
   const handleInputChange = (departmentIndex, inputIndex, event) => {
     const { name, value } = event.target;
     const newInputs = [...inputs];
     newInputs[departmentIndex][inputIndex] = { ...newInputs[departmentIndex][inputIndex], [name]: value };
+    const isCustomMultiChoice = value.toLowerCase().includes('custommultichoice');
+
     setInputs(newInputs);
   };
 
@@ -35,6 +39,14 @@ export default function CSI() {
     setInputs(newInputs);
   };
 
+  function containsCustomMultiChoice(inputString) {
+    const regex = /customMultiChoice/i; // 'i' flag makes the search case-insensitive
+    return regex.test(inputString);
+  }
+  const inputData = inputs
+  const input2 = "Some other string";
+  const containsCustom = containsCustomMultiChoice(inputData);
+  console.log(containsCustom, inputs);
   return (
     <>
       <Form method="post" className='w-[95%]'>
@@ -55,7 +67,7 @@ export default function CSI() {
                   <select
                     name={`inputs.${departmentIndex}[${inputIndex}].answerFormat`}
                     defaultValue={input.answerFormat}
-                    onChange={(e) => handleInputChange(departmentIndex, inputIndex, e)}
+                    onChange={(e) => handleInputChange(departmentIndex, inputIndex, e,)}
                     className="w-auto border p-2 "
                   >
                     <option value="">Select answer format</option>
@@ -65,22 +77,19 @@ export default function CSI() {
                   </select>
                   {input ? (
                     <>
-                      <p>{input.question}</p>
-                      <p>{input.answerFormat}</p>
-                      <p>{input.customMultipleChoiceAnswer}</p>
-                      <p>{input.customMultipleChoiceAnswers}</p>
-                      <p>{JSON.stringify(inputs)}</p>
-
-                      {input.question === 'customMultichoice' ? (
-                        <p>true</p>
+                      <div>
+                        <p>inputs</p>
+                        <p>{JSON.stringify(inputs)}</p>
+                      </div>
+                      {containsCustom === true ? (
+                        <p>true   {containsCustom}</p>
                       ) : (
-                        <p>false</p>
+
+                        <p>false    {containsCustom}</p>
                       )}
                       <div>
+                        <p>input</p>
                         <p>{JSON.stringify(input)}</p>
-                      </div>
-                      <div>
-                        <p>{JSON.stringify(input.answerFormat)}</p>
                       </div>
                     </>
                   ) : (

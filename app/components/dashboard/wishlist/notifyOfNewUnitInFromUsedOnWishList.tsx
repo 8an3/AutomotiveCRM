@@ -1,4 +1,4 @@
-export function NotifyWishList() {
+export async function NotifyWishList() {
 
   // wish list loader
   const wishList = await prisma.wishList.findMany({ where: { userId: user?.id }, })
