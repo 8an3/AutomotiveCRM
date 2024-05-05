@@ -1,4 +1,4 @@
-import { isRouteErrorResponse, Outlet, useRouteError } from "@remix-run/react";
+import { isRouteErrorResponse, Outlet, useLoaderData, useRouteError } from "@remix-run/react";
 
 import {
   buttonVariants,
@@ -12,7 +12,7 @@ import {
   Button
 } from "~/components";
 import { configAdmin, configSite } from "~/configs";
-import { requireUserSession } from "~/helpers";
+import { requireUserSession, getUserIsAllowed } from "~/helpers";
 import { RootDocumentBoundary } from "~/root";
 import { cn, createSitemap } from "~/utils";
 import { redirect, json } from "@remix-run/node";
@@ -22,10 +22,11 @@ import Sidebar from "~/components/shared/sidebar";
 import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
 import { HeaderUserMenu } from "~/components/shared/userNav";
 import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
-
+import { Separator } from "~/components/ui/separator"
+import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { model } from "~/models";
 import secondary from '~/styles/secondary.css'
-
+import { adminSidebarNav } from '~/components/shared/sidebar'
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: secondary },
 
@@ -104,97 +105,35 @@ export default function Route() {
 }
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
+  const { notifications, user } = useLoaderData()
+
+  const userIsAllowed = getUserIsAllowed(user, ["ADMIN"]);
+
+
   return (
-    <div className="flex">
-      <AdminSidebar />
-      <main className="grow pb-10">{children}</main>
-    </div>
+    <>
+      <div className="hidden space-y-6 p-10 pb-16 md:block">
+        <div className="space-y-0.5">
+          <h2 className="text-2xl font-bold tracking-tight">Admin</h2>
+          <p className="text-muted-foreground">
+            Manage your site.
+          </p>
+        </div>
+        <Separator className="my-6" />
+        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+          <aside className="-mx-4 lg:w-1/5">
+            <SearchForm action="/admin/search" />
+            <SidebarNav items={adminSidebarNav} />
+          </aside>
+          <div className="flex-1 grow pb-10">
+            {children}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
-export function AdminSidebar() {
-  return (
-    <aside
-      className={cn(
-        "hidden sm:block",
-        "sticky top-0 h-screen ", // sticky sidebar
-        "w-[200px] space-y-4 p-2 sm:flex sm:flex-col sm:p-4",
-        "border-r-2 border-surface-200 bg-[#1c2024] dark:border-surface-700 dark:bg-surface-900"
-      )}
-    >
-      <div className="queue-center justify-between">
-        <RemixNavLink
-          prefetch="intent"
-          to="/admin"
-          className="block min-w-fit transition-opacity hover:opacity-80 text-white"
-        >
-          <Logo className='text-white' text="Admin" />
-        </RemixNavLink>
-
-      </div>
-
-      <div className="grow space-y-2 mx-auto">
-        <SearchForm action="/admin/search" />
-        <RemixNavLink to='/admin' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Overview
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='users' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Users
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='images' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Images
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='import/motorcycle' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Import / Export Motor
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='import/parts' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Import / Export Parts
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='import/accs' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Import / Export Accs
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='import/leads' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Import / Export Leads
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='notes' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Notes
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='/leads' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Search Leads
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='/admin/search' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Search on Admin
-          </Button>
-        </RemixNavLink>
-        <RemixNavLink to='/' >
-          <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#c2e6ff]  cursor-pointer"  >
-            Go to site
-          </Button>
-        </RemixNavLink>
-
-      </div>
-    </aside>
-  );
-}
 
 export function ErrorBoundary() {
   const error = useRouteError();

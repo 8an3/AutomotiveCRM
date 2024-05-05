@@ -34,6 +34,7 @@ model User {
   lastSubscriptionCheck String?
   expires_in            String?
   omvicNumber           String?
+  dealer                String?
   position              String?
   roleId                String
   profileId             String   @unique
@@ -132,6 +133,42 @@ model DealerFees {
   userFreight       String?
   userAdmin         String?
   userEmail         String?  @unique
+}
+
+model StoreHours {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  day       String?   @unique
+  start     DateTime?
+  end       DateTime?
+  userEmail String?
+}
+
+model SalespersonSched {
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  day              String?
+  start            DateTime?
+  end              DateTime?
+  salespersonEmail String?
+  userEmail        String?
+  title            String?
+  resourceId       String?
+  userName         String?
+}
+
+// schema.prisma
+
+model CsiQuestion {
+  id                          Int      @id @default(autoincrement())
+  departmentIndex             Int
+  inputIndex                  Int
+  question                    String
+  answerFormat                String
+  customMultipleChoiceAnswer  String?
+  customMultipleChoiceAnswers String[]
 }
 
 model DealerInfo {

@@ -11,7 +11,7 @@ export async function loader({ request, params, req }: LoaderFunction) {
   let email = session.get("email")
   let expiry = session.get("expiry")
   const currentTime = Date.now();
-  console.log(email, expiry)
+
   const expirationTimeSeconds = expiry
 
   const expirationTimeMillis = expirationTimeSeconds * 1000;

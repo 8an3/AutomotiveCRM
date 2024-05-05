@@ -15,6 +15,7 @@ import {
 } from "@remix-run/react";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { useEffect } from "react";
+import { prisma } from "~/libs";
 
 
 
@@ -22,20 +23,34 @@ export async function loader({ request, }: LoaderFunction) {
   //
   // const email = session.get('email')
   const params = new URLSearchParams(request.url.split('?')[1] || '');
-  const email = decodeURIComponent(params.get('email') || '');
-  const name = decodeURIComponent(params.get('name') || '');
-  console.log(params, email, name, 'form params')
+  const email = params.get('email') || ''
+  const name = params.get('name') || ''
+  // let user = await prisma.currentSession.findUnique({ where: { email: email } })
+  let session = await getSession(request.headers.get("Cookie"))
+  session.set("email", email)
+  session.set("name", name)
+  return redirect('/usercheck', { headers: { 'Set-Cookie': await commitSession(session) } });
+  //
+  //const email = decodeURIComponent(params.get('email') || '');
+  //const name = decodeURIComponent(params.get('name') || '');
+  // console.log(params, email, name, 'form params')
 
-  return json({ name, email })
+  // return json({ name, email })
 }
 
-
+/**
 export async function action({ request, }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData())
   const formData = financeFormSchema.parse(formPayload);
   let session = await getSession(request.headers.get("Cookie"))
   session.set("email", formData.email)
   session.set("name", formData.name)
+  await prisma.currentSession.create({
+    data: {
+      name: formData.name,
+      email: formData.email,
+    }
+  })
   return redirect('/usercheck', { headers: { 'Set-Cookie': await commitSession(session) } });
 }
 
@@ -67,3 +82,4 @@ export default function Signup() {
     </Form>
   );
 }
+ */

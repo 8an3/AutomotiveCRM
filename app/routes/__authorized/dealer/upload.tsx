@@ -5,13 +5,13 @@ import { getSession, commitSession, authSessionStorage, destroySession } from "~
 import { GetUser } from "~/utils/loader.server";
 import Sidebar from "~/components/shared/sidebar";
 import { ClientOnly } from "remix-utils";
-import ProvideAppContext from "~/routes/__auth/auth/AppContext";
 import {
   PublicClientApplication,
   EventType,
   type EventMessage,
   type AuthenticationResult,
 } from '@azure/msal-browser';
+import ProvideAppContext from '~/components/microsoft/AppContext';
 
 const tenantId = "fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6";
 

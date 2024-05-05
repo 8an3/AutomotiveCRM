@@ -89,20 +89,20 @@ export async function getMergedFinanceOnFinance(financeId) {
         id: financeId,
       },
     });
-    console.log('financeData:', financeData); // Debugging line
+    // console.log('financeData:', financeData); // Debugging line
 
     const dashData = await prisma.dashboard.findMany({
       where: {
         financeId: financeId,
       },
     });
-    console.log('dashData:', dashData); // Debugging line
+    //console.log('dashData:', dashData); // Debugging line
 
     /// Merge financeData and dashData
     const mergedData = financeData.map((financeRecord) => {
-      console.log('financeRecord.id:', financeRecord.id); // Debugging line
+      // console.log('financeRecord.id:', financeRecord.id); // Debugging line
       const correspondingDashRecord = dashData.find(dashRecord => dashRecord.financeId === financeRecord.id);
-      console.log('correspondingDashRecord:', correspondingDashRecord); // Debugging line
+      // console.log('correspondingDashRecord:', correspondingDashRecord); // Debugging line
       return {
         ...correspondingDashRecord,
         ...financeRecord,

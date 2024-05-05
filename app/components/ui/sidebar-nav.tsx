@@ -1,5 +1,5 @@
 
-import { Link, useNavigate, } from "@remix-run/react"
+import { Link, useLocation } from "@remix-run/react"
 
 import { cn } from "./utils"
 import { Button, buttonVariants } from "./button"
@@ -12,6 +12,9 @@ interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
+  const location = useLocation();
+  const pathname = location.pathname
+  console.log(pathname)
   return (
     <nav
       className={cn(
@@ -25,7 +28,14 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
           key={item.to}
           to={item.to}
           className="justify-start" >
-          <Button variant='ghost' className="bg-muted hover:bg-muted hover:bg-transparent hover:underline" >
+          <Button variant='ghost'
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              pathname === item.to
+                ? "bg-[#232324] hover:bg-[#232324]"
+                : "hover:bg-transparent hover:underline",
+              "justify-start"
+            )} >
             {item.title}
           </Button>
         </Link>

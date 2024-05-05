@@ -1,6 +1,10 @@
-import { RemixNavLink, Input, Separator, Button, TextArea, Label, } from "~/components";
+import { RemixNavLink, Input, Separator, Button, TextArea, Label, PopoverTrigger, PopoverContent, Popover, } from "~/components";
 import { Form, useActionData, useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
-import Calendar from "react-calendar";
+import { Calendar } from '~/components/ui/calendar';
+import { Cross2Icon, CaretSortIcon, CalendarIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
+import { cn } from "~/components/ui/utils"
+import React, { useState } from "react";
+import { format } from "date-fns"
 import * as Toast from '@radix-ui/react-toast';
 
 
@@ -19,6 +23,8 @@ export default function SalesButtonCard({
   setOpen,
   fetcher,
 }) {
+  const [date, setDate] = useState<Date>()
+
   return (
     <>
       <div className="px-2 border-1 border-black  h-[176px]">
@@ -42,54 +48,8 @@ export default function SalesButtonCard({
                   </>
                 ))}
 
-                {PickUpCalendar === "yes" && (
-                  <>
-                    {formData.delivered === "on" && (
-                      <p className="mt-1">Delivered On</p>
-                    )}
-                    {formData.delivered === "off" && (
-                      <p className="mt-1">Prefered Pick Up Date</p>
-                    )}
 
-                    <div className="flex justify-center">
-                      <Calendar
-                        onChange={onChange}
-                        name="pickUpDate"
-                        defaultValue={value}
-                        calendarType="gregory"
-                      />
-                    </div>
 
-                    <input type="hidden" defaultValue={value} name="pickUpDate" />
-
-                    <select
-                      defaultValue={finance[0].pickUpTime}
-                      name='pickUpTime'
-                      placeholder="Preferred Time To P/U"
-                      className="w-1/2 mx-auto rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
-                    >
-                      <option value="9:00">9:00</option>
-                      <option value="9:30">9:30</option>
-                      <option value="10:00">10:00</option>
-                      <option value="10:30">10:30</option>
-                      <option value="11:00">11:00</option>
-                      <option value="11:30">11:30</option>
-                      <option value="12:00">12:00</option>
-                      <option value="12:30">12:30</option>
-                      <option value="1:00">1:00</option>
-                      <option value="1:30">1:30</option>
-                      <option value="2:00">2:00</option>
-                      <option value="2:30">2:30</option>
-                      <option value="3:00">3:00</option>
-                      <option value="3:30">3:30</option>
-                      <option value="4:00">4:00</option>
-                      <option value="4:30">4:30</option>
-                      <option value="5:00">5:00</option>
-                      <option value="5:30">5:30</option>
-                      <option value="6:00">6:00</option>
-                    </select>
-                  </>
-                )}
                 <Input type="hidden" defaultValue={finance[0].id} name="financeId" />
                 <Input type="hidden" defaultValue={finance[0].id} name="id" />
                 {generateHiddenInputs()}

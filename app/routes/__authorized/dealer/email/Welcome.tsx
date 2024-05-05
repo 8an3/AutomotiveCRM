@@ -1,19 +1,33 @@
-import { Input, } from "~/components/ui/input";
 import React, { useEffect, useState } from 'react';
 import { Event, type Message } from '@microsoft/microsoft-graph-types';
 import { add, endOfWeek, format, getDay, parseISO, startOfWeek } from 'date-fns';
-import { RiDraftLine } from "react-icons/ri";
-import { HiOutlineTemplate } from "react-icons/hi";
+import { HiOutlineTemplate, RiDraftLine } from "react-icons/hi";
 import { composeEmail, createMailFolder, createtestFolder, deleteMessage, forwardEmail, getAllFolders, getDrafts, getDraftsList, getEmailById, getEmailById2, getEmailList, getEmails, getFolders, getInbox, getInboxList, getJunk, getJunkList, getList, getSent, getTrash, getTrashList, getUserWeekCalendar, gettestFolderList, listAttachment, messageDone, messageRead, messageUnRead, replyAllEmail, replyMessage, testInbox, } from "~/components/microsoft/GraphService";
-
-import { useAppContext } from "~/components/microsoft/AppContext";
+import ProvideAppContext, { useAppContext } from '~/components/microsoft/AppContext';
 import { Controller, useController, useForm } from "react-hook-form";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { Button, Input } from "~/components";
+import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
+import { loginRequest, config, silentRequest } from '~/components/microsoft/Config';
+import { json, type LinksFunction, type LoaderFunction, type ActionFunction, } from '@remix-run/node';
+import CustomContext from "~/components/microsoft/CustomContext"
 
+const {
+  instance,
+  accounts,
+  client,
+  activeAccount,
+  Silent,
+  userGet,
+  error,
+  accessToken,
+  displayError,
+  clearError,
+  authProvider,
+} = CustomContext;
 
-
-
-export default function Test() {
+/*
+export function Test() {
   const app = useAppContext();
   const [editorState, setEditorState] = useState();
   const [emails, setEmails] = useState([]);
@@ -29,28 +43,6 @@ export default function Test() {
   const [inputs, setInputs] = useState({});
   const [value, setValue] = useState('');
 
-  const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-      ['blockquote', 'code-block'],
-
-      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
-      [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
-      [{ 'direction': 'rtl' }],                         // text direction
-
-      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-      [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-      [{ 'font': [] }],
-      [{ 'align': [] }],
-
-      ['clean']                                         // remove formatting button
-    ]
-  };
-
   const handleClick2 = () => {
     setIsOpenFolders(!isOpenFolders);
   };
@@ -58,19 +50,6 @@ export default function Test() {
     setIsOpenCreateFolders(!isOpenCreateFolders);
   };
 
-  useEffect(() => {
-    const fetchEmails = async () => {
-      try {
-        const folderName = 'inbox'
-        const response = await testInbox(app.authProvider!);
-        //  console.log(emails)
-        setEmails(response.value);
-      } catch (error) {
-        console.error('Error fetching emails:', error);
-      }
-    }
-    fetchEmails();
-  }, []);
 
   // <ReturnSnippet>
   const weekStart = startOfWeek(new Date());
@@ -87,39 +66,11 @@ export default function Test() {
     setEmail(emailBody)
   };
 
-  useEffect(() => {
-    if (emails.length === 0) {
-      handleClicktestInbox();
-    }
-  }, [emails]);
-
-  const handleClicktestInbox = async () => {
-    const response = await testInbox(app.authProvider!);
-    setEmails(response.value);
-    setSelectedLine(null)
-    setIsOpen(false)
-  };
-
 
   const [unreadItemCount, setUnreadItemCount] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
   const [unreadJunkCount, setUnreadJunkCount] = useState(0);
 
-  useEffect(() => {
-    const fetchUnreadCount = async () => {
-      const drafts = await getDrafts(app.authProvider!);
-      const totalDrafts = drafts.totalItemCount
-      setDraftCount(totalDrafts)
-      const messages = await getInbox(app.authProvider!);
-      const unreadCount = messages.unreadItemCount
-      setUnreadItemCount(unreadCount);
-      const junk = await getJunk(app.authProvider!);
-      const unreadJunk = junk.unreadItemCount
-      setUnreadJunkCount(unreadJunk);
-    };
-
-    fetchUnreadCount();
-  }, []);
 
   type Folder = {
     id: any;
@@ -129,22 +80,6 @@ export default function Test() {
 
   const [folders, setFolders] = useState<Folder[]>([]);
 
-  useEffect(() => {
-    const fetchFolders = async () => {
-      const fetchedFolders = await getAllFolders(app.authProvider!);
-      //console.log(fetchedFolders, 'fetchedfolders'); // Log the fetched folders to the console
-
-      // Check if fetchedFolders.value is an array and it has items
-      if (Array.isArray(fetchedFolders.value) && fetchedFolders.value.length > 0) {
-        // Extract the folders array from the fetchedFolders object
-        const foldersArray = fetchedFolders.value.map((folder: any) => ({ name: folder.displayName, ...folder }));
-        // console.log(foldersArray, 'foldersArray')
-        setFolders(foldersArray);
-      }
-    };
-
-    fetchFolders();
-  }, []);
 
   async function GetEmailsFromFolder(name: any) {
     console.log('Function parameters:', name);
@@ -171,11 +106,6 @@ export default function Test() {
     console.log('Response:', response);
     setEmails(response.value);
   }
-
-
-  // tabIndex = {- 1}
-  //onBlur = {() => { messageDone(app.authProvider!, message.id) }}
-
 
   const {
     register,
@@ -359,6 +289,60 @@ export default function Test() {
     });
   }
 
+
+  useEffect(() => {
+    // -----------------------------------------------------------------
+    const fetchEmails = async () => {
+      try {
+        const folderName = 'inbox'
+        const response = await testInbox(app.authProvider!);
+        //  console.log(emails)
+        setEmails(response.value);
+      } catch (error) {
+        console.error('Error fetching emails:', error);
+      }
+    }
+    fetchEmails();
+    // -----------------------------------------------------------------
+    const fetchUnreadCount = async () => {
+      const drafts = await getDrafts(app.authProvider!);
+      const totalDrafts = drafts.totalItemCount
+      setDraftCount(totalDrafts)
+      const messages = await getInbox(app.authProvider!);
+      const unreadCount = messages.unreadItemCount
+      setUnreadItemCount(unreadCount);
+      const junk = await getJunk(app.authProvider!);
+      const unreadJunk = junk.unreadItemCount
+      setUnreadJunkCount(unreadJunk);
+    };
+    fetchUnreadCount();
+    // -----------------------------------------------------------------
+    const fetchFolders = async () => {
+      const fetchedFolders = await getAllFolders(app.authProvider!);
+      //console.log(fetchedFolders, 'fetchedfolders'); // Log the fetched folders to the console
+
+      // Check if fetchedFolders.value is an array and it has items
+      if (Array.isArray(fetchedFolders.value) && fetchedFolders.value.length > 0) {
+        // Extract the folders array from the fetchedFolders object
+        const foldersArray = fetchedFolders.value.map((folder: any) => ({ name: folder.displayName, ...folder }));
+        // console.log(foldersArray, 'foldersArray')
+        setFolders(foldersArray);
+      }
+    };
+    fetchFolders();
+    // -----------------------------------------------------------------
+    if (emails.length === 0) {
+      handleClicktestInbox();
+    }
+    // -----------------------------------------------------------------
+  }, []);
+
+  const handleClicktestInbox = async () => {
+    const response = await testInbox(app.authProvider!);
+    setEmails(response.value);
+    setSelectedLine(null)
+    setIsOpen(false)
+  };
 
   return (
     <div className="flex h-[100%] Mainwidth bg-[#5cdb95]">
@@ -588,7 +572,6 @@ export default function Test() {
                             )}
 
                             <div className={`relative mx-auto mt-[20px] text-[12px] max-h-[50vh] overflow-y-scroll transition-all duration-500 ml-3 mr-3 text-[#f1f6ff] ${isOpen ? 'h-[50vh]' : 'h-[50vh] '}`}>
-                              {/* This is the third row */}
                               <div className='whitespace-pre-wrap text-[#f1f6ff] w-full' dangerouslySetInnerHTML={{ __html: message.body.content }} />
                             </div>
 
@@ -647,10 +630,7 @@ export default function Test() {
                                 <input type="hidden" {...register('body')} value={value} />
 
                                 <div className="border rounded  mt-3  mb-3 w-[95%] mx-auto richEditor ">
-                                  <input
 
-
-                                  />
                                 </div>
                               </div>
                             </div>
@@ -675,3 +655,169 @@ export default function Test() {
     </div>
   );
 }
+*/
+
+
+
+const ProfileContent = () => {
+  const { instance, accounts } = useMsal();
+  const activeAccount = instance.getActiveAccount();
+
+  const [graphData, setGraphData] = useState(null);
+  const [mailData, setMailData] = useState(false);
+  const app = useAppContext();
+  const token = "EwB4A8l6BAAUbDba3x2OMJElkF7gJ4z/VbCPEz0AAe7+HINLv0+iHBoeB3mNHbsPPwxYKwHbeixLyQs6B/cRkpGck0gO6tFpBflznAF3hjENAGcmFiPyOZCU8TcpQh8ZPmwM2HRjB2oWkSqzKc5G8vtD8isY+YZepbc4X+fgtzjpTC8tnGCCPmvwEGOZU1TtjIN/DCCltLDFP29UL7/IVK0/Qc6DgBod+wDa5YYvDbO8CJTMDWQa8AOHtHv/QyLFoMQpjeVr/2MbIGS3wppocrHNVe2wDJPA7X/6L+A+bttwhPL3XG0sj91RbyKMfeVb7jGuHzKYOAB6zGWw0VnOcuM9QOsa0yI8pMJGZEyllNGpfbuVFmDOJwUcy91Jv0wDZgAACD/fF+vVrXcjSALnxBT0/PAELqL1o4osNpEu1hr+SgXHrj0z3FqQB27+K1HD9ZaTZnSCfMH6RyMILrR1d/ndp4x50oaVJLGvXiZOGjjqZuB7QXNOo3cAZ8EyiEBtldv4kqinabxOHv7PdtGXo++b3SVp878XyrFht/UYG+nRyAwxgtHlgQ2zCF0pupCTE9MxvP3s4OwYu7B6OHtnbA2crjjGO8hmvshlOT734k1f8YF/Iw14Wk1ZL73AxQCmVgTraKNmwkwccZB0lZyWbqCkyAt5XvJ54ciBeKcFzs4JkF1wbf93cPCg3ke1tG2Z3ViKSROPcsQPuSc4tiC0ddoT3BOioOEQ8kJsMSsmvabNZapWe9lNQwuE5dyS2B1HdoyJdQSGnI6ZnD1dcZirfBipNRNInrcNf3/sRGmvFpuCv1tCPn+d/JeMfsoOaw7Y07IlO55+jvDRzoIzWJwhVUyzO5cYYAxP7PNoUMZ6PDtKh+uk6DdMAkopUEpJ+HAHm8qfgriF/Pdh5dI4CG66aX8E0rBhO2yjMvHySVJ+S7wmfbtdnuhBjgzUBsIFvMSZ429Gh89gkZ3ShBJRWTyS1O3x/7FMjargNAasuiHjPtlgHPrcVorgRvU0zF1F/0GtQUTJJz2RQtDXgrmKC9jPgzw77mXXJSFoam5FuQnnHHN8ELdoZ/2TPMk3NATF74aHeKgF2fFTMIRpJ8OZULoEoJ5bJ6vc6nJSp8UghaNyIvIErfVZD5Et1fO+LOGA6JAlUg7vsI9RGJqGuZ15yY5opZZhAbouVYkC"
+  async function RequestProfileData() {
+    instance
+      .acquireTokenSilent({
+        ...loginRequest,
+        account: accounts[0],
+      })
+      .then((response) => {
+        callMsGraph(response.accessToken).then((response) => setGraphData(response));
+      });
+    callMsGraph(token).then((response) => setGraphData(response));
+  }
+
+
+  function RequestProfileData2() {
+    const [inbox, setInbox] = useState([])
+    const [inbox2, setInbox2] = useState([])
+    const [mailData, setMailData] = useState(false);
+    function callMsGraph() {
+      instance
+        .acquireTokenSilent({
+          ...loginRequest,
+          account: accounts[0],
+        })
+        .then(async (response) => {
+          const graphURL = {
+            graphMeEndpoint: "https://graph.microsoft.com/v1.0/me/messages",
+          };
+          const headers = new Headers();
+          const bearer = `Bearer ${token}`;
+          headers.append("Authorization", bearer);
+          const options = {
+            method: "GET",
+            headers: headers,
+          };
+          try {
+            const fetchEmail = await fetch(graphURL.graphMeEndpoint, options);
+            if (!fetchEmail.ok) {
+              throw new Error("Failed to fetch email messages");
+            }
+            const emailData = await fetchEmail.json();
+            setInbox(emailData);
+            console.log(emailData);
+            return emailData;
+          } catch (error) {
+            console.log("Error fetching email messages:", error);
+          }
+        })
+        .catch((error) => {
+          console.log("Error acquiring token:", error);
+        });
+    }
+
+    async function callMsGraph2() {
+      let getInbox2 = await client
+        .api('/me/messages')
+        .get();
+      setInbox2(getInbox2)
+      return json({ getInbox2 })
+    }
+    if (inbox && inbox.length > 5) {
+      console.log(inbox, 'inbox')
+    }
+    if (inbox2 && inbox2.length > 5) {
+      console.log(inbox2, 'callMsGraph2')
+    }
+
+
+    return (
+      <>
+        {mailData === true && inbox.length > 4 && (
+          <>
+            <p>{JSON.stringify(inbox)}</p>
+          </>
+        )}
+        {mailData === true && inbox2.length > 4 && (
+          <>
+            <p>{JSON.stringify(inbox2)}</p>
+          </>
+        )}
+        <Button variant="ghost" onClick={() => {
+          callMsGraph()
+          setMailData(true);
+
+        }}>
+          Request Mail
+        </Button>
+        <Button variant="ghost" onClick={() => {
+          callMsGraph2()
+          setMailData(true);
+
+        }}>
+          Request Mail 2
+        </Button>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <h5 className="profileContent">Welcome {accounts[0].name}</h5>
+      {graphData ? (
+        <div id="profile-div">
+          <p><strong>Email: </strong> {graphData.userPrincipalName}</p>
+          <p><strong>Id: </strong> {graphData.id}</p>
+          <p>{JSON.stringify(activeAccount)}</p>
+          <p>idToken: {JSON.stringify(activeAccount?.idToken)}</p>
+        </div>
+      ) : (
+        <Button variant="ghost" onClick={RequestProfileData}>
+          Request Profile
+        </Button>
+      )}
+
+
+      <div>
+        {RequestProfileData2()}
+      </div>
+    </>
+  );
+};
+
+
+export default function App() {
+  return (
+    <div className="App">
+      <AuthenticatedTemplate>
+        <ProfileContent />
+      </AuthenticatedTemplate>
+
+      <UnauthenticatedTemplate>
+        <h5 className="card-title">Please sign-in to see your profile information.</h5>
+      </UnauthenticatedTemplate>
+    </div>
+  );
+}
+export async function callMsGraph(accessToken) {
+  const headers = new Headers();
+  const bearer = `Bearer ${accessToken}`;
+
+  headers.append("Authorization", bearer);
+
+  const options = {
+    method: "GET",
+    headers: headers
+  };
+
+  return fetch(graphConfig.graphMeEndpoint, options)
+    .then(response => response.json())
+    .catch(error => console.log(error));
+}
+
+const graphConfig = {
+  graphMeEndpoint: "https://graph.microsoft.com/v1.0/me",
+};

@@ -1,18 +1,16 @@
 
-import React, { Fragment, useMemo, useState, useCallback } from 'react'
-import PropTypes from 'prop-types'
+import { useState, useCallback } from 'react'
 import { Calendar, Views, dayjsLocalizer, Navigate as navigate } from 'react-big-calendar'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
-import { LinksFunction, LoaderFunction } from '@remix-run/node'
-import { type ActionFunction, type DataFunctionArgs, json, redirect, createCookie, } from '@remix-run/node';
+import { type LinksFunction, type LoaderFunction, type ActionFunction, json, redirect, } from '@remix-run/node'
 import { model } from '~/models';
-import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigate, useNavigation } from '@remix-run/react'
-import { getAllFinanceAptsForCalendar, getSingleFinanceAppts } from '~/utils/financeAppts/get.server';
+import { useLoaderData, Link, } from '@remix-run/react'
+import { getAllFinanceAptsForCalendar, } from '~/utils/financeAppts/get.server';
 import { prisma } from "~/libs";
-import { Flex, Text, Button, Card, Heading, Container, IconButton } from '@radix-ui/themes';
-import { UserPlus, Gauge, CalendarCheck, Search, ChevronRightIcon, Circle, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
+import { Text, Button, } from '@radix-ui/themes';
+import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
 import EventInfo from "~/components/dashboard/calendar/EventInfo"
 import EventInfoModal from "~/components/dashboard/calendar/EventInfoModal"
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
@@ -20,14 +18,17 @@ import clsx from 'clsx'
 import AddCustomerModal from '~/components/dashboard/calendar/addCustomerModal'
 import { AddAppt } from '~/components/dashboard/calendar/addAppt';
 import { SearchCustomerModal } from '~/components/dashboard/calendar/searchCustomerModal'
-import axios from 'axios';
-import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
-import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
 import { GetUser } from "~/utils/loader.server";
-
+import { getSession, commitSession } from '~/sessions/auth-session.server';
+import storeHoursCss from "~/styles/storeHours.css";
+import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
+import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
+  { rel: "stylesheet", href: styles2 },
+  { rel: "stylesheet", href: styles1 },
+  { rel: "stylesheet", href: storeHoursCss },
 ]
 
 export async function CompleteLastAppt(userId, financeId) {
@@ -767,6 +768,9 @@ dayjs.extend(timezone)
 
 export default function DnDResource() {
   const { salesData, user, data } = useLoaderData()
+  const [view, setView] = useState(Views.WEEK)
+  const onView = useCallback((newView) => setView(newView), [setView])
+
   const resourceMap = [
     { resourceId: 1, resourceTitle: 'Sales Calls' },
     { resourceId: 2, resourceTitle: 'Sales Appointments' },
@@ -970,6 +974,13 @@ export default function DnDResource() {
       </Button>
     ))
   }
+
+  const [showResources, setShowResources] = useState(true);
+
+  const toggleView = () => {
+    setShowResources(prevState => !prevState);
+  };
+
   const CustomToolbar = ({
     label,
     localizer: { messages },
@@ -991,7 +1002,11 @@ export default function DnDResource() {
 
         <span className="rbc-toolbar-label">{label}</span>
         <span className="ml-auto justify-end mr-10">
-
+          <Button
+            onClick={toggleView}
+          >
+            Toggle Resource View
+          </Button>
           <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' onClick={() => setAddCustomerModal(true)}>
             <UserPlus size={20} strokeWidth={1.5} />
           </button>
@@ -1054,32 +1069,60 @@ export default function DnDResource() {
         onCompleteEvent={onCompleteEvent}
       />
 
-      <div className="height600 mt-5" >
-        <DragAndDropCalendar
+      <div className="size-full mt-5" >
+        {showResources ? (
+          <DragAndDropCalendar
+        style={{ height: "100vh" }}
 
-          defaultView={Views.DAY}
-          events={myEvents}
-          min={minTime}
-          selectable
-          onClick={() => setOpenDatepickerModal(true)}
-          max={maxTime}
-          onSelectEvent={handleSelectEvent}
-          onSelectSlot={handleSelectSlot}
-          components={{
-            event: EventInfo,
-            toolbar: CustomToolbar,
-            // ...other custom components
-          }}
-          localizer={localizer}
-          onEventDrop={moveEvent}
-          onEventResize={resizeEvent}
-          resizable
-          resourceIdAccessor="resourceId"
-          resources={resourceMap}
-          resourceTitleAccessor="resourceTitle"
-          showMultiDayTimes={true}
-          step={15}
-        />
+            defaultView={Views.DAY}
+            events={myEvents}
+            // step={30}
+            //showMultiDayTimes={true}
+            localizer={localizer}
+            min={minTime}
+            max={maxTime}
+
+            onView={onView}
+            view={view}
+            resizable
+            selectable
+
+            components={{
+              event: EventInfo,
+              toolbar: CustomToolbar,
+            }}
+            onEventDrop={moveEvent}
+            onEventResize={resizeEvent}
+            onSelectEvent={handleSelectEvent}
+            onSelectSlot={handleSelectSlot}
+            onClick={() => setOpenDatepickerModal(true)}
+
+            resourceIdAccessor="resourceId"
+            resources={resourceMap}
+            resourceTitleAccessor="resourceTitle"
+          />
+        ) : (
+          <DragAndDropCalendar
+            defaultView={Views.DAY}
+            events={myEvents}
+            step={15}
+            showMultiDayTimes={true}
+            localizer={localizer}
+            min={minTime}
+            max={maxTime}
+            components={{
+              event: EventInfo,
+              toolbar: CustomToolbar,
+            }}
+            resizable
+            selectable
+            onEventDrop={moveEvent}
+            onEventResize={resizeEvent}
+            onSelectEvent={handleSelectEvent}
+            onSelectSlot={handleSelectSlot}
+            onClick={() => setOpenDatepickerModal(true)}
+          />
+        )}
       </div>
     </div>
   )

@@ -47,7 +47,7 @@ export function Topsection({
   const address = clientFile.address
   const city = clientFile.city
   const moodel = finance[0].model
-  console.log(city, 'city')
+  //console.log(city, 'city')
   const vin = finance[0].vin
 
   let appostraphe;
@@ -57,11 +57,11 @@ export function Topsection({
   return (
     <>
       {/*topSection*/}
-      <div className=" grid lg:grid-cols-3 grid-cols-2 mx-auto gap-4 md:mx-2 mr-2">
+      <div className=" grid lg:grid-cols-2 grid-cols-1 mx-auto gap-4 md:mx-2 mr-2">
         <div className="gap-4">
           {/* First Row */}
           <div className="h-full w-full">
-            <div className="flex-1 mx-auto grid  h-[210px] bg-myColor-900 text-slate2 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px]">
+            <div className="flex-1 mx-auto grid  h-[210px]   text-slate2 border border-[#43484E] p-4 rounded-lg shadow uppercase font-bold text-[15px]">
               <div className='justify-between items-center'>
                 <h2 className='text-slate1'>{finance[0].name}</h2>
               </div>
@@ -90,7 +90,7 @@ export function Topsection({
         </div>
 
         <div className="">
-          <div className="flex-1 bg-myColor-900 text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px] h-[210px]">
+          <div className="flex-1 bg-[#121212] text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px] h-[210px]">
             {/* Card content for the second column */}
             <h2>Current Unit</h2>
             <p>{finance[0].year} {finance[0].brand} </p>
@@ -110,7 +110,7 @@ export function Topsection({
         </div>
 
         <div className="">
-          <div className="bg-myColor-900 text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px]">
+          <div className="bg-[#121212] text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px]">
             {/* deaal status */}
             <SalesButtonCard
               user={user}
@@ -134,7 +134,7 @@ export function Topsection({
 
         {/* Second Row */}
         <div className="">
-          <div className=" flex-1 bg-myColor-900 text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px]">
+          <div className=" flex-1 bg-[#121212] text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px]">
             {/* Card content for the third column */}
             <AccCard
               finance={finance}
@@ -148,7 +148,7 @@ export function Topsection({
         </div>
 
         <div className="">
-          <div className="bg-myColor-900 text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px]">
+          <div className="bg-[#121212] text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px]">
             <Servicard
               user={user}
               finance={finance}
@@ -168,7 +168,7 @@ export function Topsection({
         </div>
 
         <div className="">
-          <div className="bg-myColor-900 text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px] text-[15px]">
+          <div className="bg-[#121212] text-slate1 border border-[#43484E] p-4 rounded shadow uppercase font-bold text-[15px] text-[15px]">
             {/* parts status */}
             <PartsCard
               finance={finance}

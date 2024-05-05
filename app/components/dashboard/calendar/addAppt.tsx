@@ -1,38 +1,21 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Input, Button, Separator, Checkbox, TextArea, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, ScrollArea } from "~/components/ui/index";
 import { useLoaderData, Form, useFetcher } from "@remix-run/react";
-import { Cross2Icon, CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
-
+import { Cross2Icon, CaretSortIcon, CalendarIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
+import { cn } from "~/components/ui/utils"
 import React, { useState } from "react";
-import MesasageContent from "../calls/messageContent";
 import styled from 'styled-components';
-import Calendar from 'react-calendar';
-import DateTimeComponent from "./DateTime";
+import { Calendar } from '~/components/ui/calendar';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/other/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select"
-import * as Toast from '@radix-ui/react-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "~/components/ui/select"
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
-import { UserPlus } from "lucide-react";
-import {
-  ColumnDef, ColumnFiltersState, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues,
-  getFacetedMinMaxValues, sortingFns, FilterFn, SortingFn, FilterFns,
-} from "@tanstack/react-table"
+import { type ColumnDef, type ColumnFiltersState, type SortingState, type VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns, type FilterFn, type SortingFn, FilterFns, } from "@tanstack/react-table"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
-import { DataFunctionArgs } from '@remix-run/node';
-import { GetUser } from "~/utils/loader.server";
+import { type DataFunctionArgs } from '@remix-run/node';
 import { prisma } from "~/libs";
-import {
-  RankingInfo,
-  rankItem,
-  compareItems,
-} from '@tanstack/match-sorter-utils'
+import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
 import { ListSelection2 } from '~/quoteUtils/listSelection'
+import { format } from "date-fns"
 
 
 
@@ -290,6 +273,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
 
   const { user } = useRootLoaderData();
   const userEmail = user?.email;
+  const [date, setDate] = React.useState<Date>()
 
   const initial = {
     firstName: "",
@@ -306,7 +290,6 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
   const onClose = () => { handleClose(false) }
   const [isButtonPressed, setIsButtonPressed] = useState(false);
   const timerRef = React.useRef(0);
-  const [date, setDate] = React.useState<Date>()
   React.useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, []);
@@ -855,9 +838,29 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                   </Select>
                   <div className='mt-3'></div>
 
-                  <CalendarContainer>
-                    <Calendar onChange={onChange} value={value} calendarType="gregory" />
-                  </CalendarContainer>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] justify-start text-left font-normal",
+                          !date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        initialFocus
+                        className=' bg-[#121212]'
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <div className='mt-3'></div>
 
                   <Select name='timeOfDayModal'>
@@ -902,8 +905,8 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                 </div>
 
 
-                <Input type='hidden' defaultValue={value} name='dateModal' />
-                <Input type='hidden' defaultValue={value} name='followUpDay' />
+                <Input type='hidden' defaultValue={String(date)} name='dateModal' />
+                <Input type='hidden' defaultValue={String(date)} name='followUpDay' />
 
                 <Input type="hidden" defaultValue='future' name="apptStatus" />
                 <Input type="hidden" defaultValue='no' name="completed" />

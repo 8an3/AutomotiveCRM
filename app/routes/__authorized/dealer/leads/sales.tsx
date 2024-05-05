@@ -9,12 +9,9 @@ import type {
     Table, Column, SortingFn, ColumnDef, ColumnFiltersState, SortingState, VisibilityState, FilterFn, ExpandedState, FilterFns,
 } from "@tanstack/react-table";
 import { toast } from "sonner"
-import EditWishList from '~/components/dashboard/wishlist/WishListEdit';
 import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
 import { type LinksFunction, type DataFunctionArgs } from '@remix-run/node';
 import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
-
-// dashboard
 import { DataTable } from "~/components/data-table"
 import { type dashBoardType } from "~/components/dashboard/schema";
 import { DataTableColumnHeader } from "~/components/dashboard/calls/header"
@@ -25,36 +22,15 @@ import ClientStatusCard from '~/components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '~/components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '~/components/dashboard/calls/2DaysFromNow';
 import { dashboardAction, dashboardLoader } from "~/components/actions/dashboardCalls";
-import { DocumentInputs } from '~/routes/_authorized/dealer/dashboard.customer.$custId'
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
 import { ListSelection2 } from '~/quoteUtils/listSelection'
 import { ButtonLoading } from "~/components/ui/button-loading";
-
 import AttemptedOrReached from "~/components/dashboard/calls/setAttOrReached";
 import ContactTimesByType from "~/components/dashboard/calls/ContactTimesByType";
 import LogCall from "~/components/dashboard/calls/logCall";
 import Logtext from "~/components/dashboard/calls/logText";
 import { Badge } from "~/ui/badge";
-import { GetUser } from "~/utils/loader.server";
-import { prisma } from "~/libs";
-import { ArrowDownCircle, ArrowDownUp, ArrowRightCircle } from 'lucide-react';
-import DnDResource from '~/routes/__authorized/dealer/calendar/calendar.sales';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "~/components/ui/dialog"
-import Sidebar from "~/components/shared/sidebar";
-// <Sidebar />
-import { model } from "~/models";
-import UnitPicker from '~/components/dashboard/unitPicker/unitPicker'
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
-import FinanceTurnover from "~/components/dashboard/calls/financeTurnover";
 import second from '~/styles/second.css'
 import WishList from '~/components/dashboard/wishlist/wishList'
 
@@ -568,7 +544,7 @@ export function SearchTable() {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className='cursor-pointer border-[#3b3b3b] bg-slate8 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                                    className='cursor-pointer border-[#3b3b3b] bg-[#121212] p-4 capitalize text-slate1 hover:text-[#02a9ff]'
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
@@ -585,7 +561,7 @@ export function SearchTable() {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-slate8 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                                    className="h-24 cursor-pointer bg-[#121212] text-center capitalize text-slate1 hover:text-[#02a9ff]"
                                 >
                                     No results.
                                 </TableCell>
@@ -973,7 +949,7 @@ export function WebleadsTable() {
                                     table.getRowModel().rows.map((row) => (
                                         <TableRow
                                             key={row.id}
-                                            className='cursor-pointer border-[#3b3b3b] bg-slate8 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                                            className='cursor-pointer border-[#3b3b3b] bg-[#121212] p-4 capitalize text-slate1 hover:text-[#02a9ff]'
                                             data-state={row.getIsSelected() && "selected"}
                                             onClick={() => {
                                                 handleRowClick(row);
@@ -994,7 +970,7 @@ export function WebleadsTable() {
                                     <TableRow>
                                         <TableCell
                                             colSpan={columns.length}
-                                            className="h-24 cursor-pointer bg-slate8 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                                            className="h-24 cursor-pointer bg-[#121212] text-center capitalize text-slate1 hover:text-[#02a9ff]"
                                         >
                                             No results.
                                         </TableCell>
@@ -1138,8 +1114,8 @@ export function WebleadsTable() {
                         <hr className=' max-w-sm  text-black' />
                         <div className='gap-3 my-2 grid grid-cols-3 max-w-sm '>
                             <LogCall data={data} />
-                            <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
-                            <Logtext data={data} />
+                            {/* <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
+                            <Logtext data={data} />*/}
                         </div>
                         <h1 className=' text-black mt-3' >
                             Quick Follow-up
@@ -1204,7 +1180,7 @@ export function WebleadsTable() {
 // leads dashboard
 export async function getData(): Promise<dashBoardType[]> {
     //turn into dynamic route and have them call the right loader like q  uote qand overview
-    const res = await fetch('/dashboard/calls/loader')
+    const res = await fetch('/dealer/dashboard/calls/loader')
     if (!res.ok) {
         throw new Error("Failed to fetch data");
     }
@@ -1386,8 +1362,8 @@ export function MainDashbaord() {
                 return <>
                     <div className='my-2 grid grid-cols-3 gap-3'>
                         <LogCall data={data} />
-                        <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
-                        <Logtext data={data} />
+                        {/*<EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
+                        <Logtext data={data} />*/}
                     </div>
                 </>
             },
@@ -2119,7 +2095,7 @@ export function MainDashbaord() {
     ]
     return (
         <>
-            <div className="bg-transparent text-gray-300 uppercase">
+            <div className="bg-[#121212] text-gray-300 uppercase">
                 <DataTable columns={columns} data={data} />
             </div>
         </>

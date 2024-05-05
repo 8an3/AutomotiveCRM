@@ -18,7 +18,6 @@ export async function loader({ request, params }: LoaderFunction) {
     notification.to === user.email && notification.type === 'messages'
   );
 
-  console.log(user, messages)
 
   return json({ user, messages, })
 }

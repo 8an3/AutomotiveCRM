@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Tabs, TabsList, TabsTrigger, Input, Button, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, Dialog as Dialog1, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Accordion, AccordionContenSendEmailt, AccordionItem, AccordionTrigger, AccordionContent, Label } from "~/components"
-import { useAppContext } from "~/components/microsoft/AppContext";
+import { Tabs, TabsList, TabsTrigger, Input, Button, ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger, Dialog as Dialog1, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Accordion, AccordionItem, AccordionTrigger, AccordionContent, Label } from "~/components"
+import ProvideAppContext, { useAppContext } from '~/components/microsoft/AppContext';
 import { getAllFolders, deleteMessage, getDrafts, getDraftsList, getInbox, getInboxList, getJunk, getList, getSent, getTrash, messageRead, messageUnRead, getUser } from "~/components/microsoft/GraphService";
 import { prisma } from "~/libs";
 import { EditorTiptapHook, Editor, onUpdate } from "~/components/libs/editor-tiptap";
-import { MsalProvider, AuthenticatedTemplate, useMsal, UnauthenticatedTemplate } from '@azure/msal-react';
+import { useMsal } from '@azure/msal-react';
 import { MessageAlert, SendMail, Mail, Message, User, BinHalf, Calendar as CalendarIcon, Telegram, Trash, MessageText, } from "iconoir-react";
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { toast } from "sonner"
@@ -16,7 +16,7 @@ import { ButtonLoading } from "~/components/ui/button-loading";
 
 export default function Client() {
   const app = useAppContext();
-  const { instance } = useMsal();
+  const { instance, accounts } = useMsal();
   const activeAccount = instance.getActiveAccount();
   const email = String(activeAccount?.username)
   const [folders, setFolders] = useState([])
@@ -42,6 +42,7 @@ export default function Client() {
   const [folderBeingRenamed, setFolderBeingRenamed] = useState('test');
   const [which, setWhich] = useState('');
   const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   useEffect(() => {
     const fetchUnreadCount = async () => {
@@ -57,11 +58,26 @@ export default function Client() {
       setUnreadJunkCount(unreadJunk);
       const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: email, }, });
       setTemplates(getTemplates)
-      const folderList = getAllFolders(app.authProvider!);
+      const folderList = await getAllFolders(app.authProvider!);
       setFolders(folderList)
     };
     fetchUnreadCount();
-  }, [app.authProvider, email]);
+  }, []);
+
+  useEffect(() => {
+    if (selectedTemplate) {
+      setText(selectedTemplate.body);
+      setSubject(selectedTemplate.subject);
+    }
+  }, [selectedTemplate]);
+
+  useEffect(() => {
+    if (selectedEmail) {
+      const serializedEmail = JSON.stringify(selectedEmail);
+      window.localStorage.setItem("selectedEmail", serializedEmail);
+    }
+  }, [selectedEmail]);
+
 
   let content;
   let handleUpdate;
@@ -75,18 +91,11 @@ export default function Client() {
     setRenameLabel(e.target.value);
   }, []);
   // templates
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const handleChange = (event) => {
     const selectedTemplate = templates.find(template => template.title === event.target.value);
     setSelectedTemplate(selectedTemplate);
   };
-  useEffect(() => {
-    if (selectedTemplate) {
-      setText(selectedTemplate.body);
-      setSubject(selectedTemplate.subject);
-    }
-  }, [selectedTemplate]);
 
   const handleDeleteClick = (folderName, id) => {
     //  console.log(email)
@@ -147,12 +156,6 @@ export default function Client() {
     );
   };
 
-  useEffect(() => {
-    if (selectedEmail) {
-      const serializedEmail = JSON.stringify(selectedEmail);
-      window.localStorage.setItem("selectedEmail", serializedEmail);
-    }
-  }, [selectedEmail]);
 
   async function HandleGewtLabel(label) {
     const labelData = await getList(app.authProvider!, label)
@@ -554,7 +557,7 @@ export default function Client() {
   };
   return (
     <>
-      <div className="!border-1 !mx-auto !bg-black flex !w-[95%] !h-[90vh] !border !border-[#3b3b3b] mt-[60px]">
+      <div className="!border-1 !mx-auto !bg-[#121212] flex !w-[95%] !h-[90vh] !border !border-[#3b3b3b] mt-[60px]">
         <div className="sidebar w-[10%] border-r !border-[#3b3b3b]">
           <div className="border-b !border-[#3b3b3b]">
             <LabelList />
@@ -613,7 +616,7 @@ export default function Client() {
           </div>
           <div className="overflow-y-scroll h-[95%] ">
             <div>
-              <Input name="search" placeholder="Search" className='m-2 mx-auto w-[95%] border border-[#ffffff4d] bg-[#000] text-[#fff] focus:border-[#02a9ff]' />
+              <Input name="search" placeholder="Search" className='m-2 mx-auto w-[95%] border border-[#ffffff4d] bg-[#121212] text-[#fff] focus:border-[#02a9ff]' />
             </div>
             <EmailList />
           </div>
@@ -945,3 +948,38 @@ export default function Client() {
 
 
 
+/**  // --------------------------------------------------------------------------
+  const { instance, accounts } = useMsal();
+  const [graphData, setGraphData] = useState(null);
+
+  const graphConfig = {
+    graphMeEndpoint: "https://graph.microsoft.com/v1.0/me",
+  };
+
+  async function callMsGraph(accessToken) {
+    const headers = new Headers();
+    const bearer = `Bearer ${accessToken}`;
+    headers.append("Authorization", bearer);
+    const options = {
+      method: "GET",
+      headers: headers
+    };
+    return fetch(graphConfig.graphMeEndpoint, options)
+      .then(response => response.json())
+      .catch(error => console.log(error));
+  }
+  function RequestProfileData() {
+    // Silently acquires an access token which is then attached to a request for MS Graph data
+    instance
+      .acquireTokenSilent({
+        ...loginRequest,
+        account: accounts[0],
+      })
+      .then((response) => {
+        callMsGraph(response.accessToken).then((response) => setGraphData(response));
+      });
+  }
+  if (!accounts[0]) {
+    RequestProfileData()
+  }
+  // - */

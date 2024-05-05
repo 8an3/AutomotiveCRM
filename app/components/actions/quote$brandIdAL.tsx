@@ -71,7 +71,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
   const userEmail = session2.get("email")
   const user = await prisma.user.findUnique({ where: { email: userEmail } });
 
-  console.log(formData.financeIdFromDash, 'formData.financeIdFromDash')
+  console.log(user, userEmail, 'formData.financeIdFromDash')
 
   const referer = request.headers.get('Referer');
   console.log('Referer:', referer);
@@ -276,7 +276,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
         progress: formData.progress,
       },
     });
-    return json({ finance, dashboard, updateActivix }, redirect(`/overview/${brand}`), { headers: { "Set-Cookie": serializedSession, } }
+    return json({ finance, dashboard, updateActivix }, redirect(`/dealer/overview/${brand}`), { headers: { "Set-Cookie": serializedSession, } }
     );
 
   } else {
@@ -311,14 +311,14 @@ export async function quoteAction({ params, request }: ActionArgs) {
       } else {
         createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
       }
-      return json({ createQuoteServer, }), redirect(`/overview/Used`)
+      return json({ createQuoteServer, }), redirect(`/dealer/overview/Used`)
     }
     if (formData.brand === 'Switch') {
       const email = formData.email
       const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
 
       const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer, }), redirect(`/options/${brand}`)
+      return json({ manitouOptionsCreated, createQuoteServer, }), redirect(`/dealer/options/${brand}`)
     }
     if (formData.brand === 'Manitou') {
       const email = formData.email
@@ -332,7 +332,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
       } else {
         createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
       } const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer, }), redirect(`/options/${brand}`)
+      return json({ manitouOptionsCreated, createQuoteServer, }), redirect(`/dealer/options/${brand}`)
     }
     if (formData.brand === 'BMW-Motorrad') {
       const financeId = finance.id
@@ -348,7 +348,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
         createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
       } const updatingFinance = await createBMWOptions(financeId)
       const updatingFinance2 = await createBMWOptions2(financeId)
-      return json({ updatingFinance, updatingFinance2, createQuoteServer, }), redirect(`/options/${brand}`)
+      return json({ updatingFinance, updatingFinance2, createQuoteServer, }), redirect(`/dealer/options/${brand}`)
     }
     else {
       const email = formData.email
@@ -365,11 +365,11 @@ export async function quoteAction({ params, request }: ActionArgs) {
         } else {
           createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
         }
-        return json({ createQuoteServer, }), redirect(`/overview/${brand}`)
+        return json({ createQuoteServer, }), redirect(`/dealer/overview/${brand}`)
       }
       else {
-        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
-        return json({ createQuoteServer, }), redirect(`/overview/${brand}`)
+        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData, user, userEmail,)
+        return json({ createQuoteServer, }), redirect(`/dealer/overview/${brand}`)
 
       }
 

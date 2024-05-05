@@ -19,7 +19,6 @@ export default function Root() {
       setInbox(messages)
       const unreadCount = await getInboxList(app.authProvider!);
       setEmails(unreadCount);
-      console.log(inbox, emails, 'emails iunbox ')
       window.localStorage.setItem("emailCount", String(inbox));
       window.localStorage.setItem("emails", String(emails));
       window.localStorage.setItem("idToken", String(activeAccount?.idToken));

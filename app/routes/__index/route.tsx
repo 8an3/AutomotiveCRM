@@ -56,7 +56,7 @@ export async function loader({ request }: LoaderArgs) {
   }
   if (email) {
     let user = await GetUser(email);
-    throw user && redirect("/quote/Harley-Davidson");
+    throw user && redirect("/dealer/quote/Harley-Davidson");
   };
 
   return null
@@ -75,6 +75,8 @@ export default function Index() {
   return (
     <>
       <div className='bg-black'>
+        <NavigationMenuSales />
+
         <AlertBox />
         <NewHeader />
         <NewSection />

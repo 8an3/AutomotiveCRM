@@ -11,9 +11,8 @@ import React, {
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { InteractionType, type PublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
-
 import { getUser } from "./GraphService";
-import config from "./Config";
+import { config, msalConfig } from "./Config";
 
 // <AppContextSnippet>
 export interface AppUser {
@@ -84,12 +83,13 @@ function useProvideAppContext() {
     msal.instance as PublicClientApplication,
     {
       account: msal.instance.getActiveAccount()!,
-      scopes: config.scopes,
-      clientSecret:config.clientSecret,
-
+      scopes: msalConfig.scopes,
       interactionType: InteractionType.Popup,
+      authority: msalConfig.authority,
     }
   );
+
+
   // </AuthProviderSnippet>
 
   // <UseEffectSnippet>
@@ -122,9 +122,11 @@ function useProvideAppContext() {
   // <SignInSnippet>
   const signIn = async () => {
     await msal.instance.loginPopup({
-      scopes: config.scopes,
-
+      scopes: msalConfig.scopes,
+      redirectUri: msalConfig.redirectUri,
       prompt: "select_account",
+      authority: msalConfig.authority,
+
     });
 
     // Get the user from Microsoft Graph

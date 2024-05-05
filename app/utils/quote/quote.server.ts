@@ -1,106 +1,101 @@
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '~/routes/__authorized/dealer/api/activix';
-export async function QuoteServer(clientData, financeId, email, financeData, dashData) {
-  const user = await prisma.user.findUnique({ where: { email: clientData.userEmail } })
+export async function QuoteServer(clientData, financeId, email, financeData, dashData, user, userEmail,) {
   const formData = {
     ...clientData,
     ...dashData,
     ...financeData,
   }
+  // const user = await prisma.user.findUnique({ where: { email: userEmail } })
+
   delete clientData.userEmail
   let createActivixLead
   if (user?.activixActivated === 'yes') { createActivixLead = await QuoteCreateLead(formData) }
   // console.log(createActivixLead.data.id, 'data.id')
-  try {
-    const existingClientFile = await prisma.clientfile.findUnique({ where: { email: email, }, });
-    let clientFileId;
-    if (existingClientFile) {
-      clientFileId = existingClientFile.id;
-      console.log(clientFileId, "ClientFile record already exists. Skipping creation.");
-      const finance = await prisma.finance.create({ data: { ...financeData, }, });
-      const dashboard = await prisma.dashboard.create({
-        data: {
-          ...dashData,
-          clientfileId: clientFileId,
-          financeId: finance.id, // Assuming the financeId is a foreign key in the dashboard table
-        },
-      });
-      let addFinanceId
-      let newActivix
+  const existingClientFile = await prisma.clientfile.findUnique({ where: { email: email, }, });
+  let clientFileId;
+  if (existingClientFile) {
+    clientFileId = existingClientFile.id;
+    console.log(clientFileId, "ClientFile record already exists. Skipping creation.");
+    const finance = await prisma.finance.create({ data: { ...financeData, }, });
+    const dashboard = await prisma.dashboard.create({
+      data: {
+        ...dashData,
+        clientfileId: clientFileId,
+        financeId: finance.id, // Assuming the financeId is a foreign key in the dashboard table
+      },
+    });
+    let newActivix
 
-      addFinanceId = await prisma.finance.update({
-        where: { id: finance.id, },
-        data: {
-          dashboardId: dashboard.id,
-          financeId: finance.id,
-          clientfileId: clientFileId,
-        },
-      });
-      return { finance, dashboard, addFinanceId, newActivix };
-    }
-
-
-
-
-    // If a clientFile with the given email does not exist, create a new one
-    if (!existingClientFile) {
-      console.log('!existingClientFile')
-      const newClientFile = await prisma.clientfile.create({
-        data: {
-          ...clientData,
-          userId: user.id,
-        }
-      });
-      clientFileId = newClientFile.id;
-      console.log(clientFileId, "ClientFile record created successfully");
-      const finance = await prisma.finance.create({
-        data: {
-          ...financeData,
-          userEmail: user.email,
-        }
-      });
-
-      const dashboard = await prisma.dashboard.create({
-        data: {
-          ...dashData,
-          userEmail: user.email,
-
-          clientfileId: clientFileId,
-          financeId: finance.id, // Assuming the financeId is a foreign key in the dashboard table
-        },
-      });
-
-      const addFinanceId = await prisma.finance.update({
-        where: {
-          id: finance.id,
-        },
-        data: {
-          userEmail: user?.email,
-          dashboardId: dashboard.id,
-          financeId: finance.id,
-          clientfileId: newClientFile.id,
-        },
-      });
-      console.log('addFinanceId', addFinanceId)
-      const addFinanceId2 = await prisma.clientfile.update({
-        where: {
-          id: clientFileId
-        },
-        data: {
-          userId: user.id,
-
-          financeId: finance.id
-        }
-      })
-      console.log('addFinanceId2', addFinanceId2)
-      return { finance, dashboard, addFinanceId, addFinanceId2 };
-    }
-    // If a clientFile with the given email does not exist, create a new one
-  } catch (error) {
-    console.error("Error creating ClientFile record:", error);
-    // Consider throwing the error or handling it in a way that's appropriate for your application
+    const addFinanceId = await prisma.finance.update({
+      where: { id: finance.id, },
+      data: {
+        dashboardId: dashboard.id,
+        financeId: finance.id,
+        clientfileId: clientFileId,
+      },
+    });
+    console.log(finance, dashboard, addFinanceId)
+    return { finance, dashboard, addFinanceId, newActivix };
   }
+  // If a clientFile with the given email does not exist, create a new one
+  if (!existingClientFile) {
+    console.log('!existingClientFile')
+    console.log(userEmail, user, email, 'usermeaiol; user')
+    const newUser = await prisma.user.findUnique({ where: { email: userEmail } })
+    const newClientFile = await prisma.clientfile.create({
+      data: {
+        ...clientData,
+        userId: newUser?.id,
+      }
+    });
+    clientFileId = newClientFile.id;
+    console.log(clientFileId, "ClientFile record created successfully");
+    const finance = await prisma.finance.create({
+      data: {
+        ...financeData,
+        userEmail: userEmail,
+      }
+    });
+
+    const dashboard = await prisma.dashboard.create({
+      data: {
+        ...dashData,
+        userEmail: userEmail,
+
+        clientfileId: clientFileId,
+        financeId: finance.id, // Assuming the financeId is a foreign key in the dashboard table
+      },
+    });
+
+    const addFinanceId = await prisma.finance.update({
+      where: {
+        id: finance.id,
+      },
+      data: {
+        userEmail: userEmail,
+        dashboardId: dashboard.id,
+        financeId: finance.id,
+        clientfileId: newClientFile.id,
+      },
+    });
+    console.log('addFinanceId', addFinanceId)
+    const addFinanceId2 = await prisma.clientfile.update({
+      where: {
+        id: clientFileId
+      },
+      data: {
+        userId: newUser?.id,
+
+        financeId: finance.id
+      }
+    })
+    console.log('addFinanceId2', addFinanceId2)
+    return { finance, dashboard, addFinanceId, addFinanceId2 };
+  }
+  // If a clientFile with the given email does not exist, create a new one
+  return null
 }
 
 export async function QuoteServerActivix(clientData, financeId, email, financeData, dashData) {

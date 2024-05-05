@@ -38,7 +38,6 @@ export async function loader({ request, params }: LoaderFunction) {
 
 export async function action({ request }: LoaderArgs) {
   const formData = await request.formData();
-  console.log('hit action', formData)
   const lastMessage = formData.get("lastMessage")
   const title = formData.get('title')
   const userId = formData.get('userId')
@@ -126,7 +125,7 @@ export default function NotificationSystem() {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" className="right-[75px] top-[25px] border-none fixed">
-          <Bell color="#02a9ff" strokeWidth={1.5} />
+          <Bell color="#fff" strokeWidth={1.5} />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[600px] bg-[#1c2024] justify-center items-center  mx-auto mr-10 max-h-[75%] overflow-y-scroll">

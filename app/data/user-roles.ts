@@ -72,4 +72,10 @@ export const dataUserRoles: DataUserRole[] = [
     name: "Administration",
     description: "Administration Staff",
   },
+  {
+    sequence: 12,
+    symbol: "DEV",
+    name: "DEV",
+    description: "DEV Staff",
+  },
 ];

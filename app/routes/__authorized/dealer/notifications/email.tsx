@@ -17,6 +17,5 @@ export default function EmailMessages() {
     fetchUnreadCount()
   }, []);
 
-  console.log(emails, inbox)
   return ({ emails, inbox, idToken })
 }

@@ -11,19 +11,16 @@ import { updateFinanceNote } from "~/utils/client/updateFinanceNote.server";
 import { prisma } from "~/libs";
 import { deleteFinanceAppts } from "~/utils/financeAppts/delete.server";
 import UpdateAppt from "../dashboard/calls/actions/updateAppt";
-import { createFinanceCheckClientDFirst } from "~/utils/finance/create.server";
 import createFinanceNotes from "../dashboard/calls/actions/createFinanceNote";
 import updateFinanceNotes from "../dashboard/calls/actions/updateFinanceNote";
 import CreateAppt from "../dashboard/calls/actions/createAppt";
 import updateFinance23 from "../dashboard/calls/actions/updateFinance";
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getMergedFinance } from "~/utils/dashloader/dashloader.server";
-import { EmailFunction } from "~/routes/dummyroute";
 import { model } from "~/models";
 import { getSession, commitSession } from '~/sessions/auth-session.server';
 import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
-import { google } from 'googleapis';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { QuoteServer } from "~/utils/quote/quote.server";
@@ -61,6 +58,7 @@ export function Unauthorized(refreshToken) {
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
+  console.log('session2', email)
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
@@ -126,27 +124,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
   });
-  const userRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/${user.email}/profile`, {
-    headers: { Authorization: 'Bearer ' + tokens, Accept: 'application/json' }
-  });
-  console.log(userRes, 'userRes')
-  // new
-  if (userRes.status === 401) {
-    const unauthorizedAccess = await Unauthorized(refreshToken)
-    tokens = unauthorizedAccess
 
-    session.set("accessToken", tokens);
-    await commitSession(session2);
-
-    const cookies = cookie.serialize({
-      email: email,
-      refreshToken: refreshToken,
-      accessToken: tokens,
-    })
-    await cookies
-    console.log(tokens, 'authorized tokens')
-
-  } else { console.log('Authorized'); }
 
 
 
@@ -228,6 +206,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       deFees,
       manOptions,
       sliderWidth,
+      wishlistMatches,
       user,
       financeNotes,
       dashBoardCustURL,
@@ -236,7 +215,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNewLead,
       latestNotes,
       notifications,
-      refreshToken, tokens, request
+      request
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -252,17 +231,17 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       finance,
       deFees,
       manOptions,
-
       sliderWidth,
       user,
       financeNotes,
+      wishlistMatches,
       getWishList,
       latestNotes,
       conversations,
       financeNewLead,
       notifications,
       dashBoardCustURL,
-      refreshToken, tokens, request
+      request
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -278,16 +257,16 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       finance,
       deFees,
       sliderWidth,
-
       user,
       financeNotes,
       financeNewLead,
       latestNotes,
       conversations,
+      wishlistMatches,
       getWishList,
       notifications,
       dashBoardCustURL,
-      refreshToken, tokens, request
+      request
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -305,18 +284,17 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       modelData,
       finance,
       deFees,
-
       bmwMoto,
       latestNotes,
       bmwMoto2,
       sliderWidth,
       user,
+      wishlistMatches,
       financeNotes,
       financeNewLead,
       conversations,
       getWishList,
       notifications,
-      refreshToken, tokens,
       dashBoardCustURL,
       request
     }, {
@@ -332,7 +310,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       ok: true,
       modelData,
       finance,
-
       deFees,
       sliderWidth,
       user,
@@ -342,8 +319,9 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       conversations,
       notifications,
+      wishlistMatches,
       dashBoardCustURL,
-      refreshToken, tokens, request
+      request
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -353,9 +331,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
   if (brand === "Harley-Davidson") {
     const modelData = await getDataHarley(finance);
-    // console.log(dashData)
-    // console.log(getTemplates, 'getTemplates')
-
     return json({
       ok: true,
       modelData,
@@ -371,7 +346,8 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNewLead,
       notifications,
       getTemplates,
-      refreshToken, tokens, request, wishlistMatches
+      request,
+      wishlistMatches,
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -399,7 +375,8 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         getWishList,
         notifications,
         webLeadData,
-        refreshToken, tokens, request,
+        wishlistMatches,
+        request,
       }, {
         headers: {
           "Set-Cookie": await commitSession(session2),
@@ -423,7 +400,8 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       notifications,
       webLeadData,
-      refreshToken, tokens, request
+      wishlistMatches,
+      request
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),

@@ -25,9 +25,16 @@ import ProvideAppContext from "./routes/_auth.appContext";
 import { MsalProvider } from "@azure/msal-react";
 import { type IPublicClientApplication } from "@azure/msal-browser";
 import { CustomNavigationClient } from "./utils/NavigationClient";
+import { GetUser } from "~/utils/loader.server";
 
 import GetUserFromRequest from "~/utils/auth/getUser";
-
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from 'recoil';
 
 //import GetUserFromRequest from "~/utils/auth/getUser";
 //const user = await GetUserFromRequest(request);
@@ -100,6 +107,7 @@ export default function App({ pca }: AppProps) {
         <Links />
       </head>
       <body id="__remix">
+
         {/*  <MsalProvider instance={pca}>
          <ProvideAppContext>   */}
         <Provider store={store}>

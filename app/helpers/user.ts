@@ -14,6 +14,7 @@ export type UserSession = {
   id: string;
   email: string;
   username: string;
+  name: string;
   subscriptionId: string;
   customerId: string;
   returning: string;

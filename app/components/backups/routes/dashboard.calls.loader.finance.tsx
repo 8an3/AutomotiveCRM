@@ -43,6 +43,6 @@ export async function loader({ request, params }: LoaderFunction) {
         };
     });
 
-    console.log('financeData:', combinedData);
+    // console.log('financeData:', combinedData);
     return financeData
 }

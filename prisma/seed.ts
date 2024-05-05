@@ -10,7 +10,7 @@ import { customAlphabet } from "nanoid";
 import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import voca from "voca";
-
+import chalk from 'chalk';
 import { dataUserRoles } from "~/data";
 import { prisma } from "~/libs";
 
@@ -53,10 +53,13 @@ export async function seedUsers() {
   const adminUserRole = await prisma.userRole.findFirst({
     where: { symbol: "ADMIN" },
   });
+  const devUserRole = await prisma.userRole.findFirst({
+    where: { symbol: "DEV" },
+  });
   invariant(adminUserRole, "User Role with symbol ADMIN is not found");
 
   // ---------------------------------------------------------------------------
-  console.info("Seed users...");
+  console.log(chalk.yellow("Seeding users ..."));
 
   const { REMIX_ADMIN_EMAIL, REMIX_ADMIN_PASSWORD } = process.env;
   invariant(REMIX_ADMIN_EMAIL, "REMIX_ADMIN_EMAIL must be set");
@@ -67,9 +70,11 @@ export async function seedUsers() {
     data: {
       email: REMIX_ADMIN_EMAIL,
       //    password: { create: { hash: hashedPassword } },
-      name: "Skyler",
-      username: "Skyler Zanth",
-      phone: "6138980992",
+      name: "Skyler Zanth",
+      username: "Skyler",
+      phone: "+16138980992",
+      position: 'Admin',
+      dealer: "Freedom H-D",
       role: { connect: { id: adminUserRole.id } },
       profile: {
         create: {
@@ -80,19 +85,46 @@ export async function seedUsers() {
 
     },
   });
+  console.log(chalk.green("Admin user seeded!"));
+
+  await prisma.user.create({
+    data: {
+      email: 'skylerzanth@gmail.com',
+      name: "Justin Zanth",
+      username: "Justin",
+      phone: "+16138980991",
+      position: 'Dev',
+      dealer: "Freedom H-D",
+      role: { connect: { id: devUserRole?.id } },
+      profile: {
+        create: {
+          headline: "I am Dev",
+          bio: "The dev of this app.",
+        },
+      },
+
+    },
+  });
+  console.log(chalk.green("Dev user seeded!"));
+
 
   return user
 }
-
 export async function SeedLockFinanceTerminals() {
+  console.log(chalk.yellow("Seeding lock finance terminals ..."));
+
   const data = await prisma.lockFinanceTerminals.create({
     data: {
       locked: false
     }
   })
+  console.log(chalk.green("Lock finance terminals seeded!"));
+
   return data
 }
 export async function DealerFees() {
+  console.log(chalk.yellow("Seeding dealer fees ..."));
+
   const data = await prisma.dealerFees.create({
     data: {
       dealer: 'Freedom H-D',
@@ -128,11 +160,13 @@ export async function DealerFees() {
       userEmail: 'skylerzanth@outlook.com'
     },
   });
+  console.log(chalk.green("dealer fees seeded!"));
+
   return data
 }
 export async function seedNotes() {
   // ---------------------------------------------------------------------------
-  console.info("Seed notes...");
+  console.log(chalk.yellow("Seeding notes ..."));
   await prisma.note.deleteMany();
 
   const user = await prisma.user.findFirst({
@@ -148,15 +182,19 @@ export async function seedNotes() {
 
   const slug = voca.slugify(note1.title);
   const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz1234567890", 10);
-  await prisma.note.create({
+  const createNote = await prisma.note.create({
     data: {
       user: { connect: { id: user.id } },
       slug: `${slug}-${nanoid()}`,
       ...note1,
     },
   });
+  console.log(chalk.green("Notes seeded!"));
+  return createNote
 }
 export async function FirstCustomer() {
+  console.log(chalk.yellow("Seeding first customer ..."));
+
   const user = await prisma.user.findFirst({
     where: { role: { symbol: "ADMIN" } },
   });
@@ -347,9 +385,13 @@ export async function FirstCustomer() {
       userEmail: 'skylerzanth@outlook.com',
     }
   })
+  console.log(chalk.green("First customer seeded!"));
+
   return json({ user, finance, dashboard, clientfile, finance2 })
 }
 export async function dealerInfo() {
+  console.log(chalk.yellow("Seeding dealer info ..."));
+
   const data = await prisma.dealerInfo.create({
     data: {
       dealerName: 'Freedom H-D',
@@ -360,9 +402,13 @@ export async function dealerInfo() {
       dealerPhone: '6137877777'
     }
   })
+  console.log(chalk.green("Dealer info seeded!"));
+
   return data
 }
 export async function dealerFeesAdminCreate() {
+  console.log(chalk.yellow("Seeding dealer admin fees ..."));
+
   const data = await prisma.dealerFeesAdmin.create({
     data: {
       dealer: 'Freedom H-D',
@@ -397,10 +443,14 @@ export async function dealerFeesAdminCreate() {
       userAdmin: '0'
     }
   })
+  console.log(chalk.green("dealer admin fees seeded!"));
+
   return data
 
 }
 export async function FirstMsgNotification() {
+  console.log(chalk.yellow("Seeding notifications ..."));
+
   const user = await prisma.user.findFirst({ where: { role: { symbol: "ADMIN" } }, });
   const data = await prisma.notificationsUser.create({
     data: {
@@ -444,7 +494,9 @@ export async function FirstMsgNotification() {
       userId: user?.id,
     }
   })
-  return (data, data2, data3)
+  console.log(chalk.green("Notifications seeded!"));
+
+  return ({ data, data2, data3 })
 
 }
 export async function ClientApts() {
@@ -488,6 +540,7 @@ export async function ClientApts() {
       userId: user?.id,
     },
   ];
+  console.log(chalk.yellow("Seeding ClientApts ..."));
   for (const clientApts of aptsData) {
     const {
       financeId,
@@ -517,9 +570,9 @@ export async function ClientApts() {
       },
     });
   }
-}
+  console.log(chalk.green("Client appts seeded!"));
 
-console.info("Seed BMW...");
+}
 export async function seedBMW() {
   const bmwmotoData = [
     {
@@ -747,6 +800,7 @@ export async function seedBMW() {
       brand: "BMW",
     },
   ];
+  console.log(chalk.yellow("Seeding BMW models ..."));
 
   for (const bmwmoto of bmwmotoData) {
     const { model, color, msrp, paintPrem, brand } = bmwmoto;
@@ -761,8 +815,9 @@ export async function seedBMW() {
       },
     });
   }
+  console.log(chalk.green("BMW models seeded!"));
+
 }
-console.info("Seed Kawasaki...");
 export async function seedKawasaki() {
   const kawasakiData = [
     {
@@ -1229,6 +1284,8 @@ export async function seedKawasaki() {
       brand: "KAWASAKI",
     },
   ];
+  console.log(chalk.yellow("Seeding Kawasaki models ..."));
+
   for (const kawasaki of kawasakiData) {
     const { model, color, msrp, paintPrem, brand } = kawasaki;
 
@@ -1242,8 +1299,9 @@ export async function seedKawasaki() {
       },
     });
   }
+  console.log(chalk.green("Kawasaki models seeded!"));
+
 }
-console.info("Seed Triumph...");
 export async function seedTriumph() {
   const triumphData = [
     {
@@ -1828,6 +1886,7 @@ export async function seedTriumph() {
       brand: "TRIUMPH ",
     },
   ];
+  console.log(chalk.yellow("Seeding Triumph models ..."));
 
   for (const triumph of triumphData) {
     const { model, color, msrp, paintPrem, brand } = triumph;
@@ -1842,8 +1901,9 @@ export async function seedTriumph() {
       },
     });
   }
+  console.log(chalk.green("Triumph models seeded!"));
+
 }
-console.info("Seed Harley...");
 export async function seedHarley() {
   const harleyData = [
     {
@@ -2336,6 +2396,7 @@ export async function seedHarley() {
       msrp: 52499,
     },
   ];
+  console.log(chalk.yellow("Seeding Harley models ..."));
 
   for (const harley of harleyData) {
     const { model, color, msrp } = harley;
@@ -2348,8 +2409,9 @@ export async function seedHarley() {
       },
     });
   }
+  console.log(chalk.green("Harley models seeded!"));
+
 }
-console.info("Seed Canam...");
 export async function seedCanam() {
   const canamData = [
     {
@@ -8007,6 +8069,8 @@ export async function seedCanam() {
       msrp: "42399",
     },
   ];
+  console.log(chalk.yellow("Seeding Canam models ..."));
+
   for (const canam of canamData) {
     const { model, color, model1, modelCode, freight, commodity, pdi, msrp } =
       canam;
@@ -8024,9 +8088,9 @@ export async function seedCanam() {
       },
     });
   }
-}
+  console.log(chalk.green("Canam models seeded!"));
 
-console.info("Seed Manitou...");
+}
 export async function seedManitou() {
   const manitouData = [
     {
@@ -9240,6 +9304,7 @@ export async function seedManitou() {
       msrp: 157014,
     },
   ];
+  console.log(chalk.yellow("Seeding Manitou models ..."));
 
   for (const manitou of manitouData) {
     const {
@@ -9268,9 +9333,9 @@ export async function seedManitou() {
       },
     });
   }
-}
+  console.log(chalk.green("Manitou models seeded!"));
 
-console.info("seeding my24 canam");
+}
 export async function seedmy24Canam() {
   const my24canamData = [
     {
@@ -9540,6 +9605,8 @@ export async function seedmy24Canam() {
       spec: "https://can-am.brp.com/off-road/ca/en/models/side-by-side-vehicles/defender.html#defender_pro-limited",
     },
   ];
+  console.log(chalk.yellow("Seeding my24 canam ..."));
+
   for (const my24canam of my24canamData) {
     const { model, color, msrp, url, spec } = my24canam;
 
@@ -9553,9 +9620,9 @@ export async function seedmy24Canam() {
       },
     });
   }
-}
-console.info("Seed Script...");
+  console.log(chalk.green("Canam my24 models seeded!"));
 
+}
 export async function seedTemplates() {
   const template = [
     {
@@ -9993,6 +10060,8 @@ export async function seedTemplates() {
       fromEmail: "skylerzanth@outlook.com",
     },
   ];
+  console.log(chalk.yellow("Seeding Scripts ..."));
+
   for (const EmailTemplates of template) {
     const {
       body,
@@ -10022,8 +10091,9 @@ export async function seedTemplates() {
       },
     });
   }
+  console.log(chalk.green("Scripts seeded!"));
+
 }
-console.info("Seed Harley...");
 export async function seed24Harley() {
   const harleyData = [
     {
@@ -10220,6 +10290,7 @@ export async function seed24Harley() {
       msrp: 48699,
     },
   ];
+  console.info("Seed Harley...");
 
   for (const harley of harleyData) {
     const { model, color, msrp } = harley;
@@ -10232,6 +10303,8 @@ export async function seed24Harley() {
       },
     });
   }
+  console.log(chalk.green("H-D my24 models seeded!"));
+
 }
 seed()
   .catch((e) => {

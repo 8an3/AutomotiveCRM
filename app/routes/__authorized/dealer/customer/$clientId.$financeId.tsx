@@ -2,8 +2,8 @@
 import { Form, Link, useActionData, useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { ClientResultFunction, ClientStateFunction, } from "~/components/lists/clientResultList";
-import { RemixNavLink, Input, Separator, Button, TextArea, Label, Tabs, TabsList, TabsTrigger, TabsContent, } from "~/components";
-import { type DataFunctionArgs, type ActionFunction, json, } from '@remix-run/node'
+import { RemixNavLink, Input, Separator, Button, TextArea, Label, Tabs, TabsList, TabsTrigger, TabsContent, PopoverTrigger, PopoverContent, Popover, } from "~/components";
+import { type DataFunctionArgs, type ActionFunction, json, type LinksFunction } from '@remix-run/node'
 import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { getDataKawasaki, getFinanceWithDashboard, getLatestBMWOptions, getLatestBMWOptions2, getDataBmwMoto, getDataByModel, getDataHarley, getDataTriumph, findQuoteById, findDashboardDataById, getDataByModelManitou, getLatestOptionsManitou, getFinance, getClientFileByEmail, getClientFileById } from "~/utils/finance/get.server";
 import { getAllFinanceNotes } from '~/utils/financeNote/get.server';
@@ -32,6 +32,10 @@ import { UpdateLeadBasic, UpdateLeadApiOnly, UpdateClientFromActivix, UpdateLead
 import axios from "axios";
 import { GetUser } from "~/utils/loader.server";
 import second from '~/styles/second.css'
+import { Cross2Icon, CaretSortIcon, CalendarIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
+import { Calendar } from '~/components/ui/calendar';
+import { format } from "date-fns"
+import { cn } from "~/components/ui/utils"
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: second },
@@ -1141,7 +1145,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   for (let key in merged) {
     merged[key] = String(merged[key]);
   }
-  const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: email, }, });
+  const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: email } });
   const UploadedDocs = await prisma.uploadDocs.findMany({ where: { financeId: finance?.id } });
   const userList = await prisma.user.findMany()
   const parts = await prisma.part.findMany()
@@ -1327,11 +1331,11 @@ export default function CustomerProfile({ request, }) {
     });
   };
 
-  let date = new Date(finance[0].pickUpDate); // "Wed Nov 29 2023 00:00:00 GMT-0500 (Eastern Standard Time)";
-  let weekday = date.toLocaleString('default', { weekday: 'short' });
-  let month = date.toLocaleString('default', { month: 'short' });
-  let day = date.getDate();
-  let year = date.getFullYear();
+  let date2 = new Date(finance[0].pickUpDate); // "Wed Nov 29 2023 00:00:00 GMT-0500 (Eastern Standard Time)";
+  let weekday = date2.toLocaleString('default', { weekday: 'short' });
+  let month = date2.toLocaleString('default', { month: 'short' });
+  let day = date2.getDate();
+  let year = date2.getFullYear();
   let result = weekday + ' ' + month + ' ' + day + ' ' + year
   // console.log(finance, 'finance')
   let dateLastContact = new Date(finance[0].lastContact);
@@ -1348,6 +1352,7 @@ export default function CustomerProfile({ request, }) {
   };
   const formattedDate = data.nextAppointment && data.nextAppointment !== '1969-12-31 19:00' ? formatDate(data.nextAppointment) : 'TBD';
 
+  const [date, setDate] = useState<Date>()
 
   let NewListForStatus = [
 
@@ -1356,12 +1361,63 @@ export default function CustomerProfile({ request, }) {
     {
       name: 'deliveryDate',
       value: finance[0].customerState !== 'depositMade' ?
-        (<Badge onClick={() => setPickUpCalendar('yes')} className="bg-green-600">Set Pick-Up Date</Badge>) :
+        (<Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"outline"}
+              className={cn(
+                "w-[240px] justify-start text-left font-normal",
+                !date && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date ? format(date, "PPP") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              initialFocus
+              className=' bg-[#121212]'
+            />
+            <input type="hidden" defaultValue={date} name="pickUpDate" />
+
+            <select
+              defaultValue={finance[0].pickUpTime}
+              name='pickUpTime'
+              placeholder="Preferred Time To P/U"
+              className="w-1/2 mx-auto rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+            >
+              <option value="9:00">9:00</option>
+              <option value="9:30">9:30</option>
+              <option value="10:00">10:00</option>
+              <option value="10:30">10:30</option>
+              <option value="11:00">11:00</option>
+              <option value="11:30">11:30</option>
+              <option value="12:00">12:00</option>
+              <option value="12:30">12:30</option>
+              <option value="1:00">1:00</option>
+              <option value="1:30">1:30</option>
+              <option value="2:00">2:00</option>
+              <option value="2:30">2:30</option>
+              <option value="3:00">3:00</option>
+              <option value="3:30">3:30</option>
+              <option value="4:00">4:00</option>
+              <option value="4:30">4:30</option>
+              <option value="5:00">5:00</option>
+              <option value="5:30">5:30</option>
+              <option value="6:00">6:00</option>
+            </select>
+          </PopoverContent>
+        </Popover>) :
         finance[0].customerState !== 'pickUpSet' ?
           (<Badge onClick={() => setPickUpCalendar(PickUpCalendar === 'yes' ? 'no' : 'yes')} className="cursor-pointer transform transform:translate-x-1 bg-green-600">{result}</Badge>) :
           finance[0].customerState !== 'delivered' ?
             (<Badge className="bg-green-600">Delivered</Badge>) :
-            (<Badge onClick={() => setPickUpCalendar(PickUpCalendar === 'yes' ? 'no' : 'yes')} className="cursor-pointer   transform transform:translate-x-1 bg-green-600">{result ? result : "P/U not set"}</Badge>),
+            (<Badge onClick={() => setPickUpCalendar(PickUpCalendar === 'yes' ? 'no' : 'yes')} className="cursor-pointer transform transform:translate-x-1 bg-green-600">{result}</Badge>
+                      ),
 
       label: 'Pick Up Date',
     }
@@ -1411,7 +1467,7 @@ export default function CustomerProfile({ request, }) {
     <>
       <FinanceIdContext.Provider value={financeIdState}>
 
-        <div className=" bg-black mt-[50px]">
+        <div className=" bg-[#121212] mt-[50px]">
 
           <Topsection
             getTemplates={getTemplates}

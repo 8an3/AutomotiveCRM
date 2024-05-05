@@ -9,7 +9,8 @@ import { toast } from "sonner"
 import invariant from "tiny-invariant";
 
 
-
+// NEED PRO VERCEL ACCOPUNT FOR THIS TO WORK NOT TESTED YET BUT DOCS SUGGEST YOU CANNOT USE UR PERSONAL HOBBY ACCOUNT
+const vercelToken = process.env.BLOB_READ_WRITE_TOKEN;
 
 
 
@@ -124,88 +125,91 @@ export async function action({ request, }: ActionFunctionArgs) {
       value: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk',
     },
   ]
-
   const createFirstVercel = async (newDealerRepoName) => {
-    const vercelToken = process.env.BLOB_READ_WRITE_TOKEN;
-
-    const apiUrl = 'https://api.vercel.com/v9/projects';
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${vercelToken}`,
-      },
-    };
-
-    const projectData = {
-      name: newDealerRepoName,
+    const data = {
+      name: "freedomHD",
       environmentVariables: envVar,
-      framework: 'remix',
+      framework: "remix",
       gitRepository: {
-        repo: 'https://github.com/8an3/thesalespersonscrmm.git',
-        type: 'github',
+        type: "github",
+        repo: '8an3/thesalespersonscrmm',
       },
-      publicSource: true,
-      skipGitConnectDuringLink: true,
-    };
-
-    try {
-      const response = await axios.post(apiUrl, projectData, config);
-      console.log('Project created successfully:', response.data, response);
-    } catch (error) {
-      console.error('Error creating project:', error.response.data);
     }
+    const res = await fetch(
+      "https://api.vercel.com/v9/projects?teamId=team_wZNR5xSfpymdzh4R3rMBzz9V",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${vercelToken}`
+        },
+        body: JSON.stringify(data)
+      }
+    );
+    const project = await res.json();
+    console.log('Project created successfully:', project.data);
+
+    return ({ project })
+
   };
-
-  const createSecondVercel = async (newDealerRepoName) => {
-
-    const vercelToken = process.env.VERCEL_TOKEN;
-
-    const apiUrl = 'https://api.vercel.com/v9/projects';
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${vercelToken}`,
-      },
-    };
-
-    const projectData = {
-      name: newDealerRepoName,
-      environmentVariables: envVar,
-      framework: 'remix',
-      gitRepository: {
-        repo: 'https://github.com/8an3/thesalespersonscrmm.git',
-        type: 'github',
-      },
-      publicSource: true,
-      skipGitConnectDuringLink: true,
-    };
-
-    try {
-      const response = await axios.post(apiUrl, projectData, config);
-      console.log('Project created successfully:', response.data);
-    } catch (error) {
-      console.error('Error creating project:', error.response.data);
-    }
-  };
-
 
 
   if (intent === 'createDealer') {
     const createFirstFirst = await createFirstVercel(dealerName)
     console.log(createFirstFirst)
     await delay(50);
-    const createSecondSecond = await createSecondVercel(dealerName)
-    console.log(createSecondSecond)
-
-
-    return ({ createFirstFirst, createSecondSecond })
+    // const createSecondSecond = await createSecondVercel(dealerName)
+    /// console.log(createSecondSecond)
+    // console.log(dealerName)
+    return ({ createFirstFirst })
   }
   return null
-
 }
+/**  const createSecondVercel = async (newDealerRepoName) => {
+    const data = {
+      name: "freedomHD",
+      environmentVariables: envVar,
+      framework: "remix",
+      gitRepository: {
+        type: "github",
+        repo: '8an3/crmsat',
+      },
+    }
+    const res = await fetch(
+      "https://api.vercel.com/v9/projects",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${vercelToken}`
+        },
+        body: JSON.stringify(data)
+      }
+    );
+    const project = await res.json();
+    delay(100)
 
+    const deployRes = await fetch(
+      "https://api.vercel.com/v13/deployments",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${vercelToken}`
+        },
+        body: JSON.stringify({
+          "gitSource": {
+            "ref": "main",
+            "repoId": '8an3/thesalespersonscrmm',
+            "type": "github"
+          },
+          "name": "freedomHD",
+          "projectSettings": {
+            "framework": data.framework
+          }
+        })
+      }
+    )
+
+    return ({ project, deployRes })
+  } */
 export async function loader() {
   return null
 }
@@ -220,10 +224,7 @@ export default function DashboardPage() {
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-            <div className="flex items-center space-x-2">
-              <p>CalendarDateRangePicker</p>
-              <Button>Download</Button>
-            </div>
+
           </div>
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
@@ -243,7 +244,7 @@ export default function DashboardPage() {
                 <Card className='border border-white text-white'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Total Revenue
+                      Total Dealers
                     </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -261,14 +262,14 @@ export default function DashboardPage() {
                   <CardContent>
                     <div className="text-2xl font-bold">$45,231.89</div>
                     <p className="text-xs text-muted-foreground">
-                      +20.1% from last month
+                      Total Salespeople
                     </p>
                   </CardContent>
                 </Card>
                 <Card className='border border-white text-white'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Subscriptions
+                      Monthly Revenue
                     </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

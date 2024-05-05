@@ -35,7 +35,7 @@ export default function Quote() {
   const { notifications, user } = useLoaderData()
   return (
     <>
-      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-black border-gray-300 font-bold uppercase  ">
+      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-[#121212] border-gray-300 font-bold uppercase  ">
 
         <Outlet />
       </div>

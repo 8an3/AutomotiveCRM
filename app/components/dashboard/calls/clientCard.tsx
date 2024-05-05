@@ -291,7 +291,7 @@ export default function ClientCard({ data }) {
                     <div className=' mt-3'>
 
 
-                        <a href={`/customer/${data.clientfileId}/${data.id}`} target="_blank">
+                        <a href={`/dealer/customer/${data.clientfileId}/${data.id}`} target="_blank">
                             <ButtonLoading
                                 size="lg"
                                 type="submit"

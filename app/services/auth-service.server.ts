@@ -1,18 +1,19 @@
 import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { model } from "~/models";
-import { sessionStorage } from "~/sessions/session.server";
+import { authSessionStorage, getSession, commitSession } from "~/sessions/auth-session.server";
 import type { UserSession } from "~/helpers";
+import { redirect } from "@remix-run/server-runtime";
 
-export const authenticator = new Authenticator<UserSession>(sessionStorage);
+export const authenticator = new Authenticator<UserSession>(authSessionStorage);
 
 authenticator.use(
   new FormStrategy(async ({ form }) => {
     const email = form.get("email")?.toString();
-    const password = form.get("password")?.toString();
+    const name = form.get("name")?.toString();
 
-    if (!email || !password) {
-      throw new AuthorizationError("User and password are required");
+    if (!email || !name) {
+      throw new AuthorizationError("User and name are required");
     }
 
     const user = (await model.user.query.getByEmail({ email })) as UserSession;
@@ -21,7 +22,7 @@ authenticator.use(
       throw new AuthorizationError("User is not found");
     }
 
-    return user;
+    return user
   }),
 
   "user-pass"

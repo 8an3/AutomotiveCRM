@@ -1,19 +1,9 @@
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, Accordion, AccordionContent, AccordionItem, AccordionTrigger, Input, Button, Popover, PopoverTrigger, PopoverContent, } from "~/components/ui/index"
 import { CalendarIcon } from "@radix-ui/react-icons"
-import Calendar from 'react-calendar';
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "~/other/select"
-import { ScrollArea } from "~/other/scrollarea"
-import { useState } from "react";
-import UcdaInputs from "~/components/formToPrint/ucdaInputs";
+import { Calendar } from '~/components/ui/calendar';
+import { format } from "date-fns"
+import { cn } from "~/components/ui/utils"
+import React, { useState } from "react";
 import UnitPicker from '~/components/dashboard/unitPicker/unitPicker'
 
 type ValuePiece = Date | null;
@@ -23,6 +13,8 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
   const [value, onChange] = useState<Value>(new Date());
   const firstName = finance?.firstName
   const lastName = finance?.lastName
+  const [date, setDate] = React.useState<Date>('')
+
   return (
     <>
       <div className="mt-3">
@@ -327,21 +319,26 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
-                    name='date'
                     variant={"outline"}
-                    className="font-normal flex items-center mt-2 "
-                    defaultValue={finance.date}
+                    className={cn(
+                      "w-[240px] justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {(value instanceof Date) ? value.toLocaleDateString() : 'Pick a date'}
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-2/3 bg-slate1 border border-slate12 text-slate12 p-0" align="start">
-                  <div>
-                    <Calendar onChange={onChange} name='pickUpDate' value={value} calendarType="gregory" />
-                  </div>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
                 </PopoverContent>
               </Popover>
+              <input type='hidden' value={String(date)} name='value' />
               <label className="text-left text-[15px] mt-2" htmlFor="name">
                 Prefered Time
               </label>

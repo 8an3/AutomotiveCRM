@@ -1,98 +1,104 @@
 /* eslint-disable tailwindcss/classnames-order */
-import { Form, Link, Outlet, useFetcher, useLoaderData, useParams, useSubmit } from "@remix-run/react";
+import { Form, Outlet, useFetcher, useLoaderData, useParams, useSubmit, Link, useNavigate, } from "@remix-run/react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/other/card";
 import { type LoaderFunction, type DataFunctionArgs, redirect, type V2_MetaFunction, type ActionFunction, json, } from '@remix-run/node'
 import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { getAllFinanceNotes } from '~/utils/financeNote/get.server';
 import { getClientListMerged, getMergedFinanceOnFinance } from "~/utils/dashloader/dashloader.server";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { prisma } from "~/libs";
 import { Flex, Text, Box, TextArea, TextField, Heading, Select, Theme, ThemePanel, Inset, Grid, Avatar } from '@radix-ui/themes';
-import { Badge } from "~/other/badge";
+import { Badge } from "~/ui/badge";
 import { getSession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
+import { getSession as sixsix, commitSession as sixsixcommit, } from '~/utils/pref.server'
+import { Separator } from "~/components/ui/separator"
+import { cn } from "~/components/ui/utils"
+import { Button, buttonVariants } from "~/components/ui/button"
 
-import Sidebar from "~/components/shared/sidebar";
-import { model } from '~/models'
+export function SidebarNav({ mergedFinanceList, }) {
+  console.log(mergedFinanceList, 'mergedFinanceListp')
+  return (
+    <nav
+      className={cn(
+        "flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1",
+      )}
+    >
+      {mergedFinanceList && mergedFinanceList.map((item) => (
+        <Link
+          key={item.to}
+          to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
+          className="justify-start py-3" >
+          <p variant='ghost' className="bg-muted hover:bg-muted hover:bg-transparent hover:underline" >
+            <div>
+              <p>
+                {item.year} {item.brand}
+              </p>
+            </div>
+            <div>
+              <p>
+                {item.model.toString().slice(0, 28)}
+              </p>
+            </div>
+            <Badge className="">{item.customerState}</Badge>
+
+          </p>
+        </Link>
+      ))
+      }
+    </nav >
+  )
+}
 
 export async function loader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-
-
   const user = await GetUser(email)
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
+
+  const { clientId, financeId } = params;
+
+  if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email)
-  const session = await sixSession(request.headers.get("Cookie"))
+  const session = await sixsix(request.headers.get("Cookie"))
   const sliderWidth = session.get('sliderWidth')
   let clientfileId = session.get('clientfileId')
-  let financeId = session.get('financeId')
-  console.log(financeId, 'financeid')
+  let financeId12 = session.get('financeId')
   const finance = await getMergedFinanceOnFinance(financeId)
+
   const financeNotes = await getAllFinanceNotes(financeId)
-  const financeEmail = await prisma.finance.findFirst({ where: { clientfileId: clientfileId, }, });
+  const financeEmail = await prisma.finance.findFirst({ where: { id: financeId }, });
+
   const financeList = await prisma.finance.findMany({ where: { email: financeEmail?.email }, });
-  console.log(financeList, 'listssst')
-  financeId = financeList[0].id
-  const { firstParam, clientId } = params;
-  // console.log(clientId, financeId)
   const financeIds = financeList.map(financeRecord => financeRecord.id);
   const mergedFinanceList = await getClientListMerged(financeIds);
+
   const returnThis = redirect(`/customer/${clientId}/${financeId}`)
   const notifications = await prisma.notificationsUser.findMany({
-    where: {
-      userId: user.id,
-    }
+    where: { userId: user.id, }
   })
+  console.log(financeIds, financeId, 'quote loader');
 
-  return returnThis && json({ ok: true, mergedFinanceList, clientfileId, finance, deFees, sliderWidth, user, financeNotes, financeId, notifications },)
+  return returnThis && json({ ok: true, mergedFinanceList, clientfileId, finance, deFees, sliderWidth, user, financeNotes, financeId, notifications, financeList }, { headers: { 'Set-Cookie': await sixsixcommit(session) } });
 
 }
-export default function CustMaIN() {
-  const { clientfileId, financeId, user } = useLoaderData()
-  /** <>
-        <Sidebar />
-        <div className="flex flex-col md:flex-row   ">
-          <div className="w-full md:w-64 bg-slate12 mt-[50px]">
-            <Sidebar2 />
-          </div>
-          <div className="w-full mt-[20px]">
-            <Outlet />
-          </div>
-        </div>
-      </> */
-  return (
-    <>
-      <div className="w-full h-full min-h-screen  px-2 sm:px-1 lg:px-3 bg-black border-gray-300   ">
-        <Sidebar />
-        <div className="flex flex-col md:flex-row   ">
-          <div className="w-full md:w-64 bg-black mt-[50px]">
-            <Sidebar2 />
-          </div>
-          <div className="w-full mt-[20px]">
-            <Outlet />
-          </div>
-        </div>
-      </div>
-    </>
 
-  )
-}
-
-
-export async function Sidebar2() {
-  const { clientfileId, financeId, finance, user } = useLoaderData()
+export default function SettingsLayout() {
   const { firstParam, clientId } = useParams();
-  //console.log(finance)as
+  const { mergedFinanceList, financeId, finance, user, financeList, } = useLoaderData()
   let newFinance;
-  const userIntegration = await prisma.userIntergration.findUnique({
-    where: { userEmail: user?.email }
-  })
-  const activixActivated = userIntegration.activixActivated
+  const [userIntegration, setuserIntegration] = useState()
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      const userIntegration2 = await prisma.userIntergration.findUnique({
+        where: { userEmail: user?.email }
+      })
+      setuserIntegration(userIntegration2)
+    };
+    fetchUnreadCount();
+  }, [user?.email]);
+
+  const activixActivated = userIntegration?.activixActivated
   if (activixActivated === 'yes') {
     newFinance = finance
   } else {
@@ -134,38 +140,21 @@ export async function Sidebar2() {
     },
   ]
   return (
-    <div className="w-[225px] md:h-screen  top-0 left-0 p-5 overflow-y-auto ">
-      {finance && finance.map((financeRecord, index) => (
-        <div key={index} className="w-[95%] mt-3">
-          <Link to={`/customer/${clientId}/${financeId}`} className=" cursor-pointer">
-            <Card color="gray" className="border border-slate9 p-3 w-auto rounded-md">
-              <Flex gap="3" align="center">
-
-                <Box className=''>
-                  <Text as="div" size="2" highContrast className='text-slate3 text-sm text-center justify-center' >
-                    {financeRecord.year} {financeRecord.brand}
-                  </Text>
-                  {financeRecord.model && (
-                    <Text as="div" size="2" weight="bold" highContrast className='text-slate3 text-center text-sm justify-center'>
-                      {financeRecord.model.toString().slice(0, 23)}
-                    </Text>
-                  )}
-
-
-                  <div className="flex justify-between">
-                    {NewListForStatus.map((item) => (
-                      <div key={item.name} className="flex items-center justify-between ">
-                        <p className="text-sm text-right">{item.value}</p>
-                      </div>
-                    ))}
-                  </div>
-                </Box>
-              </Flex>
-            </Card>
-          </Link>
+    <>
+      <div className="hidden space-y-6 p-10 pb-16 md:block">
+        <div className="space-y-0.5">
+          <h2 className="text-2xl font-bold tracking-tight">Client File</h2>
         </div>
-      ))
-      }
-    </div >
+        <Separator className="my-6" />
+        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+          <aside className="-mx-4 lg:w-1/6">
+            <SidebarNav mergedFinanceList={mergedFinanceList} />
+          </aside>
+          <div className="flex-1 mr-3">
+            <Outlet />
+          </div>
+        </div>
+      </div>
+    </>
   )
 }

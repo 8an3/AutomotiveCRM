@@ -23,7 +23,7 @@ export const action = async ({ request }: ActionArgs) => {
   const scope = ['openid', 'profile', 'email', 'offline_access'],
   const response_type = "login_prompt"
   const state = '123445'
-  let url = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?client_id=${client_id}&response_type=${response_type}&redirect_uri=${redirect_uri}&response_mode=${response_mode}&scope=${scope}&state=${state}`;
+  let url = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?client_id=${client_id}&response_type=${response_type}&redirect_uri=${redirect_uri}&clientSecret=${clientSecret}&scope=${scope}&state=${state}`;
 
   return url
 };

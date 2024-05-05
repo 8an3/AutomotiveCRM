@@ -1,20 +1,50 @@
 // Import necessary modules
 import { Form } from '@remix-run/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { type ActionFunction } from '@remix-run/node'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Input, Button } from '~/components';
+import { prisma } from '~/libs';
 
-export async function action({ params, request }: ActionFunction) {
 
-  return null
-}
+export const action = async ({ request }: { request: Request }) => {
+  const inputs = Object.fromEntries(await request.formData())
 
-export default function CSI() {
+  const questions = inputs.map((departmentInputs, departmentIndex) =>
+    departmentInputs.map((input, inputIndex) => ({
+      departmentIndex,
+      inputIndex,
+      question: input.question,
+      answerFormat: input.answerFormat,
+      customMultipleChoiceAnswer: input.customMultipleChoiceAnswer,
+      customMultipleChoiceAnswers: input.customMultipleChoiceAnswers,
+    }))
+  );
+
+  try {
+    await prisma.csiQuestion.createMany({
+      data: questions,
+    });
+
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 200,
+    });
+  } catch (error) {
+    console.error('Error saving questions:', error);
+
+    return new Response(JSON.stringify({ success: false, error: 'Failed to save questions' }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 500,
+    });
+  }
+};
+
+export function CSI() {
   const departments = ['Sales', 'Service Dept.', 'Accessory Dept', 'Management'];
   const initialInputs = departments.map(() => [{ question: '', answerFormat: '', customMultipleChoiceAnswer: '', customMultipleChoiceAnswers: [] }]);
   const [inputs, setInputs] = useState(initialInputs);
-  const [inputsData, setInputsData] = useState();
-
+  const [inputsData, setInputsData] = useState(inputs);
+  //JSON.stringify(inputs)
 
   // Function to handle input change
   const handleInputChange = (departmentIndex, inputIndex, event) => {
@@ -47,6 +77,31 @@ export default function CSI() {
   const input2 = "Some other string";
   const containsCustom = containsCustomMultiChoice(inputData);
   console.log(containsCustom, inputs);
+
+  // need to add custom multiple choice
+  /**    {input.answerFormat === 'customMultichoice' && (
+                    <>
+                      <Input
+                        type="text"
+                        name={`inputs.${departmentIndex}[${inputIndex}].customMultipleChoiceAnswer`}
+                        defaultValue={input.customMultipleChoiceAnswer}
+                        onChange={(e) => handleInputChange(departmentIndex, inputIndex, e)}
+                        placeholder="Custom Multiple Choice Options (comma-separated)"
+                        className="border p-2"
+                      />
+                      <Button
+                        onClick={() => handleAddCustomChoice(departmentIndex, inputIndex, input.customMultipleChoiceAnswer)}
+                        className="text-white px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
+                      >
+                        Add Choice
+                      </Button>
+                      <ul>
+                        {input.customMultipleChoiceAnswers.map((choice, choiceIndex) => (
+                          <li key={choiceIndex}>{choice}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )} */
   return (
     <>
       <Form method="post" className='w-[95%]'>
@@ -75,50 +130,6 @@ export default function CSI() {
                     <option value="multichoice">Satisfactory Multiple Choice</option>
                     <option value="customMultichoice">Custom Multiple Choice</option>
                   </select>
-                  {input ? (
-                    <>
-                      <div>
-                        <p>inputs</p>
-                        <p>{JSON.stringify(inputs)}</p>
-                      </div>
-                      {containsCustom === true ? (
-                        <p>true   {containsCustom}</p>
-                      ) : (
-
-                        <p>false    {containsCustom}</p>
-                      )}
-                      <div>
-                        <p>input</p>
-                        <p>{JSON.stringify(input)}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <p>No idTokenClaims available</p>
-                  )}
-
-                  {input.answerFormat === 'customMultichoice' && (
-                    <>
-                      <Input
-                        type="text"
-                        name={`inputs.${departmentIndex}[${inputIndex}].customMultipleChoiceAnswer`}
-                        defaultValue={input.customMultipleChoiceAnswer}
-                        onChange={(e) => handleInputChange(departmentIndex, inputIndex, e)}
-                        placeholder="Custom Multiple Choice Options (comma-separated)"
-                        className="border p-2"
-                      />
-                      <Button
-                        onClick={() => handleAddCustomChoice(departmentIndex, inputIndex, input.customMultipleChoiceAnswer)}
-                        className="text-white px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
-                      >
-                        Add Choice
-                      </Button>
-                      <ul>
-                        {input.customMultipleChoiceAnswers.map((choice, choiceIndex) => (
-                          <li key={choiceIndex}>{choice}</li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
                   {inputIndex === departmentInputs.length - 1 && (
                     <Button
                       type="button"
@@ -137,7 +148,65 @@ export default function CSI() {
           Submit
         </Button>
       </Form>
+      {inputs ? (
+        <>
+          <div>
+            <p>{JSON.stringify(inputs)}</p>
+          </div>
+
+        </>
+      ) : (
+        <p>No idTokenClaims available</p>
+      )}
+      {inputs ? (
+        <div>
+          <h2>Review</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Department</th>
+                <th>Question</th>
+                <th>Answer Format</th>
+              </tr>
+            </thead>
+            <tbody>
+              {inputs.map((departmentInputs, departmentIndex) => (
+                departmentInputs.map((input, inputIndex) => (
+                  <tr key={`${departmentIndex}-${inputIndex}`}>
+                    {inputIndex === 0 && (
+                      <td rowSpan={departmentInputs.length}>{`Department ${departmentIndex + 1}`}</td>
+                    )}
+                    <td>{input.question}</td>
+                    <td>{input.answerFormat}</td>
+                  </tr>
+                ))
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p>No inputs available</p>
+      )}
+
+
+
     </>
 
   );
+}
+
+
+export default function SettingsAccountPage() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-medium">CSI</h3>
+        <p className="text-sm text-muted-foreground">
+          Create your own CSI to see where your dealer needs to improve.
+        </p>
+      </div>
+      <hr className="solid text-white" />
+      <CSI />
+    </div>
+  )
 }

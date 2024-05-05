@@ -18,6 +18,7 @@ const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIj
 export async function overviewLoader({ request, params }: LoaderFunction) {
     const user = await GetUserFromRequest(request);
     if (!user) { return redirect('/login'); }
+    const session2 = await getSession(request.headers.get("Cookie"));
     const email = session2.get("email")
 
     const userId = user?.id

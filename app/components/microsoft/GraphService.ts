@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 // <GetUserSnippet>
-import { Client, type GraphRequestOptions, type PageCollection, PageIterator } from '@microsoft/microsoft-graph-client';
+import { Client, type GraphRequestOptions, type PageCollection, PageIterator, type ClientOptions } from '@microsoft/microsoft-graph-client';
 import { type AuthCodeMSALBrowserAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -10,19 +10,20 @@ import type { User, Event, Message } from '@microsoft/microsoft-graph-types';
 
 let graphClient: Client | undefined = undefined;
 
-function ensureClient(authProvider: AuthCodeMSALBrowserAuthenticationProvider) {
-  if (!graphClient) {
-    graphClient = Client.initWithMiddleware({
-      authProvider: authProvider
-    });
-  }
+async function ensureClient(authProvider: AuthCodeMSALBrowserAuthenticationProvider) {
+  let clientOptions: ClientOptions = {
+    authProvider: authProvider,
+    debugLogging: true,
+  };
+  graphClient = await Client.initWithMiddleware(clientOptions);
   return graphClient;
 }
 
 export async function getUser(authProvider: AuthCodeMSALBrowserAuthenticationProvider): Promise<User> {
   ensureClient(authProvider);
-  const user: User = await graphClient!.api('/me')
-    .select('id,displayName,mail,mailboxSettings,userPrincipalName')
+  const user: User = await graphClient!
+    .api('/me')
+    //.select('id,displayName,mail,mailboxSettings,userPrincipalName')
     .get();
   return user;
 }
@@ -126,7 +127,6 @@ export async function getFolders(
   var email = await graphClient!.api(`/me/mailFolders/${folderName}`).get();
   return email;
 }
-
 export async function getSent(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider
 ): Promise<Message[]> {
@@ -168,12 +168,17 @@ export async function getJunkList(
   var email = await graphClient!.api(`/me/mailFolders/junkemail/messages`).get();
   return email;
 }
-export async function getInbox(
-  authProvider: AuthCodeMSALBrowserAuthenticationProvider
-) {
-  ensureClient(authProvider);
-  var email = await graphClient!.api(`/me/mailFolders/inbox`).get();
-  return email;
+export async function getInbox(authProvider) {
+  //ensureClient(authProvider);
+  const options = {
+    authProvider: authProvider,
+  }
+
+  const client = Client.init(options);
+
+  let messages = await client.api('/me/messages')
+    .get();
+  return messages
 }
 export async function getInboxList(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider
@@ -196,7 +201,6 @@ export async function getDraftsList(
   var email = await graphClient!.api(`/me/mailFolders/drafts/messages`).get();
   return email;
 }
-
 export async function getList(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   folderName: any
@@ -208,7 +212,6 @@ export async function getList(
     .get();
   return email;
 }
-
 export async function testInbox(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
 ) {
@@ -220,7 +223,6 @@ export async function testInbox(
     .get();
   return email;
 }
-
 export async function getAllFolders(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
 
@@ -239,7 +241,6 @@ export async function deleteMessage(
   var email = await graphClient!.api(`/me/messages/${id}`).delete();
   return email;
 }
-
 export async function createMailFolder(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   displayName: any
@@ -254,8 +255,6 @@ export async function createMailFolder(
 
   return email;
 }
-
-
 export async function messageRead(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   id: any
@@ -280,7 +279,6 @@ export async function messageUnRead(
 
   return email;
 }
-
 export async function messageDone(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   id: any
@@ -292,9 +290,7 @@ export async function messageDone(
   var email = await graphClient!.api(`/me/messages/${id}/move`).update(message);
   return email;
 }
-
 // need to test
-
 export async function replyMessage(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   id: any,
@@ -327,7 +323,6 @@ export async function replyMessage(
     .post(reply);
   return email;
 }
-
 // need to test
 export async function replyAllEmail(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
@@ -343,7 +338,6 @@ export async function replyAllEmail(
   return email;
 }
 // need to test
-
 export async function createtestFolder(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   id: any
@@ -363,7 +357,6 @@ export async function createtestFolder(
   return email;
 }
 // need to test
-
 export async function gettestFolderList(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   id: any
@@ -372,7 +365,6 @@ export async function gettestFolderList(
   var email = await graphClient!.api(`/me/mailFolders/${id}/messages`).get();
   return email;
 }
-
 export async function forwardEmail(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   id: any,
