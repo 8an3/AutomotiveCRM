@@ -1,5 +1,13 @@
-import { Card, CardHeader, CardTitle, CardContent, CardFooter, Accordion, AccordionContent, AccordionItem, AccordionTrigger, Input, Button, Popover, PopoverTrigger, PopoverContent, } from "~/components/ui/index"
-import { CalendarIcon } from "@radix-ui/react-icons"
+import {
+  Card, CardHeader, CardTitle, CardContent, CardFooter, Accordion, AccordionContent, AccordionItem, AccordionTrigger, Input, Button, Popover, PopoverTrigger, PopoverContent, Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/index"
+import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { Calendar } from '~/components/ui/calendar';
 import { format } from "date-fns"
 import { cn } from "~/components/ui/utils"
@@ -15,6 +23,16 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
   const lastName = finance?.lastName
   const [date, setDate] = React.useState<Date>('')
 
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  const currentSecond = now.getSeconds();
+  const [hour, setHour] = useState(currentHour)
+  const [min, setMin] = useState(currentMinute)
+  const [secs, setSecs] = useState(currentSecond)
+  const currentTime = `${hour}:${min}:${currentSecond}`
+  console.log(`Current time is `, currentTime);
+  const time = `${hour}:${min}:00`
   return (
     <>
       <div className="mt-3">
@@ -315,57 +333,91 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
             <div className="flex flex-col mx-auto justify-center mt-5">
               {/* Content for column 1 */}
               <p className="text-center  mt-2">Desired Pick Up Date  / Time</p>
+              <div className='flex mx-auto'>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] justify-start text-left font-normal mr-3",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4 " />
+                      {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 bg-white text-black" align="start">
+                    <Calendar
+                      className='bg-white text-black'
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <input type='hidden' value={String(date)} name='value' />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <ClockIcon className="mr-2 h-4 w-4 " />
+                      {currentTime ? (time) : <span>Pick a Time</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 bg-white text-black" align="start">
+                    <div className='flex' >
+                      {hour}
+                      <Select name='pickHour' value={hour} onValueChange={setHour}>
+                        <SelectTrigger className="w-auto m-3" >
+                          <SelectValue placeholder={hour} defaultValue={hour} />
+                        </SelectTrigger>
+                        <SelectContent className='text-black bg-white' >
+                          <SelectGroup>
+                            <SelectLabel>Hour</SelectLabel>
+                            <SelectItem value="09">09</SelectItem>
+                            <SelectItem value="10">10</SelectItem>
+                            <SelectItem value="11">11</SelectItem>
+                            <SelectItem value="12">12</SelectItem>
+                            <SelectItem value="13">13</SelectItem>
+                            <SelectItem value="14">14</SelectItem>
+                            <SelectItem value="15">15</SelectItem>
+                            <SelectItem value="16">16</SelectItem>
+                            <SelectItem value="17">17</SelectItem>
+                            <SelectItem value="18">18</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      {min}
+                      <Select name='pickMin' value={min} onValueChange={setMin} >
+                        <SelectTrigger className="w-auto m-3" >
+                          <SelectValue placeholder={min} defaultValue={min} />
+                        </SelectTrigger>
+                        <SelectContent className='text-black bg-white'  >
+                          <SelectGroup>
+                            <SelectLabel>Minute</SelectLabel>
+                            <SelectItem value="10">10</SelectItem>
+                            <SelectItem value="20">20</SelectItem>
+                            <SelectItem value="30">30</SelectItem>
+                            <SelectItem value="40">40</SelectItem>
+                            <SelectItem value="50">50</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
 
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-[240px] justify-start text-left font-normal",
-                      !date && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <input type='hidden' value={String(date)} name='value' />
-              <label className="text-left text-[15px] mt-2" htmlFor="name">
-                Prefered Time
-              </label>
-              <select
-                name="pickUpTime"
-                className={`mx-auto w-2/3 mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-slate1 text-slate12  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}>
-                <option value="Time of day">Time of day</option>
-                <option value="09:00">9:00</option>
-                <option value="09:30">9:30</option>
-                <option value="10:00">10:00</option>
-                <option value="10:30">10:30</option>
-                <option value="11:00">11:00</option>
-                <option value="11:30">11:30</option>
-                <option value="12:00">12:00</option>
-                <option value="12:30">12:30</option>
-                <option value="01:00">1:00</option>
-                <option value="01:30">1:30</option>
-                <option value="02:00">2:00</option>
-                <option value="02:30">2:30</option>
-                <option value="03:00">3:00</option>
-                <option value="03:30">3:30</option>
-                <option value="04:00">4:00</option>
-                <option value="04:30">4:30</option>
-                <option value="05:00">5:00</option>
-                <option value="05:30">5:30</option>
-                <option value="06:00">6:00</option>
-              </select>
+                    </div>
+
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+
 
             </div>
             <Input type="hidden" name="name" defaultValue={`${firstName}` + ' ' + `${lastName}`} />

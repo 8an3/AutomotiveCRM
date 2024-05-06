@@ -37,7 +37,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
   const lastName = formPayload.lastName
   const email = formPayload.email;
   const model = formPayload.model;
-  const phone = formPayload.phone;
+  const phone = "+1" + formPayload.phone;
   let financeId
   if (formData.activixId && (formData.financeId.length > 20)) {
     financeId = formData.financeId
@@ -47,10 +47,10 @@ export async function quoteAction({ params, request }: ActionArgs) {
   const phoneRegex = /^\+1\d{3}\d{7}$/; // Regex pattern to match +1 followed by 3-digit area code and 7 more digits
 
   const errors = {
-    firstName: firstName ? null : "First Name is required",
-    lastName: lastName ? null : "lastName is required",
-    email: email ? null : "email is required",
-    model: model ? null : "model is required",
+    firstName: firstName ? null : "First name is required...",
+    lastName: lastName ? null : "Last name is required...",
+    email: email ? null : "Email is required...",
+    model: model ? null : "Model is required...",
     phone: phoneRegex.test(phone) ? null : "Phone must be in the format +14164164164", // Add phone validation using regex
 
   };
@@ -64,9 +64,6 @@ export async function quoteAction({ params, request }: ActionArgs) {
   invariant(typeof email === "string", "Email must be a string");
   invariant(typeof model === "string", "Model must be a string");
   invariant(typeof phone === "string", "Phone must be a string");
-
-  // console.log(formData, 'checking formPayload quote oader')
-  // console.log(financeId, 'checking financeId quote loader')
   const session2 = await getSession(request.headers.get("Cookie"));
   const userEmail = session2.get("email")
   const user = await prisma.user.findUnique({ where: { email: userEmail } });
@@ -75,44 +72,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
 
   const referer = request.headers.get('Referer');
   console.log('Referer:', referer);
-  /**if (financeId) {
-    console.log('more than 20')
-    try {
-      const brand = formData.brand
 
-      const session = await getSession(request.headers.get("Cookie"))
-      const widthInput = formData.sliderWidth
-      const sliderWidth = widthInput
-      session.set("sliderWidth", sliderWidth)
-      await commitPref(session)
-
-      const DashData = await updateDashData(formData)
-      const financeUpdated = await updateClientFinanceAndDashData(formData);
-
-      if (brand === 'Switch') {
-        const manitouOptionsCreated = await createFinanceManitou(formData)
-        return json({ financeUpdated, manitouOptionsCreated }), redirect(`/options/${brand}`)
-      }
-      if (brand === 'Manitou') {
-        const manitouOptionsCreated = await createFinanceManitou(formData)
-        return json({ financeUpdated, manitouOptionsCreated }), redirect(`/options/${brand}`)
-      }
-      if (brand === 'BMW-Motorrad') {
-        const financeId = financeUpdated.id
-        const updatingFinance = await createBMWOptions({ financeId })
-        const updatingFinance2 = await createBMWOptions2({ financeId })
-        return json({ updatingFinance, updatingFinance2 }), redirect(`/options/${brand}`)
-      }
-      else {
-        console.log('updated quote')
-        return json({ financeUpdated, DashData }), redirect(`/overview/${brand}`)
-      }
-
-    } catch (error) {
-      console.error(`quote not submitted ${error}`)
-      return (`quote not submitted ${error}`)
-    }
-  } else */
   console.log(formData.toStock, 'tostock in aaction')
   if (formData.activixRoute === 'yes') {// if (referer === 'http://localhost:3000/leads/activix' && formData.activixId && (formData.financeId.length > 20)) {
     const formData = financeFormSchema.parse(formPayload)

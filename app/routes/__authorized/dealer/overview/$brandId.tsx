@@ -1235,7 +1235,7 @@ export function Overview({ outletSize }) {
 
 
     return (
-        <>
+        <div className='text-black'>
 
             <div className='mt-3' >
                 <ImageSelect />
@@ -1942,7 +1942,7 @@ export function Overview({ outletSize }) {
                     </div>
                 </>
             </fetcher.Form >
-        </>
+        </div>
     )
 }
 

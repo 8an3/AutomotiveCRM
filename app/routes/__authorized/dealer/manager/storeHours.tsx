@@ -7,14 +7,22 @@ import moment from "moment";
 import 'moment-timezone'
 import dayjs from 'dayjs'
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
-import storeHoursCss from "~/styles/storeHours.css";
-import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
+
 import { type ActionFunction, type LoaderFunction, type LinksFunction, json } from "@remix-run/node";
 import { useLoaderData, useSubmit, useNavigate } from "@remix-run/react";
 import { getSession, commitSession } from '~/sessions/auth-session.server';
 import { prisma } from "~/libs";
 import timezone from 'dayjs/plugin/timezone'
+import storeHoursCss from "~/styles/storeHours.css";
+import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
+import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/calendar.svg' },
+  { rel: "stylesheet", href: storeHoursCss },
+  { rel: "stylesheet", href: styles1 },
+  { rel: "stylesheet", href: styles2 },
+];
 
 dayjs.extend(timezone)
 
@@ -22,11 +30,6 @@ const djLocalizer = dayjsLocalizer(dayjs)
 
 const DnDCalendar = withDragAndDrop(Calendar);
 
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: styles1 },
-  { rel: "stylesheet", href: styles2 },
-  { rel: "stylesheet", href: storeHoursCss },
-];
 function getDayName(date: string | Date): string | null {
   const validDate = new Date(date);
   if (isNaN(validDate.getTime())) {

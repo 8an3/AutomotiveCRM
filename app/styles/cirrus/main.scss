@@ -1,0 +1,32 @@
+// ==================================================
+// Extended Build
+// ==================================================
+@use "base.scss"; // Inherit everything from core
+
+// Extended Components
+@use "components/accordion.scss";
+@use "components/avatar.scss";
+@use "components/breadcrumb.scss";
+@use "components/card.scss";
+@use "components/form-ext.scss";
+@use "components/link-ext.scss";
+@use "components/modal.scss";
+@use "components/pagination.scss";
+@use "components/placeholder.scss";
+@use "components/tabs.scss";
+@use "components/tags.scss";
+@use "components/tiles.scss";
+@use "components/toast.scss";
+@use "components/tooltips.scss";
+@use "internal.scss";
+@use "utils.scss";
+@use "components/button.scss";
+@use "components/code.scss";
+@use "components/footer.scss";
+@use "components/forms.scss";
+@use "components/frames.scss";
+@use "components/header.scss";
+@use "components/links.scss";
+@use "components/lists.scss";
+@use "components/progress.scss";
+@use "components/table.scss";

@@ -29,7 +29,7 @@ export default function Quote() {
 
     return (
         <>
-            <div className="flex h-[100vh] bg-slate1 px-4 sm:px-6 lg:px-8">
+            <div className="flex h-[100vh] bg-slate1 text-black px-4 sm:px-6 lg:px-8">
                 <div className="w-full overflow-hidden rounded-lg ">
                     <div className="mx-auto my-auto md:flex">
                         <div className="mx-auto my-auto" >

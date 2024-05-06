@@ -12,6 +12,16 @@ import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { getAllFinanceAptsForCalendar, getSingleFinanceAppts } from '~/utils/financeAppts/get.server';
 import moment from 'moment';
 import { GetUser } from "~/utils/loader.server";
+import storeHoursCss from "~/styles/storeHours.css";
+import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
+import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/calendar.svg' },
+  { rel: "stylesheet", href: storeHoursCss },
+  { rel: "stylesheet", href: styles1 },
+  { rel: "stylesheet", href: styles2 },
+];
 
 const DragAndDropCalendar = withDragAndDrop(Calendar)
 export async function loader({ request, params }: LoaderFunctionArgs) {

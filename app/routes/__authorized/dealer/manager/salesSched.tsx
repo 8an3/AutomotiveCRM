@@ -7,9 +7,6 @@ import moment from "moment";
 import 'moment-timezone'
 import dayjs from 'dayjs'
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
-import storeHoursCss from "~/styles/storeHours.css";
-import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
 import { type ActionFunction, type LoaderFunction, type LinksFunction, json } from "@remix-run/node";
 import { useLoaderData, useSubmit } from "@remix-run/react";
 import { getSession, commitSession } from '~/sessions/auth-session.server';
@@ -17,11 +14,27 @@ import { prisma } from "~/libs";
 import timezone from 'dayjs/plugin/timezone'
 import { createHash } from 'crypto'
 import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
-import { Button } from "~/components";
+import {
+  Button,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components";
 import clsx from 'clsx'
 import { Text } from '@radix-ui/themes';
-import { count } from "console";
+import storeHoursCss from "~/styles/storeHours.css";
+import rbc from "~/styles/rbc.css";
+import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
+import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/calendar.svg' },
+  { rel: "stylesheet", href: storeHoursCss },
+  { rel: "stylesheet", href: styles2 },
+  { rel: "stylesheet", href: styles1 },
+  { rel: "stylesheet", href: rbc },
+];
 dayjs.extend(timezone)
 
 const djLocalizer = dayjsLocalizer(dayjs)
@@ -29,6 +42,7 @@ const djLocalizer = dayjsLocalizer(dayjs)
 const DnDCalendar = withDragAndDrop(Calendar);
 
 const formatName = (name) => `${name}`
+const formatName2 = (name, count) => `${name} ${count}`
 
 
 export async function loader({ request, params }: LoaderFunction) {
@@ -67,15 +81,14 @@ export async function loader({ request, params }: LoaderFunction) {
     const start = new Date(event.start) || null;
     const end = new Date(event.end) || null;
     return {
-      title: `${event.title} ${event.day}`,
+      title: `${event.title}`,
       start: start,
       end: end,
+      userId: event.id,
       id: event.id,
       userEmail: event.userEmail,
       day: event.day,
       resourceId: event.resourceId,
-      name: event.userName,
-      userName: event.userName,
       salespersonEmail: event.salespersonEmail,
     };
   });
@@ -93,9 +106,6 @@ export async function loader({ request, params }: LoaderFunction) {
       salespersonEmail: user.email,
       day: user.day || '',
       title: user.title,
-      userName: user.name || '',
-      name: user.name,
-
     };
     salesschedNumberMapping.push(salesSchedmappingObject);
   });
@@ -133,7 +143,7 @@ async function createOrUpdateSalespersonSched(formData) {
   const existingEvent = await prisma.salespersonSched.findFirst({
     where: {
       day,
-      salespersonEmail,
+      userEmail,
     },
   });
 
@@ -145,12 +155,12 @@ async function createOrUpdateSalespersonSched(formData) {
       },
       data: {
         day: day,
-        salespersonEmail: salespersonEmail,
+        //  salespersonEmail: salespersonEmail,
         start: start,
         end: end,
         userEmail: userEmail,
         title: title,
-        resourceId: resourceId,
+        // resourceId: resourceId,
         userName: userName
       },
     });
@@ -161,12 +171,12 @@ async function createOrUpdateSalespersonSched(formData) {
     const newEvent = await prisma.salespersonSched.create({
       data: {
         day: day,
-        salespersonEmail: salespersonEmail,
+        //   salespersonEmail: salespersonEmail,
         start: start,
         end: end,
         userEmail: userEmail,
         title: title,
-        resourceId: resourceId,
+        ///resourceId: resourceId,
         userName: userName
       },
     });
@@ -183,8 +193,7 @@ export async function action({ request }: ActionFunction) {
     const day = getDayName(formPayload.start) || '';
     const formData = {
       ...formPayload,
-      day,
-      userEmail: email,
+      // userEmail: email,
     };
     console.log(formData, 'formPayload');
     const saveEvent = await createOrUpdateSalespersonSched(formData);
@@ -197,13 +206,15 @@ export async function action({ request }: ActionFunction) {
 }
 
 
+
 export function StoreHoursCalendar() {
   const submit = useSubmit();
   const [view, setView] = useState(Views.WEEK)
+  const [userEventData, setUserorEvent] = useState()
   const onView = useCallback((newView) => setView(newView), [setView])
 
   const { events, email, users, userNumberMapping, salesSched } = useLoaderData()
-  console.log(users)
+
   const formattedData = events.map(event => {
     const start = new Date(event.start);
     const end = new Date(event.end);
@@ -220,24 +231,11 @@ export function StoreHoursCalendar() {
       ...event,
       start,
       end,
+
     };
   });
   const [myEvents, setMyEvents] = useState(formattedSalesSched)
   console.log('Generated Events:', formattedData, formattedSalesSched);
-
-  const submitEvent = (event, formData) => {
-    formData.append("start", event.start);
-    formData.append("end", event.end);
-    formData.append("userEmail", email);
-    formData.append("id", event.userId);
-    formData.append("resourceId", event.generatedTwoDigitNumber);
-    formData.append("day", event.day);
-    formData.append("title", event.title);
-    formData.append("userName", event.userName);
-    formData.append("salespersonEmail", event.salespersonEmail);
-    console.log(event, 'event')
-    return submit(formData, { method: "post" });
-  }
 
   const moveEvent = useCallback(
     ({ event, start, end, isAllDay: droppedOnAllDaySlot = false }) => {
@@ -248,11 +246,22 @@ export function StoreHoursCalendar() {
       setMyEvents((prev) => {
         const existing = prev.find((ev) => ev.id === event.id) ?? {}
         const filtered = prev.filter((ev) => ev.id !== event.id)
-        return [...filtered, { ...existing, start, end, allDay }]
+        return [...filtered, { ...existing, start, end, allDay, }]
       })
       console.log('move event')
       const formData = new FormData();
-      submitEvent(event, formData)
+      formData.append("start", start);
+      formData.append("end", end);
+      formData.append("userEmail", email);
+      formData.append("id", event.userId);
+      formData.append("resourceId", event.generatedTwoDigitNumber);
+      formData.append("day", event.day);
+      formData.append("title", event.title);
+      formData.append("userName", event.userName);
+      formData.append("salespersonEmail", event.salespersonEmail);
+      console.log(event, 'submitting')
+      submit(formData, { method: "post" });
+
     },
     []
   )
@@ -264,26 +273,72 @@ export function StoreHoursCalendar() {
         const filtered = prev.filter((ev) => ev.id !== event.id)
         return [...filtered, { ...existing, start, end }]
       })
-      console.log('resize event')
       const formData = new FormData();
+      formData.append("start", start);
+      formData.append("end", end);
       formData.append("intent", 'resizeEvent');
-      submitEvent(event, formData)
+      formData.append("userEmail", email);
+      formData.append("id", event.userId);
+      formData.append("resourceId", event.generatedTwoDigitNumber);
+      formData.append("day", event.day);
+      formData.append("title", event.title);
+      formData.append("userName", event.userName);
+      formData.append("salespersonEmail", event.salespersonEmail);
+      console.log(event, 'submitting')
+      submit(formData, { method: "post" });
+
     },
     []
   )
 
   const newEvent = useCallback(
-    ({ event, start, end }) => {
+    ({ event }) => {
+      //  const salespersonEmail = userEventData?.salespersonEmail || event.salespersonEmail || ''
+      //const title = userEventData?.title || event.title || ''
+      const resourceId = userEventData?.resourceId || event.resourceId || ''
+      const day = userEventData?.day || event.day || ''
+      const start = event.start || userEventData?.start || ''
+      const end = event.end || userEventData?.end || ''
+      console.log(event, userEventData, 'submitting')
+      console.log(
+        //  salespersonEmail, 'salespersonEmail',
+        end, 'end',
+        start, 'start',
+        day, 'day',
+        // resourceId, 'resourceId',
+        //title, title,
+        email, "userEmail",
+      )
+      const formData = new FormData();
+      console.log('1')
+      formData.append("intent", 'newEvent');
+      console.log('2')
+      formData.append("userEmail", email);
+      console.log('3')
+      //  formData.append("id", userEventData.userId);
+      console.log('4')
+      //  formData.append("resourceId", resourceId);
+      console.log('5')
+      formData.append("day", day);
+      console.log('6')
+      //  formData.append("title", title);
+      console.log('7')
+      console.log('8')
+      // formData.append("salespersonEmail", salespersonEmail);
+      console.log('9')
+      formData.append("start", start);
+      console.log('10')
+      formData.append("end", end);
+      console.log('11')
+      console.log(formData, 'submitting')
+      submit(formData, { method: "post" });
+      console.log('12')
+
       setMyEvents((prev) => {
         const idList = prev.map((item) => item.id)
         const newId = Math.max(...idList) + 1
-        return [...prev, { ...event, id: newId, start, end }]
+        return [...prev, { ...event, id: newId, }]
       })
-      console.log('new event')
-
-      const formData = new FormData();
-      formData.append("intent", 'newEvent');
-      submitEvent(event, formData)
     },
     []
   )
@@ -356,22 +411,61 @@ export function StoreHoursCalendar() {
         setDraggedEvent(null)
         return
       }
-      const { resourceTitle, salespersonEmail, day, userId, resourceId, userName } = draggedEvent
+      const { resourceTitle, salespersonEmail, day, userId, resourceId, userName, } = draggedEvent
       const event = {
         title: `${resourceTitle}`,
         salesPersonEmail: salespersonEmail,
         userName: userName,
         userEmail: email,
-        start: start,
-        end: end,
         day: day,
         userId: userId,
         resourceId: resourceId,
+        start,
+        end,
       }
       setDraggedEvent(null)
       newEvent(event)
     },
     [draggedEvent, email, newEvent]
+  )
+  const onDropFromOutside2 = useCallback(
+    ({ start, end, allDay: isAllDay }) => {
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayName = weekdays[dayOfWeek];
+      const { resourceTitle, salespersonEmail, userId, resourceId, userName, title } = draggedEvent
+
+      const setuserevent = {
+        title: title || userName || resourceTitle,
+        salesPersonEmail: salespersonEmail,
+        userEmail: email,
+        day: dayName,
+        userId: userId,
+        resourceId: resourceId,
+        start,
+        end,
+      }
+      setUserorEvent(setuserevent)
+
+      const event = {
+        //  title: title || userName || resourceTitle,
+        //  salesPersonEmail: salespersonEmail,
+        userEmail: email,
+        day: dayName,
+        resourceId: resourceId,
+
+        // userId: userId,
+        start,
+        end,
+      }
+      //  setDraggedEvent(null)
+
+      console.log(event, setuserevent)
+      //submitEvent(event, formData)
+      newEvent(event)
+    },
+    [draggedEvent, counters, setDraggedEvent, setCounters, newEvent]
   )
   // ---------------------------------------- drag from outside  ----------------------------------------------------
 
@@ -388,11 +482,10 @@ export function StoreHoursCalendar() {
   // Create resourceMap dynamically based on sorted userNumberMapping
   const resourceMap = userNumberMapping.map(user => ({
     resourceId: user.resourceId,
-    resourceTitle: user.name,
-    salespersonEmail: user.salespersonEmail,
+    title: user.name,
+    salespersonEmail: user.email,
     userId: user.id,
     day: user.day,
-    userName: user.name,
   }));
 
   // Output the sorted resourceMap
@@ -462,56 +555,64 @@ export function StoreHoursCalendar() {
   }
   // -----------------------   Custom tool bar for employee buttons and resource view changer ----------------------------
 
-  /**
-  <div>
-        {users && users.map(([user]) => (
-          <div
-            draggable="true"
-            key={user.id}
-            onDragStart={() =>
-              handleDragStart({ title: user.name })
-            }
-            className='rounded-md border border-[#6d6d70] p-5'
-          >
-            <p>{user.name}</p>
-          </div>
-        ))}
-      </div> */
+
   return (
     <div className='mr-3 mb-3 p-3 mx-auto justify-center' >
       <div className='rbc-toolbar flex ' >
-        <div className='grid grid-cols-1 mr-auto'>
-          <label>
-            Display dragged items
-          </label>
-          <input
-            type="checkbox"
-            className='mr-auto'
-            checked={displayDragItemInCell}
-            onChange={handleDisplayDragItemInCell}
-          />
-        </div>
-        {resourceMap.map(({ resourceId, resourceTitle, salespersonEmail, count, userId, day }) => (
-          <Button
-            key={resourceId}
-            type="submit"
-            className="mx-3 px-3"
+        <Tooltip>
+          <TooltipTrigger className=' border-none bg-transparent'>
+            {resourceMap.map(({ resourceId, title, salespersonEmail, count, userId, day, }) => (
+              <Button
+                key={resourceId}
+                type="submit"
+                className="mx-3 px-3"
+                draggable="true"
+                onDragStart={() =>
+                  handleDragStart({
+                    title: title,
+                    resourceTitle: title,
+                    salespersonEmail: salespersonEmail,
+                    count: count,
+                    resourceId: resourceId,
+                    userId: userId,
+                    day: day,
+                  })
+                }
+              >
+                <p>
+                  title: {title} userId: {userId} resId: {resourceId}
+                </p>
+              </Button>
+            ))}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className='text-black'>Drag and drop on the desired day.</p>
+          </TooltipContent>
+        </Tooltip>
+        {Object.entries(counters).map(([name, count]) => (
+          <div
             draggable="true"
+            key={name}
             onDragStart={() =>
-              handleDragStart({
-                title: formatName(resourceTitle),
-                resourceTitle: resourceTitle,
-                salespersonEmail: salespersonEmail,
-                count: count,
-                resourceId: resourceId,
-                userId: userId,
-                day: day,
-              })
+              handleDragStart({ title: formatName2(name, count), name })
             }
           >
-            {formatName(resourceTitle)}
-          </Button>
+            <Button variant='outline' >
+              {formatName2(name, count)}
+            </Button>
+          </div>
         ))}
+      </div>
+      <div className='grid grid-cols-1 mr-auto'>
+        <label>
+          Display dragged items
+        </label>
+        <input
+          type="checkbox"
+          className='mr-auto'
+          checked={displayDragItemInCell}
+          onChange={handleDisplayDragItemInCell}
+        />
       </div>
       <div className="size-full p-3" >
         {showResources ? (
@@ -533,7 +634,7 @@ export function StoreHoursCalendar() {
             onEventDrop={moveEvent}
             onEventResize={resizeEvent}
             onSelectSlot={newEvent}
-            onDropFromOutside={onDropFromOutside}
+            onDropFromOutside={onDropFromOutside2}
             dragFromOutsideItem={displayDragItemInCell ? dragFromOutsideItem : null}
             draggableAccessor="isDraggable"
             onDragOver={customOnDragOver}
@@ -566,7 +667,7 @@ export function StoreHoursCalendar() {
             onEventDrop={moveEvent}
             onEventResize={resizeEvent}
             onSelectSlot={newEvent}
-            onDropFromOutside={onDropFromOutside}
+            onDropFromOutside={onDropFromOutside2}
             dragFromOutsideItem={displayDragItemInCell ? dragFromOutsideItem : null}
             draggableAccessor="isDraggable"
             onDragOver={customOnDragOver}
@@ -579,11 +680,7 @@ export function StoreHoursCalendar() {
 
   );
 }
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: styles2 },
-  { rel: "stylesheet", href: styles1 },
-  { rel: "stylesheet", href: storeHoursCss },
-];
+
 function getDayName(date: string | Date): string | null {
   const validDate = new Date(date);
   if (isNaN(validDate.getTime())) {

@@ -27,9 +27,11 @@ import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { model } from "~/models";
 import secondary from '~/styles/secondary.css'
 import { adminSidebarNav } from '~/components/shared/sidebar'
+import { GetUser } from "~/utils/loader.server";
+
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: secondary },
-
 ];
 
 export const handle = createSitemap();
@@ -37,39 +39,8 @@ export const handle = createSitemap();
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
+  let user = await GetUser(email)
 
-  let user = await prisma.user.findUnique({
-    where: { email: email }
-  });
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) { redirect('/login') }
-  if (email) {
-    try {
-      user = await prisma.user.findUnique({
-        where: { email },
-        select: {
-          id: true,
-          name: true,
-          username: true,
-          email: true,
-          subscriptionId: true,
-          customerId: true,
-          returning: true,
-          phone: true,
-          role: { select: { symbol: true, name: true } },
-          profile: {
-            select: {
-              id: true,
-              headline: true,
-              bio: true,
-            },
-          },
-        },
-      });
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
-  }
   const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const symbol = user.role.symbol
@@ -91,8 +62,6 @@ export async function action({ request }: ActionArgs) {
   }
 }
 
-// Admin doesn't need separated Layout component
-// Becaus this is already the Layout route for all admin routes
 export default function Route() {
   return (
     <>
@@ -112,7 +81,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="hidden space-y-6 p-10 pb-16 md:block">
+      <div className="hidden space-y-6 p-10 pb-16 md:block bg-[#121212] text-white">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight">Admin</h2>
           <p className="text-muted-foreground">
@@ -150,7 +119,6 @@ export function ErrorBoundary() {
       default:
         throw new Error(error.data || error.statusText);
     }
-
     return (
       <RootDocumentBoundary title={message}>
         <AdminLayout>

@@ -1,16 +1,16 @@
-import { Container } from "@radix-ui/themes";
 import { Outlet, useLoaderData } from "@remix-run/react";
-import React from "react";
 import { getSession } from '~/sessions/auth-session.server';
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
-import { model } from "~/models";
-import Sidebar from "~/components/shared/sidebar";
-import { LinksFunction, json } from "@remix-run/node";
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import { LinksFunction, json, redirect } from "@remix-run/node";
 import slider from '~/styles/slider.css'
 import secondary from '~/styles/secondary.css'
-import { Separator } from "~/components/ui/separator"
+import {
+  Separator, Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components"
 import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { getUserIsAllowed } from "~/helpers";
 
@@ -61,51 +61,6 @@ export default function Quote() {
     },
 
   ]
-  const adminSidebarNav = [
-    {
-      title: "Admin",
-      to: "/dealer/admin",
-    },
-    {
-      title: "Manager",
-      to: "/dealer/manager",
-    },
-    {
-      title: "CSI",
-      to: "/dealer/csi",
-    },
-
-  ]
-  const devSidebarNav = [
-    {
-      title: "Control Panel",
-      to: "/devmode/controlPanel",
-    },
-    {
-      title: "Clients",
-      to: "/devmode/clients",
-    },
-    {
-      title: "CSI",
-      to: "/dealer/csi",
-    },
-
-  ]
-  const managerSidebarNav = [
-    {
-      title: "Control Panel",
-      to: "/devmode/controlPanel",
-    },
-    {
-      title: "Clients",
-      to: "/devmode/clients",
-    },
-    {
-      title: "CSI",
-      to: "/dealer/csi",
-    },
-
-  ]
   return (
     <>
       <div className="hidden space-y-6 p-10 pb-16 md:block">
@@ -118,34 +73,47 @@ export default function Quote() {
         <Separator className="my-6" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
           <aside className="-mx-4 lg:w-1/5">
-            <SidebarNav items={sidebarNavItems} />
-            {userIsAllowed ? (
-              <>
-                <p className="text-muted-foreground mt-3">
-                  Admin Menu
-                </p>
-                <hr className="solid" />
-                <SidebarNav items={adminSidebarNav} />
-              </>
-            ) : (null)}
-            {devIsAllowed ? (
-              <>
-                <p className="text-muted-foreground mt-3">
-                  Dev Menu
-                </p>
-                <hr className="solid" />
-                <SidebarNav items={devSidebarNav} />
-              </>
-            ) : (null)}
-            {managerIsAllowed ? (
-              <>
-                <p className="text-muted-foreground mt-3">
-                  Manager Menu
-                </p>
-                <hr className="solid" />
-                <SidebarNav items={managerSidebarNav} />
-              </>
-            ) : (null)}
+
+            <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>
+                  Menu
+                </AccordionTrigger>
+                <AccordionContent>
+                  <SidebarNav items={sidebarNavItems} />
+                </AccordionContent>
+              </AccordionItem>
+              {userIsAllowed ? (
+                <AccordionItem value="item-2">
+                  <AccordionTrigger>
+                    Admin Menu
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <SidebarNav items={adminSidebarNav} />
+                  </AccordionContent>
+                </AccordionItem>
+              ) : (null)}
+              {devIsAllowed ? (
+                <AccordionItem value="item-3">
+                  <AccordionTrigger>
+                    Dev Menu
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <SidebarNav items={devSidebarNav} />
+                  </AccordionContent>
+                </AccordionItem>
+              ) : (null)}
+              {managerIsAllowed ? (
+                <AccordionItem value="item-4">
+                  <AccordionTrigger>
+                    Manager Menu
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <SidebarNav items={managerSidebarNav} />
+                  </AccordionContent>
+                </AccordionItem>
+              ) : (null)}
+            </Accordion>
           </aside>
           <div className="flex-1 overflow-y-scroll overflow-x-hidden w-auto">
             <Outlet />

@@ -23,7 +23,9 @@ const financeFormSchema = z.object({
   familyName: zfd.text(z.string().optional()),
   identityProvider: zfd.text(z.string().optional()),
   microId: zfd.text(z.string().optional()),
-
+  pickHour: zfd.text(z.string().optional()),
+  pickMin: zfd.text(z.string().optional()),
+  AMPM: zfd.text(z.string().optional()),
   tokens: zfd.text(z.string().optional()),
   lead_id: zfd.text(z.string().optional()),
   orderNumber: zfd.text(z.string().optional()),

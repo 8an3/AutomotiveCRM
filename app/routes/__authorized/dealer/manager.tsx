@@ -13,20 +13,9 @@ import { managerSidebarNav } from '~/components/shared/sidebar'
 export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
   let user = await GetUser(email)
-  //console.log(user, 'manager')
-  //console.log(user, 'manager')
-  //if (!user) { return json({ status: 302, redirect: '/login' }); };
-  //const symbol = user.role.symbol
-  //  if (symbol !== 'ADMIN' && symbol !== 'MANAGER' && symbol !== 'EDITOR') {    return redirect(`/`);  } else {
   return json({ user });
-  //}
 }
-
-
-
-
 
 interface SettingsLayoutProps {
   children: React.ReactNode
@@ -35,7 +24,7 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <>
-      <div className="max-w-screen hidden max-h-screen space-y-6 p-10 pb-16 md:block">
+      <div className="max-w-screen hidden max-h-screen space-y-6 p-10 pb-16 md:block bg-[#121212] text-white">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight">Manager Menu</h2>
           <p className="text-muted-foreground">

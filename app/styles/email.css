@@ -13,6 +13,7 @@
     font-family: 'Krona One';
     src: url('/public/KronaOne-Regular.ttf') format('woff2'),
 }
+
 .Mainwidth {
     position: fixed;
     width: 100%;
@@ -20,41 +21,48 @@
     background-color: #131619;
     color: #d3d4d6;
     font-weight: 400;
-font-family: Roboto;
-overflow-y: scroll;
-height: 100%;
+    font-family: Roboto;
+    overflow-y: scroll;
+    height: 100%;
 }
+
 .emailBody {
-        background-color: #2d343b;
-        border-color: #f1f6ff ;
-color: #f1f6ff;
+    background-color: #2d343b;
+    border-color: #f1f6ff;
+    color: #f1f6ff;
 }
+
 .emailLine {
     background-color: #0d0f10;
-    border-color: #f1f6ff ;
+    border-color: #f1f6ff;
     color: #f1f6ff;
 
 }
+
 .replyContent {
     background-color: #1c2024;
-        border-color: #000000;
-        color: #f1f6ff;
+    border-color: #000000;
+    color: #f1f6ff;
 }
+
 .sidebarContent {
     background-color: #0d0f10;
     font-weight: 100;
 }
+
 .mainContent {
     align-items: center;
 }
 
 .richEditor {
-        background-color: #f1f6ff;
-        color: #1c2024;
+    background-color: #f1f6ff;
+    color: #1c2024;
 }
-.textColor{
-        color: #000000;
+
+.textColor {
+    color: #000000;
 }
+
 .parent {
     display: grid;
     grid-template-columns: repeat(18, 1fr);
@@ -78,6 +86,7 @@ color: #f1f6ff;
 .div4 {
     grid-area: 1 / 16 / 2 / 19;
 }
+
 /**.parent {
     display: grid;
     grid-template-columns: repeat(18, 1fr);

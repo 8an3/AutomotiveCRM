@@ -1,28 +1,42 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 /* eslint-disable tailwindcss/classnames-order */
 /* eslint-disable jsx-a11y/alt-text */
 import { Form, Link, useLoaderData, useLocation, useFetcher } from '@remix-run/react';
-import { RemixNavLink, Input, Separator, Button, } from "~/components"
+import {
+  RemixNavLink, Input, Separator, Button, buttonVariants, Tabs, TabsContent, TabsList, TabsTrigger, Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components"
 import { TextArea, } from "~/components/ui"
-import { rootAction, useUserLoader } from './actions';
 import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "~/other/sheet"
 import { getUserIsAllowed } from "~/helpers";
 import * as Dialog from '@radix-ui/react-dialog';
-import * as Tabs from '@radix-ui/react-tabs';
 import { Textarea } from '~/other/textarea';
 import { toast } from 'sonner';
 import { Menu } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import Chat from "~/components/shared/chat";
 import { prisma } from "~/libs";
-import { GetUser } from "~/utils/loader.server";
-import { SidebarNav } from "~/components/ui/sidebar-nav"
+import { cn } from "~/components/ui/utils"
 
-export let action = rootAction
-
+interface SidebarNavProps extends HTMLAttributes<HTMLElement> {
+  items: {
+    to: string
+    title: string
+  }[]
+}
 export default function Sidebar(user, email) {
   let fetcher = useFetcher()
   const [activixActivated, setActivixActivated] = useState('');
-  const activixActivatedRef = useRef(''); // useRef to store mutable value
+  const activixActivatedRef = useRef('');
+  const [isActive, setIsActive] = useState(false);
+  const location = useLocation()
+  const pathname = location.pathname
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    setIsActive((prevState) => !prevState);
+  };
   useEffect(() => {
     async function fetchData() {
       const userIntegration = await prisma.userIntergration.findUnique({ where: { userEmail: email } });
@@ -32,179 +46,243 @@ export default function Sidebar(user, email) {
     }
     fetchData();
   }, []);
-
   const userIsFinance = getUserIsAllowed(user, ["FINANCE"]);
-
-  // Check if data is still loading
   if (email === null || user === null) {
     return <div>Loading...</div>;
   }
-  //const adminUser = getUserIsAllowed(user, ["ADMIN", "MANAGER",]);
-  // const financeUser = getUserIsAllowed(user, ["ADMIN", "MANAGER", "FINANCE"]);
-  //const userIsAllowed = getUserIsAllowed(user, ["ADMIN", "MANAGER", "EDITOR", "SALES", "FINANCE"]);
-
+  function SidebarNav({ className, items, ...props }: SidebarNavProps) {
+    const location = useLocation();
+    const pathname = location.pathname
+    console.log(pathname)
+    return (
+      <nav className={cn("flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1", className)} {...props} >
+        {items.map((item) => (
+          <Link
+            to={item.to}
+            key={item.to}
+            className="justify-start" >
+            <Button
+              variant='ghost'
+              className={cn(
+                'justify-start text-left',
+                buttonVariants({ variant: 'ghost' }),
+                pathname === item.to
+                  ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
+                  : "hover:bg-[#232324]  w-[90%]  ",
+                "justify-start w-[90%]"
+              )} >
+              {item.title}
+            </Button>
+          </Link>
+        ))}
+      </nav>
+    )
+  }
   return (
     <>
       <Sheet >
-        <SheetTrigger asChild>
+        <SheetTrigger>
           <div className=' cursor-pointer text-[#fff] right-[25px] top-[25px]  fixed'>
             <Menu size={32} color="#fff" strokeWidth={1.5} />
           </div>
         </SheetTrigger>
         <SheetContent side='right' className='bg-[#121212] w-full md:w-[50%] overflow-y-auto' >
-          <Tabs.Root className="flex flex-col w-[97%] " defaultValue='UserNav'          >
-
-            <Tabs.List className="shrink-0 flex border-b border-[#02a9ff]" aria-label="Manage your account">
-              <Tabs.Trigger
-                className="bg-white2 text-white cursor-pointer px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  select-none first:rounded-tl-md last:rounded-tr-md hover:text-[#02a9ff] data-[state=active]:text-[#02a9ff] data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
-                value="MY23"
-              >
-                MY23
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                className="bg-white2 text-white px-5 cursor-pointer h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  select-none first:rounded-tl-md last:rounded-tr-md hover:text-[#02a9ff] data-[state=active]:text-[#02a9ff] data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
-                value="MY24"
-              >
-                MY24
-              </Tabs.Trigger>
-            </Tabs.List>
-            <Tabs.List className="shrink-0 flex border-b border-[#02a9ff]" aria-label="Manage your account">
-              <Tabs.Trigger
-                className="bg-white2 text-white px-5 cursor-pointer h-[45px] flex-1flex items-center justify-center text-[15px] leading-none select-none  hover:text-[#02a9ff] data-[state=active]:text-[#02a9ff] data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
-                value="UserNav"
-              >
-                User Nav
-              </Tabs.Trigger>
-
-              <Tabs.Trigger
-                className="bg-white2 text-white px-5 h-[45px]  cursor-pointer flex-1 flex items-center justify-center text-[15px] leading-none  select-none  hover:text-[#02a9ff] data-[state=active]:text-[#02a9ff] data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
-                value="Contact"
-              >
-                Contact
-              </Tabs.Trigger>
-            </Tabs.List>
-
-            {/* MY23 */}
-            <Tabs.Content className="grow p-5 bg-white2 rounded-b-md outline-none   text-white" value="MY23" >
-              <h3 className='text-white '>
-                WATERCRAFT
-              </h3>
-              <hr className="solid" />
-              <div className='p-3'>
-                <SidebarNav items={my23Watercraft} />
-              </div>
-              <h3 className='text-white ' >
-                OFF-ROAD
-              </h3>
-              <hr className="solid text-white " />
-              <div className='p-3 text-white '>
-                <SidebarNav items={my23OffRoad} />
-              </div>
-              <h3  >
-                MOTORCYCLE
-              </h3>
-              <hr className="solid" />
-              <div className='p-3'>
-                <SidebarNav items={my23Moto} />
-              </div>
-              <h3 >
-                Used
-              </h3>
-              <hr className="solid" />
-              <div className='p-3'>
-                <RemixNavLink to='/dealer/quote/used'>
-                  <SheetClose asChild>
-                    <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
-                      Used
-                    </Button>
-                  </SheetClose>
-                </RemixNavLink>
-              </div>
-            </Tabs.Content>
-
-            {/* MY24 */}
-            <Tabs.Content
-              className="grow p-5 bg-white2 rounded-b-md outline-none   "
-              value="MY24"
-            >
-              <h3 className='text-white'>
-                WATERCRAFT
-              </h3>
-              <hr className="solid text-white" />
-              <div className='p-3'>
-              </div>
-              <h3 className='text-white'>
-                MOTORCYCLE
-              </h3>
-              <hr className="solid text-white" />
-              <div className='p-3'>
-                <SidebarNav items={my24Moto} />
-              </div>
-              <h3 className='text-white'>
-                OFF-ROAD
-              </h3>
-              <hr className="solid text-white" />
-              <div className='p-3'>
-                <SidebarNav items={my24OffRoad} />
-              </div>
-            </Tabs.Content>
-
-            {/* User */}
-            <Tabs.Content className="grow p-5  rounded-b-md outline-none border-transparent   " value="UserNav"            >
+          <Tabs defaultValue="User" className="w-full mx-auto justify-center">
+            <TabsList className='mx-auto w-full'>
+              <TabsTrigger value="User">User</TabsTrigger>
+              <TabsTrigger value="MY23">MY23</TabsTrigger>
+              <TabsTrigger value="MY24">MY24</TabsTrigger>
+              <TabsTrigger value="Contact">Contact</TabsTrigger>
+            </TabsList>
+            <TabsContent value="User">
               <div className="flex flex-col items-start">
-                {userIsFinance && (
-                  <Dialog.Close asChild>
-                    <RemixNavLink to={`/dealer/leads/finance`}>
-                      <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
-                        Finance Dashboard
-                      </Button>
-                    </RemixNavLink>
-                  </Dialog.Close>
-                )}
-                {activixActivated === 'yes' && (
-                  <Dialog.Close asChild>
-                    <RemixNavLink to={`/dealer/leads/activix`}>
-                      <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer" >
-                        Activix Dashboard
-                      </Button>
-                    </RemixNavLink>
-                  </Dialog.Close>
-                )}
-                <SidebarNav items={userNavSidebarNav} />
-                {user && user?.email === 'skylerzanth@outlook.com' ? (
-                  <>
-                    <p className="text-muted-foreground mt-10">
-                      Admin Menu
-                    </p>
-                    <hr className="w-full justify-start cursor-pointer text-white " />
-                    <SidebarNav items={adminSidebarNav} />
-                  </>
-                ) : (null)}
-                {user && user?.email === 'skylerzanth@outlook.com' ? (
-                  <>
-                    <p className="text-muted-foreground mt-10">
-                      Dev Menu
-                    </p>
-                    <hr className="w-full justify-start cursor-pointer text-white " />
-                    <SidebarNav items={devSidebarNav} />
-                  </>
-                ) : (null)}
-                {user && user?.email === 'skylerzanth@outlook.com' ? (
-                  <>
-                    <p className="text-muted-foreground mt-10">
-                      Manager Menu
-                    </p>
-                    <hr className="w-full justify-start cursor-pointer text-white " />
-                    <SidebarNav items={managerSidebarNav} />
-                  </>
-                ) : (null)}
+                <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger>
+                      Menu
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <SidebarNav items={userNavSidebarNav} />
+                      {userIsFinance && (
+                        <Link to='/dealer/leads/finance'>
+                          <Button
+                            variant='ghost'
+                            className={cn(
+                              buttonVariants({ variant: "ghost" }),
+                              pathname === '/dealer/leads/finance'
+                                ? "bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]"
+                                : "hover:bg-[#232324]",
+                              "justify-start"
+                            )}
+                          >
+                            <Dialog.Close asChild>
+                              Finance Dashboard
+
+                            </Dialog.Close>
+                          </Button>
+                        </Link>
+                      )}
+                      {activixActivated === 'yes' && (
+                        <Link to='/dealer/leads/activix'>
+                          <Button
+                            variant='ghost'
+                            className={cn(
+                              buttonVariants({ variant: "ghost" }),
+                              pathname === '/dealer/leads/activix'
+                                ? "bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]"
+                                : "hover:bg-[#232324]",
+                              "justify-start"
+                            )}
+                          >
+                            <Dialog.Close asChild>
+                              Activix Dashboard
+                            </Dialog.Close>
+                          </Button>
+                        </Link>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                  {user && user?.email === 'skylerzanth@outlook.com' ? (
+                    <AccordionItem value="item-2">
+                      <AccordionTrigger>
+                        Admin Menu
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <SidebarNav items={adminSidebarNav} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  ) : (null)}
+                  {user && user?.email === 'skylerzanth@outlook.com' ? (
+                    <AccordionItem value="item-3">
+                      <AccordionTrigger>
+                        Dev Menu
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <SidebarNav items={devSidebarNav} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  ) : (null)}
+                  {user && user?.email === 'skylerzanth@outlook.com' ? (
+                    <AccordionItem value="item-4">
+                      <AccordionTrigger>
+                        Manager Menu
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <SidebarNav items={managerSidebarNav} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  ) : (null)}
+                </Accordion>
               </div>
-            </Tabs.Content>
-            {/* contaact */}
-            <Tabs.Content
-              className="grow p-5 bg-white2 rounded-b-md outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
-              value="Contact"
-            >
+            </TabsContent>
+            <TabsContent value="MY23">
+              <>
+                <Accordion type="multiple" className="w-full" >
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger  >
+                      WATERCRAFT
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <SidebarNav items={my23Watercraft} />
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-2"  >
+                    <AccordionTrigger    >
+                      MOTORCYCLE
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <SidebarNav items={my23Moto} />
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-3"  >
+                    <AccordionTrigger   >
+                      OFF-ROAD
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <SidebarNav items={my23OffRoad} />
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-4"  >
+                    <AccordionTrigger   >
+                      ON-ROAD
+                    </AccordionTrigger>
+                    <AccordionContent >
+                      <SidebarNav items={managerSidebarNav} />
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+                <Link to='/dealer/quote/used'>
+                  <Button
+                    variant='ghost'
+                    className={cn(
+                      buttonVariants({ variant: "ghost" }),
+                      pathname === '/dealer/quote/used'
+                        ? "bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]"
+                        : "hover:bg-[#232324] w-[90%]",
+                      "justify-start"
+                    )}
+                  >
+                    <Dialog.Close>
+                      USED
+                    </Dialog.Close>
+                  </Button>
+                </Link>
+              </>
+            </TabsContent>
+            <TabsContent value="MY24">
+              <Accordion type="multiple" className="w-full" >
+                <AccordionItem value="item-1"  >
+                  <AccordionTrigger    >
+                    WATERCRAFT
+                  </AccordionTrigger>
+                  <AccordionContent>
+
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2"  >
+                  <AccordionTrigger  >
+                    MOTORCYCLE
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <SidebarNav items={my24Moto} />
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-3"  >
+                  <AccordionTrigger  >
+                    OFF-ROAD
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <SidebarNav items={my24OffRoad} />
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-4"  >
+                  <AccordionTrigger >
+                    ON-ROAD
+                  </AccordionTrigger>
+                  <AccordionContent>
+
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+              <Link to='/dealer/quote/used'>
+                <Button
+                  variant='ghost'
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    pathname === '/dealer/quote/used'
+                      ? "bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]"
+                      : "hover:bg-[#232324] w-[90%]",
+                    "justify-start"
+                  )}
+                >
+                  <Dialog.Close  >
+                    USED
+                  </Dialog.Close>
+                </Button>
+              </Link>
+
+            </TabsContent>
+            <TabsContent value="Contact">
               <>
                 <div className="border-none p-0">
                   <div className="flex items-center justify-between">
@@ -260,10 +338,9 @@ export default function Sidebar(user, email) {
                   </Form>
                 </div>
               </>
-            </Tabs.Content>
+            </TabsContent>
+          </Tabs>
 
-
-          </Tabs.Root>
         </SheetContent>
       </Sheet >
     </>
@@ -558,3 +635,59 @@ export const my23OffRoad = [
     to: "/dealer/quote/Triumph",
   },
 ]
+
+
+/**
+ *
+ *
+ *  <h3 className='text-white'>
+                WATERCRAFT
+              </h3>
+              <hr className="solid text-white" />
+              <div className='p-3'>
+              </div>
+              <h3 className='text-white'>
+                MOTORCYCLE
+              </h3>
+              <hr className="solid text-white" />
+              <div className='p-3'>
+              </div>
+              <h3 className='text-white'>
+                OFF-ROAD
+              </h3>
+              <hr className="solid text-white" />
+
+
+              <h3 className='text-white '>
+                WATERCRAFT
+              </h3>
+              <hr className="solid" />
+              <div className='p-3'>
+              </div>
+              <h3 className='text-white ' >
+                OFF-ROAD
+              </h3>
+              <hr className="solid text-white " />
+              <div className='p-3 text-white '>
+              </div>
+              <h3  >
+                MOTORCYCLE
+              </h3>
+              <hr className="solid" />
+              <div className='p-3'>
+              </div>
+              <h3 >
+                Used
+              </h3>
+              <hr className="solid" />
+              <div className='p-3'>
+                <RemixNavLink to='/dealer/quote/used'>
+                  <SheetClose asChild>
+                    <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
+                      Used
+                    </Button>
+
+
+                  </SheetClose>
+                </RemixNavLink>
+              </div> */

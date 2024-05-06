@@ -1,5 +1,5 @@
 import { Outlet } from '@remix-run/react'
-import { type MetaFunction } from '@remix-run/node'
+import { type MetaFunction, type LinksFunction } from '@remix-run/node'
 import stylesheet from '~/styles/tailwind.css'
 import Sidebar from "~/components/shared/sidebar";
 import slider from '~/styles/slider.css'
@@ -9,7 +9,7 @@ export const links: LinksFunction = () => [
 	{ rel: "stylesheet", href: stylesheet }
 ];
 
-export const meta: MetaFunction = () => {
+export const meta = () => {
 	return [
 		{ title: "Welcome - Dealer Sales Assistant" },
 		{
@@ -26,7 +26,6 @@ export const meta: MetaFunction = () => {
 export default function Quote() {
 	return (
 		<>
-			<Sidebar />
 			<div className="flex min-h-screen px-4 sm:px-6 lg:px-8 bg-slate12 text-slate3">
 				<div className="w-full overflow-hidden rounded-lg ">
 					<div className="md:flex my-auto mx-auto">
