@@ -36,7 +36,7 @@ export default function Welcome() {
     clientId: msalConfig.clientId,
     knownAuthorities: [],
     redirectUri: currentURL + '/auth/login',
-    prompt: "none",
+    prompt: "prompt",
     scopes: [
       'User.Read',
       'Mail.ReadWrite',

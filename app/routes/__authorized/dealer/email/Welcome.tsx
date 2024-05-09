@@ -666,7 +666,7 @@ const ProfileContent = () => {
   const [graphData, setGraphData] = useState(null);
   const [mailData, setMailData] = useState(false);
   const app = useAppContext();
-  const token = "EwB4A8l6BAAUbDba3x2OMJElkF7gJ4z/VbCPEz0AAe7+HINLv0+iHBoeB3mNHbsPPwxYKwHbeixLyQs6B/cRkpGck0gO6tFpBflznAF3hjENAGcmFiPyOZCU8TcpQh8ZPmwM2HRjB2oWkSqzKc5G8vtD8isY+YZepbc4X+fgtzjpTC8tnGCCPmvwEGOZU1TtjIN/DCCltLDFP29UL7/IVK0/Qc6DgBod+wDa5YYvDbO8CJTMDWQa8AOHtHv/QyLFoMQpjeVr/2MbIGS3wppocrHNVe2wDJPA7X/6L+A+bttwhPL3XG0sj91RbyKMfeVb7jGuHzKYOAB6zGWw0VnOcuM9QOsa0yI8pMJGZEyllNGpfbuVFmDOJwUcy91Jv0wDZgAACD/fF+vVrXcjSALnxBT0/PAELqL1o4osNpEu1hr+SgXHrj0z3FqQB27+K1HD9ZaTZnSCfMH6RyMILrR1d/ndp4x50oaVJLGvXiZOGjjqZuB7QXNOo3cAZ8EyiEBtldv4kqinabxOHv7PdtGXo++b3SVp878XyrFht/UYG+nRyAwxgtHlgQ2zCF0pupCTE9MxvP3s4OwYu7B6OHtnbA2crjjGO8hmvshlOT734k1f8YF/Iw14Wk1ZL73AxQCmVgTraKNmwkwccZB0lZyWbqCkyAt5XvJ54ciBeKcFzs4JkF1wbf93cPCg3ke1tG2Z3ViKSROPcsQPuSc4tiC0ddoT3BOioOEQ8kJsMSsmvabNZapWe9lNQwuE5dyS2B1HdoyJdQSGnI6ZnD1dcZirfBipNRNInrcNf3/sRGmvFpuCv1tCPn+d/JeMfsoOaw7Y07IlO55+jvDRzoIzWJwhVUyzO5cYYAxP7PNoUMZ6PDtKh+uk6DdMAkopUEpJ+HAHm8qfgriF/Pdh5dI4CG66aX8E0rBhO2yjMvHySVJ+S7wmfbtdnuhBjgzUBsIFvMSZ429Gh89gkZ3ShBJRWTyS1O3x/7FMjargNAasuiHjPtlgHPrcVorgRvU0zF1F/0GtQUTJJz2RQtDXgrmKC9jPgzw77mXXJSFoam5FuQnnHHN8ELdoZ/2TPMk3NATF74aHeKgF2fFTMIRpJ8OZULoEoJ5bJ6vc6nJSp8UghaNyIvIErfVZD5Et1fO+LOGA6JAlUg7vsI9RGJqGuZ15yY5opZZhAbouVYkC"
+
   async function RequestProfileData() {
     instance
       .acquireTokenSilent({
@@ -676,7 +676,6 @@ const ProfileContent = () => {
       .then((response) => {
         callMsGraph(response.accessToken).then((response) => setGraphData(response));
       });
-    callMsGraph(token).then((response) => setGraphData(response));
   }
 
 
@@ -684,7 +683,8 @@ const ProfileContent = () => {
     const [inbox, setInbox] = useState([])
     const [inbox2, setInbox2] = useState([])
     const [mailData, setMailData] = useState(false);
-    function callMsGraph() {
+
+    function callMsGraph33() {
       instance
         .acquireTokenSilent({
           ...loginRequest,
@@ -695,7 +695,7 @@ const ProfileContent = () => {
             graphMeEndpoint: "https://graph.microsoft.com/v1.0/me/messages",
           };
           const headers = new Headers();
-          const bearer = `Bearer ${token}`;
+          const bearer = `Bearer ${response.accessToken}`;
           headers.append("Authorization", bearer);
           const options = {
             method: "GET",
@@ -718,7 +718,10 @@ const ProfileContent = () => {
           console.log("Error acquiring token:", error);
         });
     }
-
+    function callMsGraph() {
+      const emails = getEmails(app.authProvider!)
+      return emails
+    }
     async function callMsGraph2() {
       let getInbox2 = await client
         .api('/me/messages')
@@ -735,7 +738,7 @@ const ProfileContent = () => {
 
 
     return (
-      <>
+      <div className='text-white'>
         {mailData === true && inbox.length > 4 && (
           <>
             <p>{JSON.stringify(inbox)}</p>
@@ -760,7 +763,7 @@ const ProfileContent = () => {
         }}>
           Request Mail 2
         </Button>
-      </>
+      </div>
     )
   }
 
@@ -768,14 +771,14 @@ const ProfileContent = () => {
     <>
       <h5 className="profileContent">Welcome {accounts[0].name}</h5>
       {graphData ? (
-        <div id="profile-div">
+        <div className='text-white' id="profile-div">
           <p><strong>Email: </strong> {graphData.userPrincipalName}</p>
           <p><strong>Id: </strong> {graphData.id}</p>
           <p>{JSON.stringify(activeAccount)}</p>
           <p>idToken: {JSON.stringify(activeAccount?.idToken)}</p>
         </div>
       ) : (
-        <Button variant="ghost" onClick={RequestProfileData}>
+        <Button className='text-white' variant="ghost" onClick={RequestProfileData}>
           Request Profile
         </Button>
       )}
@@ -802,7 +805,7 @@ export default function App() {
     </div>
   );
 }
-export async function callMsGraph(accessToken) {
+export async function callMsGraph444(accessToken) {
   const headers = new Headers();
   const bearer = `Bearer ${accessToken}`;
 
