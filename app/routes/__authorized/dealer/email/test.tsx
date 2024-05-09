@@ -61,7 +61,7 @@ const Test = () => {
     return messages
   };
   return (
-    <div className='mt-10 '>
+    <div className='mt-10 text-white '>
       {user &&
         (
           <div className=' w-[80%]'>

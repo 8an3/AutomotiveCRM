@@ -1,19 +1,19 @@
 
 
-$out-of-range-color: lighten(#333, 40%) !default;
-$out-of-range-bg-color: lighten(#333, 70%) !default;
+$out-of-range-color: lighten(#65656c, 40%) !default;
+$out-of-range-bg-color: lighten(#121212, 70%) !default;
 
-$calendar-border: #9c9c9c !default;
-$cell-border: #9c9c9c !default;
+$calendar-border: #3e3e3f !default;
+$cell-border: #3e3e3f !default;
 
-$border-color: #9c9c9c !default;
+$border-color: #3e3e3f !default;
 
 // Each calendar segment is 1/7th.
 $segment-width: 0.14286% !default;
 
-$time-selection-color: white !default;
-$time-selection-bg-color: rgba(0, 0, 0, 0.5) !default;
-$date-selection-bg-color: rgba(0, 0, 0, 0.1) !default;
+$time-selection-color: #232324 !default;
+$time-selection-bg-color: #3e3e3f !default;
+$date-selection-bg-color: #3e3e3f !default;
 
 $event-bg: #3174ad !default;
 $event-border: darken(#3174ad, 10%) !default;
@@ -23,12 +23,57 @@ $event-border-radius: 5px !default;
 $event-padding: 2px 5px !default;
 $event-zindex: 4 !default;
 
-$btn-color: #373a3c !default;
-$btn-bg: #757575 !default;
-$btn-border: #969696 !default;
+$btn-color: #d8d8d8 !default;
+$btn-bg: #121212 !default;
+$btn-border: #3e3e3f !default;
 
-$current-time-color: #74ad31 !default;
+$current-time-color: #30A46C !default;
 
 $rbc-css-prefix: rbc-i !default;
 
-$today-highlight-bg: #eafff5 !default;
+$today-highlight-bg: #393941 !default;
+
+// ---------BORDER
+//  border-color: #2b2b2d;
+// active border color #dadce0 or #2b2b2d
+
+// ----------- ---BG
+// bg color  #121212
+// active bg color #2b2b2d or #121212
+
+//----- ----- FONT
+// font color  #cbd0d4
+// active font folor #5392ff
+
+//----- ----- BUTTON
+// button font color #cbd0d4
+// button border #363638 #2b2b2d
+// button bg #121212
+
+//----- ACTIVE BUTTON
+// active button font color #5392ff
+// active button border #dadce0
+// active button bg  #131e2c
+
+// ---------DAY
+// active day #121212
+// ---------TIME
+// active time #ea4335
+
+
+.rbc-toolbar button:active,
+.rbc-toolbar button.rbc-active {
+  background-image: none;
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  background-color: #131e2c;
+  border-color: #ccd2df;
+}
+
+.rbc-toolbar button:active:hover,
+.rbc-toolbar button:active:focus,
+.rbc-toolbar button.rbc-active:hover,
+.rbc-toolbar button.rbc-active:focus {
+  color: #5392ff;
+  background-color: #121212;
+  border-color: #2b2b2d;
+}

@@ -15,12 +15,13 @@ import { GetUser } from "~/utils/loader.server";
 import storeHoursCss from "~/styles/storeHours.css";
 import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
+import rbc from "~/styles/rbc.css";
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
   { rel: "stylesheet", href: storeHoursCss },
   { rel: "stylesheet", href: styles1 },
-  { rel: "stylesheet", href: styles2 },
+  { rel: "stylesheet", href: rbc },
 ];
 
 const DragAndDropCalendar = withDragAndDrop(Calendar)
@@ -135,8 +136,16 @@ export default function DnDResource() {
   return (
     <Fragment>
 
-      <div className="height600 bg-white">
+      <div className="max-h-[95vh] max-w-[95vw] bg-white">
         <DragAndDropCalendar
+          style={{
+            height: "100vh",
+            width: "auto",
+            overflowX: "hidden",
+            overflowY: 'scroll',
+            objectFit: 'contain',
+            overscrollBehavior: 'contain',
+          }}
           defaultDate={defaultDate}
           defaultView={Views.DAY}
           events={myEvents}

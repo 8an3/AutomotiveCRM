@@ -23,12 +23,13 @@ import { getSession, commitSession } from '~/sessions/auth-session.server';
 import storeHoursCss from "~/styles/storeHours.css";
 import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
+import rbc from "~/styles/rbc.css";
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
   { rel: "stylesheet", href: storeHoursCss },
   { rel: "stylesheet", href: styles1 },
-  { rel: "stylesheet", href: styles2 },
+  { rel: "stylesheet", href: rbc },
 ];
 
 export async function CompleteLastAppt(userId, financeId) {
@@ -1072,7 +1073,14 @@ export default function DnDResource() {
       <div className="size-full mt-5" >
         {showResources ? (
           <DragAndDropCalendar
-            style={{ height: "100vh" }}
+            style={{
+              height: "100vh",
+              width: "auto",
+              overflowX: "hidden",
+              overflowY: 'scroll',
+              objectFit: 'contain',
+              overscrollBehavior: 'contain',
+            }}
 
             defaultView={Views.DAY}
             events={myEvents}

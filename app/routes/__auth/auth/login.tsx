@@ -4,7 +4,7 @@
 // <WelcomeSnippet>
 import { IdTokenData } from './DataDisplay';
 import { Button } from '~/components';
-import { Link, useSubmit, useNavigate } from '@remix-run/react';
+import { Link, useSubmit, useNavigate, useLocation } from '@remix-run/react';
 import { MsalProvider, AuthenticatedTemplate, useMsal, UnauthenticatedTemplate } from '@azure/msal-react';
 import { useAppContext } from '~/components/microsoft/AppContext';
 import { TfiMicrosoft } from "react-icons/tfi";
@@ -14,6 +14,7 @@ import { type ActionFunction, json, type LoaderFunction, redirect } from "@remix
 import { getUser } from '~/components/microsoft/GraphService';
 import { loginRequest } from '~/components/microsoft/Config';
 
+const { APP_URL } = process.env;
 
 export async function action({ request }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData());
@@ -32,8 +33,10 @@ export default function Welcome() {
   const name = activeAccount?.name || '';
   const idToken = activeAccount?.idToken || '';
   console.log(email, 'email', name, 'name', idToken, 'idToken', activeAccount)
-
-  const submit = useSubmit();
+  const location = useLocation()
+  const pathname = location.pathname
+  if (pathname === )
+    const submit = useSubmit();
   const [user, setUser] = useState();
 
   useEffect(() => {

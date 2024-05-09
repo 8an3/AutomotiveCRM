@@ -1,7 +1,7 @@
 
 
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Calendar, dayjsLocalizer, Navigate as navigate, Views } from "react-big-calendar";
 import moment from "moment";
 import 'moment-timezone'
@@ -14,24 +14,21 @@ import { prisma } from "~/libs";
 import timezone from 'dayjs/plugin/timezone'
 import { createHash } from 'crypto'
 import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
-import {
-  Button,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components";
+import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Popover, PopoverTrigger, PopoverContent, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "~/components";
 import clsx from 'clsx'
 import { Text } from '@radix-ui/themes';
 import storeHoursCss from "~/styles/storeHours.css";
-import rbc from "~/styles/rbc.css";
 import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
+import { cn } from "~/components/ui/utils"
+import rbc from "~/styles/rbc.css";
+import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
+import { Calendar as SmallCalendar } from '~/components/ui/calendar';
+import { format } from "date-fns"
+
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
   { rel: "stylesheet", href: storeHoursCss },
-  { rel: "stylesheet", href: styles2 },
   { rel: "stylesheet", href: styles1 },
   { rel: "stylesheet", href: rbc },
 ];
@@ -86,10 +83,10 @@ export async function loader({ request, params }: LoaderFunction) {
       end: end,
       userId: event.id,
       id: event.id,
-      userEmail: event.userEmail,
+      userEmail: event.email,
       day: event.day,
       resourceId: event.resourceId,
-      salespersonEmail: event.salespersonEmail,
+      salespersonEmail: event.email,
     };
   });
   const mappedDatesForCurrentWeekSalesSched = mapSavedDatesToCurrentWeek(formattedSalesSched);
@@ -97,16 +94,33 @@ export async function loader({ request, params }: LoaderFunction) {
   mappedDatesForCurrentWeekSalesSched.forEach(user => {
     const inputString = user.id;
     const twoDigitNumber = generateTwoDigitNumber(inputString);
-    const salesSchedmappingObject = {
-      id: user.id,
-      start: user.start,
-      end: user.end,
-      userId: user.id,
-      resourceId: twoDigitNumber,
-      salespersonEmail: user.email,
-      day: user.day || '',
-      title: user.title,
-    };
+
+    let salesSchedmappingObject
+    if (!user.resourceId) {
+      salesSchedmappingObject = {
+        id: user.id,
+        start: user.start,
+        end: user.end,
+        userId: user.id,
+        resourceId: twoDigitNumber,
+        salespersonEmail: user.email,
+        day: user.day || '',
+        title: user.title,
+        userEmail: user.email,
+      };
+    } else {
+      salesSchedmappingObject = {
+        id: user.id,
+        start: user.start,
+        end: user.end,
+        userId: user.userId,
+        resourceId: Number(user.resourceId),
+        salespersonEmail: user.salespersonEmail,
+        day: user.day,
+        title: user.title,
+        userEmail: user.userEmail,
+      };
+    }
     salesschedNumberMapping.push(salesSchedmappingObject);
   });
   // -------------------------------------- get current weeks scheduled events
@@ -123,6 +137,8 @@ export async function loader({ request, params }: LoaderFunction) {
       title: user.name || '',
       userName: user.name || '',
       name: user.name,
+      id: user.id,
+      userEmail: user.email,
 
     };
     userNumberMapping.push(mappingObject);
@@ -137,7 +153,7 @@ export async function loader({ request, params }: LoaderFunction) {
 }
 
 async function createOrUpdateSalespersonSched(formData) {
-  const { day, salespersonEmail, start, end, userEmail, title, resourceId, userName } = formData;
+  const { day, salespersonEmail, start, end, userEmail, title, resourceId, userName, userId, name } = formData;
 
   // Check if there's already an event for this salesperson on the specified day
   const existingEvent = await prisma.salespersonSched.findFirst({
@@ -155,13 +171,15 @@ async function createOrUpdateSalespersonSched(formData) {
       },
       data: {
         day: day,
-        //  salespersonEmail: salespersonEmail,
+        salespersonEmail: salespersonEmail,
         start: start,
         end: end,
         userEmail: userEmail,
         title: title,
-        // resourceId: resourceId,
-        userName: userName
+        resourceId: resourceId,
+        userName: userName,
+        userId: userId,
+        name: name,
       },
     });
 
@@ -171,13 +189,15 @@ async function createOrUpdateSalespersonSched(formData) {
     const newEvent = await prisma.salespersonSched.create({
       data: {
         day: day,
-        //   salespersonEmail: salespersonEmail,
-        start: start,
-        end: end,
+        salespersonEmail: salespersonEmail,
+        start: new Date(start),
+        end: new Date(end),
         userEmail: userEmail,
         title: title,
-        ///resourceId: resourceId,
-        userName: userName
+        resourceId: resourceId,
+        userName: userName,
+        userId: userId,
+        name: name,
       },
     });
 
@@ -191,9 +211,12 @@ export async function action({ request }: ActionFunction) {
     const email = session.get("email");
     const formPayload = Object.fromEntries(await request.formData());
     const day = getDayName(formPayload.start) || '';
+    delete formPayload.intent
     const formData = {
       ...formPayload,
-      // userEmail: email,
+      day,
+      userEmail: email,
+      salespersonEmail: email,
     };
     console.log(formData, 'formPayload');
     const saveEvent = await createOrUpdateSalespersonSched(formData);
@@ -205,16 +228,12 @@ export async function action({ request }: ActionFunction) {
   }
 }
 
-
-
 export function StoreHoursCalendar() {
   const submit = useSubmit();
   const [view, setView] = useState(Views.WEEK)
   const [userEventData, setUserorEvent] = useState()
   const onView = useCallback((newView) => setView(newView), [setView])
-
   const { events, email, users, userNumberMapping, salesSched } = useLoaderData()
-
   const formattedData = events.map(event => {
     const start = new Date(event.start);
     const end = new Date(event.end);
@@ -231,7 +250,6 @@ export function StoreHoursCalendar() {
       ...event,
       start,
       end,
-
     };
   });
   const [myEvents, setMyEvents] = useState(formattedSalesSched)
@@ -295,16 +313,16 @@ export function StoreHoursCalendar() {
     ({ event }) => {
       //  const salespersonEmail = userEventData?.salespersonEmail || event.salespersonEmail || ''
       //const title = userEventData?.title || event.title || ''
-      const resourceId = userEventData?.resourceId || event.resourceId || ''
-      const day = userEventData?.day || event.day || ''
-      const start = event.start || userEventData?.start || ''
-      const end = event.end || userEventData?.end || ''
+      // const resourceId = userEventData?.resourceId || event.resourceId || ''
+      // const day = userEventData?.day || event.day || ''
+      const start = event.start //|| userEventData?.start || ''
+      const end = event.end// || userEventData?.end || ''
       console.log(event, userEventData, 'submitting')
       console.log(
         //  salespersonEmail, 'salespersonEmail',
         end, 'end',
         start, 'start',
-        day, 'day',
+        //    day, 'day',
         // resourceId, 'resourceId',
         //title, title,
         email, "userEmail",
@@ -319,7 +337,7 @@ export function StoreHoursCalendar() {
       console.log('4')
       //  formData.append("resourceId", resourceId);
       console.log('5')
-      formData.append("day", day);
+      //  formData.append("day", day);
       console.log('6')
       //  formData.append("title", title);
       console.log('7')
@@ -430,43 +448,40 @@ export function StoreHoursCalendar() {
   )
   const onDropFromOutside2 = useCallback(
     ({ start, end, allDay: isAllDay }) => {
-      const today = new Date();
-      const dayOfWeek = today.getDay();
-      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const dayName = weekdays[dayOfWeek];
-      const { resourceTitle, salespersonEmail, userId, resourceId, userName, title } = draggedEvent
 
-      const setuserevent = {
-        title: title || userName || resourceTitle,
-        salesPersonEmail: salespersonEmail,
-        userEmail: email,
-        day: dayName,
-        userId: userId,
-        resourceId: resourceId,
-        start,
-        end,
-      }
-      setUserorEvent(setuserevent)
+      const startDate = new Date(start);
+      startDate.setHours(startDate.getHours() + 8);
+      const eightHourShift = new Date(start.getTime() + 480 * 60000)
 
+      const { id, name, userId, resourceId, resourceTitle, salespersonEmail, title, userEmail, userName } = draggedEvent
+      console.log(draggedEvent, 'draggedEvent')
+      const formData = new FormData();
+      formData.append("intent", 'newEvent');
+      formData.append("userEmail", email);
+      formData.append("id", id);
+      formData.append("resourceId", resourceId);
+      // formData.append("name", name);
+      ///  formData.append("userId", userId);
+      formData.append("resourceTitle", resourceTitle);
+      formData.append("userName", userName);
+      formData.append("userEmail", userEmail);
+      formData.append("title", title);
+      formData.append("salespersonEmail", salespersonEmail);
+      formData.append("start", start);
+      formData.append("end", eightHourShift);
+      submit(formData, { method: "post" });
       const event = {
-        //  title: title || userName || resourceTitle,
-        //  salesPersonEmail: salespersonEmail,
-        userEmail: email,
-        day: dayName,
-        resourceId: resourceId,
-
-        // userId: userId,
+        draggedEvent,
         start,
         end,
       }
-      //  setDraggedEvent(null)
 
-      console.log(event, setuserevent)
-      //submitEvent(event, formData)
+      setDraggedEvent(null)
       newEvent(event)
     },
     [draggedEvent, counters, setDraggedEvent, setCounters, newEvent]
   )
+
   // ---------------------------------------- drag from outside  ----------------------------------------------------
 
   // ---------------------------------- resource mapping based off of id --------------------------------------------
@@ -476,25 +491,25 @@ export function StoreHoursCalendar() {
   const toggleView = () => {
     setShowResources(prevState => !prevState);
   };
-
   userNumberMapping.sort((a, b) => a.generatedTwoDigitNumber - b.generatedTwoDigitNumber);
-
-  // Create resourceMap dynamically based on sorted userNumberMapping
+  console.log(userNumberMapping, ' need top check data with whassts coming out of the function')
   const resourceMap = userNumberMapping.map(user => ({
     resourceId: user.resourceId,
-    title: user.name,
-    salespersonEmail: user.email,
+    title: user.title,
+    salespersonEmail: user.salespersonEmail,
     userId: user.id,
     day: user.day,
+    id: user.id,
+    userEmail: user.userEmail,
+    userName: user.userName,
+    name: user.name,
   }));
-
-  // Output the sorted resourceMap
   console.log('Sorted Resource Map:');
-  console.log(resourceMap);
+  console.log(resourceMap, ' need top check data with whassts coming out of the function');
   // ---------------------------------- resource mapping based off of id --------------------------------------------
 
   // -----------------------   Custom tool bar for employee buttons and resource view changer----------------------------
-  const views = ["Day", "Week", "Month", "Agenda"];
+
   const ViewNamesGroup = ({ views: viewNames, view, messages, onView }) => {
     return viewNames.map((name) => (
       <Button
@@ -539,13 +554,13 @@ export function StoreHoursCalendar() {
 
 
         <span className="ml-auto justify-end">
-          <Button className='mr-3 cursor-pointer items-center justify-center p-2 first:rounded-bl-md first:rounded-tl-md last:rounded-br-md last:rounded-tr-md hover:text-blue-8' onClick={() => onNavigate(navigate.PREVIOUS)}>
+          <Button className='mr-3 cursor-pointer items-center justify-center p-2 first:rounded-l-md last:rounded-r-md hover:text-blue-8' onClick={() => onNavigate(navigate.PREVIOUS)}>
             <ChevronsLeft size={20} strokeWidth={1.5} />
           </Button>
-          <Button className='mr-3 cursor-pointer items-center justify-center  p-2 first:rounded-bl-md first:rounded-tl-md last:rounded-br-md last:rounded-tr-md hover:text-blue-8' onClick={() => onNavigate(navigate.TODAY)}>
+          <Button className='mr-3 cursor-pointer items-center justify-center  p-2 first:rounded-l-md last:rounded-r-md hover:text-blue-8' onClick={() => onNavigate(navigate.TODAY)}>
             <ChevronsRightLeft size={20} strokeWidth={1.5} />
           </Button>
-          <Button className='mr-3 cursor-pointer items-center justify-center  p-2 first:rounded-bl-md first:rounded-tl-md last:rounded-br-md last:rounded-tr-md hover:text-blue-8' onClick={() => onNavigate(navigate.NEXT)}
+          <Button className='mr-3 cursor-pointer items-center justify-center  p-2 first:rounded-l-md last:rounded-r-md hover:text-blue-8' onClick={() => onNavigate(navigate.NEXT)}
           >
             <ChevronsRight size={20} strokeWidth={1.5} />
           </Button>
@@ -554,56 +569,22 @@ export function StoreHoursCalendar() {
     )
   }
   // -----------------------   Custom tool bar for employee buttons and resource view changer ----------------------------
+  // -----------------------   tryiong to cahnge colors on the fly instead of remaking the sass files  ----------------------------
 
+  // -----------------------   tryiong to cahnge colors on the fly instead of remaking the sass files  ----------------------------
 
-  return (
-    <div className='mr-3 mb-3 p-3 mx-auto justify-center' >
-      <div className='rbc-toolbar flex ' >
-        <Tooltip>
-          <TooltipTrigger className=' border-none bg-transparent'>
-            {resourceMap.map(({ resourceId, title, salespersonEmail, count, userId, day, }) => (
-              <Button
-                key={resourceId}
-                type="submit"
-                className="mx-3 px-3"
-                draggable="true"
-                onDragStart={() =>
-                  handleDragStart({
-                    title: title,
-                    resourceTitle: title,
-                    salespersonEmail: salespersonEmail,
-                    count: count,
-                    resourceId: resourceId,
-                    userId: userId,
-                    day: day,
-                  })
-                }
-              >
-                <p>
-                  title: {title} userId: {userId} resId: {resourceId}
-                </p>
-              </Button>
-            ))}
-          </TooltipTrigger>
-          <TooltipContent>
-            <p className='text-black'>Drag and drop on the desired day.</p>
-          </TooltipContent>
-        </Tooltip>
-        {Object.entries(counters).map(([name, count]) => (
-          <div
-            draggable="true"
-            key={name}
-            onDragStart={() =>
-              handleDragStart({ title: formatName2(name, count), name })
-            }
-          >
-            <Button variant='outline' >
-              {formatName2(name, count)}
-            </Button>
-          </div>
-        ))}
-      </div>
-      <div className='grid grid-cols-1 mr-auto'>
+  const [date, setDate] = useState<Date>()
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  const currentSecond = now.getSeconds();
+  const [hour, setHour] = useState(currentHour)
+  const [min, setMin] = useState(currentMinute)
+  const currentTime = `${hour}:${min}:${currentSecond}`
+  console.log(`Current time is `, currentTime);
+  const time = `${hour}:${min}:00`
+
+  /**    <div className='mr-auto grid grid-cols-1'>
         <label>
           Display dragged items
         </label>
@@ -613,11 +594,131 @@ export function StoreHoursCalendar() {
           checked={displayDragItemInCell}
           onChange={handleDisplayDragItemInCell}
         />
+      </div> */
+  const newDate = new Date()
+  return (
+    <div className='flex w-auto ' >
+      <div className='h-screen w-[310px] border-r border-[#3d3d3d]'>
+        <div className=' mt-5 flex-col  justify-center'>
+          <div className="mx-5 w-[280px] rounded-md border-white bg-[#121212] px-3 text-white " >
+            <div className='  my-3 flex justify-center   '>
+              <CalendarIcon className="mr-2 size-8 " />
+              {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+            </div>
+            <SmallCalendar
+              className='mx-1 w-auto   bg-[#121212] text-[#ccd2df]'
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              initialFocus
+            />
+          </div>
+        </div>
+        <div className=' mt-5 grid grid-cols-1  justify-center'>
+          <input type='hidden' value={String(date)} name='value' />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[240px] px-4 text-[#ccd2df] mx-auto  h-[55px] font-normal",
+                  !date && " text-[#ccd2df]"
+                )}
+              >
+                <div className=' text-[#ccd2df]  mx-auto flex justify-center  '>
+                  <ClockIcon className="mr-2 size-8 " />
+                  {currentTime ? (time) : <span>Pick a Time</span>}
+                </div>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[240px] bg-white p-0 text-black" align="start">
+              <div className='align-center my-3 flex justify-center   '>
+                <Select name='pickHour' value={hour} onValueChange={setHour}>
+                  <SelectTrigger className="m-3 w-auto" >
+                    <SelectValue placeholder={hour} defaultValue={hour} />
+                  </SelectTrigger>
+                  <SelectContent className='bg-white text-black' >
+                    <SelectGroup>
+                      <SelectLabel>Hour</SelectLabel>
+                      <SelectItem value="09">09</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                      <SelectItem value="11">11</SelectItem>
+                      <SelectItem value="12">12</SelectItem>
+                      <SelectItem value="13">13</SelectItem>
+                      <SelectItem value="14">14</SelectItem>
+                      <SelectItem value="15">15</SelectItem>
+                      <SelectItem value="16">16</SelectItem>
+                      <SelectItem value="17">17</SelectItem>
+                      <SelectItem value="18">18</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <Select name='pickMin' value={min} onValueChange={setMin} >
+                  <SelectTrigger className="m-3 w-auto" >
+                    <SelectValue placeholder={min} defaultValue={min} />
+                  </SelectTrigger>
+                  <SelectContent className='bg-white text-black'  >
+                    <SelectGroup>
+                      <SelectLabel>Minute</SelectLabel>
+                      <SelectItem value="10">10</SelectItem>
+                      <SelectItem value="20">20</SelectItem>
+                      <SelectItem value="30">30</SelectItem>
+                      <SelectItem value="40">40</SelectItem>
+                      <SelectItem value="50">50</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          <div className='mt-5 grow justify-center'>
+            <div className=' grid grid-cols-1 ' >
+              {resourceMap.map(({ resourceId, title, salespersonEmail, count, userId, day, id, userName, name, userEmail }) => (
+                <Button
+                  key={resourceId}
+                  type="submit"
+                  className="mx-3 mt-5 px-4 py-2 text-[#cbd0d4]"
+                  draggable="true"
+                  onDragStart={() =>
+                    handleDragStart({
+                      id: id,
+                      name: name,
+                      userName: userName,
+                      userEmail: userEmail,
+                      title: title,
+                      resourceTitle: title,
+                      salespersonEmail: salespersonEmail,
+                      count: count,
+                      resourceId: resourceId,
+                      userId: userId,
+                      day: day,
+                    })
+                  }
+                >
+                  <p>
+                    {title}
+                  </p>
+                </Button>
+              ))}
+            </div>
+
+          </div>
+        </div>
       </div>
-      <div className="size-full p-3" >
+
+      <div className="flex-grow justify-center overflow-hidden">
         {showResources ? (
           <DnDCalendar
-            style={{ height: "100vh", width: "auto", overflowX: "visible", overflowY: 'scroll', objectFit: 'contain', overscrollBehavior: 'contain' }}
+            style={{
+              width: `calc(100vw - 310px)`, // Calculate width based on available space (viewport width minus left panel width)
+              height: "100vh",
+              overflowX: "hidden",
+              overflowY: "scroll",
+              objectFit: "contain",
+              overscrollBehavior: "contain",
+              color: "white",
+            }}
             //, overflow: "auto"
             resizable
             selectable
@@ -628,7 +729,38 @@ export function StoreHoursCalendar() {
             view={view}
             events={myEvents}
             localizer={djLocalizer}
+            components={{ toolbar: CustomToolbar, }}
 
+            onEventDrop={moveEvent}
+            onEventResize={resizeEvent}
+            onSelectSlot={newEvent}
+            onDropFromOutside={onDropFromOutside2}
+            dragFromOutsideItem={displayDragItemInCell ? dragFromOutsideItem : null}
+            draggableAccessor="isDraggable"
+            onDragOver={customOnDragOver}
+            eventPropGetter={eventPropGetter}
+          />
+        ) : (
+          <DnDCalendar
+            style={{
+              height: "100vh",
+              width: "auto",
+              overflowX: "hidden",
+              overflowY: 'scroll',
+              objectFit: 'contain',
+              overscrollBehavior: 'contain',
+              color: 'white',
+            }}
+            //, overflow: "auto"
+            resizable
+            selectable
+            min={minTime}
+            max={maxTime}
+            defaultDate={moment().toDate()}
+            onView={onView}
+            view={view}
+            events={myEvents}
+            localizer={djLocalizer}
 
             components={{ toolbar: CustomToolbar, }}
             onEventDrop={moveEvent}
@@ -649,35 +781,10 @@ export function StoreHoursCalendar() {
             resources={resourceMap}
             resourceTitleAccessor="resourceTitle"
           />
-        ) : (
-          <DnDCalendar
-            style={{ height: "auto", width: "auto", overflow: "auto" }}
-            //, overflow: "auto"
-            resizable
-            selectable
-            min={minTime}
-            max={maxTime}
-            defaultDate={moment().toDate()}
-            onView={onView}
-            view={view}
-            events={myEvents}
-            localizer={djLocalizer}
-            components={{ toolbar: CustomToolbar, }}
-
-            onEventDrop={moveEvent}
-            onEventResize={resizeEvent}
-            onSelectSlot={newEvent}
-            onDropFromOutside={onDropFromOutside2}
-            dragFromOutsideItem={displayDragItemInCell ? dragFromOutsideItem : null}
-            draggableAccessor="isDraggable"
-            onDragOver={customOnDragOver}
-            eventPropGetter={eventPropGetter}
-          />
         )}
-
       </div>
-    </div>
 
+    </div>
   );
 }
 
@@ -764,15 +871,20 @@ function generateTwoDigitNumber(inputString) {
 
 export default function SettingsAccountPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">Salesperson Schedule</h3>
-        <p className="text-sm text-muted-foreground">
-          Update your sales schedule to enable apps functionality.
+
+    <>
+      <div className="h-[75px]  w-auto  border-b border-[#3d3d3d] bg-[#121212] text-[#cbd0d4]">
+        <h2 className="  ml-[125px] text-2xl font-bold tracking-tight">Manager Section</h2>
+        <p className="text-muted-foreground   ml-[125px]  ">
+          Advanced functionality for managers.
         </p>
       </div>
-      <hr className="solid text-white" />
-      <StoreHoursCalendar />
-    </div>
+      <div className="  size-full">
+        <StoreHoursCalendar />
+      </div>
+    </>
+
+
   )
 }
+

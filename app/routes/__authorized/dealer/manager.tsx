@@ -5,42 +5,97 @@ import { getSession, commitSession, authSessionStorage, destroySession } from "~
 import { GetUser } from "~/utils/loader.server";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 
-import { Separator } from "~/components/ui/separator"
-import { SidebarNav } from "~/components/ui/sidebar-nav"
-import { prisma } from '~/libs';
-import { managerSidebarNav } from '~/components/shared/sidebar'
+import Sidebar, { managerSidebarNav, adminSidebarNav, devSidebarNav, } from '~/components/shared/sidebar'
+import { Code, Banknote, Laptop, X } from 'lucide-react';
+import { getUserIsAllowed } from "~/helpers";
+import { useEffect, useState, } from 'react';
+import { Sheet, SheetClose, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "~/components/ui/userSideBarSheet"
+import { Button } from '~/components';
+import UserSideBar from '~/components/shared/userSideBar';
+import { SidebarNav } from '~/components/ui/sidebar-nav';
+
 
 export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   let user = await GetUser(email)
-  return json({ user });
+  return json({ user, email });
 }
+/*
 
-interface SettingsLayoutProps {
-  children: React.ReactNode
-}
+export default function SettingsLayout() {
+  const { user, email } = useLoaderData()
+  const userIsFinance = getUserIsAllowed(user, ["FINANCE"]);
+  const userIsDEV = getUserIsAllowed(user, ["DEV"]);
+  const userIsADMIN = getUserIsAllowed(user, ["ADMIN"]);
+  const userIsMANAGER = getUserIsAllowed(user, ["MANAGER"]);
+  const [isOpen, setIsOpen] = useState(false);
 
-export default function SettingsLayout({ children }: SettingsLayoutProps) {
+  const openDialog = () => {
+    setIsOpen(true);
+  };
+
+  const closeDialog = () => {
+    setIsOpen(false);
+  };
   return (
     <>
-      <div className="max-w-screen hidden max-h-screen space-y-6 p-10 pb-16 md:block bg-[#121212] text-white">
-        <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight">Manager Menu</h2>
-          <p className="text-muted-foreground">
-            Advanced functionality for managers.
-          </p>
+      <Sheet open={isOpen} onOpenChange={setIsOpen} >
+        <Sidebar user={user} email={email} />
+        <NotificationSystem />
+        <UserSideBar
+          user={user}
+          email={email}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
+        <div className={` w-[95vw] flex-1 ${isOpen ? 'ml-64' : 'ml-0'}`}>
+          {!isOpen && (
+            <SheetClose>
+              <Button
+                onClick={closeDialog}
+                variant='ghost'
+                className=' fixed left-[25px] top-[25px] cursor-pointer bg-none  text-[#fff]'>
+                <X size={32} color="#fff" strokeWidth={1.5} />
+              </Button>
+            </SheetClose>
+          )}
+          {isOpen && (
+            <SheetTrigger>
+
+              <Button
+                onClick={openDialog}
+                variant='ghost'
+                className=' fixed left-[25px] top-[25px] cursor-pointer bg-none  text-[#fff]'>
+                {user && user?.email === 'skylerzanth@outlook.com' ?
+                  <Code size={32} color="#fff" strokeWidth={1.5} />
+                  :
+                  userIsDEV && user?.email !== 'skylerzanth@outlook.com' ?
+                    <Code size={32} color="#fff" strokeWidth={1.5} />
+                    :
+                    userIsMANAGER && user?.email !== 'skylerzanth@outlook.com' ?
+                      <Banknote size={32} color="#fff" strokeWidth={1.5} />
+                      :
+                      userIsADMIN && user?.email !== 'skylerzanth@outlook.com' ?
+                        <Laptop size={32} color="#fff" strokeWidth={1.5} />
+                        : ''}
+              </Button>
+            </SheetTrigger>
+          )}
+          <Outlet />
         </div>
-        <Separator className="my-6" />
-        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/5">
-            <SidebarNav items={managerSidebarNav} />
-          </aside>
-          <div className="flex-1 w-[100%] h-[100%]">
-            <Outlet />
-          </div>
-        </div>
-      </div>
+      </Sheet >
+
     </>
   )
 }
+*/
+
+export default function SettingsLayout() {
+  return (
+    <>
+      <Outlet />
+    </>
+  )
+}
+

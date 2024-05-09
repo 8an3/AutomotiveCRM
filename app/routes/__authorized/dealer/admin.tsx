@@ -17,7 +17,7 @@ import { RootDocumentBoundary } from "~/root";
 import { cn, createSitemap } from "~/utils";
 import { redirect, json } from "@remix-run/node";
 import { prisma } from "~/libs";
-import Sidebar from "~/components/shared/sidebar";
+import Sidebar, { adminSidebarNav } from "~/components/shared/sidebar";
 // <Sidebar />
 import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
 import { HeaderUserMenu } from "~/components/shared/userNav";
@@ -26,7 +26,6 @@ import { Separator } from "~/components/ui/separator"
 import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { model } from "~/models";
 import secondary from '~/styles/secondary.css'
-import { adminSidebarNav } from '~/components/shared/sidebar'
 import { GetUser } from "~/utils/loader.server";
 
 

@@ -189,7 +189,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   }
 
   // Call the async function
-  processWishList().then(() => {
+  const wishlistMatches = processWishList().then(() => {
     // Handle completion if needed
   }).catch(error => {
     console.error('Error processing wish list:', error);

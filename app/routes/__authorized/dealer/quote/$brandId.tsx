@@ -211,7 +211,7 @@ export default function Quote() {
                             <h3 className="text-2xl font-thin">CLIENT INFORMATION</h3>
                         </div>
                         <hr className='text-black max-w-md' />
-                        <div className="grid grid-cols-1 gap-2 mt-1 " >
+                        <div onMouseEnter={handleHoverSubmit} className="grid grid-cols-1 gap-2 mt-1 " >
                             <div className="grid w-full max-w-md items-center gap-1.5">
                                 <Label htmlFor="email">First Name *</Label>
                                 <Input

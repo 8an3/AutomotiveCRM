@@ -91,7 +91,7 @@ export default function AddCustomer() {
     <Dialog>
       <DialogTrigger asChild>
         <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' >
-          <UserPlus size={20} strokeWidth={1.5} color="#02a9ff" />
+          <UserPlus size={20} strokeWidth={1.5} color="#cbd0d4" />
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-white border border-black">

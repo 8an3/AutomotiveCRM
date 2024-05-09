@@ -157,6 +157,8 @@ model SalespersonSched {
   title            String?
   resourceId       String?
   userName         String?
+  userId           String?
+  name             String?
 }
 
 // schema.prisma

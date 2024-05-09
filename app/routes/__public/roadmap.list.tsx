@@ -3,60 +3,48 @@ import { type MetaFunction, redirect, LoaderFunction, json } from "@remix-run/no
 //import { authenticator } from "~/services";
 import React from "react";
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
-	return null
-
-}
-export const meta: MetaFunction = ({ data }) => {
-	return [
-		{ title: "Road Map - Dealer Sales Assistant" },
-		{
-			property: "og:title",
-			content: "Your very own assistant!",
-		},
-		{
-			name: "description",
-			content:
-				"You can see what we have planned for the future of this service and what will be brought to you.",
-			keywords: "Automotive Sales, dealership sales, automotive CRM",
-		},
-	];
-};
-
-
 
 
 export default function Roadmap() {
 
 	const todoRoadmap = [
+		// ------------------------------------------------------------------------------DONE NEEDS TESTING--------------------------------------------------------------------------------
 		{ type: "done needs testing", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
 		{ type: "done needs testing", desc: "API file upload will be released once google approves gmail as its still in the process right now - done needs testing" },
 		{ type: "done needs testing", desc: "webhook for incoming emails, save notifiation and messeages" },
+
+
+		// ------------------------------------------------------------------------------WIP----------------------------------------------------------------------------------------
 		{ type: "WIP", desc: "have your own csi reporting for the dealer that can be sent to customers" },
 		{ type: "WIP", desc: "finish automation dash - wip" },
 		{ type: "WIP", desc: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
 		{ type: "WIP", desc: "mass email/sms - wip" },
+		{ type: "WIP", desc: "sales manager dash since they seem to know Activix less than the salespeople" },
 		{ type: "WIP", desc: "dev control panel needs to send email to new dealers with sign in info" },
 		{ type: "WIP", desc: "https://developers.klaviyo.com/en/reference/get_campaigns" },
 		{ type: "WIP", desc: "redesign subscription page to include 2 optoinns for stand alone sales people and dealers" },
+
+
+
+		// ------------------------------------------------------------------------------ISSUE----------------------------------------------------------------------------------------
 		{ type: "issue", desc: "move staff chat to sms messenger" },
-		{ type: "issue", desc: "need to change how to load overview, need to pull your own by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
-		{ type: "admin", desc: "export customers" },
-		{ type: "admin", desc: "export parts" },
-		{ type: "admin", desc: "export acc" },
-		{ type: "admin", desc: "import customers" },
-		{ type: "admin", desc: "import parts" },
-		{ type: "admin", desc: "import acc" },
-		{ type: "admin", desc: "have it populate api keys so managers can hand them out" },
+		{ type: "issue", desc: "need to change how to load overview,   by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
+
+
+
+
+		// ------------------------------------------------------------------------------AUTOMATION----------------------------------------------------------------------------------------
 		{ type: "Automation", desc: "for lead rotation, if customer pending after an hour it goes up onto a free for all board so anyone can respond to him" },
 		{ type: "Automation", desc: "customer set time before delivery of what to bring" },
 		{ type: "Automation", desc: "auto email at 5, 2.5 months and 30, 7 days before consent expires, 2 years if bought, 6 months if not" },
 		{ type: "Automation", desc: "customer 2 months after pick up to make sure everything is still good" },
-		{ type: "communications", desc: "email / sms campaigns" },
-		{ type: "dash", desc: "cross platform ad manager, post it once here and push it to different providors" },
-		{ type: "dash", desc: "sales manager dash since they seem to know Activix less than the salespeople" },
-		{ type: "dash", desc: "dynamic dashboard widgets" },
+		// ------------------------------------------------------------------------------AUTOMATION----------------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------DEALER----------------------------------------------------------------------------------------
 		{ type: "dealer", desc: "invite user section where it send an email with links to the crm and " },
+		// ------------------------------------------------------------------------------DEALER----------------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------DEALER ONBOARDING------------------------------------------------------------------------
 		{ type: "dealer onboarding", desc: "new sales page with upgrades" },
 		{ type: "dealer onboarding", desc: "automate on boarding" },
 		{ type: "dealer onboarding", desc: "quote how-to" },
@@ -68,32 +56,78 @@ export default function Roadmap() {
 		{ type: "dealer onboarding", desc: "document builder how-to" },
 		{ type: "dealer onboarding", desc: "sales process start to finsih" },
 		{ type: "dealer onboarding", desc: "free simple install with insructions, fee for total install - for dealer that already have an it team it would save them money" },
-		{ type: "infastructure", desc: "have a second non-cloud option, either as a rack for a server or tower for a non tech orientated dealer to be hosted on site but would need a license key that needs a new token every 30 days/6 months/12 months to operate based on payment plan, hardware to be paid upfront before build, payments start once activated at dealer" },
+		// ------------------------------------------------------------------------------DEALER ONBOARDING------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------SALES----------------------------------------------------------------------------------------
 		{ type: "sales", desc: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
 		{ type: "sales", desc: "sales bot 2 - customer onboarding" },
 		{ type: "sales", desc: "sales bot 3 - after sales" },
 		{ type: "sales", desc: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
+		// ------------------------------------------------------------------------------SALES----------------------------------------------------------------------------------------
 
+		// ------------------------------------------------------------------------------SERVICE----------------------------------------------------------------------------------------
 		{ type: "service", desc: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
 		{ type: "service", desc: "service writer dash" },
 		{ type: "service", desc: "tech dash" },
-		{ type: "communications", desc: "fb msgr integration" },
-		{ type: "quote", desc: "Save form to LOCAL STORASGE(CHECK REMIX SITE FOR SOLUTIONp) incase something happens to connection or if they srep awway from their computer that way whenever you come back the form is filled out the way you left it" },
+		// ------------------------------------------------------------------------------SERVICE----------------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------QUOTE----------------------------------------------------------------------------------------
 		{ type: "quote", desc: "set up parts pages - started - Manitou done - switch started" },
+		// ------------------------------------------------------------------------------QUOTE----------------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------PARTS----------------------------------------------------------------------------------------
 		{ type: "parts", desc: "parts dash" },
 		{ type: "parts", desc: "shpping and receiving dash" },
 		{ type: "parts", desc: "parts specfic page to print label, make changes etc, have search table that switch from table to part view using use state like the one in newleads" },
+		// ------------------------------------------------------------------------------PARTS----------------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------accessories----------------------------------------------------------------------------------
 		{ type: "accessories", desc: "acc dash" },
-		{ type: "ai", desc: "predictive analysis of sales trends" },
-		{ type: "ai", desc: "to add onto the last one - unit sold in territories, report already out there owners of dealers get them" },
-		{ type: "ai", desc: "Ai assistant to book apointments, complete and etc like gowrench" },
-		{ type: "ai", desc: "customter analysis, retention, customer $ worth, visits, and more" },
-		{ type: "ai", desc: "Predictive Customer Behavior Modeling, Utilize advanced machine learning models to predict future customer behaviors and preferences based on historical data. ie percentages on how liuekly the customer can be closed if asked at that time" },
+		// ------------------------------------------------------------------------------accessories----------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------ADMIN----------------------------------------------------------------------------------------
+		{ type: "admin", desc: "export customers" },
+		{ type: "admin", desc: "export parts" },
+		{ type: "admin", desc: "export acc" },
+		{ type: "admin", desc: "import customers" },
+		{ type: "admin", desc: "import parts" },
+		{ type: "admin", desc: "import acc" },
+		// ------------------------------------------------------------------------------ADMIN----------------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------INFASTRUCTURE------------------------------------------------------------------------------
+		{ type: "infastructure", desc: "have a second non-cloud option, either as a rack for a server or tower for a non tech orientated dealer to be hosted on site but would need a license key that needs a new token every 30 days/6 months/12 months to operate based on payment plan, hardware to be paid upfront before build, payments start once activated at dealer" },
+		// ------------------------------------------------------------------------------INFASTRUCTURE--------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------DASH----------------------------------------------------------------------------------------
+		{ type: "dash", desc: "cross platform ad manager, post it once here and push it to different providors" },
+		{ type: "dash", desc: "dynamic dashboard widgets" },
+		// ------------------------------------------------------------------------------DASH----------------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------COMMUINICATIONS-----------------------------------------------------------------------------
+		{ type: "communications", desc: "email / sms campaigns" },
+		{ type: "communications", desc: "fb msgr integration" },
+		// ------------------------------------------------------------------------------COMMUINICATIONS-----------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------NON URGENT----------------------------------------------------------------------------------------
+		{ type: "nonUrgent", desc: "predictive analysis of sales trends" },
+		{ type: "nonUrgent", desc: "to add onto the last one - unit sold in territories, report already out there owners of dealers get them" },
+		{ type: "nonUrgent", desc: "customter analysis, retention, customer $ worth, visits, and more" },
+		{ type: "nonUrgent", desc: "Predictive Customer Behavior Modeling, Utilize advanced machine learning models to predict future customer behaviors and preferences based on historical data. ie percentages on how liuekly the customer can be closed if asked at that time" },
+		{ type: "nonUrgent", desc: "have it populate api keys so managers can hand them out" },
+		// ------------------------------------------------------------------------------NON URGENT----------------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------PAID FEATURE----------------------------------------------------------------------------------------
 		{ type: "paid feature", desc: "*** currently working - need to attach to components and find a way to turn on or off pending payment by customer ***" },
 		{ type: "paid feature", desc: "speech to text for quicker input - done in components folder" },
 		{ type: "paid feature", desc: "AI writing partner for emails, templates and scripts - done in components folder" },
 		{ type: 'paid feature', desc: 'have ai take in last 5 emails with customer and suggest your next communication/script - not done yet but easy enough to complete in components folder' },
 		{ type: 'paid feature', desc: 'vercel has a nice write up on this to do in their platform - ai - wip - https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts' },
+		// ------------------------------------------------------------------------------PAID FEATURE----------------------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------------AI----------------------------------------------------------------------------------------
+		{ type: "ai", desc: "Ai assistant to book apointments, complete and etc like gowrench or just a work flow to customers to guide themselves" },
+		// ------------------------------------------------------------------------------AI----------------------------------------------------------------------------------------
+
 	];
 
 
@@ -103,6 +137,7 @@ export default function Roadmap() {
 		{ type: 'google', desc: 'has a push notiications for new incoming emails' },
 		{ type: "dealer onboarding", desc: "initial data can be put into seed file filed out by dealer" },
 		{ type: "done needs testing", desc: "roles based access - done needs testing" },
+		{ type: "quote", desc: "Save form to LOCAL STORASGE(CHECK REMIX SITE FOR SOLUTIONp) incase something happens to connection or if they srep awway from their computer that way whenever you come back the form is filled out the way you left it" },
 		{ type: "WIP", desc: "calendar to set store hours" },
 		{ type: 'google', desc: 'tasks' },
 		{ type: 'google', desc: 'Calendar' },
@@ -371,3 +406,25 @@ export default function Roadmap() {
 		</>
 	);
 }
+
+
+export async function loader({ request, params }: LoaderFunctionArgs) {
+	return null
+
+}
+export const meta: MetaFunction = ({ data }) => {
+	return [
+		{ title: "Road Map - Dealer Sales Assistant" },
+		{
+			property: "og:title",
+			content: "Your very own assistant!",
+		},
+		{
+			name: "description",
+			content:
+				"You can see what we have planned for the future of this service and what will be brought to you.",
+			keywords: "Automotive Sales, dealership sales, automotive CRM",
+		},
+	];
+};
+
