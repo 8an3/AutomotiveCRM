@@ -7,8 +7,46 @@ import { useState, useEffect } from 'react'
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { type ActionFunction, json, type LoaderFunction, redirect } from "@remix-run/node"
 import { getUser } from '~/components/microsoft/GraphService';
-import { loginRequest } from '~/components/microsoft/Config';
+import { msalConfig } from '~/components/microsoft/Config';
 
+const { APP_URL } = process.env
+
+const loginRequest = {
+  authority: msalConfig.authority,
+  clientSecret: msalConfig.clientSecret,
+  clientId: msalConfig.clientId,
+  knownAuthorities: [],
+  redirectUri: APP_URL + '/auth/login',
+  prompt: "none",
+  scopes: [
+    'User.Read',
+    'Mail.ReadWrite',
+    'Mail.send',
+    'email',
+    'openid',
+    'profile',
+    "Calendars.ReadWrite",
+    "Notes.ReadWrite.All",
+    "Calendars.ReadWrite.Shared",
+    "Contacts.ReadWrite",
+    "Contacts.ReadWrite.Shared",
+    "Files.ReadWrite.All",
+    "Files.ReadWrite.AppFolder",
+    "Files.ReadWrite.Selected",
+    "Mail.ReadWrite.Shared",
+    "Mail.Send.Shared",
+    "Mail.Send",
+    "Mail.ReadWrite",
+    "MailboxSettings.ReadWrite",
+    "Notes.Create",
+    "Notes.ReadWrite.All",
+    "Schedule.ReadWrite.All",
+    "Tasks.ReadWrite.Shared",
+    "User.Read",
+    "User.ReadWrite.All",
+    "User.ReadWrite",
+  ],
+};
 
 export async function action({ request }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData());
@@ -27,8 +65,7 @@ export default function Welcome() {
   const name = activeAccount?.name || '';
   const idToken = activeAccount?.idToken || '';
   console.log(email, 'email', name, 'name', idToken, 'idToken', activeAccount)
-  const location = useLocation()
-  const pathname = location.pathname
+
   const submit = useSubmit();
   const [user, setUser] = useState();
 
