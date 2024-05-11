@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, Input, Button, ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger, Dialog as Dialog1, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Accordion, AccordionItem, AccordionTrigger, AccordionContent, Label } from "~/components"
 import ProvideAppContext, { useAppContext } from '~/components/microsoft/AppContext';
-import { deleteMessage, getDrafts, getDraftsList, getInbox, getInboxList, getJunk, getList, getSent, getTrash, messageRead, messageUnRead, getUser, testInbox, getFolders, getAllFolders, getEmailById, MoveEmail, createReplyDraft } from "~/components/microsoft/GraphService";
+import { deleteMessage, getDrafts, getDraftsList, getInbox, getInboxList, getJunk, getList, getSent, getTrash, messageRead, messageUnRead, getUser, testInbox, getFolders, getAllFolders, getEmailById, MoveEmail, createReplyDraft, ComposeEmail } from "~/components/microsoft/GraphService";
 import { EditorTiptapHook, Editor } from "~/components/libs/basicEditor";
 import { useMsal } from '@azure/msal-react';
 import { Cross2Icon } from '@radix-ui/react-icons';
@@ -1010,11 +1010,11 @@ export default function Client() {
                     setTo(to)
                     setSubject(subject)
                     setTimeout(() => {
-                      composeEmail(app.authProvider!, subject, body, toAddresses, toNames)
+                      ComposeEmail(app.authProvider!, subject, text, to)
                       setReply(false)
                     }, 5);
                   }}
-                  className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                  className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-[#95959f] bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
                 >
                   Send
                 </Button>

@@ -119,13 +119,15 @@ export function EditorTiptapHook({ content, user, }: {
 
   async function SaveDraft() {
     const date = new Date()
+    const body = editor.getText()
     const saveTemplate = await prisma.emailTemplates.create({
-      body: editor.getText(),
-      userEmail: user.email,
-      subject: `New Template ${date}`,
-      title: `New Template ${date}`,
-      category: 'New Template'
-
+      data: {
+        body: body,
+        userEmail: user.email,
+        subject: `New Template ${date}`,
+        title: `New Template ${date}`,
+        category: 'New Template'
+      }
     })
     return saveTemplate
   }
@@ -162,7 +164,7 @@ export function EditorTiptapHook({ content, user, }: {
               </option>
             ))}
           </select>
-          <Button onClick={() => { toast.success(`Template saved!`) }} name='intent' value='createTemplate' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+          <Button onClick={() => { SaveDraft(); toast.success(`Template saved!`) }} name='intent' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
             Save Template
           </Button>
 

@@ -413,33 +413,29 @@ export async function listAttachment(
     .get();
   return email;
 }
-export async function composeEmail(
+export async function ComposeEmail(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   subject: any,
   body: any,
-  toAddresses: any,
-  toNames: any,
+  to: any,
 ) {
   ensureClient(authProvider);
-
-  const toRecipients = toAddresses.map((address, index) => ({
-    emailAddress: {
-      address: address,
-      name: toNames[index] || '',
-    },
-  }));
-
-
-  const sendMail = {
+  const message = {
     subject: subject,
-    important: 'low',
+    importance: 'Low',
     body: {
-      contentType: "HTML",
+      contentType: 'HTML',
       content: body,
     },
-    toRecipients: toRecipients
-  }
-  var email = await graphClient!.api("/me/messages").post(sendMail);
+    toRecipients: [
+      {
+        emailAddress: {
+          address: to
+        }
+      }
+    ]
+  };
+  var email = await graphClient!.api("/me/messages").post(message);
   return email;
 }
 
