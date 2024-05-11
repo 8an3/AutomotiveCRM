@@ -14,10 +14,8 @@ export const msalConfig = {
   clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
   clientSecret: "rut8Q~s5LpXMnEjujrxkcJs9H3KpUzxO~LfAOc-D",
   redirectUri: `http://localhost:3000/auth/login`,
-  //authorizationUrl: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
-  authorizationUrl: `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize`,
-  // tokenUrl: `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token?`,
-  tokenUrl: `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token?`,
+  authorizationUrl: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
+  tokenUrl: `https://login.microsoftonline.com/common/oauth2/v2.0/token?`,
   userInfoUrl: "https://graph.microsoft.com/oidc/userinfo",
   scopes: [
     'User.Read',
@@ -47,28 +45,24 @@ export const msalConfig = {
     "User.ReadWrite.All",
     "User.ReadWrite",
   ],
-  // scopes: ["openid", "User.ReadWrite", "Mail.ReadWrite", "offline_access"],
-  prompt: "login",
+  prompt: "login_prompt",
   resource: "https://graph.microsoft.com",
-  // authority: `https://login.microsoftonline.com/common`,
-  authority: `https://login.microsoftonline.com/${tenantId}`,
+  authority: `https://login.microsoftonline.com/common`,
 }
 
 export const config = {
   auth: {
     clientId: msalConfig.clientId,
-    clientSecret: msalConfig.clientSecret,
+    clientSecret: '4hN8Q~RtcN.b9c.1LTCnHtY0UurShP1PIIFQGakw',
+    tenantId: 'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6',
     redirectUri: msalConfig.redirectUri,
     authority: msalConfig.authority,
-    knownAuthorities: [],
     postLogoutRedirectUri: "/",
-
+    prompt: "login",
   },
   cache: {
     cacheLocation: 'localStorage',
     temporaryCacheLocation: "localStorage",
-
-    // storeAuthStateInCookie: false,
   },
   system: {
     loggerOptions: {
@@ -97,6 +91,16 @@ export const config = {
   },
 
 }
+
+// storeAuthStateInCookie: false,
+// clientSecret: msalConfig.clientSecret,
+// knownAuthorities: [],
+
+
+// scopes: ["openid", "User.ReadWrite", "Mail.ReadWrite", "offline_access"],
+// authority: `https://login.microsoftonline.com/${tenantId}`,
+// authorizationUrl: `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize`,
+// tokenUrl: `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token?`,
 /**
  * Scopes you add here will be prompted for user consent during sign-in.
  * By default, MSAL.js will add OIDC scopes (openid, profile, email) to any login request.
@@ -109,7 +113,7 @@ export const loginRequest = {
   clientId: msalConfig.clientId,
   knownAuthorities: [],
   redirectUri: msalConfig.redirectUri,
-  prompt: "none",
+  prompt: "login",
   scopes: [
     'User.Read',
     'Mail.ReadWrite',
@@ -139,7 +143,6 @@ export const loginRequest = {
     "User.ReadWrite",
   ],
 };
-
 /**
  * An optional silentRequest object can be used to achieve silent SSO
  * between applications by providing a "login_hint" property.

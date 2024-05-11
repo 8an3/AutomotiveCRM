@@ -354,7 +354,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
         <div
           className={cn(
             "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
-            "bg-black text-white transition-all align-center justify-center",
+            "bg-[#121212] text-white transition-all align-center justify-center",
             "sm:sticky sm:top-[120px]",
           )}
         >

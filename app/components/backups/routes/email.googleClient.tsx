@@ -33,9 +33,7 @@ import {
 import axios from "axios";
 import { EditorTiptapHook, Editor, onUpdate } from "~/components/libs/editor-tiptap";
 
-
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: slider },];
-
 
 export async function loader({ params, request }: DataFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));

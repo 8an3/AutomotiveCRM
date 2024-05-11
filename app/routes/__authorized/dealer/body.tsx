@@ -9,14 +9,14 @@ export default function EmailBody() {
     if (isOpen) {
       const parsedEmail = JSON.parse(isOpen);
       console.log(parsedEmail)
-      setHtmlBody(parsedEmail.body);
+      setHtmlBody(parsedEmail.body.content);
     }
 
   }, []);
 
   return (
     <>
-      <div className='p-2 h-[100%]' dangerouslySetInnerHTML={{ __html: htmlBody }} />
+      <div className='p-3 m-3 h-[100%] flex-grow mx-auto rounded-md items-center' dangerouslySetInnerHTML={{ __html: htmlBody }} />
     </>
   )
 }

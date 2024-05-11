@@ -55,7 +55,6 @@ const Test = () => {
     };
     const client = Client.initWithMiddleware(options);
     let messages = await client.api(graphConfig.url)
-      .version('beta')
       .get();
     setGraphData(messages)
     return messages
@@ -104,7 +103,7 @@ const Test = () => {
 };
 export default Test;
 
-const url = 'onenote/notebooks'
+const url = 'messages'
 
 
 
@@ -112,7 +111,7 @@ const url = 'onenote/notebooks'
 
 const graphConfig = {
   graphMeEndpoint: "https://graph.microsoft.com/v1.0/me",
-  graphMessages: "https://graph.microsoft.com/beta/me/messages",
+  graphMessages: "https://graph.microsoft.com/v1.0/me/messages",
   url: `/me/${url}`
 };
 export async function callInbox(accessToken) {

@@ -28,32 +28,6 @@ import { GetUser } from "~/utils/loader.server";
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 
 
-const getAccessToken = async (refreshToken) => {
-  try {
-    const accessTokenObj = await axios.post(
-      'https://www.googleapis.com/oauth2/v4/token',
-      {
-        refresh_token: refreshToken,
-        client_id: "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
-        client_secret: "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",
-        grant_type: 'refresh_token'
-      }
-    );
-
-    return accessTokenObj.data.access_token;
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export function Unauthorized(refreshToken) {
-  console.log('Unauthorized');
-  const newAccessToken = getAccessToken(refreshToken)
-
-  console.log(newAccessToken, 'newAccessToken', refreshToken, 'refreshToken')
-  const tokens = newAccessToken
-  return tokens
-}
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
@@ -112,19 +86,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     return Promise.all(promises);
   };
   const latestNotes = await fetchLatestNotes(finance);
-  let tokens = session2.get("accessToken")
-  const refreshToken = user.refreshToken  //session2.get("refreshToken")
-  const API_KEY = process.env.GOOGLE_API_KEY
-  // new
-  let cookie = createCookie("session_66", {
-    secrets: ['secret'],
-    // 30 days
-    maxAge: 30 * 24 * 60 * 60,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-  });
-
 
 
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Event, type Message } from '@microsoft/microsoft-graph-types';
 import { add, endOfWeek, format, getDay, parseISO, startOfWeek } from 'date-fns';
-import { HiOutlineTemplate, RiDraftLine } from "react-icons/hi";
+import { HiOutlineTemplate, } from "react-icons/hi";
 import { composeEmail, createMailFolder, createtestFolder, deleteMessage, forwardEmail, getAllFolders, getDrafts, getDraftsList, getEmailById, getEmailById2, getEmailList, getEmails, getFolders, getInbox, getInboxList, getJunk, getJunkList, getList, getSent, getTrash, getTrashList, getUserWeekCalendar, gettestFolderList, listAttachment, messageDone, messageRead, messageUnRead, replyAllEmail, replyMessage, testInbox, } from "~/components/microsoft/GraphService";
 import ProvideAppContext, { useAppContext } from '~/components/microsoft/AppContext';
 import { Controller, useController, useForm } from "react-hook-form";
@@ -11,6 +11,7 @@ import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/
 import { loginRequest, config, silentRequest } from '~/components/microsoft/Config';
 import { json, type LinksFunction, type LoaderFunction, type ActionFunction, } from '@remix-run/node';
 import CustomContext from "~/components/microsoft/CustomContext"
+import { MdOutlineDrafts } from "react-icons/md";
 
 const {
   instance,
@@ -26,7 +27,7 @@ const {
   authProvider,
 } = CustomContext;
 
-/*
+
 export function Test() {
   const app = useAppContext();
   const [editorState, setEditorState] = useState();
@@ -197,7 +198,7 @@ export function Test() {
             >
               Save Draft
               <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-white group-data-[disabled]:text-mauve8">
-                <RiDraftLine />
+                <MdOutlineDrafts />
               </div>
             </DropdownMenu.Item>
             <DropdownMenu.Item
@@ -613,7 +614,7 @@ export function Test() {
                                     setIntent(intentValue);
                                   }} type="submit"
                                     className="cursor-pointer p-2 hover:text-[#02a9ff]">
-                                    <RiDraftLine />
+                                    <MdOutlineDrafts />
                                   </button>
                                   <button
                                     onClick={() => {
@@ -655,7 +656,7 @@ export function Test() {
     </div>
   );
 }
-*/
+
 
 
 
@@ -796,7 +797,7 @@ export default function App() {
   return (
     <div className="App">
       <AuthenticatedTemplate>
-        <ProfileContent />
+        <Test />
       </AuthenticatedTemplate>
 
       <UnauthenticatedTemplate>
