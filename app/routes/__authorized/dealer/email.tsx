@@ -23,7 +23,7 @@ export default function Root() {
       // Set the active account - this simplifies token acquisition
       const authResult = event.payload as AuthenticationResult;
       msalInstance.setActiveAccount(authResult.account);
-      console.log(authResult, authResult.account)
+      //  console.log(authResult, authResult.account)
 
     }
   });

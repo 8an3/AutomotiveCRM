@@ -13,8 +13,8 @@ export const tenantId = "fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6";
 export const msalConfig = {
   clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
   clientSecret: "rut8Q~s5LpXMnEjujrxkcJs9H3KpUzxO~LfAOc-D",
-  // redirectUri: `http://localhost:3000/auth/login`,
-  redirectUri: `https://www.dealersalesassistant.ca/auth/login`,
+  redirectUri: `http://localhost:3000/auth/login`,
+  // redirectUri: `https://www.dealersalesassistant.ca/auth/login`,
   authorizationUrl: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
   tokenUrl: `https://login.microsoftonline.com/common/oauth2/v2.0/token?`,
   userInfoUrl: "https://graph.microsoft.com/oidc/userinfo",

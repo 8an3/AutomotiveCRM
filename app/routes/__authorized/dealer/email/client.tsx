@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, Input, Button, ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger, Dialog as Dialog1, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Accordion, AccordionItem, AccordionTrigger, AccordionContent, Label } from "~/components"
 import ProvideAppContext, { useAppContext } from '~/components/microsoft/AppContext';
 import { deleteMessage, getDrafts, getDraftsList, getInbox, getInboxList, getJunk, getList, getSent, getTrash, messageRead, messageUnRead, getUser, testInbox, getFolders, getAllFolders, getEmailById, MoveEmail, createReplyDraft } from "~/components/microsoft/GraphService";
-import { EditorTiptapHook, Editor, onUpdate } from "~/components/libs/basicEditor";
+import { EditorTiptapHook, Editor } from "~/components/libs/basicEditor";
 import { useMsal } from '@azure/msal-react';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { toast } from "sonner"
@@ -100,6 +100,7 @@ export default function Client() {
       const response = await fetch('/dealer/api/templates');
       const data = await response.json();
       setTemplates(data);
+      //console.log(data, 'data')
     };
     fetchTemplates();
 
@@ -135,19 +136,12 @@ export default function Client() {
     const drafts = await getFolders(app.authProvider!, folderName);
     const response = await getList(app.authProvider!, folderName);
 
-    console.log('Folder name:', folderName);
-    console.log('Drafts:', drafts);
-    console.log('Response:', response);
+    // console.log('Folder name:', folderName);
+    // console.log('Drafts:', drafts);
+    // console.log('Response:', response);
     setEmails(response.value);
   }
 
-  useEffect(() => {
-    if (selectedTemplate) {
-      setText(selectedTemplate);
-      setSubject(selectedTemplate.subject);
-      console.log(text, 'tezt')
-    }
-  }, [selectedTemplate, text]);
 
   useEffect(() => {
     if (selectedEmail) {
@@ -159,15 +153,19 @@ export default function Client() {
   }, [selectedEmail, selectedTemplate]);
 
   const handleChange = (event) => {
-    const selectedTemplate = templates.find(template => template.title === event.target.value);
-    setSelectedTemplate(selectedTemplate);
+    const selectedTitle = event.target.value;
+    const selectedTemplate = templates.find((template) => template.title === selectedTitle);
+    setSelectedTemplate(selectedTemplate.body);
+    // setText(selectedTemplate.body);
+    setSubject(selectedTemplate.subject);
+    console.log('tesxt', text, selectedTemplate)
   };
   useEffect(() => {
     if (text) {
-      window.localStorage.setItem("templateEmail", text);
+      window.localStorage.setItem("templateEmail", selectedTemplate);
     }
-  }, [text]);
-  let content;
+  }, [selectedTemplate, text]);
+  let content = text
   let handleUpdate;
   const editor = Editor(content, handleUpdate)
   const someFunction = () => {
@@ -336,206 +334,7 @@ export default function Client() {
     'Outbox'
   ];
   const LabelList = () => {
-    /** <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger className='p-2 text-white'>All Folders</AccordionTrigger>
-                  <AccordionContent>
 
-                    {folders.map((item, index) => {
-                      // Remove 'CATEGORY_' from the label name
-                      const displayLabelName = item.displayName
-                      //  console.log("Item:", item) // Add this line
-                      return (
-                        <>
-
-                          <div key={index} className="mx-2 mt-2 flex items-center justify-between">
-                            {RenameFolderInput === false ? (
-                              <div className="flex">
-                                <ContextMenu>
-                                  <ContextMenuTrigger>
-                                    <button
-                                      onClick={() => {
-                                        //handleButtonClick(item)
-                                        HandleGewtLabel(displayLabelName)
-                                        setLabel(displayLabelName)
-                                        console.log(displayLabelName, 'ddisplayLabelName')
-                                      }}
-                                      className={`flex cursor-pointer items-center text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] focus:outline-none`}
-                                    >
-                                      {item.displayName === 'Trash' && (
-                                        <Trash />
-                                      )}
-                                      {item.displayName === 'Sent Items' && (
-                                        <Send />
-                                      )}
-                                      {item.displayName === 'Archive' && (
-                                        <Archive />
-                                      )}
-                                      {item.displayName === 'Covnersation History' && (
-                                        <FolderClock />
-                                      )}
-                                      {item.displayName === 'Chat' && (
-                                        <Message strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Important' && (
-                                        <MessageAlert strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Outbox' && (
-                                        <SendMail strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Inbox' && (
-                                        <Mail strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Drafts' && (
-                                        <MessageText strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Junk Email' && (
-                                        <BinHalf strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Starred' && (
-                                        <Star strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Unread' && (
-                                        <Mail strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Forums' && (
-                                        <FormInput strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Updates' && (
-                                        <RefreshCw strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Personal' && (
-                                        <User strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Promotions' && (
-                                        <DollarSign strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Social' && (
-                                        <Telegram strokeWidth={1.5} />
-                                      )}
-                                      {item.displayName === 'Deleted Items' && (
-                                        <Trash2 strokeWidth={1.5} />
-                                      )}
-                                      <p className='ml-2 text-white'>{displayLabelName}</p>
-                                    </button>
-                                  </ContextMenuTrigger>
-                                  <ContextMenuContent className="w-64 bg-white">
-                                    <ContextMenuItem className='cursor-pointer'
-                                      inset
-                                      onClick={() => {
-                                        setRenameFolderInput(true)
-                                        setFolderBeingRenamed(labelName)
-                                        setLabelName(labelName)
-                                        setRenameLabel(labelName)
-                                      }} >
-                                      Rename Folder
-                                    </ContextMenuItem>
-                                    <Dialog1>
-                                      <DialogTrigger asChild>
-                                        <ContextMenuItem className='cursor-pointer' inset
-                                          onClick={() => {
-                                            setComposeEmail(true)
-                                            setWhich('replyAll')
-                                          }}>
-                                          Update Folder
-                                        </ContextMenuItem>
-                                      </DialogTrigger>
-                                      <DialogContent className="z-[2000] bg-white sm:max-w-[425px]">
-                                        <DialogHeader>
-                                          <DialogTitle>Update Folder</DialogTitle>
-                                        </DialogHeader>
-                                        <div className="grid gap-4 py-4">
-                                          <div className="grid grid-cols-4 items-center gap-4">
-                                            <Label htmlFor="name" className="text-right">
-                                              Name
-                                            </Label>
-                                            <Input
-
-                                              id="labelName"
-                                              defaultValue={labelName}
-                                              className="col-span-3"
-                                              onChange={(e) => setRenameLabel(e.target.value)}
-                                            />
-                                          </div>
-                                        </div>
-                                        <DialogFooter>
-                                          <Button
-                                            onClick={() => {
-                                              // renameLabel(folderList.id)
-                                              toast.success(`Folder updated.`)
-                                            }}
-                                          >Save changes</Button>
-                                        </DialogFooter>
-                                      </DialogContent>
-                                    </Dialog1>
-
-                                    <ContextMenuItem className='cursor-pointer' inset
-                                      onClick={() => {
-                                        //  DeleteLabel(email, label)
-                                        toast.success(`Folder deleted.`)
-                                      }} >
-                                      Delete Folder
-                                    </ContextMenuItem>
-                                    <ContextMenuItem className='cursor-pointer' inset disabled
-                                      onClick={() => {
-                                        setComposeEmail(true)
-                                        setWhich('replyAll')
-                                      }}>
-                                      Open folder in new tab
-                                    </ContextMenuItem>
-                                    <ContextMenuSeparator />
-
-                                    <Dialog1>
-                                      <DialogTrigger asChild>
-                                        <ContextMenuItem className='cursor-pointer' inset
-                                          onClick={() => {
-                                            setComposeEmail(true)
-                                            setWhich('replyAll')
-                                          }}>
-                                          Create New Folder
-                                        </ContextMenuItem>
-                                      </DialogTrigger>
-                                      <DialogContent className="z-[2000] bg-white sm:max-w-[425px]">
-                                        <DialogHeader>
-                                          <DialogTitle>Create Folder</DialogTitle>
-                                        </DialogHeader>
-                                        <div className="grid gap-4 py-4">
-                                          <div className="grid grid-cols-4 items-center gap-4">
-                                            <Label htmlFor="name" className="text-right">
-                                              Name
-                                            </Label>
-                                            <Input
-                                              id="labelName"
-                                              defaultValue={labelName}
-                                              className="col-span-3"
-                                              onChange={(e) => setRenameLabel(e.target.value)}
-                                            />
-                                          </div>
-                                        </div>
-                                        <DialogFooter>
-                                          <Button
-                                            onClick={() => {
-                                              //   CreateLabel(id)
-                                              toast.success(`Folder created.`)
-                                            }}
-                                          >Save changes</Button>
-                                        </DialogFooter>
-                                      </DialogContent>
-                                    </Dialog1>
-                                  </ContextMenuContent>
-                                </ContextMenu>
-                              </div>
-
-                            ) : null}
-                          </div>
-                        </>
-
-                      )
-                    })}
-
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion> */
     return (
       <>
         <div className="!border-b !border-[#3b3b3b]">
@@ -545,6 +344,7 @@ export default function Client() {
               setComposeEmail(true)
               setReply(false)
               setSelectedEmail(null)
+              setOpenReply(false)
             }}
             className={` m-2 w-[90%] cursor-pointer justify-center rounded !border !border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
           >
@@ -584,7 +384,7 @@ export default function Client() {
                             onClick={() => {
                               HandleGewtLabel(displayName);
                               setLabel(displayName);
-                              console.log(displayName, 'displayName');
+                              //   console.log(displayName, 'displayName');
                             }}
                             className={`mt-3 flex cursor-pointer items-start text-left text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${item.display === label ? 'text-[#02a9ff]' : ''}`}
                           >
@@ -1137,40 +937,18 @@ export default function Client() {
             {reply && (
               <div className="mb-2 items-end justify-end rounded-md border-l border-t border-[#3b3b3b]">
 
-                <EditorTiptapHook onChange={someFunction} />
+                <EditorTiptapHook content={null} user={user} />
 
                 <input type='hidden' defaultValue={text} name='body' />
 
                 <div className="mx-2 flex justify-between">
-                  <div className="flex">
-                    <select
-                      className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-slate12 px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-                      onChange={handleChange}>
-                      <option value="">Select a Template</option>
-                      {templates.map((template, index) => (
-                        <option key={index} value={template.title}>
-                          {template.title}
-                        </option>
-                      ))}
-                    </select>
-                    <Form method="post" >
-
-                      <input type='hidden' name='name' defaultValue="New Template" />
-                      <input type='hidden' name='title' defaultValue="New Template" />
-                      <input type='hidden' name='category' defaultValue="New Template" />
-                      <input type='hidden' name='label' defaultValue="New Template" />
-                      <input type='hidden' name='dept' defaultValue="New Template" />
-                      <input type='hidden' name='type' defaultValue="New Template" />
-                      <input type='hidden' name='body' defaultValue={text} />
-                      <input type='hidden' name='subject' defaultValue={subject} />
-                      <input type='hidden' name='userEmail' defaultValue={user.email} />
-                      <input type='hidden' name='name' defaultValue={user.name} />
-                      <Button onClick={() => { toast.success(`Template saved!`) }} name='intent' value='createTemplate' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                        Save Template
-                      </Button>
-                    </Form>
-
-                  </div>
+                  <Button onClick={() => {
+                    toast.success(`Email saved!`)
+                    SaveDraft()
+                  }}
+                    className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                    Save Draft
+                  </Button>
                   <Button
                     onClick={() => {
                       toast.success(`Email sent!`)
@@ -1182,7 +960,7 @@ export default function Client() {
                       }, 5);
                     }}
 
-                    className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                    className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
                   >
                     Send
                   </Button>
@@ -1194,47 +972,14 @@ export default function Client() {
         {composeEmail === true && (
           <div className="email flex h-full w-3/5  flex-col">
             <div className="flex justify-between border-b border-[#3b3b3b]">
-              <div className="my-2 flex">
-                <select
-                  className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9 w-auto cursor-pointer rounded border border-white  bg-slate12 px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-                  onChange={handleChange}>
-                  <option value="">Select a Template</option>
-                  {templates && templates.filter(template => template.type === 'email').map((template, index) => (
-                    <option key={index} value={template.title}>
-                      {template.title}
-                    </option>
-                  ))}
-                </select>
-                <Form method="post" >
-                  <input type='hidden' name='name' defaultValue="New Template" />
-                  <input type='hidden' name='title' defaultValue="New Template" />
-                  <input type='hidden' name='category' defaultValue="New Template" />
-                  <input type='hidden' name='label' defaultValue="New Template" />
-                  <input type='hidden' name='dept' defaultValue="New Template" />
-                  <input type='hidden' name='type' defaultValue="New Template" />
-                  <input type='hidden' name='body' defaultValue={text} />
-                  <input type='hidden' name='subject' defaultValue={subject} />
-                  <input type='hidden' name='userEmail' defaultValue={user.email} />
-                  <input type='hidden' name='name' defaultValue={user.name} />
-                  <Button onClick={() => { toast.success(`Template saved!`) }} name='intent' value='createTemplate' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                    Save Template
-                  </Button>
-                </Form>
-                <Button onClick={() => {
-                  toast.success(`Email saved!`)
-                  SaveDraft(selectedEmail)
-                }}
-                  className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                  Save Draft
-                </Button>
-              </div>
-              <div className="my-2 flex">
+
+              <div className="ml-auto my-2 flex">
 
                 <Button
                   onClick={() => {
                     setComposeEmail(false)
                   }}
-                  className={` ml-2 cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                  className={` ml-2 cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff]  bg-transparent shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
 
                   <Cross2Icon />
                 </Button>
@@ -1248,9 +993,10 @@ export default function Client() {
                 <Input name='bcc' placeholder='bcc' className='mx-auto ml-1 bg-slate12 text-right  text-white' />
               </div>
             </div>
+
             <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#3b3b3b]">
 
-              <EditorTiptapHook onChange={someFunction} />
+              <EditorTiptapHook content={null} user={user} />
 
               <input type='hidden' defaultValue={text} name='body' />
 
@@ -1261,14 +1007,14 @@ export default function Client() {
                 <Button
                   onClick={() => {
                     toast.success(`Email sent!`)
-                    tTo(to)
-                    tSubject(subject)
+                    setTo(to)
+                    setSubject(subject)
                     setTimeout(() => {
-                      replyMessage(user, to, subject, text)
+                      composeEmail(app.authProvider!, subject, body, toAddresses, toNames)
                       setReply(false)
                     }, 5);
                   }}
-                  className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                  className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
                 >
                   Send
                 </Button>

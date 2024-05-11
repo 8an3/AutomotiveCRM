@@ -417,26 +417,29 @@ export async function composeEmail(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   subject: any,
   body: any,
-  toRecipients: any,
-  ccRecipients: any,
-  bccRecipients: any
+  toAddresses: any,
+  toNames: any,
 ) {
   ensureClient(authProvider);
 
-  const sendMail = {
-    message: {
-      subject: subject,
-      body: {
-        contentType: "HTML",
-        content: body,
-      },
-      toRecipients,
-      ccRecipients,
-      bccRecipients,
+  const toRecipients = toAddresses.map((address, index) => ({
+    emailAddress: {
+      address: address,
+      name: toNames[index] || '',
     },
-    saveToSentItems: "false",
-  };
-  var email = await graphClient!.api("/me/sendMail").post(sendMail);
+  }));
+
+
+  const sendMail = {
+    subject: subject,
+    important: 'low',
+    body: {
+      contentType: "HTML",
+      content: body,
+    },
+    toRecipients: toRecipients
+  }
+  var email = await graphClient!.api("/me/messages").post(sendMail);
   return email;
 }
 

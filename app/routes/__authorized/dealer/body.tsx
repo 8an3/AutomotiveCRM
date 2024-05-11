@@ -8,7 +8,7 @@ export default function EmailBody() {
     console.log(isOpen, 'isopen')
     if (isOpen) {
       const parsedEmail = JSON.parse(isOpen);
-      console.log(parsedEmail)
+      //  console.log(parsedEmail)
       setHtmlBody(parsedEmail.body.content);
     }
 

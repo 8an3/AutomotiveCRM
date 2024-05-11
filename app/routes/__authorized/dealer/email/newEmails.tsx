@@ -1,29 +1,33 @@
-import { useMsal } from "@azure/msal-react";
-import { useAppContext } from "~/components/microsoft/AppContext";
-import { useEffect, useState } from "react";
-import { getInboxList, getInbox } from "~/components/microsoft/GraphService";
-import { redirect } from "@remix-run/node";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Tabs, TabsList, TabsTrigger, Input, Button, ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger, Dialog as Dialog1, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Accordion, AccordionItem, AccordionTrigger, AccordionContent, Label } from "~/components"
+import ProvideAppContext, { useAppContext } from '~/components/microsoft/AppContext';
+
+import { useMsal } from '@azure/msal-react';
 
 
-export default function Root() {
+export default function Client() {
   const app = useAppContext();
-  const { instance } = useMsal();
-  const activeAccount = instance.getActiveAccount();
-  const [inbox, setInbox] = useState()
+
   const [emails, setEmails] = useState();
 
-  useEffect(() => {
-    const fetchUnreadCount = async () => {
+  const [text, setText] = React.useState('');
 
-      const messages = await getInbox(app.authProvider!);
-      setInbox(messages)
-      const unreadCount = await getInboxList(app.authProvider!);
-      setEmails(unreadCount);
-      window.localStorage.setItem("emailCount", String(inbox));
-      window.localStorage.setItem("emails", String(emails));
-      window.localStorage.setItem("idToken", String(activeAccount?.idToken));
+
+  useEffect(() => {
+    // fetch emails
+    const fetchEmails = async () => {
+      try {
+        const folderName = 'inbox'
+        const response = await testInbox(app.authProvider!);
+        //  console.log(emails)
+        setEmails(response.value);
+      } catch (error) {
+        console.error('Error fetching emails:', error);
+      }
     }
-    fetchUnreadCount()
-  }, [app.authProvider, emails, inbox]);
-  return null
+    fetchEmails();
+
+  }, []);
+
+  return emails
 }

@@ -33,6 +33,9 @@ import { Button, buttonVariants } from "../ui/button"
 import { cn } from "../ui/utils"
 import { parseHTML } from "~/utils/html"
 import { fixUrl } from "~/utils/url"
+import { Form } from "@remix-run/react"
+import { toast } from "sonner"
+import { prisma } from "~/libs/prisma.server"
 
 /**
  * Tiptap
@@ -48,16 +51,9 @@ import { fixUrl } from "~/utils/url"
  * - Manage link/URL
  * - Add image
  */
-export function Editor(content, handleUpdate) {
+export function Editor(content) {
   const CustomDocument = Document.extend({ content: 'taskList', })
   const CustomTaskItem = TaskItem.extend({ content: 'inline*', })
-  const [text, setText] = React.useState('');
-
-  useEffect(() => {
-    if (text) {
-      window.localStorage.setItem("templateEmail", text);
-    }
-  }, [text]);
   const editor = useEditor({
     content,
     extensions: [
@@ -81,25 +77,25 @@ export function Editor(content, handleUpdate) {
       Link.configure({ HTMLAttributes: { rel: "noopener noreferrer", target: "_blank", class: "prose-a-styles", }, }),
     ],
     editorProps: { attributes: { class: "prose-config" } },
-    onUpdate({ editor }) {
-      if (handleUpdate) {
-        handleUpdate(editor.getHTML())
-      }
-    },
   })
   return editor
 }
 
 
-export function EditorTiptapHook({ content, handleUpdate, }: {
-  content?: Content | string
-  handleUpdate?: (htmlString: string) => void
+export function EditorTiptapHook({ content, user, }: {
+  content?: any,
+  user?: any,
 }) {
-  const editor = Editor(content, handleUpdate)
-  const [text, setText] = useState('')
+  const editor = Editor(content)
+  const [templates, setTemplates] = useState('')
   useEffect(() => {
-    const text = window.localStorage.getItem("templateEmail");
-    setText(text);
+    async function GetTemps() {
+      const response = await fetch('/dealer/api/templates');
+      const data = await response.json();
+      setTemplates(data)
+    }
+    GetTemps()
+
   }, []);
 
   const buttonActive = 'bg-white text-black rounded-md p-1 ';
@@ -120,16 +116,57 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
     const fixedUrl = fixUrl(url)
     editor.chain().focus().extendMarkRange("link").setLink({ href: fixedUrl }).run()
   })
-  const [textareaValue, setTextareaValue] = useState("");
-  const textareaRef = useRef();
+
+  async function SaveDraft() {
+    const date = new Date()
+    const saveTemplate = await prisma.emailTemplates.create({
+      body: editor.getText(),
+      userEmail: user.email,
+      subject: `New Template ${date}`,
+      title: `New Template ${date}`,
+      category: 'New Template'
+
+    })
+    return saveTemplate
+  }
+
+  async function handleChange(template) {
+    editor?.commands.setContent({
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": template
+            }
+          ]
+        }
+      ]
+    })
+  }
 
   if (!editor) return null
   return (
     <div className="p-1">
       <div className="mr-auto px-2   mt-auto grid grid-cols-1 border border-black rounded-md">
-        {/*  <RichTextExample /> */}
+        <div className="my-2 flex justify-between">
+          <select className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9 w-auto cursor-pointer rounded border border-white  bg-slate12 px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`} onChange={(e) => {
+            handleChange(e.target.value); // Pass the input value directly to handleChange
+          }}    >
+            <option value="">Select a Template</option>
+            {templates && templates.map((template, index) => (
+              <option key={index} value={template.body}>
+                {template.title}
+              </option>
+            ))}
+          </select>
+          <Button onClick={() => { toast.success(`Template saved!`) }} name='intent' value='createTemplate' type='submit' className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+            Save Template
+          </Button>
 
-
+        </div>
         <div
           className={cn(
             "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
@@ -441,18 +478,13 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
 
           </BubbleMenu>
         </div>
-
-
         <br />
         <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
         <br />
 
-
-        <input type='hidden' defaultValue={text} name='body' />
         <br />
-
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
 
@@ -463,7 +495,7 @@ export function EditorTiptapContext({
   content?: string
   children?: React.ReactNode
 }) {
-  const [text, setText] = useState('')
+  const [text, setText] = useState(content)
   useEffect(() => {
     const text = window.localStorage.getItem("templateEmail");
     setText(text);
@@ -490,7 +522,7 @@ export function EditorTiptapContext({
           types: ['heading', 'paragraph'],
         }),
       ]}
-      content={content || text}
+      content={text}
       editorProps={{
         attributes: { class: "prose-config cursor-text" },
       }}
@@ -508,14 +540,6 @@ export function EditorTiptapContextViewHTML() {
   )
 }
 
-export const onUpdate = ({ setText, handleUpdate }) => {
-  let content;
-  const editor = Editor(content, handleUpdate)
-  const updatedText = editor?.getHTML();
-  if (handleUpdate) {
-    handleUpdate(updatedText);
-  }
-  return setText(updatedText);
-};
+
 
 //const contentExample = `<p> Write message here...</p>`
