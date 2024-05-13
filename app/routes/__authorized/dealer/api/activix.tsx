@@ -1,4 +1,4 @@
-import { json, type LoaderFunction, } from '@remix-run/node';
+import { json, redirect, type LoaderFunction, } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import { model } from "~/models";

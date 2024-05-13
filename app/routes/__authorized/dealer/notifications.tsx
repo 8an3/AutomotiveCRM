@@ -77,13 +77,12 @@ function NotificationSkeleton() {
   )
 }
 
-let url4 = 'http://localhost:3000/dealer/email/newEmails'
+let url4 = 'http://localhost:3000/dealer/notifications/email'
 let url3 = 'http://localhost:3000/dealer/notifications/newLead'
 let url2 = 'http://localhost:3000/dealer/notifications/updates'
 let url1 = 'http://localhost:3000/dealer/notifications/messages'
 
 export default function NotificationSystem() {
-
   const $form = useRef<HTMLFormElement>(null);
   const { key } = useLocation();
   useEffect(
@@ -117,9 +116,36 @@ export default function NotificationSystem() {
     { refreshInterval: 300000 }
   );
 
+
+  const [unread, setUnread] = useState(0);
+  const [leadCount, setLeadCount] = useState(0);
+  const [updateCount, setUpdateCount] = useState(0);
+  const [messageCount, setMessageCount] = useState(0);
   const combined = {
     ...userMessages, ...notificationsEmail
   }
+  useEffect(() => {
+    if (Array.isArray(userMessages)) {
+      const unreadCount = userMessages.filter((message) => !message.read).length;
+      setUnread(unreadCount);
+    }
+    if (Array.isArray(notificationsNewLead)) {
+      const unreadCount = notificationsNewLead.filter((notification) => !notification.read).length;
+      setLeadCount(unreadCount);
+    }
+    if (Array.isArray(newUpdates)) {
+      const unreadCount = newUpdates.filter((update) => !update.read).length;
+      setUpdateCount(unreadCount);
+    }
+    if (Array.isArray(combined)) {
+      const unreadCount = combined.filter((email) => !email.read).length;
+      setMessageCount(unreadCount);
+    }
+  }, [userMessages, notificationsNewLead, newUpdates, notificationsEmail, combined]);
+
+  const totalNotifications = unread + leadCount + updateCount + messageCount;
+
+  console.log(totalNotifications, 'amount of  otifications')
 
   return (
     <Popover>

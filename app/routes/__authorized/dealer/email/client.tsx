@@ -70,13 +70,8 @@ export default function ClientEmail() {
     // folder list
     const fetchFolders = async () => {
       const fetchedFolders = await getAllFolders(app.authProvider!);
-      //console.log(fetchedFolders, 'fetchedfolders'); // Log the fetched folders to the console
-
-      // Check if fetchedFolders.value is an array and it has items
       if (Array.isArray(fetchedFolders.value) && fetchedFolders.value.length > 0) {
-        // Extract the folders array from the fetchedFolders object
         const foldersArray = fetchedFolders.value.map((folder: any) => ({ name: folder.displayName, ...folder }));
-        // console.log(foldersArray, 'foldersArray')
         setFolders(foldersArray);
       }
     };
@@ -371,14 +366,14 @@ export default function ClientEmail() {
                     <ContextMenuTrigger>
                       <button
                         onClick={() => {
-                          HandleGetLabel(folder.displayName);
+                          HandleGewtLabel(folder.displayName);
                           setLabel(folder.displayName);
                         }}
                         className={`mt-3 flex cursor-pointer items-start text-left text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === folder.displayName ? 'text-[#02a9ff]' : ''
                           }`}
                       >
                         {(() => {
-                          switch (displayName) {
+                          switch (folder.displayName) {
                             case 'Trash':
                               return <FaTrash className="text-2xl hover:text-[#02a9ff]" />
                             case 'Sent Items':
@@ -438,7 +433,7 @@ export default function ClientEmail() {
                           }
                         })()}
 
-                        <p className="ml-2 text-white">{displayName} </p>
+                        <p className="ml-2 text-white">{folder.displayName} </p>
 
                       </button>
                     </ContextMenuTrigger>
