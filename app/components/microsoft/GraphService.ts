@@ -448,3 +448,55 @@ export async function createReplyDraft(
     .post();
   return email;
 }
+export async function SendNewEmail(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  subject: any,
+  body: any,
+  to: any,
+  cc: any[],
+  bcc: any[],
+) {
+  ensureClient(authProvider);
+
+  const sendMail = {
+    message: {
+      subject: subject,
+      body: {
+        contentType: 'HTML',
+        content: body,
+      },
+      toRecipients: to.map((recipient: string) => ({
+        emailAddress: {
+          address: recipient,
+        },
+      })),
+      ccRecipients: cc.map((recipient: string) => ({
+        emailAddress: {
+          address: recipient,
+        },
+      })),
+      bccRecipients: bcc.map((recipient: string) => ({
+        emailAddress: {
+          address: recipient,
+        },
+      })),
+    },
+    saveToSentItems: false, // Boolean value should not be a string
+  };
+
+  try {
+    const email = await graphClient!.api("/me/sendMail").post(sendMail);
+    return email;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
+}
+
+/** ccRecipients: [
+        {
+          emailAddress: {
+            address: 'danas@contoso.com'
+          }
+        }
+      ] */

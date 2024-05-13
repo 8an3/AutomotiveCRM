@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, Input, Button, ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger, Dialog as Dialog1, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, Accordion, AccordionItem, AccordionTrigger, AccordionContent, Label } from "~/components"
 import ProvideAppContext, { useAppContext } from '~/components/microsoft/AppContext';
-import { deleteMessage, getDrafts, getDraftsList, getInbox, getInboxList, getJunk, getList, getSent, getTrash, messageRead, messageUnRead, getUser, testInbox, getFolders, getAllFolders, getEmailById, MoveEmail, createReplyDraft, ComposeEmail } from "~/components/microsoft/GraphService";
-import { EditorTiptapHook, Editor } from "~/components/libs/basicEditor";
+import { deleteMessage, getDrafts, getDraftsList, getInbox, getInboxList, getJunk, getList, getSent, getTrash, messageRead, messageUnRead, getUser, testInbox, getFolders, getAllFolders, getEmailById, MoveEmail, createReplyDraft, ComposeEmail, SendNewEmail } from "~/components/microsoft/GraphService";
+import { EditorTiptapHook, Editor, EditorTiptapHookCompose } from "~/components/libs/basicEditor";
 import { useMsal } from '@azure/msal-react';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { toast } from "sonner"
@@ -16,9 +16,10 @@ import { RiSpam3Fill } from "react-icons/ri";
 import { ImCross } from "react-icons/im";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaPencil } from "react-icons/fa6";
+import { Client, type GraphRequestOptions, type PageCollection, PageIterator, type ClientOptions } from '@microsoft/microsoft-graph-client';
+import { type AuthCodeMSALBrowserAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser';
 
-
-export default function Client() {
+export default function ClientEmail() {
   const app = useAppContext();
   const { instance, accounts } = useMsal();
   const activeAccount = instance.getActiveAccount();
@@ -53,8 +54,6 @@ export default function Client() {
   const [text, setText] = React.useState('');
   const [contentValue, setContentValue] = useState(text)
   const contentRef = useRef<HTMLInputElement>(null)
-
-
   useEffect(() => {
     // fetch emails
     const fetchEmails = async () => {
@@ -109,15 +108,12 @@ export default function Client() {
     }
 
   }, []);
-
   const handleClicktestInbox = async () => {
     const response = await testInbox(app.authProvider!);
     setEmails(response.value);
     setSelectedLine(null)
     setIsOpen(false)
   };
-
-
   async function GetEmailsFromFolder(name: any) {
     let folderName = name.toLowerCase();
     if (folderName === 'deleted items') {
@@ -141,8 +137,6 @@ export default function Client() {
     // console.log('Response:', response);
     setEmails(response.value);
   }
-
-
   useEffect(() => {
     if (selectedEmail) {
       const serializedEmail = JSON.stringify(selectedEmail);
@@ -168,17 +162,6 @@ export default function Client() {
   let content = text
   let handleUpdate;
   const editor = Editor(content, handleUpdate)
-  const someFunction = () => {
-    onUpdate({ editor, setText, handleUpdate });
-  };
-
-  const handleInputChange = useCallback((e) => {
-    setRenameLabel(e.target.value);
-  }, []);
-  // templates
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-
 
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
   const MyIFrameComponent = () => {
@@ -223,7 +206,6 @@ export default function Client() {
       </>
     );
   };
-
 
   async function HandleGewtLabel(label) {
     if (label === 'Drafts') {
@@ -311,7 +293,6 @@ export default function Client() {
   };
   async function handlesetToUnread(id) {
     messageUnRead(app.authProvider!, id)
-
   }
   const displayNameOrder = [
     'Inbox',
@@ -334,6 +315,22 @@ export default function Client() {
     'Outbox'
   ];
   const LabelList = () => {
+    const displayedFolders = [];
+
+    // Add folders in the order specified in displayNameOrder
+    displayNameOrder.forEach((displayName) => {
+      const folder = folders.find((folder) => folder.displayName === displayName);
+      if (folder) {
+        displayedFolders.push(folder);
+      }
+    });
+
+    // Add custom folders that are not in displayNameOrder
+    folders.forEach((folder) => {
+      if (!displayNameOrder.includes(folder.displayName)) {
+        displayedFolders.push(folder);
+      }
+    });
 
     return (
       <>
@@ -367,167 +364,94 @@ export default function Client() {
               <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
               <p className='ml-2 mr-2'>Unread </p><p className='text-[#868686]'>{unreadItemCount}</p>
             </button>
-            {displayNameOrder.map((displayName, index) => {
-              const item = folders.find(folder => folder.displayName === displayName);
+            {displayedFolders.map((folder, index) => (
+              <div key={index} className="mx-2 flex items-center justify-between">
+                <div className="flex">
+                  <ContextMenu>
+                    <ContextMenuTrigger>
+                      <button
+                        onClick={() => {
+                          HandleGetLabel(folder.displayName);
+                          setLabel(folder.displayName);
+                        }}
+                        className={`mt-3 flex cursor-pointer items-start text-left text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === folder.displayName ? 'text-[#02a9ff]' : ''
+                          }`}
+                      >
+                        {(() => {
+                          switch (displayName) {
+                            case 'Trash':
+                              return <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Sent Items':
+                              return <IoSend className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Archive':
+                              return <FaArchive className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Conversation History':
+                              return <FaHistory className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Chat':
+                              return <MdSms className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Important':
+                              return <IoMdAlert className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Outbox':
+                              return <IoSend className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Inbox':
+                              return <IoIosMail className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Drafts':
+                              return <MdDrafts className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Junk Email':
+                              return <RiSpam3Fill className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Starred':
+                              return <FaStar className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Unread':
+                              return <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Forums':
+                              return <MdForum className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Updates':
+                              return <MdSecurityUpdateGood className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Personal':
+                              return <User className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Promotions':
+                              return <FaCommentDollar className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Social':
+                              return <MdOutlineSocialDistance className="text-2xl hover:text-[#02a9ff]" />
+                            case 'Deleted Items':
+                              return <FaTrash strokeWidth={1.5} className="text-2xl hover:text-[#02a9ff]" />
+                            default:
+                              return (
+                                <svg
+                                  width="20px"
+                                  height="20px"
+                                  stroke-width="1.1"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  color="#000000"
+                                >
+                                  <path
+                                    d="M2 11V4.6C2 4.26863 2.26863 4 2.6 4H8.77805C8.92127 4 9.05977 4.05124 9.16852 4.14445L12.3315 6.85555C12.4402 6.94876 12.5787 7 12.722 7H21.4C21.7314 7 22 7.26863 22 7.6V11M2 11V19.4C2 19.7314 2.26863 20 2.6 20H21.4C21.7314 20 22 19.7314 22 19.4V11M2 11H22"
+                                    stroke="#fff"
+                                    stroke-width="1.1"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  ></path>
+                                </svg>
+                              );
+                          }
+                        })()}
 
-              if (!item) {
-                return null;
-              }
+                        <p className="ml-2 text-white">{displayName} </p>
 
-              return (
-                <div key={index} className="mx-2  flex items-center justify-between">
-                  {RenameFolderInput === false && (
-                    <div className="flex">
-                      <ContextMenu>
-                        <ContextMenuTrigger>
-                          <button
-                            onClick={() => {
-                              HandleGewtLabel(displayName);
-                              setLabel(displayName);
-                              //   console.log(displayName, 'displayName');
-                            }}
-                            className={`mt-3 flex cursor-pointer items-start text-left text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${item.display === label ? 'text-[#02a9ff]' : ''}`}
-                          >
-                            {(() => {
-                              switch (displayName) {
-                                case 'Trash':
-                                  return <FaTrash className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Sent Items':
-                                  return <IoSend className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Archive':
-                                  return <FaArchive className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Conversation History':
-                                  return <FaHistory className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Chat':
-                                  return <MdSms className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Important':
-                                  return <IoMdAlert className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Outbox':
-                                  return <IoSend className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Inbox':
-                                  return <IoIosMail className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Drafts':
-                                  return <MdDrafts className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Junk Email':
-                                  return <RiSpam3Fill className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Starred':
-                                  return <FaStar className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Unread':
-                                  return <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Forums':
-                                  return <MdForum className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Updates':
-                                  return <MdSecurityUpdateGood className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Personal':
-                                  return <User className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Promotions':
-                                  return <FaCommentDollar className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Social':
-                                  return <MdOutlineSocialDistance className="text-2xl hover:text-[#02a9ff]" />
-                                case 'Deleted Items':
-                                  return <FaTrash strokeWidth={1.5} className="text-2xl hover:text-[#02a9ff]" />
-                                default:
-                                  return (
-                                    <svg
-                                      width="20px"
-                                      height="20px"
-                                      stroke-width="1.1"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      color="#000000"
-                                    >
-                                      <path
-                                        d="M2 11V4.6C2 4.26863 2.26863 4 2.6 4H8.77805C8.92127 4 9.05977 4.05124 9.16852 4.14445L12.3315 6.85555C12.4402 6.94876 12.5787 7 12.722 7H21.4C21.7314 7 22 7.26863 22 7.6V11M2 11V19.4C2 19.7314 2.26863 20 2.6 20H21.4C21.7314 20 22 19.7314 22 19.4V11M2 11H22"
-                                        stroke="#fff"
-                                        stroke-width="1.1"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                      ></path>
-                                    </svg>
-                                  );
-                              }
-                            })()}
-
-                            <p className="ml-2 text-white">{displayName} </p>
-
-                          </button>
-                        </ContextMenuTrigger>
-                        {/* ContextMenuContent and other items */}
-                      </ContextMenu>
-                    </div>
-                  )}
+                      </button>
+                    </ContextMenuTrigger>
+                    {/* ContextMenuContent and other items */}
+                  </ContextMenu>
                 </div>
-              );
-            })}
-
-
+              </div>
+            ))}
           </div>
-
         </div>
       </>
     );
   };
-
-  /**<p className='text-[#868686]'> {(() => {
-                              switch (label) {
-                                case 'Unread':
-                                case 'Inbox':
-                                  return <p>{unreadItemCount}</p>;
-                                case 'Junk Email':
-                                  return <p>{unreadJunkCount}</p>;
-                                case 'Drafts':
-                                  return <p>(0)</p>;
-                                case 'Archive':
-                                  return <p>(1)</p>;
-                                case 'Deleted Items':
-                                  return <p>(3)</p>;
-                                default:
-                                  return null
-                              }
-                            })()}</p> */
-  /**        {folders.displayName === folderBeingRenamed ? (
-              <div className='grid grid-cols-1 text-white'>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-1 items-center gap-4">
-                    <Label htmlFor="name" className="text-center">
-                      Rename Folder
-                    </Label>
-                    <Input
-                      id="labelName"
-                      value={renameLabel}
-                      className="mx-2 w-auto bg-slate12"
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-                <div className=' mx-2 flex justify-between'>
-                  <Button
-                    className=' mr-2'
-                    variant="outline" color="gray" onClick={() => {
-                      setRenameFolderInput(false)
-                      setLabelName('test')
-
-                    }} >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant='outline'
-                    onClick={() => {
-                      //  RenameLabel(id)
-                      setRenameFolderInput(false)
-                      setLabelName('test')
-
-                      toast.success(`Folder renamed.`)
-                    }}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </div>
-
-            ) : null}
-             */
   const EmailList = () => {
     const navigation = useNavigation();
     const isSubmitting = navigation.state === "submitting";
@@ -536,7 +460,7 @@ export default function Client() {
         {emails?.length === 0 ? (
           <div className='m-auto flex' >
             <p className='mr-3 text-white'>No emails available.</p>
-            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000" stroke-width="1.1"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM7.53044 11.9697C7.23755 11.6768 6.76268 11.6768 6.46978 11.9697C6.17689 12.2626 6.17689 12.7374 6.46978 13.0303L9.46978 16.0303C9.76268 16.3232 10.2376 16.3232 10.5304 16.0303L17.5304 9.03033C17.8233 8.73744 17.8233 8.26256 17.5304 7.96967C17.2375 7.67678 16.7627 7.67678 16.4698 7.96967L10.0001 14.4393L7.53044 11.9697Z" fill="#000000"></path></svg>
+            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#fff" stroke-width="1.1"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM7.53044 11.9697C7.23755 11.6768 6.76268 11.6768 6.46978 11.9697C6.17689 12.2626 6.17689 12.7374 6.46978 13.0303L9.46978 16.0303C9.76268 16.3232 10.2376 16.3232 10.5304 16.0303L17.5304 9.03033C17.8233 8.73744 17.8233 8.26256 17.5304 7.96967C17.2375 7.67678 16.7627 7.67678 16.4698 7.96967L10.0001 14.4393L7.53044 11.9697Z" fill="#fff"></path></svg>
           </div>
 
         ) : (
@@ -624,65 +548,13 @@ export default function Client() {
           </div>
         )}
 
-        <Form method='post'>
-          <div className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]"
-            onClick={() => {
-              HandleGewtLabel(label)
-            }}>
-            <p className='text-center mx-auto   text-white my-3' >
-              More
 
-            </p>
-          </div>
-        </Form>
       </div>
     );
   };
-  /** <Tabs defaultValue="Unread" className="m-2 w-[95%]">
-              <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger onClick={() => {
-                  //HandleGewtLabel('UNREAD')
-                  setLabel('Unread')
-                  HandleGewtLabel('inbox');
-                }} value="Unread">
-                  Unread ({unreadItemCount})
-                </TabsTrigger>
-                <TabsTrigger
-                  onClick={() => {
-                    HandleGewtLabel('drafts');
 
-                  }}
-                  value="Draft">
-                  Draft {draftCount}
-                </TabsTrigger>
-                <TabsTrigger
-                  onClick={() => {
-                    HandleGewtLabel('sent');
-                    setLabel('Sent')
-                  }}
-                  value="Sent">
-                  Sent
-                </TabsTrigger>
-                <TabsTrigger
-                  onClick={() => {
-                    HandleGewtLabel('junk');
 
-                    setLabel('Spam')
-                  }}
-                  value="Chat">
-                  Spam {unreadJunkCount}
-                </TabsTrigger>
-                <TabsTrigger
-                  onClick={() => {
-                    HandleGewtLabel('trash');
 
-                    setLabel('Trash')
-                  }}
-                  value="Trash">
-                  Trash {trashCounts}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs> */
   return (
     <>
       <div className="!border-1 !mx-auto mt-[60px] flex !h-[90vh] !w-[95%] !border !border-[#3b3b3b] !bg-[#121212]">
@@ -972,31 +844,56 @@ export default function Client() {
         {composeEmail === true && (
           <div className="email flex h-full w-3/5  flex-col">
             <div className="flex justify-between border-b border-[#3b3b3b]">
-
               <div className="ml-auto my-2 flex">
-
                 <Button
+                  variant='ghost'
                   onClick={() => {
                     setComposeEmail(false)
+                    HandleGewtLabel(label)
                   }}
-                  className={` ml-2 cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff]  bg-transparent shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-
-                  <Cross2Icon />
+                  className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                  <ImCross className="text-2xl hover:text-[#02a9ff]" />
                 </Button>
               </div>
             </div>
             <div className=" justify-center border-b border-[#3b3b3b]">
-              <Input placeholder='To' name='to' className='m-2 mx-auto w-[98%] bg-slate12 text-white' />
-              <Input placeholder='Subject' name='subject' className='m-2 mx-auto w-[98%] bg-slate12 text-white' />
+              <Input
+                type="text"
+                onChange={(e) => {
+                  setTo(e.target.value);
+                }}
+                placeholder='To'
+                name='to'
+                className='m-2 mx-auto w-[98%] bg-slate12 text-white'
+              />
+              <Input
+                onChange={(e) => {
+                  setSubject(e.target.value);
+                }}
+                placeholder='Subject'
+                name='subject'
+                className='m-2 mx-auto w-[98%] bg-slate12 text-white'
+              />
               <div className='mx-auto mt-2 flex w-[98%]' >
-                <Input name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-slate12  text-white' />
-                <Input name='bcc' placeholder='bcc' className='mx-auto ml-1 bg-slate12 text-right  text-white' />
+                <Input
+                  onChange={(e) => {
+                    setCC(e.target.value);
+                  }}
+                  name='cc'
+                  placeholder='cc'
+                  className='mx-auto mb-2 mr-1 bg-slate12  text-white'
+                />
+                <Input
+                  onChange={(e) => {
+                    setBcc(e.target.value);
+                  }}
+                  name='bcc' placeholder='bcc' className='mx-auto ml-1 bg-slate12 text-right  text-white' />
               </div>
             </div>
 
             <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#3b3b3b]">
 
-              <EditorTiptapHook content={null} user={user} />
+              <EditorTiptapHookCompose content={null} user={user} subject={subject} to={to} app={app} cc={cc} bcc={bcc} />
 
               <input type='hidden' defaultValue={text} name='body' />
 
@@ -1004,20 +901,7 @@ export default function Client() {
                 <div className="flex">
 
                 </div>
-                <Button
-                  onClick={() => {
-                    toast.success(`Email sent!`)
-                    setTo(to)
-                    setSubject(subject)
-                    setTimeout(() => {
-                      ComposeEmail(app.authProvider!, subject, text, to)
-                      setReply(false)
-                    }, 5);
-                  }}
-                  className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-[#95959f] bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
-                >
-                  Send
-                </Button>
+
               </div>
             </div>
           </div>
@@ -1027,9 +911,47 @@ export default function Client() {
   )
 }
 
+/**
+ *
+ *
+ *
+ *
+ *
+ *   <Form method='post'>
+          <div className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]"
+            onClick={() => {
+              HandleGewtLabel(label)
+            }}>
+            <p className='text-center mx-auto   text-white my-3' >
+              More
+
+            </p>
+          </div>
+        </Form>
 
 
-/**  // --------------------------------------------------------------------------
+
+        <Button
+                  onClick={() => {
+                    toast.success(`Email sent!`)
+                    setTo(to)
+                    setSubject(subject)
+                    const body = editor?.getText()
+                    const html = editor?.getHTML()
+                    console.log(body, 'body', html, 'html', text, 'text')
+
+                    setTimeout(() => {
+                      SendNewEmail(app.authProvider!, subject, body, to)
+                      setReply(false)
+                    }, 5);
+                  }}
+                  className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-[#95959f] bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                >
+                  Send
+                </Button>
+
+
+                // --------------------------------------------------------------------------
   const { instance, accounts } = useMsal();
   const [graphData, setGraphData] = useState(null);
 
