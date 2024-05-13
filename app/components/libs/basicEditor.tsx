@@ -1008,7 +1008,7 @@ export const onUpdate = ({ setText, handleUpdate }) => {
   return setText(updatedText);
 };
 
-
+/**
 // --------------------------------------------------------------------------------
 export const BubbleMenu = ({ editor, containerRef }: BubbleMenuProps) => {
   const [selectionType, setSelectionType] = useState<SelectionMenuType>(null);
@@ -1880,3 +1880,4 @@ const CommandsPlugin = Extension.create({
     ];
   },
 });
+ */
