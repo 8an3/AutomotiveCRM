@@ -19,7 +19,12 @@ import {
 } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import React, { useCallback, useEffect, useRef, useState } from "react"
+
 import { Undo, Redo, List, ScanLine, Eraser, Code, ListPlus, Brackets, Pilcrow, Minus, AlignLeft, AlignCenter, AlignRight, AlignJustify, Highlighter, WrapText, Quote, Heading1, Heading2, Heading3 } from 'lucide-react';
+import { FaBold, FaStrikethrough, FaItalic, FaUnlink, FaLink, FaList, FaListOl, FaFileCode, FaQuoteLeft, FaUndo, FaAlignJustify, FaAlignLeft, FaRedo, FaAlignRight, FaAlignCenter, FaHighlighter, FaEraser, FaUnderline } from "react-icons/fa";
+import { BiCodeBlock } from "react-icons/bi";
+import { MdHorizontalRule } from "react-icons/md";
+import { IoMdReturnLeft } from "react-icons/io";
 
 import { IconMatch } from "./icons"
 import { buttonVariants } from "../ui/button"
@@ -441,153 +446,159 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
         <div
           className={cn(
             "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-            "bg-black text-white transition-all justify-center",
+            "bg-[#121212] text-white transition-all justify-center",
             // "sm:sticky sm:top-[80px]",
           )}
         >
           <button
-            type="button"
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={editor.isActive("bold") ? buttonActive : buttonInactive}
           >
-            <IconMatch color="#fff" className="size-4" icon="editor-bold" />
+            <FaBold className="text-xl hover:text-[#02a9ff]" />
           </button>
           <button
-            type="button"
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={editor.isActive("italic") ? buttonActive : buttonInactive}
           >
-            <IconMatch className="size-4" icon="editor-italic" />
+            <FaItalic className="text-xl hover:text-[#02a9ff]" />
           </button>
           <button
-            type="button"
             onClick={() => editor.chain().focus().toggleStrike().run()}
             className={editor.isActive("strike") ? buttonActive : buttonInactive}
           >
-            <IconMatch className="size-4" icon="editor-strikethrough" />
+            <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
           </button>
 
-          <Minus color="#000" strokeWidth={1.5} />
+          <Minus color="#121212" strokeWidth={1.5} />
           <button
-            type="button"
             onClick={handleSetLink}
             className={editor.isActive("link") ? buttonActive : buttonInactive}
           >
-            <IconMatch className="size-4" icon="editor-link" />
+            <FaLink className="text-xl hover:text-[#02a9ff]" />
           </button>
           <button
-            type="button"
             onClick={() => editor.chain().focus().unsetLink().run()}
             disabled={!editor.isActive("link")}
             className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
           >
-            <IconMatch className="size-4" icon="editor-link-unlink" />
+            <FaUnlink className="text-xl hover:text-[#02a9ff]" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
           <button
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={editor.isActive('blockquote') ? 'is-active' : ''}
+            className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
           >
-            <Quote strokeWidth={1.5} />
+            <FaQuoteLeft className="text-xl hover:text-[#02a9ff]" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleCode().run()}
-            disabled={
-              !editor.can()
-                .chain()
-                .focus()
-                .toggleCode()
-                .run()
-            }
-            className={editor.isActive('code') ? 'is-active' : ''}
+            className={editor.isActive('code') ? buttonActive : buttonInactive}
+            disabled={!editor.can().chain().focus().toggleCode().run()}
           >
-            <Code strokeWidth={1.5} />
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={editor.isActive('bulletList') ? 'is-active' : ''}
-          >
-            <List strokeWidth={1.5} />
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={editor.isActive('orderedList') ? 'is-active' : ''}
-          >
-            <ListPlus strokeWidth={1.5} />
+            <FaFileCode className="text-xl hover:text-[#02a9ff]" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            className={editor.isActive('codeBlock') ? 'is-active' : ''}
+            className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
           >
-            <Brackets strokeWidth={1.5} />
+            <BiCodeBlock className="text-xl hover:text-[#02a9ff]" />
           </button>
+          <button
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
+          >
+            <FaList className="text-xl hover:text-[#02a9ff]" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
+          >
+            <FaListOl className="text-xl hover:text-[#02a9ff]" />
+          </button>
+
           <Minus color="#000" strokeWidth={1.5} />
           <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-            <ScanLine strokeWidth={1.5} />
+            <MdHorizontalRule className="text-xl hover:text-[#02a9ff]" />
           </button>
           <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-            <WrapText strokeWidth={1.5} />
+            <IoMdReturnLeft className="text-xl hover:text-[#02a9ff]" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
           <button
             onClick={() => editor.chain().focus().undo().run()}
-            disabled={
-              !editor.can()
-                .chain()
-                .focus()
-                .undo()
-                .run()
-            }
+            disabled={!editor.can().chain().focus().undo().run()}
           >
-            <Undo strokeWidth={1.5} />
+            <FaUndo className="text-xl hover:text-[#02a9ff]" />
           </button>
           <button
             onClick={() => editor.chain().focus().redo().run()}
-            disabled={
-              !editor.can()
-                .chain()
-                .focus()
-                .redo()
-                .run()
-            }
+            disabled={!editor.can().chain().focus().redo().run()}
           >
-            <Redo strokeWidth={1.5} />
+            <FaRedo className="text-xl hover:text-[#02a9ff]" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
-          <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}>
-            <AlignLeft strokeWidth={1.5} />
+          <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
+            className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
+          >
+            <FaAlignLeft className="text-xl hover:text-[#02a9ff]" />
           </button>
-          <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}>
-            <AlignCenter strokeWidth={1.5} />
+          <button
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+            className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
+          >
+            <FaAlignCenter className="text-xl hover:text-[#02a9ff]" />
           </button>
-          <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}>
-            <AlignRight strokeWidth={1.5} />
+          <button
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+            className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
+          >
+            <FaAlignRight className="text-xl hover:text-[#02a9ff]" />
           </button>
-          <button onClick={() => editor.chain().focus().setTextAlign('justify').run()} className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}>
-            <AlignJustify strokeWidth={1.5} />
+          <button
+            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+            className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
+          >
+            <FaAlignJustify className="text-xl hover:text-[#02a9ff]" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
-          <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
-            <Highlighter strokeWidth={1.5} />
+          <button
+            onClick={() => editor.chain().focus().toggleHighlight().run()}
+            className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+          >
+            <FaHighlighter className="text-xl hover:text-[#02a9ff]" />
+          </button>
+          <input
+            type="color"
+            onInput={event => editor.chain().focus().setColor(event.target.value).run()}
+            value={editor.getAttributes('textStyle').color}
+            data-testid="setColor"
+          />
+          <button
+            onClick={() => editor.chain().focus().unsetColor().run()}
+            className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+          >
+            <FaEraser className="text-xl hover:text-[#02a9ff]" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
           <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-            className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+            className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
           >
-            <Heading1 strokeWidth={1.5} />
+            <Heading1 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
+            className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
+
           >
-            <Heading2 strokeWidth={1.5} />
+            <Heading2 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-            className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
+            className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
+
           >
-            <Heading3 strokeWidth={1.5} />
+            <Heading3 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
           </button>
         </div>
         <div>
@@ -718,7 +729,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
           </BubbleMenu>
         </div>
         <br />
-        <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
+        <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md text-black" />
         <br />
 
 

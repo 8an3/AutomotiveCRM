@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "~/components/ui/select"
 import { prisma } from "~/libs";
+import { isDate } from 'date-fns';
 
 
 export async function loader({ request }) {
@@ -544,9 +545,10 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                             type="checkbox"
                             id={item.name}
                             name={item.name}
-                            checked={item.value === 'on'}
+                            checked={item.value === 'on' || (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'))}
                             onChange={(e) => handleInputChange(item.name, e.target.checked)}
                           />
+
                         </div>
                       ))}
 

@@ -165,12 +165,16 @@ model SalespersonSched {
 
 model CsiQuestion {
   id                          Int      @id @default(autoincrement())
-  departmentIndex             Int
-  inputIndex                  Int
-  question                    String
-  answerFormat                String
-  customMultipleChoiceAnswer  String?
-  customMultipleChoiceAnswers String[]
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+  title                       String?
+  departmentName              String? // Added to identify the department
+  departmentIndex             Int?
+  questionIndex               Int? // Changed from `inputIndex` to `questionIndex`
+  question                    String?
+  answerFormat                String?
+  customMultipleChoiceAnswer  String? // Assuming this is for a single custom answer
+  customMultipleChoiceAnswers String[] // Array for multiple custom answers
 }
 
 model DealerInfo {
@@ -405,7 +409,7 @@ model Sales {
   financeId String?
   email     String
   sales     Int?
-  date      String?
+  sold      String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -570,25 +574,16 @@ model EmailTemplates {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  firstName   String?
-  lastName    String?
-  name        String?
-  body        String?
-  userEmail   String?
-  category    String?
-  type        String?
-  subject     String?
-  title       String?
-  cc          String?
-  bcc         String?
-  attributes  String?
-  dept        String?
-  label       String?
-  attachments String?
-  to          String?
-  review      String?
-  date        String?
-  fromEmail   String?
+  subCat    String?
+  body      String?
+  userEmail String?
+  category  String?
+  type      String?
+  subject   String?
+  title     String?
+  dept      String?
+  review    String?
+  fromEmail String?
 }
 
 model EmailClient {

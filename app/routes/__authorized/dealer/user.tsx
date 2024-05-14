@@ -13,6 +13,7 @@ import {
 } from "~/components"
 import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { getUserIsAllowed } from "~/helpers";
+import { adminSidebarNav, devSidebarNav, managerSidebarNav } from "~/components/shared/sidebar";
 
 
 export const links: LinksFunction = () => [
@@ -52,8 +53,32 @@ export default function Quote() {
       to: "/dealer/user/dashboard/password",
     },
     {
+      title: "Dealer Fees",
+      to: "/dealer/user/dashboard/dealerfees",
+    },
+    {
       title: "Docs",
       to: "/dealer/user/docs",
+    },
+    {
+      title: "Roadmap",
+      to: "/dealer/user/dashboard/roadmap",
+    },
+    {
+      title: "Sales Tracker",
+      to: "/dealer/user/dashboard/salestracker",
+    },
+    {
+      title: "Scripts",
+      to: "/dealer/user/dashboard/scripts",
+    },
+    {
+      title: "Settings",
+      to: "/dealer/user/dashboard/settings",
+    },
+    {
+      title: "Template Builder",
+      to: "/dealer/user/dashboard/templates",
     },
     {
       title: "Log out",
@@ -63,59 +88,21 @@ export default function Quote() {
   ]
   return (
     <>
-      <div className="hidden space-y-6 p-10 pb-16 md:block">
+      <div className=" space-y-6 p-10 pb-16 max-h-screen max-w-screen">
         <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight">User Settings</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-2xl font-bold tracking-tight text-white">User Settings</h2>
+          <p className="text-white">
             Manage your account settings and set e-mail preferences.
           </p>
         </div>
-        <Separator className="my-6" />
+        <div className="  my-6" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/5">
-
-            <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>
-                  Menu
-                </AccordionTrigger>
-                <AccordionContent>
-                  <SidebarNav items={sidebarNavItems} />
-                </AccordionContent>
-              </AccordionItem>
-              {userIsAllowed ? (
-                <AccordionItem value="item-2">
-                  <AccordionTrigger>
-                    Admin Menu
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <SidebarNav items={adminSidebarNav} />
-                  </AccordionContent>
-                </AccordionItem>
-              ) : (null)}
-              {devIsAllowed ? (
-                <AccordionItem value="item-3">
-                  <AccordionTrigger>
-                    Dev Menu
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <SidebarNav items={devSidebarNav} />
-                  </AccordionContent>
-                </AccordionItem>
-              ) : (null)}
-              {managerIsAllowed ? (
-                <AccordionItem value="item-4">
-                  <AccordionTrigger>
-                    Manager Menu
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <SidebarNav items={managerSidebarNav} />
-                  </AccordionContent>
-                </AccordionItem>
-              ) : (null)}
-            </Accordion>
+          <aside className="-mx-4 lg:w-1/5 text-white">
+            <p className='text-white'>Menu</p>
+            <hr className="text-white w-[90%] mb-5" />
+            <SidebarNav items={sidebarNavItems} />
           </aside>
-          <div className="flex-1 overflow-y-scroll overflow-x-hidden w-auto">
+          <div className="flex-1  w-auto">
             <Outlet />
           </div>
         </div>

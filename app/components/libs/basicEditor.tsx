@@ -1,16 +1,18 @@
 import Highlight from "@tiptap/extension-highlight"
-import Link from "@tiptap/extension-link"
-import Placeholder from "@tiptap/extension-placeholder"
-import Paragraph from '@tiptap/extension-paragraph'
 import Text from '@tiptap/extension-text'
 
+import Paragraph from '@tiptap/extension-paragraph'
 import Typography from "@tiptap/extension-typography"
 import Underline from "@tiptap/extension-underline"
-import TextAlign from '@tiptap/extension-text-align'
-import ListItem from '@tiptap/extension-list-item'
-import TaskItem from '@tiptap/extension-task-item'
 import { Color } from '@tiptap/extension-color'
 import TextStyle from '@tiptap/extension-text-style'
+import StarterKit from "@tiptap/starter-kit"
+import TextAlign from '@tiptap/extension-text-align'
+import Placeholder from "@tiptap/extension-placeholder"
+import Link from "@tiptap/extension-link"
+
+import ListItem from '@tiptap/extension-list-item'
+import TaskItem from '@tiptap/extension-task-item'
 import Document from '@tiptap/extension-document'
 import {
   BubbleMenu,
@@ -20,7 +22,6 @@ import {
   useEditor,
   type Content,
 } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
 import React, { Component, useCallback, useEffect, useRef, useState } from "react"
 import { Undo, Redo, List, ScanLine, Eraser, Code, ListPlus, Brackets, Pilcrow, Minus, AlignLeft, AlignCenter, AlignRight, AlignJustify, Highlighter, WrapText, Quote, Heading1, Heading2, Heading3 } from 'lucide-react';
 import { FaBold, FaStrikethrough, FaItalic, FaUnlink, FaLink, FaList, FaListOl, FaFileCode, FaQuoteLeft, FaUndo, FaAlignJustify, FaAlignLeft, FaRedo, FaAlignRight, FaAlignCenter, FaHighlighter, FaEraser, FaUnderline } from "react-icons/fa";
@@ -80,6 +81,7 @@ export function Editor(content, handleUpdate) {
     ],
     editorProps: { attributes: { class: "prose-config" } },
     onUpdate({ editor }) {
+      setText(editor.getHTML())
       if (handleUpdate) {
         handleUpdate(editor.getHTML())
       }

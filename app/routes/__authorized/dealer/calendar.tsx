@@ -39,12 +39,8 @@ export default function CustMaIN() {
 
   return (
     <>
-      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 font-bold uppercase  ">
-
-        <div className="w-[95%] h-[95%] mt-10 justify-center mx-auto items-center">
-          <Outlet />
-
-        </div>
+      <div className="h-screen w-screen overflow-hidden">
+        <Outlet />
       </div>
     </>
   )

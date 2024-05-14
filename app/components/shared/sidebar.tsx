@@ -377,7 +377,7 @@ export const userNavSidebarNav = [
   },
   {
     title: "Template Builder",
-    to: "/dealer/editor/templates",
+    to: "/dealer/user/dashboard/templates",
   },
   {
     title: "Scripts",

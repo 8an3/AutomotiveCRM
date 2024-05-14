@@ -254,9 +254,16 @@ export function SearchCustomerModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' >
-          <Search size={20} strokeWidth={1.5} />
-        </button>
+        <Button
+          variant='outline'
+          className=' px-4 mt-3 mx-auto text-[#cbd0d4] cursor-pointer hover:text-[#02a9ff] justify-center items-center   border-[#fff] hover:border-[#02a9ff] bg-transparent hover:bg-transparent w-[240px]'>
+          <>
+            <Search size={20} strokeWidth={1.5} />
+            <p className='ml-2'>
+              Search Customer
+            </p>
+          </>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[1000px] bg-white">
         <DialogHeader>

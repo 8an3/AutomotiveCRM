@@ -1,12 +1,12 @@
 import { prisma } from "~/libs";
 
 
-export function createSalesInput({ email, sales, date }) {
+export function createSalesInput({ email, sales, sold }) {
     return prisma.sales.create({
         data: {
             email,
             sales,
-            date
+            sold
         }
     })
 }

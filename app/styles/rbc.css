@@ -72,6 +72,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+
 }
 
 .rbc-ellipsis,
@@ -99,7 +100,7 @@
 
 
 
-/************sdafsdfsdf*****************rbc-header***********************************/
+/*****************************rbc-header***********************************/
 .rbc-header {
   overflow: hidden;
   flex: 1 0 0%;
@@ -281,6 +282,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  border-left: 1px solid #2b2b2b
 }
 
 .rbc-month-row {
@@ -297,6 +299,7 @@
   border-top: 1px solid #2b2b2d;
 }
 
+
 /***********now**********/
 .rbc-date-cell.rbc-now {
   font-weight: bold;
@@ -308,6 +311,7 @@
   clip-path: circle();
   color: white;
   background-color: #1967d2;
+
 }
 
 .rbc-date-cell>a,
@@ -321,15 +325,10 @@
   flex: 1 0 0%;
 }
 
-/*********border*********/
-.rbc-day-bg+.rbc-day-bg {
-  border-left: 1px solid #2b2b2d;
-}
 
 /*********border*********/
 .rbc-rtl .rbc-day-bg+.rbc-day-bg {
-  border-left-width: 0;
-  border-right: 1px solid #2b2b2d;
+  /* border-left-width: 0;*/
 }
 
 /*********border*********/
@@ -418,7 +417,7 @@
 }
 
 .rbc-month-view .rbc-date-cell {
-  border-left: 1px solid #2b2b2d;
+  /* border-left: 1px solid #2b2b2d;
   /* Add a solid border with light gray color */
 }
 
@@ -816,4 +815,11 @@ button.rbc-input::-moz-focus-inner {
   .rbc-toolbar {
     flex-direction: column;
   }
+}
+
+
+/*********border*********/
+
+.rbc-day-bg+.rbc-day-bg {
+  border-left: 1px solid #f50000;
 }

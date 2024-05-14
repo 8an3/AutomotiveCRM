@@ -1,15 +1,15 @@
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Calendar, Views, dayjsLocalizer, Navigate as navigate } from 'react-big-calendar'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { type LinksFunction, type LoaderFunction, type ActionFunction, json, redirect, } from '@remix-run/node'
 import { model } from '~/models';
-import { useLoaderData, Link, } from '@remix-run/react'
+import { useLoaderData, Link, useNavigate } from '@remix-run/react'
 import { getAllFinanceAptsForCalendar, } from '~/utils/financeAppts/get.server';
 import { prisma } from "~/libs";
-import { Text, Button, } from '@radix-ui/themes';
+import { Text, } from '@radix-ui/themes';
 import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
 import EventInfo from "~/components/dashboard/calendar/EventInfo"
 import EventInfoModal from "~/components/dashboard/calendar/EventInfoModal"
@@ -22,8 +22,18 @@ import { GetUser } from "~/utils/loader.server";
 import { getSession, commitSession } from '~/sessions/auth-session.server';
 import storeHoursCss from "~/styles/storeHours.css";
 import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
 import rbc from "~/styles/rbc.css";
+import { Button, buttonVariants, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Popover, PopoverTrigger, PopoverContent, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "~/components";
+import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
+import { format } from "date-fns"
+import { Calendar as SmallCalendar } from '~/components/ui/calendar';
+import { cn } from "~/components/ui/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion"
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
@@ -1002,38 +1012,24 @@ export default function DnDResource() {
         </span>
 
         <span className="rbc-toolbar-label">{label}</span>
-        <span className="ml-auto justify-end mr-10">
+        <span className="ml-auto justify-end mr-5">
           <Button
             onClick={toggleView}
+            className='mr-3'
           >
             Toggle Resource View
           </Button>
-          <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' onClick={() => setAddCustomerModal(true)}>
-            <UserPlus size={20} strokeWidth={1.5} />
-          </button>
 
-          <Link to='/leads/sales'>
-            <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]'  >
-              <Gauge size={20} strokeWidth={1.5} />
-            </button>
-          </Link>
-
-          <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' onClick={() => setAddApptModal(true)}>
-            <CalendarPlus size={20} strokeWidth={1.5} />
-          </button>
-
-
-          <SearchCustomerModal />
 
         </span>
         <span className="ml-auto justify-end">
-          <button className='first:rounded-tl-md last:rounded-tr-md first:rounded-bl-md last:rounded-br-md p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3' onClick={() => onNavigate(navigate.PREVIOUS)}>
+          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-[#02a9ff] justify-center items-center ' onClick={() => onNavigate(navigate.PREVIOUS)}>
             <ChevronsLeft size={20} strokeWidth={1.5} />
           </button>
-          <button className='first:rounded-tl-md last:rounded-tr-md first:rounded-bl-md last:rounded-br-md  p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3' onClick={() => onNavigate(navigate.TODAY)}>
+          <button className='rounded-none  p-2 cursor-pointer hover:text-[#02a9ff] justify-center items-center ' onClick={() => onNavigate(navigate.TODAY)}>
             <ChevronsRightLeft size={20} strokeWidth={1.5} />
           </button>
-          <button className='first:rounded-tl-md last:rounded-tr-md first:rounded-bl-md last:rounded-br-md  p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3' onClick={() => onNavigate(navigate.NEXT)}
+          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-[#02a9ff] justify-center items-center mr-3' onClick={() => onNavigate(navigate.NEXT)}
           >
             <ChevronsRight size={20} strokeWidth={1.5} />
           </button>
@@ -1041,98 +1037,312 @@ export default function DnDResource() {
       </div>
     )
   }
-  const views = ["day", "week", "month", "agenda"];
 
+  const [date, setDate] = useState<Date>()
+
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  const currentSecond = now.getSeconds();
+  const [hour, setHour] = useState(currentHour)
+  const [min, setMin] = useState(currentMinute)
+  const [sec, setSec] = useState(currentSecond);
+  useEffect(() => {
+    function updateTime() {
+      setHour(currentHour)
+      setMin(currentMinute)
+      setSec(currentSecond)
+    }
+    updateTime();
+    const intervalId = setInterval(updateTime, 60000);
+    return () => clearInterval(intervalId);
+  }, []);
+  const currentTime = `${hour}:${min}:${sec}`
+  console.log(`Current time is `, currentTime);
+  const time = `${hour}:${min}:${sec}`
+  const newDate = new Date()
+
+  const navigate = useNavigate();
+  const [calendarLabel, setCalendarLabel] = useState('Sales')
   return (
-    <div className='max-h-[95vh] max-w-[95vw]'>
-      <EventInfoModal
-        open={eventInfoModal}
-        handleClose={() => setEventInfoModal(false)}
-        onDeleteEvent={onDeleteEvent}
-        currentEvent={currentEvent as IEventInfo}
-        user={user}
-        onCompleteEvent={onCompleteEvent}
-      />
-      <AddCustomerModal
-        open={addCustomerModal}
-        handleClose={() => setAddCustomerModal(false)}
-        onDeleteEvent={onDeleteEvent}
-        currentEvent={currentEvent as IEventInfo}
-        user={user}
-        onCompleteEvent={onCompleteEvent}
-      />
-      <AddAppt
-        open={addApptModal}
-        handleClose={() => setAddApptModal(false)}
-        onDeleteEvent={onDeleteEvent}
-        currentEvent={currentEvent as IEventInfo}
-        user={user}
-        onCompleteEvent={onCompleteEvent}
-      />
-
-      <div className="size-full mt-5" >
-        {showResources ? (
-          <DragAndDropCalendar
-            style={{
-              height: "100vh",
-              width: "auto",
-              overflowX: "hidden",
-              overflowY: 'scroll',
-              objectFit: 'contain',
-              overscrollBehavior: 'contain',
-            }}
-
-            defaultView={Views.DAY}
-            events={myEvents}
-            // step={30}
-            //showMultiDayTimes={true}
-            localizer={localizer}
-            min={minTime}
-            max={maxTime}
-
-            onView={onView}
-            view={view}
-            resizable
-            selectable
-
-            components={{
-              event: EventInfo,
-              toolbar: CustomToolbar,
-            }}
-            onEventDrop={moveEvent}
-            onEventResize={resizeEvent}
-            onSelectEvent={handleSelectEvent}
-            onSelectSlot={handleSelectSlot}
-            onClick={() => setOpenDatepickerModal(true)}
-
-            resourceIdAccessor="resourceId"
-            resources={resourceMap}
-            resourceTitleAccessor="resourceTitle"
-          />
-        ) : (
-          <DragAndDropCalendar
-            defaultView={Views.DAY}
-            events={myEvents}
-            step={15}
-            showMultiDayTimes={true}
-            localizer={localizer}
-            min={minTime}
-            max={maxTime}
-            components={{
-              event: EventInfo,
-              toolbar: CustomToolbar,
-            }}
-            resizable
-            selectable
-            onEventDrop={moveEvent}
-            onEventResize={resizeEvent}
-            onSelectEvent={handleSelectEvent}
-            onSelectSlot={handleSelectSlot}
-            onClick={() => setOpenDatepickerModal(true)}
-          />
-        )}
+    <>
+      <div className="h-[75px]  w-auto  border-b border-[#3d3d3d] bg-[#121212] text-[#cbd0d4]">
+        <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
+        <p className="text-muted-foreground   ml-[105px]  ">
+          {calendarLabel}
+        </p>
       </div>
-    </div>
+      <div className=" grow">
+        <div className='flex w-auto '>
+          <EventInfoModal
+            open={eventInfoModal}
+            handleClose={() => setEventInfoModal(false)}
+            onDeleteEvent={onDeleteEvent}
+            currentEvent={currentEvent as IEventInfo}
+            user={user}
+            onCompleteEvent={onCompleteEvent}
+          />
+          <AddCustomerModal
+            open={addCustomerModal}
+            handleClose={() => setAddCustomerModal(false)}
+            onDeleteEvent={onDeleteEvent}
+            currentEvent={currentEvent as IEventInfo}
+            user={user}
+            onCompleteEvent={onCompleteEvent}
+          />
+          <AddAppt
+            open={addApptModal}
+            handleClose={() => setAddApptModal(false)}
+            onDeleteEvent={onDeleteEvent}
+            currentEvent={currentEvent as IEventInfo}
+            user={user}
+            onCompleteEvent={onCompleteEvent}
+          />
+          <div className='h-screen w-[310px] border-r border-[#3d3d3d]'>
+            <div className=' mt-5 flex-col mx-auto justify-center'>
+              <div className="mx-auto w-[280px] rounded-md border-white bg-[#121212] px-3 text-white " >
+                <div className='  my-3 flex justify-center   '>
+                  <CalendarIcon className="mr-2 size-8 " />
+                  {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                </div>
+                <SmallCalendar
+                  className='mx-auto w-auto   bg-[#121212] text-[#ccd2df]'
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </div>
+            </div>
+            <div className=' mt-2 grid grid-cols-1  justify-center mx-auto'>
+              <input type='hidden' value={String(date)} name='value' />
+
+              <Button
+                variant={"ghost"}
+                className={cn(
+                  "w-[240px] px-4 text-[#ccd2df] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff]  hover:border-transparent",
+                  !date && " text-[#ccd2df]"
+                )}
+              >
+                <div className=' text-[#ccd2df]  mx-auto flex justify-center my-auto '>
+                  <ClockIcon className="mr-2 size-8 " />
+                  {currentTime ? (time) : <span>Pick a Time</span>}
+                  <p className='my-auto'></p>
+                </div>
+              </Button>
+
+              <div className='mt-5 grow justify-center'>
+                <div className=' grid grid-cols-1 ' >
+                  <Accordion type="single" collapsible className="w-[240px] text-white mx-auto">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>Calendars</AccordionTrigger>
+                      <AccordionContent>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Sales')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Sales'
+                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
+                              : "hover:bg-[#232324]  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Sales
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Finance')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Finance'
+                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
+                              : "hover:bg-[#232324]  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Finance
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Drivers Schedule')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Drivers Schedule'
+                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
+                              : "hover:bg-[#232324]  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Drivers Schedule
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Service')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Service'
+                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
+                              : "hover:bg-[#232324]  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Service
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Accessories')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Accessories'
+                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
+                              : "hover:bg-[#232324]  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Accessories
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Parts')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Parts'
+                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
+                              : "hover:bg-[#232324]  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Parts
+                        </Button>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                  <Button
+                    variant='outline'
+                    className=' px-4 mx-auto mt-3 text-[#cbd0d4] cursor-pointer hover:text-[#02a9ff] justify-center items-center border-[#fff] hover:border-[#02a9ff]  bg-transparent hover:bg-transparent w-[240px] '
+                    onClick={() => setAddCustomerModal(true)}>
+                    <>
+                      <UserPlus size={20} strokeWidth={1.5} />
+                      <p className='ml-2'>
+                        Add Customer
+                      </p>
+                    </>
+                  </Button>
+
+                  <Button
+                    variant='outline'
+                    onClick={() => (
+                      navigate('/dealer/leads/sales')
+                    )}
+                    className=' w-[240px] mt-3 text-[#cbd0d4] cursor-pointer hover:text-[#02a9ff] justify-center items-center  mx-auto  border-[#fff] hover:border-[#02a9ff] bg-transparent hover:bg-transparent   '  >
+                    <>
+                      <Gauge size={20} strokeWidth={1.5} />
+                      <p className='ml-2'>
+                        Sales Dashboard
+                      </p>
+                    </>
+                  </Button>
+
+                  <Button
+                    variant='outline'
+                    className=' px-4 mt-3 mx-auto text-[#cbd0d4] cursor-pointer hover:text-[#02a9ff] justify-center items-center   border-[#fff] hover:border-[#02a9ff] bg-transparent hover:bg-transparent w-[240px]'
+                    onClick={() => setAddApptModal(true)}>
+                    <>
+                      <CalendarPlus size={20} strokeWidth={1.5} />
+                      <p className='ml-2'>
+                        Add Appointment
+                      </p>
+                    </>
+                  </Button>
+
+                  <SearchCustomerModal />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex w-[97%] justify-center overflow-clip">
+            {showResources ? (
+              <DragAndDropCalendar
+                style={{
+                  // width: 'auto',//`calc(100vw - 210px)`,
+                  // height: 'auto',
+                  // maxHeight: "95vh",
+                  // overflow: "scroll",
+
+                  width: `calc(100vw - 310px)`,
+                  height: "100vh",
+                  overflowX: "hidden",
+                  overflowY: "scroll",
+                  objectFit: "contain",
+                  overscrollBehavior: "contain",
+                  color: "white",
+                }}
+
+                defaultView={Views.DAY}
+                events={myEvents}
+                // step={30}
+                //showMultiDayTimes={true}
+                localizer={localizer}
+                min={minTime}
+                max={maxTime}
+
+                onView={onView}
+                view={view}
+                resizable
+                selectable
+
+                components={{
+                  toolbar: CustomToolbar,
+                  event: EventInfo,
+                }}
+                onEventDrop={moveEvent}
+                onEventResize={resizeEvent}
+                onSelectEvent={handleSelectEvent}
+                onSelectSlot={handleSelectSlot}
+                onClick={() => setOpenDatepickerModal(true)}
+
+                resourceIdAccessor="resourceId"
+                resources={resourceMap}
+                resourceTitleAccessor="resourceTitle"
+              />
+            ) : (
+              <DragAndDropCalendar
+                style={{
+                  width: `calc(100vw - 310px)`,
+                  height: "100vh",
+                  overflowX: "hidden",
+                  overflowY: "scroll",
+                  objectFit: "contain",
+                  overscrollBehavior: "contain",
+                  color: "white",
+                }}
+                defaultView={Views.DAY}
+                events={myEvents}
+                step={15}
+                showMultiDayTimes={true}
+                localizer={localizer}
+                min={minTime}
+                max={maxTime}
+                components={{
+                  toolbar: CustomToolbar,
+                  event: EventInfo,
+                }}
+                resizable
+                selectable
+                onEventDrop={moveEvent}
+                onEventResize={resizeEvent}
+                onSelectEvent={handleSelectEvent}
+                onSelectSlot={handleSelectSlot}
+                onClick={() => setOpenDatepickerModal(true)}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+
   )
 }
 
@@ -1411,3 +1621,5 @@ var CustomToolbar = ({ handleChange }) => {
               onAddEvent={onAddEvent}
               todos={todos}
             /> */
+
+

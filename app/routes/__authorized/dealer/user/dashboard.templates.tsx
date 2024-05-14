@@ -1,24 +1,40 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable no-template-curly-in-string */
+import React, { useEffect, useState, useCallback } from 'react';
 import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui";
-import { Form, Link, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card"
-import { FaCheck } from "react-icons/fa";
-
-import { scriptsLoader, scriptsAction } from '~/components/actions/scriptsAL';
-import { Copy } from 'lucide-react';
+import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card"
+import { GetUser } from "~/utils/loader.server";
+import { redirect, type DataFunctionArgs, json, type ActionFunction, type LoaderFunction } from '@remix-run/node'
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { Toaster, toast } from 'sonner'
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
-import { type ActionFunction } from '@remix-run/node';
 import { prisma } from '~/libs';
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area"
+import { getSession } from '~/sessions/auth-session.server';
+import { getDealerFeesbyEmail } from "~/utils/user.server";
+import { BubbleMenu, EditorContent, EditorProvider, useCurrentEditor, useEditor, type Content, } from "@tiptap/react"
+import { HoverCard, HoverCardContent, HoverCardTrigger, } from "~/components/ui/hover-card"
+import { cn } from "~/components/ui/utils"
+import { buttonVariants } from "~/components/ui/button"
+import { Copy, Undo, Redo, List, ScanLine, Eraser, Code, ListPlus, Brackets, Pilcrow, Minus, AlignLeft, AlignCenter, AlignRight, AlignJustify, Highlighter, WrapText, Quote, Heading1, Heading2, Heading3 } from 'lucide-react';
+import { FaCheck, FaBold, FaStrikethrough, FaItalic, FaUnlink, FaLink, FaList, FaListOl, FaFileCode, FaQuoteLeft, FaUndo, FaAlignJustify, FaAlignLeft, FaRedo, FaAlignRight, FaAlignCenter, FaHighlighter, FaEraser, FaUnderline } from "react-icons/fa";
+import { BiCodeBlock } from "react-icons/bi";
+import { MdHorizontalRule } from "react-icons/md";
+import { IoMdReturnLeft } from "react-icons/io";
+
+import Document from '@tiptap/extension-document'
+import Paragraph from '@tiptap/extension-paragraph'
+import Typography from "@tiptap/extension-typography"
+import Underline from "@tiptap/extension-underline"
+import { Color } from '@tiptap/extension-color'
+import TextStyle from '@tiptap/extension-text-style'
+import StarterKit from "@tiptap/starter-kit"
+import TextAlign from '@tiptap/extension-text-align'
+import Placeholder from "@tiptap/extension-placeholder"
+import Link from "@tiptap/extension-link"
+import Text from '@tiptap/extension-text'
+import Highlight from "@tiptap/extension-highlight"
+import ListItem from '@tiptap/extension-list-item'
+import TaskItem from '@tiptap/extension-task-item'
 
 export const meta = () => {
   return [
@@ -36,25 +52,88 @@ export const meta = () => {
   ];
 };
 
-export let loader = scriptsLoader
-export const action: ActionFunction = async ({ request }) => {
-  const formPayload = Object.fromEntries(await request.formData())
-  const formData = financeFormSchema.parse(formPayload);
-
-  const template = await prisma.emailTemplates.create({
-    data: {
-      name: formData.name,
-      body: formData.body,
-      title: formData.title,
-      category: formData.category,
-      userEmail: formData.userEmail,
-      dept: formData.dept,
-      type: 'text / email',
+export async function loader({ request, params }: LoaderFunction) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  const user = await GetUser(email)  /// console.log(user, account, 'wquiote loadert')
+  if (!user) {
+    redirect('/login')
+  }
+  const dFees = await getDealerFeesbyEmail(user?.email)
+  const templates = await prisma.emailTemplates.findMany({
+    where: {
+      userEmail: email,
     },
   });
-  return template;
+  return json({
+    ok: true,
+    email,
+    user,
+    templates,
+    dFees
+  })
 }
+
+export const action = async ({ request }: ActionArgs) => {
+  const formPayload = Object.fromEntries(await request.formData());
+  let formData = financeFormSchema.parse(formPayload)
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  const user = await GetUser(email)
+  if (!user) { redirect('/login') }
+
+  const intent = formData.intent;
+
+  const data = {
+    body: formData.body,
+    title: formData.title,
+    category: formData.category,
+    userEmail: formData.userEmail,
+    review: formData.review,
+    dept: formData.dept,
+    type: formData.type,
+    subject: formData.subject,
+    subCat: formData.subCat,
+  };
+
+  if (intent === "createTemplate") {
+    const template = await prisma.emailTemplates.create({
+      data: {
+        ...data,
+      },
+    });
+    console.log('create template')
+    return json({ template, user });
+  }
+
+  if (intent === "updateTemplate") {
+    const id = formData.id
+    const template = await prisma.emailTemplates.update({
+      data: {
+        ...data,
+      },
+      where: {
+        id: id,
+      },
+    });
+    console.log('update template', formData, data, template)
+    return json({ template, user });
+  }
+  if (intent === "deleteTemplate") {
+    const id = formData.id
+    const template = await prisma.emailTemplates.delete({
+      where: {
+        id: id,
+      },
+    });
+    return template;
+  }
+  console.log('returned null')
+  return (user)
+};
+
 export default function Shight() {
+  const { user, templates } = useLoaderData();
 
   let scripts = [
     {
@@ -203,7 +282,7 @@ export default function Shight() {
       email: "",
       name: "No answer - respect decision to wait",
       content: "While I respect your decision to wait, if this is the unit you want. We can button up the deal now, and you can store it here for free till your ready to pick up. Because if we were to order one we wouldn't get till after June, maybe longer.",
-      category: "Follow-up",
+      category: "Follow-ups",
       subCat: 'No answer - respect decision to wait',
     },
     {
@@ -1546,9 +1625,6 @@ export default function Shight() {
     },
   ]
 
-
-  const { user, } = useLoaderData();
-
   const copyText = (text) => {
     navigator.clipboard.writeText(text)
       .then(() => {
@@ -1568,14 +1644,14 @@ export default function Shight() {
 
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('Closes');
-  const [subcategories, setSubcategories] = useState(scripts.reduce((unique, mail) => {
+  const [subcategories, setSubcategories] = useState(templates.reduce((unique, mail) => {
     if (!unique.includes(mail.subCat)) {
       unique.push(mail.subCat);
     }
     return unique;
   }, [])); function handleEmailClick(category) {
     setSelectedCategory(category);
-    const sameCategoryMails = scripts.filter(item => item.category === category);
+    const sameCategoryMails = templates.filter(item => item.category === category);
     const uniqueSubcategories = sameCategoryMails.reduce((unique, item) => {
       if (!unique.includes(item.subCat)) {
         unique.push(item.subCat);
@@ -1586,7 +1662,10 @@ export default function Shight() {
   }
   function handleSubCatLisstClick(mail) {
     setSelectedRecord(mail);
+    setText(mail.content)
+    console.log(mail, mail.content, 'mail')
   }
+
   const navigation = useNavigation();
   const isSubmitting = navigation.formAction === "/user/dashboard/scripts";
 
@@ -1611,6 +1690,607 @@ export default function Shight() {
     setSelectedSubcategory(false);
     setSelectedScript(true);
   };
+  const [text, setText] = React.useState('');
+  const [content, setContent] = useState('')
+  const [finalText, setFinalText] = React.useState('');
+  const [id, setId] = useState('')
+
+  useEffect(() => {
+    if (text) {
+      setContent(text)
+      editor?.commands.setContent({
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": text
+              }
+            ]
+          }
+        ]
+      })
+    }
+  }, [text])
+
+  let handleUpdate;
+  const CustomDocument = Document.extend({ content: 'taskList', })
+  const CustomTaskItem = TaskItem.extend({ content: 'inline*', })
+  const editor = useEditor({
+    content,
+    extensions: [
+      Document,
+      Paragraph,
+      Text,
+      Highlight,
+      Typography,
+      Underline,
+      CustomDocument,
+      CustomTaskItem,
+      Color,//.configure({ types: [TextStyle.name, ListItem.name] }),
+      TextStyle,
+      StarterKit.configure({
+        bulletList: { keepMarks: true, keepAttributes: false, },
+        orderedList: { keepMarks: true, keepAttributes: false, },
+      }),
+      TextAlign.configure({ types: ['heading', 'paragraph'], }),
+      Placeholder.configure({ placeholder: () => { return "Write something..." }, }),
+      Link.configure({ HTMLAttributes: { rel: "noopener noreferrer", target: "_blank", class: "prose-a-styles", }, }),
+    ],
+    editorProps: { attributes: { class: "prose-config" } },
+    onUpdate({ editor }) {
+      setFinalText(editor.getHTML())
+      if (handleUpdate) {
+        handleUpdate(editor.getHTML())
+      }
+    },
+  })
+  const buttonActive = 'bg-white text-black rounded-md p-1 ';
+  const buttonInactive = 'bg-[#121212] text-white hover:text-[#02a9ff] hover:bg-transparent';
+
+
+  const handleSetLink = useCallback(() => {
+    if (!editor) return null
+
+    const previousUrl = editor.getAttributes("link").href as string
+    const url = window.prompt("URL", previousUrl)
+
+    if (url === null) return
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run()
+      return
+    }
+
+    const fixedUrl = fixUrl(url)
+    editor.chain().focus().extendMarkRange("link").setLink({ href: fixedUrl }).run()
+  })
+
+
+  const clientAtr =
+    [
+      { title: "Mr/Mrs", attribute: "${clientTitle}" },
+      { title: "First Name", attribute: "${firstName}" },
+      { title: "Last Name", attribute: "${lastName}" },
+      { title: "Full Name", attribute: "${name}" },
+      { title: "Phone", attribute: "${phone}" },
+      { title: 'Email', attribute: '${email}' },
+      { title: 'Company Name', attribute: '${clientCompanyName}' },
+      { title: 'Address', attribute: '${address}' },
+      { title: 'City', attribute: '${city}' },
+      { title: 'Province', attribute: '${province}' },
+      { title: 'Postal Code', attribute: '${postal}' },
+    ]
+  const wantedVehAttr = [
+    { title: 'Year', attribute: "${year}" },
+    { title: "Brand", attribute: "${brand}" },
+    { title: "Model", attribute: "${model}" },
+    { title: "Trim", attribute: "${trim}" },
+    { title: "Stock Number", attribute: "${stockNumber}" },
+    { title: "VIN", attribute: "${vin}" },
+    { title: 'Color', attribute: '${color}' },
+    { title: 'Balance', attribute: '${balance}' },
+    { title: 'packageNumber', attribute: '${packageNumber}' },
+    { title: 'packagePrice', attribute: '${packagePrice}' },
+    { title: 'stockNumber', attribute: '${stockNumber}' },
+    { title: 'type', attribute: '${type}' },
+    { title: 'class', attribute: '${class}' },
+    { title: 'year', attribute: '${year}' },
+    { title: 'make', attribute: '${make}' },
+    { title: 'model', attribute: '${model}' },
+    { title: 'modelName', attribute: '${modelName}' },
+    { title: 'submodel', attribute: '${submodel}' },
+    { title: 'subSubmodel', attribute: '${subSubmodel}' },
+    { title: 'price', attribute: '${price}' },
+    { title: 'exteriorColor', attribute: '${exteriorColor}' },
+    { title: 'mileage', attribute: '${mileage}' },
+    { title: 'consignment', attribute: '${consignment}' },
+    { title: 'onOrder', attribute: '${onOrder}' },
+    { title: 'expectedOn', attribute: '${expectedOn}' },
+    { title: 'status', attribute: '${status}' },
+    { title: 'orderStatus', attribute: '${orderStatus}' },
+    { title: 'hdcFONumber', attribute: '${hdcFONumber}' },
+    { title: 'hdmcFONumber', attribute: '${hdmcFONumber}' },
+    { title: 'vin', attribute: '${vin}' },
+    { title: 'age', attribute: '${age}' },
+    { title: 'floorPlanDueDate', attribute: '${floorPlanDueDate}' },
+    { title: 'location', attribute: '${location}' },
+    { title: 'stocked', attribute: '${stocked}' },
+    { title: 'stockedDate', attribute: '${stockedDate}' },
+    { title: 'isNew', attribute: '${isNew}' },
+    { title: 'actualCost', attribute: '${actualCost}' },
+    { title: 'mfgSerialNumber', attribute: '${mfgSerialNumber}' },
+    { title: 'engineNumber', attribute: '${engineNumber}' },
+    { title: 'plates', attribute: '${plates}' },
+    { title: 'keyNumber', attribute: '${keyNumber}' },
+    { title: 'length', attribute: '${length}' },
+    { title: 'width', attribute: '${width}' },
+    { title: 'engine', attribute: '${engine}' },
+    { title: 'fuelType', attribute: '${fuelType}' },
+    { title: 'power', attribute: '${power}' },
+    { title: 'chassisNumber', attribute: '${chassisNumber}' },
+    { title: 'chassisYear', attribute: '${chassisYear}' },
+    { title: 'chassisMake', attribute: '${chassisMake}' },
+    { title: 'chassisModel', attribute: '${chassisModel}' },
+    { title: 'chassisType', attribute: '${chassisType}' },
+    { title: 'registrationState', attribute: '${registrationState}' },
+    { title: 'registrationExpiry', attribute: '${registrationExpiry}' },
+    { title: 'grossWeight', attribute: '${grossWeight}' },
+    { title: 'netWeight', attribute: '${netWeight}' },
+    { title: 'insuranceCompany', attribute: '${insuranceCompany}' },
+    { title: 'policyNumber', attribute: '${policyNumber}' },
+    { title: 'insuranceAgent', attribute: '${insuranceAgent}' },
+    { title: 'insuranceStartDate', attribute: '${insuranceStartDate}' },
+    { title: 'insuranceEndDate', attribute: '${insuranceEndDate}' },
+    { title: 'sold', attribute: '${sold}' },
+  ]
+  const tradeVehAttr = [
+    { title: 'Year', attribute: "${tradeYear}" },
+    { title: "Brand", attribute: "${tradeMake}" },
+    { title: "Model", attribute: "${tradeDesc}" },
+    { title: "Trim", attribute: "${tradeTrim}" },
+    { title: "VIN", attribute: "${tradeVin}" },
+    { title: 'Color', attribute: "${tradeColor}" },
+    { title: 'Trade Value', attribute: "${tradeValue}" },
+    { title: 'Mileage', attribute: '${tradeMileage}' },
+  ]
+  const salesPersonAttr = [
+    { title: 'First Name', attribute: "${userFname}" },
+    { title: "Full Name", attribute: "${userFullName}" },
+    { title: "Phone or EXT", attribute: "${userPhone}" },
+    { title: 'Email', attribute: "${userEmail}" },
+    { title: 'Cell #', attribute: "${userCell}" },
+  ]
+  const FandIAttr = [
+    { title: 'Institution', attribute: "${fAndIInstitution}" },
+    { title: "Assigned Manager", attribute: "${fAndIFullName}" },
+    { title: "Email", attribute: "${fAndIEmail}" },
+    { title: "Name", attribute: "${fAndIFullName}" },
+    { title: 'Phone # or EXT', attribute: "${fAndIPhone}" },
+    { title: 'Cell #', attribute: "${fAndICell}" },
+  ]
+  const dealerInfo = [
+    { title: 'dealerName', attribute: '${dealerName}' },
+    { title: 'dealerAddress', attribute: '${dealerAddress}' },
+    { title: 'dealerCity', attribute: '${dealerCity}' },
+    { title: 'dealerProv', attribute: '${dealerProv}' },
+    { title: 'dealerPostal', attribute: '${dealerPostal}' },
+    { title: 'dealerPhone', attribute: '${dealerPhone}' },
+    { title: 'userLoanProt', attribute: '${userLoanProt}' },
+    { title: 'userTireandRim', attribute: '${userTireandRim}' },
+    { title: 'userGap', attribute: '${userGap}' },
+    { title: 'userExtWarr', attribute: '${userExtWarr}' },
+    { title: 'userServicespkg', attribute: '${userServicespkg}' },
+    { title: 'vinE', attribute: '${vinE}' },
+    { title: 'lifeDisability', attribute: '${lifeDisability}' },
+    { title: 'rustProofing', attribute: '${rustProofing}' },
+    { title: 'userLicensing', attribute: '${userLicensing}' },
+    { title: 'userFinance', attribute: '${userFinance}' },
+    { title: 'userDemo', attribute: '${userDemo}' },
+    { title: 'userGasOnDel', attribute: '${userGasOnDel}' },
+    { title: 'userOMVIC', attribute: '${userOMVIC}' },
+    { title: 'userOther', attribute: '${userOther}' },
+    { title: 'userTax', attribute: '${userTax}' },
+    { title: 'userAirTax', attribute: '${userAirTax}' },
+    { title: 'userTireTax', attribute: '${userTireTax}' },
+    { title: 'userGovern', attribute: '${userGovern}' },
+    { title: 'userPDI', attribute: '${userPDI}' },
+    { title: 'userLabour', attribute: '${userLabour}' },
+    { title: 'userMarketAdj', attribute: '${userMarketAdj}' },
+    { title: 'userCommodity', attribute: '${userCommodity}' },
+    { title: 'destinationCharge', attribute: '${destinationCharge}' },
+    { title: 'userFreight', attribute: '${userFreight}' },
+    { title: 'userAdmin', attribute: '${userAdmin}' },
+  ]
+  const financeInfo = [
+    {
+      title: "financeManager",
+      attribute: "${financeManager}"
+    },
+    {
+      title: 'email',
+      attribute: '${email}'
+    },
+    {
+      title: 'firstName',
+      attribute: '${firstName}'
+    },
+    {
+      title: 'mileage',
+      attribute: '${mileage}'
+    },
+    {
+      title: 'lastName',
+      attribute: '${lastName}'
+    },
+    {
+      title: 'phone',
+      attribute: '${phone}'
+    },
+    {
+      title: 'name',
+      attribute: '${name}'
+    },
+    {
+      title: 'address',
+      attribute: '${address}'
+    },
+    {
+      title: 'city',
+      attribute: '${city}'
+    },
+    {
+      title: 'postal',
+      attribute: '${postal}'
+    },
+    {
+      title: 'province',
+      attribute: '${province}'
+    },
+    {
+      title: 'dl',
+      attribute: '${dl}'
+    },
+    {
+      title: 'typeOfContact',
+      attribute: '${typeOfContact}'
+    },
+    {
+      title: 'timeToContact',
+      attribute: '${timeToContact}'
+    },
+    {
+      title: 'iRate',
+      attribute: '${iRate}'
+    },
+    {
+      title: 'months',
+      attribute: '${months}'
+    },
+    {
+      title: 'discount',
+      attribute: '${discount}'
+    },
+    {
+      title: 'total',
+      attribute: '${total}'
+    },
+    {
+      title: 'onTax',
+      attribute: '${onTax}'
+    },
+    {
+      title: 'on60',
+      attribute: '${on60}'
+    },
+    {
+      title: 'biweekly',
+      attribute: '${biweekly}'
+    },
+    {
+      title: 'weekly',
+      attribute: '${weekly}'
+    },
+    {
+      title: 'weeklyOth',
+      attribute: '${weeklyOth}'
+    },
+    {
+      title: 'biweekOth',
+      attribute: '${biweekOth}'
+    },
+    {
+      title: 'oth60',
+      attribute: '${oth60}'
+    },
+    {
+      title: 'weeklyqc',
+      attribute: '${weeklyqc}'
+    },
+    {
+      title: 'biweeklyqc',
+      attribute: '${biweeklyqc}'
+    },
+    {
+      title: 'qc60',
+      attribute: '${qc60}'
+    },
+    {
+      title: 'deposit',
+      attribute: '${deposit}'
+    },
+    {
+      title: 'biweeklNatWOptions',
+      attribute: '${biweeklNatWOptions}'
+    },
+    {
+      title: 'weeklylNatWOptions',
+      attribute: '${weeklylNatWOptions}'
+    },
+    {
+      title: 'nat60WOptions',
+      attribute: '${nat60WOptions}'
+    },
+    {
+      title: 'weeklyOthWOptions',
+      attribute: '${weeklyOthWOptions}'
+    },
+    {
+      title: 'biweekOthWOptions',
+      attribute: '${biweekOthWOptions}'
+    },
+    {
+      title: 'oth60WOptions',
+      attribute: '${oth60WOptions}'
+    },
+    {
+      title: 'biweeklNat',
+      attribute: '${biweeklNat}'
+    },
+    {
+      title: 'weeklylNat',
+      attribute: '${weeklylNat}'
+    },
+    {
+      title: 'nat60',
+      attribute: '${nat60}'
+    },
+    {
+      title: 'qcTax',
+      attribute: '${qcTax}'
+    },
+    {
+      title: 'otherTax',
+      attribute: '${otherTax}'
+    },
+    {
+      title: 'totalWithOptions',
+      attribute: '${totalWithOptions}'
+    },
+    {
+      title: 'otherTaxWithOptions',
+      attribute: '${otherTaxWithOptions}'
+    },
+    {
+      title: 'desiredPayments',
+      attribute: '${desiredPayments}'
+    },
+    {
+      title: 'freight',
+      attribute: '${freight}'
+    },
+    {
+      title: 'admin',
+      attribute: '${admin}'
+    },
+    {
+      title: 'commodity',
+      attribute: '${commodity}'
+    },
+    {
+      title: 'pdi',
+      attribute: '${pdi}'
+    },
+    {
+      title: 'discountPer',
+      attribute: '${discountPer}'
+    },
+    {
+      title: 'userLoanProt',
+      attribute: '${userLoanProt}'
+    },
+    {
+      title: 'userTireandRim',
+      attribute: '${userTireandRim}'
+    },
+    {
+      title: 'userGap',
+      attribute: '${userGap}'
+    },
+    {
+      title: 'userExtWarr',
+      attribute: '${userExtWarr}'
+    },
+    {
+      title: 'userServicespkg',
+      attribute: '${userServicespkg}'
+    },
+    {
+      title: 'deliveryCharge',
+      attribute: '${deliveryCharge}'
+    },
+    {
+      title: 'vinE',
+      attribute: '${vinE}'
+    },
+    {
+      title: 'lifeDisability',
+      attribute: '${lifeDisability}'
+    },
+    {
+      title: 'rustProofing',
+      attribute: '${rustProofing}'
+    },
+    {
+      title: 'userOther',
+      attribute: '${userOther}'
+    },
+    {
+      title: 'paintPrem',
+      attribute: '${paintPrem}'
+    },
+    {
+      title: 'licensing',
+      attribute: '${licensing}'
+    },
+    {
+      title: 'stockNum',
+      attribute: '${stockNum}'
+    },
+    {
+      title: 'options',
+      attribute: '${options}'
+    },
+    {
+      title: 'accessories',
+      attribute: '${accessories}'
+    },
+    {
+      title: 'labour',
+      attribute: '${labour}'
+    },
+    {
+      title: 'year',
+      attribute: '${year}'
+    },
+    {
+      title: 'brand',
+      attribute: '${brand}'
+    },
+    {
+      title: 'model',
+      attribute: '${model}'
+    },
+    {
+      title: 'model1',
+      attribute: '${model1}'
+    },
+    {
+      title: 'color',
+      attribute: '${color}'
+    },
+    {
+      title: 'modelCode',
+      attribute: '${modelCode}'
+    },
+    {
+      title: 'msrp',
+      attribute: '${msrp}'
+    },
+    {
+      title: 'userEmail',
+      attribute: '${userEmail}'
+    },
+    {
+      title: 'tradeValue',
+      attribute: '${tradeValue}'
+    },
+    {
+      title: 'tradeDesc',
+      attribute: '${tradeDesc}'
+    },
+    {
+      title: 'tradeColor',
+      attribute: '${tradeColor}'
+    },
+    {
+      title: 'tradeYear',
+      attribute: '${tradeYear}'
+    },
+    {
+      title: 'tradeMake',
+      attribute: '${tradeMake}'
+    },
+    {
+      title: 'tradeVin',
+      attribute: '${tradeVin}'
+    },
+    {
+      title: 'tradeTrim',
+      attribute: '${tradeTrim}'
+    },
+    {
+      title: 'tradeMileage',
+      attribute: '${tradeMileage}'
+    },
+    {
+      title: 'trim',
+      attribute: '${trim}'
+    },
+    {
+      title: 'vin',
+      attribute: '${vin}'
+    },
+    {
+      title: 'leadNote',
+      attribute: '${leadNote}'
+    },
+    {
+      title: 'sendToFinanceNow',
+      attribute: '${sendToFinanceNow}'
+    },
+    {
+      title: 'dealNumber',
+      attribute: '${dealNumber}'
+    },
+    {
+      title: 'bikeStatus',
+      attribute: '${bikeStatus}'
+    },
+    {
+      title: 'lien',
+      attribute: '${lien}'
+    },
+  ]
+
+  const [attribute, setAttribute] = useState('')
+  function AttributeClick(item) {
+    setAttribute(item.title);
+    editor.commands.insertContent(item.attribute);
+    console.log(item.attribute, 'attribute')
+  }
+
+  function ClientAttributes({ items, ...props }) {
+    return (
+      <nav
+        className={cn(
+          'flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1',
+        )}
+        {...props}
+      >
+        {items.map((item) => (
+          <Button
+            key={item.title}
+            variant="ghost"
+            className={cn(
+              buttonVariants({ variant: 'ghost' }),
+              attribute === item.title
+                ? 'bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]'
+                : 'hover:bg-[#232324] w-[90%]',
+              'justify-start w-[90%]'
+            )}
+            value={item.attribute}
+            onClick={() => {
+              AttributeClick(item)
+            }}
+          >
+            {item.title}
+          </Button>
+        ))}
+      </nav>
+    )
+  }
 
   return (
     <>
@@ -1623,7 +2303,7 @@ export default function Shight() {
             <>
               <CardContent className="space-y-2 ">
                 <div className="h-auto max-h-[700px] space-y-1 overflow-y-auto  ">
-                  {scripts.reduce((unique, mail) => {
+                  {templates.reduce((unique, mail) => {
                     if (!unique.some(item => item.category === mail.category)) {
                       unique.push(mail);
                     }
@@ -1664,6 +2344,7 @@ export default function Shight() {
                       onClick={() => {
                         handleSubCatLisstClick(scripts.find((mail) => mail.subCat === subCat));
                         handleScriptClick();
+
                       }}
                     >
                       <div className="m-2 flex items-center justify-between">
@@ -1680,7 +2361,7 @@ export default function Shight() {
 
         <Card className={`mx-2  transition delay-300 duration-1000 ease-in-out ${selectedScript ? 'grow' : 'w-[15%]'} `}        >
           <CardHeader onClick={handleScriptClick} className='cursor-pointer'>
-            <CardTitle>Script</CardTitle>
+            <CardTitle>Template</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 ">
             {selectedScript && (
@@ -1688,46 +2369,294 @@ export default function Shight() {
                 {selectedRecord && (
                   <div className="">
                     <div className="m-2 mx-auto w-[95%]   hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
-                      <div className="m-2  items-center justify-between p-2 text-white">
+                      <div className="flex m-2  items-center justify-between p-2 text-white">
                         <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
-                        <div className='flex justify-between text-[16px]  text-[#fff]'>
-                          <p className='text-[20px]'>{selectedRecord.name}</p>
-                        </div>
-                        <p className='mt-5'>{selectedRecord.content}</p>
-                        <div className='mt-5 flex  items-center justify-between text-[#fff]'>
-                          <div className='flex' >
-                            <Button variant='outline' className="cursor-pointer bg-transparent text-white  hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(selectedRecord.content)} >
-
-                              {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
-                              {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
-                            </Button>
-
-                          </div>
-                          <Form method='post'>
-                            <input type='hidden' name='name' value={selectedRecord.name} />
-                            <input type='hidden' name='body' value={selectedRecord.content} />
-                            <input type='hidden' name='category' value={selectedRecord.category} />
-                            <input type='hidden' name='userEmail' value={user.email} />
-                            <input type='hidden' name='subject' value='Copied from scripts' />
-                            <input type='hidden' name='title' value='Copied from scripts' />
-                            <input type='hidden' name='dept' value='sales' />
-                            <ButtonLoading
-                              size="lg"
-                              name='intent'
-                              value='createTemplate'
-                              type='submit'
-                              isSubmitting={isSubmitting}
-                              onClick={() => {
-                                toast.message('Helping you become the hulk of sales...')
-                              }}
-                              loadingText="Loading..."
-                              className="w-auto cursor-pointer border-white bg-transparent text-white hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]"
-                            >
-                              Save As Template
-                            </ButtonLoading>
-                          </Form>
-                        </div>
+                        <Button variant='outline' className="cursor-pointer bg-transparent text-white  hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(selectedRecord.content)} >
+                          {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
+                          {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
+                        </Button>
                       </div>
+                    </div>
+                    <div className='grid grid-cols-1' >
+                      <div className='flex mx-auto' >
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <Button
+                              className='mx-2'
+                              variant="link" >
+                              Client
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
+                            <div className=''>
+                              <ClientAttributes items={clientAtr} />
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <Button
+                              className='mx-2'
+                              variant="link" >
+                              Wanted Veh.
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
+                            <div className=''>
+                              <ClientAttributes items={wantedVehAttr} />
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <Button
+                              className='mx-2'
+                              variant="link" >
+                              Trade Veh
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
+                            <div className=''>
+                              <ClientAttributes items={tradeVehAttr} />
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <Button
+                              className='mx-2'
+                              variant="link" >
+                              Sales Person
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
+                            <div className=''>
+                              <ClientAttributes items={salesPersonAttr} />
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <Button
+                              className='mx-2'
+                              variant="link" >
+                              F & I
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
+                            <div className=''>
+                              <ClientAttributes items={FandIAttr} />
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <Button
+                              className='mx-2'
+                              variant="link" >
+                              Dealer Info
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
+                            <div className=''>
+                              <ClientAttributes items={dealerInfo} />
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <Button
+                              className='mx-2'
+                              variant="link" >
+                              Finance Info
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
+                            <ClientAttributes items={financeInfo} />
+                          </HoverCardContent>
+                        </HoverCard>
+                      </div>
+                      <div
+                        className={cn(
+                          "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
+                          "bg-[#121212] text-white transition-all justify-center",
+                          // "sm:sticky sm:top-[80px]",
+                        )}
+                      >
+                        <button
+                          onClick={() => editor.chain().focus().toggleBold().run()}
+                          className={editor.isActive("bold") ? buttonActive : buttonInactive}
+                        >
+                          <FaBold className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().toggleItalic().run()}
+                          className={editor.isActive("italic") ? buttonActive : buttonInactive}
+                        >
+                          <FaItalic className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().toggleStrike().run()}
+                          className={editor.isActive("strike") ? buttonActive : buttonInactive}
+                        >
+                          <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+
+                        <Minus color="#121212" strokeWidth={1.5} />
+                        <button
+                          onClick={handleSetLink}
+                          className={editor.isActive("link") ? buttonActive : buttonInactive}
+                        >
+                          <FaLink className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().unsetLink().run()}
+                          disabled={!editor.isActive("link")}
+                          className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
+                        >
+                          <FaUnlink className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <Minus color="#000" strokeWidth={1.5} />
+                        <button
+                          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                          className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
+                        >
+                          <FaQuoteLeft className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().toggleCode().run()}
+                          className={editor.isActive('code') ? buttonActive : buttonInactive}
+                          disabled={!editor.can().chain().focus().toggleCode().run()}
+                        >
+                          <FaFileCode className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                          className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
+                        >
+                          <BiCodeBlock className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().toggleBulletList().run()}
+                          className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
+                        >
+                          <FaList className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                          className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
+                        >
+                          <FaListOl className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+
+                        <Minus color="#000" strokeWidth={1.5} />
+                        <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                          <MdHorizontalRule className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button onClick={() => editor.chain().focus().setHardBreak().run()}>
+                          <IoMdReturnLeft className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <Minus color="#000" strokeWidth={1.5} />
+                        <button
+                          onClick={() => editor.chain().focus().undo().run()}
+                          disabled={!editor.can().chain().focus().undo().run()}
+                        >
+                          <FaUndo className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().redo().run()}
+                          disabled={!editor.can().chain().focus().redo().run()}
+                        >
+                          <FaRedo className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <Minus color="#000" strokeWidth={1.5} />
+                        <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                          className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
+                        >
+                          <FaAlignLeft className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                          className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
+                        >
+                          <FaAlignCenter className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                          className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
+                        >
+                          <FaAlignRight className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+                          className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
+                        >
+                          <FaAlignJustify className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <Minus color="#000" strokeWidth={1.5} />
+                        <button
+                          onClick={() => editor.chain().focus().toggleHighlight().run()}
+                          className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+                        >
+                          <FaHighlighter className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <input
+                          type="color"
+                          onInput={event => editor.chain().focus().setColor(event.target.value).run()}
+                          value={editor.getAttributes('textStyle').color}
+                          data-testid="setColor"
+                        />
+                        <button
+                          onClick={() => editor.chain().focus().unsetColor().run()}
+                          className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+                        >
+                          <FaEraser className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <Minus color="#000" strokeWidth={1.5} />
+                        <button
+                          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                          className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
+                        >
+                          <Heading1 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                          className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
+
+                        >
+                          <Heading2 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                        <button
+                          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                          className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
+
+                        >
+                          <Heading3 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                        </button>
+                      </div>
+                      <EditorContent editor={editor} className=" p-3 mb-2 mt-auto cursor-text   bg-white mx-auto w-[95%] rounded-md text-black place-self-end self-end" />
+                      <Form method='post'>
+                        <input type='hidden' defaultValue={id} name='id' />
+                        <input type='hidden' defaultValue={user?.email} name='userEmail' />
+                        <input type='hidden' defaultValue='updateTemplate' name='intent' />
+                        <input type='hidden' defaultValue={finalText} name='body' />
+
+                        <ButtonLoading
+                          size="lg"
+                          name='intent'
+                          value='createTemplate'
+                          type='submit'
+                          isSubmitting={isSubmitting}
+                          onClick={() => {
+                            toast.message('Helping you become the hulk of sales...')
+                          }}
+                          loadingText="Loading..."
+                          className="w-auto cursor-pointer border-white bg-transparent text-white hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]"
+                        >
+                          Save As Template
+                        </ButtonLoading>
+                      </Form>
+
                     </div>
                   </div>
                 )}
@@ -1741,353 +2670,3 @@ export default function Shight() {
   )
 }
 
-/**
- *   <>
-      <div className=" mx-auto flex h-[85%] w-[95%] border border-[#3b3b3b]">
-        <div className="sidebar w-[25%] border-r border-[#3b3b3b]">
-          <div className="border-b border-[#3b3b3b]">
-            <p className="text-bold  p-2 text-lg text-[#fff]">
-              Category
-            </p>
-          </div>
-          <div className="border-b border-[#3b3b3b]">
-            <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#3b3b3b]">
-              {scripts.reduce((unique, mail) => {
-                if (!unique.some(item => item.category === mail.category)) {
-                  unique.push(mail);
-                }
-                return unique;
-              }, []).map((mail, index) => (
-                <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(mail.category)}>
-                  <div className="m-2 flex items-center justify-between">
-                    <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
-                  </div>
-                </div>
-              ))}
-
-            </div>
-            <p className="text-sm text-white p-2">
-              Your ability to close increases with the amount of tools at your
-              disposal. A mechanic without a tire iron wouldnt be able to change
-              a tire. So why dont more sales people take better care of their
-              scripts, closes, and such?
-            </p>
-          </div>
-        </div>
-        <div className="emailList w-[25%] border-r border-[#3b3b3b]">
-          <div className="border-b border-[#3b3b3b]">
-            <p className="text-bold  p-2 text-lg text-[#fff]">
-              Sub-category
-            </p>
-          </div>
-          <div className="h-auto max-h-[950px] overflow-y-auto">
-            {subcategories.map((subCat, index) => (
-              <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleSubCatLisstClick(scripts.find(mail => mail.subCat === subCat))}>
-                <div className="m-2 flex items-center justify-between">
-                  <p className="text-lg font-bold text-[#fff]">{subCat}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="email flex h-full w-[50%]  flex-col">
-          <div className="border-b border-[#3b3b3b]">
-            <p className="text-bold  p-2 text-lg text-[#fff]">
-              Script
-            </p>
-          </div>
-          <div className="flex justify-between  border-[#3b3b3b]">
-            {selectedRecord && (
-              <div className="h-auto max-h-[950px] overflow-y-auto">
-                <div className="m-2 mx-auto w-[95%]   hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
-                  <div className="m-2  items-center justify-between p-2 text-white">
-
-                    <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
-
-                    <div className='flex justify-between text-[16px]  text-[#fff]'>
-                      <p className='text-[20px]'>{selectedRecord.name}</p>
-
-                    </div>
-                    <p className='mt-5'>{selectedRecord.content}</p>
-                    <div className='flex justify-between  text-[#fff] mt-5 items-center'>
-                      <div className='flex' >
-                        <button className="cursor-pointer text-white" onClick={() => copyText(selectedRecord.content)} >
-                          <Copy strokeWidth={1.5} />
-                        </button>
-                        {copiedText === selectedRecord.content && <div>Copied!</div>}
-                      </div>
-                      <Form method='post'>
-                        <input type='hidden' name='name' value={selectedRecord.name} />
-                        <input type='hidden' name='body' value={selectedRecord.content} />
-                        <input type='hidden' name='category' value={selectedRecord.category} />
-                        <input type='hidden' name='userEmail' value={user.email} />
-                        <input type='hidden' name='subject' value='Copied from scripts' />
-                        <input type='hidden' name='title' value='Copied from scripts' />
-                        <input type='hidden' name='dept' value='sales' />
-
-                        <ButtonLoading
-                          size="lg"
-                          name='intent'
-                          value='createTemplate'
-                          type='submit'
-                          isSubmitting={isSubmitting}
-                          onClick={() => {
-                            toast.message('Helping you become the hulk of sales...')
-                          }}
-                          loadingText="Loading..."
-                          className="w-auto cursor-pointer  hover:text-[#02a9ff] hover:border-[#02a9ff] text-white border-white"
-                        >
-                          Save As Template
-                        </ButtonLoading>
-                      </Form>
-
-                    </div>
-
-
-
-
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </>
- */
-
-
-/*** template for other layours like thi sone
- *
-export default function Shight() {
-  const { user, } = useLoaderData();
-  const email = user.email
-  const name = user.name
-  const [open, setOpen] = React.useState(false);
-  const timerRef = React.useRef(0);
-  React.useEffect(() => {
-    return () => clearTimeout(timerRef.current);
-  }, [])
-
-  const scripts = [
-    {
-      email: "",
-      name: "",
-      content: "",
-      category: "Closes",
-      subCatLisst: 'close',
-    },
-    {
-      email: "",
-      name: "",
-      content: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the Street Glide. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
-      category: "Closes",
-      subCatLisst: 'close',
-    },
-    {
-      email: "",
-      name: "",
-      content: " I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the Street Glide. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let me know if you're interested and we can discuss next steps.",
-      category: "Closes",
-      subCatLisst: 'close',
-    },
-    {
-      email: "",
-      name: "",
-      content: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the Street Glide is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
-      category: "Closes",
-      subCatLisst: 'close',
-    },
-    {
-      email: "",
-      name: "",
-      content: "To ensure that you have the opportunity to view and secure the unit, I recommend placing a deposit to reserve it until it arrives. This way, you'll prevent anyone else from purchasing it before you've had a chance to see it. The best part is, if you don't like it when you see it, you'll receive a full deposit refund. On the other hand, if you fall in love with it, you won't miss the opportunity to make it yours.",
-      category: "Closes",
-      subCatLisst: 'close',
-    },
-    {
-      email: "",
-      name: "",
-      content: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible. It's clear that you may have some reservations about the current deal. If you don't mind sharing, I'd love to know what we can adjust or improve to make it a more attractive offer for you. Your feedback is invaluable, and I'm here to work together on a solution that meets your needs and expectations.",
-      category: "Closes",
-      subCatLisst: 'close',
-    },
-    {
-      email: "",
-      name: "",
-      content: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
-      category: "Closes",
-      subCatLisst: 'testDrives',
-    },
-    {
-      email: "",
-      name: "",
-      content: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the Street Glide as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the Street Glide, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
-      category: "Closes",
-      subCatLisst: 'emotional',
-    },
-    {
-      email: "",
-      name: "",
-      content: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the Street Glide have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the Street Glide for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the Street Glide can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
-      category: "Closes",
-      subCatLisst: 'felt',
-    },
-    {
-      email: "",
-      name: "",
-      content: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
-      category: "Closes",
-      subCatLisst: 'problem',
-    },
-    {
-      email: "",
-      name: "dsa",
-      content: "Present the customer with two options and ask them to choose. It's as simple as that.",
-      category: "Closes",
-      subCatLisst: 'alternative',
-    },
-    {
-      email: "",
-      name: "",
-      content: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license. This will allow us to initiate the process for our finance manager to go over the application with you.  We understand that making a financial commitment is an important step, and we want you to feel comfortable. If you're hesitant about putting money down for financing, please know that it's perfectly okay. In fact, we have a flexible approach, and we'll refund the deposit when you come to pick up your new bike.  We genuinely want to make this process as smooth and convenient for you as possible. Could you please let us know which payment option you're most comfortable with?",
-      category: "Closes",
-      subCatLisst: 'alternative',
-    },
-    {
-      email: "",
-      name: "",
-      content: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
-      category: "Closes",
-      subCatLisst: 'directs',
-    },
-    {
-      email: "",
-      name: "",
-      content: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
-      category: "Closes",
-      subCatLisst: 'directs',
-    },
-    {
-      email: "",
-      name: "dsa",
-      content: "Ask the customer questions to gauge their level of interest.",
-      category: "Closes",
-      subCatLisst: 'trial',
-    },
-    {
-      email: "",
-      name: "dsa",
-      content: "Summarize the key benefits of the product and ask for the sale.",
-      category: "Closes",
-      subCatLisst: 'summary',
-    },
-    {
-      email: "",
-      name: "dsa",
-      content: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
-      category: "Closes",
-      subCatLisst: 'close',
-    },
-  ]
-  const handleEmailClick = (email) => {
-    setSelectedEmail(email);
-    console.log(email)
-    SetToRead(email)
-    setReply(false)
-  };
-  const CategoryList = ({ scripts, }) => {
-    return (
-      <div className="h-auto max-h-[970px] overflow-y-auto">
-        {scripts.map((mail) => (
-          <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(mail)}>
-            <div className="m-2 flex items-center justify-between">
-              <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  };
-  const SubCatLisst = ({ scripts, }) => {
-    return (
-      <div className="h-auto max-h-[970px] overflow-y-auto">
-        {scripts.map((mail) => (
-          <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(mail)}>
-            <div className="m-2 flex items-center justify-between">
-              <p className="text-lg font-bold text-[#fff]">{mail.subCat}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  };
-  const ScriptsList = ({ scripts, }) => {
-    const copyText = (text) => {
-      navigator.clipboard.writeText(text)
-        .then(() => {
-          setCopiedText(text);
-          setTimeout(() => setCopiedText(''), 3000); // Reset after 3 seconds
-        })
-        .catch((error) => {
-          console.error('Failed to copy text: ', error);
-        });
-    };
-    return (
-      <div className="h-auto max-h-[970px] overflow-y-auto">
-        {scripts.map((mail) => (
-          <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(mail)}>
-
-
-            <div className="m-2 flex items-center justify-between">
-              <p className="text-lg font-bold text-[#fff]">{mail.name}</p>
-            </div>
-            <p className="my-2 ml-2 text-sm text-[#ffffffc9]">{mail.content}</p>
-            <button
-              className="cursor-pointer"
-              onClick={() => copyText(mail.content)}
-            >
-              <Copy strokeWidth={1.5} />
-
-            </button>
-            <div className="flex">
-              <Badge className="m-2 border-[#fff] text-[#fff]">{mail.category}</Badge>
-              <Badge className="m-2 border-[#fff] text-[#fff]">{mail.subCatLisst}</Badge>
-
-            </div>
-
-          </div>
-        ))}
-
-
-      </div>
-    );
-  };
-  return (
-    <>
-      <div className="border-1 mx-auto flex h-[95%] w-[95%] border border-[#3b3b3b]">
-        <div className="sidebar w-[25%] border-r border-[#3b3b3b]">
-          <div className="border-b border-[#3b3b3b]">
-            <CategoryList scripts={scripts} />
-          </div>
-        </div>
-        <div className="emailList w-[25%] border-r border-[#3b3b3b]">
-          <div className=" ">
-            <div>
-              <Input name="search" placeholder="Search" className='m-2 mx-auto w-[95%] border border-[#ffffff4d] bg-[#000] text-[#fff] focus:border-[#02a9ff]' />
-            </div>
-            <SubCatLisst scripts={scripts} />
-          </div>
-        </div>
-        <div className="email flex h-full w-[50%]  flex-col">
-          <div className="flex justify-between border-b border-[#3b3b3b]">
-
-            <ScriptsList scripts={scripts} />
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
- */

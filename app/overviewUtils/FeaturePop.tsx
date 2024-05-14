@@ -34,7 +34,7 @@ const FeaturePop = ({ finance, user }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className='rounded-md border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border' >
+        <Button className='rounded-md border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border bg-transparent hover:bg-transparent' >
           Features
         </Button>
       </PopoverTrigger>
@@ -45,28 +45,24 @@ const FeaturePop = ({ finance, user }) => {
           </div>
           <div className="flex ">
             <div className='grid grid-cols-1 gap-2'>
-
-
               <div className="mx-auto justify-center">
                 <PrintSpec />
               </div>
               <ModelPage />
-              <a className="w-full mx-auto" href="/leads/sales" target="_blank"  >
+              <a className="w-full mx-auto" href="/dealer/leads/sales" target="_blank"  >
                 <Button className="w-full border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
                   Dashboard
                 </Button>
               </a>
-              <a className="w-full mx-auto" href={`/customer/${finance.clientfileId}/${finance.id}`} target="_blank">
+              <a className="w-full mx-auto" href={`/dealer/customer/${finance.clientfileId}/${finance.id}`} target="_blank">
                 <Button className=" w-full border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
                   Client File
                 </Button>
               </a>
-
               <Form method='post' >
                 <input type='hidden' name='intent' value='financeTurnover' />
                 <input type='hidden' name='locked' value={lockedValue} />
                 <input type='hidden' name='financeId' value={finance.id} />
-
                 <ButtonLoading
                   size="lg"
                   className="w-full cursor-pointer ml-auto p-5 hover:text-[#02a9ff]"
@@ -78,12 +74,9 @@ const FeaturePop = ({ finance, user }) => {
                   Finance Turnover
                 </ButtonLoading>
               </Form>
-
-
             </div>
           </div>
           <div className="flex justify-between mb-[10px] mt-3">
-
           </div>
         </div>
       </PopoverContent>

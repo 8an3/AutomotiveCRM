@@ -94,7 +94,9 @@ export default function SettingsLayout() {
 export default function SettingsLayout() {
   return (
     <>
-      <Outlet />
+      <div className="h-screen w-screen overflow-hidden">
+        <Outlet />
+      </div>
     </>
   )
 }

@@ -65,6 +65,14 @@ import { Color } from '@tiptap/extension-color'
 import TextStyle from '@tiptap/extension-text-style'
 import Document from '@tiptap/extension-document'
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
+import {
   BubbleMenu,
   EditorContent,
   EditorProvider,
@@ -75,6 +83,11 @@ import {
 import StarterKit from "@tiptap/starter-kit"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Undo, Redo, List, ScanLine, Eraser, Code, ListPlus, Brackets, Pilcrow, Minus, AlignLeft, AlignCenter, AlignRight, AlignJustify, Highlighter, WrapText, Quote, Heading1, Heading2, Heading3 } from 'lucide-react';
+import { FaBold, FaStrikethrough, FaItalic, FaUnlink, FaLink, FaList, FaListOl, FaFileCode, FaQuoteLeft, FaUndo, FaAlignJustify, FaAlignLeft, FaRedo, FaAlignRight, FaAlignCenter, FaHighlighter, FaEraser, FaUnderline } from "react-icons/fa";
+import { BiCodeBlock } from "react-icons/bi";
+import { MdHorizontalRule } from "react-icons/md";
+import { IoMdReturnLeft } from "react-icons/io";
+
 
 import { IconMatch } from "~/components/libs/icons"
 import { buttonVariants } from "~/components/ui/button"
@@ -353,9 +366,9 @@ export function Example({ content, handleUpdate, }: {
   }, [editor])
 
   const [financeList, setFinanceList] = useState([])
-
   const [dynamicAttributes, setDynamic] = useState()
-
+  const [textareaValue, setTextareaValue] = useState("");
+  const [clientAtrState, setClientAtr] = useState("");
 
   const clientAtr =
   {
@@ -371,8 +384,6 @@ export function Example({ content, handleUpdate, }: {
     'Province': '${province}',
     'Postal Code': '${postal}',
   }
-  const [clientAtrState, setClientAtr] = useState("");
-
   const wantedVehAttr = {
     'Year': "${year}",
     "Brand": "${brand}",
@@ -583,7 +594,7 @@ export function Example({ content, handleUpdate, }: {
     'bikeStatus': '${bikeStatus}',
     'lien': '${lien}',
   }
-  const [textareaValue, setTextareaValue] = useState("");
+
 
   function handleDropdownChange(value) {
     setText(value);
@@ -592,883 +603,826 @@ export function Example({ content, handleUpdate, }: {
   return (
     <>
       <div className=" mx-auto mb-[5px] mt-10">
-        <div className="flex h-[98vh] w-[98w] mx-auto  justify-center ">
-          <div className="w-1/3 h-[100%] border border-[#ffffff4d] grid grid-cols-1 space-y-2">
-            <p>{searchTemplates}</p>
-            <div className="flex w-[full] items-start justify-start space-x-2 p-2">
-              <DebouncedInput
-                value={searchTerm}
-                onChange={value => {
-                  setSearchTemplates(value)
-                  if (!selectedDept && !selectedType && !selectedCategory) { setSelectedDept('sales') }
-                }}
-                placeholder="search"
-                name='searchTerm'
-                className='w-full mr-2' />
-              <Button className='text-[#fff] border-[#fff]' variant='outline' type="submit">
-                Search
-              </Button>
-            </div>
+        <div className="flex h-[90vh] w-[98w] mx-auto  justify-center ">
 
-            <div className="flex">
-              <select
-                className={`border-white text-[#fff] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#363a3f] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-                value={selectedType}
-                onChange={(e) => setSelectedDept(e.target.value)}
-              >
-                <option value="">Dept</option>
-                {depts.map((department) => (
-                  <option key={department} value={department}>
-                    {department}
-                  </option>
-                ))}
-              </select>
+          <Card className="w-1/3 h-[100%] mx-3 border-white">
+            <CardHeader>
+              <CardTitle>
+                <p>{searchTemplates}</p>
+                <div className="flex w-[full] items-start justify-start space-x-2 p-2">
+                  <DebouncedInput
+                    value={searchTerm}
+                    onChange={value => {
+                      setSearchTemplates(value)
+                      if (!selectedDept && !selectedType && !selectedCategory) { setSelectedDept('sales') }
+                    }}
+                    placeholder="search"
+                    name='searchTerm'
+                    className='w-full mr-2 text-white border-white' />
+                  <Button className='text-white border-white' variant='outline' type="submit">
+                    Search
+                  </Button>
+                </div>
+              </CardTitle>
+              <CardDescription> <div className="flex">
+                <select
+                  className={`border-white text-white placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#121212] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  value={selectedType}
+                  onChange={(e) => setSelectedDept(e.target.value)}
+                >
+                  <option value="">Dept</option>
+                  {depts.map((department) => (
+                    <option key={department} value={department}>
+                      {department}
+                    </option>
+                  ))}
+                </select>
 
-              <select
-                className={`border-white text-[#fff] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#363a3f] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-              >
-                <option value="">Type</option>
-                {types.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={searchTerm}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className={`border-white text-[#fff] placeholder:text-blue-300 broder mx-auto ml-2 h-8  cursor-pointer rounded border bg-[#363a3f] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-              >
-                <option value="">Category</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <select
-                className={`border-white text-[#fff] placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#363a3f] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-                value={selectedEmail}
-                onChange={(e) => setSelectedEmail(e.target.value)}
-              >
-                <option value="">Email</option>
-                {emails.map((email) => (
-                  <option key={email} value={email}>
-                    {email}
-                  </option>
-                ))}
-              </select>
+                <select
+                  className={`border-white text-white placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#121212] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                >
+                  <option value="">Type</option>
+                  {types.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={searchTerm}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className={`border-white text-white placeholder:text-blue-300 broder mx-auto ml-2 h-8  cursor-pointer rounded border bg-[#121212] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                >
+                  <option value="">Category</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  className={`border-white text-white placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#121212] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  value={selectedEmail}
+                  onChange={(e) => setSelectedEmail(e.target.value)}
+                >
+                  <option value="">Email</option>
+                  {emails.map((email) => (
+                    <option key={email} value={email}>
+                      {email}
+                    </option>
+                  ))}
+                </select>
 
-            </div>
-            <div className={`mx-auto  hover:text-[#02a9ff]  ml-2 mt-2 w-[98%] cursor-pointer  grow overflow-auto  rounded-md p-3  grid gris-cols-2 `}
-              onClick={() => {
-
-              }} >
-              <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#3b3b3b]">
-
-                <div className="flex">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className='text-[#fff]   hover:text-[#02a9ff] border border-white py-2 px-3  rounded-md'>
-                        New Template
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[90%] bg-black">
-                      <DialogHeader>
-                        <DialogTitle className='text-white'>New Template</DialogTitle>
-                        <DialogDescription className='text-white'>
-                          Create new templates to send to your leads.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className=" w-full h-full p-3">
-                        <div className={` bg-black w-full  items-center   rounded-md  `}  >
-                          <div className="flex flex-col space-y-4 mt-2 ">
-                            <div
-                              className={`border-[#ffffff4d]  bg-black  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
-                            >
-                              {/* Your content here */}
-                              <Form method="post">
-                                <div className="bg-black ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
-                                  {/* Row 1 */}
-                                  <div className="relative">
-                                    <Input name="title" className="text-[#fff] border-[#fff] bg-black block w-full pl-[115px]" type="text" />
-                                    <label className="absolute left-2 top-[6px] text-[#fff]">Template Title:</label>
-                                  </div>
-                                  <div className="relative ">
-                                    <Input name="subject" className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[65px]" type="text" />
-                                    <label className="absolute left-2 top-2 text-[#fff]">Subject:</label>
-                                  </div>
-                                  {/* Row 2 */}
-                                  <div className="py-1">
-                                    <div className="flex flex-row space-between-2">
-                                      <Select name="dept"  >
-                                        <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-[#fff] border-[#fff]">
-                                          <SelectValue placeholder="Select a Dept" />
-                                        </SelectTrigger>
-                                        <SelectContent className='bg-[#fff]'>
-                                          <SelectItem value="sales">Sales</SelectItem>
-                                          <SelectItem value="service">Service</SelectItem>
-                                          <SelectItem value="accessories">Accessories</SelectItem>
-                                          <SelectItem value="management">Management</SelectItem>
-                                          <SelectItem value="after Sales">After Sales</SelectItem>
-                                          <SelectItem value="other">Other</SelectItem>
-                                        </SelectContent>
-                                      </Select>
-                                      <Select name="type"   >
-                                        <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-[#fff] border-[#fff]">
-                                          <SelectValue placeholder="Select Type" />
-                                        </SelectTrigger>
-                                        <SelectContent className='bg-[#fff]'>
-                                          <SelectItem value="phone">Phone</SelectItem>
-                                          <SelectItem value="email">Email</SelectItem>
-                                          <SelectItem value="text">Text</SelectItem>
-                                          <SelectItem value="copy">Copy</SelectItem>
-                                        </SelectContent>
-                                      </Select>
-                                    </div>
-                                  </div>
-                                  <div className="relative">
-                                    <Input name="category" type="text" className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[80px]" />
-                                    <label className="absolute left-2 top-2 text-[#fff]">Category:</label>
-                                  </div>
-                                  {/* Row 3 */}
-                                  <div className="py-1 flex justify-between">
-
-                                    <div
-                                      onClick={() => setDetails(!details)}
-                                      className="flex cursor-pointer items-center hover:text-[#02a9ff]"
-                                    >
-                                      <p className="text-bold text-[#fff] hover:text-[#02a9ff]">cc bcc</p>
-                                    </div>
-                                  </div>
-                                  {/* Details */}
-                                  {details && (
-                                    <div className="flex flex-row justify-between">
-                                      <div className="relative py-1">
-                                        <Input name="cc" placeholder="cc" type="text" className='text-[#fff] block w-full h-10 pl-8 border-[#fff] bg-[#363a3f] ' />
-                                        <label className="absolute left-2 top-[5px] text-[#fff]">cc</label>
+              </div>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 space-y-2 w-full items-center gap-4">
+                <div className={`mx-auto h-[800px] hover:text-[#02a9ff]  ml-2 mt-2 w-[98%] cursor-pointer  grow overflow-auto  rounded-md p-3  grid gris-cols-2 `}
+                  onClick={() => {
+                  }} >
+                  <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#3b3b3b]">
+                    <div className="flex">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" className='m-2 mx-auto w-[95%] h-[50px] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff]  hover:bg-transparent bg-transparent text-white '>
+                            New Template
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[90%] bg-[#121212]">
+                          <DialogHeader>
+                            <DialogTitle className='text-white'>New Template</DialogTitle>
+                            <DialogDescription className='text-white'>
+                              Create new templates to send to your leads.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className=" w-full h-full p-3">
+                            <div className={` bg-[#121212] w-full  items-center   rounded-md  `}  >
+                              <div className="flex flex-col space-y-4 mt-2 ">
+                                <div
+                                  className={`border-[#ffffff4d]  bg-[#121212]  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
+                                >
+                                  {/* Your content here */}
+                                  <Form method="post">
+                                    <div className="bg-[#121212] ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
+                                      {/* Row 1 */}
+                                      <div className="relative">
+                                        <Input name="title" className="text-white border-white bg-[#121212] block w-full pl-[115px]" type="text" />
+                                        <label className="absolute left-2 top-[6px] text-white">Template Title:</label>
                                       </div>
+                                      <div className="relative ">
+                                        <Input name="subject" className="text-white border-white bg-[#121212] block w-full h-10 pl-[65px]" type="text" />
+                                        <label className="absolute left-2 top-2 text-white">Subject:</label>
+                                      </div>
+                                      {/* Row 2 */}
+                                      <div className="py-1">
+                                        <div className="flex flex-row space-between-2">
+                                          <Select name="dept"  >
+                                            <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-white border-white">
+                                              <SelectValue placeholder="Select a Dept" />
+                                            </SelectTrigger>
+                                            <SelectContent className='bg-white text-black'>
+                                              <SelectItem value="sales">Sales</SelectItem>
+                                              <SelectItem value="service">Service</SelectItem>
+                                              <SelectItem value="accessories">Accessories</SelectItem>
+                                              <SelectItem value="management">Management</SelectItem>
+                                              <SelectItem value="after Sales">After Sales</SelectItem>
+                                              <SelectItem value="other">Other</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                          <Select name="type"   >
+                                            <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-white border-white">
+                                              <SelectValue placeholder="Select Type" />
+                                            </SelectTrigger>
+                                            <SelectContent className='bg-white text-black'>
+                                              <SelectItem value="phone">Phone</SelectItem>
+                                              <SelectItem value="email">Email</SelectItem>
+                                              <SelectItem value="text">Text</SelectItem>
+                                              <SelectItem value="copy">Copy</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                      </div>
+                                      <div className="relative">
+                                        <Input name="category" type="text" className="text-white border-white bg-[#121212] block w-full h-10 pl-[80px]" />
+                                        <label className="absolute left-2 top-2 text-white">Category:</label>
+                                      </div>
+                                      {/* Row 3 */}
+                                      <div className="py-1 flex justify-between">
 
-                                      <div className="relative py-1">
-                                        <Input name="bcc" placeholder="bcc" type="text" className='text-[#fff] border-[#fff] bg-[#363a3f]  block w-full h-10 pl-8' />
-                                        <label className="absolute left-2 top-[5px] text-[#fff]">bcc</label>
+                                        <div
+                                          onClick={() => setDetails(!details)}
+                                          className="flex cursor-pointer items-center hover:text-[#02a9ff]"
+                                        >
+                                          <p className="text-bold text-white hover:text-[#02a9ff]">cc bcc</p>
+                                        </div>
+                                      </div>
+                                      {/* Details */}
+                                      {details && (
+                                        <div className="flex flex-row justify-between">
+                                          <div className="relative py-1">
+                                            <Input name="cc" placeholder="cc" type="text" className='text-white block w-full h-10 pl-8 border-white bg-[#363a3f] ' />
+                                            <label className="absolute left-2 top-[5px] text-white">cc</label>
+                                          </div>
+
+                                          <div className="relative py-1">
+                                            <Input name="bcc" placeholder="bcc" type="text" className='text-white border-white bg-[#363a3f]  block w-full h-10 pl-8' />
+                                            <label className="absolute left-2 top-[5px] text-white">bcc</label>
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      <Input
+                                        name="intent"
+                                        type="hidden"
+                                        defaultValue="createTemplate"
+                                      />
+                                      <Input
+                                        name="userEmail"
+                                        type="hidden"
+                                        defaultValue={user?.email}
+                                      />
+                                      <div className=" p-1">
+                                        <div className="mr-auto px-2">
+                                          {/*  <RichTextExample /> */}
+                                          <EditorTiptapHook content={contentValue} handleUpdate={handleUpdateContent} />
+
+                                          <input type='hidden' name='body2' value={paragraph} />
+                                          <input type="hidden" name="textEditor" value={textEditor} />
+                                          <br />
+                                          <Button
+                                            variant='outline'
+                                            onClick={() =>
+                                              toast.success(`Saved Template.`)
+                                            } className="border-white text-white cursor-pointer border uppercase px-4 py-3">
+                                            Create
+                                          </Button>
+                                        </div>
                                       </div>
                                     </div>
-                                  )}
-
-                                  <Input
-                                    name="intent"
-                                    type="hidden"
-                                    defaultValue="createTemplate"
-                                  />
-                                  <Input
-                                    name="userEmail"
-                                    type="hidden"
-                                    defaultValue={user?.email}
-                                  />
-                                  <div className=" p-1">
-                                    <div className="mr-auto px-2">
-                                      {/*  <RichTextExample /> */}
-                                      <EditorTiptapHook content={contentValue} handleUpdate={handleUpdateContent} />
-
-                                      <input type='hidden' name='body2' value={paragraph} />
-                                      <input type="hidden" name="textEditor" value={textEditor} />
-                                      <br />
-                                      <Button
-                                        variant='outline'
-                                        onClick={() =>
-                                          toast.success(`Saved Template.`)
-                                        } className="border-[#fff] text-[#fff] cursor-pointer border uppercase px-4 py-3">
-                                        Create
-                                      </Button>
-                                    </div>
-                                  </div>
+                                  </Form>
                                 </div>
-                              </Form>
+                              </div>
                             </div>
                           </div>
+                          <DialogFooter>
+                            <Button type="submit">Save changes</Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                    {filteredDropDown?.map((item, index) => (
+                      <div
+                        key={index}
+                        className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff] ${selectedLine !== index
+                          ? "opacity-80"
+                          : "bg-slate11"
+                          } `}
+                        onClick={() => {
+                          setText(item.body);
+                          setTitle(item.title)
+                          setSubject(item.subject)
+                          setDepartment(item.dept)
+                          setType2(item.type)
+                          setCategory(item.category)
+                          setCC(item.cc)
+                          setBCC(item.bcc)
+                          setAttachments(item.attachments)
+                          setLabel(item.label)
+                          setId(item.id)
+                          handleLineClick(index, item)
+                          editor.commands.setContent(item.body)
+                        }}
+                      >
+                        <div className="m-2 flex items-center justify-between">
+                          <p className="text-lg font-bold text-white text-left">{item.title}</p>
+                        </div>
+                        <p className="my-2 ml-2 text-sm text-[#ffffffc9]">{item.subject}</p>
+                        <p className="my-2 ml-2 text-sm text-[#ffffff70]">{item.snippet}</p>
+
+                        <div className="flex">
+
+                          <Badge className="m-2 bg-transparent border-[#f5f5f5a8] text-white">{item.dept}</Badge>
+                          <Badge className="m-2  bg-transparent border-[#f5f5f5a8] text-white">{item.type}</Badge>
+                          <Badge className="m-2 bg-transparent border-[#f5f5f5a8] text-white">{item.category}</Badge>
+                        </div>
+                        <div className="flex">
+                          <p className="text-white ml-3 hover:text-[#02a9ff]"></p>
+                        </div>
+
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+
+          </Card>
+
+          <Card className="w-2/3 mx-3 border-white h-[100%]">
+
+            <CardContent>
+              <div className="grid w-full items-center gap-4">
+                {oldTempState === true ? (
+                  <div className=" w-full h-full p-3">
+                    <div className={` bg-[#121212] w-full  items-center  overflow-x-scroll  rounded-md  `}  >
+                      <div className="flex flex-col space-y-4 mt-[50px] ">
+                        <div
+                          className={`border-[#ffffff4d]  bg-[#121212]  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
+                        >
+                          {/* Your content here */}
+                          <Form method="post">
+                            <div className="bg-[#121212] ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
+                              {/* Row 1 */}
+                              <div className="relative">
+                                <Input name="title" className="text-white border-white bg-[#121212] block w-full pl-[115px]" type="text" />
+                                <label className="absolute left-2 top-[6px] text-white">Template Title:</label>
+                              </div>
+                              <div className="relative ">
+                                <Input name="subject" className="text-white border-white bg-[#121212] block w-full h-10 pl-[65px]" type="text" />
+                                <label className="absolute left-2 top-2 text-white">Subject:</label>
+                              </div>
+                              {/* Row 2 */}
+                              <div className="py-1">
+                                <div className="flex flex-row space-between-2">
+                                  <Select name="dept"  >
+                                    <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-white border-white">
+                                      <SelectValue placeholder="Select a Dept" />
+                                    </SelectTrigger>
+                                    <SelectContent className='bg-white'>
+                                      <SelectItem value="sales">Sales</SelectItem>
+                                      <SelectItem value="service">Service</SelectItem>
+                                      <SelectItem value="accessories">Accessories</SelectItem>
+                                      <SelectItem value="management">Management</SelectItem>
+                                      <SelectItem value="after Sales">After Sales</SelectItem>
+                                      <SelectItem value="other">Other</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <Select name="type"   >
+                                    <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-white border-white">
+                                      <SelectValue placeholder="Select Type" />
+                                    </SelectTrigger>
+                                    <SelectContent className='bg-white'>
+                                      <SelectItem value="phone">Phone</SelectItem>
+                                      <SelectItem value="email">Email</SelectItem>
+                                      <SelectItem value="text">Text</SelectItem>
+                                      <SelectItem value="copy">Copy</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              <div className="relative">
+                                <Input name="category" type="text" className="text-white border-white bg-[#121212] block w-full h-10 pl-[80px]" />
+                                <label className="absolute left-2 top-2 text-white">Category:</label>
+                              </div>
+                              {/* Row 3 */}
+                              <div className="py-1 flex justify-between">
+
+                                <div
+                                  onClick={() => setDetails(!details)}
+                                  className="flex cursor-pointer items-center hover:text-[#02a9ff]"
+                                >
+                                  <p className="text-bold text-white hover:text-[#02a9ff]">cc bcc</p>
+                                </div>
+                              </div>
+                              {/* Details */}
+                              {details && (
+                                <div className="flex flex-row justify-between">
+                                  <div className="relative py-1">
+                                    <Input name="cc" placeholder="cc" type="text" className='text-white block w-full h-10 pl-8 border-white bg-[#363a3f] ' />
+                                    <label className="absolute left-2 top-[5px] text-white">cc</label>
+                                  </div>
+
+                                  <div className="relative py-1">
+                                    <Input name="bcc" placeholder="bcc" type="text" className='text-white border-white bg-[#363a3f]  block w-full h-10 pl-8' />
+                                    <label className="absolute left-2 top-[5px] text-white">bcc</label>
+                                  </div>
+                                </div>
+                              )}
+
+                              <Input
+                                name="intent"
+                                type="hidden"
+                                defaultValue="createTemplate"
+                              />
+                              <Input
+                                name="userEmail"
+                                type="hidden"
+                                defaultValue={user?.email}
+                              />
+
+                              <div className=" p-1 mt-auto">
+                                <div className="mr-auto px-2">
+                                  {/*  <RichTextExample /> */}
+                                  <input defaultValue={text} />
+
+                                  <EditorTiptapHook content={contentValue} handleUpdate={handleUpdateContent} />
+                                  <input type='hidden' name='body2' value={paragraph} />
+
+                                  <input
+                                    type="hidden"
+                                    name="textEditor"
+                                    value={textEditor}
+                                  />
+                                  <br />
+                                  <Button
+                                    variant='outline'
+                                    onClick={() =>
+                                      toast.success(`Saved Template.`)
+                                    } className="border-white text-white cursor-pointer border uppercase px-4 py-3">
+                                    Create
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </Form>
                         </div>
                       </div>
-                      <DialogFooter>
-                        <Button type="submit">Save changes</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-
-                {filteredDropDown?.map((item, index) => (
-                  <div
-                    key={index}
-                    className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff] ${selectedLine !== index
-                      ? "opacity-80"
-                      : "bg-slate11"
-                      } `}
-                    onClick={() => {
-                      setText(item.body);
-                      setTitle(item.title)
-                      setSubject(item.subject)
-                      setDepartment(item.dept)
-                      setType2(item.type)
-                      setCategory(item.category)
-                      setCC(item.cc)
-                      setBCC(item.bcc)
-                      setAttachments(item.attachments)
-                      setLabel(item.label)
-                      setId(item.id)
-                      handleLineClick(index, item)
-                      editor.commands.setContent(item.body)
-                    }}
-                  >
-                    <div className="m-2 flex items-center justify-between">
-                      <p className="text-lg font-bold text-[#fff] text-left">{item.title}</p>
                     </div>
-                    <p className="my-2 ml-2 text-sm text-[#ffffffc9]">{item.subject}</p>
-                    <p className="my-2 ml-2 text-sm text-[#ffffff70]">{item.snippet}</p>
-
-                    <div className="flex">
-
-                      <Badge className="m-2 border-[#f5f5f5a8] text-[#fff]">{item.dept}</Badge>
-                      <Badge className="m-2 border-[#f5f5f5a8] text-[#fff]">{item.type}</Badge>
-                      <Badge className="m-2 border-[#f5f5f5a8] text-[#fff]">{item.category}</Badge>
-                    </div>
-                    <div className="flex">
-                      <p className="text-[#fff] ml-3 hover:text-[#02a9ff]"></p>
-                    </div>
-
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="w-2/3 h-[100%] border border-[#ffffff4d]  ">
-            {oldTempState === true ? (
-              <div className=" w-full h-full p-3">
-                <div className={` bg-black w-full  items-center  overflow-x-scroll  rounded-md  `}  >
-                  <div className="flex flex-col space-y-4 mt-[50px] ">
+                ) : (
+                  <div className=" w-full h-[915px] overflow-y-scroll p-3 mt-5">
                     <div
-                      className={`border-[#ffffff4d]  bg-black  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
-                    >
-                      {/* Your content here */}
-                      <Form method="post">
-                        <div className="bg-black ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
-                          {/* Row 1 */}
-                          <div className="relative">
-                            <Input name="title" className="text-[#fff] border-[#fff] bg-black block w-full pl-[115px]" type="text" />
-                            <label className="absolute left-2 top-[6px] text-[#fff]">Template Title:</label>
-                          </div>
-                          <div className="relative ">
-                            <Input name="subject" className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[65px]" type="text" />
-                            <label className="absolute left-2 top-2 text-[#fff]">Subject:</label>
-                          </div>
-                          {/* Row 2 */}
-                          <div className="py-1">
-                            <div className="flex flex-row space-between-2">
-                              <Select name="dept"  >
-                                <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-[#fff] border-[#fff]">
-                                  <SelectValue placeholder="Select a Dept" />
-                                </SelectTrigger>
-                                <SelectContent className='bg-[#fff]'>
-                                  <SelectItem value="sales">Sales</SelectItem>
-                                  <SelectItem value="service">Service</SelectItem>
-                                  <SelectItem value="accessories">Accessories</SelectItem>
-                                  <SelectItem value="management">Management</SelectItem>
-                                  <SelectItem value="after Sales">After Sales</SelectItem>
-                                  <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <Select name="type"   >
-                                <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-[#fff] border-[#fff]">
-                                  <SelectValue placeholder="Select Type" />
-                                </SelectTrigger>
-                                <SelectContent className='bg-[#fff]'>
-                                  <SelectItem value="phone">Phone</SelectItem>
-                                  <SelectItem value="email">Email</SelectItem>
-                                  <SelectItem value="text">Text</SelectItem>
-                                  <SelectItem value="copy">Copy</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                          <div className="relative">
-                            <Input name="category" type="text" className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[80px]" />
-                            <label className="absolute left-2 top-2 text-[#fff]">Category:</label>
-                          </div>
-                          {/* Row 3 */}
-                          <div className="py-1 flex justify-between">
+                      className={` bg-[#121212] w-full  items-center  overflow-x-hidden  rounded-md  `}  >
 
-                            <div
-                              onClick={() => setDetails(!details)}
-                              className="flex cursor-pointer items-center hover:text-[#02a9ff]"
-                            >
-                              <p className="text-bold text-[#fff] hover:text-[#02a9ff]">cc bcc</p>
-                            </div>
-                          </div>
-                          {/* Details */}
-                          {details && (
-                            <div className="flex flex-row justify-between">
-                              <div className="relative py-1">
-                                <Input name="cc" placeholder="cc" type="text" className='text-[#fff] block w-full h-10 pl-8 border-[#fff] bg-[#363a3f] ' />
-                                <label className="absolute left-2 top-[5px] text-[#fff]">cc</label>
+                      <div className="flex flex-col space-y-4 mt-[50px] ">
+                        <div
+                          className={`border-white  bg-[#121212]  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
+                        >
+
+                          {/* Your content here */}
+                          <Form method="post">
+
+
+                            <div className="bg-[#121212] ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
+                              {/* Row 1 */}
+                              <div className="relative">
+                                <Input name="title" defaultValue={title}
+                                  className="text-white border-white bg-[#121212] block w-full pl-[145px]"
+                                  type="text" />
+                                <label className="absolute left-2 top-[6px] text-white">Template Title:</label>
                               </div>
-
-                              <div className="relative py-1">
-                                <Input name="bcc" placeholder="bcc" type="text" className='text-[#fff] border-[#fff] bg-[#363a3f]  block w-full h-10 pl-8' />
-                                <label className="absolute left-2 top-[5px] text-[#fff]">bcc</label>
+                              <div className="relative ">
+                                <Input
+                                  name="subject"
+                                  defaultValue={subject}
+                                  className="text-white border-white bg-[#121212] block w-full h-10 pl-[85px]"
+                                  type="text" />
+                                <label className="absolute left-2 top-2 text-white">Subject:</label>
                               </div>
-                            </div>
-                          )}
+                              {/* Row 2 */}
+                              <div className="py-1">
+                                <div className="flex flex-row space-between-2">
+                                  <Select name="dept">
+                                    <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-white border-white">
+                                      <SelectValue placeholder="Select a Dept" />
+                                    </SelectTrigger>
+                                    <SelectContent className='bg-white'>
+                                      <SelectItem value="sales">Sales</SelectItem>
+                                      <SelectItem value="service">Service</SelectItem>
+                                      <SelectItem value="accessories">Accessories</SelectItem>
+                                      <SelectItem value="management">Management</SelectItem>
+                                      <SelectItem value="after Sales">After Sales</SelectItem>
+                                      <SelectItem value="other">Other</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <Select name="type"  >
+                                    <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-white border-white">
+                                      <SelectValue placeholder="Select Type1" />
+                                    </SelectTrigger>
+                                    <SelectContent className='bg-white'>
+                                      <SelectItem value="phone">Phone</SelectItem>
+                                      <SelectItem value="email">Email</SelectItem>
+                                      <SelectItem value="text">Text</SelectItem>
+                                      <SelectItem value="copy">Copy</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              <div className="relative">
+                                <Input
+                                  name="category"
+                                  type="text"
+                                  defaultValue={subject}
+                                  className="text-white border-white bg-[#121212] block w-full h-10 pl-[100px]"
+                                />
+                                <label className="absolute left-2 top-2 text-white">Category:</label>
+                              </div>
+                              {/* Row 3 */}
+                              <div className="py-1 flex justify-between">
 
-                          <Input
-                            name="intent"
-                            type="hidden"
-                            defaultValue="createTemplate"
-                          />
-                          <Input
-                            name="userEmail"
-                            type="hidden"
-                            defaultValue={user?.email}
-                          />
+                                <div
+                                  onClick={() => setDetails(!details)}
+                                  className="flex cursor-pointer items-center hover:text-[#02a9ff]"
+                                >
+                                  <p className="text-bold text-white hover:text-[#02a9ff]">cc bcc</p>
+                                </div>
+                              </div>
+                              {/* Details */}
+                              {details && (
+                                <div className="flex flex-row justify-between">
+                                  <div className="relative py-1">
+                                    <Input
+                                      name="cc"
+                                      placeholder="cc"
 
-                          <div className=" p-1">
-                            <div className="mr-auto px-2">
-                              {/*  <RichTextExample /> */}
-                              <input defaultValue={text} />
+                                      type="text"
+                                      className='text-white block w-full h-10 pl-8 border-white bg-[#363a3f] '
+                                    />
+                                    <label className="absolute left-2 top-[5px] text-white">cc</label>
+                                  </div>
 
-                              <EditorTiptapHook content={contentValue} handleUpdate={handleUpdateContent} />
-                              <input type='hidden' name='body2' value={paragraph} />
+                                  <div className="relative py-1">
+                                    <Input
+                                      name="bcc"
+                                      placeholder="bcc"
 
-                              <input
+                                      type="text"
+                                      className='text-white border-white bg-[#363a3f]  block w-full h-10 pl-8' />
+                                    <label className="absolute left-2 top-[5px] text-white">bcc</label>
+                                  </div>
+                                </div>
+                              )}
+
+                              <Input
+                                name="intent"
                                 type="hidden"
-                                name="textEditor"
-                                value={textEditor}
+                                defaultValue="updateTemplate"
                               />
-                              <br />
-                              <Button
-                                variant='outline'
-                                onClick={() =>
-                                  toast.success(`Saved Template.`)
-                                } className="border-[#fff] text-[#fff] cursor-pointer border uppercase px-4 py-3">
-                                Create
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </Form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className=" w-full h-full p-3">
-                <ScrollArea>
-                  <div
-                    className={` bg-black w-full  items-center  overflow-x-hidden  rounded-md  `}  >
-
-                    <div className="flex flex-col space-y-4 mt-[50px] ">
-                      <div
-                        className={`border-[#fff]  bg-black  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
-                      >
-
-                        {/* Your content here */}
-                        <Form method="post">
-
-
-                          <div className="bg-black ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
-                            {/* Row 1 */}
-                            <div className="relative">
-                              <Input name="title" defaultValue={title}
-                                className="text-[#fff] border-[#fff] bg-black block w-full pl-[145px]"
-                                type="text" />
-                              <label className="absolute left-2 top-[6px] text-[#fff]">Template Title:</label>
-                            </div>
-                            <div className="relative ">
                               <Input
-                                name="subject"
-                                defaultValue={subject}
-                                className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[85px]"
-                                type="text" />
-                              <label className="absolute left-2 top-2 text-[#fff]">Subject:</label>
-                            </div>
-                            {/* Row 2 */}
-                            <div className="py-1">
-                              <div className="flex flex-row space-between-2">
-                                <Select name="dept">
-                                  <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-[#fff] border-[#fff]">
-                                    <SelectValue placeholder="Select a Dept" />
-                                  </SelectTrigger>
-                                  <SelectContent className='bg-[#fff]'>
-                                    <SelectItem value="sales">Sales</SelectItem>
-                                    <SelectItem value="service">Service</SelectItem>
-                                    <SelectItem value="accessories">Accessories</SelectItem>
-                                    <SelectItem value="management">Management</SelectItem>
-                                    <SelectItem value="after Sales">After Sales</SelectItem>
-                                    <SelectItem value="other">Other</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <Select name="type"  >
-                                  <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-[#fff] border-[#fff]">
-                                    <SelectValue placeholder="Select Type" />
-                                  </SelectTrigger>
-                                  <SelectContent className='bg-[#fff]'>
-                                    <SelectItem value="phone">Phone</SelectItem>
-                                    <SelectItem value="email">Email</SelectItem>
-                                    <SelectItem value="text">Text</SelectItem>
-                                    <SelectItem value="copy">Copy</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </div>
-                            <div className="relative">
-                              <Input
-                                name="category"
-                                type="text"
-                                defaultValue={subject}
-                                className="text-[#fff] border-[#fff] bg-black block w-full h-10 pl-[100px]"
+                                name="userEmail"
+                                type="hidden"
+                                defaultValue={user?.email}
                               />
-                              <label className="absolute left-2 top-2 text-[#fff]">Category:</label>
-                            </div>
-                            {/* Row 3 */}
-                            <div className="py-1 flex justify-between">
+                              <Input
+                                name="id"
+                                type="hidden"
+                                defaultValue={id}
+                              />
+                              <div className="p-1 mt-auto">
+                                <div className="mr-auto px-2 mt-auto  mt-auto grid grid-cols-1    rounded-md">
+                                  {/*  <RichTextExample /> */}
 
-                              <div
-                                onClick={() => setDetails(!details)}
-                                className="flex cursor-pointer items-center hover:text-[#02a9ff]"
-                              >
-                                <p className="text-bold text-[#fff] hover:text-[#02a9ff]">cc bcc</p>
-                              </div>
-                            </div>
-                            {/* Details */}
-                            {details && (
-                              <div className="flex flex-row justify-between">
-                                <div className="relative py-1">
-                                  <Input
-                                    name="cc"
-                                    placeholder="cc"
-
-                                    type="text"
-                                    className='text-[#fff] block w-full h-10 pl-8 border-[#fff] bg-[#363a3f] '
-                                  />
-                                  <label className="absolute left-2 top-[5px] text-[#fff]">cc</label>
-                                </div>
-
-                                <div className="relative py-1">
-                                  <Input
-                                    name="bcc"
-                                    placeholder="bcc"
-
-                                    type="text"
-                                    className='text-[#fff] border-[#fff] bg-[#363a3f]  block w-full h-10 pl-8' />
-                                  <label className="absolute left-2 top-[5px] text-[#fff]">bcc</label>
-                                </div>
-                              </div>
-                            )}
-
-                            <Input
-                              name="intent"
-                              type="hidden"
-                              defaultValue="updateTemplate"
-                            />
-                            <Input
-                              name="userEmail"
-                              type="hidden"
-                              defaultValue={user?.email}
-                            />
-                            <Input
-                              name="id"
-                              type="hidden"
-                              defaultValue={id}
-                            />
-                            <div className="p-1">
-                              <div className="mr-auto px-2   mt-auto grid grid-cols-1 border border-black rounded-md">
-                                {/*  <RichTextExample /> */}
-
-                                <div
-                                  className={cn(
-                                    "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
-                                    "bg-black text-white transition-all align-center justify-center",
-                                    "sm:sticky sm:top-[120px]",
-                                  )}
-                                >
-                                  <select
-                                    name="clientAtr"
-                                    onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                                    className='bg-black border border-white  text-white  focus:border-[#60b9fd] rounded-md p-2 '
-                                  >
-                                    <option value="">Client</option>
-                                    {Object.entries(clientAtr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <select
-                                    name="wantedVehAttr"
-                                    onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '   >
-                                    <option value="">Wanted Veh</option>
-                                    {Object.entries(wantedVehAttr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <select
-                                    name="tradeVehAttr"
-                                    onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '         >
-                                    <option value="">Trade Veh</option>
-                                    {Object.entries(tradeVehAttr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <select
-                                    name="salesPersonAttr"
-                                    onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '          >
-                                    <option value="">Sales Person</option>
-                                    {Object.entries(salesPersonAttr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <select
-                                    name="FandIAttr"
-                                    onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
-                                    <option value="">F & I Manager</option>
-                                    {Object.entries(FandIAttr).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <select
-                                    name="dealerInfo"
-                                    onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
-                                    <option value="">Dealer Info</option>
-                                    {Object.entries(dealerInfo).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <select
-                                    name="financeInfo"
-                                    onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
-                                    <option value="">Finance Info</option>
-                                    {Object.entries(financeInfo).map(([title, value]) => (
-                                      <option key={title} value={title}>
-                                        {title}
-                                      </option>
-                                    ))}
-                                  </select>
-
-                                </div>
-                                <div
-                                  className={cn(
-                                    "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-                                    "bg-black text-white transition-all justify-center",
-                                    // "sm:sticky sm:top-[80px]",
-                                  )}
-                                >
-                                  <button
-                                    type="button"
-                                    onClick={() => editor.chain().focus().toggleBold().run()}
-                                    className={editor.isActive("bold") ? buttonActive : buttonInactive}
-                                  >
-                                    <IconMatch color="#fff" className="size-4" icon="editor-bold" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => editor.chain().focus().toggleItalic().run()}
-                                    className={editor.isActive("italic") ? buttonActive : buttonInactive}
-                                  >
-                                    <IconMatch className="size-4" icon="editor-italic" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => editor.chain().focus().toggleStrike().run()}
-                                    className={editor.isActive("strike") ? buttonActive : buttonInactive}
-                                  >
-                                    <IconMatch className="size-4" icon="editor-strikethrough" />
-                                  </button>
-
-                                  <Minus color="#000" strokeWidth={1.5} />
-                                  <button
-                                    type="button"
-                                    onClick={handleSetLink}
-                                    className={editor.isActive("link") ? buttonActive : buttonInactive}
-                                  >
-                                    <IconMatch className="size-4" icon="editor-link" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => editor.chain().focus().unsetLink().run()}
-                                    disabled={!editor.isActive("link")}
-                                    className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
-                                  >
-                                    <IconMatch className="size-4" icon="editor-link-unlink" />
-                                  </button>
-                                  <Minus color="#000" strokeWidth={1.5} />
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                                    className={editor.isActive('blockquote') ? 'is-active' : ''}
-                                  >
-                                    <Quote strokeWidth={1.5} />
-                                  </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleCode().run()}
-                                    disabled={
-                                      !editor.can()
-                                        .chain()
-                                        .focus()
-                                        .toggleCode()
-                                        .run()
-                                    }
-                                    className={editor.isActive('code') ? 'is-active' : ''}
-                                  >
-                                    <Code strokeWidth={1.5} />
-                                  </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleBulletList().run()}
-                                    className={editor.isActive('bulletList') ? 'is-active' : ''}
-                                  >
-                                    <List strokeWidth={1.5} />
-                                  </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                                    className={editor.isActive('orderedList') ? 'is-active' : ''}
-                                  >
-                                    <ListPlus strokeWidth={1.5} />
-                                  </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                                    className={editor.isActive('codeBlock') ? 'is-active' : ''}
-                                  >
-                                    <Brackets strokeWidth={1.5} />
-                                  </button>
-                                  <Minus color="#000" strokeWidth={1.5} />
-                                  <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                                    <ScanLine strokeWidth={1.5} />
-                                  </button>
-                                  <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-                                    <WrapText strokeWidth={1.5} />
-                                  </button>
-                                  <Minus color="#000" strokeWidth={1.5} />
-                                  <button
-                                    onClick={() => editor.chain().focus().undo().run()}
-                                    disabled={
-                                      !editor.can()
-                                        .chain()
-                                        .focus()
-                                        .undo()
-                                        .run()
-                                    }
-                                  >
-                                    <Undo strokeWidth={1.5} />
-                                  </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().redo().run()}
-                                    disabled={
-                                      !editor.can()
-                                        .chain()
-                                        .focus()
-                                        .redo()
-                                        .run()
-                                    }
-                                  >
-                                    <Redo strokeWidth={1.5} />
-                                  </button>
-                                  <Minus color="#000" strokeWidth={1.5} />
-                                  <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}>
-                                    <AlignLeft strokeWidth={1.5} />
-                                  </button>
-                                  <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}>
-                                    <AlignCenter strokeWidth={1.5} />
-                                  </button>
-                                  <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}>
-                                    <AlignRight strokeWidth={1.5} />
-                                  </button>
-                                  <button onClick={() => editor.chain().focus().setTextAlign('justify').run()} className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}>
-                                    <AlignJustify strokeWidth={1.5} />
-                                  </button>
-                                  <Minus color="#000" strokeWidth={1.5} />
-                                  <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
-                                    <Highlighter strokeWidth={1.5} />
-                                  </button>
-                                  <Minus color="#000" strokeWidth={1.5} />
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                                    className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
-                                  >
-                                    <Heading1 strokeWidth={1.5} />
-                                  </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                                    className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
-                                  >
-                                    <Heading2 strokeWidth={1.5} />
-                                  </button>
-                                  <button
-                                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                                    className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
-                                  >
-                                    <Heading3 strokeWidth={1.5} />
-                                  </button>
-                                </div>
-                                <div>
-                                  <BubbleMenu
-                                    editor={editor}
-                                    tippyOptions={{ duration: 100 }}
+                                  <div
                                     className={cn(
-                                      "flex items-center gap-1 rounded-md p-1 bg-white",
-                                      "  text-black shadow dark:bg-slate10",
+                                      "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
+                                      "bg-[#121212] text-white transition-all align-center justify-center",
+                                      "sm:sticky sm:top-[120px]",
+                                    )}
+                                  >
+                                    <select
+                                      name="clientAtr"
+                                      onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
+                                      className='bg-[#121212] border border-white  text-white  focus:border-[#60b9fd] rounded-md p-2 '
+                                    >
+                                      <option value="">Client</option>
+                                      {Object.entries(clientAtr).map(([title, value]) => (
+                                        <option key={title} value={title}>
+                                          {title}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <select
+                                      name="wantedVehAttr"
+                                      onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
+                                      className='bg-[#121212] border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '   >
+                                      <option value="">Wanted Veh</option>
+                                      {Object.entries(wantedVehAttr).map(([title, value]) => (
+                                        <option key={title} value={title}>
+                                          {title}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <select
+                                      name="tradeVehAttr"
+                                      onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
+                                      className='bg-[#121212] border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '         >
+                                      <option value="">Trade Veh</option>
+                                      {Object.entries(tradeVehAttr).map(([title, value]) => (
+                                        <option key={title} value={title}>
+                                          {title}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <select
+                                      name="salesPersonAttr"
+                                      onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
+                                      className='bg-[#121212] border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '          >
+                                      <option value="">Sales Person</option>
+                                      {Object.entries(salesPersonAttr).map(([title, value]) => (
+                                        <option key={title} value={title}>
+                                          {title}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <select
+                                      name="FandIAttr"
+                                      onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
+                                      className='bg-[#121212] border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                      <option value="">F & I Manager</option>
+                                      {Object.entries(FandIAttr).map(([title, value]) => (
+                                        <option key={title} value={title}>
+                                          {title}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <select
+                                      name="dealerInfo"
+                                      onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
+                                      className='bg-[#121212] border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                      <option value="">Dealer Info</option>
+                                      {Object.entries(dealerInfo).map(([title, value]) => (
+                                        <option key={title} value={title}>
+                                          {title}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <select
+                                      name="financeInfo"
+                                      onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
+                                      className='bg-[#121212] border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                      <option value="">Finance Info</option>
+                                      {Object.entries(financeInfo).map(([title, value]) => (
+                                        <option key={title} value={title}>
+                                          {title}
+                                        </option>
+                                      ))}
+                                    </select>
+
+                                  </div>
+                                  <div
+                                    className={cn(
+                                      "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
+                                      "bg-[#121212] text-white transition-all justify-center",
+                                      // "sm:sticky sm:top-[80px]",
                                     )}
                                   >
                                     <button
-                                      type="button"
                                       onClick={() => editor.chain().focus().toggleBold().run()}
                                       className={editor.isActive("bold") ? buttonActive : buttonInactive}
                                     >
-                                      <IconMatch className="size-4" icon="editor-bold" />
+                                      <FaBold className="text-xl hover:text-[#02a9ff]" />
                                     </button>
                                     <button
-                                      type="button"
                                       onClick={() => editor.chain().focus().toggleItalic().run()}
                                       className={editor.isActive("italic") ? buttonActive : buttonInactive}
                                     >
-                                      <IconMatch className="size-4" icon="editor-italic" />
+                                      <FaItalic className="text-xl hover:text-[#02a9ff]" />
                                     </button>
                                     <button
-                                      type="button"
                                       onClick={() => editor.chain().focus().toggleStrike().run()}
                                       className={editor.isActive("strike") ? buttonActive : buttonInactive}
                                     >
-                                      <IconMatch className="size-4" icon="editor-strikethrough" />
+                                      <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
                                     </button>
+
+                                    <Minus color="#121212" strokeWidth={1.5} />
                                     <button
-                                      type="button"
                                       onClick={handleSetLink}
                                       className={editor.isActive("link") ? buttonActive : buttonInactive}
                                     >
-                                      <IconMatch className="size-4" icon="editor-link" />
+                                      <FaLink className="text-xl hover:text-[#02a9ff]" />
                                     </button>
                                     <button
-                                      type="button"
                                       onClick={() => editor.chain().focus().unsetLink().run()}
                                       disabled={!editor.isActive("link")}
                                       className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
                                     >
-                                      <IconMatch className="size-4" icon="editor-link-unlink" />
+                                      <FaUnlink className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                                      className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaQuoteLeft className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleCode().run()}
+                                      className={editor.isActive('code') ? buttonActive : buttonInactive}
+                                      disabled={!editor.can().chain().focus().toggleCode().run()}
+                                    >
+                                      <FaFileCode className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                                      className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
+                                    >
+                                      <BiCodeBlock className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleBulletList().run()}
+                                      className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaList className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                                      className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaListOl className="text-xl hover:text-[#02a9ff]" />
                                     </button>
 
-                                  </BubbleMenu>
-                                </div>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                                      <MdHorizontalRule className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button onClick={() => editor.chain().focus().setHardBreak().run()}>
+                                      <IoMdReturnLeft className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button
+                                      onClick={() => editor.chain().focus().undo().run()}
+                                      disabled={!editor.can().chain().focus().undo().run()}
+                                    >
+                                      <FaUndo className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().redo().run()}
+                                      disabled={!editor.can().chain().focus().redo().run()}
+                                    >
+                                      <FaRedo className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                                      className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
+                                    >
+                                      <FaAlignLeft className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                                      className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
+                                    >
+                                      <FaAlignCenter className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                                      className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
+                                    >
+                                      <FaAlignRight className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+                                      className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
+                                    >
+                                      <FaAlignJustify className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleHighlight().run()}
+                                      className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaHighlighter className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <input
+                                      type="color"
+                                      onInput={event => editor.chain().focus().setColor(event.target.value).run()}
+                                      value={editor.getAttributes('textStyle').color}
+                                      data-testid="setColor"
+                                    />
+                                    <button
+                                      onClick={() => editor.chain().focus().unsetColor().run()}
+                                      className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaEraser className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                                      className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
+                                    >
+                                      <Heading1 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                                      className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
 
-                                <div>
-                                  <BubbleMenu
-                                    editor={editor}
-                                    tippyOptions={{ duration: 100 }}
-                                    className={cn(
-                                      "flex items-center gap-1 rounded-md p-1 bg-white",
-                                      "  text-black shadow dark:bg-slate10",
-                                    )}
-                                  >
-                                    <div className="grid grid-cols-2 w-full items-center justify-between  ">
-                                      <select
-                                        name="clientAtr"
+                                    >
+                                      <Heading2 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                                      className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
 
-                                        onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                                        className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+                                    >
+                                      <Heading3 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                                    </button>
+                                  </div>
+                                  <div>
+                                    <BubbleMenu
+                                      editor={editor}
+                                      tippyOptions={{ duration: 100 }}
+                                      className={cn(
+                                        "flex items-center gap-1 rounded-md p-1 bg-white",
+                                        "  text-black shadow dark:bg-slate10",
+                                      )}
+                                    >
+                                      <button
+                                        type="button"
+                                        onClick={() => editor.chain().focus().toggleBold().run()}
+                                        className={editor.isActive("bold") ? buttonActive : buttonInactive}
                                       >
-                                        <option value="">Client</option>
-                                        {Object.entries(clientAtr).map(([title, value]) => (
-                                          <option key={title} value={title}>
-                                            {title}
-                                          </option>
-                                        ))}
-                                      </select>
-                                      <select
-                                        name="wantedVehAttr"
-                                        onChange={(event) => {
-                                          handleDropdownChange(wantedVehAttr[event.target.value]);
-                                        }}
-                                        className='bg-slate12 border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
-                                        <option value="">Wanted Veh</option>
-                                        {Object.entries(wantedVehAttr).map(([title, value]) => (
-                                          <option key={title} value={title}>
-                                            {title}
-                                          </option>
-                                        ))}
-                                      </select>
-                                      <select
-                                        name="tradeVehAttr"
-                                        onChange={(event) => {
-                                          handleDropdownChange(tradeVehAttr[event.target.value]);
-                                        }}
-                                        className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
-                                        <option value="">Trade Veh</option>
-                                        {Object.entries(tradeVehAttr).map(([title, value]) => (
-                                          <option key={title} value={title}>
-                                            {title}
-                                          </option>
-                                        ))}
-                                      </select>
-                                      <select
-                                        name="salesPersonAttr"
-                                        onChange={(event) => {
-                                          handleDropdownChange(salesPersonAttr[event.target.value]);
-                                        }}
-                                        className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
-                                        <option value="">Sales Person</option>
-                                        {Object.entries(salesPersonAttr).map(([title, value]) => (
-                                          <option key={title} value={title}>
-                                            {title}
-                                          </option>
-                                        ))}
-                                      </select>
-                                      <select
-                                        name="FandIAttr"
-                                        onChange={(event) => {
-                                          handleDropdownChange(FandIAttr[event.target.value]);
-                                        }}
-                                        className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
-                                        <option value="">F & I Manager</option>
-                                        {Object.entries(FandIAttr).map(([title, value]) => (
-                                          <option key={title} value={title}>
-                                            {title}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                  </BubbleMenu>
+                                        <IconMatch className="size-4" icon="editor-bold" />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => editor.chain().focus().toggleItalic().run()}
+                                        className={editor.isActive("italic") ? buttonActive : buttonInactive}
+                                      >
+                                        <IconMatch className="size-4" icon="editor-italic" />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => editor.chain().focus().toggleStrike().run()}
+                                        className={editor.isActive("strike") ? buttonActive : buttonInactive}
+                                      >
+                                        <IconMatch className="size-4" icon="editor-strikethrough" />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={handleSetLink}
+                                        className={editor.isActive("link") ? buttonActive : buttonInactive}
+                                      >
+                                        <IconMatch className="size-4" icon="editor-link" />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => editor.chain().focus().unsetLink().run()}
+                                        disabled={!editor.isActive("link")}
+                                        className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
+                                      >
+                                        <IconMatch className="size-4" icon="editor-link-unlink" />
+                                      </button>
+
+                                    </BubbleMenu>
+                                  </div>
+
+
+                                  <br />
+                                  <EditorContent editor={editor} className=" p-3 mb-2 mt-auto cursor-text   bg-white mx-auto w-[95%] rounded-md" />
+                                  <br />
+
+
+                                  <input type='hidden' defaultValue={text} name='body' />
+                                  <br />
+
                                 </div>
-                                <br />
-                                <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text border border-black bg-white mx-auto w-[95%] rounded-md" />
-                                <br />
-
-
-                                <input type='hidden' defaultValue={text} name='body' />
-                                <br />
-
                               </div>
                             </div>
-                          </div>
-                        </Form>
+                          </Form>
+                        </div>
                       </div>
-                    </div>
+                    </div >
                   </div >
-                </ScrollArea>
-              </div >
-            )}
-          </div >
+                )}
+              </div>
+            </CardContent>
+
+          </Card>
+
+
         </div >
       </div >
     </>
@@ -1509,7 +1463,7 @@ export function SettingsMenu() {
             size="sm"
             className=" h-8 cursor-pointer justify-between lg:flex "
           >
-            <div className="text-[#fff] flex w-full items-center justify-between hover:text-[#02a9ff]">
+            <div className="text-white flex w-full items-center justify-between hover:text-[#02a9ff]">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>
 
             </div>

@@ -554,13 +554,13 @@ export function StoreHoursCalendar() {
 
 
         <span className="ml-auto justify-end">
-          <Button className='mr-3 cursor-pointer items-center justify-center p-2 first:rounded-l-md last:rounded-r-md hover:text-blue-8' onClick={() => onNavigate(navigate.PREVIOUS)}>
+          <Button className='  cursor-pointer items-center justify-center p-2  rounded-l-md   hover:text-blue-8' onClick={() => onNavigate(navigate.PREVIOUS)}>
             <ChevronsLeft size={20} strokeWidth={1.5} />
           </Button>
-          <Button className='mr-3 cursor-pointer items-center justify-center  p-2 first:rounded-l-md last:rounded-r-md hover:text-blue-8' onClick={() => onNavigate(navigate.TODAY)}>
+          <Button className=' cursor-pointer items-center justify-center  p-2   hover:text-blue-8' onClick={() => onNavigate(navigate.TODAY)}>
             <ChevronsRightLeft size={20} strokeWidth={1.5} />
           </Button>
-          <Button className='mr-3 cursor-pointer items-center justify-center  p-2 first:rounded-l-md last:rounded-r-md hover:text-blue-8' onClick={() => onNavigate(navigate.NEXT)}
+          <Button className='mr-3 cursor-pointer items-center justify-center  p-2  rounded-r-md hover:text-blue-8' onClick={() => onNavigate(navigate.NEXT)}
           >
             <ChevronsRight size={20} strokeWidth={1.5} />
           </Button>
@@ -595,18 +595,21 @@ export function StoreHoursCalendar() {
           onChange={handleDisplayDragItemInCell}
         />
       </div> */
+  // <div className=' flex max-h-[95vh] max-w-[95vw]'>
+  //
   const newDate = new Date()
   return (
     <div className='flex w-auto ' >
+
       <div className='h-screen w-[310px] border-r border-[#3d3d3d]'>
-        <div className=' mt-5 flex-col  justify-center'>
-          <div className="mx-5 w-[280px] rounded-md border-white bg-[#121212] px-3 text-white " >
+        <div className=' mt-5 flex-col mx-auto justify-center'>
+          <div className="mx-auto w-[280px] rounded-md border-white bg-[#121212] px-3 text-white " >
             <div className='  my-3 flex justify-center   '>
               <CalendarIcon className="mr-2 size-8 " />
               {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
             </div>
             <SmallCalendar
-              className='mx-1 w-auto   bg-[#121212] text-[#ccd2df]'
+              className='mx-auto  w-auto   bg-[#121212] text-[#ccd2df]'
               mode="single"
               selected={date}
               onSelect={setDate}
@@ -621,7 +624,7 @@ export function StoreHoursCalendar() {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-[240px] px-4 text-[#ccd2df] mx-auto  h-[55px] font-normal",
+                  "w-[240px] px-4 text-[#ccd2df] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff]",
                   !date && " text-[#ccd2df]"
                 )}
               >
@@ -634,7 +637,7 @@ export function StoreHoursCalendar() {
             <PopoverContent className="w-[240px] bg-white p-0 text-black" align="start">
               <div className='align-center my-3 flex justify-center   '>
                 <Select name='pickHour' value={hour} onValueChange={setHour}>
-                  <SelectTrigger className="m-3 w-auto" >
+                  <SelectTrigger className="m-3 w-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff]" >
                     <SelectValue placeholder={hour} defaultValue={hour} />
                   </SelectTrigger>
                   <SelectContent className='bg-white text-black' >
@@ -678,7 +681,8 @@ export function StoreHoursCalendar() {
                 <Button
                   key={resourceId}
                   type="submit"
-                  className="mx-3 mt-5 px-4 py-2 text-[#cbd0d4]"
+                  variant='outline'
+                  className="mx-3 mt-5 px-4 py-2 text-[#cbd0d4] bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff] w-[240px]"
                   draggable="true"
                   onDragStart={() =>
                     handleDragStart({
@@ -707,11 +711,11 @@ export function StoreHoursCalendar() {
         </div>
       </div>
 
-      <div className="flex-grow justify-center overflow-hidden">
+      <div className="flex w-[97%] justify-center overflow-hidden">
         {showResources ? (
           <DnDCalendar
             style={{
-              width: `calc(100vw - 310px)`, // Calculate width based on available space (viewport width minus left panel width)
+              width: `calc(100vw - 310px)`,
               height: "100vh",
               overflowX: "hidden",
               overflowY: "scroll",
@@ -876,10 +880,10 @@ export default function SettingsAccountPage() {
       <div className="h-[75px]  w-auto  border-b border-[#3d3d3d] bg-[#121212] text-[#cbd0d4]">
         <h2 className="  ml-[125px] text-2xl font-bold tracking-tight">Manager Section</h2>
         <p className="text-muted-foreground   ml-[125px]  ">
-          Advanced functionality for managers.
+          Salesperson Schedule.
         </p>
       </div>
-      <div className="  size-full">
+      <div className=" grow">
         <StoreHoursCalendar />
       </div>
     </>

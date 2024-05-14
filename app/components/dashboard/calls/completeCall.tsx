@@ -55,24 +55,21 @@ const CompleteCall = ({ data, contactMethod }) => {
           <ClipboardCheck className='mx-auto  text-white items-center justify-center hover:text-[#02a9ff] target:text-[#02a9ff]' />
         </div>
       </DialogTrigger>
-      <DialogContent className="w-full md:w-[50%] bg-white border text-black  border-black h-auto">
+      <DialogContent className="w-full md:w-[50%] bg-[#1c2024] border text-white  border-[#2b2b2d] h-auto">
         <DialogHeader>
           <DialogTitle>  <p className="mt-4">Schedule Follow-up</p>
           </DialogTitle>
-          <DialogDescription className=" bg-white border-black text-black">
-
-          </DialogDescription>
         </DialogHeader>
         <Form method="post" >
           <div className='grid grid-cols-1 mx-auto w-[90%] '>
 
             <p>Updating Completed Appointment</p>
-            <hr className="solid text-black " />
+            <hr className="solid text-white " />
             <Select name='resultOfcall' >
               <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3 ">
                 <SelectValue placeholder="Result of call" />
               </SelectTrigger>
-              <SelectContent className='bg-white'>
+              <SelectContent className='bg-[#1c2024]'>
                 <SelectGroup>
                   <SelectLabel>Result of call</SelectLabel>
                   <SelectItem value="Reached">Reached</SelectItem>
@@ -83,20 +80,20 @@ const CompleteCall = ({ data, contactMethod }) => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <p className='text-black mt-5'>Creating New Appointment</p>
-            <hr className="solid text-black  " />
+            <p className='text-white mt-5'>Creating New Appointment</p>
+            <hr className="solid text-white  " />
 
             <Input
               type="text"
               name="title"
               defaultValue={`F/U on the ${data.model}`}
-              className="w-full mx-auto mt-3 rounded border border-black h-8 bg-white text-black  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+              className="w-full mx-auto mt-3 rounded border border-[#2b2b2d] h-8 bg-[#1c2024] text-white  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
             />
             <Select name='note' defaultValue="No Answer / Left Message">
               <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
                 <SelectValue placeholder="Message examples" />
               </SelectTrigger>
-              <SelectContent className='bg-white'>
+              <SelectContent className='bg-[#1c2024]'>
                 <SelectGroup>
                   <SelectLabel>Message examples</SelectLabel>
 
@@ -125,14 +122,14 @@ const CompleteCall = ({ data, contactMethod }) => {
             <Input
               name="note"
               placeholder="or write a custom note..."
-              className="w-full mx-auto mt-3 rounded border border-black h-8 bg-white text-black  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+              className="w-full mx-auto mt-3 rounded border border-[#2b2b2d] h-8 bg-[#1c2024] text-white  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
             />
 
             <Select name='contactMethod' defaultValue="SMS">
               <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
                 <SelectValue placeholder="Contact Method" />
               </SelectTrigger>
-              <SelectContent className='bg-white'>
+              <SelectContent className='bg-[#1c2024]'>
                 <SelectGroup>
                   <SelectLabel>Contact Method</SelectLabel>
                   <SelectItem value="Phone">Phone</SelectItem>
@@ -146,7 +143,7 @@ const CompleteCall = ({ data, contactMethod }) => {
               <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
                 <SelectValue placeholder="Type of Appointment" />
               </SelectTrigger>
-              <SelectContent className='bg-white'>
+              <SelectContent className='bg-[#1c2024]'>
                 <SelectGroup>
                   <SelectLabel>Type of Appointment</SelectLabel>
                   <SelectItem value="1">Sales Calls</SelectItem>
@@ -164,7 +161,7 @@ const CompleteCall = ({ data, contactMethod }) => {
               <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
                 <SelectValue placeholder="Time of day" />
               </SelectTrigger>
-              <SelectContent className='bg-white' >
+              <SelectContent className='bg-[#1c2024]' >
                 <SelectGroup>
                   <SelectLabel>Time of day</SelectLabel>
                   <SelectItem value="09:00">9:00</SelectItem>
@@ -220,7 +217,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                   })
                 }}
                 name='intent' value='scheduleFUp' type='submit'
-                className={` cursor-pointer ml-2 mr-2 p-3 hover:text-[#02a9ff] text-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                className={` cursor-pointer ml-2 mr-2 p-3 hover:text-[#02a9ff] text-white font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
               >
                 Complete
               </Button>

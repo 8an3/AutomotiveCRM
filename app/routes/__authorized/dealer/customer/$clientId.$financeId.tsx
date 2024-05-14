@@ -607,53 +607,200 @@ export const action: ActionFunction = async ({ req, request, params }) => {
 
     const currentDate = new Date().toISOString();
 
-    const updateData = {};
+    const date = new Date();
+    let sold;
+    let referral;
+    let visited;
+    let bookedApt;
+    let aptShowed;
+    let aptNoShowed;
+    let testDrive;
+    let metService;
+    let metManager;
+    let metParts;
+    let depositMade;
+    let refund;
+    let turnOver;
+    let financeApp;
+    let approved;
+    let signed;
+    let pickUpSet;
+    let demoed;
+    let delivered;
+    let deliveredDate;
+    let docsSigned;
+    let funded;
+    let seenTrade;
+    let financeApplication;
+    let metSalesperson;
+    let metFinance;
+    let signBill;
+    let tradeInsp;
+    let applicationDone;
+    let licensingSent;
+    let liceningDone;
+    let cancelled;
+    let lost;
 
-    if (!formData.reached) updateData.reached = currentDate;
-    if (!formData.attempted) updateData.attempted = currentDate;
-    if (!formData.visited) updateData.visited = currentDate;
-    if (!formData.sold) updateData.sold = currentDate;
-    if (!formData.depositMade) updateData.depositMade = currentDate;
-    if (!formData.turnOver) updateData.turnOver = currentDate;
-    if (!formData.applicationDone) updateData.applicationDone = currentDate;
-    if (!formData.approved) updateData.approved = currentDate;
-    if (!formData.signed) updateData.signed = currentDate;
-    if (!formData.licensingSent) updateData.licensingSent = currentDate;
-    if (!formData.liceningDone) updateData.liceningDone = currentDate;
-    if (!formData.pickUpSet) updateData.pickUpSet = currentDate;
-    if (!formData.delivered) updateData.delivered = currentDate;
-    if (!formData.refund) updateData.refund = currentDate;
-    if (!formData.funded) updateData.funded = currentDate;
-    if (!formData.cancelled) updateData.cancelled = currentDate;
-    if (!formData.lost) updateData.lost = currentDate;
-    if (!formData.financeApp) updateData.financeApp = currentDate;
-    if (!formData.testDrive) updateData.testDrive = currentDate;
-    if (!formData.seenTrade) updateData.seenTrade = currentDate;
-    if (!formData.metService) updateData.metService = currentDate;
-    if (!formData.metManager) updateData.metManager = currentDate;
-    if (!formData.metParts) updateData.metParts = currentDate;
-    if (!formData.demoed) updateData.demoed = currentDate;
+    if (formData.tradeInsp === 'on') {
+      tradeInsp = date
+    }
+    if (formData.sold === 'on') {
+      sold = date;
+    }
+    if (formData.signBill === 'on') {
+      signBill = date;
+    }
+    if (formData.metFinance === 'on') {
+      metFinance = date;
+    }
+    if (formData.metSalesperson === 'on') {
+      metSalesperson = date;
+    }
+    if (formData.financeApplication === 'on') {
+      financeApplication = date;
+    }
+    if (formData.seenTrade === 'on') {
+      seenTrade = date;
+    }
+    if (formData.funded === 'on') {
+      funded = date;
+    }
+    if (formData.docsSigned === 'on') {
+      docsSigned = date;
+    }
+    if (formData.deliveredDate === 'on') {
+      deliveredDate = date;
+    }
+    if (formData.delivered === 'on') {
+      delivered = date;
+    }
+    if (formData.demoed === 'on') {
+      demoed = date;
+    }
+    if (formData.pickUpSet === 'on') {
+      pickUpSet = date;
+    }
+    if (formData.signed === 'on') {
+      signed = date;
+    }
+    if (formData.approved === 'on') {
+      approved = date;
+    }
+    if (formData.financeApp === 'on') {
+      financeApp = date;
+    }
+    if (formData.turnOver === 'on') {
+      turnOver = date;
+    }
+    if (formData.refund === 'on') {
+      refund = date;
+    }
+    if (formData.depositMade === 'on') {
+      depositMade = date;
+    }
+    if (formData.metParts === 'on') {
+      metParts = date;
+    }
+    if (formData.metManager === 'on') {
+      metManager = date;
+    }
+    if (formData.metService === 'on') {
+      metService = date;
+    }
+    if (formData.testDrive === 'on') {
+      testDrive = date;
+    }
+    if (formData.aptNoShowed === 'on') {
+      aptNoShowed = date;
+    }
+    if (formData.aptShowed === 'on') {
+      aptShowed = date;
+    }
+    if (formData.bookedApt === 'on') {
+      bookedApt = date;
+    }
+    if (formData.visited === 'on') {
+      visited = date;
+    }
+    if (formData.referral === 'on') {
+      referral = date;
+    }
+    if (formData.applicationDone === 'on') {
+      applicationDone = date;
+    }
+    if (formData.licensingSent === 'on') {
+      licensingSent = date;
+    }
+    if (formData.liceningDone === 'on') {
+      liceningDone = date;
+    }
+    if (formData.cancelled === 'on') {
+      cancelled = date;
+    }
+    if (formData.lost === 'on') {
+      lost = date;
+    }
+
+    // if (!formData.reached) updateData.reached = currentDate;
+    // if (!formData.attempted) updateData.attempted = currentDate;
 
     const updateDealProgress = await prisma.dashboard.update({
       where: { financeId: formData.financeId },
       data: {
-        ...updateData,
+        applicationDone: String(applicationDone),
+        licensingSent: String(licensingSent),
+        liceningDone: String(liceningDone),
+        cancelled: String(cancelled),
+        lost: String(lost),
+        sold: String(sold),
+        referral: String(referral),
+        visited: String(visited),
+      bookedApt: String(bookedApt),
+        aptShowed: String(aptShowed),
+        aptNoShowed: String(aptNoShowed),
+        testDrive: String(testDrive),
+        metService: String(metService),
+        metManager: String(metManager),
+        metParts: String(metParts),
+        depositMade: String(depositMade),
+        refund: String(refund),
+        turnOver: String(turnOver),
+        financeApp: String(financeApp),
+        approved: String(approved),
+        signed: String(signed),
+        pickUpSet: String(pickUpSet),
+        demoed: String(demoed),
+        delivered: String(delivered),
+        deliveredDate: String(deliveredDate),
+        docsSigned: String(docsSigned),
+        funded: String(funded),
+        seenTrade: String(seenTrade),
+        financeApplication: String(financeApplication),
+        metSalesperson: String(metSalesperson),
+        metFinance: String(metFinance),
+        signBill: String(signBill),
+        tradeInsp: String(tradeInsp),
+
         pending: formData.pending,
-        bookedApt: formData.bookedApt,
-        aptShowed: formData.aptShowed,
-        aptNoShowed: formData.aptNoShowed,
-        referral: formData.referral,
+      //  bookedApt: formData.bookedApt,
+       // aptShowed: formData.aptShowed,
+       /// aptNoShowed: formData.aptNoShowed,
+       // referral: formData.referral,
       },
     });
 
     const userIntegration = await prisma.userIntergration.findUnique({
       where: { userEmail: user?.email }
     })
-    const activixActivated = userIntegration.activixActivated
-    if (activixActivated === 'yes') {
-      await UpdateLeadBasic(formData)
+    if (userIntegration) {
+      const activixActivated = userIntegration.activixActivated
+      if (activixActivated === 'yes') {
+        await UpdateLeadBasic(formData)
+      }
+      return json({ updateDealProgress })
     }
-    return json({ updateDealProgress })
+
   }
   // trade
   if (intent === 'updateTrade') {
@@ -1417,7 +1564,7 @@ export default function CustomerProfile({ request, }) {
           finance[0].customerState !== 'delivered' ?
             (<Badge className="bg-green-600">Delivered</Badge>) :
             (<Badge onClick={() => setPickUpCalendar(PickUpCalendar === 'yes' ? 'no' : 'yes')} className="cursor-pointer transform transform:translate-x-1 bg-green-600">{result}</Badge>
-                      ),
+            ),
 
       label: 'Pick Up Date',
     }

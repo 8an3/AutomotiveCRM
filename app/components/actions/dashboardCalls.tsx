@@ -1155,6 +1155,140 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       pickUpDate = new Date(formData.pickUpDate).toISOString()
     }
     let lastContact = new Date().toISOString()
+    const date = new Date();
+    let sold;
+    let referral;
+    let visited;
+    let bookedApt;
+    let aptShowed;
+    let aptNoShowed;
+    let testDrive;
+    let metService;
+    let metManager;
+    let metParts;
+    let depositMade;
+    let refund;
+    let turnOver;
+    let financeApp;
+    let approved;
+    let signed;
+    let pickUpSet;
+    let demoed;
+    let delivered;
+    let deliveredDate;
+    let docsSigned;
+    let funded;
+    let seenTrade;
+    let financeApplication;
+    let metSalesperson;
+    let metFinance;
+    let signBill;
+    let tradeInsp;
+    let applicationDone;
+    let licensingSent;
+    let liceningDone;
+    let cancelled;
+    let lost;
+
+    if (formData.tradeInsp === 'on') {
+      tradeInsp = date
+    }
+    if (formData.sold === 'on') {
+      sold = date;
+    }
+    if (formData.signBill === 'on') {
+      signBill = date;
+    }
+    if (formData.metFinance === 'on') {
+      metFinance = date;
+    }
+    if (formData.metSalesperson === 'on') {
+      metSalesperson = date;
+    }
+    if (formData.financeApplication === 'on') {
+      financeApplication = date;
+    }
+    if (formData.seenTrade === 'on') {
+      seenTrade = date;
+    }
+    if (formData.funded === 'on') {
+      funded = date;
+    }
+    if (formData.docsSigned === 'on') {
+      docsSigned = date;
+    }
+    if (formData.deliveredDate === 'on') {
+      deliveredDate = date;
+    }
+    if (formData.delivered === 'on') {
+      delivered = date;
+    }
+    if (formData.demoed === 'on') {
+      demoed = date;
+    }
+    if (formData.pickUpSet === 'on') {
+      pickUpSet = date;
+    }
+    if (formData.signed === 'on') {
+      signed = date;
+    }
+    if (formData.approved === 'on') {
+      approved = date;
+    }
+    if (formData.financeApp === 'on') {
+      financeApp = date;
+    }
+    if (formData.turnOver === 'on') {
+      turnOver = date;
+    }
+    if (formData.refund === 'on') {
+      refund = date;
+    }
+    if (formData.depositMade === 'on') {
+      depositMade = date;
+    }
+    if (formData.metParts === 'on') {
+      metParts = date;
+    }
+    if (formData.metManager === 'on') {
+      metManager = date;
+    }
+    if (formData.metService === 'on') {
+      metService = date;
+    }
+    if (formData.testDrive === 'on') {
+      testDrive = date;
+    }
+    if (formData.aptNoShowed === 'on') {
+      aptNoShowed = date;
+    }
+    if (formData.aptShowed === 'on') {
+      aptShowed = date;
+    }
+    if (formData.bookedApt === 'on') {
+      bookedApt = date;
+    }
+    if (formData.visited === 'on') {
+      visited = date;
+    }
+    if (formData.referral === 'on') {
+      referral = date;
+    }
+    if (formData.applicationDone === 'on') {
+      applicationDone = date;
+    }
+    if (formData.licensingSent === 'on') {
+      licensingSent = date;
+    }
+    if (formData.liceningDone === 'on') {
+      liceningDone = date;
+    }
+    if (formData.cancelled === 'on') {
+      cancelled = date;
+    }
+    if (formData.lost === 'on') {
+      lost = date;
+    }
 
     console.log(financeId, 'finaceCheckId')
     const financeData = {
@@ -1244,25 +1378,41 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     }
     const dashData = {
       userEmail: formData.userEmail,
-      referral: formData.referral,
-      visited: formData.visited,
-      bookedApt: formData.bookedApt,
-      aptShowed: formData.aptShowed,
-      aptNoShowed: formData.aptNoShowed,
-      testDrive: formData.testDrive,
-      metService: formData.metService,
-      metManager: formData.metManager,
-      metParts: formData.metParts,
-      sold: formData.sold,
-      depositMade: formData.depositMade,
-      refund: formData.refund,
-      turnOver: formData.turnOver,
-      financeApp: formData.financeApp,
-      approved: formData.approved,
-      signed: formData.signed,
-      pickUpSet: formData.pickUpSet,
-      demoed: formData.demoed,
-      delivered: formData.delivered,
+
+      applicationDone: String(applicationDone),
+      licensingSent: String(licensingSent),
+      liceningDone: String(liceningDone),
+      cancelled: String(cancelled),
+      lost: String(lost),
+      sold: String(sold),
+      referral: String(referral),
+      visited: String(visited),
+      bookedApt: String(bookedApt),
+      aptShowed: String(aptShowed),
+      aptNoShowed: String(aptNoShowed),
+      testDrive: String(testDrive),
+      metService: String(metService),
+      metManager: String(metManager),
+      metParts: String(metParts),
+      depositMade: String(depositMade),
+      refund: String(refund),
+      turnOver: String(turnOver),
+      financeApp: String(financeApp),
+      approved: String(approved),
+      signed: String(signed),
+      pickUpSet: String(pickUpSet),
+      demoed: String(demoed),
+      delivered: String(delivered),
+      deliveredDate: String(deliveredDate),
+      docsSigned: String(docsSigned),
+      funded: String(funded),
+      seenTrade: String(seenTrade),
+      financeApplication: String(financeApplication),
+      metSalesperson: String(metSalesperson),
+      metFinance: String(metFinance),
+      signBill: String(signBill),
+      tradeInsp: String(tradeInsp),
+
       lastContact: lastContact,
       status: formData.status,
       customerState: customerState,
@@ -1272,32 +1422,23 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       completeCall: formData.completeCall,
       followUpDay: formData.followUpDay,
       state: formData.state,
-      deliveredDate: formData.deliveredDate,
       notes: formData.notes,
       visits: formData.visits,
       progress: formData.progress,
-      metSalesperson: formData.metSalesperson,
-      metFinance: formData.metFinance,
-      financeApplication: formData.financeApplication,
       pickUpDate: pickUpDate,
       pickUpTime: formData.pickUpTime,
       depositTakenDate: formData.depositTakenDate,
-      docsSigned: formData.docsSigned,
       tradeRepairs: formData.tradeRepairs,
-      seenTrade: formData.seenTrade,
       lastNote: formData.lastNote,
       dLCopy: formData.dLCopy,
       insCopy: formData.insCopy,
       testDrForm: formData.testDrForm,
       voidChq: formData.voidChq,
       loanOther: formData.loanOther,
-      signBill: formData.signBill,
       ucda: formData.ucda,
-      tradeInsp: formData.tradeInsp,
       customerWS: formData.customerWS,
       otherDocs: formData.otherDocs,
       urgentFinanceNote: formData.urgentFinanceNote,
-      funded: formData.funded,
       countsInPerson: formData.countsInPerson,
       countsPhone: formData.countsPhone,
       countsSMS: formData.countsSMS,

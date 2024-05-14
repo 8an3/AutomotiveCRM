@@ -28,7 +28,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "~/other/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/other/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import UnitPicker from '../unitPicker/unitPicker'
 import { dashboardAction, dashboardLoader } from "activix/dashboardCallsActivix";
@@ -135,7 +135,7 @@ export default function ClientVehicleCard({ data, }) {
             <select
               name='selectBrand'
 
-              className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
+              className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-[#c7c7cb] text-[#c7c7cb] h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
             >
               <option value="">Select Brand</option>
               {options.map((option, index) => (
@@ -157,12 +157,12 @@ export default function ClientVehicleCard({ data, }) {
       )}
       <SheetHeader>
         <SheetTitle>
-          <SheetContent side='left' className='bg-[#1c2024] w-full md:w-[50%]  overflow-y-auto    shadow-[0_2px_10px] text-white' >
+          <SheetContent side='left' className='bg-[#121212] text-[#c7c7cb] w-full h-screen md:w-[50%] overflow-y-auto   ' >
 
-            <h3 className="text-2xl font-thin text-white">CLIENT VEHICLE CARD</h3>
+            <h3 className="text-2xl font-thin text-[#c7c7cb]">CLIENT VEHICLE CARD</h3>
 
             <Form method='post'>
-              <div className="grid grid-cols-1 text-white">
+              <div className="grid grid-cols-1 text-[#c7c7cb]">
                 {/* Left column with inputs */}
                 <div>
                   <div className="mx-3 my-3 w-[90%]">
@@ -174,8 +174,8 @@ export default function ClientVehicleCard({ data, }) {
                     <Input type="hidden" defaultValue='updateFinance' name="intent" />
 
                   </div>
-                  <div className="mx-3 my-3 w-[90%]">
-                    <Tabs defaultValue="model" className="my-x mx-3 w-[90%]">
+                  <div className="mx-3 my-3 w-[95%]">
+                    <Tabs defaultValue="model" className="my-x mx-3 w-auto">
                       <TabsList className="flex w-full flex-row  ">
                         <TabsTrigger value="model">Model</TabsTrigger>
                         <TabsTrigger value="price">Price</TabsTrigger>
@@ -250,18 +250,18 @@ export default function ClientVehicleCard({ data, }) {
                         {data.desiredPayments === "Standard Payment" && (
                           <>
                             <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4  text-white  text-sm  font-thin">
+                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4  items-end text-white   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end  text-right text-sm font-thin ">
                                 ${data.total}
                               </p>
                             </div>
-                            <div className="mt-2 flex flex-wrap justify-between text-white  ">
-                              <p className="mt-2 basis-2/4   text-sm text-white  font-thin">
+                            <div className="mt-2 flex flex-wrap justify-between text-[#c7c7cb]  ">
+                              <p className="mt-2 basis-2/4   text-sm text-[#c7c7cb]  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  items-end text-white   justify-end text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end text-sm font-thin ">
                                 ${data.onTax}
                               </p>
                             </div>
@@ -269,19 +269,19 @@ export default function ClientVehicleCard({ data, }) {
                         )}
                         {data.desiredPayments === "Payments with Options" && (
                           <>
-                            <div className="mt-2 flex flex-wrap justify-between text-white ">
-                              <p className="mt-2 basis-2/4  text-white  text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap justify-between text-[#c7c7cb] ">
+                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4 text-white  items-end  justify-end text-right text-sm font-thin ">
+                              <p className="flex basis-2/4 text-[#c7c7cb]  items-end  justify-end text-right text-sm font-thin ">
                                 ${data.totalWithOptions}
                               </p>
                             </div>
-                            <div className="mt-2 flex flex-wrap text-white  justify-between ">
-                              <p className="mt-2 basis-2/4 text-white   text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
+                              <p className="mt-2 basis-2/4 text-[#c7c7cb]   text-sm  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  items-end text-white   justify-end text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end text-sm font-thin ">
                                 ${data.qcTax}
                               </p>
                             </div>
@@ -289,11 +289,11 @@ export default function ClientVehicleCard({ data, }) {
                         )}
                         {data.desiredPayments === "No Tax Payment" && (
                           <>
-                            <div className="mt-2 flex flex-wrap text-white  justify-between ">
-                              <p className="mt-2 basis-2/4  text-white  text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
+                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  text-white  items-end   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  text-[#c7c7cb]  items-end   justify-end  text-right text-sm font-thin ">
                                 ${data.native}
                               </p>
                             </div>
@@ -301,11 +301,11 @@ export default function ClientVehicleCard({ data, }) {
                         )}
                         {data.desiredPayments === "No Tax Payment with Options" && (
                           <>
-                            <div className="mt-2 flex flex-wrap text-white  justify-between ">
-                              <p className="mt-2 basis-2/4 text-white   text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
+                              <p className="mt-2 basis-2/4 text-[#c7c7cb]   text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4  items-end text-white   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end  text-right text-sm font-thin ">
                                 ${data.totalWithOptions}
                               </p>
                             </div>
@@ -853,7 +853,7 @@ export default async function ClientVehicleCard({ data }) {
               <select
                 name='selectBrand'
                 onChange={handleSelectChange}
-                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] mx-auto"
+                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-[#c7c7cb] h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] mx-auto"
               >
                 <option value="">Select Brand</option>
                 {options.map((option, index) => (
@@ -868,10 +868,10 @@ export default async function ClientVehicleCard({ data }) {
       </p>
       <SheetHeader>
         <SheetTitle>
-          <SheetContent side='left' className='bg-[#1c2024] w-full md:w-[50%]  overflow-y-auto    shadow-[0_2px_10px] text-white' >
-            <h3 className="text-2xl font-thin text-white">CLIENT VEHICLE CARD</h3>
+          <SheetContent side='left' className='bg-[#1c2024] w-full md:w-[50%]  overflow-y-auto    shadow-[0_2px_10px] text-[#c7c7cb]' >
+            <h3 className="text-2xl font-thin text-[#c7c7cb]">CLIENT VEHICLE CARD</h3>
             <Form method='post'>
-              <div className="grid grid-cols-1 text-white">
+              <div className="grid grid-cols-1 text-[#c7c7cb]">
                 <div>
                   <div className="mx-3 my-3 w-[90%]">
                     <h3 className="text-2xl font-thin">PURCHASING</h3>
@@ -956,18 +956,18 @@ export default async function ClientVehicleCard({ data }) {
                         {data.desiredPayments === "Standard Payment" && (
                           <>
                             <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4  text-white  text-sm  font-thin">
+                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4  items-end text-white   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end  text-right text-sm font-thin ">
                                 ${data.total}
                               </p>
                             </div>
-                            <div className="mt-2 flex flex-wrap justify-between text-white  ">
-                              <p className="mt-2 basis-2/4   text-sm text-white  font-thin">
+                            <div className="mt-2 flex flex-wrap justify-between text-[#c7c7cb]  ">
+                              <p className="mt-2 basis-2/4   text-sm text-[#c7c7cb]  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  items-end text-white   justify-end text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end text-sm font-thin ">
                                 ${data.onTax}
                               </p>
                             </div>
@@ -975,19 +975,19 @@ export default async function ClientVehicleCard({ data }) {
                         )}
                         {data.desiredPayments === "Payments with Options" && (
                           <>
-                            <div className="mt-2 flex flex-wrap justify-between text-white ">
-                              <p className="mt-2 basis-2/4  text-white  text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap justify-between text-[#c7c7cb] ">
+                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4 text-white  items-end  justify-end text-right text-sm font-thin ">
+                              <p className="flex basis-2/4 text-[#c7c7cb]  items-end  justify-end text-right text-sm font-thin ">
                                 ${data.totalWithOptions}
                               </p>
                             </div>
-                            <div className="mt-2 flex flex-wrap text-white  justify-between ">
-                              <p className="mt-2 basis-2/4 text-white   text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
+                              <p className="mt-2 basis-2/4 text-[#c7c7cb]   text-sm  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  items-end text-white   justify-end text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end text-sm font-thin ">
                                 ${data.qcTax}
                               </p>
                             </div>
@@ -995,11 +995,11 @@ export default async function ClientVehicleCard({ data }) {
                         )}
                         {data.desiredPayments === "No Tax Payment" && (
                           <>
-                            <div className="mt-2 flex flex-wrap text-white  justify-between ">
-                              <p className="mt-2 basis-2/4  text-white  text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
+                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  text-white  items-end   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  text-[#c7c7cb]  items-end   justify-end  text-right text-sm font-thin ">
                                 ${data.native}
                               </p>
                             </div>
@@ -1007,11 +1007,11 @@ export default async function ClientVehicleCard({ data }) {
                         )}
                         {data.desiredPayments === "No Tax Payment with Options" && (
                           <>
-                            <div className="mt-2 flex flex-wrap text-white  justify-between ">
-                              <p className="mt-2 basis-2/4 text-white   text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
+                              <p className="mt-2 basis-2/4 text-[#c7c7cb]   text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4  items-end text-white   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end  text-right text-sm font-thin ">
                                 ${data.totalWithOptions}
                               </p>
                             </div>

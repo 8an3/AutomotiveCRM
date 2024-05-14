@@ -57,7 +57,7 @@ export function DataTablePagination<TData>({
         <div className="flex items-center space-x-2">
           <Button
 
-            className="h-7 p-0  cursor-pointer hover:text-[#02a9ff] text-slate1 "
+            className="h-7 p-0  cursor-pointer hover:text-[#02a9ff] text-slate1 bg-transparent hover:bg-transparent "
 
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
@@ -66,7 +66,7 @@ export function DataTablePagination<TData>({
           </Button>
           <Button
 
-            className="h-7 p-0  cursor-pointer hover:text-[#02a9ff] text-slate1 "
+            className="h-7 p-0  cursor-pointer hover:text-[#02a9ff] text-slate1 text-slate1 bg-transparent hover:bg-transparent "
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -74,7 +74,7 @@ export function DataTablePagination<TData>({
           </Button>
           <Button
 
-            className="h-8 w-15 p-0  cursor-pointer hover:text-[#02a9ff] text-slate1 "
+            className="h-8 w-15 p-0  cursor-pointer hover:text-[#02a9ff] text-slate1 text-slate1 bg-transparent hover:bg-transparent"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
@@ -82,7 +82,7 @@ export function DataTablePagination<TData>({
           </Button>
           <Button
 
-            className=" h-8 w-15 p-0 lg:flex  cursor-pointer hover:text-[#02a9ff] text-slate1 "
+            className=" h-8 w-15 p-0 lg:flex  cursor-pointer hover:text-[#02a9ff] text-slate1 text-slate1 bg-transparent hover:bg-transparent"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >

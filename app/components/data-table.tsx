@@ -484,14 +484,14 @@ export function DataTable<TData, TValue>({
     <div className="mb-[20px]  even:bg-[#121212]  rounded overflow-x-hidden   justify-center">
       <div className="flex items-center">
 
-        <Select className='bg-[#121212] text-[#cbd0d4] border-[#2b2b2d] hover:text-[#02a9ff]' onValueChange={(value) => {
+        <Select className='bg-[#121212] text-[#cbd0d4] border-[#2b2b2d] hover:text-[#02a9ff]  hover:border-[#02a9ff]' onValueChange={(value) => {
           const item = CallsList.find(i => i.key === value) || DeliveriesList.find(i => i.key === value) || DepositsTakenList.find(i => i.key === value);
           if (item) {
             handleFilterChange(item.key);
             setTodayfilterBy(item.name);
           }
         }}>
-          <SelectTrigger className="w-auto bg-[#121212] text-[#cbd0d4] border-[#2b2b2d] hover:text-[#02a9ff] mr-3 ">
+          <SelectTrigger className="w-auto bg-[#121212] text-[#cbd0d4] border-[#2b2b2d] hover:border-[#02a9ff] hover:text-[#02a9ff] mr-3 ">
             <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
           </SelectTrigger>
           <SelectContent className='bg-slate1 text-slate12'>
@@ -508,7 +508,7 @@ export function DataTable<TData, TValue>({
         </Select>
 
         <Select onValueChange={(value) => handleInputChange(value)} >
-          <SelectTrigger className='text-[#cbd0d4] border-[#2b2b2d] w-auto  mr-3'>
+          <SelectTrigger className='text-[#cbd0d4] border-[#2b2b2d] w-auto  mr-3 hover:text-[#02a9ff]  hover:border-[#02a9ff]'>
             Global Filter
           </SelectTrigger>
           <SelectContent align="end" className='bg-slate1 text-slate12 '>
@@ -534,11 +534,14 @@ export function DataTable<TData, TValue>({
           />
         )}
 
-        <Button onClick={() => setAllFilters([])} className='bg-[#121212] text-[#cbd0d4] border-[#2b2b2d] hover:text-[#02a9ff]' >
+        <Button
+          variant='outline'
+          onClick={() => setAllFilters([])} className='bg-[#121212] text-[#cbd0d4] border-[#2b2b2d] hover:text-[#02a9ff]  hover:border-[#02a9ff] hover:bg-transparent mr-3' >
           Clear
         </Button>
 
-        <Button onClick={toggleFilter} className='bg-[#121212] text-[#cbd0d4] border-[#2b2b2d] hover:text-[#02a9ff] mr-3' >
+        <Button
+          variant='outline' onClick={toggleFilter} className='bg-[#121212] text-[#cbd0d4] border-[#2b2b2d] hover:text-[#02a9ff]  hover:border-[#02a9ff] hover:bg-transparent mr-3' >
           Toggle Col
         </Button>
         <div className="mx-2">

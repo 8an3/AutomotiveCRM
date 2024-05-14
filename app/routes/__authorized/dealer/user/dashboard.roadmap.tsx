@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card"
-import { FaCheck } from "react-icons/fa";
 
 import { scriptsLoader, scriptsAction } from '~/components/actions/scriptsAL';
 import { Copy } from 'lucide-react';
@@ -203,7 +202,7 @@ export default function Shight() {
       email: "",
       name: "No answer - respect decision to wait",
       content: "While I respect your decision to wait, if this is the unit you want. We can button up the deal now, and you can store it here for free till your ready to pick up. Because if we were to order one we wouldn't get till after June, maybe longer.",
-      category: "Follow-up",
+      category: "Follow-ups",
       subCat: 'No answer - respect decision to wait',
     },
     {
@@ -1697,11 +1696,9 @@ export default function Shight() {
                         <div className='mt-5 flex  items-center justify-between text-[#fff]'>
                           <div className='flex' >
                             <Button variant='outline' className="cursor-pointer bg-transparent text-white  hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(selectedRecord.content)} >
-
-                              {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
-                              {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
+                              <Copy strokeWidth={1.5} />
                             </Button>
-
+                            {copiedText === selectedRecord.content && <div>Copied!</div>}
                           </div>
                           <Form method='post'>
                             <input type='hidden' name='name' value={selectedRecord.name} />

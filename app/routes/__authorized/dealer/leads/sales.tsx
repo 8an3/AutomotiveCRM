@@ -289,7 +289,7 @@ export function SearchTable() {
 
             },
             cell: ({ row }) => <div className="text-center  lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
+                <a target="_blank" href={`/dealer/customer/${row.getValue("id")}`} rel="noreferrer">
                     {row.getValue("firstName")}
                 </a>
             </div>
@@ -314,7 +314,7 @@ export function SearchTable() {
                 )
             },
             cell: ({ row }) => <div className="text-center  lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
+                <a target="_blank" href={`/dealer/customer/${row.getValue("id")}`} rel="noreferrer">
                     {row.getValue("lastName")}
                 </a>
             </div>,
@@ -337,7 +337,7 @@ export function SearchTable() {
                 )
             },
             cell: ({ row }) => <div className="text-center lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
+                <a target="_blank" href={`/dealer/customer/${row.getValue("id")}`} rel="noreferrer">
                     {row.getValue("email")}
                 </a>
             </div>,
@@ -361,7 +361,7 @@ export function SearchTable() {
 
             },
             cell: ({ row }) => <div className="text-center lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
+                <a target="_blank" href={`/dealer/customer/${row.getValue("id")}`} rel="noreferrer">
                     {row.getValue("phone")}
                 </a>
             </div>,
@@ -384,7 +384,7 @@ export function SearchTable() {
                 )
             },
             cell: ({ row }) => <div className="text-center lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
+                <a target="_blank" href={`/dealer/customer/${row.getValue("id")}`} rel="noreferrer">
                     {row.getValue("address")}
                 </a>
             </div>,
@@ -407,7 +407,7 @@ export function SearchTable() {
                 )
             },
             cell: ({ row }) => <div className="text-center lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
+                <a target="_blank" href={`/dealer/customer/${row.getValue("id")}`} rel="noreferrer">
                     {row.getValue("prov")}
                 </a></div>,
         },
@@ -494,7 +494,7 @@ export function SearchTable() {
             <div className="flex items-center py-4">
                 <DebouncedInput
                     value={globalFilter ?? ''}
-                    onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-[#878787] bg-white p-2 text-black shadow"
+                    onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-[#3b3b3b] bg-[#121212] p-2 text-white shadow"
                     placeholder="Search all columns..."
                 />
                 <Input
@@ -505,11 +505,11 @@ export function SearchTable() {
                     onChange={(event) =>
                         table.getColumn('phone')?.setFilterValue(event.target.value)
                     }
-                    className="ml-2 max-w-sm border-[#878787] bg-white text-black"
+                    className="ml-2 max-w-sm border-[#3b3b3b] bg-[#121212] text-white"
                 />
 
 
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-[#121212] px-3 py-2  text-center text-xs  font-bold uppercase text-white shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff] border-[#3b3b3b] hover:text-[#02a9ff] hover:bg-transparent hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
@@ -1222,15 +1222,22 @@ export function MainDashbaord() {
             )
         },
     }
+    /**  */
     const columns: ColumnDef<Payment>[] = [
         {
             id: 'select',
             header: ({ table }) => (
-                <IndeterminateCheckbox
-                    checked={table.getIsAllRowsSelected()}
-                    indeterminate={table.getIsSomeRowsSelected()}
-                    onChange={table.getToggleAllRowsSelectedHandler()}
-                />
+                <div className='flex mx-auto my-auto'>
+                    <IndeterminateCheckbox
+                        checked={table.getIsAllRowsSelected()}
+                        indeterminate={table.getIsSomeRowsSelected()}
+                        onChange={table.getToggleAllRowsSelectedHandler()}
+
+                    />
+
+                </div>
+
+
             ),
             cell: ({ row }) => (
                 <div className="px-1">
@@ -1238,6 +1245,7 @@ export function MainDashbaord() {
                         checked={row.getIsSelected()}
                         indeterminate={row.getIsSomeSelected()}
                         onChange={row.getToggleSelectedHandler()}
+
                     />
                 </div>
             ),

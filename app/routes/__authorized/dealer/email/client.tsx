@@ -9,15 +9,30 @@ import { toast } from "sonner"
 import { Form, useNavigation } from "@remix-run/react";
 import { Forward, User, Reply, } from "iconoir-react";
 import { FaReply, FaReplyAll, FaForward, FaTrash, FaArchive, FaHistory, FaStar, FaCommentDollar } from "react-icons/fa";
-import { IoIosMailUnread, IoIosMail, IoMdAlert } from "react-icons/io";
+import { IoIosMailUnread, IoIosMail, IoMdAlert, IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { IoSend } from "react-icons/io5";
-import { MdSms, MdDrafts, MdForum, MdSecurityUpdateGood, MdOutlineSocialDistance, MdMarkunreadMailbox } from "react-icons/md";
+import { MdSms, MdDrafts, MdForum, MdSecurityUpdateGood, MdOutlineSocialDistance, MdOutlineKeyboardDoubleArrowRight, MdOutlineKeyboardDoubleArrowLeft, MdMarkunreadMailbox } from "react-icons/md";
 import { RiSpam3Fill } from "react-icons/ri";
 import { ImCross } from "react-icons/im";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaPencil } from "react-icons/fa6";
 import { Client, type GraphRequestOptions, type PageCollection, PageIterator, type ClientOptions } from '@microsoft/microsoft-graph-client';
 import { type AuthCodeMSALBrowserAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
+import { GoArrowSwitch } from "react-icons/go";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip"
 
 export default function ClientEmail() {
   const app = useAppContext();
@@ -329,21 +344,7 @@ export default function ClientEmail() {
 
     return (
       <>
-        <div className="!border-b !border-[#3b3b3b]">
-          <Button
-            variant='ghost'
-            onClick={() => {
-              setComposeEmail(true)
-              setReply(false)
-              setSelectedEmail(null)
-              setOpenReply(false)
-            }}
-            className={` m-2 w-[90%] cursor-pointer justify-center rounded !border !border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
-          >
-            <FaPencil className="text-2xl hover:text-[#02a9ff]" />
-            <p className='ml-2 mr-2'>Compose </p>
-          </Button>
-        </div>
+
         <div className="">
 
           <div className="flex-col items-center justify-center ">
@@ -356,7 +357,23 @@ export default function ClientEmail() {
               value="Unread"
               className={`ml-2 mt-3 flex cursor-pointer items-start text-left text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === 'Unread' ? 'text-[#02a9ff]  ' : ''}`}
             >
-              <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+              {unreadItemCount === 0 && (
+                <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+              )}
+              {unreadItemCount > 1 && (
+                <div className=' relative h-t w-7'>
+                  <div className='pointer-events-none absolute -right-4 -top-0.5 flex h-full w-full'>
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute  inline-flex h-full w-full rounded-full bg-[#02a9ff] opacity-75">
+                      </span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0078b4]">
+                      </span>
+                    </span>
+                  </div>
+                  <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+
+                </div>
+              )}
               <p className='ml-2 mr-2'>Unread </p><p className='text-[#868686]'>{unreadItemCount}</p>
             </button>
             {displayedFolders.map((folder, index) => (
@@ -369,7 +386,7 @@ export default function ClientEmail() {
                           HandleGewtLabel(folder.displayName);
                           setLabel(folder.displayName);
                         }}
-                        className={`mt-3 flex cursor-pointer items-start text-left text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === folder.displayName ? 'text-[#02a9ff]' : ''
+                        className={`mt-3 flex cursor-pointer mx-autro text-left text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === folder.displayName ? 'text-[#02a9ff]' : ''
                           }`}
                       >
                         {(() => {
@@ -438,6 +455,154 @@ export default function ClientEmail() {
                       </button>
                     </ContextMenuTrigger>
                     {/* ContextMenuContent and other items */}
+                  </ContextMenu>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  };
+  const ClosedLabelList = () => {
+    const displayedFolders = [];
+    displayNameOrder.forEach((displayName) => {
+      const folder = folders.find((folder) => folder.displayName === displayName);
+      if (folder) {
+        displayedFolders.push(folder);
+      }
+    });
+    folders.forEach((folder) => {
+      if (!displayNameOrder.includes(folder.displayName)) {
+        displayedFolders.push(folder);
+      }
+    });
+    return (
+      <>
+        <div className=" mx-auto">
+          <div className="flex-col items-center justify-center mx-auto">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => {
+                      setLabel('Unread')
+                      HandleGewtLabel(label);
+                    }}
+                    value="Unread"
+                    className={`ml-2 mt-3 flex cursor-pointer mx-auto   text-[#fff] outline-none transition-all   hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === 'Unread' ? 'text-[#02a9ff]  ' : ''}`}
+                  >
+                    {unreadItemCount === 0 && (
+                      <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+                    )}
+                    {unreadItemCount > 1 && (
+                      <div className=' relative h-t w-7'>
+                        <div className='pointer-events-none absolute -right-4 -top-0.5 flex h-full w-full'>
+                          <span className="relative flex h-3 w-3">
+                            <span className="animate-ping absolute  inline-flex h-full w-full rounded-full bg-[#02a9ff] opacity-75">
+                            </span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0078b4]">
+                            </span>
+                          </span>
+                        </div>
+                        <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+
+                      </div>
+                    )}
+
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="bg-white text-black">
+                  <p>Unread {unreadItemCount}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            {displayedFolders.map((folder, index) => (
+              <div key={index} className="mx-2 flex items-center justify-between">
+                <div className="flex">
+                  <ContextMenu>
+                    <ContextMenuTrigger>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              onClick={() => {
+                                HandleGewtLabel(folder.displayName);
+                                setLabel(folder.displayName);
+                              }}
+                              className={`mt-3 flex cursor-pointer items-start text-left text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === folder.displayName ? 'text-[#02a9ff]' : ''
+                                }`}
+                            >
+                              {(() => {
+                                switch (folder.displayName) {
+                                  case 'Trash':
+                                    return <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Sent Items':
+                                    return <IoSend className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Archive':
+                                    return <FaArchive className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Conversation History':
+                                    return <FaHistory className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Chat':
+                                    return <MdSms className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Important':
+                                    return <IoMdAlert className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Outbox':
+                                    return <IoSend className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Inbox':
+                                    return <IoIosMail className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Drafts':
+                                    return <MdDrafts className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Junk Email':
+                                    return <RiSpam3Fill className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Starred':
+                                    return <FaStar className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Unread':
+                                    return <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Forums':
+                                    return <MdForum className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Updates':
+                                    return <MdSecurityUpdateGood className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Personal':
+                                    return <User className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Promotions':
+                                    return <FaCommentDollar className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Social':
+                                    return <MdOutlineSocialDistance className="text-2xl hover:text-[#02a9ff]" />
+                                  case 'Deleted Items':
+                                    return <FaTrash strokeWidth={1.5} className="text-2xl hover:text-[#02a9ff]" />
+                                  default:
+                                    return (
+                                      <svg
+                                        width="20px"
+                                        height="20px"
+                                        stroke-width="1.1"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        color="#000000"
+                                      >
+                                        <path
+                                          d="M2 11V4.6C2 4.26863 2.26863 4 2.6 4H8.77805C8.92127 4 9.05977 4.05124 9.16852 4.14445L12.3315 6.85555C12.4402 6.94876 12.5787 7 12.722 7H21.4C21.7314 7 22 7.26863 22 7.6V11M2 11V19.4C2 19.7314 2.26863 20 2.6 20H21.4C21.7314 20 22 19.7314 22 19.4V11M2 11H22"
+                                          stroke="#fff"
+                                          stroke-width="1.1"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                        ></path>
+                                      </svg>
+                                    );
+                                }
+                              })()}
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-white text-black">
+                            <p>{folder.displayName}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
+                    </ContextMenuTrigger>
                   </ContextMenu>
                 </div>
               </div>
@@ -547,360 +712,625 @@ export default function ClientEmail() {
       </div>
     );
   };
+  const ClosedEmailList = () => {
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === "submitting";
+    return (
+      <div className=" ">
+        {emails?.length === 0 ? (
+          <div className='m-auto flex' >
+            <p className=' mx-auto text-white -rotate-90'>No emails available.</p>
+
+          </div>
+
+        ) : (
+          <div className="">
+            {Array.isArray(emails) && emails.map((message: any, index: number) => (
+              <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]"
+                onClick={() => {
+                  handleEmailClick(message)
+                  //  handleLineClick(index);
+                }}>
+                <div>
+                <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline">
+          <IoIosMail className="text-2xl hover:text-[#02a9ff]" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+         <>
+         <div className="m-2 flex items-center justify-between">
+                    <p className="text-lg font-bold text-[#fff]">
+                      {message.from?.emailAddress?.name}
+                    </p>
+                    <p className="text-sm text-[#ffffff7c] ">
+                      {new Date(message.receivedDateTime).toLocaleString()}
+                    </p>
+                  </div>
+
+                  <p className="my-2 ml-2 text-sm text-[#ffffff7e]">
+                    {message.subject ? message.subject.split(' ').slice(0, 12).join(' ') + '...' : ''}
+                  </p>
+                  <div className="flex justify-between">
+
+                    <div className="ml-auto mr-2 flex space-x-1">
+                      <Button
+                        variant='ghost'
+                        onClick={() => {
+                          setSelectedEmail(message);
+                          setTimeout(() => {
+                            handleReply(selectedEmail)
+                          }, 5);
+                        }}
+                        className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                        <FaReply className="text-2xl hover:text-[#02a9ff]" />
+                      </Button>
+                      <Button
+                        variant='ghost'
+                        onClick={() => {
+                          setSelectedEmail(message);
+                          setTimeout(() => {
+                            handleReplyAll(selectedEmail)
+                          }, 5);
+                        }}
+                        className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                        <FaReplyAll className="text-2xl hover:text-[#02a9ff]" />
+                      </Button>
+                      <Button
+                        variant='ghost'
+                        onClick={() => {
+                          setSelectedEmail(message);
+                          setTimeout(() => {
+                            handleForward(selectedEmail)
+                          }, 5);
+                        }}
+                        className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                        <FaForward className="text-2xl hover:text-[#02a9ff]" />
+                      </Button>
+                      <Button
+                        variant='ghost'
+                        onClick={() => {
+                          // handleDeleteClick(selectedEmail)
+                          //  console.log(email)
+                          SetToTrash(email)
+                          toast.success(`Email moved to trash.`)
+                          //  setEmails(emails);
+                          setTimeout(() => {
+                            GetEmailsFromFolder(label);
+                          }, 5);
+                          setTimeout(() => {
+                            setSelectedEmail(emails[1]);
+                            setReply(false)
+                          }, 10);
+                        }}
+                        className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                        <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                      </Button>
+                    </div>
+                  </div>
+         </>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+
+                </div>
+
+              </div>
+            ))}
+          </div>
+        )}
 
 
+      </div>
+    );
+  };
+
+  const [selectedCategorySize, setSelectedCategorySize] = useState(true);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(true);
+  const [selectedScript, setSelectedScript] = useState(false);
+  const [selectShrink, setSelectShrink] = useState(false);
+
+  const handleCategoryClick = () => {
+    setSelectedCategorySize(true);
+  };
+  const handleCategoryClickClose = () => {
+    setSelectedCategorySize(false);
+  };
+  const handleCategoryClickselectShrink = () => {
+    setSelectedCategorySize(false);
+    setSelectedSubcategory(false);
+    setSelectShrink(true)
+    setSelectedScript(true);
+  };
+
+  const handleSubcategoryClick = () => {
+    setSelectedSubcategory(true);
+    setSelectedScript(false);
+    setSelectShrink(false)
+  };
+
+  const handleScriptClick = () => {
+    setSelectedCategorySize(false);
+    setSelectedSubcategory(false);
+    setSelectedScript(true);
+    // setSelectShrink(false)
+
+  };
 
   return (
     <>
-      <div className="!border-1 !mx-auto mt-[60px] flex !h-[90vh] !w-[95%] !border !border-[#3b3b3b] !bg-[#121212]">
-        <div className="sidebar w-[10%] border-r !border-[#3b3b3b]">
-          <div className="border-b !border-[#3b3b3b]">
-            <LabelList />
-          </div>
-        </div>
-        <div className="emailList !w-[35%] !border-r !border-[#3b3b3b]">
-          <div className="  border-b border-[#3b3b3b]">
-            <Button
-              variant='ghost'
-              className='m-2  cursor-pointer justify-center rounded !border !border-transparent p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none'>
-              <p className='my-3 ml-3 text-white'>
-                {label}
-              </p>
-              <p className='my-3 ml-3 text-[#868686]'>
-                {(() => {
-                  switch (label) {
-                    case 'Unread':
-                    case 'Inbox':
-                      return <p>{unreadItemCount}</p>;
-                    case 'Junk Email':
-                      return <p>{unreadJunkCount}</p>;
-                    case 'Drafts':
-                      return <p>(0)</p>;
-                    case 'Archive':
-                      return <p>(1)</p>;
-                    case 'Deleted Items':
-                      return <p>(3)</p>;
-                    default:
-                      return null
-                  }
-                })()}
-              </p>
-            </Button>
-          </div>
-          <div className="h-[94%] overflow-y-scroll ">
-            <div>
-              <Input name="search" placeholder="Search" className='m-2 mx-auto w-[95%] border border-[#ffffff4d] bg-[#121212] text-[#fff] focus:border-[#02a9ff]' />
+      <div className=" !mx-auto mt-[60px] flex !h-[90vh] !w-[95%]  !bg-[#121212]">
+        <Card className={` mx-2 border-[#3b3b3b] transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'w-[15%]' : 'w-[5%]'} `}        >
+          <CardHeader className='cursor-pointer mx-auto'>
+            <CardTitle>
+              {selectedCategorySize && (
+                <Button
+                  variant='ghost'
+                  onClick={() => {
+                    setComposeEmail(true)
+                    setReply(false)
+                    setSelectedEmail(null)
+                    setOpenReply(false)
+                  }}
+                  className={` m-2 w-[90%] cursor-pointer justify-center rounded !border !border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                >
+                  <FaPencil className="text-2xl hover:text-[#02a9ff]" />
+                  <p className='ml-2 mr-2'>
+                    Compose
+                  </p>
+                </Button>
+              )}
+              {!selectedCategorySize && (
+                <button
+                  onClick={() => {
+                    setComposeEmail(true)
+                    setReply(false)
+                    setSelectedEmail(null)
+                    setOpenReply(false)
+                  }}
+                  className={` w-[90%] cursor-pointer mx-auto justify-center  text-center    text-[#fff] shadow outline-none   hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                >
+                  <FaPencil className="text-2xl hover:text-[#02a9ff]" />
+                </button>
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+          {selectedCategorySize && (
+              <LabelList />
+          )}
+          {!selectedCategorySize && (
+              <ClosedLabelList />
+        )}
+          </CardContent>
+            <CardFooter>
+              <>
+              {selectedCategorySize && (
+            <div className='justify-between grid grid-cols-1 mc'>
+              <Button
+                className='  bg-transparent  hover:bg-transparent duration-200 text-white mt-auto mx-auto  '
+                onClick={handleCategoryClickClose}
+              >
+                <MdOutlineKeyboardDoubleArrowLeft className='   text-xl hover:text-[#02a9ff]' />
+              </Button>
             </div>
-            <EmailList />
-          </div>
-        </div>
-        {openReply === true && (
-          <div className="email flex   h-full  w-3/5 flex-col overflow-y-scroll">
-            <div className="flex justify-between !border-b !border-[#3b3b3b]">
-              <div className="!my-2 !ml-2 !flex">
-                <Button
-                  variant='ghost'
-                  onClick={() => {
-                    //   setReply(false)
-                    //  setOpenReply(false)
-                    HandleGewtLabel(label)
-                    GetNextEmail(emails)
-                  }}
-                  className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                  <ImCross className="text-2xl hover:text-[#02a9ff]" />
-                </Button>
+          )}
+          {!selectedCategorySize && (
+            <div className='justify-between grid grid-cols-1 mx-auto'>
+              <Button
+                variant='ghost'
+                className='  bg-transparent hover:bg-transparent text-white mt-auto mx-auto  '
+                onClick={handleCategoryClick}
+              >
+                <MdOutlineKeyboardDoubleArrowRight className=' text-xl hover:text-[#02a9ff]' />
+              </Button>
+            </div>
+          )}
+              </>
+  </CardFooter>
+        </Card>
 
-                <Button
-                  variant='ghost'
-                  onClick={() => {
-                    handleDeleteClick(label, selectedEmail?.id)
-                    HandleGewtLabel(label)
-                    GetNextEmail(emails)
-                    toast.success(`Email deleted!`)
-
-                  }}
-                  className={`cursor-pointer text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}>
-                  <FaTrash className="text-2xl hover:text-[#02a9ff]" />
-                </Button>
-                {label !== 'Trash' && (
-                  <Button
-                    onClick={() => {
-                      handlesetToUnread(selectedEmail)
-                      GetNextEmail(emails)
-
-                    }}
-                    variant='outline' className='border-transparent text-white hover:bg-transparent hover:text-[#02a9ff]'>
-                    <MdMarkunreadMailbox className="text-2xl hover:text-[#02a9ff]" />
-                  </Button>
-                )}
-                {label === 'Trash' && (
+        <Card
+          className={`mx-2 transition delay-300 duration-1000 border-[#3b3b3b] ease-in-out
+          ${selectedSubcategory ? 'grow' : 'w-[30%]'}
+          ${selectShrink ? 'w-[5%]' : ''}
+          `}
+        >
+          <CardHeader className='cursor-pointer'>
+            <CardTitle>
+              {selectedSubcategory && (
+                <div className="justify-between flex w-[90&]" >
                   <Button
                     variant='ghost'
-                    onClick={() => {
-                      handleDeleteClick(label, selectedEmail.id)
-                      GetNextEmail(emails)
-
-                    }}
-                    className={`cursor-pointer text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}>
-                    Send To Inbox
+                    onClick={handleSubcategoryClick}
+                    className='m-2  cursor-pointer justify-center rounded !border !border-transparent p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none'>
+                    <p className='my-3 ml-3 text-white'>
+                      {label}
+                    </p>
+                    <p className='my-3 ml-3 text-[#868686]'>
+                      {(() => {
+                        switch (label) {
+                          case 'Unread':
+                          case 'Inbox':
+                            return <p>{unreadItemCount}</p>;
+                          case 'Junk Email':
+                            return <p>{unreadJunkCount}</p>;
+                          case 'Drafts':
+                            return <p>(0)</p>;
+                          case 'Archive':
+                            return <p>(1)</p>;
+                          case 'Deleted Items':
+                            return <p>(3)</p>;
+                          default:
+                            return null
+                        }
+                      })()}
+                    </p>
                   </Button>
+
+                </div>
+              )}
+
+            </CardTitle>
+            <CardDescription>
+              {selectedSubcategory && (
+                <Input name="search" placeholder="Search" className='m-2 mx-auto w-[95%] border border-[#ffffff4d] bg-[#121212] text-[#fff] focus:border-[#02a9ff]' />
+              )}
+            </CardDescription>
+
+          </CardHeader>
+          <CardContent className="space-y-2">
+          {selectedSubcategory && (
+                <EmailList />
+          )}
+            {selectShrink && (
+              <div className='grid grid-cols-1 mx-auto'>
+                <Button
+                  variant='ghost'
+                  className='bg-transparent hover:bg-transparent text-white mt-auto mx-auto -rotate-90'
+                  onClick={handleSubcategoryClick}
+                >
+                  {label}
+                </Button>
+                <ClosedEmailList />
+                </div>
+            )}
+          </CardContent>
+          <CardFooter>
+          {selectedSubcategory && (
+              <div className='h-[94%] overflow-y-scroll' >
+                <Button
+                  className=' relative bg-transparent  hover:bg-transparent duration-200 text-white   mr-auto '
+                  onClick={() => {
+                    handleCategoryClickselectShrink()
+                  }}
+                >
+                  <MdOutlineKeyboardDoubleArrowLeft className='   text-xl hover:text-[#02a9ff]' />
+                </Button>
+              </div>
+            )}
+  </CardFooter>
+        </Card>
+
+        <Card className={`mx-2 border-[#3b3b3b] transition delay-300 duration-1000 ease-in-out ${selectedScript ? 'grow' : 'w-[15%]'} `}        >
+
+          <CardContent className="space-y-2 ">
+            {selectedScript && (
+              <div className="h-auto max-h-[70vh] overflow-y-auto">
+                {openReply === true && (
+                  <div className="email flex   h-full  w-3/5 flex-col overflow-y-scroll">
+                    <div className="flex justify-between !border-b !border-[#3b3b3b]">
+                      <div className="!my-2 !ml-2 !flex">
+                        <Button
+                          variant='ghost'
+                          onClick={() => {
+                            //   setReply(false)
+                            //  setOpenReply(false)
+                            HandleGewtLabel(label)
+                            GetNextEmail(emails)
+                          }}
+                          className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                          <ImCross className="text-2xl hover:text-[#02a9ff]" />
+                        </Button>
+
+                        <Button
+                          variant='ghost'
+                          onClick={() => {
+                            handleDeleteClick(label, selectedEmail?.id)
+                            HandleGewtLabel(label)
+                            GetNextEmail(emails)
+                            toast.success(`Email deleted!`)
+
+                          }}
+                          className={`cursor-pointer text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}>
+                          <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                        </Button>
+                        {label !== 'Trash' && (
+                          <Button
+                            onClick={() => {
+                              handlesetToUnread(selectedEmail)
+                              GetNextEmail(emails)
+
+                            }}
+                            variant='outline' className='border-transparent text-white hover:bg-transparent hover:text-[#02a9ff]'>
+                            <MdMarkunreadMailbox className="text-2xl hover:text-[#02a9ff]" />
+                          </Button>
+                        )}
+                        {label === 'Trash' && (
+                          <Button
+                            variant='ghost'
+                            onClick={() => {
+                              handleDeleteClick(label, selectedEmail.id)
+                              GetNextEmail(emails)
+
+                            }}
+                            className={`cursor-pointer text-center text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}>
+                            Send To Inbox
+                          </Button>
+                        )}
+                      </div>
+                      <div className="!my-2 !flex">
+                        <Button
+                          variant='ghost'
+                          onClick={() => {
+                            setTimeout(() => {
+                              handleReply(selectedEmail)
+                            }, 5);
+                          }}
+                          className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                          <FaReply className="text-2xl hover:text-[#02a9ff]" />
+                        </Button>
+                        <Button
+                          variant='ghost'
+                          onClick={() => {
+                            setTimeout(() => {
+                              handleReplyAll(selectedEmail)
+                            }, 5);
+                          }}
+                          className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                          <FaReplyAll className="text-2xl hover:text-[#02a9ff]" />
+                        </Button>
+                        <Button
+                          variant='ghost'
+                          onClick={() => {
+                            setTimeout(() => {
+                              handleForward(selectedEmail)
+                            }, 5);
+                          }}
+                          className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                          <FaForward className="text-2xl hover:text-[#02a9ff]" />
+                        </Button>
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild className='m-auto mr-4 cursor-pointer'>
+                            <BsThreeDotsVertical className="text-2xl text-white hover:text-[#02a9ff]" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="w-56 bg-[#121212]">
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup>
+
+                              <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]' onClick={() => {
+                                handleReply(selectedEmail)
+                              }}  >
+                                Reply
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
+                                onClick={() => {
+                                  handleReplyAll(selectedEmail)
+                                }}  >
+                                Reply All
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
+                                onClick={() => {
+                                  handleForward(selectedEmail)
+                                }}
+                              >
+                                Forward
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
+                                onClick={() => {
+                                  handleDeleteClick(label, selectedEmail?.id)
+                                  HandleGewtLabel(label)
+                                  GetNextEmail(emails)
+                                  toast.success(`Email deleted!`)
+                                }}  >
+                                Delete
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
+                                onClick={() => {
+                                  messageUnRead(app.authProvider!, selectedEmail.id)
+                                  toast.success(`Set to unread.`)
+                                }} >
+                                Mark As Unread
+                              </DropdownMenuItem>
+
+                            </DropdownMenuGroup>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup>
+                              <DropdownMenuSub>
+                                <DropdownMenuSubTrigger className='cursor-pointer hover:text-[#02a9ff]' >
+                                  Move
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                  <DropdownMenuSubContent className='bg-white'>
+                                    {folders.map((item, index) => {
+                                      return (
+                                        <DropdownMenuItem
+                                          className='cursor-pointer hover:text-[#02a9ff]'
+                                          key={index}
+                                          onClick={() => {
+                                            MoveEmail(selectedEmail, labelName)
+                                          }}>
+                                          {item.name}
+                                        </DropdownMenuItem>
+                                      )
+                                    })}
+                                  </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                              </DropdownMenuSub>
+                            </DropdownMenuGroup>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setSelectedEmail(selectedEmail)
+                                setComposeEmail(true)
+                              }} >
+                              Create New Email
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+
+                      </div>
+                    </div>
+                    {!reply && (
+                      <div className="m-2 rounded-md border border-[#3b3b3b]">
+                        <div className="m-2 flex items-center justify-between">
+                          <p className="text-bold  text-lg text-[#fff]">
+                            {selectedEmail?.sender.emailAddress.name}
+                          </p>
+                          <p className="text-bold text-sm text-[#fff]">
+                            {new Date(selectedEmail?.receivedDateTime).toLocaleString()}
+                          </p>
+                        </div>
+                        <p className="text-bold ml-2 text-sm text-[#fff]">
+                          {selectedEmail?.sender.emailAddress.address}
+                        </p>
+                        <div className="m-2 flex ">
+                          {cc && cc.length > 0 && (<p className="mr-2 text-[#fff]">cc</p>)}
+                          {bcc && bcc.length > 0 && (<p className="text-[#fff]">bcc</p>)}
+                        </div>
+                      </div>
+                    )}
+                    {reply && (
+                      <div className=" justify-center border-b border-[#3b3b3b]">
+                        <Input defaultValue={to} name='to' className='m-2 mx-auto w-[98%] bg-slate12 text-white' />
+                        <Input defaultValue={subject} name='subject' className='m-2 mx-auto w-[98%] bg-slate12 text-white' />
+                        <div className='mx-auto mt-2 flex w-[98%]' >
+                          {cc & cc.length > 1 && (
+                            <Input defaultValue={cc} name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-slate12  text-white' />
+                          )}
+                          {bcc & bcc.length > 1 && (
+                            <Input defaultValue={bcc} name='bcc' placeholder='bcc' className='mx-auto ml-1 bg-slate12 text-right  text-white' />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {selectedEmail?.body && (
+                      <div className="!grow  !border-t border-[#3b3b3b] bg-white">
+                        <p className="  !text-sm  ">
+                          <div className="parent-container">
+                            <MyIFrameComponent />
+                          </div>
+                        </p>
+                      </div>
+                    )}
+                    {reply && (
+                      <div className="mb-2 items-end justify-end rounded-md border-l border-t border-[#3b3b3b]">
+
+                        <EditorTiptapHook content={null} user={user} />
+
+                        <input type='hidden' defaultValue={text} name='body' />
+
+                        <div className="mx-2 flex justify-between">
+                          <Button onClick={() => {
+                            toast.success(`Email saved!`)
+                            SaveDraft()
+                          }}
+                            className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                            Save Draft
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              toast.success(`Email sent!`)
+                              setTo(to)
+                              setSubject(subject)
+                              setTimeout(() => {
+                                SendEmail(user, to, subject, text)
+                                setReply(false)
+                              }, 5);
+                            }}
+
+                            className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          >
+                            Send
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {composeEmail === true && (
+                  <div className="email flex h-full w-3/5  flex-col">
+                    <div className="flex justify-between border-b border-[#3b3b3b]">
+                      <div className="ml-auto my-2 flex">
+                        <Button
+                          variant='ghost'
+                          onClick={() => {
+                            setComposeEmail(false)
+                            HandleGewtLabel(label)
+                          }}
+                          className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
+                          <ImCross className="text-2xl hover:text-[#02a9ff]" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className=" justify-center border-b border-[#3b3b3b]">
+                      <Input
+                        type="text"
+                        onChange={(e) => {
+                          setTo(e.target.value);
+                        }}
+                        placeholder='To'
+                        name='to'
+                        className='m-2 mx-auto w-[98%] bg-slate12 text-white'
+                      />
+                      <Input
+                        onChange={(e) => {
+                          setSubject(e.target.value);
+                        }}
+                        placeholder='Subject'
+                        name='subject'
+                        className='m-2 mx-auto w-[98%] bg-slate12 text-white'
+                      />
+                      <div className='mx-auto mt-2 flex w-[98%]' >
+                        <Input
+                          onChange={(e) => {
+                            setCC(e.target.value);
+                          }}
+                          name='cc'
+                          placeholder='cc'
+                          className='mx-auto mb-2 mr-1 bg-slate12  text-white'
+                        />
+                        <Input
+                          onChange={(e) => {
+                            setBcc(e.target.value);
+                          }}
+                          name='bcc' placeholder='bcc' className='mx-auto ml-1 bg-slate12 text-right  text-white' />
+                      </div>
+                    </div>
+
+                    <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#3b3b3b]">
+
+                      <EditorTiptapHookCompose content={null} user={user} subject={subject} to={to} app={app} cc={cc} bcc={bcc} />
+
+                      <input type='hidden' defaultValue={text} name='body' />
+
+                      <div className="mx-2 flex justify-between">
+                        <div className="flex">
+
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
-              <div className="!my-2 !flex">
-                <Button
-                  variant='ghost'
-                  onClick={() => {
-                    setTimeout(() => {
-                      handleReply(selectedEmail)
-                    }, 5);
-                  }}
-                  className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                  <FaReply className="text-2xl hover:text-[#02a9ff]" />
-                </Button>
-                <Button
-                  variant='ghost'
-                  onClick={() => {
-                    setTimeout(() => {
-                      handleReplyAll(selectedEmail)
-                    }, 5);
-                  }}
-                  className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                  <FaReplyAll className="text-2xl hover:text-[#02a9ff]" />
-                </Button>
-                <Button
-                  variant='ghost'
-                  onClick={() => {
-                    setTimeout(() => {
-                      handleForward(selectedEmail)
-                    }, 5);
-                  }}
-                  className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                  <FaForward className="text-2xl hover:text-[#02a9ff]" />
-                </Button>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild className='m-auto mr-4 cursor-pointer'>
-                    <BsThreeDotsVertical className="text-2xl text-white hover:text-[#02a9ff]" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 bg-[#121212]">
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-
-                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]' onClick={() => {
-                        handleReply(selectedEmail)
-                      }}  >
-                        Reply
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
-                        onClick={() => {
-                          handleReplyAll(selectedEmail)
-                        }}  >
-                        Reply All
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
-                        onClick={() => {
-                          handleForward(selectedEmail)
-                        }}
-                      >
-                        Forward
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
-                        onClick={() => {
-                          handleDeleteClick(label, selectedEmail?.id)
-                          HandleGewtLabel(label)
-                          GetNextEmail(emails)
-                          toast.success(`Email deleted!`)
-                        }}  >
-                        Delete
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className='cursor-pointer hover:text-[#02a9ff]'
-                        onClick={() => {
-                          messageUnRead(app.authProvider!, selectedEmail.id)
-                          toast.success(`Set to unread.`)
-                        }} >
-                        Mark As Unread
-                      </DropdownMenuItem>
-
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuSub>
-                        <DropdownMenuSubTrigger className='cursor-pointer hover:text-[#02a9ff]' >
-                          Move
-                        </DropdownMenuSubTrigger>
-                        <DropdownMenuPortal>
-                          <DropdownMenuSubContent className='bg-white'>
-                            {folders.map((item, index) => {
-                              return (
-                                <DropdownMenuItem
-                                  className='cursor-pointer hover:text-[#02a9ff]'
-                                  key={index}
-                                  onClick={() => {
-                                    MoveEmail(selectedEmail, labelName)
-                                  }}>
-                                  {item.name}
-                                </DropdownMenuItem>
-                              )
-                            })}
-                          </DropdownMenuSubContent>
-                        </DropdownMenuPortal>
-                      </DropdownMenuSub>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedEmail(selectedEmail)
-                        setComposeEmail(true)
-                      }} >
-                      Create New Email
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-              </div>
-            </div>
-            {!reply && (
-              <div className="m-2 rounded-md border border-[#3b3b3b]">
-                <div className="m-2 flex items-center justify-between">
-                  <p className="text-bold  text-lg text-[#fff]">
-                    {selectedEmail?.sender.emailAddress.name}
-                  </p>
-                  <p className="text-bold text-sm text-[#fff]">
-                    {new Date(selectedEmail?.receivedDateTime).toLocaleString()}
-                  </p>
-                </div>
-                <p className="text-bold ml-2 text-sm text-[#fff]">
-                  {selectedEmail?.sender.emailAddress.address}
-                </p>
-                <div className="m-2 flex ">
-                  {cc && cc.length > 0 && (<p className="mr-2 text-[#fff]">cc</p>)}
-                  {bcc && bcc.length > 0 && (<p className="text-[#fff]">bcc</p>)}
-                </div>
-              </div>
             )}
-            {reply && (
-              <div className=" justify-center border-b border-[#3b3b3b]">
-                <Input defaultValue={to} name='to' className='m-2 mx-auto w-[98%] bg-slate12 text-white' />
-                <Input defaultValue={subject} name='subject' className='m-2 mx-auto w-[98%] bg-slate12 text-white' />
-                <div className='mx-auto mt-2 flex w-[98%]' >
-                  {cc & cc.length > 1 && (
-                    <Input defaultValue={cc} name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-slate12  text-white' />
-                  )}
-                  {bcc & bcc.length > 1 && (
-                    <Input defaultValue={bcc} name='bcc' placeholder='bcc' className='mx-auto ml-1 bg-slate12 text-right  text-white' />
-                  )}
-                </div>
-              </div>
-            )}
-            {selectedEmail?.body && (
-              <div className="!grow  !border-t border-[#3b3b3b] bg-white">
-                <p className="  !text-sm  ">
-                  <div className="parent-container">
-                    <MyIFrameComponent />
-                  </div>
-                </p>
-              </div>
-            )}
-            {reply && (
-              <div className="mb-2 items-end justify-end rounded-md border-l border-t border-[#3b3b3b]">
+          </CardContent>
+        </Card>
 
-                <EditorTiptapHook content={null} user={user} />
-
-                <input type='hidden' defaultValue={text} name='body' />
-
-                <div className="mx-2 flex justify-between">
-                  <Button onClick={() => {
-                    toast.success(`Email saved!`)
-                    SaveDraft()
-                  }}
-                    className={` ml-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                    Save Draft
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      toast.success(`Email sent!`)
-                      setTo(to)
-                      setSubject(subject)
-                      setTimeout(() => {
-                        SendEmail(user, to, subject, text)
-                        setReply(false)
-                      }, 5);
-                    }}
-
-                    className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
-                  >
-                    Send
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-        {composeEmail === true && (
-          <div className="email flex h-full w-3/5  flex-col">
-            <div className="flex justify-between border-b border-[#3b3b3b]">
-              <div className="ml-auto my-2 flex">
-                <Button
-                  variant='ghost'
-                  onClick={() => {
-                    setComposeEmail(false)
-                    HandleGewtLabel(label)
-                  }}
-                  className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}>
-                  <ImCross className="text-2xl hover:text-[#02a9ff]" />
-                </Button>
-              </div>
-            </div>
-            <div className=" justify-center border-b border-[#3b3b3b]">
-              <Input
-                type="text"
-                onChange={(e) => {
-                  setTo(e.target.value);
-                }}
-                placeholder='To'
-                name='to'
-                className='m-2 mx-auto w-[98%] bg-slate12 text-white'
-              />
-              <Input
-                onChange={(e) => {
-                  setSubject(e.target.value);
-                }}
-                placeholder='Subject'
-                name='subject'
-                className='m-2 mx-auto w-[98%] bg-slate12 text-white'
-              />
-              <div className='mx-auto mt-2 flex w-[98%]' >
-                <Input
-                  onChange={(e) => {
-                    setCC(e.target.value);
-                  }}
-                  name='cc'
-                  placeholder='cc'
-                  className='mx-auto mb-2 mr-1 bg-slate12  text-white'
-                />
-                <Input
-                  onChange={(e) => {
-                    setBcc(e.target.value);
-                  }}
-                  name='bcc' placeholder='bcc' className='mx-auto ml-1 bg-slate12 text-right  text-white' />
-              </div>
-            </div>
-
-            <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#3b3b3b]">
-
-              <EditorTiptapHookCompose content={null} user={user} subject={subject} to={to} app={app} cc={cc} bcc={bcc} />
-
-              <input type='hidden' defaultValue={text} name='body' />
-
-              <div className="mx-2 flex justify-between">
-                <div className="flex">
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </>
   )

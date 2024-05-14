@@ -1925,7 +1925,7 @@ export function Overview({ outletSize }) {
                                 variant="outline"
                                 loadingText="Updating deal..."
                                 isSubmitting={isSubmitting}
-
+                                className='bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff]'
                                 onClick={() =>
                                     toast.success(`Quote updated for ${finance.name}`)
                                 }

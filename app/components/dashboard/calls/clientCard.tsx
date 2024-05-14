@@ -11,6 +11,7 @@ import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHe
 import MesasageContent from "./messageContent";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { testLeademail, testLeadPhone } from '~/routes/__authorized/dealer/api/activix';
+import { isDate } from 'date-fns';
 
 type ValuePiece = Date | null;
 
@@ -132,16 +133,16 @@ export default function ClientCard({ data }) {
                 <SheetTrigger asChild>
                     <p>{data.firstName} </p>
                 </SheetTrigger>
-                <SheetContent side='left' className='bg-[#1c2024] text-white w-full md:w-[50%] overflow-y-auto border  border-slate1 shadow-[0_2px_10px] ' >
+                <SheetContent side='left' className='bg-[#121212] text-white w-full h-screen md:w-[50%] overflow-y-auto   ' >
                     <Form method="post" >
                         <SheetHeader>
                             <SheetTitle>
-                                <div className='flex justify-between text-[#c7c7cb]'>
+                                <div className='flex justify-between text-white'>
                                     Edit Client Profile
 
                                 </div>
                             </SheetTitle>
-                            <SheetDescription className='text-[#c7c7cb]'>
+                            <SheetDescription className='text-white'>
                                 Make changes to the profile here. Click save when you're done.
                             </SheetDescription>
                         </SheetHeader>
@@ -154,7 +155,7 @@ export default function ClientCard({ data }) {
                                             name={fee.name}
                                             defaultValue={fee.value}
                                             placeholder={fee.placeHolder}
-                                            className='mt-2 h-8 text-slate1 bg-slate11'
+                                            className='mt-2 h-8 text-white bg-[#121212]'
                                         />
                                     </div>
                                 ))}
@@ -164,7 +165,7 @@ export default function ClientCard({ data }) {
                             <select defaultValue={data.typeOfContact}
                                 name='typeOfContact'
                                 placeholder='Best Form To Contact '
-                                className="w-2/3 mb-2 rounded text-black cursor-pointer border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                                className="w-2/3 mb-2 rounded text-white cursor-pointer border-[#c7c7cb] ml-2 mr-2 bg-[#121212] px-3 py-3 text-sm  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                                 <option value="na">Best Form To Contact </option>
                                 <option value="Phone">Phone</option>
                                 <option value="Text">Text</option>
@@ -173,7 +174,7 @@ export default function ClientCard({ data }) {
                             <select defaultValue={data.timeToContact}
                                 name='timeToContact'
                                 placeholder='Best Time To Contact'
-                                className="mx-automt-3 w-2/3 text-black cursor-pointer rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                                className="mx-automt-3 w-2/3 text-white cursor-pointer rounded border-[#c7c7cb] ml-2 mr-2 bg-[#121212] px-3 py-3 text-sm placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                                 <option value="na">Best Time To Contact</option>
                                 <option value="Morning">Morning</option>
                                 <option value="Afternoon">Afternoon</option>
@@ -198,7 +199,7 @@ export default function ClientCard({ data }) {
                                                         type="checkbox"
                                                         id={item.name}
                                                         name={item.name}
-                                                        checked={item.value === 'on'}
+                                                        checked={item.value === 'on' || (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'))}
                                                         onChange={(e) => handleInputChange(item.name, e.target.checked)}
                                                     />
                                                 </div>
@@ -346,7 +347,7 @@ export default function ClientCard({ data }) {
                             <input type='hidden' name='id' value={data.id} />
                             <input type='hidden' name='clientId' value={data.id} />
                             {!data.model && (
-                                <Button name='intent' value='createQuote' type='submit' className="bg-[#02a9ff] cursor-pointer p-3 text-slate1 active:bg-black font-bold uppercase   border border-slate1 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+                                <Button name='intent' value='createQuote' type='submit' className="bg-[#02a9ff] cursor-pointer p-3 text-white active:bg-black font-bold uppercase   border border-slate1 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
                                     Create Quote
                                 </Button>
                             )}

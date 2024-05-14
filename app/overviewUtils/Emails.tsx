@@ -38,7 +38,7 @@ const EmailSheet = (finance) => {
     return (
         <Sheet variant='left'>
             <SheetTrigger asChild>
-                <Button className='rounded-md border border-black  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border' >
+                <Button className='rounded-md border border-black  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border bg-transparent hover:bg-transparent' >
                     Emails
                 </Button>
             </SheetTrigger>

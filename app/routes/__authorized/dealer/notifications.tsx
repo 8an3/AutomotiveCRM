@@ -146,12 +146,31 @@ export default function NotificationSystem() {
   const totalNotifications = unread + leadCount + updateCount + messageCount;
 
   console.log(totalNotifications, 'amount of  otifications')
-
+  /**{totalNotifications > 1 && (
+  <>
+  <span className="relative t-3 r-3 h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#02a9ff] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0085c7]"></span>
+            </span>
+  </>
+            )} */
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="right-[75px] top-[25px] border-none fixed">
-          <Bell color="#fff" strokeWidth={1.5} />
+        <Button variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]">
+          <div className=' relative h-t w-7'>
+            <div className='pointer-events-none absolute  right-1 -top-3 flex h-full w-full'>
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute  inline-flex h-full w-full rounded-full bg-[#02a9ff] opacity-75">
+                </span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0078b4]">
+                </span>
+              </span>
+            </div>
+            <Bell color="#fff" strokeWidth={1.5} className="text-2xl hover:text-[#02a9ff]" />
+
+          </div>
+
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[600px] bg-[#1c2024] justify-center items-center  mx-auto mr-10 max-h-[75%] overflow-y-scroll">

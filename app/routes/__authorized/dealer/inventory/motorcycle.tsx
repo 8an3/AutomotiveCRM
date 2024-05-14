@@ -957,7 +957,7 @@ export function InventoryMoto() {
                 <Input
                     value={globalFilter ?? ''}
                     onChange={event => setGlobalFilter(event.target.value)}
-                    className="font-lg border-block w-[400px] border border-[#878787] bg-[#363a3f] p-2 text-[#fff] shadow"
+                    className="font-lg border-block w-[400px] border border-[#878787] bg-[#121212] p-2 text-white shadow"
                     placeholder="Search all columns..."
                 />
                 <Select
@@ -985,7 +985,7 @@ export function InventoryMoto() {
 
 
 
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate12 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate12 px-4 py-3  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
@@ -995,7 +995,7 @@ export function InventoryMoto() {
                             Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className='bg-white'>
+                    <DropdownMenuContent align="end" className='bg-white text-black'>
                         {table
                             .getAllColumns()
                             .filter((column) => column.getCanHide())
@@ -1016,7 +1016,7 @@ export function InventoryMoto() {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className="rounded-md border border-[#3b3b3b] ">
+            <div className="rounded-md border border-[#3b3b3b] mt-5 ">
                 <Table className='w-full overflow-x-auto border-[#3b3b3b] text-slate1'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (

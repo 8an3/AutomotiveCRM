@@ -24,7 +24,7 @@ const ClientStatusCard = ({ data }) => {
                 <SelectTrigger className="w-auto focus:border-[#60b9fd]">
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>
-                <SelectContent className='bg-slate1'>
+                <SelectContent className='bg-slate1 text-black'>
                     <SelectItem value="Active">Active</SelectItem>
                     <SelectItem value="Duplicate">Duplicate</SelectItem>
                     <SelectItem value="Invalid">Invalid</SelectItem>

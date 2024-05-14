@@ -236,7 +236,7 @@ export default function WishList() {
             <Form method='post'>
               <input type='hidden' name='rowId' value={data.id} />
 
-              <Button variant='outline' name='intent' value='convertWishList' className="active:bg-black mx-auto my-auto h-7  cursor-pointer rounded bg-black px-3 py-2  text-center text-xs  font-bold uppercase text-white border border-white shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+              <Button variant='outline' name='intent' value='convertWishList' className="active:bg-[#121212] mx-auto my-auto h-7  cursor-pointer rounded bg-[#121212] px-3 py-2  text-center text-xs  font-bold uppercase text-white border border-[#3b3b3b] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
               >
                 Convert
               </Button>
@@ -255,7 +255,7 @@ export default function WishList() {
             <Form method='post'>
               <input type='hidden' name='rowId' value={data.id} />
 
-              <Button variant='outline' name='intent' value='deleteWishList' className="active:bg-black mx-auto my-auto h-7  cursor-pointer rounded bg-black px-3 py-2  text-center text-xs  font-bold uppercase text-white border border-white shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+              <Button variant='outline' name='intent' value='deleteWishList' className="active:bg-[#121212] mx-auto my-auto h-7  cursor-pointer rounded bg-[#121212] px-3 py-2  text-center text-xs  font-bold uppercase text-white border border-[#3b3b3b] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
               >
                 Delete
               </Button>
@@ -386,7 +386,7 @@ export default function WishList() {
       <div className="flex items-center py-4">
         <Input
           value={globalFilter ?? ''}
-          onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-block w-[400px] border border-white bg-black p-2 text-white shadow"
+          onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-[#3b3b3b] w-[400px] border border-[#3b3b3b] bg-[#121212] p-2 text-white shadow"
           placeholder="Search all columns..."
         />
         <Input
@@ -397,13 +397,13 @@ export default function WishList() {
           onChange={(event) =>
             table.getColumn('phone')?.setFilterValue(event.target.value)
           }
-          className="ml-2 max-w-sm border-white bg-black p-2 text-white"
+          className="ml-2 max-w-sm border-[#3b3b3b] bg-[#121212] p-2 text-white"
         />
 
 
 
         <select value={filterBy} onChange={handleDropdownChange}
-          className={`border-white bg-black p-2 text-white placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+          className={`border-[#3b3b3b] bg-[#121212] p-2 text-white placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
         >
           <option value='' >Search By Model</option>
           {models.map((model, index) => (
@@ -412,18 +412,18 @@ export default function WishList() {
             </option>
           ))}
         </select>
-        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-white bg-black p-2 text-white placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-[#3b3b3b] bg-[#121212] p-2 text-white placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
         >
           Clear
         </Button>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-black border border-white px-3 py-2  text-center text-xs  font-bold uppercase text-white shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+            <Button variant='outline' className="active:bg-[#121212]  mx-2 my-auto h-7  cursor-pointer rounded bg-[#121212] border border-[#3b3b3b] px-3 py-2  text-center text-xs  font-bold uppercase text-white shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
             >
               Add
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-[#fff]">
+          <DialogContent className="sm:max-w-[425px] bg-[#121212] text-white">
             <DialogHeader>
               <DialogTitle>Wish List</DialogTitle>
               <DialogDescription>
@@ -573,7 +573,7 @@ export default function WishList() {
                 />
               </div>
               <Button onClick={() => toast.success(`Added to wish list!`)}
-                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-black w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-[#121212] w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-[#121212] px-3 py-2  text-center text-xs  font-bold uppercase text-white shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff] border-[#3b3b3b] hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
               >
                 Save
               </Button>
@@ -584,7 +584,7 @@ export default function WishList() {
 
       </div>
       <div className="rounded-md border border-[#3b3b3b] ">
-        <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1'>
+        <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-white'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
@@ -613,7 +613,7 @@ export default function WishList() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className='cursor-pointer border-[#3b3b3b] bg-black  p-4 capitalize text-white hover:text-[#02a9ff]'
+                  className='cursor-pointer border-[#3b3b3b] bg-[#121212]  p-4 capitalize text-white hover:text-[#02a9ff]'
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -630,7 +630,7 @@ export default function WishList() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 cursor-pointer bg-slate8 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                  className="h-24 cursor-pointer bg-[#121212] text-center capitalize text-white hover:text-[#02a9ff]"
                 >
                   No results.
                 </TableCell>
@@ -647,7 +647,7 @@ export default function WishList() {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="border-slate1 text-slate1"
+            className="border-[#3b3b3b] text-white bg-transparent hover:bg-transparent"
           >
             Previous
           </Button>
@@ -655,7 +655,7 @@ export default function WishList() {
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            className="border-white text-white bg-black"
+            className="border-[#3b3b3b] text-white bg-[#121212]   hover:bg-transparent"
 
             disabled={!table.getCanNextPage()}
           >
