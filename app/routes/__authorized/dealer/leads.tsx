@@ -8,13 +8,17 @@ import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
 import { type LinksFunction, json, createCookie } from "@remix-run/node";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
-import secondary from '~/styles/secondary.css'
 import { GetUser } from "~/utils/loader.server";
+import secondary from "~/styles/secondary.css";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
   { rel: "stylesheet", href: secondary },
-];
+]
+
+
 
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -35,7 +39,7 @@ export default function Quote() {
   const { notifications, user } = useLoaderData()
   return (
     <>
-      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-[#121212] border-gray-300 font-bold uppercase  ">
+      <div className="w-screen h-screen     bg-[#09090b] border-gray-300 font-bold uppercase  ">
 
         <Outlet />
       </div>

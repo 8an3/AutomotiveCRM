@@ -5,14 +5,17 @@ import { getSession } from '~/sessions/auth-session.server';
 import { json, redirect } from "@remix-run/node";
 import { prisma } from "~/libs";
 import { GetUser } from "~/utils/loader.server";
+import secondary from "~/styles/secondary.css";
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/calendar.svg' },
+  { rel: "stylesheet", href: secondary },
+]
+
 
 
 const CalendarIcon = () => { <CalendarDays strokeWidth={1.5} /> }
 
-export const links = () => [
-
-  { rel: "icon", type: "image/svg", href: '/calendar.svg' },
-]
 
 
 export const loader = async ({ request }) => {

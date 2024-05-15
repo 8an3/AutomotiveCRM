@@ -180,7 +180,7 @@ export default function Salestracker() {
                             <Input type='hidden' defaultValue={user.email} name='email' />
                         </CardContent>
                         <CardFooter className="bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
-                            <Button name="intent" value='updateSales' type="submit" className=' text-slate1'>
+                            <Button name="intent" value='updateSales' type="submit" className=' text-[#fafafa]'>
                                 Update Sales
                             </Button>
                         </CardFooter>

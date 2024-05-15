@@ -58,7 +58,7 @@ export default function Route() {
   }
 
   return (
-    <div className='max-w-xl  stack mx-auto justify-center text-white'>
+    <div className='max-w-xl  stack mx-auto justify-center text-[#fafafa]'>
 
       <header>
         <div className="queue-center">

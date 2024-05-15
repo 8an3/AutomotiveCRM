@@ -30,7 +30,7 @@ export default function TwoDaysFromNow({ data }) {
     //     setButtonText('F/U ' + followUpDay1 + ' days')
     //     setAppointmentDate(getFutureDate(followUpDay1));
     //   }
-    /**           <select defaultValue={fUpDays} name='followUpDay1' className="mx-auto  rounded border-1  mz-1 px-2 border border-slate1 bg-slate12 h-9 text-bold uppercase text-slate1 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+    /**           <select defaultValue={fUpDays} name='followUpDay1' className="mx-auto  rounded border-1  mz-1 px-2 border border-slate1 bg-[#09090b] h-9 text-bold uppercase text-[#fafafa] placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
                         onChange={handleDropdownChange}>
                         <option value="">Days</option>
                         <option value="1">1 Day</option>
@@ -63,7 +63,7 @@ export default function TwoDaysFromNow({ data }) {
 
 
                     <Select name='followUpDay1' onValueChange={handleDropdownChange}>
-                        <SelectTrigger className="w-auto focus:border-[#60b9fd] text-slate1 border border-slate1 font-bold uppercase">
+                        <SelectTrigger className="w-auto focus:border-[#60b9fd] text-[#fafafa] border border-slate1 font-bold uppercase">
                             <SelectValue placeholder="Days" />
                         </SelectTrigger>
                         <SelectContent className='bg-slate1'>
@@ -116,7 +116,7 @@ export default function TwoDaysFromNow({ data }) {
                             setButtonText('Follow-up set');
                         }}
                         type='submit'
-                        className={`p-3 cursor-pointer ml-2 mr-2 text-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                        className={`p-3 cursor-pointer ml-2 mr-2 text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
                     >
                         {buttonText}
                     </Button>

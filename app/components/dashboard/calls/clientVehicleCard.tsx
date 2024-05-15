@@ -157,7 +157,7 @@ export default function ClientVehicleCard({ data, }) {
       )}
       <SheetHeader>
         <SheetTitle>
-          <SheetContent side='left' className='bg-[#121212] text-[#c7c7cb] w-full h-screen md:w-[50%] overflow-y-auto   ' >
+          <SheetContent side='left' className='bg-[#09090b] text-[#c7c7cb] w-full h-screen md:w-[50%] overflow-y-auto   ' >
 
             <h3 className="text-2xl font-thin text-[#c7c7cb]">CLIENT VEHICLE CARD</h3>
 

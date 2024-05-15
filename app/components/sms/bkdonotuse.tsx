@@ -233,7 +233,7 @@ const ChatApp = () => {
   };
   if (selectedChannelSid) {
     channelContent = (
-      <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }} className='text-white'>
+      <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }} className='text-[#fafafa]'>
         <div >
           <div style={{ flexBasis: "100%", flexGrow: 2, flexShrink: 1, overflowY: "scroll" }}>
             <ChatMessages identity={user.username} messages={messages} />
@@ -247,7 +247,7 @@ const ChatApp = () => {
                   placeholder="Message..."
                   name="message"
                   autoComplete="off"
-                  className='bg-myColor-900 text-white rounded-d p-3 m-2 align-bottom content-end'
+                  className='bg-myColor-900 text-[#fafafa] rounded-d p-3 m-2 align-bottom content-end'
                   onChange={onMessageChanged}
                   value={state.newMessage}
                   ref={textareaRef}
@@ -297,11 +297,11 @@ const ChatApp = () => {
 
   if (loggedIn) {
     return (
-      <div className="mx-auto mt-[65px] flex h-[93%] w-[95%] border border-[#3b3b3b] bg-black">
+      <div className="mx-auto mt-[65px] flex h-[93%] w-[95%] border border-[#262626] bg-black">
         <div className="grid h-[100%] w-1/4 max-w-[25%] grid-cols-1 space-y-2 border border-[#ffffff4d]">
-          <div className="flex justify-center border-b border-r border-[#3b3b3b] ">
+          <div className="flex justify-center border-b border-r border-[#262626] ">
 
-            <div className="flex items-center justify-center border-b border-[#3b3b3b]">
+            <div className="flex items-center justify-center border-b border-[#262626]">
               <Tabs defaultValue="New Chat" className="m-2 w-[95%]">
                 <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger onClick={() => {
@@ -369,14 +369,14 @@ const ChatApp = () => {
                     }}
                       className={`channel-item m-2 mx-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}>
                       <div className="m-2 flex items-center justify-between">
-                        <span className="text-lg font-bold text-white">
+                        <span className="text-lg font-bold text-[#fafafa]">
                           <strong>{item.friendlyName || item.sid}</strong>
                         </span>
-                        <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                        <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                           {formattedDate}
                         </p>
                       </div>
-                      <p className={`text-sm m-2 text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                      <p className={`text-sm m-2 text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                         {messages && messages.length > 0 && messages[0].body
                           ? messages[0].body.split(' ').slice(0, 12).join(' ') + '...'
                           : ''}
@@ -415,11 +415,11 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(mapStateToProps, mapDispatchToProps)(ChatApp);
 
 
-/** <div className="bg-black border border-[#3b3b3b] mt-[60px]">
-      <div className="w-[30%] border !border-[#3b3b3b]" >
+/** <div className="bg-black border border-[#262626] mt-[60px]">
+      <div className="w-[30%] border !border-[#262626]" >
 
       </div>
-      <div className="w-[70%] border !border-[#3b3b3b]">
+      <div className="w-[70%] border !border-[#262626]">
 
       </div>
     </div> */

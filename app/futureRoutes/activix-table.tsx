@@ -475,7 +475,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenu>
             <DropdownMenuTrigger >
 
-              <Button name='intent' value='2DaysFromNow' type='submit' className="bg-[#02a9ff] cursor-pointer  w-[115px] p-3 mr-1 text-white active:bg-black font-bold uppercase   text-xs whitespace-nowrap  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+              <Button name='intent' value='2DaysFromNow' type='submit' className="bg-[#02a9ff] cursor-pointer  w-[115px] p-3 mr-1 text-[#fafafa] active:bg-black font-bold uppercase   text-xs whitespace-nowrap  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
                 Default Filters
               </Button>
             </DropdownMenuTrigger>
@@ -528,7 +528,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button name='intent' value='2DaysFromNow' type='submit'
-                className="bg-[#02a9ff] whitespace-nowrap p-3 cursor-pointer w-[140px] mx-1 text-white active:bg-black font-bold uppercase  hover:text-slate1 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+                className="bg-[#02a9ff] whitespace-nowrap p-3 cursor-pointer w-[140px] mx-1 text-[#fafafa] active:bg-black font-bold uppercase  hover:text-[#fafafa] text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
               >
                 Global Filter
               </Button>
@@ -569,12 +569,12 @@ export function DataTable<TData, TValue>({
             />
           )}
 
-          <Button onClick={() => setAllFilters([])} name='intent' type='submit' className="bg-[#02a9ff]  cursor-pointer w-[50px] mx-1 text-slate1 active:bg-black font-bold uppercase hover:text-slate1 whitespace-nowrap p-3 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+          <Button onClick={() => setAllFilters([])} name='intent' type='submit' className="bg-[#02a9ff]  cursor-pointer w-[50px] mx-1 text-[#fafafa] active:bg-black font-bold uppercase hover:text-[#fafafa] whitespace-nowrap p-3 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
             Clear
           </Button>
 
           <Button
-            className="bg-[#02a9ff] w-[90px] hover:text-slate1 cursor-pointer my-auto mx-1 text-slate1 active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+            className="bg-[#02a9ff] w-[90px] hover:text-[#fafafa] cursor-pointer my-auto mx-1 text-[#fafafa] active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
             onClick={toggleFilter}>
             Toggle Col
           </Button>
@@ -618,7 +618,7 @@ export function DataTable<TData, TValue>({
 
         </Flex>
       </div>
-      <div className="mt-[20px] rounded-md rounded-2 border overflow-x-auto text-slate1">
+      <div className="mt-[20px] rounded-md rounded-2 border overflow-x-auto text-[#fafafa]">
         <Table className="rounded-md  rounded-2">
           <TableHeader>
 
@@ -654,7 +654,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`p-4 ${index % 2 === 0 ? 'bg-slate12' : 'bg-[#2c3238]'}`}
+                  className={`p-4 ${index % 2 === 0 ? 'bg-[#09090b]' : 'bg-[#2c3238]'}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

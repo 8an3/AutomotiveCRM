@@ -36,7 +36,7 @@ export default function Subscribe() {
                             <div className='grid grid-cols-1 place-content-center mx-auto my-auto	mt-6' >
                                 <div className="item-4 grid grid-cols-1 scriptcard justify-end mx-auto my-auto ">
                                     <div className="text-center">
-                                        <h2 className="scriptcardText text-white text-3xl sm:mt-0 mt-6 font-thin tracking-tight  sm:text-4xl mb-6 ">
+                                        <h2 className="scriptcardText text-[#fafafa] text-3xl sm:mt-0 mt-6 font-thin tracking-tight  sm:text-4xl mb-6 ">
                                             Subscription Plans
                                         </h2>
                                         <p className="scriptcardText text-[#fff]">
@@ -46,8 +46,8 @@ export default function Subscribe() {
                                             <a href='https://buy.stripe.com/14k6pTg9J0IV0G4fYZ' target="_blank" className='mr-2'>
                                                 <div className='p-1 mx-auto h-[700px] w-[550px] rounded-md border border-white cursor-pointer hover:border-[#02a9ff]' onClick={() => {
                                                 }}>
-                                                    <h1 className='mt-[40px] text-center text-white  bold text-4xl'>Sales People</h1>
-                                                    <Separator className='text-white' />
+                                                    <h1 className='mt-[40px] text-center text-[#fafafa]  bold text-4xl'>Sales People</h1>
+                                                    <Separator className='text-[#fafafa]' />
                                                     <h3 className="scriptcardTitler text-[#fff]">
                                                         For a limited time $19.95/MONTH
                                                     </h3>
@@ -75,11 +75,11 @@ export default function Subscribe() {
                                             </a>
 
                                             <a href='https://buy.stripe.com/14k6pTg9J0IV0G4fYZ' target="_blank" className='ml-2'>
-                                                <div className='p4 mx-auto h-[700px] w-[550px] cursor-pointer   rounded-md border border-white text-white hover:border-[#02a9ff]'
+                                                <div className='p4 mx-auto h-[700px] w-[550px] cursor-pointer   rounded-md border border-white text-[#fafafa] hover:border-[#02a9ff]'
                                                     onClick={() => {
                                                     }}>
-                                                    <h1 className='mt-[40px] text-center text-white  bold text-4xl'>Dealers</h1>
-                                                    <Separator className='text-white' />
+                                                    <h1 className='mt-[40px] text-center text-[#fafafa]  bold text-4xl'>Dealers</h1>
+                                                    <Separator className='text-[#fafafa]' />
                                                     <h3 className="scriptcardTitler text-[#fff]">
                                                         For a limited time $19.95/MONTH
                                                     </h3>

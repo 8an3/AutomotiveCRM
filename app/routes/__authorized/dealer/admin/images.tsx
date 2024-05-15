@@ -47,7 +47,7 @@ export default function Route() {
   const imagesCount = images.length;
 
   return (
-    <div className='max-w-xl  mx-auto justify-center text-white'>
+    <div className='max-w-xl  mx-auto justify-center text-[#fafafa]'>
 
       <PageAdminHeader size="xs">
         <RemixLink to=".">

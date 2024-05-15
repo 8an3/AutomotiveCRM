@@ -52,10 +52,10 @@ const CompleteCall = ({ data, contactMethod }) => {
     <Dialog>
       <DialogTrigger asChild>
         <div className='mx-auto'>
-          <ClipboardCheck className='mx-auto  text-white items-center justify-center hover:text-[#02a9ff] target:text-[#02a9ff]' />
+          <ClipboardCheck className='mx-auto  text-[#fafafa] items-center justify-center hover:text-[#02a9ff] target:text-[#02a9ff]' />
         </div>
       </DialogTrigger>
-      <DialogContent className="w-full md:w-[50%] bg-[#1c2024] border text-white  border-[#2b2b2d] h-auto">
+      <DialogContent className="w-full md:w-[50%] bg-[#1c2024] border text-[#fafafa]  border-[#262626] h-auto">
         <DialogHeader>
           <DialogTitle>  <p className="mt-4">Schedule Follow-up</p>
           </DialogTitle>
@@ -64,7 +64,7 @@ const CompleteCall = ({ data, contactMethod }) => {
           <div className='grid grid-cols-1 mx-auto w-[90%] '>
 
             <p>Updating Completed Appointment</p>
-            <hr className="solid text-white " />
+            <hr className="solid text-[#fafafa] " />
             <Select name='resultOfcall' >
               <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3 ">
                 <SelectValue placeholder="Result of call" />
@@ -80,14 +80,14 @@ const CompleteCall = ({ data, contactMethod }) => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <p className='text-white mt-5'>Creating New Appointment</p>
-            <hr className="solid text-white  " />
+            <p className='text-[#fafafa] mt-5'>Creating New Appointment</p>
+            <hr className="solid text-[#fafafa]  " />
 
             <Input
               type="text"
               name="title"
               defaultValue={`F/U on the ${data.model}`}
-              className="w-full mx-auto mt-3 rounded border border-[#2b2b2d] h-8 bg-[#1c2024] text-white  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+              className="w-full mx-auto mt-3 rounded border border-[#262626] h-8 bg-[#1c2024] text-[#fafafa]  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
             />
             <Select name='note' defaultValue="No Answer / Left Message">
               <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
@@ -122,7 +122,7 @@ const CompleteCall = ({ data, contactMethod }) => {
             <Input
               name="note"
               placeholder="or write a custom note..."
-              className="w-full mx-auto mt-3 rounded border border-[#2b2b2d] h-8 bg-[#1c2024] text-white  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+              className="w-full mx-auto mt-3 rounded border border-[#262626] h-8 bg-[#1c2024] text-[#fafafa]  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
             />
 
             <Select name='contactMethod' defaultValue="SMS">
@@ -217,7 +217,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                   })
                 }}
                 name='intent' value='scheduleFUp' type='submit'
-                className={` cursor-pointer ml-2 mr-2 p-3 hover:text-[#02a9ff] text-white font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                className={` cursor-pointer ml-2 mr-2 p-3 hover:text-[#02a9ff] text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
               >
                 Complete
               </Button>

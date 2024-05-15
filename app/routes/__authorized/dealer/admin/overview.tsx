@@ -200,9 +200,9 @@ export default function Route() {
 
         </TabsList>
         <TabsContent value="stats" className='rounded-md'>
-          <Card className='rounded-md text-white'>
+          <Card className='rounded-md text-[#fafafa]'>
             <CardHeader className='bg-myColor-900'>
-              <CardTitle className='text-white'>
+              <CardTitle className='text-[#fafafa]'>
                 <h3 className="text-2xl font-thin uppercase text-slate4">
                   Statistics
                 </h3>
@@ -210,14 +210,14 @@ export default function Route() {
               <CardDescription>
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2 bg-slate11 text-white">
+            <CardContent className="space-y-2 bg-slate11 text-[#fafafa]">
               <StatsTable statsData={statsData} comsRecords={comsRecords} />
             </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="dealerFees" className='rounded-md'>
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-white rounded-md">
+            <CardContent className="space-y-2 bg-slate11 text-[#fafafa] rounded-md">
               <Form method="post" className="">
 
                 <div className="grid grid-cols-1 gap-4 mx-auto">
@@ -227,7 +227,7 @@ export default function Route() {
                       <h2 className="text-2xl font-thin">
                         DEALER FEES
                       </h2>
-                      <p className="text-sm text-white">
+                      <p className="text-sm text-[#fafafa]">
                         This is where you can change values like freight, admin, taxes and
                         such. If you don't have all this information with you, dont worry, you can always come back and update it later.
                       </p>
@@ -314,7 +314,7 @@ export default function Route() {
                         defaultValue='updateDealerFeesAdmin'
                         name="intent"
                       />
-                      <Button className="bg-[#02a9ff] mb-10 w-[75px] ml-2  mr-2 cursor-pointer text-white active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" type="submit"
+                      <Button className="bg-[#02a9ff] mb-10 w-[75px] ml-2  mr-2 cursor-pointer text-[#fafafa] active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" type="submit"
                         onClick={() => {
                           setIsButtonPressed(true);
                           toast.message('Dealer Fees Updated', {})
@@ -332,10 +332,10 @@ export default function Route() {
         </TabsContent>
         <TabsContent value="account">
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-white rounded-md">
+            <CardContent className="space-y-2 bg-slate11 text-[#fafafa] rounded-md">
               <Form method="post" className="">
-                <h1 className='text-white'>Dealer Info</h1>
-                <hr className="text-white" />
+                <h1 className='text-[#fafafa]'>Dealer Info</h1>
+                <hr className="text-[#fafafa]" />
                 <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
 
                   <div className="grid gap-2">
@@ -403,8 +403,8 @@ export default function Route() {
                 </div>
               </Form>
               <Form method="post" encType="multipart/form-data">
-                <h1 className='text-white'>Import Parts</h1>
-                <hr className="text-white" />
+                <h1 className='text-[#fafafa]'>Import Parts</h1>
+                <hr className="text-[#fafafa]" />
                 <div className="grid w-full max-w-sm items-center gap-1.5">
                   <Label htmlFor="picture">Parts</Label>
                   <Input id="picture" type="file" />
@@ -413,8 +413,8 @@ export default function Route() {
               {data.status === "success" && <p>File uploaded successfully!</p>}
               <Form method="post" encType="multipart/form-data">
 
-                <h1 className='text-white'>Import Accessories</h1>
-                <hr className="text-white" />
+                <h1 className='text-[#fafafa]'>Import Accessories</h1>
+                <hr className="text-[#fafafa]" />
                 <div className="grid w-full max-w-sm items-center gap-1.5">
                   <Label htmlFor="picture">Acessories</Label>
                   <Input id="picture" type="file" />
@@ -425,26 +425,26 @@ export default function Route() {
           </Card>
         </TabsContent>
         <TabsContent value="stats1">
-          <div className='max-w-xl mx-auto justify-center text-white'>
+          <div className='max-w-xl mx-auto justify-center text-[#fafafa]'>
             <PageAdminHeader size="xs">
-              <h1 className='text-white'>Admin Dashboard</h1>
+              <h1 className='text-[#fafafa]'>Admin Dashboard</h1>
               <RemixLink to={`/admin/users/${user.id}`}>
                 <div className="space-y-2 text-right">
-                  <h2 className='text-white'>Welcome, {user.name}!</h2>
-                  <Badge className='text-white border-white' >{user.role.name}</Badge>
+                  <h2 className='text-[#fafafa]'>Welcome, {user.name}!</h2>
+                  <Badge className='text-[#fafafa] border-white' >{user.role.name}</Badge>
                 </div>
               </RemixLink>
             </PageAdminHeader>
 
             <section className="px-layout space-y-2">
-              <h3 className='text-white'>Database Metrics/Statistics</h3>
+              <h3 className='text-[#fafafa]'>Database Metrics/Statistics</h3>
               <div className="grid max-w-3xl gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {metrics.map((metric) => {
                   return (
                     <RemixLink key={metric.name} to={metric.to}>
                       <div className="card hover:card-hover stack rounded p-4 text-center">
-                        <p className="text-6xl font-extrabold text-white">{metric.count}</p>
-                        <span className='text-white'>{metric.name}</span>
+                        <p className="text-6xl font-extrabold text-[#fafafa]">{metric.count}</p>
+                        <span className='text-[#fafafa]'>{metric.name}</span>
                       </div>
                     </RemixLink>
                   );
@@ -453,14 +453,14 @@ export default function Route() {
             </section>
 
             <section className="px-layout">
-              <Debug className='text-white' name="rootLoaderData">{rootLoaderData}</Debug>
-              <Debug className='text-white' name="loaderData">{loaderData}</Debug>
+              <Debug className='text-[#fafafa]' name="rootLoaderData">{rootLoaderData}</Debug>
+              <Debug className='text-[#fafafa]' name="loaderData">{loaderData}</Debug>
             </section>
           </div>
         </TabsContent>
         <TabsContent value="Parts">
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-white rounded-md">
+            <CardContent className="space-y-2 bg-slate11 text-[#fafafa] rounded-md">
               <Form method="post" className="">
                 <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
 
@@ -672,43 +672,43 @@ export function StatsTable({ statsData, comsRecords }) {
       <TableCaption>List of Stats</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className='text-white'>Period</TableHead>
-          <TableHead className='text-white'>Quotes</TableHead>
-          <TableHead className='text-white'>Deposits</TableHead>
-          <TableHead className='text-white'>Financed</TableHead>
-          <TableHead className='text-white'>Delivered</TableHead>
-          <TableHead className='text-white'>Repeat Cust</TableHead>
-          <TableHead className='text-white'>Walk-in</TableHead>
-          <TableHead className='text-white'>Web-lead</TableHead>
-          <TableHead className='text-white'>Phone-lead</TableHead>
-          <TableHead className='text-white'>Total</TableHead>
-          <TableHead className='text-white'>emailsSent</TableHead>
-          <TableHead className='text-white'>smsSent</TableHead>
-          <TableHead className='text-white'>phoneCallsMade</TableHead>
-          <TableHead className='text-white'>timesContacted</TableHead>
-          <TableHead className='text-white'>Appts</TableHead>
-          <TableHead className='text-white'>Appts Showed</TableHead>
+          <TableHead className='text-[#fafafa]'>Period</TableHead>
+          <TableHead className='text-[#fafafa]'>Quotes</TableHead>
+          <TableHead className='text-[#fafafa]'>Deposits</TableHead>
+          <TableHead className='text-[#fafafa]'>Financed</TableHead>
+          <TableHead className='text-[#fafafa]'>Delivered</TableHead>
+          <TableHead className='text-[#fafafa]'>Repeat Cust</TableHead>
+          <TableHead className='text-[#fafafa]'>Walk-in</TableHead>
+          <TableHead className='text-[#fafafa]'>Web-lead</TableHead>
+          <TableHead className='text-[#fafafa]'>Phone-lead</TableHead>
+          <TableHead className='text-[#fafafa]'>Total</TableHead>
+          <TableHead className='text-[#fafafa]'>emailsSent</TableHead>
+          <TableHead className='text-[#fafafa]'>smsSent</TableHead>
+          <TableHead className='text-[#fafafa]'>phoneCallsMade</TableHead>
+          <TableHead className='text-[#fafafa]'>timesContacted</TableHead>
+          <TableHead className='text-[#fafafa]'>Appts</TableHead>
+          <TableHead className='text-[#fafafa]'>Appts Showed</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {stats.map((stat) => (
           <TableRow key={stat.period}>
-            <TableCell className='text-white'>{stat.period}</TableCell>
-            <TableCell className='text-white'>{stat.quotes}</TableCell>
-            <TableCell className='text-white'>{stat.deposits}</TableCell>
-            <TableCell className='text-white'>{stat.financed}</TableCell>
-            <TableCell className='text-white'>{stat.delivered}</TableCell>
-            <TableCell className='text-white'>{stat.repeatCustomer}</TableCell>
-            <TableCell className='text-white'>{stat.walkIn}</TableCell>
-            <TableCell className='text-white'>{stat.webLead}</TableCell>
-            <TableCell className='text-white'>{stat.phoneLead}</TableCell>
-            <TableCell className='text-white'>{stat.total}</TableCell>
-            <TableCell className='text-white'>{stat.emailsSent}</TableCell>
-            <TableCell className='text-white'>{stat.smsSent}</TableCell>
-            <TableCell className='text-white'>{stat.phoneCallsMade}</TableCell>
-            <TableCell className='text-white'>{stat.timesContacted}</TableCell>
-            <TableCell className='text-white'>Appts</TableCell>
-            <TableCell className='text-white'>Appts Showed</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.period}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.quotes}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.deposits}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.financed}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.delivered}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.repeatCustomer}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.walkIn}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.webLead}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.phoneLead}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.total}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.emailsSent}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.smsSent}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.phoneCallsMade}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.timesContacted}</TableCell>
+            <TableCell className='text-[#fafafa]'>Appts</TableCell>
+            <TableCell className='text-[#fafafa]'>Appts Showed</TableCell>
           </TableRow>
         ))}
       </TableBody>

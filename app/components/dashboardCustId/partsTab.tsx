@@ -95,13 +95,13 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
   let fetcher = useFetcher();
   const { finance, clientFile } = useLoaderData()
   return (
-    <div className="grow p-5 rounded-tl-md bg-myColor-900 text-slate1 rounded-b-md outline-none  focus:shadow-black"
+    <div className="grow p-5 rounded-tl-md bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black"
     >
       <div className="mb-8 grid grid-cols-1">
         <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0"  >
-          <div className="rounded-t bg-slate12 mb-0 px-6 py-6">
+          <div className="rounded-t bg-[#09090b] mb-0 px-6 py-6">
             <div className="text-center flex justify-between">
-              <h6 className="text-slate1 text-xl font-bold uppercase">
+              <h6 className="text-[#fafafa] text-xl font-bold uppercase">
                 Order
               </h6>
             </div>
@@ -112,9 +112,9 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
           </div>
         </div>
         <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0"  >
-          <div className="rounded-t bg-slate12 mb-0 px-6 py-6">
+          <div className="rounded-t bg-[#09090b] mb-0 px-6 py-6">
             <div className="text-center flex justify-between">
-              <h6 className="text-slate1 text-xl font-bold uppercase">
+              <h6 className="text-[#fafafa] text-xl font-bold uppercase">
                 Purchasing
               </h6>
             </div>
@@ -127,14 +127,14 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase mt-2 text-slate1 text-xs font-bold mb-2"
+                      className="block uppercase mt-2 text-[#fafafa] text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Brand
                     </label>
                     <input
                       type="text"
-                      className="w-full  rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                      className="w-full  rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
                       defaultValue={finance[0].brand}
                       name='brand'
                     />
@@ -143,13 +143,13 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase mt-2 text-slate1 text-xs font-bold mb-2"
+                      className="block uppercase mt-2 text-[#fafafa] text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       model
                     </label>
                     <input
-                      className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
                       defaultValue={finance[0].model}
                       name='model'
                     />
@@ -158,14 +158,14 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-slate1 text-xs font-bold mb-2"
+                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       year
                     </label>
                     <input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
                       defaultValue={finance[0].year}
                       name='year'
                     />
@@ -174,14 +174,14 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-slate1 text-xs font-bold mb-2"
+                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Trim
                     </label>
                     <input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
                       defaultValue={finance[0].trim}
                       name='trim'
                     />
@@ -190,14 +190,14 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-slate1 text-xs font-bold mb-2"
+                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Stock Number
                     </label>
                     <input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
                       defaultValue={finance[0].stockNum}
                       name='stockNum'
                     />
@@ -206,14 +206,14 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-slate1 text-xs font-bold mb-2"
+                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Model Code
                     </label>
                     <input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
                       defaultValue={finance[0].modelCode}
                       name='modelCode'
                     />
@@ -222,14 +222,14 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-slate1 text-xs font-bold mb-2"
+                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Color
                     </label>
                     <input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
                       defaultValue={finance[0].color}
                       name='color'
                     />
@@ -239,14 +239,14 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
 
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-slate1 text-xs font-bold mb-2"
+                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       vin
                     </label>
                     <input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
                       defaultValue={finance[0].vin}
                       name='vin'
                     />
@@ -262,12 +262,12 @@ export function PartsTab({ timerRef, open, setOpen, user, }) {
                       }, 100);
                     }}
                     type="submit" name='intent' value='updateWantedUnit'
-                    className="bg-[#2ebb98] cursor-pointer  mt-3 ml-auto text-slate1 active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                    className="bg-[#2ebb98] cursor-pointer  mt-3 ml-auto text-[#fafafa] active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                   >
                     Update
                   </button>
                   <Toast.Root open={open} onOpenChange={setOpen} className="bg-white rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut">
-                    <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]">
+                    <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-[#fafafa] text-[15px]">
                       {finance[0].firstName}'s File Updated.
                     </Toast.Title>
                     <Toast.Description asChild>
@@ -631,16 +631,16 @@ export function SearchTable() {
         />
 
 
-        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate12 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
         >
           Clear
         </Button>
       </div>
-      <div className="rounded-md border border-[#3b3b3b] ">
-        <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1'>
+      <div className="rounded-md border border-[#262626] ">
+        <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+              <TableRow key={headerGroup.id} className=' border-[#262626]'>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead className='items-center ' key={header.id}>
@@ -651,7 +651,7 @@ export function SearchTable() {
                           header.getContext()
                         )}
                       {header.column.getCanFilter() && showFilter && (
-                        <div className="mx-auto cursor-pointer items-center justify-center border-[#3b3b3b] text-center">
+                        <div className="mx-auto cursor-pointer items-center justify-center border-[#262626] text-center">
                           <Filter column={header.column} table={table} />
                         </div>
                       )}
@@ -666,7 +666,7 @@ export function SearchTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className='cursor-pointer border-[#3b3b3b] bg-slate12 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                  className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -678,7 +678,7 @@ export function SearchTable() {
                     </TableCell>
                   ))}
                   <TableCell>
-                    <Button name='add' className='text-white' variant='outline' onClick={() => {
+                    <Button name='add' className='text-[#fafafa]' variant='outline' onClick={() => {
                       setRowSelection(row.original)
                       setcurrentInputValues(inputValues)
                       setSavedValues(prevValues => [...prevValues, { row: row.original, inputs: inputValues }])
@@ -691,7 +691,7 @@ export function SearchTable() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 cursor-pointer bg-slate12 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                  className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                 >
                   No results.
                 </TableCell>
@@ -708,7 +708,7 @@ export function SearchTable() {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="border-slate1 text-slate1"
+            className="border-slate1 text-[#fafafa]"
           >
             Previous
           </Button>
@@ -716,7 +716,7 @@ export function SearchTable() {
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            className="border-slate1 text-slate1"
+            className="border-slate1 text-[#fafafa]"
 
             disabled={!table.getCanNextPage()}
           >
@@ -725,7 +725,7 @@ export function SearchTable() {
         </div>
       </div>
       <div>
-        <Card className="bg-slate12 w-[50%]">
+        <Card className="bg-[#09090b] w-[50%]">
           <CardHeader>
             Order Details
           </CardHeader>

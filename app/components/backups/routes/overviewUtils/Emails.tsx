@@ -122,7 +122,7 @@ const EmailSheet = (finance) => {
                                     <SelectValue placeholder="Payments (by default)" />
                                 </SelectTrigger>
                                 <SelectContent className="">
-                                    <ScrollArea className="h-[300px] w-[350px] rounded-md text-slate12 bg-slate1 p-4 border border-slate12">                                        <SelectGroup>
+                                    <ScrollArea className="h-[300px] w-[350px] rounded-md text-[#fafafa] bg-slate1 p-4 border border-slate12">                                        <SelectGroup>
                                         <SelectLabel>Payments </SelectLabel>
                                         <SelectItem value="payments">Payments</SelectItem>{/*19 */}
                                         <SelectItem value="wBreakdown">W/ Full Breakdown</SelectItem>{/* 20*/}

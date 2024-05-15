@@ -113,7 +113,7 @@ export function EditorTiptapHook({ content, user, to, subject, app }: {
   }, []);
 
   const buttonActive = 'bg-white text-black rounded-md p-1 ';
-  const buttonInactive = 'bg-[#121212] text-white hover:text-[#02a9ff] hover:bg-transparent';
+  const buttonInactive = 'bg-[#09090b] text-[#fafafa] hover:text-[#02a9ff] hover:bg-transparent';
 
   const handleSetLink = useCallback(() => {
     if (!editor) return null
@@ -166,9 +166,9 @@ export function EditorTiptapHook({ content, user, to, subject, app }: {
   if (!editor) return null
   return (
     <div className="p-1">
-      <div className="mr-auto px-2   mt-auto grid grid-cols-1 border border-black rounded-md">
+      <div className="mr-auto px-2   mt-auto grid grid-cols-1 border   rounded-md">
         <div className="my-2 flex justify-between">
-          <select className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9 w-auto cursor-pointer rounded border border-white  bg-slate12 px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`} onChange={(e) => {
+          <select className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9 max-w-md cursor-pointer rounded border border-white  bg-[#09090b] px-2 text-xs uppercase text-[#fafafa] shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`} onChange={(e) => {
             handleChange(e.target.value); // Pass the input value directly to handleChange
           }}    >
             <option value="">Select a Template</option>
@@ -186,7 +186,7 @@ export function EditorTiptapHook({ content, user, to, subject, app }: {
         <div
           className={cn(
             "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-            "bg-[#121212] text-white transition-all justify-center",
+            "bg-[#09090b] text-[#fafafa] transition-all justify-center",
             // "sm:sticky sm:top-[80px]",
           )}
         >
@@ -209,7 +209,7 @@ export function EditorTiptapHook({ content, user, to, subject, app }: {
             <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
           </button>
 
-          <Minus color="#121212" strokeWidth={1.5} />
+          <Minus color="#09090b" strokeWidth={1.5} />
           <button
             onClick={handleSetLink}
             className={editor.isActive("link") ? buttonActive : buttonInactive}
@@ -373,7 +373,7 @@ export function EditorTiptapHook({ content, user, to, subject, app }: {
               <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
             </button>
 
-            <Minus color="#121212" strokeWidth={1.5} />
+            <Minus color="#09090b" strokeWidth={1.5} />
             <button
               type="button"
               onClick={handleSetLink}
@@ -543,7 +543,7 @@ export function EditorTiptapHookCompose({ content, user, to, subject, app, cc, b
   }, []);
 
   const buttonActive = 'bg-white text-black rounded-md p-1 ';
-  const buttonInactive = 'bg-[#121212] text-white hover:text-[#02a9ff] hover:bg-transparent';
+  const buttonInactive = 'bg-[#09090b] text-[#fafafa] hover:text-[#02a9ff] hover:bg-transparent';
 
   const handleSetLink = useCallback(() => {
     if (!editor) return null
@@ -598,7 +598,7 @@ export function EditorTiptapHookCompose({ content, user, to, subject, app, cc, b
     <div className="p-1">
       <div className="mr-auto px-2   mt-auto grid grid-cols-1 border border-black rounded-md">
         <div className="my-2 flex justify-between">
-          <select className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9 w-auto cursor-pointer rounded border border-white  bg-slate12 px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`} onChange={(e) => {
+          <select className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9 w-auto cursor-pointer rounded border border-white  bg-[#09090b] px-2 text-xs uppercase text-[#fafafa] shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`} onChange={(e) => {
             handleChange(e.target.value); // Pass the input value directly to handleChange
           }}    >
             <option value="">Select a Template</option>
@@ -616,7 +616,7 @@ export function EditorTiptapHookCompose({ content, user, to, subject, app, cc, b
         <div
           className={cn(
             "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-            "bg-[#121212] text-white transition-all justify-center",
+            "bg-[#09090b] text-[#fafafa] transition-all justify-center",
             // "sm:sticky sm:top-[80px]",
           )}
         >
@@ -639,7 +639,7 @@ export function EditorTiptapHookCompose({ content, user, to, subject, app, cc, b
             <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
           </button>
 
-          <Minus color="#121212" strokeWidth={1.5} />
+          <Minus color="#09090b" strokeWidth={1.5} />
           <button
             onClick={handleSetLink}
             className={editor.isActive("link") ? buttonActive : buttonInactive}
@@ -803,7 +803,7 @@ export function EditorTiptapHookCompose({ content, user, to, subject, app, cc, b
               <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
             </button>
 
-            <Minus color="#121212" strokeWidth={1.5} />
+            <Minus color="#09090b" strokeWidth={1.5} />
             <button
               type="button"
               onClick={handleSetLink}

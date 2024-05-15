@@ -1,7 +1,15 @@
 import { EditorTiptapContextViewHTML, EditorTiptapHook } from "~/components/libs/editor-tiptap"
 import { useEffect, useRef, useState } from "react"
-import { type ActionFunction } from "@remix-run/node"
+import { LinksFunction, type ActionFunction } from "@remix-run/node"
 import { Form } from "@remix-run/react"
+import base from "~/styles/base.css";
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
+  { rel: "stylesheet", href: base },
+]
+
 
 import { conform, useForm, useInputEvent } from "@conform-to/react"
 

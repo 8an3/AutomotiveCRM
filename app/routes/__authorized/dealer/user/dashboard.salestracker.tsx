@@ -189,8 +189,8 @@ export default function Salestracker() {
 
             <div className='grid grid-cols-3 p-3' >
                 <div className='mr-3'>
-                    <Card className="bg-[#121212]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
-                        <CardContent className="bg-[#121212]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                    <Card className="text-[#fafafa]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                        <CardContent className="text-[#fafafa]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                             <div className='grid grid-cols-1' >
                                 <h3 className="text-2xl font-thin">
                                     Sales
@@ -229,15 +229,15 @@ export default function Salestracker() {
 
                             <Input type='hidden' defaultValue={user.email} name='email' />
                         </CardContent>
-                        <CardFooter className="bg-[#121212]    text-slate4  font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
-                            <Button variant='outline' name="intent" value='updateSales' type="submit" className=' text-slate1 bg-transparent hover:bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff]'>
+                        <CardFooter className="text-[#fafafa]    text-slate4  font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                            <Button variant='outline' name="intent" value='updateSales' type="submit" className=' text-[#fafafa] bg-transparent hover:bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff]'>
                                 Update Sales
                             </Button>
                         </CardFooter>
                     </Card>
                 </div>
                 <div className='mr-3 ml-3 '>
-                    <Card className="bg-[#121212] h-[225px]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                    <Card className="text-[#fafafa] h-[225px]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                         <CardContent>
                             <h3 className="text-2xl font-thin mb-2">
                                 Current Sales
@@ -255,7 +255,7 @@ export default function Salestracker() {
                     </Card>
                 </div>
                 <div className='mr-3 ml-3'>
-                    <Card className="bg-[#121212] h-[225px]  text-slate4  font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                    <Card className="text-[#fafafa] h-[225px]  text-slate4  font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                         <CardContent>
                             <h3 className="text-2xl font-thin mb-2">
                                 Custom Date View
@@ -339,7 +339,7 @@ export default function Salestracker() {
                                     onClick={() => (
                                         setCustomView(true)
                                     )}
-                                    className=' text-slate1 mt-2 bg-transparent hover:bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff]'>
+                                    className=' text-[#fafafa] mt-2 bg-transparent hover:bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff]'>
                                     Set Custom View
                                 </Button>
                             </div>
@@ -351,7 +351,7 @@ export default function Salestracker() {
             <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-8  p-3">
                 {!customView && (
                     <>
-                        <Card className="col-span-4 mr- bg-[#121212]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                        <Card className="col-span-4 mr- text-[#fafafa]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                             <CardHeader>
                                 <CardTitle> Breakdown of sales over the current year.</CardTitle>
                             </CardHeader>
@@ -359,7 +359,7 @@ export default function Salestracker() {
                                 <Overview />
                             </CardContent>
                         </Card>
-                        <Card className="col-span-4 mr-3 bg-[#121212]   text-slate4  ] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                        <Card className="col-span-4 mr-3 text-[#fafafa]   text-slate4  ] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                             <CardHeader>
                                 <CardTitle>Breakdown of sales from last year.</CardTitle>
                             </CardHeader>
@@ -371,7 +371,7 @@ export default function Salestracker() {
                 )}
                 {customView && (
                     <>
-                        <Card className="col-span-4 mr- bg-[#121212]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                        <Card className="col-span-4 mr- text-[#fafafa]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                             <CardHeader>
                                 <CardTitle>
                                     <div className='justify-between'>
@@ -383,7 +383,7 @@ export default function Salestracker() {
                                             onClick={() => (
                                                 setCustomView(false)
                                             )}
-                                            className=' text-slate1 bg-transparent hover:bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff]'>
+                                            className=' text-[#fafafa] bg-transparent hover:bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff]'>
                                             <ImCross />
                                         </Button>
                                     </div>
@@ -393,7 +393,7 @@ export default function Salestracker() {
                                 <FirstCustom dateRange={dateRange} salesData={salesData} />
                             </CardContent>
                         </Card>
-                        <Card className="col-span-4 mr-3 bg-[#121212]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                        <Card className="col-span-4 mr-3 text-[#fafafa]   text-slate4   font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                             <CardHeader>
                                 <CardTitle>Second date range</CardTitle>
                             </CardHeader>
@@ -658,17 +658,17 @@ export function Overview() {
                     dataKey="name"
                     stroke="#888888"
                     fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
+                    tickLine={true}
+                    axisLine={true}
                 />
                 <YAxis
                     stroke="#888888"
                     fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
+                    tickLine={true}
+                    axisLine={true}
                     tickFormatter={(value) => `${value}`}
                 />
-                <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total" fill="#c72323" radius={[4, 4, 0, 0]} />
             </BarChart>
         </ResponsiveContainer>
     )
@@ -873,17 +873,17 @@ export function OverviewLastYear() {
                     dataKey="name"
                     stroke="#888888"
                     fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
+                    tickLine={true}
+                    axisLine={true}
                 />
                 <YAxis
                     stroke="#888888"
                     fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
+                    tickLine={true}
+                    axisLine={true}
                     tickFormatter={(value) => `${value}`}
                 />
-                <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total" fill="#c72323" radius={[4, 4, 0, 0]} />
             </BarChart>
         </ResponsiveContainer>
     )
@@ -939,17 +939,17 @@ function FirstCustom({ dateRange, salesData }) {
                     dataKey="name"
                     stroke="#888888"
                     fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
+                    tickLine={true}
+                    axisLine={true}
                 />
                 <YAxis
                     stroke="#888888"
                     fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
+                    tickLine={true}
+                    axisLine={true}
                     tickFormatter={(value) => `${value}`}
                 />
-                <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total" fill="#c72323" radius={[4, 4, 0, 0]} />
             </BarChart>
         </ResponsiveContainer>
     );
@@ -1005,17 +1005,17 @@ function SecondCustom(dateRange, salesData) {
                     dataKey="name"
                     stroke="#888888"
                     fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
+                    tickLine={true}
+                    axisLine={true}
                 />
                 <YAxis
                     stroke="#888888"
                     fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
+                    tickLine={true}
+                    axisLine={true}
                     tickFormatter={(value) => `${value}`}
                 />
-                <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total" fill="#c72323" radius={[4, 4, 0, 0]} />
             </BarChart>
         </ResponsiveContainer>
     );

@@ -470,21 +470,21 @@ const ChatApp = (item) => {
     if (selectedChannelSid) {
 
         channelContent = (
-            <div onClick={() => { }} id="OpenChannel" className='text-white'>
-                <div className="flex justify-between border-b border-[#3b3b3b]">
+            <div onClick={() => { }} id="OpenChannel" className='text-[#fafafa]'>
+                <div className="flex justify-between border-b border-[#262626]">
                     <div className='flex align-middle'>
 
                         <Button variant='outline' onClick={() => SetConversation('list')}>
                             <ChevronLeft color="#ffffff" strokeWidth={1.5} />
                         </Button>
 
-                        <span className="text-lg font-bold text-white m-2">
+                        <span className="text-lg font-bold text-[#fafafa] m-2">
                             <strong>{channelName}</strong>
                         </span>
                     </div>
 
                     <select
-                        className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  m-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                        className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  m-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-[#fafafa] shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                         onChange={handleChange}>
                         <option value="">Select a Template</option>
                         {templates.map((template, index) => (
@@ -499,7 +499,7 @@ const ChatApp = (item) => {
                 <div className='relative w-[100%] max-h-[950px] h-auto overflow-y-scroll' >
                     <ChatMessages identity={`+1${user.phone}`} messages={messagesConvo} messagesRef={messagesRef} />
                 </div>
-                <div className="mt-auto   rounded-md  border-[#3b3b3b]">
+                <div className="mt-auto   rounded-md  border-[#262626]">
 
                     <Form ref={$form} method="post"  >
                         <input className='w-full p-2' type="hidden" name='phone' defaultValue={`+1${user.phone}`} />
@@ -510,7 +510,7 @@ const ChatApp = (item) => {
                             placeholder="Message..."
                             name="message"
                             autoComplete="off"
-                            className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-white  mb-2 mt-5'
+                            className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-[#fafafa]  mb-2 mt-5'
                             value={text}
                             ref={textareaRef}
                             onChange={(e) => setText(e.target.value)}
@@ -543,11 +543,11 @@ const ChatApp = (item) => {
             <>
                 {conversation === 'largeScreen' && (
 
-                    <div className="mx-auto mt-[65px] h-[93%] w-[95%] border border-[#3b3b3b] bg-black flex">
+                    <div className="mx-auto mt-[65px] h-[93%] w-[95%] border border-[#262626] bg-black flex">
 
                         <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d]  w-[25%] `}>
 
-                            <div className="tabListSZ mx-auto flex w-full border-b border-[#3b3b3b]">
+                            <div className="tabListSZ mx-auto flex w-full border-b border-[#262626]">
                                 <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
                                     <TabsList className="grid w-auto grid-cols-2">
                                         <TabsTrigger
@@ -618,14 +618,14 @@ const ChatApp = (item) => {
                                                         <input type='hidden' name='conversationSid' defaultValue={item} />
                                                         <input type='hidden' name='intent' defaultValue='getConversation' />
                                                         <div className="m-2 flex items-center justify-between">
-                                                            <span className="text-lg font-bold text-white">
+                                                            <span className="text-lg font-bold text-[#fafafa]">
                                                                 <strong>{item.author || item.author}</strong>
                                                             </span>
-                                                            <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                            <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                                 {formattedDate}
                                                             </p>
                                                         </div>
-                                                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                             {conversationsData && conversationsData.length > 0 && conversationsData[0].body
                                                                 ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
                                                                 : ''}
@@ -679,14 +679,14 @@ const ChatApp = (item) => {
                                                         <input type='hidden' name='conversationSid' defaultValue={item} />
                                                         <input type='hidden' name='intent' defaultValue='getConversation' />
                                                         <div className="m-2 flex items-center justify-between">
-                                                            <span className="text-lg font-bold text-white">
+                                                            <span className="text-lg font-bold text-[#fafafa]">
                                                                 <strong>{item.author || item.author}</strong>
                                                             </span>
-                                                            <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                            <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                                 {formattedDate}
                                                             </p>
                                                         </div>
-                                                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                             {conversationsData && conversationsData.length > 0 && conversationsData[0].body
                                                                 ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
                                                                 : ''}
@@ -723,7 +723,7 @@ const ChatApp = (item) => {
                     <div className="">
                         <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d]  w-full `}>
 
-                            <div className="tabListSZ mx-auto flex w-full border-b border-[#3b3b3b]">
+                            <div className="tabListSZ mx-auto flex w-full border-b border-[#262626]">
                                 <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
                                     <TabsList className="grid w-auto grid-cols-2">
                                         <TabsTrigger
@@ -794,14 +794,14 @@ Facebook
                                                         <input type='hidden' name='conversationSid' defaultValue={item} />
                                                         <input type='hidden' name='intent' defaultValue='getConversation' />
                                                         <div className="m-2 flex items-center justify-between">
-                                                            <span className="text-lg font-bold text-white">
+                                                            <span className="text-lg font-bold text-[#fafafa]">
                                                                 <strong>{item.author || item.author}</strong>
                                                             </span>
-                                                            <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                            <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                                 {formattedDate}
                                                             </p>
                                                         </div>
-                                                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                             {conversationsData && conversationsData.length > 0 && conversationsData[0].body
                                                                 ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
                                                                 : ''}
@@ -855,14 +855,14 @@ Facebook
                                                         <input type='hidden' name='conversationSid' defaultValue={item} />
                                                         <input type='hidden' name='intent' defaultValue='getConversation' />
                                                         <div className="m-2 flex items-center justify-between">
-                                                            <span className="text-lg font-bold text-white">
+                                                            <span className="text-lg font-bold text-[#fafafa]">
                                                                 <strong>{item.author || item.author}</strong>
                                                             </span>
-                                                            <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                            <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                                 {formattedDate}
                                                             </p>
                                                         </div>
-                                                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                        <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                             {conversationsData && conversationsData.length > 0 && conversationsData[0].body
                                                                 ? conversationsData[0].body.split(' ').slice(0, 12).join(' ')
                                                                 : ''}
@@ -950,11 +950,11 @@ const mapDispatchToProps = (dispatch) => ({
 export default ChatApp
 
 
-/** <div className="bg-black border border-[#3b3b3b] mt-[60px]">
-      <div className="w-[30%] border !border-[#3b3b3b]" >
+/** <div className="bg-black border border-[#262626] mt-[60px]">
+      <div className="w-[30%] border !border-[#262626]" >
 
       </div>
-      <div className="w-[70%] border !border-[#3b3b3b]">
+      <div className="w-[70%] border !border-[#262626]">
 
       </div>
     </div> */

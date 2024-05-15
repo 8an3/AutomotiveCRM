@@ -7,9 +7,7 @@
  */
 
 import { fontLinks } from "~/configs/fonts";
-import tailwindStyles from "~/styles/tailwind.css";
 
-export const stylesheetLinks = [{ rel: "stylesheet", href: tailwindStyles }];
 
 /**
  * Docs:

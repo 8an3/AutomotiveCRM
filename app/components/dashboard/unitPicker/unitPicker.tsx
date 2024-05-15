@@ -920,7 +920,7 @@ export function UnitPickerTable({ finance, }) {
             ))}
           </SelectContent>
         </Select>
-        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-slate12 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
         >
           Clear
         </Button>
@@ -1209,10 +1209,10 @@ export default function UnitPicker({ data }) {
     <Dialog.Root  >
 
       <Dialog.Trigger>
-        <Button variant='outline' className='text-white border-white'>Assign Unit</Button>
+        <Button variant='outline' className='text-[#fafafa] border-white'>Assign Unit</Button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="z-50 bg-background/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
+        <Dialog.Overlay className="z-50 bg-[#09090b]/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
         <Dialog.Content className="z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y  md:w-[95%] max-w-[80%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none text-black">
           <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
             Confirm Unit for Current Client

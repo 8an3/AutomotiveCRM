@@ -17,7 +17,14 @@ import {
 import { Sheet, SheetClose, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "~/components/ui/userSideBarSheet"
 import { getUserIsAllowed } from "~/helpers";
 import { Code, Banknote, Laptop, X } from 'lucide-react';
+import base from "~/styles/base.css";
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
+  { rel: "stylesheet", href: base },
+
+]
 
 export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));

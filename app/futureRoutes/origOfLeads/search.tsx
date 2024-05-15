@@ -549,16 +549,16 @@ export default function SearchTable() {
         />
 
 
-        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="bg-slate12  hover:text-[#02a9ff] hover:border-[#02a9ff] cursor-pointer  mx-1 text-slate1 active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150  px-3 py-2 h-7"
+        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="bg-[#09090b]  hover:text-[#02a9ff] hover:border-[#02a9ff] cursor-pointer  mx-1 text-[#fafafa] active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150  px-3 py-2 h-7"
         >
           Clear
         </Button>
       </div>
-      <div className="rounded-md border border-[#3b3b3b] ">
-        <Table className='w-full text-slate1 border-[#3b3b3b] overflow-x-auto'>
+      <div className="rounded-md border border-[#262626] ">
+        <Table className='w-full text-[#fafafa] border-[#262626] overflow-x-auto'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+              <TableRow key={headerGroup.id} className=' border-[#262626]'>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead className='items-center ' key={header.id}>
@@ -569,7 +569,7 @@ export default function SearchTable() {
                           header.getContext()
                         )}
                       {header.column.getCanFilter() && showFilter && (
-                        <div className="mx-auto items-center justify-center text-center cursor-pointer border-[#3b3b3b]">
+                        <div className="mx-auto items-center justify-center text-center cursor-pointer border-[#262626]">
                           <Filter column={header.column} table={table} />
                         </div>
                       )}
@@ -584,7 +584,7 @@ export default function SearchTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className='p-4 text-slate1 bg-slate12 capitalize cursor-pointer hover:text-[#02a9ff] border-[#3b3b3b]'
+                  className='p-4 text-[#fafafa] bg-[#09090b] capitalize cursor-pointer hover:text-[#02a9ff] border-[#262626]'
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -601,7 +601,7 @@ export default function SearchTable() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-slate1 bg-slate12 capitalize cursor-pointer hover:text-[#02a9ff]"
+                  className="h-24 text-center text-[#fafafa] bg-[#09090b] capitalize cursor-pointer hover:text-[#02a9ff]"
                 >
                   No results.
                 </TableCell>
@@ -611,7 +611,7 @@ export default function SearchTable() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-slate1">
+        <div className="flex-1 text-sm text-[#fafafa]">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
@@ -621,7 +621,7 @@ export default function SearchTable() {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="text-slate1 border-slate1"
+            className="text-[#fafafa] border-slate1"
           >
             Previous
           </Button>
@@ -629,7 +629,7 @@ export default function SearchTable() {
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            className="text-slate1 border-slate1"
+            className="text-[#fafafa] border-slate1"
 
             disabled={!table.getCanNextPage()}
           >

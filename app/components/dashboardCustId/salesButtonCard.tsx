@@ -73,12 +73,12 @@ export default function SalesButtonCard({
                       }, 100);
                     }}
                     type="submit" name='intent' value='updateFinance'
-                    className="bg-[#2ebb98] cursor-pointer mt-1 ml-auto mb-1 justify-end items-end text-slate1 active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                    className="bg-[#2ebb98] cursor-pointer mt-1 ml-auto mb-1 justify-end items-end text-[#fafafa] active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                   >
                     Update
                   </button>
                   <Toast.Root open={open} onOpenChange={setOpen} className="bg-white rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut">
-                    <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]">
+                    <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-[#fafafa] text-[15px]">
                       {finance[0].firstName}'s File Updated.
                     </Toast.Title>
                     <Toast.Description asChild>

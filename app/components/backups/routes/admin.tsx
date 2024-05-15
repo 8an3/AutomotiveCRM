@@ -123,16 +123,16 @@ export function AdminSidebar() {
         "hidden sm:block",
         "sticky top-0 h-screen ", // sticky sidebar
         "w-[200px] space-y-4 p-2 sm:flex sm:flex-col sm:p-4",
-        "border-r-2 border-surface-200 bg-[#1c2024] dark:border-surface-700 dark:bg-surface-900"
+        "border-r-2 border-surface-200 bg-[#151518] dark:border-surface-700 dark:bg-surface-900"
       )}
     >
       <div className="queue-center justify-between">
         <RemixNavLink
           prefetch="intent"
           to="/admin"
-          className="block min-w-fit transition-opacity hover:opacity-80 text-white"
+          className="block min-w-fit transition-opacity hover:opacity-80 text-[#fafafa]"
         >
-          <Logo className='text-white' text="Admin" />
+          <Logo className='text-[#fafafa]' text="Admin" />
         </RemixNavLink>
 
       </div>
@@ -220,13 +220,13 @@ export function ErrorBoundary() {
       <RootDocumentBoundary title={message}>
         <AdminLayout>
           <PageAdminHeader size="sm">
-            <h1 className='text-white'>Error {error.status}</h1>
+            <h1 className='text-[#fafafa]'>Error {error.status}</h1>
             {error.statusText && <h2>{error.statusText}</h2>}
-            <p className='text-white'>{message}</p>
+            <p className='text-[#fafafa]'>{message}</p>
           </PageAdminHeader>
           <section className="px-layout space-y-2">
-            <p className='text-white'>Here's the error information that can be informed to Rewinds.</p>
-            <Debug className='text-white' name="error.data" isAlwaysShow isCollapsibleOpen>
+            <p className='text-[#fafafa]'>Here's the error information that can be informed to Rewinds.</p>
+            <Debug className='text-[#fafafa]' name="error.data" isAlwaysShow isCollapsibleOpen>
               {error.data}
             </Debug>
           </section>
@@ -238,18 +238,18 @@ export function ErrorBoundary() {
       <RootDocumentBoundary title="Sorry, unexpected error occured.">
         <AdminLayout>
           <PageAdminHeader size="sm">
-            <h1 className='text-white'>Error from {configSite.name}</h1>
+            <h1 className='text-[#fafafa]'>Error from {configSite.name}</h1>
           </PageAdminHeader>
           <section className="px-layout space-y-2">
-            <p className='text-white'>Here's the error information that can be informed to Rewinds.</p>
+            <p className='text-[#fafafa]'>Here's the error information that can be informed to Rewinds.</p>
 
-            <pre className='text-white'>{error.message}</pre>
+            <pre className='text-[#fafafa]'>{error.message}</pre>
             <Debug name="error" isAlwaysShow isCollapsibleOpen>
               {error}
             </Debug>
 
-            <p className='text-white'>The stack trace is:</p>
-            <Debug className='text-white' name="error.stack" isAlwaysShow isCollapsibleOpen>
+            <p className='text-[#fafafa]'>The stack trace is:</p>
+            <Debug className='text-[#fafafa]' name="error.stack" isAlwaysShow isCollapsibleOpen>
               {error.stack}
             </Debug>
           </section>
@@ -259,7 +259,7 @@ export function ErrorBoundary() {
   } else {
     return (
       <AdminLayout>
-        <h1 className='text-white'>Unknown Error</h1>
+        <h1 className='text-[#fafafa]'>Unknown Error</h1>
       </AdminLayout>
     );
   }

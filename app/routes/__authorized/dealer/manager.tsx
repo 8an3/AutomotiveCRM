@@ -1,5 +1,5 @@
 import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react'
-import { json, redirect, type LoaderFunction } from '@remix-run/node';
+import { LinksFunction, json, redirect, type LoaderFunction } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
 import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
@@ -13,7 +13,13 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger, SheetHeader, SheetTitle,
 import { Button } from '~/components';
 import UserSideBar from '~/components/shared/userSideBar';
 import { SidebarNav } from '~/components/ui/sidebar-nav';
+import base from "~/styles/base.css";
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
+  { rel: "stylesheet", href: base },
+]
 
 export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));

@@ -10,25 +10,23 @@ import type { HeadersFunction, LinksFunction, LoaderArgs, V2_MetaDescriptor, V2_
 import { type RootLoaderData } from "~/hooks";
 import { Theme } from "@radix-ui/themes";
 //import FinanceIdContext from "~/other/financeIdContext";
-import tailwind from "~/styles/tailwind.css";
-import font from "~/styles/font.css";
 import slider from "~/styles/slider.css";
 import { Toaster } from "sonner";
 import { getSession, commitSession } from "./sessions/auth-session.server";
 import { GlobalLoading } from "./components/ui/globalLoading";
 import nProgressStyles from "~/styles/loader.css";
 import rbc from "~/styles/rbc.css";
-import daisy from "~/styles/daisy.css";
 import { Provider } from "react-redux";
 import store from "./store";
 import { type IPublicClientApplication } from "@azure/msal-browser";
 import { GetUser } from "~/utils/loader.server";
 import GetUserFromRequest from "~/utils/auth/getUser";
 import { ThemeProvider, BaseStyles } from '@primer/react'
+import base from "~/styles/base.css";
+import tailwind from "~/styles/tailwind.css";
+import font from "~/styles/font.css";
+import secondary from "~/styles/secondary.css";
 
-type AppProps = {
-  pca: IPublicClientApplication;
-};
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwind },
@@ -39,7 +37,15 @@ export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg" },
   { rel: "apple-touch-icon", sizes: "180x180", href: "/money180.svg" },
   { rel: "stylesheet", href: nProgressStyles },
+  { rel: "stylesheet", href: secondary },
 ];
+
+
+type AppProps = {
+  pca: IPublicClientApplication;
+};
+
+
 
 export async function loader({ request }: LoaderArgs) {
   const user = await GetUserFromRequest(request);

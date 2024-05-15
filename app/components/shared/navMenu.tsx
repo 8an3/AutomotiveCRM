@@ -79,7 +79,7 @@ export function NavigationMenuSales() {
               DSA
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 bg-[#121212] text-white">
+          <PopoverContent className="w-80 bg-[#09090b] text-[#fafafa]">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex-col items-center  text-center bg-[#5c5c5c] rounded-md">
                 <h4 className="font-medium leading-none">Dimensions</h4>
@@ -146,7 +146,7 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
                 : "hover:bg-[#232324]  w-[90%]  ",
               "justify-start w-[90%] "
             )} >
-            <div classname='flex-col mb-3 text-white' >
+            <div classname='flex-col mb-3 text-[#fafafa]' >
               <p classname='  mb-3'>
                 {item.title}
               </p>

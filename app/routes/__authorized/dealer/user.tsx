@@ -4,7 +4,6 @@ import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { LinksFunction, json, redirect } from "@remix-run/node";
 import slider from '~/styles/slider.css'
-import secondary from '~/styles/secondary.css'
 import {
   Separator, Accordion,
   AccordionContent,
@@ -14,12 +13,14 @@ import {
 import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { getUserIsAllowed } from "~/helpers";
 import { adminSidebarNav, devSidebarNav, managerSidebarNav } from "~/components/shared/sidebar";
-
+import base from "~/styles/base.css";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
-  { rel: "stylesheet", href: secondary },
-];
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
+  { rel: "stylesheet", href: base },
+]
 
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -90,16 +91,16 @@ export default function Quote() {
     <>
       <div className=" space-y-6 p-10 pb-16 max-h-screen max-w-screen">
         <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight text-white">User Settings</h2>
-          <p className="text-white">
+          <h2 className="text-2xl font-bold tracking-tight text-[#fafafa]">User Settings</h2>
+          <p className="text-[#fafafa]">
             Manage your account settings and set e-mail preferences.
           </p>
         </div>
         <div className="  my-6" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/5 text-white">
-            <p className='text-white'>Menu</p>
-            <hr className="text-white w-[90%] mb-5" />
+          <aside className="-mx-4 lg:w-1/5 text-[#fafafa]">
+            <p className='text-[#fafafa]'>Menu</p>
+            <hr className="text-[#fafafa] w-[90%] mb-5" />
             <SidebarNav items={sidebarNavItems} />
           </aside>
           <div className="flex-1  w-auto">

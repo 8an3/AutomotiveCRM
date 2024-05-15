@@ -9,14 +9,12 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 
 
-import stylesheet from '~/styles/tailwind.css'
 import { prisma } from "~/libs";
 import { getSession } from '~/sessions/auth-session.server';
 
 
 
 
-export const links = () => [{ rel: "stylesheet", href: stylesheet },]
 
 export async function loader({ request }: DataFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));

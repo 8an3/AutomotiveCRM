@@ -17,20 +17,21 @@ import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, Chevron
 import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Popover, PopoverTrigger, PopoverContent, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "~/components";
 import clsx from 'clsx'
 import { Text } from '@radix-ui/themes';
-import storeHoursCss from "~/styles/storeHours.css";
 import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import { cn } from "~/components/ui/utils"
 import rbc from "~/styles/rbc.css";
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
 import { format } from "date-fns"
+import base from "~/styles/base.css";
 
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
-  { rel: "stylesheet", href: storeHoursCss },
   { rel: "stylesheet", href: styles1 },
   { rel: "stylesheet", href: rbc },
+  { rel: "stylesheet", href: base },
+
 ];
 dayjs.extend(timezone)
 
@@ -523,6 +524,21 @@ export function StoreHoursCalendar() {
     ))
   }
 
+
+  function isToday(date) {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  }
+
+  function isPast(date) {
+    const today = new Date();
+    return date < today;
+  }
+
   const CustomToolbar = ({
     label,
     localizer: { messages },
@@ -603,13 +619,13 @@ export function StoreHoursCalendar() {
 
       <div className='h-screen w-[310px] border-r border-[#3d3d3d]'>
         <div className=' mt-5 flex-col mx-auto justify-center'>
-          <div className="mx-auto w-[280px] rounded-md border-white bg-[#121212] px-3 text-white " >
+          <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
             <div className='  my-3 flex justify-center   '>
               <CalendarIcon className="mr-2 size-8 " />
               {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
             </div>
             <SmallCalendar
-              className='mx-auto  w-auto   bg-[#121212] text-[#ccd2df]'
+              className='mx-auto  w-auto   bg-[#09090b] text-[#fafafa]'
               mode="single"
               selected={date}
               onSelect={setDate}
@@ -624,11 +640,11 @@ export function StoreHoursCalendar() {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-[240px] px-4 text-[#ccd2df] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff]",
-                  !date && " text-[#ccd2df]"
+                  "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff]",
+                  !date && " text-[#fafafa]"
                 )}
               >
-                <div className=' text-[#ccd2df]  mx-auto flex justify-center  '>
+                <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
                   <ClockIcon className="mr-2 size-8 " />
                   {currentTime ? (time) : <span>Pick a Time</span>}
                 </div>
@@ -682,7 +698,7 @@ export function StoreHoursCalendar() {
                   key={resourceId}
                   type="submit"
                   variant='outline'
-                  className="mx-3 mt-5 px-4 py-2 text-[#cbd0d4] bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff] w-[240px]"
+                  className="mx-3 mt-5 px-4 py-2 text-[#fafafa] bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff] w-[240px]"
                   draggable="true"
                   onDragStart={() =>
                     handleDragStart({
@@ -877,7 +893,7 @@ export default function SettingsAccountPage() {
   return (
 
     <>
-      <div className="h-[75px]  w-auto  border-b border-[#3d3d3d] bg-[#121212] text-[#cbd0d4]">
+      <div className="h-[75px]  w-auto  border-b border-[#3d3d3d] bg-[#09090b] text-[#fafafa]">
         <h2 className="  ml-[125px] text-2xl font-bold tracking-tight">Manager Section</h2>
         <p className="text-muted-foreground   ml-[125px]  ">
           Salesperson Schedule.

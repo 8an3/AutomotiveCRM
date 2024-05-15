@@ -5,14 +5,17 @@ import { getSession } from '~/sessions/auth-session.server';
 import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
-import { json } from "@remix-run/node";
+import { LinksFunction, json } from "@remix-run/node";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
-import secondary from '~/styles/secondary.css'
 import { GetUser } from "~/utils/loader.server";
+import base from "~/styles/base.css";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: secondary },
-];
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
+  { rel: "stylesheet", href: base },
+]
+
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
@@ -38,7 +41,7 @@ export default function Quote() {
   //
   return (
     <>
-      <div className="w-screen h-screen   px-2 sm:px-1 lg:px-3 bg-[#121212] border-gray-300 font-bold uppercase  ">
+      <div className="w-screen h-screen   px-2 sm:px-1 lg:px-3 bg-[#09090b] border-gray-300 font-bold uppercase  ">
 
         <Outlet />
       </div>

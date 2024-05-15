@@ -56,64 +56,64 @@ export default function Mainbody() {
   return (
     <>
       <div className="flex h-[100%] w-[98vw] left-0">
-        <div className="w-[300px] rounded-lg h-[95%] bg-slate12 text-slate2  ">
+        <div className="w-[300px] rounded-lg h-[95%] bg-[#09090b] text-slate2  ">
           <hr className="solid" />
           <Button
             variant="link"
-            className="w-full justify-start cursor-pointer text-white "
+            className="w-full justify-start cursor-pointer text-[#fafafa] "
             onClick={() => handleVideoSelection('dashboard-video-url', 'Dashboard')}>
             Dashboard
           </Button>
           <Button
             variant="link"
-            className="w-full justify-start cursor-pointer text-white "
+            className="w-full justify-start cursor-pointer text-[#fafafa] "
             onClick={() => handleVideoSelection('dashboard-video-url', 'Dashboard')}>
             Client Profile
           </Button>
           <Button
             variant="link"
-            className="w-full justify-start cursor-pointer text-white"
+            className="w-full justify-start cursor-pointer text-[#fafafa]"
             onClick={() => handleVideoSelection('dashboard-video-url', 'Calendar')}>
             Calendar
           </Button>
           <Button
             variant="link"
-            className="w-full justify-start cursor-pointer text-white"
+            className="w-full justify-start cursor-pointer text-[#fafafa]"
             onClick={() => handleVideoSelection('dashboard-video-url', 'Document Builder')}>
             Document Builder
           </Button>
-          <Button variant="link" className="w-full justify-start cursor-pointer text-white"
+          <Button variant="link" className="w-full justify-start cursor-pointer text-[#fafafa]"
             onClick={() => handleVideoSelection('dashboard-video-url', 'Template Builder')}>
             Template Builder
           </Button>
-          <Button variant="link" className="w-full justify-start cursor-pointer text-white"
+          <Button variant="link" className="w-full justify-start cursor-pointer text-[#fafafa]"
             onClick={() => handleVideoSelection('dashboard-video-url', 'Email')}>
             Email
           </Button>
-          <Button variant="link" className="w-full justify-start cursor-pointer text-white"
+          <Button variant="link" className="w-full justify-start cursor-pointer text-[#fafafa]"
             onClick={() => handleVideoSelection('dashboard-video-url', 'SMS')}>
             SMS
           </Button>
-          <Button variant="link" className="w-full justify-start cursor-pointer text-white"
+          <Button variant="link" className="w-full justify-start cursor-pointer text-[#fafafa]"
             onClick={() => handleVideoSelection('https://youtu.be/IJoEmkRDhaU', 'SMS')}>
             Payment Calculator
           </Button>
-          <Button variant="link" className="w-full justify-start cursor-pointer text-white"
+          <Button variant="link" className="w-full justify-start cursor-pointer text-[#fafafa]"
             onClick={() => handleVideoSelection('dashboard-video-url', 'SMS')}>
             Inventory
           </Button>
-          <Button variant="link" className="w-full justify-start cursor-pointer text-white"
+          <Button variant="link" className="w-full justify-start cursor-pointer text-[#fafafa]"
             onClick={() => handleVideoSelection('https://youtu.be/2zSmBP6icpY', 'SMS')}>
             Scripts
           </Button>
-          <Button variant="link" className="w-full justify-start cursor-pointer text-white"
+          <Button variant="link" className="w-full justify-start cursor-pointer text-[#fafafa]"
             onClick={() => handleVideoSelection('dashboard-video-url', 'SMS')}>
             Automation
           </Button>
         </div>
         <div className='w-[98%]'>
           <div className="mx-auto my-auto w-[90%] h-[90%]">
-            <h1 className='text-white mb-5'>{docsTitle}</h1>
+            <h1 className='text-[#fafafa] mb-5'>{docsTitle}</h1>
             <video width="50%" autoPlay src={docuVideos} />
           </div>
         </div>

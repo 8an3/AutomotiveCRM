@@ -17,7 +17,7 @@ const AttemptedOrReached = ({ data }) => {
         <select name='customerState'
           onChange={handleSelectChange}
           defaultValue={data.customerState}
-          className="mx-auto  cursor-pointer px-2 py-1 rounded-md border border-white text-white h-8  bg-[#363a3f]  text-xs  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+          className="mx-auto  cursor-pointer px-2 py-1 rounded-md border border-white text-[#fafafa] h-8  bg-[#363a3f]  text-xs  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
         >
           <option value="">Set Status</option>
           <option value="Attempted">Attempted</option>

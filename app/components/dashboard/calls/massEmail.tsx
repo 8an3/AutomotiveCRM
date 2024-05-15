@@ -181,7 +181,7 @@ export default function MassEmail(table) {
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className=" bg-background/80  fixed inset-0 backdrop-blur-sm" />
+        <Dialog.Overlay className=" bg-[#09090b]/80  fixed inset-0 backdrop-blur-sm" />
         <Dialog.Content className=" fixed left-[50%] top-[50%] max-h-[85%] w-[90vw] overflow-y-scroll translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#0d1520] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none md:w-[750px]">
           <Dialog.Title className="m-0 text-[17px] font-medium text-[#C2E6FF]">
             Email
@@ -271,7 +271,7 @@ export default function MassEmail(table) {
                   setCreateTemplate("createEmailTemplate")
                 }}
                 name='template' value='createEmailTemplate' type='submit'
-                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
 
               >
                 Save Template
@@ -284,7 +284,7 @@ export default function MassEmail(table) {
                   toast.success(`Sent email to ${data.firstName}.`)
                 }}
                 name='emailType' value='fullCustom' type='submit'
-                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
               >
                 {buttonText}
               </Button>

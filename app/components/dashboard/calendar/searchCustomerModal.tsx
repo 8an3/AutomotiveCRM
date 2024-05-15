@@ -256,7 +256,7 @@ export function SearchCustomerModal() {
       <DialogTrigger asChild>
         <Button
           variant='outline'
-          className=' px-4 mt-3 mx-auto text-[#cbd0d4] cursor-pointer hover:text-[#02a9ff] justify-center items-center   border-[#fff] hover:border-[#02a9ff] bg-transparent hover:bg-transparent w-[240px]'>
+          className=' px-4 mt-3 mx-auto text-[#fafafa] cursor-pointer hover:text-[#02a9ff] justify-center items-center   border-[#fff] hover:border-[#02a9ff] bg-transparent hover:bg-transparent w-[240px]'>
           <>
             <Search size={20} strokeWidth={1.5} />
             <p className='ml-2'>
@@ -288,13 +288,13 @@ export function SearchCustomerModal() {
             />
 
 
-            <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate12 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+            <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
             >
               Clear
             </Button>
           </div>
           <div className="rounded-md border border-black ">
-            <Table2 className='w-full overflow-x-auto border-black text-slate1'>
+            <Table2 className='w-full overflow-x-auto border-black text-[#fafafa]'>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id} className=' border-black'>
@@ -340,7 +340,7 @@ export function SearchCustomerModal() {
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 cursor-pointer bg-slate12 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                      className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                     >
                       No results.
                     </TableCell>
@@ -357,7 +357,7 @@ export function SearchCustomerModal() {
                 size="sm"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="border-slate1 text-slate1"
+                className="border-slate1 text-[#fafafa]"
               >
                 Previous
               </Button>
@@ -365,7 +365,7 @@ export function SearchCustomerModal() {
                 variant="outline"
                 size="sm"
                 onClick={() => table.nextPage()}
-                className="border-slate1 text-slate1"
+                className="border-slate1 text-[#fafafa]"
 
                 disabled={!table.getCanNextPage()}
               >

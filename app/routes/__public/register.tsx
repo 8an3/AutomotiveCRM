@@ -228,7 +228,7 @@ export default function Route() {
         </div>
       </Layout>
 
-      <div className='text-center my-auto items-center text-white  top-[50vh] '>
+      <div className='text-center my-auto items-center text-[#fafafa]  top-[50vh] '>
         <h1>
           The single best step in enhancing your sales strategy, I would confidently compare it against any other sales product or tool on the market to demonstrate its effectiveness.</h1>
         <p >Guaranteed improvement in sales, regardless of your current level in the game. Are you brand new? Our intuitive, user-friendly interface will drastically reduce your training time. Are you a seasoned salesperson? We'll remove inefficiencies in your process, allowing you to spend more time closing deals rather than managing CRM tasks and processes.</p>

@@ -217,7 +217,7 @@ export default function Mainboard() {
 
                 <AlertDialog.Portal>
                     <AlertDialog.Overlay
-                        className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+                        className="fixed inset-0 z-40 bg-[#09090b]/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
                     <AlertDialog.Content
                         className=" z-50 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                         <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
@@ -700,16 +700,16 @@ export function SearchTable() {
 
 
                 <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline'
-                    className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate12 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                    className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
             </div>
-            <div className="rounded-md border border-[#3b3b3b] ">
-                <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1'>
+            <div className="rounded-md border border-[#262626] ">
+                <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+                            <TableRow key={headerGroup.id} className=' border-[#262626]'>
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <TableHead className='items-center ' key={header.id}>
@@ -721,7 +721,7 @@ export function SearchTable() {
                                                 )}
                                             {header.column.getCanFilter() && showFilter && (
                                                 <div
-                                                    className="mx-auto cursor-pointer items-center justify-center border-[#3b3b3b] text-center">
+                                                    className="mx-auto cursor-pointer items-center justify-center border-[#262626] text-center">
                                                     <Filter column={header.column} table={table} />
                                                 </div>
                                             )}
@@ -736,7 +736,7 @@ export function SearchTable() {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className='cursor-pointer border-[#3b3b3b] bg-slate12 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                                    className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
@@ -753,7 +753,7 @@ export function SearchTable() {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-slate12 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                                    className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                                 >
                                     No results.
                                 </TableCell>
@@ -770,7 +770,7 @@ export function SearchTable() {
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="border-slate1 text-slate1"
+                        className="border-slate1 text-[#fafafa]"
                     >
                         Previous
                     </Button>
@@ -778,7 +778,7 @@ export function SearchTable() {
                         variant="outline"
                         size="sm"
                         onClick={() => table.nextPage()}
-                        className="border-slate1 text-slate1"
+                        className="border-slate1 text-[#fafafa]"
 
                         disabled={!table.getCanNextPage()}
                     >
@@ -1136,11 +1136,11 @@ export function WebleadsTable() {
         <div className="mx-auto mt-[75px] w-[95%] justify-center ">
 
             <>
-                <div className="rounded-md border border-[#3b3b3b] ">
-                    <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1 '>
+                <div className="rounded-md border border-[#262626] ">
+                    <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa] '>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+                                <TableRow key={headerGroup.id} className=' border-[#262626]'>
                                     {headerGroup.headers.map((header) => {
                                         return (
                                             <TableHead className='items-center' key={header.id}>
@@ -1166,7 +1166,7 @@ export function WebleadsTable() {
                                 table.getRowModel().rows.map((row) => (
                                     <TableRow
                                         key={row.id}
-                                        className='cursor-pointer border-[#3b3b3b] bg-slate12 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                                        className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                                         data-state={row.getIsSelected() && "selected"}
                                         onClick={() => {
                                             handleRowClick(row);
@@ -1187,7 +1187,7 @@ export function WebleadsTable() {
                                 <TableRow>
                                     <TableCell
                                         colSpan={columns.length}
-                                        className="h-24 cursor-pointer bg-slate12 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                                        className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                                     >
                                         No results.
                                     </TableCell>
@@ -1204,7 +1204,7 @@ export function WebleadsTable() {
                             size="sm"
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage()}
-                            className="border-slate1 text-slate1"
+                            className="border-slate1 text-[#fafafa]"
                         >
                             Previous
                         </Button>
@@ -1212,7 +1212,7 @@ export function WebleadsTable() {
                             variant="outline"
                             size="sm"
                             onClick={() => table.nextPage()}
-                            className="border-slate1 text-slate1"
+                            className="border-slate1 text-[#fafafa]"
 
                             disabled={!table.getCanNextPage()}
                         >
@@ -3108,7 +3108,7 @@ export function FinanceBoard() {
                         <SelectTrigger className="w-auto text-[#02a9ff] border-[#02a9ff]  mr-2 ml-2">
                             <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
                         </SelectTrigger>
-                        <SelectContent className='bg-slate1 text-slate12'>
+                        <SelectContent className='bg-slate1 text-[#fafafa]'>
                             {CallsList.map((item) => (
                                 <SelectItem value={item.key}>{item.name}</SelectItem>
                             ))}
@@ -3125,7 +3125,7 @@ export function FinanceBoard() {
                         <SelectTrigger className='text-[#02a9ff] border-[#02a9ff] w-auto  mr-3'>
                             Global Filter
                         </SelectTrigger>
-                        <SelectContent align="end" className='bg-slate1 text-slate12 '>
+                        <SelectContent align="end" className='bg-slate1 text-[#fafafa] '>
                             {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => (
                                 <SelectItem key={column.id} value={column.id}
                                     className="bg-[#fff] text-[#000] capitalize cursor-pointer  hover:underline hover:text-[#02a9ff]">
@@ -3149,7 +3149,7 @@ export function FinanceBoard() {
                         />
                     )}
 
-                    <Button onClick={() => setAllFilters([])} className='bg-[#02a9ff] text-slate1 hover:text-slate1 mr-3'>
+                    <Button onClick={() => setAllFilters([])} className='bg-[#02a9ff] text-[#fafafa] hover:text-[#fafafa] mr-3'>
                         Clear
                     </Button>
                     <div className="flex" >
@@ -3190,11 +3190,11 @@ export function FinanceBoard() {
                     </div>
                 </div>
 
-                <div className="rounded-md border border-[#3b3b3b] mt-2">
-                    <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1 '>
+                <div className="rounded-md border border-[#262626] mt-2">
+                    <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa] '>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+                                <TableRow key={headerGroup.id} className=' border-[#262626]'>
                                     {headerGroup.headers.map((header) => {
                                         return (
                                             <TableHead className='items-center' key={header.id}>
@@ -3220,7 +3220,7 @@ export function FinanceBoard() {
                                 table.getRowModel().rows.map((row) => (
                                     <TableRow
                                         key={row.id}
-                                        className='cursor-pointer border-[#3b3b3b] bg-slate12 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                                        className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                                         data-state={row.getIsSelected() && "selected"}
                                         onClick={() => handleRowClick(row)}
                                     >
@@ -3238,7 +3238,7 @@ export function FinanceBoard() {
                                 <TableRow>
                                     <TableCell
                                         colSpan={columns.length}
-                                        className="h-24 cursor-pointer bg-slate12 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                                        className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                                     >
                                         No results.
                                     </TableCell>
@@ -3255,7 +3255,7 @@ export function FinanceBoard() {
                             size="sm"
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage()}
-                            className="border-slate1 text-slate1"
+                            className="border-slate1 text-[#fafafa]"
                         >
                             Previous
                         </Button>
@@ -3263,7 +3263,7 @@ export function FinanceBoard() {
                             variant="outline"
                             size="sm"
                             onClick={() => table.nextPage()}
-                            className="border-slate1 text-slate1"
+                            className="border-slate1 text-[#fafafa]"
 
                             disabled={!table.getCanNextPage()}
                         >

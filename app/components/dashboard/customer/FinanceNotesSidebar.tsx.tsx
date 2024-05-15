@@ -95,7 +95,7 @@ export default function FinanceNotesSidebar() {
     <>
       <Sheet>
         <SheetTrigger asChild>
-          <Button className="bg-transparent text-slate1 hover:bg-transparent">
+          <Button className="bg-transparent text-[#fafafa] hover:bg-transparent">
             Notes
           </Button>
         </SheetTrigger>

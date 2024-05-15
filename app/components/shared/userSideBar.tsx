@@ -47,7 +47,7 @@ export default function UserSideBar(user: any, email: any,) {
           </div>
         </SheetTrigger>
 
-        <SheetContent side='left' className='bg-[#121212] w-full md:w-[50%] overflow-y-auto' >
+        <SheetContent side='left' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto' >
           <SheetHeader>
             <SheetTitle>
               <h2>
@@ -133,7 +133,7 @@ export default function UserSideBar(user: any, email: any,) {
     return (
       <>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetContent side='left' className='bg-[#121212] w-full md:w-[50%] overflow-y-auto' >
+          <SheetContent side='left' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto' >
             <SheetHeader>
               <SheetTitle>
                 <h2>
@@ -152,7 +152,7 @@ export default function UserSideBar(user: any, email: any,) {
                         userIsADMIN && user?.email !== 'skylerzanth@outlook.com' ? 'Manage your site.' :
                           ''}
                 </h2>
-                <hr className="my-6 text-white w-[90%]" />
+                <hr className="my-6 text-[#fafafa] w-[90%]" />
               </SheetDescription>
             </SheetHeader>
             {user && user?.email === 'skylerzanth@outlook.com' ?
@@ -231,7 +231,7 @@ export default function UserSideBar(user: any, email: any,) {
             </Button>
           </SheetTrigger>
 
-          <SheetContent side='left' className='bg-[#121212] w-full md:w-[50%] overflow-y-auto' >
+          <SheetContent side='left' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto' >
             <SheetHeader>
               <SheetTitle>
                 <h2>
@@ -324,7 +324,7 @@ export default function UserSideBar(user: any, email: any,) {
             )}
           </Button>
         </SheetTrigger>
-        <SheetContent side='left' className='bg-[#121212] w-full md:w-[50%] overflow-y-auto' >
+        <SheetContent side='left' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto' >
           <SheetHeader>
             <SheetTitle>
               {user && user?.email === 'skylerzanth@outlook.com' && (

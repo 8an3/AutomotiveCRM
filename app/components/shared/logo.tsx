@@ -14,7 +14,7 @@ export const logoVariants = cva("flex items-center font-brand font-semibold", {
       lg: "gap-2 text-xl sm:gap-3 sm:text-3xl",
     },
     accent: {
-      default: "text-black dark:text-slate1",
+      default: "text-black dark:text-[#fafafa]",
       brand: "text-brand-600",
       muted: "text-surface-600 grayscale dark:text-surface-100",
     },

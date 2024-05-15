@@ -102,9 +102,9 @@ export default function Print() {
     <>
       <div className="mb-8 mt-2">
         <div className="h-[600] relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0 grid-cols-1"  >
-          <div className="rounded-t bg-slate12 mb-0 px-6 py-6">
+          <div className="rounded-t bg-[#09090b] mb-0 px-6 py-6">
             <div className="text-center flex justify-between">
-              <h6 className="text-slate1 text-xl font-bold uppercase">
+              <h6 className="text-[#fafafa] text-xl font-bold uppercase">
                 Upload Docs
               </h6>
             </div>
@@ -237,9 +237,9 @@ export default function Print() {
     <>
       <div className="mb-8 mt-2">
         <div className="h-[600] relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0 grid-cols-1"  >
-          <div className="rounded-t bg-slate12 mb-0 px-6 py-6">
+          <div className="rounded-t bg-[#09090b] mb-0 px-6 py-6">
             <div className="text-center flex justify-between">
-              <h6 className="text-slate1 text-xl font-bold uppercase">
+              <h6 className="text-[#fafafa] text-xl font-bold uppercase">
                 Upload Docs
               </h6>
             </div>

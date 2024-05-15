@@ -31,14 +31,15 @@ import ContactTimesByType from "~/components/dashboard/calls/ContactTimesByType"
 import LogCall from "~/components/dashboard/calls/logCall";
 import Logtext from "~/components/dashboard/calls/logText";
 import { Badge } from "~/ui/badge";
-import second from '~/styles/second.css'
 import WishList from '~/components/dashboard/wishlist/wishList'
-
+import secondary from "~/styles/secondary.css";
 
 export const links: LinksFunction = () => [
-    { rel: "stylesheet", href: second },
-    { rel: "icon", type: "image/svg", href: '/dashboard.svg' },
+    { rel: "stylesheet", href: secondary },
+    { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+    { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
 ];
+
 
 export let loader = dashboardLoader
 
@@ -50,9 +51,9 @@ export default function Mainboard() {
     //<TabsTrigger onClick={() => setSelectedTab("calendar")} value="calendar">Calendar</TabsTrigger>
     const { notifications } = useLoaderData()
     return (
-        <>
+        <div className='bg-[#09090b]'>
 
-            <Tabs defaultValue="dashboard" className='mt-10'>
+            <Tabs defaultValue="dashboard" className=''>
                 <TabsList className="ml-[19px] grid w-[600px] grid-cols-4">
                     <TabsTrigger onClick={() => {
                         setSelectedTab("null")
@@ -89,7 +90,7 @@ export default function Mainboard() {
                     </TabsContent>
                 )}
             </Tabs>
-        </>
+        </div>
     )
 }
 
@@ -494,7 +495,7 @@ export function SearchTable() {
             <div className="flex items-center py-4">
                 <DebouncedInput
                     value={globalFilter ?? ''}
-                    onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-[#3b3b3b] bg-[#121212] p-2 text-white shadow"
+                    onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-[#262626] bg-[#09090b] p-2 text-[#fafafa] shadow"
                     placeholder="Search all columns..."
                 />
                 <Input
@@ -505,20 +506,20 @@ export function SearchTable() {
                     onChange={(event) =>
                         table.getColumn('phone')?.setFilterValue(event.target.value)
                     }
-                    className="ml-2 max-w-sm border-[#3b3b3b] bg-[#121212] text-white"
+                    className="ml-2 max-w-sm border-[#262626] bg-[#09090b] text-[#fafafa]"
                 />
 
 
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-[#121212] px-3 py-2  text-center text-xs  font-bold uppercase text-white shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff] border-[#3b3b3b] hover:text-[#02a9ff] hover:bg-transparent hover:shadow-md focus:outline-none"
+                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff] border-[#262626] hover:text-[#02a9ff] hover:bg-transparent hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
             </div>
-            <div className="rounded-md border border-[#3b3b3b] ">
-                <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1'>
+            <div className="rounded-md border border-[#262626] ">
+                <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+                            <TableRow key={headerGroup.id} className=' border-[#262626]'>
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <TableHead className='items-center ' key={header.id}>
@@ -529,7 +530,7 @@ export function SearchTable() {
                                                     header.getContext()
                                                 )}
                                             {header.column.getCanFilter() && showFilter && (
-                                                <div className="mx-auto cursor-pointer items-center justify-center border-[#3b3b3b] text-center">
+                                                <div className="mx-auto cursor-pointer items-center justify-center border-[#262626] text-center">
                                                     <Filter column={header.column} table={table} />
                                                 </div>
                                             )}
@@ -544,7 +545,7 @@ export function SearchTable() {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className='cursor-pointer border-[#3b3b3b] bg-[#121212] p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                                    className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
@@ -561,7 +562,7 @@ export function SearchTable() {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-[#121212] text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                                    className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                                 >
                                     No results.
                                 </TableCell>
@@ -578,7 +579,7 @@ export function SearchTable() {
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="border-slate1 text-slate1"
+                        className="border-slate1 text-[#fafafa]"
                     >
                         Previous
                     </Button>
@@ -586,7 +587,7 @@ export function SearchTable() {
                         variant="outline"
                         size="sm"
                         onClick={() => table.nextPage()}
-                        className="border-slate1 text-slate1"
+                        className="border-slate1 text-[#fafafa]"
 
                         disabled={!table.getCanNextPage()}
                     >
@@ -919,11 +920,11 @@ export function WebleadsTable() {
         <div className="mx-auto mt-[75px] w-[95%] justify-center ">
             {!isRowSelected ? (
                 <>
-                    <div className="rounded-md border border-[#3b3b3b] ">
-                        <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1 '>
+                    <div className="rounded-md border border-[#262626] ">
+                        <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa] '>
                             <TableHeader>
                                 {table.getHeaderGroups().map((headerGroup) => (
-                                    <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+                                    <TableRow key={headerGroup.id} className=' border-[#262626]'>
                                         {headerGroup.headers.map((header) => {
                                             return (
                                                 <TableHead className='items-center' key={header.id}>
@@ -949,7 +950,7 @@ export function WebleadsTable() {
                                     table.getRowModel().rows.map((row) => (
                                         <TableRow
                                             key={row.id}
-                                            className='cursor-pointer border-[#3b3b3b] bg-[#121212] p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                                            className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                                             data-state={row.getIsSelected() && "selected"}
                                             onClick={() => {
                                                 handleRowClick(row);
@@ -970,7 +971,7 @@ export function WebleadsTable() {
                                     <TableRow>
                                         <TableCell
                                             colSpan={columns.length}
-                                            className="h-24 cursor-pointer bg-[#121212] text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                                            className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                                         >
                                             No results.
                                         </TableCell>
@@ -987,7 +988,7 @@ export function WebleadsTable() {
                                 size="sm"
                                 onClick={() => table.previousPage()}
                                 disabled={!table.getCanPreviousPage()}
-                                className="border-slate1 text-slate1"
+                                className="border-slate1 text-[#fafafa]"
                             >
                                 Previous
                             </Button>
@@ -995,7 +996,7 @@ export function WebleadsTable() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => table.nextPage()}
-                                className="border-slate1 text-slate1"
+                                className="border-slate1 text-[#fafafa]"
 
                                 disabled={!table.getCanNextPage()}
                             >
@@ -1153,13 +1154,13 @@ export function WebleadsTable() {
                                     setIsComplete(true);
                                 }}
                                 name='intent' value='newLead' type='submit'
-                                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                             >
                                 Complete
                             </Button>
                             <Button
                                 disabled={isComplete === false}
-                                className={` cursor-pointer ml-auto p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                                className={` cursor-pointer ml-auto p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                             >
                                 <Link to={`/overview/${brandId}/${clientFinanceId}`}>
 
@@ -1232,6 +1233,7 @@ export function MainDashbaord() {
                         checked={table.getIsAllRowsSelected()}
                         indeterminate={table.getIsSomeRowsSelected()}
                         onChange={table.getToggleAllRowsSelectedHandler()}
+                        className='border-[#c72323]'
 
                     />
 
@@ -1245,6 +1247,7 @@ export function MainDashbaord() {
                         checked={row.getIsSelected()}
                         indeterminate={row.getIsSomeSelected()}
                         onChange={row.getToggleSelectedHandler()}
+                        className='border-[#c72323]'
 
                     />
                 </div>
@@ -2103,7 +2106,7 @@ export function MainDashbaord() {
     ]
     return (
         <>
-            <div className="bg-[#121212] text-gray-300 uppercase">
+            <div className="bg-[#09090b] text-gray-300 uppercase">
                 <DataTable columns={columns} data={data} />
             </div>
         </>
@@ -2453,7 +2456,7 @@ export const meta: MetaFunction = () => {
                         <Form method='post'>
                             <input type='hidden' name='rowId' value={data.id} />
 
-                            <Button variant='outline' name='intent' value='deleteWishList' className="active:bg-black mx-auto my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                            <Button variant='outline' name='intent' value='deleteWishList' className="active:bg-black mx-auto my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
                             >
                                 Delete
                             </Button>
@@ -2560,13 +2563,13 @@ export const meta: MetaFunction = () => {
                         </option>
                     ))}
                 </select>
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                        <Button variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
                         >
                             Add
                         </Button>
@@ -2651,7 +2654,7 @@ export const meta: MetaFunction = () => {
                                 />
                             </div>
                             <Button onClick={() => toast.success(`Added to wish list!`)}
-                                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-black w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-black w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
                             >
                                 Save
                             </Button>
@@ -2661,11 +2664,11 @@ export const meta: MetaFunction = () => {
                 </Dialog>
 
             </div>
-            <div className="rounded-md border border-[#3b3b3b] ">
-                <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1'>
+            <div className="rounded-md border border-[#262626] ">
+                <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+                            <TableRow key={headerGroup.id} className=' border-[#262626]'>
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <TableHead className='items-center ' key={header.id}>
@@ -2676,7 +2679,7 @@ export const meta: MetaFunction = () => {
                                                     header.getContext()
                                                 )}
                                             {header.column.getCanFilter() && showFilter && (
-                                                <div className="mx-auto cursor-pointer items-center justify-center border-[#3b3b3b] text-center">
+                                                <div className="mx-auto cursor-pointer items-center justify-center border-[#262626] text-center">
                                                     <Filter column={header.column} table={table} />
                                                 </div>
                                             )}
@@ -2691,7 +2694,7 @@ export const meta: MetaFunction = () => {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className='cursor-pointer border-[#3b3b3b] bg-slate8 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                                    className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
@@ -2708,7 +2711,7 @@ export const meta: MetaFunction = () => {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-slate8 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                                    className="h-24 cursor-pointer bg-slate8 text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                                 >
                                     No results.
                                 </TableCell>
@@ -2725,7 +2728,7 @@ export const meta: MetaFunction = () => {
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="border-slate1 text-slate1"
+                        className="border-slate1 text-[#fafafa]"
                     >
                         Previous
                     </Button>
@@ -2733,7 +2736,7 @@ export const meta: MetaFunction = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => table.nextPage()}
-                        className="border-slate1 text-slate1"
+                        className="border-slate1 text-[#fafafa]"
 
                         disabled={!table.getCanNextPage()}
                     >

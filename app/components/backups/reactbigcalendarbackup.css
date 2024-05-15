@@ -1417,7 +1417,7 @@ button.rbc-input::-moz-focus-inner {
 .rbc-time-view-resources .rbc-time-header-gutter {
   position: sticky;
   left: 0;
-  background-color: #121212;
+  background-color: #09090b;
   border-right: 1px solid #9c9c9c;
   z-index: 10;
   margin-right: -1px;

@@ -557,14 +557,14 @@ export function FinanceIdDialog() {
         <Dialog.Root open={financeIdMenu} onClose={handleClose}>
           <Dialog.Trigger asChild>
             {financeIdState && (
-              <Button onClick={handleClickOpen} className='text-slate1 mt-5'>
+              <Button onClick={handleClickOpen} className='text-[#fafafa] mt-5'>
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-printer"><polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect width="12" height="8" x="6" y="14" /></svg>
               </Button>
             )}
           </Dialog.Trigger>
           <Dialog.Portal>
-            <Dialog.Overlay className="bg-background/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
-            <Dialog.Content className="data-[state=open]:animate-contentShow fixed bg-slate1 text-slate12 top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+            <Dialog.Overlay className="bg-[#09090b]/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
+            <Dialog.Content className="data-[state=open]:animate-contentShow fixed bg-slate1 text-[#fafafa] top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
               <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
                 Print Docs
               </Dialog.Title>

@@ -463,12 +463,12 @@ export default function DesignerApp() {
     <div>
       <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginRight: 120, marginLeft: 50 }}>
         <div className="grid w-full max-w-xs items-center gap-1.5">
-          <Label className="text-white"  >Change BasePDF</Label>
-          <Input className="text-white border-white" type="file" accept="application/pdf" onChange={onChangeBasePDF} />
+          <Label className="text-[#fafafa]"  >Change BasePDF</Label>
+          <Input className="text-[#fafafa] border-white" type="file" accept="application/pdf" onChange={onChangeBasePDF} />
         </div>
         <div className="grid w-full max-w-xs items-center gap-1.5">
-          <Label className="text-white" > Load Template</Label>
-          <Input className="text-white border-white" type="file" accept="application/json" onChange={(e) => handleLoadTemplate(e, designer.current)} />
+          <Label className="text-[#fafafa]" > Load Template</Label>
+          <Input className="text-[#fafafa] border-white" type="file" accept="application/json" onChange={(e) => handleLoadTemplate(e, designer.current)} />
         </div>
 
 

@@ -283,7 +283,7 @@ export function CustomerDetails() {
   const [customerData, setCustomerData] = useState(callData);
 
   return (
-    <div className="bg-black text-white p-4 text-center">
+    <div className="bg-black text-[#fafafa] p-4 text-center">
       {customerData && (
         <>
           <div>
@@ -898,7 +898,7 @@ export function Activixtest() {
   }
 
   return (
-    <div className='text-white bg-black'>
+    <div className='text-[#fafafa] bg-black'>
       <h1>Activix Data</h1>
       <div className='w-[90%] mt-[25px]'>
         <ul>

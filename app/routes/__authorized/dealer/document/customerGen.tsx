@@ -245,7 +245,7 @@ export default function CustomerGen() {
                             <p className="text-[#fff]">{template.fileName}</p>
                         )}
                         <button
-                            className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                            className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                             id='myButton'
                             onClick={() => Yellow(inputs, template)}>
                             Print
@@ -257,7 +257,7 @@ export default function CustomerGen() {
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p className="text-[#fff]" > Work Order </p>
                 <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                     disabled={isLoading}
                     id='myButton2'
                     onClick={() => {
@@ -268,7 +268,7 @@ export default function CustomerGen() {
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p className="text-[#fff]" >UCDA</p>
                 <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                     disabled={isLoading}
                     id='myButton3'
                     onClick={() => {
@@ -280,7 +280,7 @@ export default function CustomerGen() {
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p className="text-[#fff]" >Yellow Jacket</p>
                 <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                     disabled={isLoading}
                     onClick={() => {
                         setfileFront('fileFront');
@@ -290,7 +290,7 @@ export default function CustomerGen() {
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p className="text-[#fff]" >LV6</p>
                 <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                     disabled={isLoading}
                     onClick={() => {
                         setlvsix('lvsix');
@@ -300,7 +300,7 @@ export default function CustomerGen() {
             <div className='mt-5 align-center ' style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p className="text-[#fff]" >LV6 - 2</p>
                 <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                     disabled={isLoading}
                     onClick={() => {
                         setlvsixBack('lvsixBack');
@@ -311,7 +311,7 @@ export default function CustomerGen() {
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p className="text-[#fff]" >Quebec - Power of Attourney</p>
                 <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                     disabled={isLoading}
                     onClick={() => {
                         setQUEBECATTOURNEY('QUEBECATTOURNEY');
@@ -321,7 +321,7 @@ export default function CustomerGen() {
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p className="text-[#fff]" >Sticky Back - Into Customers Name</p>
                 <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                     disabled={isLoading}
                     onClick={() => {
                         setstickyBack('stickyBack');
@@ -332,7 +332,7 @@ export default function CustomerGen() {
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p className="text-[#fff]" >BOS</p>
                 <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                     disabled={isLoading}
                     onClick={() => {
                         setbos('bos');

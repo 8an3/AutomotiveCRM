@@ -10,6 +10,14 @@ import {
 } from '@azure/msal-browser';
 import { MsalProvider, AuthenticatedTemplate, useMsal, UnauthenticatedTemplate } from '@azure/msal-react';
 import { config } from '~/components/microsoft/Config';
+import secondary from "~/styles/secondary.css";
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: secondary },
+  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
+  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
+];
+
 
 export default function Root() {
   const msalInstance = new PublicClientApplication(config);
@@ -33,7 +41,9 @@ export default function Root() {
       {() => (
         <MsalProvider instance={msalInstance}>
           <ProvideAppContext>
-            <Outlet />
+            <div className='max-h-screen max-w-screen' >
+              <Outlet />
+            </div>
           </ProvideAppContext>
         </MsalProvider>
       )}

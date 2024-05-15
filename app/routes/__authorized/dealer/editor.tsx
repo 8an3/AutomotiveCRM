@@ -7,11 +7,9 @@ import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
-import secondary from '~/styles/secondary.css'
 import { GetUser } from "~/utils/loader.server";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: secondary },
 ];
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -34,7 +32,7 @@ export const loader = async ({ request }) => {
 export default function Quote() {
   return (
     <>
-      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-[#121212] border-gray-300 font-bold   ">
+      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-[#09090b] border-gray-300 font-bold   ">
 
         <Outlet />
       </div>

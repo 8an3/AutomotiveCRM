@@ -133,16 +133,16 @@ export default function ClientCard({ data }) {
                 <SheetTrigger asChild>
                     <p>{data.firstName} </p>
                 </SheetTrigger>
-                <SheetContent side='left' className='bg-[#121212] text-white w-full h-screen md:w-[50%] overflow-y-auto   ' >
+                <SheetContent side='left' className='bg-[#09090b] text-[#fafafa] w-full h-screen md:w-[50%] overflow-y-auto   ' >
                     <Form method="post" >
                         <SheetHeader>
                             <SheetTitle>
-                                <div className='flex justify-between text-white'>
+                                <div className='flex justify-between text-[#fafafa]'>
                                     Edit Client Profile
 
                                 </div>
                             </SheetTitle>
-                            <SheetDescription className='text-white'>
+                            <SheetDescription className='text-[#fafafa]'>
                                 Make changes to the profile here. Click save when you're done.
                             </SheetDescription>
                         </SheetHeader>
@@ -155,7 +155,7 @@ export default function ClientCard({ data }) {
                                             name={fee.name}
                                             defaultValue={fee.value}
                                             placeholder={fee.placeHolder}
-                                            className='mt-2 h-8 text-white bg-[#121212]'
+                                            className='mt-2 h-8 text-[#fafafa] bg-[#09090b]'
                                         />
                                     </div>
                                 ))}
@@ -165,7 +165,7 @@ export default function ClientCard({ data }) {
                             <select defaultValue={data.typeOfContact}
                                 name='typeOfContact'
                                 placeholder='Best Form To Contact '
-                                className="w-2/3 mb-2 rounded text-white cursor-pointer border-[#c7c7cb] ml-2 mr-2 bg-[#121212] px-3 py-3 text-sm  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                                className="w-2/3 mb-2 rounded text-[#fafafa] cursor-pointer border-[#c7c7cb] ml-2 mr-2 bg-[#09090b] px-3 py-3 text-sm  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                                 <option value="na">Best Form To Contact </option>
                                 <option value="Phone">Phone</option>
                                 <option value="Text">Text</option>
@@ -174,7 +174,7 @@ export default function ClientCard({ data }) {
                             <select defaultValue={data.timeToContact}
                                 name='timeToContact'
                                 placeholder='Best Time To Contact'
-                                className="mx-automt-3 w-2/3 text-white cursor-pointer rounded border-[#c7c7cb] ml-2 mr-2 bg-[#121212] px-3 py-3 text-sm placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                                className="mx-automt-3 w-2/3 text-[#fafafa] cursor-pointer rounded border-[#c7c7cb] ml-2 mr-2 bg-[#09090b] px-3 py-3 text-sm placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                                 <option value="na">Best Time To Contact</option>
                                 <option value="Morning">Morning</option>
                                 <option value="Afternoon">Afternoon</option>
@@ -347,7 +347,7 @@ export default function ClientCard({ data }) {
                             <input type='hidden' name='id' value={data.id} />
                             <input type='hidden' name='clientId' value={data.id} />
                             {!data.model && (
-                                <Button name='intent' value='createQuote' type='submit' className="bg-[#02a9ff] cursor-pointer p-3 text-white active:bg-black font-bold uppercase   border border-slate1 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+                                <Button name='intent' value='createQuote' type='submit' className="bg-[#02a9ff] cursor-pointer p-3 text-[#fafafa] active:bg-black font-bold uppercase   border border-slate1 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
                                     Create Quote
                                 </Button>
                             )}

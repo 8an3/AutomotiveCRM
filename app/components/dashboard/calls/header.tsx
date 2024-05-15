@@ -42,8 +42,8 @@ export function DataTableColumnHeader<TData, TValue>({
               variant="ghost"
               size="sm"
               className="-ml-3 h-8 data-[state=open]:bg-accent text-center target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff] font-bold uppercase  rounded outline-none  ease-linear transition-all text-center duration-150 cursor-pointer border-gray-300
-            focus:outline-none hover:bg-slate12 focus:text-[#02a9ff]">
-              <span className="text-slate1">{title}</span>
+            focus:outline-none hover:bg-[#09090b] focus:text-[#02a9ff]">
+              <span className="text-[#fafafa]">{title}</span>
               {column.getIsSorted() === "desc" ? (
                 <ArrowDownIcon className="ml-2 h-4 w-4" />
               ) : column.getIsSorted() === "asc" ? (
@@ -56,16 +56,16 @@ export function DataTableColumnHeader<TData, TValue>({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-slate1" />
+            <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-[#fafafa]" />
             Asc
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-slate1" />
+            <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-[#fafafa]" />
             Desc
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <EyeNoneIcon className="mr-2 h-3.5 w-3.5 text-slate1" />
+            <EyeNoneIcon className="mr-2 h-3.5 w-3.5 text-[#fafafa]" />
             Hide
           </DropdownMenuItem>
         </DropdownMenuContent>

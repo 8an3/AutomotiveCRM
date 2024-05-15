@@ -35,7 +35,7 @@ export default function Subscribe() {
                             <div className='grid grid-cols-1 place-content-center mx-auto my-auto	mt-6' >
                                 <div className="item-4 grid grid-cols-1 scriptcard justify-end mx-auto my-auto	h-[450px] ">
                                     <div className="text-center">
-                                        <h2 className="scriptcardText text-white text-3xl sm:mt-0 mt-6 font-thin tracking-tight  sm:text-4xl mb-6 ">
+                                        <h2 className="scriptcardText text-[#fafafa] text-3xl sm:mt-0 mt-6 font-thin tracking-tight  sm:text-4xl mb-6 ">
                                             Subscription Plan
                                         </h2>
                                         <p className="scriptcardText text-[#fff]">

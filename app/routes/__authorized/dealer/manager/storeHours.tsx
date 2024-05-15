@@ -13,16 +13,17 @@ import { useLoaderData, useSubmit, useNavigate } from "@remix-run/react";
 import { getSession, commitSession } from '~/sessions/auth-session.server';
 import { prisma } from "~/libs";
 import timezone from 'dayjs/plugin/timezone'
-import storeHoursCss from "~/styles/storeHours.css";
 import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
 import rbc from "~/styles/rbc.css";
+import base from "~/styles/base.css";
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
-  { rel: "stylesheet", href: storeHoursCss },
   { rel: "stylesheet", href: styles1 },
   { rel: "stylesheet", href: rbc },
+  { rel: "stylesheet", href: base },
+
 ];
 
 dayjs.extend(timezone)
@@ -319,7 +320,7 @@ export default function SettingsAccountPage() {
           Update your stores hours to enable apps functionality.
         </p>
       </div>
-      <hr className="solid text-white" />
+      <hr className="solid text-[#fafafa]" />
       <StoreHoursCalendar />
     </div>
   )

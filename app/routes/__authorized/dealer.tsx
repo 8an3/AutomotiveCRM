@@ -45,10 +45,8 @@ export default function SettingsLayout() {
       />
       <Sidebar user={user} email={email} />
       <NotificationSystem />
-      <div className={` w-[98vw] h-[98vh] flex-1 ${isOpen ? 'ml-64' : 'ml-0'}`}>
 
-        <Outlet />
-      </div >
+      <Outlet />
     </>
   )
 }

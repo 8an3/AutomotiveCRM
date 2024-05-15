@@ -242,14 +242,14 @@ export default function Test() {
                     >
                         <DropdownMenu.Item className=" cursor-pointer hover:text-[#02a9ff] group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1">
                             Reply
-                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-white group-data-[disabled]:text-mauve8">
+                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-[#fafafa] group-data-[disabled]:text-mauve8">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-reply"><polyline points="9 17 4 12 9 7" /><path d="M20 18v-2a4 4 0 0 0-4-4H4" /></svg>
 
                             </div>
                         </DropdownMenu.Item>
                         <DropdownMenu.Item className=" cursor-pointer hover:text-[#02a9ff] group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1">
                             Reply All
-                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-white group-data-[disabled]:text-mauve8">
+                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-[#fafafa] group-data-[disabled]:text-mauve8">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-reply-all"><polyline points="7 17 2 12 7 7" /><polyline points="12 17 7 12 12 7" /><path d="M22 18v-2a4 4 0 0 0-4-4H7" /></svg>
                             </div>
                         </DropdownMenu.Item>
@@ -257,7 +257,7 @@ export default function Test() {
                             className=" cursor-pointer hover:text-[#02a9ff] group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
                         >
                             Forward
-                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-white group-data-[disabled]:text-mauve8">
+                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-[#fafafa] group-data-[disabled]:text-mauve8">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-forward"><polyline points="15 17 20 12 15 7" /><path d="M4 18v-2a4 4 0 0 1 4-4h12" /></svg>
                             </div>
                         </DropdownMenu.Item>
@@ -265,7 +265,7 @@ export default function Test() {
                             className="group  cursor-pointer hover:text-[#02a9ff] text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
                         >
                             Save Draft
-                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-white group-data-[disabled]:text-mauve8">
+                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-[#fafafa] group-data-[disabled]:text-mauve8">
                                 <RiDraftLine />
                             </div>
                         </DropdownMenu.Item>
@@ -273,7 +273,7 @@ export default function Test() {
                             className="group  cursor-pointer hover:text-[#02a9ff] text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
                         >
                             Save Template
-                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-white group-data-[disabled]:text-mauve8">
+                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-[#fafafa] group-data-[disabled]:text-mauve8">
                                 <HiOutlineTemplate />
                             </div>
                         </DropdownMenu.Item>
@@ -284,7 +284,7 @@ export default function Test() {
                             className="group  cursor-pointer hover:text-[#02a9ff] text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
                         >
                             Mark as Unread
-                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-white group-data-[disabled]:text-mauve8">
+                            <div className="ml-auto pl-[20px] text-mauve11 group-data-[highlighted]:text-[#fafafa] group-data-[disabled]:text-mauve8">
                                 <HiOutlineTemplate />
                             </div>
                         </DropdownMenu.Item>

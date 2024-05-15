@@ -289,15 +289,15 @@ async function createOrUpdateYourModel(data) {
   });
 }
 /** <div className='mt-5 mb-5' style={{ textAlign: 'center' }}>
-        <h1 className='text-white' style={{ marginBottom: 10 }}>Export Motorcycle Inventory - CSV</h1>
-        <Button onClick={() => Click1()} download="inventoryMotorcycles.csv" className="btn btn-sm text-white border-white border py-2 px-3 rounded-md mb-5">
+        <h1 className='text-[#fafafa]' style={{ marginBottom: 10 }}>Export Motorcycle Inventory - CSV</h1>
+        <Button onClick={() => Click1()} download="inventoryMotorcycles.csv" className="btn btn-sm text-[#fafafa] border-white border py-2 px-3 rounded-md mb-5">
           DOWNLOAD CSV
         </Button>
       </div>
 
 
 
-       <div className='text-white border border-white rounded-md mx-auto mt-10'>
+       <div className='text-[#fafafa] border border-white rounded-md mx-auto mt-10'>
       <Form style={{ display: "flex", flexDirection: "column" }}>
 
 

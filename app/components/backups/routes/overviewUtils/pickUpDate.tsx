@@ -27,7 +27,7 @@ export default function PickUpDateClientCard({ data }) {
                 <SelectTrigger className="w-2/3 mx-auto mt-2 text-center" >
                     <SelectValue placeholder="Time of day" />
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-black dark:text-slate1">
+                <SelectContent className="bg-white dark:bg-black dark:text-[#fafafa]">
                     <ScrollArea className="h-[300px] w-[200px] rounded-md  p-4">
                         <SelectGroup>
                             <SelectLabel>Time of day</SelectLabel>
@@ -75,7 +75,7 @@ export function PickUpDateContactInfo() {
                 <SelectTrigger className="w-2/3 mx-auto mt-2 text-center" >
                     <SelectValue placeholder="Time of day" />
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-black dark:text-slate1">
+                <SelectContent className="bg-white dark:bg-black dark:text-[#fafafa]">
                     <ScrollArea className="h-[300px] w-[200px] rounded-md  p-4">
                         <SelectGroup>
                             <SelectLabel>Time of day</SelectLabel>

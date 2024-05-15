@@ -95,7 +95,7 @@ export default function FinanceNotes() {
             >
               <Card //className="mr-1 mt-1 w-full rounded-[0px]"
 
-                className={`w-full rounded mt-2 bg-slate12 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] ${message.urgentFinanceNote === 'soon'
+                className={`w-full rounded mt-2 bg-[#09090b] text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] ${message.urgentFinanceNote === 'soon'
                   ? 'border-green-500 border:w-[5px] '
                   : message.urgentFinanceNote === 'asap'
                     ? 'border-yellow-500 border:w-[4px]  bg-yellow-200'
@@ -310,7 +310,7 @@ export default function FinanceNotes() {
                           {urgentFinanceNoteList.map((item) => (
                             <DropdownMenu.Item key={item.name} className="group  leading-none rounded-[3px] pt-1 h-[25px] px-[5px]  pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-600 data-[highlighted]:text-violet1">
                               <div className=" flex  justify-between">
-                                <label htmlFor={item.name} className="text-sm mr-auto text-left text-slate11">
+                                <label htmlFor={item.name} className="text-sm mr-auto text-left text-[#fafafa]1">
                                   {item.label}
                                 </label>
                                 <input
@@ -352,7 +352,7 @@ export default function FinanceNotes() {
           <TextArea
             placeholder="Type your message here."
             name="customContent"
-            className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
+            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
           />
           <Input type="hidden" defaultValue={user.name} name="author" />
           <Input
@@ -380,10 +380,10 @@ export default function FinanceNotes() {
             <div className='flex' >
               <p className='mr-2'>CC: </p>
               <Select name='ccUser' >
-                <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                   <SelectValue>Sales Person</SelectValue>
                 </SelectTrigger>
-                <SelectContent className='bg-slate1 text-slate12'>
+                <SelectContent className='bg-slate1 text-[#fafafa]'>
                   {userList.map((user, index) => (
                     <SelectItem key={index} value={user.email}>{user.name}</SelectItem>
                   ))}
@@ -395,7 +395,7 @@ export default function FinanceNotes() {
               variant='outline'
               name="intent"
               type="submit"
-              className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-white"
+              className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-[#fafafa]"
               value="saveFinanceNote"
 
             >

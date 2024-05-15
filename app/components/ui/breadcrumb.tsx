@@ -1,184 +1,115 @@
-import { cloneElement, forwardRef } from "react";
+import * as React from "react"
+import { ChevronRightIcon, DotsHorizontalIcon } from "@radix-ui/react-icons"
+import { Slot } from "@radix-ui/react-slot"
 
-import { RemixLink } from "~/components";
-import { ChevronRight } from "~/icons";
-import { cn, getValidChildren } from "~/utils";
+import { cn } from "./utils"
 
-import type { RemixLinkProps } from "@remix-run/react/dist/components";
-
-/**
- * Breadcrumb
- *
- * Breadcrumb trail is a graphical control element used
- * as a navigational aid in user interfaces and on web pages.
- * It allows users to keep track and maintain awareness of their locations
- * within programs, documents, or websites.
- */
-
-export interface BreadcrumbProps extends React.ComponentPropsWithoutRef<"nav"> {
-  /* The visual separator between each breadcrumb item */
-  separator?: React.ReactNode;
-  /**
-   * If `true`, adds a separator between each breadcrumb item.
-   * @default true
-   */
-  addSeparator?: boolean;
-}
-
-export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(
-  (
-    {
-      children,
-      className,
-      separator = <ChevronRight className="size-sm" />,
-      addSeparator = true,
-      ...props
-    },
-    forwardedRef
-  ) => {
-    const validChildren = getValidChildren(children);
-    const clones = validChildren.map((child, index) => {
-      return cloneElement(child, {
-        addSeparator,
-        separator,
-        lastChild: validChildren.length === index + 1,
-      });
-    });
-
-    return (
-      <nav
-        className={cn("relative break-words", className)}
-        aria-label="breadcrumb"
-        {...props}
-        ref={forwardedRef}
-      >
-        <ol className="flex items-center">{clones}</ol>
-      </nav>
-    );
+const Breadcrumb = React.forwardRef<
+  HTMLElement,
+  React.ComponentPropsWithoutRef<"nav"> & {
+    separator?: React.ReactNode
   }
-);
-Breadcrumb.displayName = "Breadcrumb";
+>(({ ...props }, ref) => <nav ref={ref} aria-label="breadcrumb" {...props} />)
+Breadcrumb.displayName = "Breadcrumb"
 
-export interface BreadcrumbItemProps extends BreadcrumbProps {
-  /**
-   * If `true`, indicates that the breadcrumb item is active, adds
-   * `aria-current=page` and renders a `span`
-   */
-  isCurrentPage?: boolean;
-  lastChild?: boolean;
-}
+const BreadcrumbList = React.forwardRef<
+  HTMLOListElement,
+  React.ComponentPropsWithoutRef<"ol">
+>(({ className, ...props }, ref) => (
+  <ol
+    ref={ref}
+    className={cn(
+      "flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5",
+      className
+    )}
+    {...props}
+  />
+))
+BreadcrumbList.displayName = "BreadcrumbList"
 
-export const BreadcrumbItem = forwardRef<HTMLLIElement, BreadcrumbItemProps>(
-  (
-    {
-      children,
-      className,
-      isCurrentPage,
-      lastChild,
-      separator,
-      addSeparator,
-      ...props
-    },
-    forwardedRef
-  ) => {
-    const validChildren = getValidChildren(children);
-    const clones = validChildren.map((child) => {
-      if (child.type === BreadcrumbLink) {
-        return cloneElement(child, { isCurrentPage });
-      }
+const BreadcrumbItem = React.forwardRef<
+  HTMLLIElement,
+  React.ComponentPropsWithoutRef<"li">
+>(({ className, ...props }, ref) => (
+  <li
+    ref={ref}
+    className={cn("inline-flex items-center gap-1.5", className)}
+    {...props}
+  />
+))
+BreadcrumbItem.displayName = "BreadcrumbItem"
 
-      if (child.type === BreadcrumbSeparator) {
-        return cloneElement(child, {
-          children: separator || child.props.children,
-        });
-      }
-
-      return child;
-    });
-
-    return (
-      <li
-        className={cn("inline-flex items-center", className)}
-        {...props}
-        ref={forwardedRef}
-      >
-        {clones}
-        {!lastChild && addSeparator && (
-          <BreadcrumbSeparator>{separator}</BreadcrumbSeparator>
-        )}
-      </li>
-    );
-  }
-);
-BreadcrumbItem.displayName = "BreadcrumbItem";
-
-export interface BreadcrumbLinkProps
-  extends RemixLinkProps,
-    React.ComponentPropsWithoutRef<"a">,
-    Pick<BreadcrumbItemProps, "isCurrentPage"> {
-  as?: React.ElementType;
-}
-
-export const BreadcrumbLink = forwardRef<
+const BreadcrumbLink = React.forwardRef<
   HTMLAnchorElement,
-  BreadcrumbLinkProps
->(({ className, as: asComp, isCurrentPage, ...props }, forwardedRef) => {
-  const Comp = (isCurrentPage ? "a" : asComp || "a") as "a";
+  React.ComponentPropsWithoutRef<"a"> & {
+    asChild?: boolean
+  }
+>(({ asChild, className, ...props }, ref) => {
+  const Comp = asChild ? Slot : "a"
 
   return (
     <Comp
-      className={cn(
-        "cursor-pointer text-sm font-medium underline-offset-4 transition-colors hover:underline",
-        "aria-[current]:font-bold",
-        className
-      )}
-      aria-current={isCurrentPage ? "page" : undefined}
+      ref={ref}
+      className={cn("transition-colors hover:text-foreground", className)}
       {...props}
-      ref={forwardedRef}
     />
-  );
-});
-BreadcrumbLink.displayName = "BreadcrumbLink";
+  )
+})
+BreadcrumbLink.displayName = "BreadcrumbLink"
 
-export type BreadcrumbSeparatorProps = React.ComponentPropsWithoutRef<"span">;
-
-export const BreadcrumbSeparator = forwardRef<
+const BreadcrumbPage = React.forwardRef<
   HTMLSpanElement,
-  BreadcrumbSeparatorProps
->(({ className, ...props }, forwardedRef) => {
-  return (
-    <span
-      className={cn("mx-1 opacity-50 sm:mx-2", className)}
-      role="presentation"
-      {...props}
-      ref={forwardedRef}
-    />
-  );
-});
-BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
+  React.ComponentPropsWithoutRef<"span">
+>(({ className, ...props }, ref) => (
+  <span
+    ref={ref}
+    role="link"
+    aria-disabled="true"
+    aria-current="page"
+    className={cn("font-normal text-foreground", className)}
+    {...props}
+  />
+))
+BreadcrumbPage.displayName = "BreadcrumbPage"
 
-export function BreadcrumbAuto({
-  separator,
-  items,
-}: {
-  separator?: React.ReactNode;
-  items: {
-    to: string;
-    name: string;
-    isCurrentPage?: boolean;
-  }[];
-}) {
-  return (
-    <Breadcrumb separator={separator}>
-      {items.map((item) => {
-        return (
-          <BreadcrumbItem key={item.to} isCurrentPage={item.isCurrentPage}>
-            <BreadcrumbLink as={RemixLink} to={item.to}>
-              {item.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        );
-      })}
-    </Breadcrumb>
-  );
+const BreadcrumbSeparator = ({
+  children,
+  className,
+  ...props
+}: React.ComponentProps<"li">) => (
+  <li
+    role="presentation"
+    aria-hidden="true"
+    className={cn("[&>svg]:size-3.5", className)}
+    {...props}
+  >
+    {children ?? <ChevronRightIcon />}
+  </li>
+)
+BreadcrumbSeparator.displayName = "BreadcrumbSeparator"
+
+const BreadcrumbEllipsis = ({
+  className,
+  ...props
+}: React.ComponentProps<"span">) => (
+  <span
+    role="presentation"
+    aria-hidden="true"
+    className={cn("flex h-9 w-9 items-center justify-center", className)}
+    {...props}
+  >
+    <DotsHorizontalIcon className="h-4 w-4" />
+    <span className="sr-only">More</span>
+  </span>
+)
+BreadcrumbEllipsis.displayName = "BreadcrumbElipssis"
+
+export {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  BreadcrumbEllipsis,
 }

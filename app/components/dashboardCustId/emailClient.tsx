@@ -158,7 +158,7 @@ export default function EmailClient() {
         </p>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className=" bg-background/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
+        <Dialog.Overlay className=" bg-[#09090b]/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
         <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] md:w-[750px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
           <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
             Email
@@ -255,7 +255,7 @@ export default function EmailClient() {
                   setIsButtonPressed(true);
                 }}
                 name='template' value='createEmailTemplate' type='submit'
-                className={`w-[75px] ml-2 mr-2 text-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                className={`w-[75px] ml-2 mr-2 text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
               >
                 Save Template
               </Button>
@@ -264,7 +264,7 @@ export default function EmailClient() {
                   setIsButtonPressed(true);
                 }}
                 name='emailType' value='fullCustom' type='submit'
-                className={`w-[75px] ml-2 mr-2 text-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                className={`w-[75px] ml-2 mr-2 text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
               >
                 Send
               </Button>

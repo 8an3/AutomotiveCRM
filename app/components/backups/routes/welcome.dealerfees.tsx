@@ -429,7 +429,7 @@ export default function WelcomeDealerFeesSection() {
             <h2 className="text-2xl font-thin">
               DEALER FEES
             </h2>
-            <p className="text-sm text-slate1">
+            <p className="text-sm text-[#fafafa]">
               This is where you can change values like freight, admin, taxes and
               such. If you don't have all this information with you, dont worry, you can always come back and update it later.
             </p>
@@ -513,7 +513,7 @@ export default function WelcomeDealerFeesSection() {
               name="email"
             />
             <Toast.Provider swipeDirection="right">
-              <Button className="bg-[#02a9ff] mb-10 w-[75px] ml-2  mr-2 cursor-pointer text-slate1 active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" type="submit"
+              <Button className="bg-[#02a9ff] mb-10 w-[75px] ml-2  mr-2 cursor-pointer text-[#fafafa] active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" type="submit"
                 onClick={() => {
                   setOpen(false);
                   window.clearTimeout(timerRef.current);
@@ -529,7 +529,7 @@ export default function WelcomeDealerFeesSection() {
                 open={open}
                 onOpenChange={setOpen}
               >
-                <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]">
+                <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-[#fafafa] text-[15px]">
                   Dealer Fees Updated.
                 </Toast.Title>
                 <Toast.Description asChild>

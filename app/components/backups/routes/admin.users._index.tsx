@@ -165,10 +165,10 @@ export default function Route() {
       </TabsList>
       <TabsContent value="Users">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-myColor-900  text-white border-black">
+          <CardContent className="space-y-2 rounded-md bg-myColor-900  text-[#fafafa] border-black">
             <Form method="post" className="">
 
-              <div className=' text-white'>
+              <div className=' text-[#fafafa]'>
                 <PageAdminHeader size="xs">
 
                   <div className="queue">
@@ -211,7 +211,7 @@ export default function Route() {
                     )}
                   </div>
                 </PageAdminHeader>
-                <div className='max-w-xl   text-white'>
+                <div className='max-w-xl   text-[#fafafa]'>
                   <header>
                     <span>{formatPluralItems("user", usersCount)}</span>
                   </header>
@@ -325,7 +325,7 @@ export default function Route() {
                           <SelectTrigger className='mr-3 w-auto border-[#02a9ff]  text-[#02a9ff]'>
                             Role
                           </SelectTrigger>
-                          <SelectContent align="end" className='bg-slate1 text-slate12 ' required>
+                          <SelectContent align="end" className='bg-slate1 text-[#fafafa] ' required>
                             {userRole.map((role) => (
                               <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-[#02a9ff] hover:underline">
                                 {role.symbol}
@@ -350,7 +350,7 @@ export default function Route() {
 
       <TabsContent value="Add">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-slate11 text-white">
+          <CardContent className="space-y-2 rounded-md bg-slate11 text-[#fafafa]">
             <Form method="post" className="">
 
               <div className="mt-2  grid  grid-cols-1 gap-2">
@@ -406,7 +406,7 @@ export default function Route() {
                       <SelectTrigger className='mr-3 w-auto border-[#02a9ff]  text-[#02a9ff]'>
                         Role
                       </SelectTrigger>
-                      <SelectContent align="end" className='bg-slate1 text-slate12 '>
+                      <SelectContent align="end" className='bg-slate1 text-[#fafafa] '>
                         {userRole.map((role) => (
                           <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-[#02a9ff] hover:underline">
                             {role.symbol}
@@ -434,7 +434,7 @@ export default function Route() {
 
       <TabsContent value="UserRoles">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-slate11 text-white  mt-5">
+          <CardContent className="space-y-2 rounded-md bg-slate11 text-[#fafafa]  mt-5">
             <div className='flex justify-between'>
               <Button variant='outline' onClick={() => { setAddUserRole(true) }}>
                 Add User Role

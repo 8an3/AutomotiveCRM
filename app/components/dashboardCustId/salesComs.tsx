@@ -35,46 +35,46 @@ export function SalesComms({
     <Tabs.Root className="flex flex-col w-full mt-3  bg-blak mx-auto"
       defaultValue="notes"
     >
-      <Tabs.List className="shrink-0 flex border-b border-white bg-myColor-900 text-slate1" aria-label="Manage your account">
+      <Tabs.List className="shrink-0 flex border-b border-white bg-myColor-900 text-[#fafafa]" aria-label="Manage your account">
         <Tabs.Trigger
-          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate1 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
+          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
           value="notes" >
-          <p className="text-slate1 ">
+          <p className="text-[#fafafa] ">
             Notes
 
           </p>
         </Tabs.Trigger>
         <Tabs.Trigger
-          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate1 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
+          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
           value="aptHist" >
-          <p className="text-slate1 ">
+          <p className="text-[#fafafa] ">
             Apt history
           </p>
         </Tabs.Trigger>
         <Tabs.Trigger
-          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate1 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
+          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
           value="coms" >
-          <p className="text-slate1 ">
+          <p className="text-[#fafafa] ">
             Client Interactions
 
           </p>
         </Tabs.Trigger>
         <Tabs.Trigger
-          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate1 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
               focus:outline-none  focus:text-[#02a9ff]  mx-1"
           value="Upload"
         >
-          <p className="text-slate1 ">
+          <p className="text-[#fafafa] ">
             Upload
           </p>
         </Tabs.Trigger>
       </Tabs.List>
-      <Tabs.Content className="grow  bg-myColor-900 text-slate1 rounded-b-md outline-none  focus:shadow-black" value="notes"  >
-        <div className="mb-4 p-5 h-full   text-slate1">
+      <Tabs.Content className="grow  bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black" value="notes"  >
+        <div className="mb-4 p-5 h-full   text-[#fafafa]">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-slate11" >
-            <div className="rounded-t bg-slate12 mb-4 p-4 ">
+            <div className="rounded-t bg-[#09090b] mb-4 p-4 ">
               <div className="text-center flex justify-between">
-                <h6 className="text-slate1 text-xl font-bold uppercase px-3 py-2">
+                <h6 className="text-[#fafafa] text-xl font-bold uppercase px-3 py-2">
                   notes
                 </h6>
               </div>
@@ -85,12 +85,12 @@ export function SalesComms({
           </div>
         </div>
       </Tabs.Content>
-      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-slate1 rounded-b-md outline-none  focus:shadow-black" value="aptHist" >
-        <div className="mb-4 w-full  text-slate1">
+      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black" value="aptHist" >
+        <div className="mb-4 w-full  text-[#fafafa]">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-slate11" >
-            <div className="rounded-t bg-slate12 mb-0 p-4 ">
+            <div className="rounded-t bg-[#09090b] mb-0 p-4 ">
               <div className="text-center flex justify-between">
-                <h6 className="text-slate1 text-xl font-bold uppercase px-3 py-2">
+                <h6 className="text-[#fafafa] text-xl font-bold uppercase px-3 py-2">
                   Appointments
                 </h6>
               </div>
@@ -107,7 +107,7 @@ export function SalesComms({
                     className="flex-cols-2 flex mb-4"
                   >
                     <Card
-                      className={`w-full rounded  bg-slate12 text-sm text-slate1 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]
+                      className={`w-full rounded  bg-[#09090b] text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]
 ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
                           isPast(new Date(message.start)) ? 'border-red-500 border:w-[3px] bg-red-600' :
                             message.appStatus === 'completed' ? 'border-gray-500 border:w-[5px] bg-gray-600' :
@@ -264,12 +264,12 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
 
 
       </Tabs.Content>
-      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-slate1 rounded-b-md outline-none  focus:shadow-black" value="coms" >
-        <div className="mb-4 h-full  text-slate1">
+      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black" value="coms" >
+        <div className="mb-4 h-full  text-[#fafafa]">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-slate11" >
-            <div className="rounded-t bg-slate12 mb-0 p-4 ">
+            <div className="rounded-t bg-[#09090b] mb-0 p-4 ">
               <div className="text-center flex justify-between">
-                <h6 className="text-slate1 text-xl font-bold uppercase px-3 py-2">
+                <h6 className="text-[#fafafa] text-xl font-bold uppercase px-3 py-2">
                   Client Communications
                 </h6>
               </div>
@@ -281,7 +281,7 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
         </div>
 
       </Tabs.Content>
-      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-slate1 rounded-b-md outline-none  focus:shadow-black" value="Upload"  >
+      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black" value="Upload"  >
         <Print finance={finance} />
       </Tabs.Content>
     </Tabs.Root>

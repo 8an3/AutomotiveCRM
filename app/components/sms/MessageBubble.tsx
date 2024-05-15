@@ -1,17 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from 'prop-types';
 import slider from '~/styles/slider.css'
-import secondary from '~/styles/secondary.css'
 import ChatChannel from '~/styles/ChatChannel.css'
-import messageBubblew from '~/styles/messageBubble.css'
 import { type LinksFunction } from '@remix-run/node';
-import styles from '~/styles/messageBubble.css';  // Make sure to import your styles
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
-  { rel: "stylesheet", href: secondary },
   { rel: "stylesheet", href: ChatChannel },
-  { rel: "stylesheet", href: messageBubblew },
 ];
 
 const MessageBubble = ({ message, direction }) => {
@@ -40,8 +35,8 @@ const MessageBubble = ({ message, direction }) => {
     }, [message, hasMedia]); */
 
   const { itemStyle, divStyle } = direction === 'incoming'
-    ? { itemStyle: "inline-block px-0 py-0 pl-10 align-bottom w-full my-1", divStyle: "bg-black w-[55%] rounded-lg text-white m-0 px-1 pl-5 mt-2" }
-    : { itemStyle: " w-full pr-10 justify-self-end my-1", divStyle: "w-[55%] ml-auto my-1 float-right bg-black rounded-lg text-right  text-white pr-5 p-1 mt-2" };
+    ? { itemStyle: "inline-block px-0 py-0 pl-10 align-bottom w-full my-1", divStyle: "bg-black w-[55%] rounded-lg text-[#fafafa] m-0 px-1 pl-5 mt-2" }
+    : { itemStyle: " w-full pr-10 justify-self-end my-1", divStyle: "w-[55%] ml-auto my-1 float-right bg-black rounded-lg text-right  text-[#fafafa] pr-5 p-1 mt-2" };
   //: { itemStyle: " overflow-hidden pr-5 my-26 w-[55%]", divStyle: "bg-myColor-900 my-1 rounded-lg  text-right w-full p-5 pr-12" };
 
   /**<strong>
@@ -94,7 +89,7 @@ const Media = ({ hasFailed, url }) => {
         }
       }}
     >
-      {!url && !hasFailed && <div className="border border-[#3b3b3b] bg-black"></div>}
+      {!url && !hasFailed && <div className="border border-[#262626] bg-black"></div>}
 
 
       {hasFailed && (

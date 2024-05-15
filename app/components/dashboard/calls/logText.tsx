@@ -96,7 +96,7 @@ export default function LogText({ data }) {
   return (
     <RootDialog>
       <DialogTrigger asChild>
-        <Text className="cursor-pointer text-white hover:text-[#02a9ff] target:text-[#02a9ff]" >
+        <Text className="cursor-pointer text-[#fafafa] hover:text-[#02a9ff] target:text-[#02a9ff]" >
           <MessageText />
         </Text>
       </DialogTrigger>
@@ -688,7 +688,7 @@ export default function LogText({ data }) {
   return (
     <RootDialog>
       <DialogTrigger asChild>
-        <Text className="cursor-pointer text-white hover:text-[#02a9ff] target:text-[#02a9ff]" >
+        <Text className="cursor-pointer text-[#fafafa] hover:text-[#02a9ff] target:text-[#02a9ff]" >
           <MessageText />
         </Text>
       </DialogTrigger>

@@ -242,7 +242,7 @@ value = "emails"
             <SelectTrigger className=" mt-2 rounded-[0px] border">
               <SelectValue placeholder="Select an email..." />
             </SelectTrigger>
-            <SelectContent className="bg-white2 dark:bg-black dark:text-white ">
+            <SelectContent className="bg-white2 dark:bg-black dark:text-[#fafafa] ">
               <ScrollArea className="h-[300px] w-[350px] rounded-md  p-4">
                 <SelectGroup>
                   <SelectLabel>Payments </SelectLabel>
@@ -309,7 +309,7 @@ value = "emails"
             <SelectTrigger className="w-full mt-2">
               <SelectValue placeholder="Payments (by default)" />
             </SelectTrigger>
-            <SelectContent className="bg-white2 dark:bg-black dark:text-white ">
+            <SelectContent className="bg-white2 dark:bg-black dark:text-[#fafafa] ">
               <ScrollArea className="h-[400px] w-[350px] rounded-md  p-4">
                 <SelectGroup>
                   <SelectLabel>Payments </SelectLabel>

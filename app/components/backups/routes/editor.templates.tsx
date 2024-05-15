@@ -666,7 +666,7 @@ export function Example({ content, handleUpdate, }: {
               onClick={() => {
 
               }} >
-              <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#3b3b3b]">
+              <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#262626]">
 
                 <div className="flex">
                   <Dialog>
@@ -677,8 +677,8 @@ export function Example({ content, handleUpdate, }: {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[90%] bg-black">
                       <DialogHeader>
-                        <DialogTitle className='text-white'>New Template</DialogTitle>
-                        <DialogDescription className='text-white'>
+                        <DialogTitle className='text-[#fafafa]'>New Template</DialogTitle>
+                        <DialogDescription className='text-[#fafafa]'>
                           Create new templates to send to your leads.
                         </DialogDescription>
                       </DialogHeader>
@@ -1087,14 +1087,14 @@ export function Example({ content, handleUpdate, }: {
                                 <div
                                   className={cn(
                                     "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
-                                    "bg-black text-white transition-all align-center justify-center",
+                                    "bg-black text-[#fafafa] transition-all align-center justify-center",
                                     "sm:sticky sm:top-[120px]",
                                   )}
                                 >
                                   <select
                                     name="clientAtr"
                                     onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                                    className='bg-black border border-white  text-white  focus:border-[#60b9fd] rounded-md p-2 '
+                                    className='bg-black border border-white  text-[#fafafa]  focus:border-[#60b9fd] rounded-md p-2 '
                                   >
                                     <option value="">Client</option>
                                     {Object.entries(clientAtr).map(([title, value]) => (
@@ -1106,7 +1106,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="wantedVehAttr"
                                     onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '   >
+                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '   >
                                     <option value="">Wanted Veh</option>
                                     {Object.entries(wantedVehAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1117,7 +1117,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="tradeVehAttr"
                                     onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '         >
+                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '         >
                                     <option value="">Trade Veh</option>
                                     {Object.entries(tradeVehAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1128,7 +1128,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="salesPersonAttr"
                                     onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '          >
+                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '          >
                                     <option value="">Sales Person</option>
                                     {Object.entries(salesPersonAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1139,7 +1139,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="FandIAttr"
                                     onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
                                     <option value="">F & I Manager</option>
                                     {Object.entries(FandIAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1150,7 +1150,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="dealerInfo"
                                     onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
                                     <option value="">Dealer Info</option>
                                     {Object.entries(dealerInfo).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1161,7 +1161,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="financeInfo"
                                     onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-                                    className='bg-black border border-white  text-white   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
                                     <option value="">Finance Info</option>
                                     {Object.entries(financeInfo).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1174,7 +1174,7 @@ export function Example({ content, handleUpdate, }: {
                                 <div
                                   className={cn(
                                     "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-                                    "bg-black text-white transition-all justify-center",
+                                    "bg-black text-[#fafafa] transition-all justify-center",
                                     // "sm:sticky sm:top-[80px]",
                                   )}
                                 >
@@ -1386,7 +1386,7 @@ export function Example({ content, handleUpdate, }: {
                                         name="clientAtr"
 
                                         onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                                        className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+                                        className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
                                       >
                                         <option value="">Client</option>
                                         {Object.entries(clientAtr).map(([title, value]) => (
@@ -1400,7 +1400,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(wantedVehAttr[event.target.value]);
                                         }}
-                                        className='bg-slate12 border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                                        className='bg-[#09090b] border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                                         <option value="">Wanted Veh</option>
                                         {Object.entries(wantedVehAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1413,7 +1413,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(tradeVehAttr[event.target.value]);
                                         }}
-                                        className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                                        className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                                         <option value="">Trade Veh</option>
                                         {Object.entries(tradeVehAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1426,7 +1426,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(salesPersonAttr[event.target.value]);
                                         }}
-                                        className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
+                                        className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
                                         <option value="">Sales Person</option>
                                         {Object.entries(salesPersonAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1439,7 +1439,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(FandIAttr[event.target.value]);
                                         }}
-                                        className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
+                                        className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
                                         <option value="">F & I Manager</option>
                                         {Object.entries(FandIAttr).map(([title, value]) => (
                                           <option key={title} value={title}>

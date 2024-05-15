@@ -241,7 +241,7 @@ export default function DashboardPage() {
             </TabsList>
             <TabsContent value="overview" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card className='border border-white text-white'>
+                <Card className='border border-white text-[#fafafa]'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Total Dealers
@@ -266,7 +266,7 @@ export default function DashboardPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className='border border-white text-white'>
+                <Card className='border border-white text-[#fafafa]'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Monthly Revenue
@@ -293,7 +293,7 @@ export default function DashboardPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className='border border-white text-white'>
+                <Card className='border border-white text-[#fafafa]'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Sales</CardTitle>
                     <svg
@@ -317,7 +317,7 @@ export default function DashboardPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className='border border-white text-white'>
+                <Card className='border border-white text-[#fafafa]'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Active Now
@@ -346,7 +346,7 @@ export default function DashboardPage() {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 <Card className="col-span-4 border border-white ">
                   <CardHeader>
-                    <CardTitle className='text-white'>Add New Dealer</CardTitle>
+                    <CardTitle className='text-[#fafafa]'>Add New Dealer</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
                     <div className="space-y-6">
@@ -354,41 +354,41 @@ export default function DashboardPage() {
                       <div className="ml-5">
                         <Form method='post' className="space-y-4">
                           <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="email" className='text-white'>Dealer Name</Label>
+                            <Label htmlFor="email" className='text-[#fafafa]'>Dealer Name</Label>
                             <Input type="text" id="email" name="dealerName" />
                           </div>
                           <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="email" className='text-white'>Dealer Phone</Label>
+                            <Label htmlFor="email" className='text-[#fafafa]'>Dealer Phone</Label>
                             <Input type="text" id="email" name="dealerPhone" />
                           </div>
                           <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="email" className='text-white'>Dealer Address</Label>
+                            <Label htmlFor="email" className='text-[#fafafa]'>Dealer Address</Label>
                             <Input type="text" id="email" name="dealerAddress" />
                           </div>
                           <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="email" className='text-white'>Dealer City</Label>
+                            <Label htmlFor="email" className='text-[#fafafa]'>Dealer City</Label>
                             <Input type="text" id="email" name="dealerCity" />
                           </div>
                           <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="email" className='text-white'>Dealer Province</Label>
+                            <Label htmlFor="email" className='text-[#fafafa]'>Dealer Province</Label>
                             <Input type="text" id="email" name="dealerProvince" />
                           </div>
                           <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="email" className='text-white'>Dealer Postal Code</Label>
+                            <Label htmlFor="email" className='text-[#fafafa]'>Dealer Postal Code</Label>
                             <Input type="text" id="email" name="dealerPostal" />
                           </div>
                           <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="email" className='text-white'>Dealer Email</Label>
+                            <Label htmlFor="email" className='text-[#fafafa]'>Dealer Email</Label>
                             <Input type="text" id="email" name="dealerEmail" />
                           </div>
                           <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="email" className='text-white'>Dealer Admin Email</Label>
+                            <Label htmlFor="email" className='text-[#fafafa]'>Dealer Admin Email</Label>
                             <Input type="text" id="email" name="dealerEmailAdmin" />
                           </div>
                           <ButtonLoading
                             size="lg"
                             value='createDealer'
-                            className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff] text-white border border-white"
+                            className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff] text-[#fafafa] border border-white"
                             name="intent"
                             type="submit"
                             isSubmitting={isSubmitting}
@@ -402,7 +402,7 @@ export default function DashboardPage() {
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="col-span-3 border border-white text-white">
+                <Card className="col-span-3 border border-white text-[#fafafa]">
                   <CardHeader>
                     <CardTitle>Recent Sales</CardTitle>
                     <CardDescription>

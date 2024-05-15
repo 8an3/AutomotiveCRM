@@ -381,7 +381,7 @@ export default function EmailClient() {
             onClick={() => fetchMoreEntries()}
             isSubmitting={isSubmitting}
             loadingText="Fetching more emails..."
-            className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff] text-white border-white mx-auto mb-2"
+            className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff] text-[#fafafa] border-white mx-auto mb-2"
           >
             More
           </ButtonLoading>
@@ -530,7 +530,7 @@ export default function EmailClient() {
 
     return (
       <>
-        <div className="!border-b !border-[#3b3b3b]">
+        <div className="!border-b !border-[#262626]">
           <Button
             onClick={() => {
               GetEmailsFromFolder('DRAFT')
@@ -545,11 +545,11 @@ export default function EmailClient() {
             Compose
           </Button>
         </div>
-        <div className="border-b border-[#3b3b3b]">
+        <div className="border-b border-[#262626]">
           <p className="m-2 text-[#fff]"> </p>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
-              <AccordionTrigger className='p-2 text-white'>All Folders</AccordionTrigger>
+              <AccordionTrigger className='p-2 text-[#fafafa]'>All Folders</AccordionTrigger>
               <AccordionContent>
 
                 {labelData.labels.map((item, index) => {
@@ -620,7 +620,7 @@ export default function EmailClient() {
                                   {displayLabelName === 'SOCIAL' && (
                                     <Telegram strokeWidth={1.5} />
                                   )}
-                                  <p className='ml-2 text-white'>{displayLabelName}</p>
+                                  <p className='ml-2 text-[#fafafa]'>{displayLabelName}</p>
                                 </button>
                               </ContextMenuTrigger>
                               <ContextMenuContent className="w-64 bg-white">
@@ -741,7 +741,7 @@ export default function EmailClient() {
             </AccordionItem>
           </Accordion>
           {labelData.labels === folderBeingRenamed ? (
-            <div className='grid grid-cols-1 text-white'>
+            <div className='grid grid-cols-1 text-[#fafafa]'>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-1 items-center gap-4">
                   <Label htmlFor="name" className="text-center">
@@ -1015,14 +1015,14 @@ export default function EmailClient() {
 
   return (
     <>
-      <div className="!border-1 !mx-auto !bg-black flex !w-[95%] !h-[90vh] !border !border-[#3b3b3b] mt-[60px]">
-        <div className="sidebar w-[10%] border-r !border-[#3b3b3b]">
-          <div className="border-b !border-[#3b3b3b]">
+      <div className="!border-1 !mx-auto !bg-black flex !w-[95%] !h-[90vh] !border !border-[#262626] mt-[60px]">
+        <div className="sidebar w-[10%] border-r !border-[#262626]">
+          <div className="border-b !border-[#262626]">
             <LabelList />
           </div>
         </div>
-        <div className="emailList !w-[35%] !border-r !border-[#3b3b3b]">
-          <div className="flex items-center justify-center border-b border-[#3b3b3b]">
+        <div className="emailList !w-[35%] !border-r !border-[#262626]">
+          <div className="flex items-center justify-center border-b border-[#262626]">
             <Tabs defaultValue="Unread" className="m-2 w-[95%]">
               <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger onClick={() => {
@@ -1082,7 +1082,7 @@ export default function EmailClient() {
         </div>
         {openReply === true && (
           <div className="email flex h-full w-[60%]  flex-col">
-            <div className="flex justify-between !border-b !border-[#3b3b3b]">
+            <div className="flex justify-between !border-b !border-[#262626]">
               <div className="!my-2 !ml-2 !flex">
                 <Button
                   onClick={() => {
@@ -1104,7 +1104,7 @@ export default function EmailClient() {
                     onClick={() => {
                       handlesetToUnread(selectedEmail)
                     }}
-                    variant='outline' className='text-white border-white hover:text-[#02a9ff]'>
+                    variant='outline' className='text-[#fafafa] border-white hover:text-[#02a9ff]'>
                     Unread
                   </Button>
                 )}
@@ -1221,7 +1221,7 @@ export default function EmailClient() {
               </div>
             </div>
             {!reply && (
-              <div className="m-2 rounded-md border border-[#3b3b3b]">
+              <div className="m-2 rounded-md border border-[#262626]">
                 <div className="m-2 flex items-center justify-between">
                   <p className="text-bold  text-lg text-[#fff]">
                     {selectedEmail.name}
@@ -1240,17 +1240,17 @@ export default function EmailClient() {
               </div>
             )}
             {reply && (
-              <div className=" justify-center border-b border-[#3b3b3b]">
-                <Input defaultValue={to} name='to' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-white' />
-                <Input defaultValue={subject} name='subject' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-white' />
+              <div className=" justify-center border-b border-[#262626]">
+                <Input defaultValue={to} name='to' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-[#fafafa]' />
+                <Input defaultValue={subject} name='subject' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-[#fafafa]' />
                 <div className='mx-auto mt-2 flex w-[98%]' >
-                  <Input defaultValue={cc} name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-[#1c2024]  text-white' />
-                  <Input defaultValue={bcc} name='bcc' placeholder='bcc' className='text-right mx-auto ml-1 bg-[#1c2024]  text-white' />
+                  <Input defaultValue={cc} name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-[#1c2024]  text-[#fafafa]' />
+                  <Input defaultValue={bcc} name='bcc' placeholder='bcc' className='text-right mx-auto ml-1 bg-[#1c2024]  text-[#fafafa]' />
                 </div>
               </div>
             )}
             {selectedEmail.body && (
-              <div className="!grow  !border-t bg-white border-[#3b3b3b]">
+              <div className="!grow  !border-t bg-white border-[#262626]">
                 <p className="  !text-sm  ">
                   <div className="parent-container">
                     <MyIFrameComponent />
@@ -1259,7 +1259,7 @@ export default function EmailClient() {
               </div>
             )}
             {reply && (
-              <div className="border-l mb-2 items-end justify-end rounded-md border-t border-[#3b3b3b]">
+              <div className="border-l mb-2 items-end justify-end rounded-md border-t border-[#262626]">
 
                 {/*<Textarea value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)} className="m-2 mx-auto h-[200px] w-[98%]" placeholder="Reply to email..." />*/}
                 <EditorTiptapHook onChange={someFunction} />
@@ -1269,7 +1269,7 @@ export default function EmailClient() {
                 <div className="mx-2 flex justify-between">
                   <div className="flex">
                     <select
-                      className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                      className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-[#fafafa] shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                       onChange={handleChange}>
                       <option value="">Select a Template</option>
                       {templates.map((template, index) => (
@@ -1318,10 +1318,10 @@ export default function EmailClient() {
         )}
         {composeEmail === true && (
           <div className="email flex h-full w-[60%]  flex-col">
-            <div className="flex justify-between border-b border-[#3b3b3b]">
+            <div className="flex justify-between border-b border-[#262626]">
               <div className="my-2 flex">
                 <select
-                  className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start ml-2 mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start ml-2 mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-[#fafafa] shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                   onChange={handleChange}>
                   <option value="">Select a Template</option>
                   {templates && templates.filter(template => template.type === 'email').map((template, index) => (
@@ -1365,15 +1365,15 @@ export default function EmailClient() {
                 </Button>
               </div>
             </div>
-            <div className=" justify-center border-b border-[#3b3b3b]">
-              <Input placeholder='To' name='to' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-white' />
-              <Input placeholder='Subject' name='subject' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-white' />
+            <div className=" justify-center border-b border-[#262626]">
+              <Input placeholder='To' name='to' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-[#fafafa]' />
+              <Input placeholder='Subject' name='subject' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-[#fafafa]' />
               <div className='mx-auto mt-2 flex w-[98%]' >
-                <Input name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-[#1c2024]  text-white' />
-                <Input name='bcc' placeholder='bcc' className='text-right mx-auto ml-1 bg-[#1c2024]  text-white' />
+                <Input name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-[#1c2024]  text-[#fafafa]' />
+                <Input name='bcc' placeholder='bcc' className='text-right mx-auto ml-1 bg-[#1c2024]  text-[#fafafa]' />
               </div>
             </div>
-            <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#3b3b3b]">
+            <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#262626]">
 
               <EditorTiptapHook onChange={someFunction} />
 

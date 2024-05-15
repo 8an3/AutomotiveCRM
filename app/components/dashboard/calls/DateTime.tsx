@@ -13,13 +13,11 @@ import {
 } from "~/components/ui/sheet"
 import React, { useState } from 'react';
 import DateTimePicker from 'react-datetime-picker';
-import styles from "~/styles/tailwind.css";
 import { type LinksFunction } from "@remix-run/node";
 import { ClientOnly } from "remix-utils";
 import 'react-clock/dist/Clock.css';
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: styles },
 ];
 
 

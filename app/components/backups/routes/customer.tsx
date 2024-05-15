@@ -57,7 +57,7 @@ export default function CustMaIN() {
   /** <>
         <Sidebar />
         <div className="flex flex-col md:flex-row   ">
-          <div className="w-full md:w-64 bg-slate12 mt-[50px]">
+          <div className="w-full md:w-64 bg-[#09090b] mt-[50px]">
             <Sidebar2 />
           </div>
           <div className="w-full mt-[20px]">

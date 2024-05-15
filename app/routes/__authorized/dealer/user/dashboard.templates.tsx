@@ -1748,7 +1748,7 @@ export default function Shight() {
     },
   })
   const buttonActive = 'bg-white text-black rounded-md p-1 ';
-  const buttonInactive = 'bg-[#121212] text-white hover:text-[#02a9ff] hover:bg-transparent';
+  const buttonInactive = 'bg-[#09090b] text-[#fafafa] hover:text-[#02a9ff] hover:bg-transparent';
 
 
   const handleSetLink = useCallback(() => {
@@ -2294,7 +2294,7 @@ export default function Shight() {
 
   return (
     <>
-      <div className=" mx-auto flex h-[80vh] text-white  ">
+      <div className=" mx-auto flex h-[80vh] text-[#fafafa]  ">
         <Card className={` mx-2 transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'grow' : 'w-[15%]'} `}        >
           <CardHeader onClick={handleCategoryClick} className='cursor-pointer'>
             <CardTitle>Category</CardTitle>
@@ -2369,9 +2369,9 @@ export default function Shight() {
                 {selectedRecord && (
                   <div className="">
                     <div className="m-2 mx-auto w-[95%]   hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
-                      <div className="flex m-2  items-center justify-between p-2 text-white">
+                      <div className="flex m-2  items-center justify-between p-2 text-[#fafafa]">
                         <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
-                        <Button variant='outline' className="cursor-pointer bg-transparent text-white  hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(selectedRecord.content)} >
+                        <Button variant='outline' className="cursor-pointer bg-transparent text-[#fafafa]  hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(selectedRecord.content)} >
                           {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
                           {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
                         </Button>
@@ -2479,7 +2479,7 @@ export default function Shight() {
                       <div
                         className={cn(
                           "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-                          "bg-[#121212] text-white transition-all justify-center",
+                          "bg-[#09090b] text-[#fafafa] transition-all justify-center",
                           // "sm:sticky sm:top-[80px]",
                         )}
                       >
@@ -2502,7 +2502,7 @@ export default function Shight() {
                           <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
                         </button>
 
-                        <Minus color="#121212" strokeWidth={1.5} />
+                        <Minus color="#09090b" strokeWidth={1.5} />
                         <button
                           onClick={handleSetLink}
                           className={editor.isActive("link") ? buttonActive : buttonInactive}
@@ -2651,7 +2651,7 @@ export default function Shight() {
                             toast.message('Helping you become the hulk of sales...')
                           }}
                           loadingText="Loading..."
-                          className="w-auto cursor-pointer border-white bg-transparent text-white hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]"
+                          className="w-auto cursor-pointer border-white bg-transparent text-[#fafafa] hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]"
                         >
                           Save As Template
                         </ButtonLoading>

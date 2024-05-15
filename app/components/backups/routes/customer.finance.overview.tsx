@@ -1263,7 +1263,7 @@ export function Overview({ outletSize }) {
             <h3 className="text-2xl font-thin">Price</h3>
           </div>
 
-          <hr className="solid dark:text-slate1" />
+          <hr className="solid dark:text-[#fafafa]" />
           <div className="flex flex-wrap justify-between  ">
             <p className="basis-2/4 font-thin mt-2 ">MSRP</p>
             <p className="flex basis-2/4 items-end justify-end font-thin mt-2">
@@ -1401,16 +1401,16 @@ export function Overview({ outletSize }) {
           <div className=''>
             <div className='mt-3'>
               <div className="flex main-button-group justify-between ">
-                <Badge className={`button  shadow bg-[#02a9ff] transform focus:-translate-y-1 cursor-pointer  ${mainButton === 'payments' ? 'active bg-black text-slate1' : '-translate-y-1'}`}
+                <Badge className={`button  shadow bg-[#02a9ff] transform focus:-translate-y-1 cursor-pointer  ${mainButton === 'payments' ? 'active bg-black text-[#fafafa]' : '-translate-y-1'}`}
                   onClick={() => handleMainButtonClick('payments')}>
                   Payments
                 </Badge>
-                <Badge className={`button  shadow bg-[#02a9ff] transform target:-translate-y-1  cursor-pointer ${mainButton === 'noTax' ? 'active bg-black text-slate1 -translate-y-1' : ''}`}
+                <Badge className={`button  shadow bg-[#02a9ff] transform target:-translate-y-1  cursor-pointer ${mainButton === 'noTax' ? 'active bg-black text-[#fafafa] -translate-y-1' : ''}`}
                   onClick={() => handleMainButtonClick('noTax')}
                 >
                   No Tax
                 </Badge>
-                <Badge className={`button  shadow bg-[#02a9ff] transform active:-translate-y-1 cursor-pointer ${mainButton === 'customTax' ? 'active bg-black text-slate1' : ''}`}
+                <Badge className={`button  shadow bg-[#02a9ff] transform active:-translate-y-1 cursor-pointer ${mainButton === 'customTax' ? 'active bg-black text-[#fafafa]' : ''}`}
                   onClick={() => handleMainButtonClick('customTax')}
                 >
                   Custom Tax
@@ -1418,14 +1418,14 @@ export function Overview({ outletSize }) {
               </div>
               <div className="flex sub-button-group justify-between mt-2">
 
-                <Badge className={`button  shadow bg-[#02a9ff] transform translate-y-[1px] cursor-pointer ${mainButton === 'withoutOptions' ? 'active bg-black text-slate1' : ''}`}
+                <Badge className={`button  shadow bg-[#02a9ff] transform translate-y-[1px] cursor-pointer ${mainButton === 'withoutOptions' ? 'active bg-black text-[#fafafa]' : ''}`}
                   onClick={() => handleSubButtonClick('withoutOptions')}
                 >
                   W/O Options
                 </Badge>
 
 
-                <Badge className={`button  shadow bg-[#02a9ff] transform translate-y-[1px] cursor-pointer   ${mainButton === 'withOptions' ? 'active bg-black text-slate1' : ''}`}
+                <Badge className={`button  shadow bg-[#02a9ff] transform translate-y-[1px] cursor-pointer   ${mainButton === 'withOptions' ? 'active bg-black text-[#fafafa]' : ''}`}
                   onClick={() => handleSubButtonClick('withOptions')}
                 >
                   W/ Options
@@ -2014,8 +2014,8 @@ export function Overview({ outletSize }) {
                   type="submit" name='intent' value='updateFinance' content="update" className='cursor-pointer' >
                   Update
                 </Button>
-                <Toast.Root open={open} onOpenChange={setOpen} className="bg-[#02a9ff] border border-black text-slate1 rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut">
-                  <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]">
+                <Toast.Root open={open} onOpenChange={setOpen} className="bg-[#02a9ff] border border-black text-[#fafafa] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut">
+                  <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-[#fafafa] text-[15px]">
                     {finance.name}'s Quote Updated.
                   </Toast.Title>
                   <Toast.Description asChild>

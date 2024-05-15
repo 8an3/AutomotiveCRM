@@ -20,7 +20,6 @@ import {
 import Parts from '~/images/parts.png'
 import Quoeimage from '~/images/quote.png'
 import { Input, Button, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, Label, Separator, Badge, RemixNavLinkText, } from "~/components/ui/index"
-import index from '~/styles/index.css'
 import {
   Carousel,
   CarouselContent,
@@ -37,8 +36,10 @@ import {
   TabsList,
   TabsTrigger,
 } from "~/components/ui/tabs"
-import secondary from '~/styles/indexSecondary.css'
 import { GetUser } from "~/utils/loader.server";
+import base from "~/styles/base.css";
+import secondary from '~/styles/indexSecondary.css'
+import index from '~/styles/index.css'
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: index },
@@ -54,10 +55,7 @@ export async function loader({ request }: LoaderArgs) {
   if (dealerName !== 'Dealer Sales Assistant') {
     return redirect('/auth/login')
   }
-  if (email) {
-    let user = await GetUser(email);
-    throw user && redirect("/dealer/quote/Harley-Davidson");
-  };
+  // if (email) {    let user = await GetUser(email);    throw user && redirect("/dealer/quote/Harley-Davidson");  };
 
   return null
 }
@@ -92,10 +90,10 @@ function AlertBox() {
         <div className='m-3 flex items-center justify-center p-3'>
           <AlertCircle color="#ffffff" />
           <div className='ml-3'>
-            <p className='text-white'>
+            <p className='text-[#fafafa]'>
               Heads up!
             </p>
-            <p className='text-white'>
+            <p className='text-[#fafafa]'>
               Beta version of our new CRM is now available! Be some of the first to take advantage of our discounted pricing, limited spots for our beta program.
             </p>
           </div>
@@ -110,19 +108,19 @@ function NewHeader() {
       <div className="mx-auto max-w-2xl py-[55px] ">
 
         <div className="text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-slate1 sm:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight text-[#fafafa] sm:text-6xl">
             Generate vehicle pricing in less than 60 seconds or saving your sales people 125+ mins a day, individually
           </h1>
-          <p className="mt-6 text-lg leading-8 text-slate1">
+          <p className="mt-6 text-lg leading-8 text-[#fafafa]">
             Experience crystal-clear and effortlessly legible displays of weekly, bi-weekly, and monthly payment options, all while receiving a detailed breakdown of every dollar involved in the deal.
           </p>
-          <p className="mt-6 text-lg leading-8 text-slate1">
+          <p className="mt-6 text-lg leading-8 text-[#fafafa]">
             Inquire about a free demo of our new CRM! Garaunteed better results than any other crm on the market. Developed and tested by a team of sales professionals, instead of programmers and developers who never sold a car in their life.
           </p>
           <Form method="post" action="/emails/send/contact" className='mt-5 flex items-center  justify-center'>
-            <Input name="email" placeholder="example@gmail.com" className='mr-2 w-[300px] border border-white bg-black text-white focus:border-[#02a9ff]' />
+            <Input name="email" placeholder="example@gmail.com" className='mr-2 w-[300px] border border-white bg-black text-[#fafafa] focus:border-[#02a9ff]' />
 
-            <Button name='intent' value='demoInquiry' type='submit' className=" ml-2 mr-2 w-[75px]  rounded bg-[#02a9ff]  text-center text-xs font-bold   uppercase  text-white shadow outline-none transition-all duration-150  ease-linear hover:shadow-md focus:outline-none active:bg-black"
+            <Button name='intent' value='demoInquiry' type='submit' className=" ml-2 mr-2 w-[75px]  rounded bg-[#02a9ff]  text-center text-xs font-bold   uppercase  text-[#fafafa] shadow outline-none transition-all duration-150  ease-linear hover:shadow-md focus:outline-none active:bg-black"
             >
               Email
             </Button>
@@ -237,9 +235,9 @@ export function Feature1() {
                   <CardContent className="flex  justify-center rounded-md  bg-myColor-900 p-6">
                     <div className='grid grid-cols-2 items-center justify-between'>
                       <div className='justify-center'>
-                        <h2 className="top-[50%] my-auto text-center text-2xl font-semibold text-slate1">{item.title}</h2>
+                        <h2 className="top-[50%] my-auto text-center text-2xl font-semibold text-[#fafafa]">{item.title}</h2>
                         {item.paragraphs.map((paragraph, i) => (
-                          <p className='text-center text-slate1' key={i}>{paragraph}</p>
+                          <p className='text-center text-[#fafafa]' key={i}>{paragraph}</p>
                         ))}
                       </div>
                       <img alt="logo" width='450' height='450' src={item.image} className='ml-[50px]' />
@@ -250,8 +248,8 @@ export function Feature1() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className='text-slate1' />
-        <CarouselNext className='text-slate1' />
+        <CarouselPrevious className='text-[#fafafa]' />
+        <CarouselNext className='text-[#fafafa]' />
       </Carousel>
     </>
   )
@@ -261,17 +259,17 @@ export function Price() {
     <>
       {/* pricing */}
       <div className='mx-auto mb-[100px] mt-10 grid grid-cols-1 items-center text-center' >
-        <h2 className="mx-auto text-center font-sans text-3xl font-bold text-slate1 sm:mt-0 sm:text-4xl">
+        <h2 className="mx-auto text-center font-sans text-3xl font-bold text-[#fafafa] sm:mt-0 sm:text-4xl">
           Subscription Plan
         </h2>
-        <h3 className='text-2xl text-slate1'>
+        <h3 className='text-2xl text-[#fafafa]'>
           Cancel Anytime with No Penalties. Your Plan Includes Full Access to All Our Features.
         </h3>
-        <h4 className="font-medium text-slate1">
+        <h4 className="font-medium text-[#fafafa]">
           Subscribe Now for Just $19.95 Per Month.
         </h4>
         <a href='https://buy.stripe.com/14k6pTg9J0IV0G4fYZ' target="_blank">
-          <Button type="submit" name='_action' value='subscribe' variant='outline' className=' mx-auto my-2 border-slate1 text-slate1' >
+          <Button type="submit" name='_action' value='subscribe' variant='outline' className=' mx-auto my-2 border-slate1 text-[#fafafa]' >
             Subscribe Now
           </Button>
         </a>
@@ -286,39 +284,39 @@ export function Mission() {
         <CardContent>
 
           <div className=' mx-auto mb-[50px] text-center'>
-            <h2 className="mx-auto text-center font-sans text-3xl font-bold text-white sm:mt-0 sm:text-4xl">
+            <h2 className="mx-auto text-center font-sans text-3xl font-bold text-[#fafafa] sm:mt-0 sm:text-4xl">
               Mission Statement
             </h2>
             <hr className="solid text-black " />
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               Our mission is clear: We aim to empower salespeople everywhere with tools and resources that transcend the traditional approach of relying solely on salesmanship training. Whether it's your first day or your tenth year in sales, our goal is to provide universally accessible solutions that lead to improved sales performance.
             </p>
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               Our commitment goes beyond streamlining sales processes. In development, we're crafting a comprehensive dashboard that significantly reduces the time required to complete customer interactions and schedule follow-ups. This dashboard is designed to seamlessly integrate with various CRM systems, ensuring that you have all the necessary information at your fingertips for well-informed follow-up calls. No more navigating between pages or seeking additional resources; everything you need will be readily available to enhance your efficiency.
             </p>
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               We firmly reject the notion of relying on vague or mystical 'secrets' to enhance sales performance, and we challenge the idea that only seasoned oratory experts can excel in sales. There is no mystical formula to sales success; it's a matter of equipping individuals with the right knowledge at the right time in their sales journey.
             </p>
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               We believe that every person has the potential to become a highly effective sales professional. This is not an abstract hope or wishful thinking; it's a verifiable fact. We've seen remarkable transformations, even among individuals who have faced significant challenges, such as those with criminal backgrounds. Instead of treating them with harsh judgment, we've taken a different approach, guiding them toward sales excellence and, in turn, improving various aspects of their lives.
             </p>
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               Our approach stands in stark contrast to traditional sales presentations where the speaker hopes that attendees will absorb even a small fraction of their teachings. We don't aspire for a handful out of a thousand to improve. Our mission is to empower each and every person to enhance their sales skills. We firmly believe that, given the right tools and guidance, anyone can become a successful salesperson.
             </p>
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               While we could charge premium prices similar to CRM systems once fully developed, our commitment to accessibility remains unwavering. We understand that affordability should not be a barrier to access the tools needed for continuous growth. Every salesperson deserves to have the resources required for success, a principle that drives us to offer our solution at an accessible price point.
             </p>
 
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               We are committed to a simple principle: We won't offer anything that hasn't undergone rigorous testing on the sales floor. We understand that our real-world experience as current sales professionals provides our tools with a unique advantage over others in the industry.
             </p>
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               While exceptional sales coaches exist, the passage of time can sometimes lead to a disconnect from the practical realities of the sales process. We're not suggesting that you should forego further sales training; in fact, we recognize the immense value that proper training can bring when absorbed effectively.
             </p>
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               What we promise is this: We won't present you with tools or strategies that we haven't personally used ourselves. Our commitment is rooted in the belief that only by testing and validating every aspect of our solutions in the real sales environment can we truly deliver tools that work effectively for you.
             </p>
-            <p className="m-auto mt-5 text-left text-white">
+            <p className="m-auto mt-5 text-left text-[#fafafa]">
               Although we currently focus primarily on the power sports industry, our vision extends far beyond. We plan to expand into the automotive industry and beyond, with a singular purpose: to assist salespeople everywhere. Our mission is to empower you and every other sales professional out there to reach new heights in your career.
             </p>
           </div>
@@ -394,7 +392,7 @@ export function Brands() {
   return (
     <div className='mx-5'>
 
-      <h2 className="mx-auto mb-6 max-w-lg font-sans text-3xl font-bold tracking-tight text-slate1 sm:text-4xl sm:leading-none">
+      <h2 className="mx-auto mb-6 max-w-lg font-sans text-3xl font-bold tracking-tight text-[#fafafa] sm:text-4xl sm:leading-none">
         Current Brands with Ongoing Additions.<br className="hidden sm:block" />
       </h2>
       <Card className='mx-auto w-[90%] bg-slate1'>
@@ -435,11 +433,11 @@ export function FAQ() {
   return (
     <div className='mx-auto mt-[100px] w-[95vw]'>
       <div className="mt-5">
-        <h2 className="mx-auto text-center font-sans text-3xl font-bold text-slate1 sm:mt-0 sm:text-4xl">
+        <h2 className="mx-auto text-center font-sans text-3xl font-bold text-[#fafafa] sm:mt-0 sm:text-4xl">
           FAQ
         </h2>
       </div>
-      <Accordion type="single" collapsible className="w-full text-white">
+      <Accordion type="single" collapsible className="w-full text-[#fafafa]">
         {faqItems.map((item, index) => (
           <AccordionItem key={index} value={index}>
             <AccordionTrigger>{item.question}</AccordionTrigger>
@@ -464,9 +462,9 @@ export function FAQ() {
                   <CardContent className="flex  justify-center rounded-md  bg-myColor-900 p-6">
 
                     <div>
-                      <h2 className="text-2xl font-semibold text-slate1">{item.question}</h2>
-                      <hr className='mb-3 text-slate1' />
-                      <p className='text-slate1'>{item.answer}</p>
+                      <h2 className="text-2xl font-semibold text-[#fafafa]">{item.question}</h2>
+                      <hr className='mb-3 text-[#fafafa]' />
+                      <p className='text-[#fafafa]'>{item.answer}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -474,8 +472,8 @@ export function FAQ() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className='text-slate1' />
-        <CarouselNext className='text-slate1' />
+        <CarouselPrevious className='text-[#fafafa]' />
+        <CarouselNext className='text-[#fafafa]' />
       </Carousel>
     </div>
 
@@ -529,8 +527,8 @@ function NewSection() {
           <div className='p-1 mx-auto h-[900px] w-[550px] rounded-md border border-white cursor-pointer hover:border-[#02a9ff]' onClick={() => {
             setSales(true)
           }}>
-            <h1 className='mt-[40px] text-center text-white  bold text-4xl'>Sales People</h1>
-            <Separator className='text-white' />
+            <h1 className='mt-[40px] text-center text-[#fafafa]  bold text-4xl'>Sales People</h1>
+            <Separator className='text-[#fafafa]' />
             <p className='px-[40px] py-[15px] text-center  text-myColor-200 '>
               Experience the only CRM on the market designed to empower every salesperson, regardless of your current CRM provider. While we may not have every integration yet, if your current provider isn't on our list, sign up, and we'll prioritize integrating it promptly.
             </p>
@@ -551,11 +549,11 @@ function NewSection() {
             </p>
           </div>
 
-          <div className='p4 mx-auto h-[900px] w-[550px] cursor-pointer   rounded-md border border-white text-white hover:border-[#02a9ff]'
+          <div className='p4 mx-auto h-[900px] w-[550px] cursor-pointer   rounded-md border border-white text-[#fafafa] hover:border-[#02a9ff]'
             onClick={() => {
               setDealer(true)
             }}>
-            <h1 className='mt-[40px] text-center text-white  bold text-4xl'>For Dealers</h1>
+            <h1 className='mt-[40px] text-center text-[#fafafa]  bold text-4xl'>For Dealers</h1>
             <div className="text-center">
               <p className="px-8 py-5 text-myColor-200">
                 Increase your revenue and streamline training for new hires by using our CRM. It's not just easier for your employees but also provides an excellent way to present and upsell to every customer.
@@ -802,7 +800,7 @@ function Footer() {
   return (
     <>
       <div className="mt-[100px] ">
-        <div className='bg-slate11 text-white'>
+        <div className='bg-slate11 text-[#fafafa]'>
           <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
             <p>Dealer Sales Assistant</p>
           </div>

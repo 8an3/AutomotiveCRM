@@ -335,7 +335,7 @@ export default function WebleadsTable() {
   return (
     <div className="w-[100%] justify-center mx-auto ">
       <div className="rounded-md border border-slate1 ">
-        <Table className='w-full text-slate1 border-slate1 overflow-x-auto'>
+        <Table className='w-full text-[#fafafa] border-slate1 overflow-x-auto'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -364,7 +364,7 @@ export default function WebleadsTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className='p-4 text-slate1 bg-slate12 capitalize cursor-pointer hover:text-[#02a9ff]'
+                  className='p-4 text-[#fafafa] bg-[#09090b] capitalize cursor-pointer hover:text-[#02a9ff]'
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -381,7 +381,7 @@ export default function WebleadsTable() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-slate1 bg-slate12 capitalize cursor-pointer hover:text-[#02a9ff]"
+                  className="h-24 text-center text-[#fafafa] bg-[#09090b] capitalize cursor-pointer hover:text-[#02a9ff]"
                 >
                   No results.
                 </TableCell>
@@ -391,7 +391,7 @@ export default function WebleadsTable() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-slate1">
+        <div className="flex-1 text-sm text-[#fafafa]">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
@@ -401,7 +401,7 @@ export default function WebleadsTable() {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="text-slate1 border-slate1"
+            className="text-[#fafafa] border-slate1"
           >
             Previous
           </Button>
@@ -409,7 +409,7 @@ export default function WebleadsTable() {
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            className="text-slate1 border-slate1"
+            className="text-[#fafafa] border-slate1"
 
             disabled={!table.getCanNextPage()}
           >

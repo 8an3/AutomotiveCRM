@@ -1614,7 +1614,7 @@ export default function Shight() {
 
   return (
     <>
-      <div className=" mx-auto flex h-[80vh] text-white  ">
+      <div className=" mx-auto flex h-[80vh] text-[#fafafa]  ">
         <Card className={` mx-2 transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'grow' : 'w-[15%]'} `}        >
           <CardHeader onClick={handleCategoryClick} className='cursor-pointer'>
             <CardTitle>Category</CardTitle>
@@ -1688,7 +1688,7 @@ export default function Shight() {
                 {selectedRecord && (
                   <div className="">
                     <div className="m-2 mx-auto w-[95%]   hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
-                      <div className="m-2  items-center justify-between p-2 text-white">
+                      <div className="m-2  items-center justify-between p-2 text-[#fafafa]">
                         <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
                         <div className='flex justify-between text-[16px]  text-[#fff]'>
                           <p className='text-[20px]'>{selectedRecord.name}</p>
@@ -1696,7 +1696,7 @@ export default function Shight() {
                         <p className='mt-5'>{selectedRecord.content}</p>
                         <div className='mt-5 flex  items-center justify-between text-[#fff]'>
                           <div className='flex' >
-                            <Button variant='outline' className="cursor-pointer bg-transparent text-white  hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(selectedRecord.content)} >
+                            <Button variant='outline' className="cursor-pointer bg-transparent text-[#fafafa]  hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(selectedRecord.content)} >
 
                               {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
                               {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
@@ -1721,7 +1721,7 @@ export default function Shight() {
                                 toast.message('Helping you become the hulk of sales...')
                               }}
                               loadingText="Loading..."
-                              className="w-auto cursor-pointer border-white bg-transparent text-white hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]"
+                              className="w-auto cursor-pointer border-white bg-transparent text-[#fafafa] hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]"
                             >
                               Save As Template
                             </ButtonLoading>
@@ -1743,15 +1743,15 @@ export default function Shight() {
 
 /**
  *   <>
-      <div className=" mx-auto flex h-[85%] w-[95%] border border-[#3b3b3b]">
-        <div className="sidebar w-[25%] border-r border-[#3b3b3b]">
-          <div className="border-b border-[#3b3b3b]">
+      <div className=" mx-auto flex h-[85%] w-[95%] border border-[#262626]">
+        <div className="sidebar w-[25%] border-r border-[#262626]">
+          <div className="border-b border-[#262626]">
             <p className="text-bold  p-2 text-lg text-[#fff]">
               Category
             </p>
           </div>
-          <div className="border-b border-[#3b3b3b]">
-            <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#3b3b3b]">
+          <div className="border-b border-[#262626]">
+            <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#262626]">
               {scripts.reduce((unique, mail) => {
                 if (!unique.some(item => item.category === mail.category)) {
                   unique.push(mail);
@@ -1766,7 +1766,7 @@ export default function Shight() {
               ))}
 
             </div>
-            <p className="text-sm text-white p-2">
+            <p className="text-sm text-[#fafafa] p-2">
               Your ability to close increases with the amount of tools at your
               disposal. A mechanic without a tire iron wouldnt be able to change
               a tire. So why dont more sales people take better care of their
@@ -1774,8 +1774,8 @@ export default function Shight() {
             </p>
           </div>
         </div>
-        <div className="emailList w-[25%] border-r border-[#3b3b3b]">
-          <div className="border-b border-[#3b3b3b]">
+        <div className="emailList w-[25%] border-r border-[#262626]">
+          <div className="border-b border-[#262626]">
             <p className="text-bold  p-2 text-lg text-[#fff]">
               Sub-category
             </p>
@@ -1791,16 +1791,16 @@ export default function Shight() {
           </div>
         </div>
         <div className="email flex h-full w-[50%]  flex-col">
-          <div className="border-b border-[#3b3b3b]">
+          <div className="border-b border-[#262626]">
             <p className="text-bold  p-2 text-lg text-[#fff]">
               Script
             </p>
           </div>
-          <div className="flex justify-between  border-[#3b3b3b]">
+          <div className="flex justify-between  border-[#262626]">
             {selectedRecord && (
               <div className="h-auto max-h-[950px] overflow-y-auto">
                 <div className="m-2 mx-auto w-[95%]   hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
-                  <div className="m-2  items-center justify-between p-2 text-white">
+                  <div className="m-2  items-center justify-between p-2 text-[#fafafa]">
 
                     <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
 
@@ -1811,7 +1811,7 @@ export default function Shight() {
                     <p className='mt-5'>{selectedRecord.content}</p>
                     <div className='flex justify-between  text-[#fff] mt-5 items-center'>
                       <div className='flex' >
-                        <button className="cursor-pointer text-white" onClick={() => copyText(selectedRecord.content)} >
+                        <button className="cursor-pointer text-[#fafafa]" onClick={() => copyText(selectedRecord.content)} >
                           <Copy strokeWidth={1.5} />
                         </button>
                         {copiedText === selectedRecord.content && <div>Copied!</div>}
@@ -1835,7 +1835,7 @@ export default function Shight() {
                             toast.message('Helping you become the hulk of sales...')
                           }}
                           loadingText="Loading..."
-                          className="w-auto cursor-pointer  hover:text-[#02a9ff] hover:border-[#02a9ff] text-white border-white"
+                          className="w-auto cursor-pointer  hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border-white"
                         >
                           Save As Template
                         </ButtonLoading>
@@ -2065,13 +2065,13 @@ export default function Shight() {
   };
   return (
     <>
-      <div className="border-1 mx-auto flex h-[95%] w-[95%] border border-[#3b3b3b]">
-        <div className="sidebar w-[25%] border-r border-[#3b3b3b]">
-          <div className="border-b border-[#3b3b3b]">
+      <div className="border-1 mx-auto flex h-[95%] w-[95%] border border-[#262626]">
+        <div className="sidebar w-[25%] border-r border-[#262626]">
+          <div className="border-b border-[#262626]">
             <CategoryList scripts={scripts} />
           </div>
         </div>
-        <div className="emailList w-[25%] border-r border-[#3b3b3b]">
+        <div className="emailList w-[25%] border-r border-[#262626]">
           <div className=" ">
             <div>
               <Input name="search" placeholder="Search" className='m-2 mx-auto w-[95%] border border-[#ffffff4d] bg-[#000] text-[#fff] focus:border-[#02a9ff]' />
@@ -2080,7 +2080,7 @@ export default function Shight() {
           </div>
         </div>
         <div className="email flex h-full w-[50%]  flex-col">
-          <div className="flex justify-between border-b border-[#3b3b3b]">
+          <div className="flex justify-between border-b border-[#262626]">
 
             <ScriptsList scripts={scripts} />
           </div>

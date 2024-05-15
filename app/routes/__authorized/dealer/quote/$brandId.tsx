@@ -219,8 +219,8 @@ export default function Quote() {
                                     name="firstName"
                                     value={formData.firstName}
                                     className={`input
-                                             ${validity.firstName === true ? 'border-green11 bg-green11 text-white' : ' '}
-                                             ${validity.firstName === false ? 'border-red11 bg-red11 text-white' : ''}
+                                             ${validity.firstName === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
+                                             ${validity.firstName === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
                                               `}
                                     onChange={(e) => handleChange('firstName', e.target.value)}
                                 />
@@ -243,8 +243,8 @@ export default function Quote() {
                                     name="lastName"
                                     value={formData.lastName}
                                     className={`input
-                                            ${validity.lastName === true ? 'border-green11 bg-green11 text-white' : ''}
-                                            ${validity.lastName === false ? 'border-red11 bg-red11 text-white' : ''}
+                                            ${validity.lastName === true ? 'border-green11 bg-green11 text-[#fafafa]' : ''}
+                                            ${validity.lastName === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
                                             `}
                                     onChange={(e) => handleChange('lastName', e.target.value)}
                                 />
@@ -262,9 +262,9 @@ export default function Quote() {
                             </div>
                             <div className="grid w-full max-w-md items-center gap-1.5">
                                 <Label htmlFor="email">Phone Number</Label>
-                                <div className={`border border-bg-[#121212] items-center flex rounded-md w-full
-                                            ${validity.phone === true ? 'border-green11 bg-green11 text-white' : ''}
-                                            ${validity.phone === false ? 'border-red11 bg-red11 text-white' : ''}
+                                <div className={`border border-bg-[#09090b] items-center flex rounded-md w-full
+                                            ${validity.phone === true ? 'border-green11 bg-green11 text-[#fafafa]' : ''}
+                                            ${validity.phone === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
                                              `}>
                                     <Button variant='ghost' disabled  >
                                         +1
@@ -297,8 +297,8 @@ export default function Quote() {
                                     name="email"
                                     value={formData.email}
                                     className={`input
-                                            ${validity.email === true ? 'border-green11 bg-green11 text-white' : ' '}
-                                            ${validity.email === false ? 'border-red11 bg-red11 text-white' : ''}
+                                            ${validity.email === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
+                                            ${validity.email === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
                                              `}
                                     onChange={(e) => handleChange('email', e.target.value)}
                                 />
@@ -339,12 +339,12 @@ export default function Quote() {
                                 </Label>
                                 <select
                                     name='model'
-                                    className={` w-full placeholder:text-blue-300  mx-auto  h-9 cursor-pointer rounded-md border  px-3 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none  focus:border-[#60b9fd]
+                                    className={` w-full placeholder:text-blue-300  mx-auto bg-white text-black hover:bg-transparent h-9 cursor-pointer rounded-md border  px-3 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none  focus:border-[#60b9fd]
                                     ${modelError === false && validity.model === false ? 'border-black bg-white text-black' : ' '}
 
-                                    ${modelError === true ? 'border-red11 bg-red11 text-white' : ' '}
-                                     ${validity.model === true && modelError === false ? 'border-green11 bg-green11 text-white' : ' '}
-                                     ${validity.model === false ? 'border-red11 bg-red11 text-white' : ''}
+                                    ${modelError === true ? 'border-red11 bg-red11 text-[#fafafa]' : ' '}
+                                     ${validity.model === true && modelError === false ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
+                                     ${validity.model === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
                                      `}
                                     onChange={(e) => {
                                         SetModelError(false);
@@ -381,8 +381,8 @@ export default function Quote() {
                                         name="year"
                                         value={formData.year}
                                         className={`input
-                                             ${validity.year === true ? 'border-green11 bg-green11 text-white' : ' '}
-                                             ${validity.year === false ? 'border-red11 bg-red11 text-white' : ''}
+                                             ${validity.year === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
+                                             ${validity.year === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
                                               `}
                                         onChange={(e) => handleChange('year', e.target.value)}
                                     />
@@ -418,7 +418,7 @@ export default function Quote() {
                                 <ButtonLoading
                                     size="lg"
                                     type="submit"
-                                    className="w-auto cursor-pointer ml-auto mt-5"
+                                    className="w-auto cursor-pointer ml-auto mt-5 bg-white hover:bg-transparent"
                                     name="intent"
                                     value="submit"
                                     isSubmitting={isSubmitting}

@@ -716,7 +716,7 @@ export function EquipBMW() {
                     <>
                         <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
                         <select name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Light White</option>
                             <option value="1420">White / Blue / Red</option>
@@ -915,7 +915,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1100">White / Blue / Red</option>
                             <option value="1">Black Storm Metallic</option>
@@ -1098,7 +1098,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Alpine White</option>
                             <option value="620">Black Storm Metallic</option>
@@ -1209,7 +1209,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Alpine White</option>
                             <option value="620">Black Storm Metallic</option>
@@ -1350,7 +1350,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Cosmic Black</option>
                             <option value="110">Kalamata</option>
@@ -1511,7 +1511,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Alpine White</option>
                             <option value="620">Black Storm Metallic</option>
@@ -1660,7 +1660,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option value="">Select Color</option>
                             <option value="620">Black Storm</option>
                             <option value="860">Manhattan </option>
@@ -1748,7 +1748,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option value="">Select Color</option>
                             <option value="620">Black Storm</option>
                             <option value="435">Manhattan </option>
@@ -1836,7 +1836,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option value="">Select Color</option>
                             <option value="1">Black Storm</option>
                             <option value="710">Manhattan </option>
@@ -1910,7 +1910,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option value="">Select Color</option>
                             <option value="1">Black Storm</option>
                             <option value="985">Manhattan </option>
@@ -1973,7 +1973,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Ice Grey</option>
                             <option value="620">Racing Blue</option>
@@ -2166,7 +2166,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="3955">M Motorsport</option>
                             <option value="460">Blue Storm</option>
@@ -2321,7 +2321,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Black Storm Metallic</option>
                             <option value="390">Racing Blue / Light White / Racing Red</option>
@@ -2466,7 +2466,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Cosmic Black</option>
                             <option value="145">Racing Red</option>
@@ -2480,7 +2480,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="285">Mars Red</option>
                             <option value="1">Black Storm Metallic</option>
@@ -2663,7 +2663,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="325">Mars Red</option>
                             <option value="1">Black Storm Metallic</option>
@@ -2806,7 +2806,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="455">Mars Red</option>
                             <option value="1">Black Storm Metallic</option>
@@ -2928,7 +2928,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option value="455">Mars Red</option>
                             <option value="1">Black Storm Metallic</option>
                             <option value="455">Manhatten Matte</option>
@@ -3072,7 +3072,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Black Storm</option>
                             <option value="1280">Aluminum - 719</option>
@@ -3168,7 +3168,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Mineral Grey </option>
                             <option value="2070">Aluminum - 719</option>
@@ -3286,7 +3286,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Granite Grey </option>
                             <option value="210">Manhatten Matte</option>
@@ -3402,7 +3402,7 @@ export function EquipBMW() {
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
                         <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border bg-transparent px-3
-     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-slate1">
+     py-2 text-sm shadow-sm  focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50 dark:bg-black dark:text-[#fafafa]">
                             <option >Select Color</option>
                             <option value="1">Light White</option>
                             <option value="210">Imperial Blue</option>

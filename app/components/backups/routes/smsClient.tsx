@@ -253,7 +253,7 @@ export default function ChatApp() {
 
   if (loggedIn) {
     return (
-      <div className="chat-window-wrapper text-white">
+      <div className="chat-window-wrapper text-[#fafafa]">
         <div className="chat-window-container">
           <div style={{ display: "flex", alignItems: "center", padding: 0 }}>
             <div
@@ -307,11 +307,11 @@ export default function ChatApp() {
   }
 
   return <Loader2 className="animate-spin" />;
-}<div className="bg-black border border-[#3b3b3b] mt-[60px]">
-      <div className="w-[30%] border !border-[#3b3b3b]" >
+}<div className="bg-black border border-[#262626] mt-[60px]">
+      <div className="w-[30%] border !border-[#262626]" >
 
       </div>
-      <div className="w-[70%] border !border-[#3b3b3b]">
+      <div className="w-[70%] border !border-[#262626]">
 
       </div>
     </div> */

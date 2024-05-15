@@ -990,7 +990,7 @@ export default function UnitPicker({ finance, records }) {
           placeholder="Search all columns..."
         />
         <Select
-          className='text-white border-white focus:border-[#02a9ff] ml-2'
+          className='text-[#fafafa] border-white focus:border-[#02a9ff] ml-2'
           onValueChange={(value) => {
             const item = DeliveriesList.find((i) => i.key === value);
 
@@ -1000,7 +1000,7 @@ export default function UnitPicker({ finance, records }) {
             }
           }}
         >
-          <SelectTrigger className="w-auto text-white border-white focus:border-[#02a9ff]  ml-2">
+          <SelectTrigger className="w-auto text-[#fafafa] border-white focus:border-[#02a9ff]  ml-2">
             <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
           </SelectTrigger>
           <SelectContent className='bg-white text-black'>
@@ -1014,13 +1014,13 @@ export default function UnitPicker({ finance, records }) {
 
 
 
-        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate12 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
         >
           Clear
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto text-white border-white">
+            <Button variant="outline" className="ml-auto text-[#fafafa] border-white">
               Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -1045,13 +1045,13 @@ export default function UnitPicker({ finance, records }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border border-[#3b3b3b] ">
-        <Table className='w-full overflow-x-auto border-[#3b3b3b] text-slate1'>
+      <div className="rounded-md border border-[#262626] ">
+        <Table className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className=' border-[#3b3b3b]'
+                className=' border-[#262626]'
               >
                 {headerGroup.headers.map((header) => {
                   return (
@@ -1075,7 +1075,7 @@ export default function UnitPicker({ finance, records }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className='cursor-pointer border-[#3b3b3b] bg-slate12 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                  className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                   onClick={() => handleRowClick(row)}
 
                 >
@@ -1094,7 +1094,7 @@ export default function UnitPicker({ finance, records }) {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 cursor-pointer bg-slate12 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                  className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
 
                 >
                   No results.
@@ -1118,7 +1118,7 @@ export default function UnitPicker({ finance, records }) {
       <input name='stockNum' defaultValue={selectedModel?.stockNumber} />
 
       < div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-white">
+        <div className="flex-1 text-sm text-[#fafafa]">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
@@ -1126,7 +1126,7 @@ export default function UnitPicker({ finance, records }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-white border-white"
+            className="text-[#fafafa] border-white"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -1135,7 +1135,7 @@ export default function UnitPicker({ finance, records }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-white border-white"
+            className="text-[#fafafa] border-white"
 
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}

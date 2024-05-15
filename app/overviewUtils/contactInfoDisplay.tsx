@@ -203,7 +203,7 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
                       <select
                         name='timeToContact'
                         placeholder='Best Time To Contact'
-                        className="mx-auto mt-3 w-2/3  border-black cursor-pointer rounded border-1 ml-2 mr-2 bg-slate1 px-3 py-3 text-sm text-slate12 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                        className="mx-auto mt-3 w-2/3  border-black cursor-pointer rounded border-1 ml-2 mr-2 bg-slate1 px-3 py-3 text-sm text-[#fafafa] placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                         <option value="na">Best Time To Contact</option>
                         <option value="Morning">Morning</option>
                         <option value="Afternoon">Afternoon</option>
@@ -217,7 +217,7 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
                       </label>
                       <select
                         name='typeOfContact'
-                        className='w-2/3  mx-auto  text-xs  mb-2 cursor-pointer rounded border-1 border-black focus:border-[#60b9fd] bg-slate1 text-slate12  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]'>
+                        className='w-2/3  mx-auto  text-xs  mb-2 cursor-pointer rounded border-1 border-black focus:border-[#60b9fd] bg-slate1 text-[#fafafa]  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]'>
                         <option value="">Contact Method</option>
                         <option value="Phone">Phone</option>
                         <option value="InPerson">In-Person</option>

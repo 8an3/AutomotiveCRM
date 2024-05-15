@@ -88,9 +88,9 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
       <Dialog.Root open={open}  >
         <Dialog.Portal>
           <Form method='post'>
-            <Dialog.Overlay className="z-50 bg-background/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
+            <Dialog.Overlay className="z-50 bg-[#09090b]/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
             <Dialog.Content className="z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y-
-             md:w-[350px] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate1 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none text-slate12 bg-slate1">
+             md:w-[350px] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate1 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none text-[#fafafa] bg-slate1">
               <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
                 Add Client
               </Dialog.Title>

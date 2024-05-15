@@ -220,17 +220,17 @@ export default function Index() {
 
       <div className='grid grid-cols-2 justify-between mr-8 ml-8'>
         <Form method="post" encType="multipart/form-data" className='items-center'>
-          <h1 className='text-white mt-5' style={{ textAlign: 'center' }}>Import Leads - CSV</h1>
-          <p className='text-white'>Part 1 - Finance </p>
-          <input type='file' accept=".csv" name="selected_csv" className='text-white border-white' />
-          <Button disabled type="submit" className="btn btn-sm text-white border-white  border py-2 px-3  mt-2">
+          <h1 className='text-[#fafafa] mt-5' style={{ textAlign: 'center' }}>Import Leads - CSV</h1>
+          <p className='text-[#fafafa]'>Part 1 - Finance </p>
+          <input type='file' accept=".csv" name="selected_csv" className='text-[#fafafa] border-white' />
+          <Button disabled type="submit" className="btn btn-sm text-[#fafafa] border-white  border py-2 px-3  mt-2">
             UPLOAD CSV
           </Button>
         </Form>
         <div className='mt-5 mb-5' style={{ textAlign: 'center' }}>
-          <h1 className='text-white' style={{ marginBottom: 10 }}>Export Leads - CSV</h1>
-          <p className='text-white'>Part 1 - Finance </p>
-          <Button onClick={() => Click1()} className="btn btn-sm text-white border-white border py-2 px-3 rounded-md mb-5  mt-2">
+          <h1 className='text-[#fafafa]' style={{ marginBottom: 10 }}>Export Leads - CSV</h1>
+          <p className='text-[#fafafa]'>Part 1 - Finance </p>
+          <Button onClick={() => Click1()} className="btn btn-sm text-[#fafafa] border-white border py-2 px-3 rounded-md mb-5  mt-2">
             DOWNLOAD CSV
           </Button>
         </div>
@@ -240,17 +240,17 @@ export default function Index() {
 
       <div className='grid grid-cols-2 justify-between mr-8 ml-8'>
         <Form method="post" encType="multipart/form-data" className='items-center'>
-          <h1 className='text-white mt-5' style={{ textAlign: 'center' }}>Import Leads - CSV</h1>
-          <p className='text-white'>Part 2 - Dash Info </p>
-          <input type='file' accept=".csv" name="selected_csv" className='text-white border-white' />
-          <Button disabled type="submit" className="btn btn-sm text-white border-white  border py-2 px-3  mt-2">
+          <h1 className='text-[#fafafa] mt-5' style={{ textAlign: 'center' }}>Import Leads - CSV</h1>
+          <p className='text-[#fafafa]'>Part 2 - Dash Info </p>
+          <input type='file' accept=".csv" name="selected_csv" className='text-[#fafafa] border-white' />
+          <Button disabled type="submit" className="btn btn-sm text-[#fafafa] border-white  border py-2 px-3  mt-2">
             UPLOAD CSV
           </Button>
         </Form>
         <div className='mt-5 mb-5' style={{ textAlign: 'center' }}>
-          <h1 className='text-white' style={{ marginBottom: 10 }}>Export Leads - CSV</h1>
-          <p className='text-white'>Part 2 - Dash Info </p>
-          <Button onClick={() => Click1()} className="btn btn-sm text-white border-white border py-2 px-3 rounded-md mb-5  mt-2">
+          <h1 className='text-[#fafafa]' style={{ marginBottom: 10 }}>Export Leads - CSV</h1>
+          <p className='text-[#fafafa]'>Part 2 - Dash Info </p>
+          <Button onClick={() => Click1()} className="btn btn-sm text-[#fafafa] border-white border py-2 px-3 rounded-md mb-5  mt-2">
             DOWNLOAD CSV
           </Button>
         </div>
@@ -259,17 +259,17 @@ export default function Index() {
 
       <div className='grid grid-cols-2 justify-between mr-8 ml-8'>
         <Form method="post" encType="multipart/form-data" className='items-center'>
-          <h1 className='text-white mt-5' style={{ textAlign: 'center' }}>Import Leads - CSV</h1>
-          <p className='text-white'>Part 3 - Clientfile Info</p>
-          <input type='file' accept=".csv" name="selected_csv" className='text-white border-white' />
-          <Button disabled type="submit" className="btn btn-sm text-white border-white  border py-2 px-3  mt-2">
+          <h1 className='text-[#fafafa] mt-5' style={{ textAlign: 'center' }}>Import Leads - CSV</h1>
+          <p className='text-[#fafafa]'>Part 3 - Clientfile Info</p>
+          <input type='file' accept=".csv" name="selected_csv" className='text-[#fafafa] border-white' />
+          <Button disabled type="submit" className="btn btn-sm text-[#fafafa] border-white  border py-2 px-3  mt-2">
             UPLOAD CSV
           </Button>
         </Form>
         <div className='mt-5 mb-5' style={{ textAlign: 'center' }}>
-          <h1 className='text-white' style={{ marginBottom: 10 }}>Export Leads - CSV</h1>
-          <p className='text-white'>Part 3 - Clientfile Info </p>
-          <Button onClick={() => Click1()} className="btn btn-sm text-white border-white border py-2 px-3 rounded-md mb-5 mt-2">
+          <h1 className='text-[#fafafa]' style={{ marginBottom: 10 }}>Export Leads - CSV</h1>
+          <p className='text-[#fafafa]'>Part 3 - Clientfile Info </p>
+          <Button onClick={() => Click1()} className="btn btn-sm text-[#fafafa] border-white border py-2 px-3 rounded-md mb-5 mt-2">
             DOWNLOAD CSV
           </Button>
         </div>

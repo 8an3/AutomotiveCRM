@@ -86,7 +86,7 @@ export default function Sidebar(user, email) {
             <Menu size={32} color="#fff" strokeWidth={1.5} />
           </div>
         </SheetTrigger>
-        <SheetContent side='right' className='bg-[#121212] w-full md:w-[50%] overflow-y-auto' >
+        <SheetContent side='right' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto text-[#f9f9f9]' >
           <Tabs defaultValue="User" className="w-full mx-auto justify-center">
             <TabsList className='mx-auto w-full'>
               <TabsTrigger value="User">User</TabsTrigger>
@@ -287,10 +287,10 @@ export default function Sidebar(user, email) {
                 <div className="border-none p-0">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                      <h2 className="text-2xl font-thin text-white">
+                      <h2 className="text-2xl font-thin text-[#fafafa]">
                         Contact
                       </h2>
-                      <p className="text-sm dark:text-black text-white">
+                      <p className="text-sm dark:text-black text-[#fafafa]">
                         If a feature could help you sell more, but we dont have it? Let us
                         know, we can implement it.
                       </p>
@@ -305,7 +305,7 @@ export default function Sidebar(user, email) {
                     />
                     <Input name="userFname" className="w-[95%]" placeholder="John Doe" />
                     <Input name="userEmail" className="w-[95%]" placeholder="johndoe@gmail.com" />
-                    <Button name='intent' value='contactForm' type='submit' className="bg-[#02a9ff] mt-3 w-[75px] ml-2  mr-2 text-white  active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+                    <Button name='intent' value='contactForm' type='submit' className="bg-[#02a9ff] mt-3 w-[75px] ml-2  mr-2 text-[#fafafa]  active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
                       onClick={() => {
                         toast.success('Event has been created')
                       }}
@@ -315,20 +315,20 @@ export default function Sidebar(user, email) {
                   </fetcher.Form>
                 </div>
                 <div className="mt-[50px] mx-auto ">
-                  <h2 className="text-2xl font-thin text-white">
+                  <h2 className="text-2xl font-thin text-[#fafafa]">
                     Scripts, closes and rebuttals
                   </h2>
-                  <p className="text-sm text-white">
+                  <p className="text-sm text-[#fafafa]">
                     The tool box is there so
                     you and other sales people can refer to it whenever you need it.
                   </p>
-                  <Form method="post" action="/emails/send/contact">
+                  <Form method="post" action="/dealeremails/send/contact">
                     <Textarea placeholder="Type your message here." name="customContent" className="h-[200px] w-[95%]" />
                     <Input name="userFname" className="w-[95%]" placeholder="John Doe" />
                     <Input name="userEmail" className="w-[95%]" placeholder="johndoe@gmail.com" />
                     <Input type="hidden" name="userFname" value='test' />
 
-                    <Button name='intent' value='scriptForm' type='submit' className="mt-3 bg-[#02a9ff] w-[75px] ml-2  mr-2 text-white  active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" onClick={() => {
+                    <Button name='intent' value='scriptForm' type='submit' className="mt-3 bg-[#02a9ff] w-[75px] ml-2  mr-2 text-[#fafafa]  active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" onClick={() => {
                       toast.success('Event has been created')
 
                     }}  >
@@ -389,7 +389,7 @@ export const userNavSidebarNav = [
   },
   {
     title: "Roadmap",
-    to: "/roadmap",
+    to: "/dealer/user/dashboard/roadmap",
   },
   {
     title: "Settings",
@@ -640,35 +640,35 @@ export const my23OffRoad = [
 /**
  *
  *
- *  <h3 className='text-white'>
+ *  <h3 className='text-[#fafafa]'>
                 WATERCRAFT
               </h3>
-              <hr className="solid text-white" />
+              <hr className="solid text-[#fafafa]" />
               <div className='p-3'>
               </div>
-              <h3 className='text-white'>
+              <h3 className='text-[#fafafa]'>
                 MOTORCYCLE
               </h3>
-              <hr className="solid text-white" />
+              <hr className="solid text-[#fafafa]" />
               <div className='p-3'>
               </div>
-              <h3 className='text-white'>
+              <h3 className='text-[#fafafa]'>
                 OFF-ROAD
               </h3>
-              <hr className="solid text-white" />
+              <hr className="solid text-[#fafafa]" />
 
 
-              <h3 className='text-white '>
+              <h3 className='text-[#fafafa] '>
                 WATERCRAFT
               </h3>
               <hr className="solid" />
               <div className='p-3'>
               </div>
-              <h3 className='text-white ' >
+              <h3 className='text-[#fafafa] ' >
                 OFF-ROAD
               </h3>
-              <hr className="solid text-white " />
-              <div className='p-3 text-white '>
+              <hr className="solid text-[#fafafa] " />
+              <div className='p-3 text-[#fafafa] '>
               </div>
               <h3  >
                 MOTORCYCLE
@@ -683,7 +683,7 @@ export const my23OffRoad = [
               <div className='p-3'>
                 <RemixNavLink to='/dealer/quote/used'>
                   <SheetClose asChild>
-                    <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-white  cursor-pointer"  >
+                    <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#fafafa]  cursor-pointer"  >
                       Used
                     </Button>
 

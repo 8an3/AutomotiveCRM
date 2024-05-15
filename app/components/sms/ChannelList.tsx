@@ -51,14 +51,14 @@ function ChannelsList({ channels, selectedChannel, onChannelClick, messages }) {
               <conversations.Form method='get' action='/get-conversation' >
 
                 <div className="m-2 flex items-center justify-between">
-                  <span className="text-lg font-bold text-white">
+                  <span className="text-lg font-bold text-[#fafafa]">
                     <strong>{item.friendlyName || item.sid}</strong>
                   </span>
-                  <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                  <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                     {formattedDate}
                   </p>
                 </div>
-                <p className={`text-sm m-2 text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                <p className={`text-sm m-2 text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                   {messages[0].body ? messages[0].body.split(' ').slice(0, 12).join(' ') + '...' : ''}
                 </p>
               </conversations.Form>

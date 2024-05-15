@@ -1,25 +1,15 @@
+.body {
+
+  background-color: #09090b;
+
+  /* Set the background color to black  overflow-y: hidden;*/
+}
+
 body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  background-color: #121212;
-  overflow-y: hidden;
-  /* Set the background color to black */
-}
 
-.socials {
-  height: 98%;
-}
+  background-color: #09090b;
 
-.channelListSZ {
-  height: 100%;
-  flex-grow: 1;
-  top: 0px;
-}
-
-.tabListSZ {
-  height: 55px;
-
+  /* Set the background color to black  overflow-y: hidden;*/
 }
 
 .messagesFieldSZ {

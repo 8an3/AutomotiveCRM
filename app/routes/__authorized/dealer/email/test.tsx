@@ -60,12 +60,12 @@ const Test = () => {
     return messages
   };
   return (
-    <div className='mt-10 text-white '>
+    <div className='mt-10 text-[#fafafa] '>
       {user &&
         (
           <div className=' w-[80%]'>
             <h2 className='mt-10 text-center'>user: </h2>
-            <hr className='mx-auto items-center text-center text-white' />
+            <hr className='mx-auto items-center text-center text-[#fafafa]' />
             <p className='text-center '> {JSON.stringify(user)}</p>
           </div>
         )}
@@ -74,7 +74,7 @@ const Test = () => {
           (
             <div className=' w-[80%]'>
               <h2 className='mt-10 text-center'>graphData2: </h2>
-              <hr className='mx-auto items-center text-center text-white' />
+              <hr className='mx-auto items-center text-center text-[#fafafa]' />
               <p className='text-center '> {JSON.stringify(graphData2)}</p>
             </div>
           )}
@@ -83,13 +83,13 @@ const Test = () => {
         {graphData ? (
           <div className=' w-[80%]'>
             <h2 className='mt-10 text-center'>graphData: </h2>
-            <hr className='mx-auto items-center text-center text-white' />
+            <hr className='mx-auto items-center text-center text-[#fafafa]' />
             <p className='text-center '> {JSON.stringify(graphData)}</p>
           </div>
         ) : (
           <div className=' w-[80%]'>
             <h2 className='mt-10 text-center'>graphData: </h2>
-            <hr className='mx-auto items-center text-center text-white' />
+            <hr className='mx-auto items-center text-center text-[#fafafa]' />
             <p className='text-center '> No Data {graphConfig.url}</p>
           </div>
         )}

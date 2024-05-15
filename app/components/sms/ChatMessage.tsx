@@ -22,7 +22,7 @@ const ChatMessages = ({ identity, messages, messagesRef }) => {
   }, [/* dependencies */]);
 
   return (
-    <div id="messages" ref={messagesRef} className='text-white ' >
+    <div id="messages" ref={messagesRef} className='text-[#fafafa] ' >
       <ul className='  justify-end m-2 mx-auto'>
         {messages.map((m) => (
           m.author === identity.toLowerCase().replace(/\s/g, '')

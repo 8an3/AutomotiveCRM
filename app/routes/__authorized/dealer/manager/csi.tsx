@@ -1,7 +1,7 @@
 // Import necessary modules
 import { Form } from '@remix-run/react';
 import React, { useEffect, useState } from 'react';
-import { type ActionFunction } from '@remix-run/node'
+import { LinksFunction, type ActionFunction } from '@remix-run/node'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Input, Button, Label } from '~/components';
 import { prisma } from '~/libs';
 import { FaPlus } from "react-icons/fa";
@@ -19,6 +19,12 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card"
+import base from "~/styles/base.css";
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/calendar.svg' },
+
+  { rel: "stylesheet", href: base },
+];
 
 export const action = async ({ request }: { request: Request }) => {
   const formPayload = Object.fromEntries(await request.formData());
@@ -75,14 +81,14 @@ export const action = async ({ request }: { request: Request }) => {
 
 export default function SettingsAccountPage() {
   return (
-    <div className="space-y-6 space-x-6 mx-10 ml-[100px] text-white">
+    <div className="space-y-6 space-x-6 mx-10 ml-[100px] text-[#fafafa]">
       <div>
         <h3 className="text-lg font-medium">CSI</h3>
-        <p className="text-sm text-white">
+        <p className="text-sm text-[#fafafa]">
           Create your own CSI to see where your dealer needs to improve.
         </p>
       </div>
-      <hr className="solid text-white" />
+      <hr className="solid text-[#fafafa]" />
       <Tabs defaultValue="account" className="w-[50%]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="account">Create</TabsTrigger>
@@ -236,7 +242,7 @@ export function CSI() {
         <Button
           variant='ghost'
           type='submit'
-          className='text-white bg-transparent hover:bg-transparent border-white'
+          className='text-[#fafafa] bg-transparent hover:bg-transparent border-white'
         >
           Save
         </Button>
@@ -271,7 +277,7 @@ export function CSI() {
       {departments.map((department, departmentIndex) => (
         <div key={departmentIndex} className=' '>
           <h2>{department}</h2>
-          <hr className='text-white mb-2 mt-1 w-[50%]' />
+          <hr className='text-[#fafafa] mb-2 mt-1 w-[50%]' />
           {inputs[departmentIndex].map((input, inputIndex) => (
             <div key={inputIndex} className='flex space-y-4 items-center align-middle content-center'>
               <Input
@@ -437,7 +443,7 @@ const ReviewTable = ({ inputs, departments }) => {
                     <Button
                       type="button"
                       onClick={() => handleAddInput(departmentIndex)}
-                      className="text-white px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
+                      className="text-[#fafafa] px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
                     >
                       +
                     </Button>
@@ -447,7 +453,7 @@ const ReviewTable = ({ inputs, departments }) => {
             </div>
           </div>
         ))}
-        <Button type="submit" className="text-white px-3 py-2 mt-4 rounded bg-green-500 hover:bg-green-600">
+        <Button type="submit" className="text-[#fafafa] px-3 py-2 mt-4 rounded bg-green-500 hover:bg-green-600">
           Submit
         </Button>
       </Form>
@@ -490,7 +496,7 @@ const ReviewTable = ({ inputs, departments }) => {
                     />
                     <Button
                       onClick={() => handleAddCustomChoice(departmentIndex, inputIndex, input.customMultipleChoiceAnswer)}
-                      className="text-white px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
+                      className="text-[#fafafa] px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
                     >
                       Add Choice
                     </Button>

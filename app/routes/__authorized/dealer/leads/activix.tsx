@@ -28,12 +28,12 @@ import LogCall from "~/components/dashboard/calls/logCall";
 import Logtext from "~/components/dashboard/calls/logText";
 import { Badge } from "~/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "~/components/ui/dialog"
-import second from '~/styles/second.css'
+import base from "~/styles/base.css";
 import { DataTable } from '~/components/activix/data-table';
 import WishList from '~/components/dashboard/wishlist/wishList'
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: second },
+  { rel: "stylesheet", href: base },
   { rel: "icon", type: "image/svg", href: '/dashboard.svg' },
 ];
 
@@ -509,16 +509,16 @@ export function SearchTable() {
         />
 
 
-        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-slate1 shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
         >
           Clear
         </Button>
       </div>
-      <div className="rounded-md border border-[#3b3b3b] ">
-        <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1'>
+      <div className="rounded-md border border-[#262626] ">
+        <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+              <TableRow key={headerGroup.id} className=' border-[#262626]'>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead className='items-center ' key={header.id}>
@@ -529,7 +529,7 @@ export function SearchTable() {
                           header.getContext()
                         )}
                       {header.column.getCanFilter() && showFilter && (
-                        <div className="mx-auto cursor-pointer items-center justify-center border-[#3b3b3b] text-center">
+                        <div className="mx-auto cursor-pointer items-center justify-center border-[#262626] text-center">
                           <Filter column={header.column} table={table} />
                         </div>
                       )}
@@ -544,7 +544,7 @@ export function SearchTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className='cursor-pointer border-[#3b3b3b] bg-slate8 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                  className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -561,7 +561,7 @@ export function SearchTable() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 cursor-pointer bg-slate8 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                  className="h-24 cursor-pointer bg-slate8 text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                 >
                   No results.
                 </TableCell>
@@ -578,7 +578,7 @@ export function SearchTable() {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="border-slate1 text-slate1"
+            className="border-slate1 text-[#fafafa]"
           >
             Previous
           </Button>
@@ -586,7 +586,7 @@ export function SearchTable() {
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            className="border-slate1 text-slate1"
+            className="border-slate1 text-[#fafafa]"
 
             disabled={!table.getCanNextPage()}
           >
@@ -919,11 +919,11 @@ export function WebleadsTable() {
     <div className="mx-auto mt-[75px] w-[95%] justify-center ">
       {!isRowSelected ? (
         <>
-          <div className="rounded-md border border-[#3b3b3b] ">
-            <Table2 className='w-full overflow-x-auto border-[#3b3b3b] text-slate1 '>
+          <div className="rounded-md border border-[#262626] ">
+            <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa] '>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className=' border-[#3b3b3b]'>
+                  <TableRow key={headerGroup.id} className=' border-[#262626]'>
                     {headerGroup.headers.map((header) => {
                       return (
                         <TableHead className='items-center' key={header.id}>
@@ -949,7 +949,7 @@ export function WebleadsTable() {
                   table.getRowModel().rows.map((row) => (
                     <TableRow
                       key={row.id}
-                      className='cursor-pointer border-[#3b3b3b] bg-slate8 p-4 capitalize text-slate1 hover:text-[#02a9ff]'
+                      className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                       data-state={row.getIsSelected() && "selected"}
                       onClick={() => {
                         handleRowClick(row);
@@ -970,7 +970,7 @@ export function WebleadsTable() {
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 cursor-pointer bg-slate8 text-center capitalize text-slate1 hover:text-[#02a9ff]"
+                      className="h-24 cursor-pointer bg-slate8 text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                     >
                       No results.
                     </TableCell>
@@ -987,7 +987,7 @@ export function WebleadsTable() {
                 size="sm"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="border-slate1 text-slate1"
+                className="border-slate1 text-[#fafafa]"
               >
                 Previous
               </Button>
@@ -995,7 +995,7 @@ export function WebleadsTable() {
                 variant="outline"
                 size="sm"
                 onClick={() => table.nextPage()}
-                className="border-slate1 text-slate1"
+                className="border-slate1 text-[#fafafa]"
 
                 disabled={!table.getCanNextPage()}
               >
@@ -1153,13 +1153,13 @@ export function WebleadsTable() {
                   setIsComplete(true);
                 }}
                 name='intent' value='newLead' type='submit'
-                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
               >
                 Complete
               </Button>
               <Button
                 disabled={isComplete === false}
-                className={` cursor-pointer ml-auto p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-slate1 border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                className={` cursor-pointer ml-auto p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
               >
                 <Link to={`/overview/${brandId}/${clientFinanceId}`}>
 

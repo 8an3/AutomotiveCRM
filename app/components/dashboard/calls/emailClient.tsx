@@ -459,12 +459,12 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <p
-          className="cursor-pointer text-white target:text-[#02a9ff] hover:text-[#02a9ff]" >
+          className="cursor-pointer text-[#fafafa] target:text-[#02a9ff] hover:text-[#02a9ff]" >
           <Mail className="" />
         </p>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className=" bg-background/80  fixed inset-0 backdrop-blur-sm" />
+        <Dialog.Overlay className=" bg-[#09090b]/80  fixed inset-0 backdrop-blur-sm" />
         <Dialog.Content className=" fixed left-[50%] top-[50%] max-h-[85%] w-[90vw] overflow-y-scroll translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white text-black p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none md:w-[950px]">
 
           <Dialog.Description className="text-mauve11 mb-5 mt-[10px] text-[15px] leading-normal ">
@@ -831,7 +831,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               name="clientAtr"
 
                               onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                              className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+                              className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
                             >
                               <option value="">Client</option>
                               {Object.entries(clientAtr).map(([title, value]) => (
@@ -845,7 +845,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(wantedVehAttr[event.target.value]);
                               }}
-                              className='bg-slate12 border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                              className='bg-[#09090b] border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                               <option value="">Wanted Veh</option>
                               {Object.entries(wantedVehAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -858,7 +858,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(tradeVehAttr[event.target.value]);
                               }}
-                              className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                              className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                               <option value="">Trade Veh</option>
                               {Object.entries(tradeVehAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -871,7 +871,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(salesPersonAttr[event.target.value]);
                               }}
-                              className='bg-slate12 border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
+                              className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
                               <option value="">Sales Person</option>
                               {Object.entries(salesPersonAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -884,7 +884,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(FandIAttr[event.target.value]);
                               }}
-                              className='bg-slate12 border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
+                              className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
                               <option value="">F & I Manager</option>
                               {Object.entries(FandIAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -1028,7 +1028,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                           <TextArea
                             placeholder="Type your message here."
                             name="customContent"
-                            className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
+                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
                           />
                           <Input type="hidden" defaultValue={user.name} name="author" />
                           <Input
@@ -1052,7 +1052,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               variant='outline'
                               name="intent"
                               type="submit"
-                              className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-white"
+                              className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-[#fafafa]"
                               value="saveFinanceNote"
                             >
                               Save
@@ -1722,12 +1722,12 @@ return (
   <Dialog.Root>
     <Dialog.Trigger asChild>
       <p
-        className="cursor-pointer text-white target:text-[#02a9ff] hover:text-[#02a9ff]" >
+        className="cursor-pointer text-[#fafafa] target:text-[#02a9ff] hover:text-[#02a9ff]" >
         <Mail className="" />
       </p>
     </Dialog.Trigger>
     <Dialog.Portal>
-      <Dialog.Overlay className=" bg-background/80  fixed inset-0 backdrop-blur-sm" />
+      <Dialog.Overlay className=" bg-[#09090b]/80  fixed inset-0 backdrop-blur-sm" />
       <Dialog.Content className=" fixed left-[50%] top-[50%] max-h-[85%] w-[90vw] overflow-y-scroll translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white text-black p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none md:w-[750px]">
 
         <Dialog.Description className="text-mauve11 mb-5 mt-[10px] text-[15px] leading-normal ">
@@ -1922,7 +1922,7 @@ return (
                         <TextArea
                           placeholder="Type your message here."
                           name="customContent"
-                          className="w-full rounded border-0 h-8 bg-slate12 px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
+                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
                         />
                         <Input type="hidden" defaultValue={user.name} name="author" />
                         <Input
@@ -1945,7 +1945,7 @@ return (
   variant='outline'
   name="intent"
   type="submit"
-  className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-white"
+  className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-[#fafafa]"
   value="saveFinanceNote"
 
 >

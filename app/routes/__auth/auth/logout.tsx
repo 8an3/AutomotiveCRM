@@ -83,18 +83,18 @@ export default function Welcome({ pca }: AppProps) {
              <div className="flex items-center justify-center text-center">
 
                <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-                 <h1 className="text-white">Have a nice day!</h1>
-                 <p className="mt-5 text-white">
+                 <h1 className="text-[#fafafa]">Have a nice day!</h1>
+                 <p className="mt-5 text-[#fafafa]">
                    Are you sure you want to log out?
                  </p>
-                 <Button onClick={app.signOut!} variant="outline" className="mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-white "  >
+                 <Button onClick={app.signOut!} variant="outline" className="mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-[#fafafa] "  >
                    <p className="mr-1">Logout of your </p>
                    <TfiMicrosoft className="text-[28px]" />{" "}
                    <p className="ml-2">account</p>
                  </Button>
-                 <hr className="solid mb-5 mt-5 text-white" />
+                 <hr className="solid mb-5 mt-5 text-[#fafafa]" />
                  <Link to="/privacy">
-                   <p className="text-white">To review our Privacy Policy</p>
+                   <p className="text-[#fafafa]">To review our Privacy Policy</p>
                  </Link>
                </div>
 
@@ -158,18 +158,18 @@ export default function Welcome({ pca }: AppProps) {
                <div className="flex items-center justify-center text-center">
 
                  <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-                   <h1 className="text-white">Welcome to D.S.A.</h1>
-                   <p className="mt-5 text-white">
+                   <h1 className="text-[#fafafa]">Welcome to D.S.A.</h1>
+                   <p className="mt-5 text-[#fafafa]">
                      Log-in
                    </p>
-                   <Button onClick={app.signIn!} variant="outline" className="mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-white "  >
+                   <Button onClick={app.signIn!} variant="outline" className="mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-[#fafafa] "  >
                      <p className="mr-1">Login with your </p>
                      <TfiMicrosoft className="text-[28px]" />{" "}
                      <p className="ml-2">account</p>
                    </Button>
-                   <hr className="solid mb-5 mt-5 text-white" />
+                   <hr className="solid mb-5 mt-5 text-[#fafafa]" />
                    <Link to="/privacy">
-                     <p className="text-white">To review our Privacy Policy</p>
+                     <p className="text-[#fafafa]">To review our Privacy Policy</p>
                    </Link>
                  </div>
 

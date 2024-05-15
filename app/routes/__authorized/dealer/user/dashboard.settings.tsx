@@ -245,43 +245,43 @@ export function StatsTable({ statsData, comsRecords }) {
       <TableCaption>List of Stats</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className='text-white'>Period</TableHead>
-          <TableHead className='text-white'>Quotes</TableHead>
-          <TableHead className='text-white'>Deposits</TableHead>
-          <TableHead className='text-white'>Financed</TableHead>
-          <TableHead className='text-white'>Delivered</TableHead>
-          <TableHead className='text-white'>Repeat Cust</TableHead>
-          <TableHead className='text-white'>Walk-in</TableHead>
-          <TableHead className='text-white'>Web-lead</TableHead>
-          <TableHead className='text-white'>Phone-lead</TableHead>
-          <TableHead className='text-white'>Total</TableHead>
-          <TableHead className='text-white'>emailsSent</TableHead>
-          <TableHead className='text-white'>smsSent</TableHead>
-          <TableHead className='text-white'>phoneCallsMade</TableHead>
-          <TableHead className='text-white'>timesContacted</TableHead>
-          <TableHead className='text-white'>Appts</TableHead>
-          <TableHead className='text-white'>Appts Showed</TableHead>
+          <TableHead className='text-[#fafafa]'>Period</TableHead>
+          <TableHead className='text-[#fafafa]'>Quotes</TableHead>
+          <TableHead className='text-[#fafafa]'>Deposits</TableHead>
+          <TableHead className='text-[#fafafa]'>Financed</TableHead>
+          <TableHead className='text-[#fafafa]'>Delivered</TableHead>
+          <TableHead className='text-[#fafafa]'>Repeat Cust</TableHead>
+          <TableHead className='text-[#fafafa]'>Walk-in</TableHead>
+          <TableHead className='text-[#fafafa]'>Web-lead</TableHead>
+          <TableHead className='text-[#fafafa]'>Phone-lead</TableHead>
+          <TableHead className='text-[#fafafa]'>Total</TableHead>
+          <TableHead className='text-[#fafafa]'>emailsSent</TableHead>
+          <TableHead className='text-[#fafafa]'>smsSent</TableHead>
+          <TableHead className='text-[#fafafa]'>phoneCallsMade</TableHead>
+          <TableHead className='text-[#fafafa]'>timesContacted</TableHead>
+          <TableHead className='text-[#fafafa]'>Appts</TableHead>
+          <TableHead className='text-[#fafafa]'>Appts Showed</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {stats.map((stat) => (
           <TableRow key={stat.period}>
-            <TableCell className='text-white'>{stat.period}</TableCell>
-            <TableCell className='text-white'>{stat.quotes}</TableCell>
-            <TableCell className='text-white'>{stat.deposits}</TableCell>
-            <TableCell className='text-white'>{stat.financed}</TableCell>
-            <TableCell className='text-white'>{stat.delivered}</TableCell>
-            <TableCell className='text-white'>{stat.repeatCustomer}</TableCell>
-            <TableCell className='text-white'>{stat.walkIn}</TableCell>
-            <TableCell className='text-white'>{stat.webLead}</TableCell>
-            <TableCell className='text-white'>{stat.phoneLead}</TableCell>
-            <TableCell className='text-white'>{stat.total}</TableCell>
-            <TableCell className='text-white'>{stat.emailsSent}</TableCell>
-            <TableCell className='text-white'>{stat.smsSent}</TableCell>
-            <TableCell className='text-white'>{stat.phoneCallsMade}</TableCell>
-            <TableCell className='text-white'>{stat.timesContacted}</TableCell>
-            <TableCell className='text-white'>Appts</TableCell>
-            <TableCell className='text-white'>Appts Showed</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.period}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.quotes}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.deposits}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.financed}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.delivered}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.repeatCustomer}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.walkIn}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.webLead}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.phoneLead}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.total}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.emailsSent}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.smsSent}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.phoneCallsMade}</TableCell>
+            <TableCell className='text-[#fafafa]'>{stat.timesContacted}</TableCell>
+            <TableCell className='text-[#fafafa]'>Appts</TableCell>
+            <TableCell className='text-[#fafafa]'>Appts Showed</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -379,24 +379,24 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
 
       </TabsList>
       <TabsContent value="stats" className='rounded-md'>
-        <Card className='rounded-md text-white border-[#3e3e3f] border'>
+        <Card className='rounded-md text-[#fafafa] border-[#3e3e3f] border'>
           <CardHeader className=''>
-            <CardTitle className='text-white'>
-              <h3 className="text-2xl font-thin uppercase text-white">
+            <CardTitle className='text-[#fafafa]'>
+              <h3 className="text-2xl font-thin uppercase text-[#fafafa]">
                 Statistics
               </h3>
             </CardTitle>
             <CardDescription>
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2  text-white">
+          <CardContent className="space-y-2  text-[#fafafa]">
             <StatsTable statsData={statsData} comsRecords={comsRecords} />
           </CardContent>
         </Card>
       </TabsContent>
       <TabsContent value="dealerFees" className='rounded-md'>
         <Card>
-          <CardContent className="space-y-2  text-white rounded-md">
+          <CardContent className="space-y-2  text-[#fafafa] rounded-md">
             <Form method="post" className="">
 
               <div className="grid grid-cols-1 gap-4 mx-auto">
@@ -406,7 +406,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                     <h2 className="text-2xl font-thin">
                       DEALER FEES
                     </h2>
-                    <p className="text-sm text-white">
+                    <p className="text-sm text-[#fafafa]">
                       This is where you can change values like freight, admin, taxes and
                       such. If you don't have all this information with you, dont worry, you can always come back and update it later.
                     </p>
@@ -422,7 +422,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                           name={fee.name}
                           defaultValue={fee.value}
 
-                          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]  mx-1"
                         />
                       </div>
@@ -432,7 +432,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                       <Input
                         defaultValue={deFees.userLicensing}
                         name="userLicensing"
-                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]  mx-1"
                       />
                       {errors?.userLicensing ? (
@@ -445,7 +445,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                       <Input
                         defaultValue={deFees.userTax}
                         name="userTax"
-                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]  mx-1"
                       />
                       {errors?.userTax ? (
@@ -457,7 +457,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                       <Input
                         defaultValue={deFees.userLabour}
                         name="userLabour"
-                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#ff0202]  mx-1"
                       />
                       {errors?.userLabour ? (
@@ -480,7 +480,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                         <Input
                           name={option.name}
                           defaultValue={option.value}
-                          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]  mx-1"
                         />
                       </div>
@@ -513,27 +513,27 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
         </Card>
       </TabsContent>
       <TabsContent value="account" className='rounded-md'>
-        <Card className='rounded-md text-white'>
+        <Card className='rounded-md text-[#fafafa]'>
           <CardHeader className=''>
-            <CardTitle className='text-white'>
-              <h3 className="text-2xl font-thin uppercase text-white">
+            <CardTitle className='text-[#fafafa]'>
+              <h3 className="text-2xl font-thin uppercase text-[#fafafa]">
                 EDIT ACCOUNT
               </h3>
             </CardTitle>
             <CardDescription>
-              <p className="text-white text-sm">
+              <p className="text-[#fafafa] text-sm">
                 Name, Phone # and email will show up in emails sent to customers.
               </p>
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 bg-slate11 text-white">
+          <CardContent className="space-y-2 bg-slate11 text-[#fafafa]">
             <fetcher.Form method="post" className=''>
               <div className="grid sm:grid-cols-3 grid-cols-1  gap-2">
 
                 <div className="grid gap-2 mt-2 ">
                   <Label htmlFor="area">Name</Label>
                   <Input
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none   focus:text-[#02a9ff]   mx-1"
                     placeholder="name"
                     type="text"
@@ -549,7 +549,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                     placeholder="Phone Number"
                     type="text"
                     name="phone"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]    mx-1"
                   />
                 </div>
@@ -557,7 +557,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                 <div className="grid gap-2 mt-2">
                   <Label htmlFor="area" className=''>Email</Label>
                   <Input
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]   mx-1"
                     placeholder="youremail@here.com"
                     type="email"
@@ -572,12 +572,12 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                     placeholder="Phone Number"
                     type="text"
                     name="username"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none   focus:text-[#02a9ff]   mx-1"
                   />
                 </div>
               </div>
-              <p className="text-white text-sm mt-10">
+              <p className="text-[#fafafa] text-sm mt-10">
                 Dealer Information - This will only be for contracts.
               </p>
               <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
@@ -588,7 +588,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                     defaultValue={deFees?.dealer}
                     placeholder="Dealer Name"
                     name="dealer"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]  mx-1"
                   />
                 </div>
@@ -599,7 +599,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                     placeholder="123 Dealer Street"
                     name="dealerAddress"
                     defaultValue={dealerAddress}
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]   mx-1"
                   />
                 </div>
@@ -609,7 +609,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                     defaultValue={dealerProv}
                     placeholder="Toronto, ON, K1K K1K"
                     name="dealerProv"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none   focus:text-[#02a9ff]    mx-1"
                   />
                 </div>
@@ -619,7 +619,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                     placeholder="1231231234"
                     type="phone"
                     name="dealerPhone"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none focus:text-[#02a9ff]    mx-1"
                     defaultValue={dealerPhone}
                   />
@@ -631,20 +631,20 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                     placeholder="1231234"
                     type="text"
                     name="omvicNumber"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]  mx-1"
                   />
                 </div>
                 <Input
                   type='hidden'
-                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]  mx-1"
                   name="email"
                   defaultValue={user.email}
                 />
                 <Input
                   type='hidden'
-                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#02a9ff]  mx-1"
                   name="userEmail"
                   defaultValue={user.email}
@@ -668,13 +668,13 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
           </CardContent>
         </Card>
 
-        <Card className='rounded-md text-white mt-5 w-1/3'>
+        <Card className='rounded-md text-[#fafafa] mt-5 w-1/3'>
           <Form method='post' >
             <CardHeader className=''>
-              <CardTitle className='text-white'>Feature Settings</CardTitle>
-              <CardDescription className='text-white'>Manage your cookie settings here.</CardDescription>
+              <CardTitle className='text-[#fafafa]'>Feature Settings</CardTitle>
+              <CardDescription className='text-[#fafafa]'>Manage your cookie settings here.</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6 text-white space-y-2 bg-slate11">
+            <CardContent className="grid gap-6 text-[#fafafa] space-y-2 bg-slate11">
               <div className="flex items-center justify-between space-x-2">
                 <Label htmlFor="necessary" className="flex flex-col space-y-1 mt-2">
                   <span>Activix Integration</span>
@@ -707,7 +707,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                       placeholder="activix@email.com"
                       type="text"
                       name="activixEmail"
-                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-white active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                   focus:outline-none  focus:text-[#02a9ff]    mx-1"
                     />
                   </div>
@@ -716,7 +716,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
               <Input type='hidden' name="email" defaultValue={user.email} />
               <Input type='hidden' name="userEmail" defaultValue={user.email} />
             </CardContent>
-            <CardFooter className='text-white bg-slate11'>
+            <CardFooter className='text-[#fafafa] bg-slate11'>
               <ButtonLoading
                 size="lg"
                 className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"

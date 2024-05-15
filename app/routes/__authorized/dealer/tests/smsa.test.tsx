@@ -8,16 +8,12 @@ import { ChevronLeft } from 'lucide-react';
 import { toast } from "sonner"
 import ChatMessages from '~/components/sms/ChatMessage';
 import slider from '~/styles/slider.css'
-import secondary from '~/styles/secondary.css'
 import ChatChannel from '~/styles/ChatChannel.css'
-import messageBubble from '~/styles/messageBubble.css'
 import { GetUser } from "~/utils/loader.server";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: slider },
     { rel: "stylesheet", href: ChatChannel },
-    { rel: "stylesheet", href: messageBubble },
-    { rel: "stylesheet", href: secondary },
 
 ];
 export async function loader({ request, params }: LoaderFunction) {
@@ -153,8 +149,8 @@ export default function SMSConv() {
     if (selectedStaffChatSid) {
 
         staffChatContent = (
-            <div onClick={() => { }} id="OpenChannel" className='text-white'>
-                <div className="flex justify-between border-b border-[#3b3b3b]">
+            <div onClick={() => { }} id="OpenChannel" className='text-[#fafafa]'>
+                <div className="flex justify-between border-b border-[#262626]">
                     <div className='flex align-middle'>
 
                         {conversation === 'list' || conversation === 'conversation' && (
@@ -164,13 +160,13 @@ export default function SMSConv() {
                         )}
 
 
-                        <span className="text-lg font-bold text-white m-2">
+                        <span className="text-lg font-bold text-[#fafafa] m-2">
                             <strong>{channelName}</strong>
                         </span>
                     </div>
 
                     <select
-                        className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  m-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-white shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                        className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  m-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-[#fafafa] shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                         onChange={handleChange}>
                         <option value="">Select a Template</option>
                         {templates.map((template, index) => (
@@ -185,7 +181,7 @@ export default function SMSConv() {
                 <div className='relative w-[100%] max-h-[950px] h-auto overflow-y-scroll' >
                     <ChatMessages identity={user.email} messages={messagesConvo} messagesRef={messagesRef} />
                 </div>
-                <div className="mt-auto   rounded-md  border-[#3b3b3b]">
+                <div className="mt-auto   rounded-md  border-[#262626]">
 
                     <Form ref={$form} method="post"  >
                         <input className='w-full p-2' type="hidden" name='sender' defaultValue={user.email} />
@@ -196,7 +192,7 @@ export default function SMSConv() {
                             placeholder="Message..."
                             name="message"
                             autoComplete="off"
-                            className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-white  mb-2 mt-5'
+                            className='rounded-d m-2 w-[99%] bg-myColor-900 p-3 text-[#fafafa]  mb-2 mt-5'
                             value={text}
                             ref={textareaRef}
                             onChange={(e) => setText(e.target.value)}
@@ -276,14 +272,14 @@ export default function SMSConv() {
                                             >
                                                 <div className='w-[95%]'>
                                                     <div className="m-2 flex items-center justify-between">
-                                                        <span className="text-lg font-bold text-white">
+                                                        <span className="text-lg font-bold text-[#fafafa]">
                                                             <strong>{member.name || member.name}</strong>
                                                         </span>
-                                                        <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                        <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                             {sortedConversations[member.email].createdAt}
                                                         </p>
                                                     </div>
-                                                    <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-white' : ''}`}>
+                                                    <p className={`m-2 text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
                                                         {sortedConversations[member.email].message ? (
                                                             sortedConversations[member.email].message//.body.split(' ').slice(0, 12).join(' ')
                                                         ) : (
