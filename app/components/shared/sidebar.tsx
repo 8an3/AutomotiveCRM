@@ -172,6 +172,16 @@ export default function Sidebar(user, email) {
                       </AccordionContent>
                     </AccordionItem>
                   ) : (null)}
+                  {user && user?.email === 'skylerzanth@outlook.com' ? (
+                    <AccordionItem value="item-4">
+                      <AccordionTrigger>
+                        Service Menu
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <SidebarNav items={serviceNavSidebarNav} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  ) : (null)}
                 </Accordion>
               </div>
             </TabsContent>
@@ -346,6 +356,17 @@ export default function Sidebar(user, email) {
     </>
   )
 }
+
+export const serviceNavSidebarNav = [
+  {
+    title: "Service Dashboard",
+    to: "/dealer/service/dashboard",
+  },
+  {
+    title: "Technician Clock",
+    to: "/dealer/service/techClock",
+  },
+]
 export const userNavSidebarNav = [
   {
     title: "Email Client",

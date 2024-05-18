@@ -2106,7 +2106,7 @@ export function MainDashbaord() {
     ]
     return (
         <>
-            <div className="bg-[#09090b] text-gray-300 uppercase">
+            <div className="bg-[#09090b] text-gray-300 uppercase mt-10">
                 <DataTable columns={columns} data={data} />
             </div>
         </>
@@ -2235,7 +2235,7 @@ export const defaultColumn: Partial<ColumnDef<Payment>> = {
     },
 }
 
-export const meta: MetaFunction = () => {
+export const meta = () => {
     return [
         { title: 'Sales Leads - Dealer Sales Assistant' },
         {

@@ -11,7 +11,7 @@ export async function getAppointmentsForFinance(financeId) {
       },
     });
 
-    console.log("Fetched Appointments for Finance successfully");
+    // console.log("Fetched Appointments for Finance successfully");
     return appointments;
   } catch (error) {
     console.error("Error fetching Appointments for Finance:", error);

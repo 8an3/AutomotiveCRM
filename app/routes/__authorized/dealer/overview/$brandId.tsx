@@ -13,29 +13,11 @@ import DisplayModel from '~/overviewUtils/modelDisplay'
 import DealerFeesDisplay from '~/overviewUtils/dealerFeesDisplay'
 import ContactInfoDisplay from '~/overviewUtils/contactInfoDisplay'
 import * as Tooltip from '@radix-ui/react-tooltip';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Input, Button, Checkbox } from "~/components/ui/index"
-import { toast } from "sonner"
-
-import * as Toast from '@radix-ui/react-toast';
-import { type DataFunctionArgs } from '@remix-run/node'
+import { Input, Button, Checkbox } from "~/components/ui/index"
 import { quotebrandIdActionLoader } from '~/components/actions/quote$brandIdAL'
-import { Slider } from '~/components/ui/slider';
 import { Badge } from '~/other/badge'
-import ClientProfile from '~/components/dashboard/calls/actions/clientProfile'
 import { Theme, ThemePanel } from '@radix-ui/themes';
-import {
-    Alert,
-    ButtonLoading,
-    Debug,
-    InputPassword,
-    Layout,
-    PageHeader,
-    RemixForm,
-    RemixLinkText,
-} from "~/components";
-import Sidebar from "~/components/shared/sidebar";
-// <Sidebar />
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import { toast } from "sonner"
 
 
 export let action = overviewAction;
@@ -1429,20 +1411,20 @@ export function Overview({ outletSize }) {
                         <div className='mt-3'>
                             <div className="flex main-button-group justify-between ">
                                 <Badge id='myButton'
-                                    className={`button  shadow hover:text-[#fafafa] bg-[#02a9ff]  transform cursor-pointer  ${mainButton === 'payments' ? 'active bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow hover:text-[#fafafa] bg-[#02a9ff]  transform cursor-pointer  ${mainButton === 'payments' ? 'active bg-[#c72323] text-[#fafafa]' : 'bg-[#09090b] text-[#fafafa]'}`}
                                     onClick={() => handleMainButtonClick('payments')}>
                                     Payments
                                 </Badge>
 
                                 <Badge id='myButton1'
-                                    className={`button  shadow bg-[#02a9ff] transform hover:text-[#fafafa]   cursor-pointer ${mainButton === 'noTax' ? 'active bg-[#09090b] text-[#fafafa] ' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow bg-[#02a9ff] transform hover:text-[#fafafa]   cursor-pointer ${mainButton === 'noTax' ? 'active bg-[#c72323] text-[#fafafa] ' : 'bg-[#09090b] text-[#fafafa]'}`}
                                     onClick={() => handleMainButtonClick('noTax')}
                                 >
                                     No Tax
                                 </Badge>
 
                                 <Badge id='myButton2'
-                                    className={`button  shadow bg-[#02a9ff] transform   hover:text-[#fafafa] cursor-pointer ${mainButton === 'customTax' ? 'active bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow bg-[#02a9ff] transform   hover:text-[#fafafa] cursor-pointer ${mainButton === 'customTax' ? 'active bg-[#c72323] text-[#fafafa]' : 'bg-[#09090b] text-[#fafafa]'}`}
                                     onClick={() => handleMainButtonClick('customTax')}
                                 >
                                     Custom Tax
@@ -1451,7 +1433,7 @@ export function Overview({ outletSize }) {
                             <div className="flex sub-button-group justify-between mt-2">
 
                                 <Badge id='myButton3'
-                                    className={`button  shadow bg-[#02a9ff] transform hover:text-[#fafafa] cursor-pointer ${subButton === 'withoutOptions' ? 'active bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow bg-[#02a9ff] transform hover:text-[#fafafa] cursor-pointer ${subButton === 'withoutOptions' ? 'active bg-[#c72323] text-[#fafafa]' : 'bg-[#09090b] text-[#fafafa]'}`}
                                     onClick={() => handleSubButtonClick('withoutOptions')}
                                 >
                                     W/O Options
@@ -1459,7 +1441,7 @@ export function Overview({ outletSize }) {
 
 
                                 <Badge id='myButton5'
-                                    className={`button  shadow bg-[#02a9ff] transform  cursor-pointer hover:text-[#fafafa]  ${subButton === 'withOptions' ? 'active bg-[#09090b]  text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow bg-[#02a9ff] transform  cursor-pointer hover:text-[#fafafa]  ${subButton === 'withOptions' ? 'active bg-[#c72323]  text-[#fafafa]' : 'bg-[#09090b] text-[#fafafa]'}`}
                                     onClick={() => handleSubButtonClick('withOptions')}
                                 >
                                     W/ Options
@@ -1925,10 +1907,9 @@ export function Overview({ outletSize }) {
                                 variant="outline"
                                 loadingText="Updating deal..."
                                 isSubmitting={isSubmitting}
-className='bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff]'
-                                onClick={() =>
-                                    toast.success(`Quote updated for ${finance.name}`)
-                                }
+                                className='bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff]'
+                                onClick={() => toast.success(`Quote updated for ${finance.firstName}`)}
+
                             >
                                 Update
                             </Button>

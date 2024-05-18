@@ -12,7 +12,25 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip"
 import { toast } from "sonner"
-
+import {
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  CreditCard,
+  File,
+  Home,
+  LineChart,
+  ListFilter,
+  MoreVertical,
+  Package,
+  Package2,
+  PanelLeft,
+  Search,
+  Settings,
+  ShoppingCart,
+  Truck,
+  Users2,
+} from "lucide-react"
 import React, { useEffect, useState } from "react";
 import {
   type RankingInfo,
@@ -1209,7 +1227,12 @@ export default function UnitPicker({ data }) {
     <Dialog.Root  >
 
       <Dialog.Trigger>
-        <Button variant='outline' className='text-[#fafafa] border-white'>Assign Unit</Button>
+        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3 border-[#27272a] bg-[#18181a] text-[#f2f2f2]"  >
+          <Truck className="h-3.5 w-3.5" />
+          <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+            Assign Stock Unit
+          </span>
+        </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="z-50 bg-[#09090b]/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />

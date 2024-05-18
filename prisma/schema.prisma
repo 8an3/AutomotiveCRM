@@ -20,7 +20,7 @@ generator docs {
 }
 
 // ----------------------------------------------------------------------------
-// User
+// -------------------------------User-----------------------------------------
 // -----------------------------------------------------------------------------
 model User {
   id        String   @id @default(cuid())
@@ -51,8 +51,9 @@ model User {
   images        Image[]            @relation("Images")
   notifications UserNotification[] @relation("UserNotifications")
   notes         Note[]             @relation("UserNotes")
-  noteImages    NoteImage[]        @relation("UserNoteImages")
   //UserPassword  UserPassword?
+  timeEntries   TimeEntry[]
+  workorders    Workorder[]
 
   @@index([roleId])
   @@index([profileId])
@@ -69,183 +70,6 @@ model microsoftAccount {
   givenName        String?
   familyName       String?
   identityProvider String?
-}
-
-model userIntergration {
-  id               String   @id @default(cuid())
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  userEmail        String   @unique
-  activixId        String?
-  activixActivated String?
-  dealerAccountId  String?
-  activixEmail     String?
-}
-
-model DealerCustomer {
-  id             String   @id @default(cuid())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  dealerName     String?
-  dealerPhone    String?
-  dealerAddress  String?
-  dealerCity     String?
-  dealerProvince String?
-  dealerPostal   String?
-  dealerEmail    String?
-  planetScale    String?
-  vercel         String?
-  github         String?
-}
-
-model DealerFees {
-  id                String   @id @default(cuid())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  dealer            String?
-  dealerAddress     String?
-  dealerProv        String?
-  dealerPhone       String?
-  omvicNumber       String?
-  userLoanProt      Int?
-  userTireandRim    String?
-  userGap           Int?
-  userExtWarr       String?
-  userServicespkg   Int?
-  vinE              Int?
-  lifeDisability    Int?
-  rustProofing      Int?
-  userLicensing     Int?
-  userFinance       String?
-  userDemo          String?
-  userGasOnDel      String?
-  userOMVIC         String?
-  userOther         Int?
-  userTax           String?
-  userAirTax        String?
-  userTireTax       String?
-  userGovern        String?
-  userPDI           String?
-  userLabour        String?
-  userMarketAdj     String?
-  userCommodity     String?
-  destinationCharge Int?
-  userFreight       String?
-  userAdmin         String?
-  userEmail         String?  @unique
-}
-
-model StoreHours {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  day       String?   @unique
-  start     DateTime?
-  end       DateTime?
-  userEmail String?
-}
-
-model SalespersonSched {
-  id               String    @id @default(cuid())
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  day              String?
-  start            DateTime?
-  end              DateTime?
-  salespersonEmail String?
-  userEmail        String?
-  title            String?
-  resourceId       String?
-  userName         String?
-  userId           String?
-  name             String?
-}
-
-// schema.prisma
-
-model CsiQuestion {
-  id                          Int      @id @default(autoincrement())
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @updatedAt
-  title                       String?
-  departmentName              String? // Added to identify the department
-  departmentIndex             Int?
-  questionIndex               Int? // Changed from `inputIndex` to `questionIndex`
-  question                    String?
-  answerFormat                String?
-  customMultipleChoiceAnswer  String? // Assuming this is for a single custom answer
-  customMultipleChoiceAnswers String[] // Array for multiple custom answers
-}
-
-model DealerInfo {
-  id            Int      @id @default(1)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  dealerName    String?
-  dealerAddress String?
-  dealerCity    String?
-  dealerProv    String?
-  dealerPostal  String?
-  dealerPhone   String?
-}
-
-model DealerFeesAdmin {
-  id                Int      @id @default(1)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  dealer            String?
-  dealerAddress     String?
-  dealerProv        String?
-  dealerPhone       String?
-  omvicNumber       String?
-  userLoanProt      Int?
-  userTireandRim    String?
-  userGap           Int?
-  userExtWarr       String?
-  userServicespkg   Int?
-  vinE              Int?
-  lifeDisability    Int?
-  rustProofing      Int?
-  userLicensing     Int?
-  userFinance       String?
-  userDemo          String?
-  userGasOnDel      String?
-  userOMVIC         String?
-  userOther         Int?
-  userTax           String?
-  userAirTax        String?
-  userTireTax       String?
-  userGovern        String?
-  userPDI           String?
-  userLabour        String?
-  userMarketAdj     String?
-  userCommodity     String?
-  destinationCharge Int?
-  userFreight       String?
-  userAdmin         String?
-}
-
-model DailyPDF {
-  id                     String   @id @default(cuid())
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
-  userEmail              String?  @unique
-  todaysGoalGuest        String?
-  todaysActualGuest      String?
-  differenceGuest        String?
-  monthsGoalGuest        String?
-  todaysGoalTestDrives   String?
-  todaysActualTestDrives String?
-  differenceTestDrives   String?
-  monthsGoalTestDrives   String?
-  todaysGoalWriteUps     String?
-  todaysActualWriteUps   String?
-  differenceWriteUps     String?
-  monthsGoalWriteUps     String?
-  todaysGoalDeliveries   String?
-  todaysActualDeliveries String?
-  differenceDeliveries   String?
-  monthsGoalDeliveries   String?
 }
 
 model UserPassword {
@@ -353,19 +177,6 @@ model UserNotification {
   @@index([userId])
 }
 
-model StaffChat {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-
-  message    String?
-  sender     String?
-  senderName String?
-  to         String?
-  toName     String?
-  room       String?
-  token      String?
-}
-
 model Note {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -395,7 +206,6 @@ model NoteImage {
   filePath String?
 
   userId String?
-  user   User?   @relation("UserNoteImages", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   noteId String?
   note   Note?   @relation("NoteImages", fields: [noteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
@@ -403,46 +213,168 @@ model NoteImage {
   @@index([noteId])
 }
 
-model Sales {
-  id String @id @default(cuid())
-
-  financeId String?
-  email     String
-  sales     Int?
-  sold      String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// ----------------------------------------------------------------------------
+// -------------------------------User-----------------------------------------
+// -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// -------------------------------dev-----------------------------------------
+// -----------------------------------------------------------------------------
+model DealerCustomer {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  dealerName     String?
+  dealerPhone    String?
+  dealerAddress  String?
+  dealerCity     String?
+  dealerProvince String?
+  dealerPostal   String?
+  dealerEmail    String?
+  planetScale    String?
+  vercel         String?
+  github         String?
 }
 
-model Address {
+// ----------------------------------------------------------------------------
+// -------------------------------dev-----------------------------------------
+// -----------------------------------------------------------------------------
+//--------------------accessories
+//--------------------parts
+
+// ----------------------------------------------------------------------------
+// -------------------------------dealer-----------------------------------------
+// -----------------------------------------------------------------------------
+model userIntergration {
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  userEmail        String   @unique
+  activixId        String?
+  activixActivated String?
+  dealerAccountId  String?
+  activixEmail     String?
+}
+
+model CsiQuestion {
+  id                          Int      @id @default(autoincrement())
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+  title                       String?
+  departmentName              String? // Added to identify the department
+  departmentIndex             Int?
+  questionIndex               Int? // Changed from `inputIndex` to `questionIndex`
+  question                    String?
+  answerFormat                String?
+  customMultipleChoiceAnswer  String? // Assuming this is for a single custom answer
+  customMultipleChoiceAnswers String[] // Array for multiple custom answers
+}
+
+model StoreHours {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  day       String?   @unique
+  start     DateTime?
+  end       DateTime?
+  userEmail String?
+}
+
+model DealerFees {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  dealer            String?
+  dealerAddress     String?
+  dealerProv        String?
+  dealerPhone       String?
+  omvicNumber       String?
+  userLoanProt      Int?
+  userTireandRim    String?
+  userGap           Int?
+  userExtWarr       String?
+  userServicespkg   Int?
+  vinE              Int?
+  lifeDisability    Int?
+  rustProofing      Int?
+  userLicensing     Int?
+  userFinance       String?
+  userDemo          String?
+  userGasOnDel      String?
+  userOMVIC         String?
+  userOther         Int?
+  userTax           String?
+  userAirTax        String?
+  userTireTax       String?
+  userGovern        String?
+  userPDI           String?
+  userLabour        String?
+  userMarketAdj     String?
+  userCommodity     String?
+  destinationCharge Int?
+  userFreight       String?
+  userAdmin         String?
+  userEmail         String?  @unique
+}
+
+model DealerInfo {
+  id            Int      @id @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  dealerName    String?
+  dealerAddress String?
+  dealerCity    String?
+  dealerProv    String?
+  dealerPostal  String?
+  dealerPhone   String?
+}
+
+model DealerFeesAdmin {
+  id                Int      @id @default(1)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  dealer            String?
+  dealerAddress     String?
+  dealerProv        String?
+  dealerPhone       String?
+  omvicNumber       String?
+  userLoanProt      Int?
+  userTireandRim    String?
+  userGap           Int?
+  userExtWarr       String?
+  userServicespkg   Int?
+  vinE              Int?
+  lifeDisability    Int?
+  rustProofing      Int?
+  userLicensing     Int?
+  userFinance       String?
+  userDemo          String?
+  userGasOnDel      String?
+  userOMVIC         String?
+  userOther         Int?
+  userTax           String?
+  userAirTax        String?
+  userTireTax       String?
+  userGovern        String?
+  userPDI           String?
+  userLabour        String?
+  userMarketAdj     String?
+  userCommodity     String?
+  destinationCharge Int?
+  userFreight       String?
+  userAdmin         String?
+}
+
+model StaffChat {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  label String // Address label name
-
-  addressComplete      String? // The complete combined address name
-  addressGoogleMapsURL String? // https://goo.gl/maps/1xABCDEF123456
-
-  street        String? // Street name
-  streetDetails String? // Street or location details, such as floor number
-  subDistrict   String?
-  district      String?
-  city          String?
-  province      String?
-  postalCode    String?
-  countryCode   String?
-
-  countryId     String?
-  provinceId    String?
-  cityId        String?
-  districtId    String?
-  subDistrictId String?
-
-  // Geolocation
-  latitude  Decimal? // -90 to 90, Example: -6.1234567
-  longitude Decimal? // -180 to 180, Example: 106.1234567
+  message    String?
+  sender     String?
+  senderName String?
+  to         String?
+  toName     String?
+  room       String?
+  token      String?
 }
 
 model Automation {
@@ -529,8 +461,133 @@ model InventoryMotorcycle {
   sold               String?
 }
 
+// ----------------------------------------------------------------------------
+// -------------------------------dealer-----------------------------------------
 // -----------------------------------------------------------------------------
-// External Assets
+// ----------------------------------------------------------------------------
+// -------------------------------service-----------------------------------------
+// -----------------------------------------------------------------------------
+model TimeEntry {
+  id          String    @id @default(uuid())
+  description String
+  startTime   DateTime  @default(now())
+  endTime     DateTime?
+  duration    Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userEmail String
+
+  workorderId String
+  workorders  Workorder @relation(fields: [workorderId], references: [id])
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+
+  @@index([workorderId])
+  @@index([userId])
+}
+
+model Workorder {
+  id          String  @id @default(uuid())
+  number      String
+  description String?
+  color       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  timeEntries TimeEntry[]
+  userEmail   String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+
+  @@index([userId])
+}
+
+model JobCodes {
+  id          String  @id @default(uuid())
+  number      String
+  description String?
+  price       String?
+  cost        String?
+}
+
+model DemoTime {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  end       String?
+  start     String?
+  userEmail String?
+  diff      String?
+}
+
+// ----------------------------------------------------------------------------
+// -------------------------------service-----------------------------------------
+// -----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
+// -------------------------------sales-----------------------------------------
+// -----------------------------------------------------------------------------
+model DailyPDF {
+  id                     String   @id @default(cuid())
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  userEmail              String?  @unique
+  todaysGoalGuest        String?
+  todaysActualGuest      String?
+  differenceGuest        String?
+  monthsGoalGuest        String?
+  todaysGoalTestDrives   String?
+  todaysActualTestDrives String?
+  differenceTestDrives   String?
+  monthsGoalTestDrives   String?
+  todaysGoalWriteUps     String?
+  todaysActualWriteUps   String?
+  differenceWriteUps     String?
+  monthsGoalWriteUps     String?
+  todaysGoalDeliveries   String?
+  todaysActualDeliveries String?
+  differenceDeliveries   String?
+  monthsGoalDeliveries   String?
+}
+
+model SalespersonSched {
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  day              String?
+  start            DateTime?
+  end              DateTime?
+  salespersonEmail String?
+  userEmail        String?
+  title            String?
+  resourceId       String?
+  userName         String?
+  userId           String?
+  name             String?
+}
+
+model Sales {
+  id String @id @default(cuid())
+
+  financeId String?
+  email     String
+  sales     Int?
+  sold      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ----------------------------------------------------------------------------
+// -------------------------------sales-----------------------------------------
+// -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// -------------------------------External Assets-----------------------------------------
 // -----------------------------------------------------------------------------
 model Image {
   id        String   @id @default(cuid())
@@ -554,8 +611,11 @@ model GetConversation {
   userEmail String?
 }
 
+// ----------------------------------------------------------------------------
+// -------------------------------External Assets-------------------------------
 // -----------------------------------------------------------------------------
-// scripts / templates
+// ----------------------------------------------------------------------------
+// -------------------------------scripts / templates---------------------------
 // -----------------------------------------------------------------------------
 model Script {
   id       String  @id @default(cuid())
@@ -611,8 +671,11 @@ model EmailClient {
   fromEmail   String?
 }
 
+// ----------------------------------------------------------------------------
+// -------------------------------scripts / templates---------------------------
 // -----------------------------------------------------------------------------
-// print docs
+// ----------------------------------------------------------------------------
+// -------------------------------print docs---------------------------
 // -----------------------------------------------------------------------------
 model UCDAForm {
   id        String   @id @default(cuid())
@@ -692,6 +755,9 @@ model TwilioSMSDetails {
   proxyPhone      String?
 }
 
+// ----------------------------------------------------------------------------
+// -------------------------------print docs---------------------------
+// -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // finance / clients
 // -----------------------------------------------------------------------------
@@ -840,6 +906,8 @@ model Part {
   description String?
   category    String?
   subCategory String?
+  onOrder     Int?
+  distributer String?
 
   @@index([partNumber])
 }
@@ -1007,6 +1075,7 @@ model Finance {
   tradeVin            String?
   tradeTrim           String?
   tradeMileage        String?
+  tradeLocation       String?
   trim                String?
   vin                 String?
   leadNote            String?
@@ -1015,6 +1084,7 @@ model Finance {
   bikeStatus          String?
   lien                String?
   dob                 String?
+  othTax              String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

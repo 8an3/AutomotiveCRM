@@ -56,6 +56,7 @@ const todoRoadmap = [
   // ------------------------------------------------------------------------------DEALER ONBOARDING------------------------------------------------------------------------
   { type: "dealer onboarding", desc: "invite user section where it send an email with links to the crm and " },
 
+  { type: "dealer onboarding", desc: "role specific invites, for example when invitiing a tech only show him what hes going to be using maybe even see if you can book mark for them to make it super easy" },
   { type: "dealer onboarding", desc: "new sales page with upgrades" },
   { type: "dealer onboarding", desc: "automate on boarding" },
   { type: "dealer onboarding", desc: "quote how-to" },

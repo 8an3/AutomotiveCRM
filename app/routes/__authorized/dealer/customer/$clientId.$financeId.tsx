@@ -1,6 +1,6 @@
 
 /* eslint-disable tailwindcss/classnames-order */
-import { Form, Link, useActionData, useFetcher, useLoaderData, useSubmit, useNavigation, useParams } from "@remix-run/react";
+import { Form, Link, useActionData, useFetcher, useLoaderData, useSubmit, useNavigation, useParams, useNavigate } from "@remix-run/react";
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { ClientResultFunction, ClientStateFunction, } from "~/components/lists/clientResultList";
 import { type DataFunctionArgs, type ActionFunction, json, type LinksFunction, redirect } from '@remix-run/node'
@@ -77,15 +77,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
+//import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, } from "~/other/dropdown-menu";
 import {
   Pagination,
   PaginationContent,
@@ -144,6 +137,8 @@ import {
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { toast } from "sonner"
 import { FaMotorcycle } from "react-icons/fa";
+import { ScrollArea } from "~/other/scrollarea";
+import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 
 
 import { ImageSelectNav } from '~/overviewUtils/imageselect'
@@ -152,7 +147,16 @@ import manitouIndex from '~/logos/manitouIndex.png'
 import Harley from '~/components/dashboardCustId/hdIcon.png'
 import second from '~/styles/second.css'
 import CustomerGen from "../document/customerGen";
-
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer"
 
 import { overviewLoader, overviewAction, financeIdLoader } from '~/components/actions/overviewActions'
 import EmailSheet from '~/overviewUtils/Emails'
@@ -162,10 +166,14 @@ import ManitouOptions from '~/overviewUtils/manitouOptions'
 import DisplayModel from '~/overviewUtils/modelDisplay'
 import DealerFeesDisplay from '~/overviewUtils/dealerFeesDisplay'
 import ContactInfoDisplay from '~/overviewUtils/contactInfoDisplay'
-import * as Toast from '@radix-ui/react-toast';
 import ClientProfile from '~/components/dashboard/calls/actions/clientProfile'
 // <Sidebar />
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import { PrintSpec } from "~/overviewUtils/printSpec";
+import { CiEdit } from "react-icons/ci";
+import { Calendar as SmallCalendar } from '~/components/ui/calendar';
+import { FaSave } from "react-icons/fa";
+import UnitPicker from "~/components/dashboard/unitPicker/unitPicker";
 
 /**  const [formData, setFormData] = useState({
     referral: mergedFinanceList.referral || "off",
@@ -198,6 +206,7 @@ export default function Dashboard() {
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
   const submit = useSubmit();
+  const navigate = useNavigate()
   let formRef = useRef();
   const [value, onChange] = useState();
   const timerRef = React.useRef(0);
@@ -252,6 +261,7 @@ export default function Dashboard() {
   const currentTime = `${hour}:${min}:${currentSecond}`
   console.log(`Current time is `, currentTime);
   const time = `${hour}:${min}:00`
+
   useEffect(() => {
     if (mergedFinanceList.tradeDesc === null || mergedFinanceList.tradeDesc === undefined || mergedFinanceList.tradeDesc === '') {
       setTradeToggled(false);
@@ -459,6 +469,8 @@ export default function Dashboard() {
   type User = (typeof users)[number]
 
   const [open, setOpen] = React.useState(false)
+  const [openAppt, setOpenAppt] = React.useState(false)
+  const [openComms, setOpenComms] = React.useState(false)
   const [selectedUsers, setSelectedUsers] = React.useState<User[]>([])
 
   const [messages, setMessages] = React.useState([
@@ -502,11 +514,9 @@ export default function Dashboard() {
     { name: 'tradeMake', value: finance[0].tradeMake, placeholder: 'Brand' },
     { name: 'tradeDesc', value: finance[0].tradeDesc, placeholder: 'Model' },
     { name: 'tradeTrim', value: finance[0].tradeTrim, placeholder: 'Trim' },
-    { name: 'stockNum', value: finance[0].stockNum, placeholder: 'Stock Number' },
-    { name: 'modelCode', value: finance[0].modelCode, placeholder: 'Model Code' },
     { name: 'tradeColor', value: finance[0].tradeColor, placeholder: 'Color' },
     { name: 'tradeMileage', value: finance[0].tradeMileage, placeholder: 'Mileage' },
-    { name: 'location', value: finance[0].location, placeholder: 'Location' },
+    { name: 'tradeLocation', value: finance[0].tradeLocation, placeholder: 'Location' },
     { name: 'tradeVin', value: finance[0].tradeVin, placeholder: 'VIN' },
   ]
 
@@ -535,57 +545,12 @@ export default function Dashboard() {
 
   ];
 
-  const handleCheckboxChange = (name: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: prevData[name] === 'on' ? 'off' : 'on',
+  const handleCheckboxChange = (name, isChecked) => {
+    setCheckedItems((prevCheckedItems) => ({
+      ...prevCheckedItems,
+      [name]: isChecked ? (prevCheckedItems[name] ?? new Date().toISOString()) : false,
     }));
   };
-
-  function ClientResultFunction({ formData, }) {
-    let clientResultList = [
-
-      { name: 'referral', value: formData.referral, label: 'Referral', },
-      { name: 'visited', value: formData.visited, label: 'Visited', },
-      { name: 'bookedApt', value: formData.bookedApt, label: 'Booked Apt', },
-      { name: 'aptShowed', value: formData.aptShowed, label: 'Apt Showed', },
-      { name: 'aptNoShowed', value: formData.aptNoShowed, label: 'Apt No Showed', },
-      { name: 'testDrive', value: formData.testDrive, label: 'Test Drive', },
-      { name: 'seenTrade', value: formData.seenTrade, label: 'Seen Trade', },
-      { name: 'metService', value: formData.metService, label: 'Met Service', },
-      { name: 'metManager', value: formData.metManager, label: 'Met Manager', },
-      { name: 'metParts', value: formData.metParts, label: 'Met Parts', },
-      { name: 'sold', value: formData.sold, label: 'Sold', },
-      { name: 'deposit', value: formData.deposit, label: 'Deposit', },
-      { name: 'refund', value: formData.refund, label: 'Refund', },
-      { name: 'turnOver', value: formData.turnOver, label: 'Turn Over', },
-      { name: 'financeApp', value: formData.financeApp, label: 'Finance Application Done', },
-      { name: 'approved', value: formData.approved, label: 'approved', },
-      { name: 'signed', value: formData.signed, label: 'Signed Docs', },
-      { name: 'licensingSent', value: formData.licensingSent, label: 'Licensing Sent', },
-      { name: 'liceningDone', value: formData.liceningDone, label: 'Licening Done', },
-      { name: 'pickUpSet', value: formData.pickUpSet, label: 'Pick Up Date Set', },
-      { name: 'demoed', value: formData.demoed, label: 'Demoed' },
-      { name: 'delivered', value: formData.delivered, label: 'Delivered', },
-      { name: 'funded', value: formData.funded, label: 'Funded', },
-      { name: 'cancelled', value: formData.cancelled, label: 'Cancelled', },
-      { name: 'lost', value: formData.lost, label: 'Lost', },
-    ];
-
-    return clientResultList
-  }
-  const handleInputChange = (name, checked) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: checked ? 'on' : 'off',
-    }));
-  };
-
-  const [editUnits, setEditUnits] = useState(false)
-  function handleEditUnits() {
-    // Toggle the value of editUnits
-    setEditUnits((prevEditUnits) => !prevEditUnits);
-  }
 
   const errors = useActionData() as Record<string, string | null>;
 
@@ -635,8 +600,8 @@ export default function Dashboard() {
     lifeDisability: parseInt(deFees.lifeDisability) || 0,
     deliveryCharge: parseInt(finance[0].deliveryCharge) || 0,
     brand: finance[0].brand,
-    paintPrem: 0,//parseInt(modelData.paintPrem) || 0,
-    modelCode: 0,//modelData.modelCode || null,
+    paintPrem: 0, //parseInt(modelData.paintPrem) || 0,
+    modelCode: 0, //modelData.modelCode || null,
     model: finance[0].model,
     color: finance[0].color,
     stockNum: finance[0].stockNum,
@@ -653,14 +618,50 @@ export default function Dashboard() {
     userTireTax: parseInt(deFees.userTireTax) || 0,
     nat60: parseInt(finance[0].nat60) || 0,
     userOMVIC: parseInt(deFees.userOMVIC) || 0,
-    tradeValue: 0, deposit: 500, discount: 0, iRate: 10.99,
-    months: 60, discountPer: 0, biweeklyqc: 0, weeklyqc: 0,
-    biweeklNat: 0, weeklylNat: 0, biweekOth: 0, weeklyOth: 0, othTax: 13,
+    tradeValue: parseInt(finance[0].tradeValue) || 0,
+    deposit: parseInt(finance[0].deposit) || 500,
+    discount: parseInt(finance[0].discount) || 0,
+    iRate: parseInt(finance[0].iRate) || 10.99,
+    months: parseInt(finance[0].months) || 60,
+    discountPer: parseInt(finance[0].discountPer) || 0,
+    biweeklyqc: 0,
+    weeklyqc: 0,
+    biweeklNat: 0,
+    weeklylNat: 0,
+    biweekOth: 0,
+    weeklyOth: 0,
+    othTax: parseInt(finance[0].othTax) || 13,
     firstName: finance[0].firstName,
     lastName: finance[0].lastName,
     panAmAdpRide: 0,
     panAmTubelessLacedWheels: 0,
     hdWarrAmount: 0,
+
+    referral: finance[0].referral,
+    visited: finance[0].visited,
+    bookedApt: finance[0].bookedApt,
+    aptShowed: finance[0].aptShowed,
+    aptNoShowed: finance[0].aptNoShowed,
+    testDrive: finance[0].testDrive,
+    seenTrade: finance[0].seenTrade,
+    metService: finance[0].metService,
+    metManager: finance[0].metManager,
+    metParts: finance[0].metParts,
+    sold: finance[0].sold,
+    //  deposit: finance[0].deposit,
+    refund: finance[0].refund,
+    turnOver: finance[0].turnOver,
+    financeApp: finance[0].financeApp,
+    approved: finance[0].approved,
+    signed: finance[0].signed,
+    licensingSent: finance[0].licensingSent,
+    liceningDone: finance[0].liceningDone,
+    pickUpSet: finance[0].pickUpSet,
+    demoed: finance[0].demoed,
+    delivered: finance[0].delivered,
+    funded: finance[0].funded,
+    cancelled: finance[0].cancelled,
+    lost: finance[0].lost,
   };
 
 
@@ -1102,6 +1103,61 @@ export default function Dashboard() {
   }
   const [formData, setFormData] = useState(initial)
 
+  function ClientResultFunction({ formData, }) {
+    let clientResultList = [
+
+      { name: 'referral', value: formData.referral, label: 'Referral', },
+      { name: 'visited', value: formData.visited, label: 'Visited', },
+      { name: 'bookedApt', value: formData.bookedApt, label: 'Booked Apt', },
+      { name: 'aptShowed', value: formData.aptShowed, label: 'Apt Showed', },
+      { name: 'aptNoShowed', value: formData.aptNoShowed, label: 'Apt No Showed', },
+      { name: 'testDrive', value: formData.testDrive, label: 'Test Drive', },
+      { name: 'seenTrade', value: formData.seenTrade, label: 'Seen Trade', },
+      { name: 'metService', value: formData.metService, label: 'Met Service', },
+      { name: 'metManager', value: formData.metManager, label: 'Met Manager', },
+      { name: 'metParts', value: formData.metParts, label: 'Met Parts', },
+      { name: 'sold', value: formData.sold, label: 'Sold', },
+      { name: 'deposit', value: formData.deposit, label: 'Deposit', },
+      { name: 'refund', value: formData.refund, label: 'Refund', },
+      { name: 'turnOver', value: formData.turnOver, label: 'Turn Over', },
+      { name: 'financeApp', value: formData.financeApp, label: 'Finance Application Done', },
+      { name: 'approved', value: formData.approved, label: 'approved', },
+      { name: 'signed', value: formData.signed, label: 'Signed Docs', },
+      { name: 'licensingSent', value: formData.licensingSent, label: 'Licensing Sent', },
+      { name: 'liceningDone', value: formData.liceningDone, label: 'Licening Done', },
+      { name: 'pickUpSet', value: formData.pickUpSet, label: 'Pick Up Date Set', },
+      { name: 'demoed', value: formData.demoed, label: 'Demoed' },
+      { name: 'delivered', value: formData.delivered, label: 'Delivered', },
+      { name: 'funded', value: formData.funded, label: 'Funded', },
+      { name: 'cancelled', value: formData.cancelled, label: 'Cancelled', },
+      { name: 'lost', value: formData.lost, label: 'Lost', },
+    ];
+
+    return clientResultList
+  }
+  const handleInputChange = (name, checked) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: checked ? 'on' : 'off',
+    }));
+  };
+
+  const [editProgress, setEditProgress] = useState(false)
+  const [editUnits, setEditUnits] = useState(false)
+  const [editTradeUnits, setEditTradeUnits] = useState(false)
+  function handleEditUnits() {
+    // Toggle the value of editUnits
+    setEditUnits((prevEditUnits) => !prevEditUnits);
+  }
+  function handleEditTradeUnits() {
+    // Toggle the value of editUnits
+    setEditTradeUnits((prevEditTradeUnits) => !prevEditTradeUnits);
+  }
+  function handleProgressUnits() {
+    // Toggle the value of editUnits
+    setEditProgress((prevEditProgress) => !prevEditProgress);
+  }
+
   bmwTotal =
     initial.mPsgrSeat +
     initial.aeroPkg719 +
@@ -1537,6 +1593,7 @@ export default function Dashboard() {
     const sizeInBytes = new TextEncoder().encode(jsonString).length;
     return sizeInBytes;
   }
+  const lockedValue = Boolean(true)
 
 
   function DealerOptionsAmounts() {
@@ -1778,6 +1835,8 @@ export default function Dashboard() {
 
   const [firstPage, setFirstPage] = useState(true);
   const [secPage, setSecPage] = useState(false);
+  const [minForm, setMinForm] = useState('00');
+  const [hourForm, setHourForm] = useState('09');
 
 
   function handleNextPage() {
@@ -1800,14 +1859,99 @@ export default function Dashboard() {
       setSecPage(false)
     }
   }
+  const isDate = (date) => !isNaN(date) && date instanceof Date;
+
+  const [checkedItems, setCheckedItems] = useState({});
+
+  const handleCheckedChange = (name, isChecked) => {
+    setCheckedItems((prev) => ({ ...prev, [name]: isChecked }));
+    column.toggleVisibility(isChecked);
+  };
+
+  const items = ClientResultFunction({ formData });
+
+  const newDate = new Date()
+
+  interface Item {
+    name: string;
+    label: string;
+    value: string;
+  }
+
+  interface Props {
+    items: Item[];
+  }
+
+  //------------------------------------------------------------------------------//
+  //------------------------------------------------------------------------------//
+  //------------------------------------------------------------------------------//
+  /**  <Select className='bg-[#09090b] text-[#fafafa] border-[#262626] hover:text-[#02a9ff]  hover:border-[#02a9ff]'
+                      onValueChange={(value) => {
+
+                      }}>
+                      <SelectTrigger className="w-auto bg-[#09090b] text-[#fafafa] border-[#262626] hover:border-[#02a9ff] hover:text-[#02a9ff] mr-3 ">
+                        <SelectValue>Customer Progress</SelectValue>
+                      </SelectTrigger>
+                      <SelectContent className='bg-[#151518] text-[#fafafa]'>
+                        {ClientResultFunction({ formData }).map((item) => (
+                          <SelectItem
+                            checked={item.value === 'on' || (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'))}
+                            value={item.value}
+                          >
+                            {item.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+
+                      <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 gap-1 text-sm text-[#f2f2f2] border-[#f2f2f2]"
+                        >
+                          Customer Progress
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <Form method='post' >
+                          <ScrollArea className="h-[500px] w-[200px] rounded-md p-4 bg-[#151518] text-[#fafafa]">
+                            {items.map((item) => {
+                              const isChecked =
+                                item.value === 'on' ||
+                                (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
+                              return (
+                                <DropdownMenuCheckboxItem
+                                  key={item.name}
+                                  className="capitalize cursor-pointer"
+                                  checked={checkedItems[item.name] ?? isChecked}
+                                  value={item.value}
+                                  onCheckedChange={(e) => handleCheckedChange(item.name, e.target.checked)}
+                                >
+                                  {item.label}
+                                </DropdownMenuCheckboxItem>
+                              );
+                            })}
+                            <input type='hidden' name='financeId' value={finance[0].id} />
+
+
+                          </ScrollArea>
+                        </Form>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+
+                    */
   return (
     <div className="flex min-h-screen w-full flex-col bg-[#151518]">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-[#09090b] sm:flex">
         <SidebarNav mergedFinanceList={mergedFinanceList} finance={finance} />
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-[#151518] px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <Breadcrumb className="hidden md:flex">
+        <header className=" w-[50%] sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-transparent px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          <Breadcrumb className="hidden md:flex  text-[#fafafa]">
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
@@ -1837,217 +1981,428 @@ export default function Dashboard() {
             </BreadcrumbList>
           </Breadcrumb>
           <div className="relative ml-auto flex-1 md:grow-0">
-
           </div>
-
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-              <Card
-                className="sm:col-span-2 bg-[#09090b]" x-chunk="dashboard-05-chunk-0"
-              >
-                <CardHeader className="pb-3">
-                  <CardTitle className='grid grid-cols-2 justify-between'>
-                    <p>{finance[0].firstName} {finance[0].lastName}</p>
-                    <Badge className="">{finance[0].customerState}</Badge>
-                  </CardTitle>
-                  <CardDescription className="max-w-lg text-balance leading-relaxed">
-                    <p>{finance[0].model}</p>
-                  </CardDescription>
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-6">
+              <Card className="sm:col-span-2 bg-[#09090b] text-[#fafafa]" x-chunk="dashboard-05-chunk-0"  >
+                <CardHeader className="flex flex-row items-start bg-[#18181a] rounded-md">
+                  <div className="grid">
+                    <CardTitle className="group flex items-center text-sm">
+                      Customer Info
+                    </CardTitle>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className='grid grid-cols-2'>
-                    <div>
-                      <Button variant='ghost' className="cursor-pointer bg-transparent text-[#fafafa]  hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(finance[0].phone)} >
-                        <p>{finance[0].phone}</p>
-                        {copiedText === finance[0].phone && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
-                      </Button>
-                      <Button variant='ghost' className="cursor-pointer bg-transparent text-[#fafafa]  border-none hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(finance[0].email)} >
-                        <p>{finance[0].email}</p>
-                        {copiedText === finance[0].email && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
-                      </Button>
-                      <Button variant='ghost' className="cursor-pointer bg-transparent text-[#fafafa]  border-none hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(finance[0].address)} >
-                        <p>{finance[0].address}</p>
-                        {copiedText === finance[0].address && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
-                      </Button>
-                      <p>{finance[0].city}</p>
-                      <p>{finance[0].postal}</p>
-                      <p>{finance[0].postal}</p>
-                    </div>
-                    <div>
-
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button size="sm" variant="outline" className="h-8 gap-1">
-                            <Truck className="h-3.5 w-3.5" />
-                            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                              Edit Customer Info
-                            </span>
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                          <Form method='post' >
-                            <DialogHeader>
-                              <DialogTitle>Edit Customer Profile</DialogTitle>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                  First Name
-                                </Label>
-                                <Input id="name" defaultValue={clientFile.firstName} name='firstName' className="col-span-3" />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                  Last Name
-                                </Label>
-                                <Input id="name" defaultValue={clientFile.lastName}
-                                  name='lastName' className="col-span-3" />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                  Phone
-                                </Label>
-                                <Input id="name" defaultValue={clientFile.phone}
-                                  name='phone' className="col-span-3" />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                  Email
-                                </Label>
-                                <Input id="name" defaultValue={clientFile.email}
-                                  name='email' className="col-span-3" />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                  Address
-                                </Label>
-                                <Input id="name" defaultValue={clientFile.address}
-                                  name='address' className="col-span-3" />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                  City
-                                </Label>
-                                <Input id="name" defaultValue={clientFile.city}
-                                  name='city' className="col-span-3" />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                  Province
-                                </Label>
-                                <Input id="name" defaultValue={clientFile.province}
-                                  name='province' className="col-span-3" />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                  Postal Code
-                                </Label>
-                                <Input id="name" defaultValue={clientFile.postal}
-                                  name='postal' className="col-span-3" />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                  Driver's Lic.
-                                </Label>
-                                <Input id="name" defaultValue={clientFile.dl}
-                                  name='dl' className="col-span-3" />
-                              </div>
-                            </div>
-                            <DialogFooter>
-                              <input type='hidden' name="userEmail" defaultValue={user.email} />
-                              <input type='hidden' name="intent" defaultValue='updateCustomerProfile' />
-                              <Input type="hidden" defaultValue={finance[0].dashboardId} name="dashboardId" />
-                              <Input type="hidden" defaultValue={finance[0].id} name="clientId" />
-                              <Input type="hidden" defaultValue={finance[0].id} name="financeId" />
-                              <Input type="hidden" defaultValue={clientFile.id} name="clientfileId" />
-
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button>Save changes</Button>
-
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      This action cannot be undone. This will permanently change the customers profile information.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <ButtonLoading
-                                      size="lg"
-                                      value='updateFinanceTwo'
-                                      className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
-                                      name="intent" type="submit"
-                                      isSubmitting={isSubmitting}
-                                      onClick={() => toast.success(`${data.firstName}'s customer file is updated...`)}
-                                      loadingText={`${data.firstName}'s customer file is updated...`}
-                                    >
-                                      <AlertDialogAction>Continue</AlertDialogAction>
-                                    </ButtonLoading>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </DialogFooter>
-                          </Form>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </div>
+                  <ul className="grid gap-3 text-sm mt-2">
+                    <li className="flex items-center justify-between">
+                      <span className="text-[#909098]">
+                        First Name
+                      </span>
+                      <span>{finance[0].firstName}</span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-[#909098]">
+                        Last Name
+                      </span>
+                      <span> {finance[0].lastName}</span>
+                    </li>
+                    <li className=" group flex items-center justify-between">
+                      <div className='flex'>
+                        <span className="text-[#909098]">
+                          Phone
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => copyText(finance[0].phone)}
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Copy</span>
+                        </Button>
+                        {copiedText === finance[0].phone && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                      </div>
+                      <span>{finance[0].phone}  </span>
+                    </li>
+                    <li className=" group flex items-center justify-between">
+                      <div className='flex'>
+                        <span className="text-[#909098]">
+                          Email
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => copyText(finance[0].email)}
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Copy</span>
+                        </Button>
+                        {copiedText === finance[0].email && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                      </div>
+                      <span>{finance[0].email}  </span>
+                    </li>
+                    <li className=" group flex items-center justify-between">
+                      <div className='flex'>
+                        <span className="text-[#909098]">
+                          Address
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => copyText(finance[0].address)}
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Copy</span>
+                        </Button>
+                        {copiedText === finance[0].address && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                      </div>
+                      <span>{finance[0].address}  </span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-[#909098]">
+                        City
+                      </span>
+                      <span>{finance[0].city}</span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-[#909098]">
+                        Postal
+                      </span>
+                      <span>{finance[0].postal}</span>
+                    </li>
+                  </ul>
                 </CardContent>
-              </Card>
+                <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                  <div>
+                    <Badge >{finance[0].customerState}</Badge>
+                  </div>
+                  <Dialog  >
+                    <DialogTrigger asChild>
+                      <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
+                        <CiEdit className="h-3.5 w-3.5" />
+                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                          Edit Customer Info
+                        </span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                      <Form method='post'>
+                        <DialogHeader className="px-4 pb-4 pt-5">
+                          <DialogTitle>Edit Customer Profile Info</DialogTitle>
+                        </DialogHeader>
+                        <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                        <div className="grid gap-3 mx-3 mb-3">
+                          <div className="grid gap-3">
+                            <Label htmlFor="name"> First Name</Label>
+                            <Input
+                              defaultValue={clientFile.firstName} name='firstName'
+                              type="text"
+                              className="w-full bg-[#09090b] border-[#27272a] "
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <Label htmlFor="name"> Last Name</Label>
+                            <Input
+                              defaultValue={clientFile.lastName} name='lastName'
+                              type="text"
+                              className="w-full bg-[#09090b] border-[#27272a] "
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <Label htmlFor="name">Phone</Label>
+                            <Input
+                              defaultValue={clientFile.phone} name='phone'
+                              type="text"
+                              className="w-full bg-[#09090b] border-[#27272a] "
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <Label htmlFor="name">Email</Label>
+                            <Input
+                              defaultValue={clientFile.email} name='email'
+                              type="text"
+                              className="w-full bg-[#09090b] border-[#27272a] "
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <Label htmlFor="name">Address</Label>
+                            <Input
+                              defaultValue={clientFile.address} name='address'
+                              type="text"
+                              className="w-full bg-[#09090b] border-[#27272a] "
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <Label htmlFor="name">City</Label>
+                            <Input
+                              defaultValue={clientFile.city} name='city'
+                              type="text"
+                              className="w-full bg-[#09090b] border-[#27272a] "
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <Label htmlFor="name">Postal Code</Label>
+                            <Input
+                              defaultValue={clientFile.postal} name='postal'
+                              type="text"
+                              className="w-full bg-[#09090b] border-[#27272a] "
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <Label htmlFor="name">Driver's Lic.</Label>
+                            <Input
+                              defaultValue={clientFile.dl} name='dl'
+                              type="text"
+                              className="w-full bg-[#09090b] border-[#27272a] "
+                            />
+                          </div>
 
-              <Card x-chunk="dashboard-05-chunk-1" className="bg-[#09090b]">
-                <CardHeader className="pb-2">
-                  <CardTitle>{finance[0].year} {finance[0].brand}</CardTitle>
-                  <CardDescription className="max-w-lg text-balance leading-relaxed">
-                    <p>{finance[0].model}</p>
-                  </CardDescription>
+                        </div>
+                        <input type='hidden' name='phone' defaultValue={finance[0].phone} />
+                        <input type='hidden' name='email' defaultValue={finance[0].email} />
+                        <input type='hidden' name='lastName' defaultValue={finance[0].lastName} />
+                        <input type='hidden' name='firstName' defaultValue={finance[0].firstName} />
+                        <input type='hidden' name='brand' defaultValue={finance[0].brand} />
+                        <input type='hidden' name='unit' defaultValue={finance[0].model} />
+                        <input type='hidden' name='brand' defaultValue={finance[0].brand} />
+                        <input type='hidden' name='financeId' defaultValue={finance[0].id} />
+                        <input type='hidden' name='userId' defaultValue={user.id} />
+                        <input type='hidden' name='apptType' defaultValue='sales' />
+                        <input type='hidden' name='min' defaultValue={minForm} />
+                        <input type='hidden' name='hour' defaultValue={hourForm} />
+                        <input type='hidden' name="dashboardId" defaultValue={finance[0].dashboardId} />
+                        <input type='hidden' name="clientId" defaultValue={finance[0].id} />
+                        <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
+
+                        <DialogFooter className=" border-t border-[#27272a] p-4  ">
+                          <div className='flex justify-center' >
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  size='sm'
+                                  className=' bg-[#dc2626]'
+                                >
+                                  Save changes
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently change the customers profile information.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                                  <ButtonLoading
+                                    size="sm"
+                                    value="updateClientInfoFinance"
+                                    className="w-auto cursor-pointer ml-auto mt-5 bg-[#dc2626]"
+                                    name="intent"
+                                    type="submit"
+                                    isSubmitting={isSubmitting}
+                                    onClick={() => toast.success(`${finance[0].firstName}'s customer file is updated...`)}
+                                    loadingText={`${data.firstName}'s customer file is updated...`}
+                                  >
+                                    <AlertDialogAction>Continue
+                                      <PaperPlaneIcon className="h-4 w-4 ml-2" />
+
+                                    </AlertDialogAction>
+                                  </ButtonLoading>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+
+                          </div>
+                        </DialogFooter>
+                      </Form>
+
+                    </DialogContent>
+                  </Dialog>
+                </CardFooter>
+              </Card>
+              <Card x-chunk="dashboard-05-chunk-1 " className="bg-[#09090b] text-[#fafafa] sm:col-span-2">
+                <CardHeader className="flex flex-row items-start bg-[#18181a] rounded-md">
+                  <div className="grid ">
+                    <CardTitle className="group flex items-center text-sm">
+                      Current Vehichle
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </CardTitle>
+                  </div>
                 </CardHeader>
                 <CardContent className='text-sm'>
-                  <div className='flex-col'>
-                    <p>Color: {finance[0].color}</p>
-                    <p>VIN: {finance[0].vin}</p>
-                    <p>Current Mileage: {finance[0].vin}</p>
-                    <Button variant='outline' className="cursor-pointer bg-transparent text-[#fafafa]  border-none hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(finance[0].vin)} >
-                      <p>{finance[0].vin}</p>
-                      {copiedText === finance[0].vin && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
-                    </Button>
-                  </div>
+                  <ul className="grid gap-3 mt-3">
+                    <li className="flex items-center justify-between">
+                      <span className="text-[#909098]">
+                        Year
+                      </span>
+                      <span>{finance[0].year}</span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-[#909098]">
+                        Brand
+                      </span>
+                      <span>{finance[0].brand}</span>
+                    </li>
+                    <li className=" group flex items-center justify-between">
+                      <div className='flex'>
+                        <span className="text-[#909098]">
+                          Model
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => copyText(finance[0].model)}
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Copy</span>
+                        </Button>
+                        {copiedText === finance[0].model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                      </div>
+                      <span>{finance[0].model}  </span>
+                    </li>
+
+                    <li className="flex items-center justify-between">
+                      <span className="text-[#909098]">
+                        Color
+                      </span>
+                      <span>{finance[0].color}</span>
+                    </li>
+                    <li className=" group flex items-center justify-between">
+                      <div className='flex'>
+                        <span className="text-[#909098]">
+                          VIN
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => copyText(finance[0].vin)}
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Copy</span>
+                        </Button>
+                        {copiedText === finance[0].vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                      </div>
+                      <span>{finance[0].vin}  </span>
+                    </li>
+
+                    <li className="flex items-center justify-between">
+                      <span className="text-[#909098]">
+                        Current Mileage
+                      </span>
+                      <span>{finance[0].mileage}</span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-[#909098]">
+                        Location
+                      </span>
+                      <span>{finance[0].location}</span>
+                    </li>
+                  </ul>
+
                 </CardContent>
                 <CardFooter>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2" className="bg-[#09090b]">
-                <CardHeader className="pb-2">
-                  <CardDescription>Customer Progress</CardDescription>
-
-                </CardHeader>
-                <CardContent className=''>
-                  <div className='max-h-[20vh] h-auto overflow-y-scroll'>
-                    {ClientResultFunction({ formData })
-                      .map((item) => (
-                        <div key={item.name} className='flex justify-between items-center '>
-                          <label htmlFor={item.name}>{item.label}</label>
-                          <input
-                            className='mr-3 cursor-pointer'
-                            type="checkbox"
-                            id={item.name}
-                            name={item.name}
-                            checked={item.value === 'on' || (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'))}
-                            onChange={(e) => handleInputChange(item.name, e.target.checked)}
-                          />
-
-                        </div>
-                      ))}
+              <Card x-chunk="dashboard-05-chunk-2" className="bg-[#09090b] text-[#fafafa] sm:col-span-2 rounded-md flex flex-col h-full">
+                <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                  <div className="grid">
+                    <CardTitle className="group flex items-center text-sm">
+                      Customer Progress
+                    </CardTitle>
                   </div>
+                </CardHeader>
+                <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip mt-3">
+                  <div className="max-h-[20vh] h-auto">
+                    {editProgress === true && (
+                      <Form method="post">
+                        {items
 
-                </CardContent >
+                          .map((item) => {
+                            const isChecked =
+                              item.value === 'on' ||
+                              new Date(item.value) > new Date('2022-01-01');
+                            return (
+                              <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
+                                <label htmlFor={item.name}>{item.label}</label>
+                                <IndeterminateCheckbox
+                                  name={item.name}
+                                  indeterminate={checkedItems[item.name] === undefined && isChecked}
+                                  checked={checkedItems[item.name] ?? isChecked}
+                                  onChange={(e) => handleCheckboxChange(item.name, e.target.checked)}
+                                  className="border-[#c72323]"
+                                />
+                              </div>
+                            );
+                          })}
+                        <input type="hidden" defaultValue={finance[0].id} name="financeId" />
 
+                        <ButtonLoading
+                          size="sm"
+                          value="dealProgress"
+                          className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-[#dc2626]"
+                          name="intent"
+                          type="submit"
+                          isSubmitting={isSubmitting}
+                          onClick={() => toast.success(`${finance[0].firstName}'s customer file is updated...`)}
+                          loadingText={`${data.firstName}'s customer file is updated...`}
+                        >
+                          Save
+                          <FaSave className="h-4 w-4 ml-2" />
+                        </ButtonLoading>
+                      </Form>
+                    )}
+                    {editProgress === false && (
+                      items
+                        .filter((item) => {
+                          const isChecked =
+                            item.value === 'on' ||
+                            (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
+                          return checkedItems[item.name] ?? isChecked;
+                        })
+                        .map((item) => {
+                          const isChecked =
+                            item.value === 'on' ||
+                            (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
+                          return (
+                            <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
+                              <label htmlFor={item.name}>{item.label}</label>
+                              <IndeterminateCheckbox
+                                name={item.name}
+                                indeterminate={checkedItems[item.name] === undefined && isChecked}
+                                checked={checkedItems[item.name] ?? isChecked}
+                                onChange={(e) => handleCheckboxChange(item.name, e.target.checked)}
+                                className="border-[#c72323]"
+                              />
+                            </div>
+                          );
+                        })
+                    )}
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-self-end flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                  <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => handleProgressUnits()}>
+                    <Truck className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                      Edit Progress
+                    </span>
+                  </Button>
+                </CardFooter>
               </Card>
+
             </div>
             <Tabs defaultValue="Sales">
               <div className="flex items-center">
@@ -2058,190 +2413,198 @@ export default function Dashboard() {
                   <TabsTrigger value="Accessories">Accessories</TabsTrigger>
                   <TabsTrigger value="Parts">Parts</TabsTrigger>
                 </TabsList>
-                <div className="ml-auto flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-7 gap-1 text-sm"
-                      >
-                        <ListFilter className="h-3.5 w-3.5" />
-                        <span className="sr-only sm:not-sr-only">Filter</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuCheckboxItem checked>
-                        Fulfilled
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem>
-                        Declined
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem>
-                        Refunded
-                      </DropdownMenuCheckboxItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 gap-1 text-sm"
-                  >
-                    <File className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only">Export</span>
-                  </Button>
-                </div>
+
               </div>
               <TabsContent value="Sales" className="  text-[#f2f2f2] rounded-lg">
                 <div className='grid grid-cols-2' >
-                  <div>
-                    <Card
-                      className="overflow-hidden" x-chunk="dashboard-05-chunk-4 mx-2"
-                    >
-                      <CardHeader className="flex flex-row items-start bg-[#18181a]">
-                        <div className="grid gap-0.5">
-                          <CardTitle className="group flex items-center gap-2 text-lg">
-                            Wanted Vehichle
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                            >
-                              <Copy className="h-3 w-3" />
-                              <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
-                            </Button>
-                          </CardTitle>
-                        </div>
+                  <Card
+                    className="overflow-hidden  flex flex-col h-full" x-chunk="dashboard-05-chunk-4 mx-2"
+                  >
+                    <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                      <div className="grid gap-0.5">
+                        <CardTitle className="group flex items-center gap-2 text-lg">
+                          Wanted Vehichle
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                          >
+                            <Copy className="h-3 w-3" />
+                            <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
+                          </Button>
+                        </CardTitle>
+                      </div>
 
-                      </CardHeader>
-                      <CardContent className="p-6 text-sm bg-[#09090b]">
+                    </CardHeader>
+                    <CardContent className="flex-grow !grow  p-6 text-sm bg-[#09090b]">
 
-                        {editUnits === false && (
+                      {editUnits === false && (
+                        <ul className="grid gap-3">
+                          {WantedData.map((item, index) => (
+                            <li key={index} className="flex items-center justify-between">
+                              <span className="text-[#909098]">
+                                {item.placeholder}
+                              </span>
+                              <span>{item.value}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {editUnits === true && (
+                        <fetcher.Form method='post' >
                           <ul className="grid gap-3">
                             {WantedData.map((item, index) => (
                               <li key={index} className="flex items-center justify-between">
                                 <span className="text-[#909098]">
                                   {item.placeholder}
                                 </span>
-                                <span>{item.value}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                        {editUnits === true && (
-                          <ul className="grid gap-3">
-                            {WantedData.map((item, index) => (
-                              <li key={index} className="flex items-center justify-between">
-                                <span className="text-[#909098]">
-                                  {item.placeholder}
-                                </span>
-                                <Input name={item.name} defaultValue={item.value} className='w-[200px]' />
+                                <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-[#09090b] border-[#27272a]' />
 
                               </li>
                             ))}
                           </ul>
-                        )}
-                      </CardContent>
-                      <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
-                        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditUnits())}>
-                          <Truck className="h-3.5 w-3.5" />
-                          <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                            Edit Unit
-                          </span>
-                        </Button>
-                        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditUnits())}>
-                          <Truck className="h-3.5 w-3.5" />
-                          <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                            Assign Stock Unit
-                          </span>
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
-                  <div>
-                    <Card
-                      className="overflow-hidden mx-2" x-chunk="dashboard-05-chunk-4"
-                    >
-                      <CardHeader className="flex flex-row items-start bg-[#18181a]">
-                        <div className="grid gap-0.5">
-                          <CardTitle className="group flex items-center gap-2 text-lg">
-                            Trade Vehichle
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                            >
-                              <Copy className="h-3 w-3" />
-                              <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
-                            </Button>
-                          </CardTitle>
-                        </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            name='intent'
+                            value='updateWantedUnit'
+                            className="h-8 gap-1 ml-auto bg-[#dc2626] mt-3 "
+                            onClick={() => {
+                              toast.success(`Wanted unit saved!`)
+                            }}>
+                            <FaSave className="h-3.5 w-3.5" />
+                            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                              Save Unit
+                            </span>
+                          </Button>
+                        </fetcher.Form>
+                      )}
+                    </CardContent>
+                    <CardFooter className="flex justify-self-end flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                      <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditUnits())}>
+                        <Truck className="h-3.5 w-3.5" />
+                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                          Edit Unit
+                        </span>
+                      </Button>
+                      <UnitPicker data={data} />
 
-                      </CardHeader>
-                      <CardContent className="p-6 text-sm bg-[#09090b]">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-7 gap-1 text-sm text-[#f2f2f2] border-[#f2f2f2]"
+                          >
+                            <ListFilter className="h-3.5 w-3.5" />
+                            <span className="sr-only sm:not-sr-only"> Sales Person</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuCheckboxItem checked>
+                            Fulfilled
+                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuCheckboxItem>
+                            Declined
+                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuCheckboxItem>
+                            Refunded
+                          </DropdownMenuCheckboxItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </CardFooter>
+                  </Card>
+                  <Card
+                    className="overflow-hidden mx-2  flex flex-col h-full" x-chunk="dashboard-05-chunk-4"
+                  >
+                    <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                      <div className="grid gap-0.5">
+                        <CardTitle className="group flex items-center gap-2 text-lg">
+                          Trade Vehichle
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                          >
+                            <Copy className="h-3 w-3" />
+                            <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
+                          </Button>
+                        </CardTitle>
+                      </div>
 
-                        {editUnits === false && (
+                    </CardHeader>
+                    <CardContent className="flex-grow !grow  p-6 text-sm bg-[#09090b]">
+
+                      {editTradeUnits === false && (
+                        <ul className="grid gap-3">
+                          {TradeData.map((item, index) => (
+                            <li key={index} className="flex items-center justify-between">
+                              <span className="text-[#909098]">
+                                {item.placeholder}
+                              </span>
+                              <span>{item.value}</span>
+
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
+                      {editTradeUnits === true && (
+                        <fetcher.Form method='post' >
                           <ul className="grid gap-3">
                             {TradeData.map((item, index) => (
                               <li key={index} className="flex items-center justify-between">
                                 <span className="text-[#909098]">
                                   {item.placeholder}
                                 </span>
-                                <span>{item.value}</span>
-
+                                <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-[#09090b] border-[#27272a]' />
                               </li>
                             ))}
                           </ul>
-                        )}
-                        {editUnits === true && (
-                          <ul className="grid gap-3">
-                            {TradeData.map((item, index) => (
-                              <li key={index} className="flex items-center justify-between">
-                                <span className="text-[#909098]">
-                                  {item.placeholder}
-                                </span>
-                                <Input name={item.name} defaultValue={item.value} className='w-[200px]' />
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </CardContent>
-                      <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
-                        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditUnits())}>
-                          <Truck className="h-3.5 w-3.5" />
-                          <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                            Edit Unit
-                          </span>
-                        </Button>
-                        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditUnits())}>
-                          <Truck className="h-3.5 w-3.5" />
-                          <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                            Assign Stock Unit
-                          </span>
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            name='intent'
+                            value='updateTrade'
+                            className="h-8 gap-1 ml-auto bg-[#dc2626] mt-3 "
+                            onClick={() => {
+                              toast.success(`Trade unit saved!`)
+                            }}>
+                            <FaSave className="h-3.5 w-3.5" />
+                            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                              Save Unit
+                            </span>
+                          </Button>
+                        </fetcher.Form>
+                      )}
+                    </CardContent>
+                    <CardFooter className=" items-end justify-end  flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                      <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditTradeUnits())}>
+                        <Truck className="h-3.5 w-3.5" />
+                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                          Edit Unit
+                        </span>
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 </div>
               </TabsContent>
               <TabsContent value="Finance">
-
                 <div className="">
-
                   <div className="mx-auto mt-10 mb-10">
-                    <Card className=" w-[550px] rounded-md">
+                    <Card className=" w-[550px] rounded-md text-[#fafafa] mx-auto">
                       <CardHeader className="bg-[#18181a] flex flex-row items-start t-rounded-md">
                         <div className="grid gap-0.5">
                           <CardTitle className="group flex items-center gap-2 text-lg">
                             Payment Calculator
                           </CardTitle>
-                          <CardDescription>{date.toISOString}</CardDescription>
+                          <CardDescription>{date}</CardDescription>
                         </div>
                         <div className="ml-auto flex items-center gap-1">
                           <Button size="sm" variant="outline" className="h-8 gap-1">
-                            <Truck className="h-3.5 w-3.5" />
+                            <CiEdit className="h-3.5 w-3.5" />
                             <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
                               Emails
                             </span>
@@ -2306,50 +2669,45 @@ export default function Dashboard() {
                           </DropdownMenu>
                         </div>
                       </CardHeader>
-                      {firstPage && (
+                      {secPage && (
                         <>
                           <CardContent className="p-6 text-sm bg-[#09090b]">
                             <div className="grid gap-3">
                               <div className="font-semibold">Payment Details</div>
-
-                              {/*}
-            <ul className="grid gap-3">
-          <li className="flex items-center justify-between">
-            <span className="text-[#8a8a93]">Brand</span>
-            <span>{brand}</span>
-          </li>
-          <li className="flex items-center justify-between">
-            <span className="text-[#8a8a93]">Model</span>
-            <span> {model}</span>
-          </li>
-          {brand !== "BMW-Motorrad" && (
-            <>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Color</span>
-                <span>{color}</span>
-              </li>
-            </>
-          )}
-          {modelCode !== null && (
-            <li className="flex items-center justify-between">
-              <span className="text-[#8a8a93]">Model Code</span>
-              <span>{modelCode}</span>
-            </li>
-          )}
-          {modelCode !== null && (
-            <li className="flex items-center justify-between">
-              <span className="text-[#8a8a93]">Year</span>
-              <span>{year}</span>
-            </li>
-          )}
-          {stockNum !== null && (
-            <li className="flex items-center justify-between">
-              <span className="text-[#8a8a93]">Stock Number</span>
-              <span>{stockNum}</span>
-            </li>
-          )}
-            </ul>
-              */}
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Brand</span>
+                                <span>{finance[0].brand}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Model</span>
+                                <span> {finance[0].model}</span>
+                              </li>
+                              {finance[0].brand !== "BMW-Motorrad" && (
+                                <>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Color</span>
+                                    <span>{finance[0].color}</span>
+                                  </li>
+                                </>
+                              )}
+                              {finance[0].modelCode !== null && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Model Code</span>
+                                  <span>{finance[0].modelCode}</span>
+                                </li>
+                              )}
+                              {finance[0].modelCode !== null && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Year</span>
+                                  <span>{finance[0].year}</span>
+                                </li>
+                              )}
+                              {finance[0].stockNum !== null && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Stock Number</span>
+                                  <span>{finance[0].stockNum}</span>
+                                </li>
+                              )}
 
                               <ul className="grid gap-3">
                                 <li className="flex items-center justify-between">
@@ -2358,7 +2716,7 @@ export default function Dashboard() {
                                     <Input
                                       name="msrp"
                                       id="msrp"
-                                      className="h-8 w-20 text-right"
+                                      className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
                                       autoComplete="msrp"
                                       defaultValue={formData.msrp}
                                       onChange={handleChange}
@@ -2370,7 +2728,7 @@ export default function Dashboard() {
                                     <span className="text-[#8a8a93]">Freight</span>
                                     <span>
                                       <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right"
+                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
                                         defaultValue={formData.freight}
                                         placeholder="freight"
                                         type="text"
@@ -2386,7 +2744,7 @@ export default function Dashboard() {
                                     <span className="text-[#8a8a93]">PDI</span>
                                     <span>
                                       <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right"
+                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
                                         defaultValue={formData.pdi}
                                         placeholder="pdi"
                                         type="text"
@@ -2401,7 +2759,7 @@ export default function Dashboard() {
                                     <span className="text-[#8a8a93]">Admin</span>
                                     <span>
                                       <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right  "
+                                        className="mt-2 h-8 w-20 items-end justify-end  text-right  bg-[#09090b] border-[#27272a] "
                                         defaultValue={formData.admin}
                                         placeholder="admin"
                                         type="text"
@@ -2416,7 +2774,7 @@ export default function Dashboard() {
                                     <span className="text-[#8a8a93]">Commodity</span>
                                     <span>
                                       <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right"
+                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
                                         defaultValue={formData.commodity}
                                         placeholder="commodity"
                                         type="text"
@@ -2426,21 +2784,38 @@ export default function Dashboard() {
                                     </span>
                                   </li>
                                 )}
+
                                 <li className="flex items-center justify-between">
                                   <span className="text-[#8a8a93]">Accessories</span>
-                                  <span>${accessories}</span>
+                                  <span>
+                                    <Input
+                                      name="accessories"
+                                      id="msrp"
+                                      className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                      autoComplete="msrp"
+                                      defaultValue={formData.accessories}
+                                      onChange={handleChange}
+                                    />
+                                  </span>
                                 </li>
                                 <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">
-                                    Labour Hours
+                                  <span className="text-[#8a8a93]">Labour Hours</span>
+                                  <span>
+                                    <Input
+                                      name="labour"
+                                      id="msrp"
+                                      className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                      autoComplete="msrp"
+                                      defaultValue={formData.labour}
+                                      onChange={handleChange}
+                                    />
                                   </span>
-                                  <span>${finance[0].labour}</span>
                                 </li>
                                 <li className="flex items-center justify-between font-semibold">
                                   <span className="text-[#8a8a93]">Licensing</span>
                                   <span>
                                     <Input
-                                      className="ml-auto mt-2 h-8 w-20  justify-end text-right "
+                                      className="ml-auto mt-2 h-8 w-20  justify-end text-right bg-[#09090b] border-[#27272a] "
                                       defaultValue={licensing}
                                       placeholder="licensing"
                                       type="text"
@@ -2641,7 +3016,7 @@ export default function Dashboard() {
                                       <Input
                                         name="othTax"
                                         id="othTax"
-                                        className="h-8 w-20 text-right"
+                                        className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
                                         autoComplete="othTax"
                                         defaultValue={formData.othTax}
                                         onChange={handleChange}
@@ -2709,7 +3084,7 @@ export default function Dashboard() {
                                 <div className="grid w-full max-w-sm items-center gap-1.5">
                                   <label htmlFor="Term">Term</label>
                                   <Input
-                                    className="h-8 w-20"
+                                    className="h-8 w-20 bg-[#09090b] border-[#27272a] "
                                     name="months"
                                     id="months"
                                     autoComplete="months"
@@ -2725,7 +3100,7 @@ export default function Dashboard() {
                                     Rate
                                   </label>
                                   <Input
-                                    className="h-8 w-20 items-end justify-end text-right  "
+                                    className="h-8 w-20 items-end justify-end text-right bg-[#09090b] border-[#27272a]  "
                                     name="iRate"
                                     id="iRate"
                                     autoComplete="iRate"
@@ -2738,7 +3113,7 @@ export default function Dashboard() {
                                 <div className="grid w-full max-w-sm items-center gap-1.5">
                                   <label htmlFor="deposit">Deposit</label>
                                   <Input
-                                    className="h-8 w-20"
+                                    className="h-8 w-20 bg-[#09090b] border-[#27272a] "
                                     name="deposit"
                                     id="deposit"
                                     autoComplete="deposit"
@@ -2752,7 +3127,7 @@ export default function Dashboard() {
                                 <div className="grid w-full max-w-sm items-center gap-1.5 ">
                                   <label htmlFor="tradeValue">Trade Value</label>
                                   <Input
-                                    className="ml-auto h-8 w-20 text-right"
+                                    className="ml-auto h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
                                     name="tradeValue"
                                     id="tradeValue"
                                     autoComplete="tradeValue"
@@ -2765,7 +3140,7 @@ export default function Dashboard() {
                                 <div className="grid w-full max-w-sm items-center gap-1.5">
                                   <label htmlFor="deposit">Lien</label>
                                   <Input
-                                    className="h-8 w-20"
+                                    className="h-8 w-20 bg-[#09090b] border-[#27272a] "
                                     name="lien"
                                     id="lien"
                                     autoComplete="lien"
@@ -2779,65 +3154,75 @@ export default function Dashboard() {
 
                             <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                             <Drawer>
-                              <DrawerTrigger>Other Inputs</DrawerTrigger>
-                              <DrawerContent className='bg-[#09090b] w-1/2 mb-5'>
-                                <DrawerHeader>
-                                  <DrawerTitle>Changes to discounts and such</DrawerTitle>
-                                </DrawerHeader>
-                                <div className="grid  grid-cols-2">
-                                  <div className=" mt-2 ">
-                                    <div className="grid  max-w-sm items-center gap-1.5">
-                                      <label htmlFor="discount">Discount $ </label>
-                                      <Input
-                                        className="h-8 w-20"
-                                        name="discount"
-                                        id="discount"
-                                        autoComplete="discount"
-                                        defaultValue={discount}
-                                        onChange={handleChange}
-                                        type="number"
-                                      />
+                              <DrawerTrigger asChild>
+                                <Button variant="outline">Other Inputs</Button>
+                              </DrawerTrigger>
+                              <DrawerContent className='bg-[#09090b] text-[#fafafa]'>
+                                <div className="mx-auto w-full max-w-sm">
+                                  <DrawerHeader>
+                                    <DrawerTitle>Other Inputs</DrawerTitle>
+                                    <DrawerDescription>Changes to discounts and such</DrawerDescription>
+                                  </DrawerHeader>
+                                  <div className="p-4 pb-0">
+                                    <div className="flex items-center justify-center space-x-2">
+                                      <ul className="grid gap-3">
+                                        <li className="flex items-center justify-between">
+                                          <span className="text-[#8a8a93]">Discount $</span>
+                                          <span>
+                                            <Input
+                                              name="discount"
+                                              id="msrp"
+                                              className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                              autoComplete="msrp"
+                                              defaultValue={discount}
+                                              onChange={handleChange}
+                                            />
+                                          </span>
+                                        </li>
+                                        <li className="flex items-center justify-between">
+                                          <span className="text-[#8a8a93]"> Discount (1.1-15)%</span>
+                                          <span>
+                                            <Input
+                                              name="discountPer"
+                                              id="msrp"
+                                              className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                              autoComplete="msrp"
+                                              defaultValue={0}
+                                              onChange={handleChange}
+                                            />
+                                          </span>
+                                        </li>
+                                        <li className="flex items-center justify-between">
+                                          <span className="text-[#8a8a93]">Delivery Charge</span>
+                                          <span>
+                                            <Input
+                                              name="deliveryCharge"
+                                              id="msrp"
+                                              className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                              autoComplete="msrp"
+                                              defaultValue={deliveryCharge}
+                                              onChange={handleChange}
+                                            />
+                                          </span>
+                                        </li>
+                                        {totalLabour > 0 && (
+                                          <li className="flex items-center justify-between">
+                                            <span className="text-[#8a8a93]">Total Labour</span>
+                                            <span> ${totalLabour}</span>
+                                          </li>
+                                        )}
+                                      </ul>
                                     </div>
                                   </div>
-                                  <div className="ml-auto mt-2">
-                                    <div className="grid  max-w-sm items-center gap-1.5">
-                                      <label htmlFor="discountPer">
-                                        Discount (1.1-15)%
-                                      </label>
-                                      <Input
-                                        className="ml-auto h-8 w-20 text-right"
-                                        name="discountPer"
-                                        id="discountPer"
-                                        autoComplete="discountPer"
-                                        defaultValue={0}
-                                        onChange={handleChange}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className=" mt-2 ">
-                                    <div className="grid  max-w-sm items-center gap-1.5">
-                                      <label htmlFor="discountPer">Delivery Charge</label>
-                                      <Input
-                                        className="h-8 w-20"
-                                        name="deliveryCharge"
-                                        id="deliveryCharge"
-                                        autoComplete="deliveryCharge"
-                                        defaultValue={deliveryCharge}
-                                        onChange={handleChange}
-                                      />
-                                    </div>
-                                  </div>
-                                  {totalLabour > 0 && (
-                                    <>
-                                      <p className="mt-3  basis-2/4">Total Labour</p>
-                                      <p className="flex basis-2/4 items-end justify-end  ">
-                                        ${totalLabour}
-                                      </p>
-                                    </>
-                                  )}
+                                  <DrawerFooter>
+                                    <DrawerClose asChild>
+                                      <Button variant="outline">Close</Button>
+                                    </DrawerClose>
+                                  </DrawerFooter>
                                 </div>
                               </DrawerContent>
                             </Drawer>
+
 
                             <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                             <div className="font-semibold">Total</div>
@@ -2998,48 +3383,48 @@ export default function Dashboard() {
                           </CardContent>
                         </>
                       )}
-                      {secPage && (
+                      {firstPage && (
                         <>
                           <CardContent className="p-6 text-sm  bg-[#09090b]">
                             <div className="grid gap-3">
                               <div className="font-semibold">Payment Details</div>
                               <ul className="grid gap-3">
-                                {/*}
-          <li className="flex items-center justify-between">
-            <span className="text-[#8a8a93]">Brand</span>
-            <span>{brand}</span>
-          </li>
-          <li className="flex items-center justify-between">
-            <span className="text-[#8a8a93]">Model</span>
-            <span> {model}</span>
-          </li>
-          {brand !== "BMW-Motorrad" && (
-            <>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Color</span>
-                <span>{color}</span>
-              </li>
-            </>
-          )}
-          {modelCode !== null && (
-            <li className="flex items-center justify-between">
-              <span className="text-[#8a8a93]">Model Code</span>
-              <span>{modelCode}</span>
-            </li>
-          )}
-          {modelCode !== null && (
-            <li className="flex items-center justify-between">
-              <span className="text-[#8a8a93]">Year</span>
-              <span>{year}</span>
-            </li>
-          )}
-          {stockNum !== null && (
-            <li className="flex items-center justify-between">
-              <span className="text-[#8a8a93]">Stock Number</span>
-              <span>{stockNum}</span>
-            </li>
-          )}
-              */}
+
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Brand</span>
+                                  <span>{finance[0].brand}</span>
+                                </li>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Model</span>
+                                  <span> {finance[0].model}</span>
+                                </li>
+                                {finance[0].brand !== "BMW-Motorrad" && (
+                                  <>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Color</span>
+                                      <span>{finance[0].color}</span>
+                                    </li>
+                                  </>
+                                )}
+                                {finance[0].modelCode !== null && (
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Model Code</span>
+                                    <span>{finance[0].modelCode}</span>
+                                  </li>
+                                )}
+                                {finance[0].modelCode !== null && (
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Year</span>
+                                    <span>{finance[0].year}</span>
+                                  </li>
+                                )}
+                                {finance[0].stockNum !== null && (
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Stock Number</span>
+                                    <span>{finance[0].stockNum}</span>
+                                  </li>
+                                )}
+
                               </ul>
                               <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                               <div className="font-semibold">Price</div>
@@ -3081,26 +3466,26 @@ export default function Dashboard() {
                                   <span className="text-[#8a8a93]">
                                     Labour Hours
                                   </span>
-                                  <span>${finance[0].labour}</span>
+                                  <span>${formData.labour}</span>
                                 </li>
                                 <li className="flex items-center justify-between font-semibold">
                                   <span className="text-[#8a8a93]">Licensing</span>
                                   <span>${licensing}</span>
                                 </li>
-                                {/*
-          {modelData.trailer > 0 && (
-            <li className="flex items-center justify-between font-semibold">
-              <span className="text-[#8a8a93]">Trailer</span>
-              <span>${modelData.trailer}</span>
-            </li>
-          )}
-          {modelData.painPrem > 0 && (
-            <li className="flex items-center justify-between font-semibold">
-              <span className="text-[#8a8a93]">Paint Premium</span>
-              <span> ${modelData.painPrem}</span>
-            </li>
-          )}
-           */}
+
+                                {finance[0].brand === 'Sea-Doo' && modelData.trailer > 0 && (
+                                  <li className="flex items-center justify-between font-semibold">
+                                    <span className="text-[#8a8a93]">Trailer</span>
+                                    <span>${modelData.trailer}</span>
+                                  </li>
+                                )}
+                                {finance[0].brand === 'Triumph' && modelData.painPrem > 0 && (
+                                  <li className="flex items-center justify-between font-semibold">
+                                    <span className="text-[#8a8a93]">Paint Premium</span>
+                                    <span> ${modelData.painPrem}</span>
+                                  </li>
+                                )}
+
                               </ul>
                               <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                               <div className="font-semibold">Fees</div>
@@ -3182,7 +3567,7 @@ export default function Dashboard() {
                                 <Badge
                                   id="myButton"
                                   className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${mainButton === "payments"
-                                    ? "active bg-[#0a0a0a]2 text-[#fafafa]"
+                                    ? "active bg-[#c72323] text-[#fafafa]"
                                     : "bg-[#0a0a0a] text-[#fafafa]"
                                     }`}
                                   onClick={() => handleMainButtonClick("payments")}
@@ -3204,7 +3589,7 @@ export default function Dashboard() {
                                 <Badge
                                   id="myButton2"
                                   className={`button  transform cursor-pointer bg-[#02a9ff]   shadow hover:text-[#fafafa] ${mainButton === "customTax"
-                                    ? "active bg-[#0a0a0a]2 text-[#fafafa]"
+                                    ? "active bg-[#c72323] text-[#fafafa]"
                                     : "bg-[#0a0a0a] text-[#fafafa]"
                                     }`}
                                   onClick={() => handleMainButtonClick("customTax")}
@@ -3216,7 +3601,7 @@ export default function Dashboard() {
                                 <Badge
                                   id="myButton3"
                                   className={`button  transform cursor-pointer bg-[#02a9ff] shadow hover:text-[#fafafa] ${subButton === "withoutOptions"
-                                    ? "active bg-[#0a0a0a]2 text-[#fafafa]"
+                                    ? "active bg-[#c72323] text-[#fafafa]"
                                     : "bg-[#0a0a0a] text-[#fafafa]"
                                     }`}
                                   onClick={() => handleSubButtonClick("withoutOptions")}
@@ -3227,7 +3612,7 @@ export default function Dashboard() {
                                 <Badge
                                   id="myButton5"
                                   className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${subButton === "withOptions"
-                                    ? "active bg-[#0a0a0a]2  text-[#fafafa]"
+                                    ? "active bg-[#c72323] text-[#fafafa]"
                                     : "bg-[#0a0a0a] text-[#fafafa]"
                                     }`}
                                   onClick={() => handleSubButtonClick("withOptions")}
@@ -3239,7 +3624,7 @@ export default function Dashboard() {
                             {mainButton === "payments" && (
                               <div className="">
                                 {subButton === "withoutOptions" && (
-                                  <ul className="grid gap-3">
+                                  <ul className="grid gap-3 mt-3">
                                     <li className="flex items-center justify-between">
                                       <span className="text-[#8a8a93]">Monthly</span>
                                       <span> ${on60}</span>
@@ -3258,7 +3643,7 @@ export default function Dashboard() {
                                 )}
                                 {subButton === "withOptions" && (
                                   <>
-                                    <div className="font-semibold">Options Include</div>
+                                    <div className="font-semibold mt-3">Options Include</div>
                                     <DealerOptionsAmounts />
                                     <ul className="grid gap-3">
                                       <li className="flex items-center justify-between">
@@ -3289,7 +3674,7 @@ export default function Dashboard() {
                               <div className="">
                                 {subButton === "withoutOptions" && (
                                   <div>
-                                    <ul className="grid gap-3">
+                                    <ul className="grid gap-3 mt-3">
                                       <li className="flex items-center justify-between">
                                         <span className="text-[#8a8a93]">
                                           Monthly
@@ -3313,7 +3698,7 @@ export default function Dashboard() {
                                 )}
                                 {subButton === "withOptions" && (
                                   <div>
-                                    <div className="font-semibold">Options Include</div>
+                                    <div className="font-semibold mt-3">Options Include</div>
                                     <DealerOptionsAmounts />
                                     <ul className="grid gap-3">
                                       <li className="flex items-center justify-between">
@@ -3343,7 +3728,7 @@ export default function Dashboard() {
                             {mainButton === "customTax" && (
                               <div className="">
                                 {subButton === "withoutOptions" && (
-                                  <div className="mt-5 flex justify-between">
+                                  <div className="mt-3 flex justify-between">
                                     <ul className="grid gap-3">
                                       <li className="flex items-center justify-between">
                                         <span className="text-[#8a8a93]">
@@ -3368,7 +3753,7 @@ export default function Dashboard() {
                                 )}
                                 {subButton === "withOptions" && (
                                   <div>
-                                    <div className="font-semibold">Options Include</div>
+                                    <div className="font-semibold mt-3">Options Include</div>
                                     <DealerOptionsAmounts />
                                     <ul className="grid gap-3">
                                       <li className="flex items-center justify-between">
@@ -3397,78 +3782,31 @@ export default function Dashboard() {
 
                             <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                             <div className="font-semibold">Contract Variables</div>
-                            <div className="grid grid-cols-2 ">
-                              <div className=" mt-2 ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                  <label htmlFor="Term">Term</label>
-                                  <Input
-                                    className="h-8 w-20"
-                                    name="months"
-                                    id="months"
-                                    autoComplete="months"
-                                    defaultValue={months}
-                                    onChange={handleChange}
-                                    type="number"
-                                  />
-                                </div>
-                              </div>
-                              <div className="mt-2 grid items-end justify-end ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                  <label className="text-right" htmlFor="iRate">
-                                    Rate
-                                  </label>
-                                  <Input
-                                    className="h-8 w-20 items-end justify-end text-right  "
-                                    name="iRate"
-                                    id="iRate"
-                                    autoComplete="iRate"
-                                    defaultValue={iRate}
-                                    onChange={handleChange}
-                                  />
-                                </div>
-                              </div>
-                              <div className=" mt-2 ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                  <label htmlFor="deposit">Deposit</label>
-                                  <Input
-                                    className="h-8 w-20"
-                                    name="deposit"
-                                    id="deposit"
-                                    autoComplete="deposit"
-                                    defaultValue={deposit}
-                                    onChange={handleChange}
-                                    type="number"
-                                  />
-                                </div>
-                              </div>
-                              <div className=" mt-2 grid items-end justify-end ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5 ">
-                                  <label htmlFor="tradeValue">Trade Value</label>
-                                  <Input
-                                    className="ml-auto h-8 w-20 text-right"
-                                    name="tradeValue"
-                                    id="tradeValue"
-                                    autoComplete="tradeValue"
-                                    defaultValue={tradeValue}
-                                    onChange={handleChange}
-                                  />
-                                </div>
-                              </div>
-                              <div className=" mt-2 ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                  <label htmlFor="deposit">Lien</label>
-                                  <Input
-                                    className="h-8 w-20"
-                                    name="lien"
-                                    id="lien"
-                                    autoComplete="lien"
-                                    defaultValue={lien}
-                                    onChange={handleChange}
-                                    type="number"
-                                  />
-                                </div>
-                              </div>
-                            </div>
+                            <ul className="grid gap-3 mt-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Term</span>
+                                <span>{months}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Rate</span>
+                                <span>{iRate}%</span>
+                              </li>
+                              {deposit > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Deposit</span>
+                                  <span>${deposit}</span>
+                                </li>
+                              )}
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Trade Value</span>
+                                <span>${tradeValue}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Lien</span>
+                                <span>${lien}</span>
+                              </li>
+                            </ul>
+
 
                             <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                             <div className="font-semibold">Total</div>
@@ -3497,17 +3835,17 @@ export default function Dashboard() {
                                 <div>
                                   {subButton === "withoutOptions" && (
                                     <>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">Total</span>
                                         <span>${total}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           With taxes
                                         </span>
                                         <span> ${onTax}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           After Deposit
                                         </span>
@@ -3517,17 +3855,17 @@ export default function Dashboard() {
                                   )}
                                   {subButton === "withOptions" && (
                                     <>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">Total</span>
                                         <span>${totalWithOptions}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           With taxes
                                         </span>
                                         <span> ${qcTax}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           After Deposit
                                         </span>
@@ -3541,11 +3879,11 @@ export default function Dashboard() {
                                 <div>
                                   {subButton === "withoutOptions" && (
                                     <>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">Total</span>
                                         <span>${total}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           With taxes
                                         </span>
@@ -3561,17 +3899,17 @@ export default function Dashboard() {
                                   )}
                                   {subButton === "withOptions" && (
                                     <>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">Total</span>
                                         <span>${totalWithOptions}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           With taxes
                                         </span>
                                         <span> ${totalWithOptions}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           After Deposit
                                         </span>
@@ -3585,17 +3923,17 @@ export default function Dashboard() {
                                 <div>
                                   {subButton === "withoutOptions" && (
                                     <>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">Total</span>
                                         <span>${total}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           With taxes
                                         </span>
                                         <span> ${otherTax}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           After Deposit
                                         </span>
@@ -3605,17 +3943,17 @@ export default function Dashboard() {
                                   )}
                                   {subButton === "withOptions" && (
                                     <>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">Total</span>
                                         <span>${totalWithOptions}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           With taxes
                                         </span>
                                         <span> ${otherTaxWithOptions}</span>
                                       </li>
-                                      <li className="flex items-center justify-between">
+                                      <li className="flex items-center justify-between mt-3">
                                         <span className="text-[#8a8a93]">
                                           After Deposit
                                         </span>
@@ -3681,7 +4019,7 @@ export default function Dashboard() {
               </TabsList>
               <TabsContent value="Actions">
                 <Card
-                  className="overflow-hidden" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-[#fafafa]" x-chunk="dashboard-05-chunk-4"
                 >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
@@ -3698,32 +4036,11 @@ export default function Dashboard() {
                       </CardTitle>
                       <CardDescription>Date: November 23, 2023</CardDescription>
                     </div>
-                    <div className="ml-auto flex items-center gap-1">
-                      <Button size="sm" variant="outline" className="h-8 gap-1">
-                        <Truck className="h-3.5 w-3.5" />
-                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                          Track Order
-                        </span>
-                      </Button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="outline" className="h-8 w-8">
-                            <MoreVertical className="h-3.5 w-3.5" />
-                            <span className="sr-only">More</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Export</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>Trash</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+
                   </CardHeader>
-                  <CardContent className="p-6 text-sm bg-[#09090b]">
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Order Details</div>
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                    <div className="grid gap-3 max-h-[20vh] h-auto">
+                      <div className="font-semibold">Customer Interactions</div>
                       <ul className="grid gap-3">
                         <li className="flex items-center justify-between">
                           <span className="text-[#909098]">
@@ -3758,85 +4075,19 @@ export default function Dashboard() {
                         </li>
                       </ul>
                     </div>
-                    <Separator className="my-4" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="grid gap-3">
-                        <div className="font-semibold">Shipping Information</div>
-                        <address className="grid gap-0.5 not-italic text-[#909098]">
-                          <span>Liam Johnson</span>
-                          <span>1234 Main St.</span>
-                          <span>Anytown, CA 12345</span>
-                        </address>
-                      </div>
-                      <div className="grid auto-rows-max gap-3">
-                        <div className="font-semibold">Billing Information</div>
-                        <div className="text-[#909098]">
-                          Same as shipping address
-                        </div>
-                      </div>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Customer Information</div>
-                      <dl className="grid gap-3">
-                        <div className="flex items-center justify-between">
-                          <dt className="text-[#909098]">Customer</dt>
-                          <dd>Liam Johnson</dd>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <dt className="text-[#909098]">Email</dt>
-                          <dd>
-                            <a href="mailto:">liam@acme.com</a>
-                          </dd>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <dt className="text-[#909098]">Phone</dt>
-                          <dd>
-                            <a href="tel:">+1 234 567 890</a>
-                          </dd>
-                        </div>
-                      </dl>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Payment Information</div>
-                      <dl className="grid gap-3">
-                        <div className="flex items-center justify-between">
-                          <dt className="flex items-center gap-1 text-[#909098]">
-                            <CreditCard className="h-4 w-4" />
-                            Visa
-                          </dt>
-                          <dd>**** **** **** 4532</dd>
-                        </div>
-                      </dl>
-                    </div>
+
                   </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
-                    <div className="text-xs text-[#909098]">
+                  <CardFooter className="flex flex-row items-center border-t border-[#27272a]  bg-[#18181a] px-6 py-3">
+                    <div className="text-xs text-[#18181a]">
                       Updated <time dateTime="2023-11-23">November 23, 2023</time>
                     </div>
-                    <Pagination className="ml-auto mr-0 w-auto">
-                      <PaginationContent>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronLeft className="h-3.5 w-3.5" />
-                            <span className="sr-only">Previous Order</span>
-                          </Button>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronRight className="h-3.5 w-3.5" />
-                            <span className="sr-only">Next Order</span>
-                          </Button>
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
+
                   </CardFooter>
                 </Card>
               </TabsContent>
               <TabsContent value="Notes">
                 <Card
-                  className="overflow-hidden" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-[#f0f0f0]" x-chunk="dashboard-05-chunk-4"
                 >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
@@ -3851,121 +4102,85 @@ export default function Dashboard() {
                           <span className="sr-only">To leave yourself or your colleagues notes regarding the customer.</span>
                         </Button>
                       </CardTitle>
-                      <CardDescription>Date: November 23, 2023</CardDescription>
                     </div>
                     <div className="ml-auto flex items-center gap-1">
-                      <Button size="sm" variant="outline" className="h-8 gap-1">
-                        <Truck className="h-3.5 w-3.5" />
-                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                          Track Order
-                        </span>
-                      </Button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="outline" className="h-8 w-8">
-                            <MoreVertical className="h-3.5 w-3.5" />
-                            <span className="sr-only">More</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Export</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>Trash</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="ml-auto rounded-full"
+                              onClick={() => setOpen(true)}
+                            >
+                              <PlusIcon className="h-4 w-4" />
+                              <span className="sr-only">CC Employee</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent sideOffset={10} className='bg-[#dc2626]'>CC Employee</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-6 text-sm bg-[#09090b]">
-
-
-
-                    <>
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                    <div className="grid gap-3 max-h-[70vh] h-auto">
                       <Card>
-                        <CardHeader className="flex flex-row items-center">
-                          <div className="flex items-center space-x-4">
-
-                            <div>
-                              <p className="text-sm font-medium leading-none">Sofia Davis</p>
-                              <p className="text-sm text-[#909098]">m@example.com</p>
-                            </div>
-                          </div>
-                          <TooltipProvider delayDuration={0}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  size="icon"
-                                  variant="outline"
-                                  className="ml-auto rounded-full"
-                                  onClick={() => setOpen(true)}
-                                >
-                                  <PlusIcon className="h-4 w-4" />
-                                  <span className="sr-only">New message</span>
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent sideOffset={10}>New message</TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </CardHeader>
                         <CardContent>
-                          <div className="space-y-4">
+                          <div className="space-y-4 mt-5">
                             {messages.map((message, index) => (
                               <div
                                 key={index}
                                 className={cn(
                                   "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                                   message.role === "user"
-                                    ? "ml-auto bg-[#dc2626]] text-primary-foreground"
-                                    : "bg-muted"
+                                    ? "ml-auto bg-[#dc2626] text-[#fafafa]"
+                                    : "bg-[#262626]"
                                 )}
                               >
-                                {message.content}
+                                <div className='grid grid-cols-1'>
+                                  {message.role !== "user" && (
+                                    <p className='text-[#8c8c8c]'>
+                                      {message.role}
+                                    </p>
+                                  )}
+                                  {message.content}
+                                </div>
+                              </div>
+                            ))}
+                            {financeNotes.map((message, index) => (
+                              <div
+                                key={index}
+                                className={cn(
+                                  "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                                  message.author === user.email
+                                    ? "ml-auto bg-[#dc2626] text-[#fafafa]"
+                                    : "bg-[#262626]"
+                                )}
+                              >
+                                <div className='grid grid-cols-1'>
+                                  {message.author !== user.email && (
+                                    <p className='text-[#8c8c8c]'>
+                                      {message.author}
+                                    </p>
+                                  )}
+                                  {message.customContent}
+                                </div>
                               </div>
                             ))}
                           </div>
                         </CardContent>
-                        <CardFooter>
-                          <form
-                            onSubmit={(event) => {
-                              event.preventDefault()
-                              if (inputLength === 0) return
-                              setMessages([
-                                ...messages,
-                                {
-                                  role: "user",
-                                  content: input,
-                                },
-                              ])
-                              setInput("")
-                            }}
-                            className="flex w-full items-center space-x-2"
-                          >
-                            <Input
-                              id="message"
-                              placeholder="Type your message..."
-                              className="flex-1"
-                              autoComplete="off"
-                              value={input}
-                              onChange={(event) => setInput(event.target.value)}
-                            />
-                            <Button type="submit" size="icon" disabled={inputLength === 0}>
-                              <PaperPlaneIcon className="h-4 w-4" />
-                              <span className="sr-only">Send</span>
-                            </Button>
-                          </form>
-                        </CardFooter>
+
                       </Card>
                       <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogContent className="gap-0 p-0 outline-none">
+                        <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
                           <DialogHeader className="px-4 pb-4 pt-5">
-                            <DialogTitle>New message</DialogTitle>
+                            <DialogTitle>CC Employee</DialogTitle>
                             <DialogDescription>
-                              Invite a user to this thread. This will create a new group
-                              message.
+                              Invite a user to this thread.
                             </DialogDescription>
                           </DialogHeader>
-                          <Command className="overflow-hidden rounded-t-none border-t bg-transparent">
-                            <CommandInput placeholder="Search user..." />
+                          <Command className="overflow-hidden rounded-t-none border-t border-[#27272a] bg-transparent">
+                            <CommandInput placeholder="Search user..." className='bg-[#18181a] text-[#fafafa]' />
                             <CommandList>
                               <CommandEmpty>No users found.</CommandEmpty>
                               <CommandGroup className="p-2">
@@ -4009,13 +4224,13 @@ export default function Dashboard() {
                               </CommandGroup>
                             </CommandList>
                           </Command>
-                          <DialogFooter className="flex items-center border-t p-4 sm:justify-between">
+                          <DialogFooter className="flex items-center border-t border-[#27272a] p-4 sm:justify-between">
                             {selectedUsers.length > 0 ? (
                               <div className="flex -space-x-2 overflow-hidden">
                                 {selectedUsers.map((user) => (
                                   <Avatar
                                     key={user.email}
-                                    className="inline-block border-2 border-background"
+                                    className="inline-block border-2 border-background border-[#27272a]"
                                   >
                                     <AvatarImage src={user.avatar} />
                                     <AvatarFallback>{user.name[0]}</AvatarFallback>
@@ -4038,302 +4253,10 @@ export default function Dashboard() {
                           </DialogFooter>
                         </DialogContent>
                       </Dialog>
-                      <div className="flex-auto px-4 lg:px-10 py-10 pt-0 bg-slate11">
-                        <div className="relative mx-3 mt-3 max-h-[800px] h-auto overflow-y-auto">
-                          <ul>
-                            {financeNotes.map((message) => (
-                              <li
-                                key={message.id}
-                                style={{
-                                  opacity: isDeleting ? 0.5 : 1,
-                                }}
-                                className="flex-cols-2 flex "
-                              >
-                                <Card //className="mr-1 mt-1 w-full rounded-[0px]"
-
-                                  className={`w-full rounded mt-2 bg-[#09090b] text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] ${message.urgentFinanceNote === 'soon'
-                                    ? 'border-green-500 border:w-[5px] '
-                                    : message.urgentFinanceNote === 'asap'
-                                      ? 'border-yellow-500 border:w-[4px]  bg-yellow-200'
-                                      : message.urgentFinanceNote === 'dropEverything'
-                                        ? 'border-red-500 border:w-[3px]   bg-red-300'
-                                        : ''
-                                    }`}
-                                >
-                                  <CardContent className="flex flex-col"
-
-                                  >
-                                    <div className="mt-3 flex justify-between">
-                                      <p className="">
-                                        {message.author}
-                                      </p>
-                                      <button className='h-4 w-8' />
-                                      <p className="">
-                                        {new Date(message.createdAt).toLocaleDateString()}{" "}
-                                        {new Date(message.createdAt).toLocaleTimeString()}
-                                      </p>
-                                    </div>
-                                    {editItemId === message.id ? (
-                                      <TextArea
-                                        placeholder="Type your message here."
-                                        key={message.id}
-                                        name="customContent"
-                                        className="w-full mt-2 h-[50px] rounded-[0px]"
-                                        defaultValue={message.customContent}
-                                        onChange={handleChange}
-                                      />
-                                    ) : (
-                                      <p className="  text-left ">
-                                        {message.customContent}
-                                      </p>
-                                    )}
-
-
-                                  </CardContent>
-                                </Card>
-                                <Input
-                                  type="hidden"
-                                  defaultValue={user.name}
-                                  name="author"
-                                />
-                                <Input
-                                  type="hidden"
-                                  defaultValue={finance[0].id}
-                                  name="customerId"
-                                />
-
-                                {/* Toolbar */}
-                                < Toolbar.Root className="my-auto ml-auto  flex h-full  w-[30px] justify-center bg-slate11 p-[10px] shadow-[0_2px_2px] shadow-blackA4" >
-                                  <Toolbar.ToggleGroup
-                                    type="multiple"
-                                    className="flex flex-col"
-                                  >
-                                    <fetcher.Form method="post">
-                                      <Toolbar.ToggleItem
-                                        name="intent"
-                                        type="submit"
-                                        value="updateFinanceNote"
-                                        className="cursor-pointer hover:text-[#02a9ff] "
-                                        onClick={() => {
-                                          handleSave(message.id);
-                                          setEditItemId(null);
-                                        }}
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="20px"
-                                          height="20px"
-                                          fill="none"
-                                          strokeWidth="1.2"
-                                          viewBox="0 0 24 24"
-                                          color="#d1d5db"
-                                        >
-                                          <path
-                                            stroke="#d1d5db"
-                                            strokeWidth="1.2"
-                                            d="M3 19V5a2 2 0 0 1 2-2h11.172a2 2 0 0 1 1.414.586l2.828 2.828A2 2 0 0 1 21 7.828V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"
-                                          ></path>
-                                          <path
-                                            stroke="#d1d5db"
-                                            strokeWidth="1.2"
-                                            d="M8.6 9h6.8a.6.6 0 0 0 .6-.6V3.6a.6.6 0 0 0-.6-.6H8.6a.6.6 0 0 0-.6.6v4.8a.6.6 0 0 0 .6.6ZM6 13.6V21h12v-7.4a.6.6 0 0 0-.6-.6H6.6a.6.6 0 0 0-.6.6Z"
-                                          ></path>
-                                        </svg>
-                                      </Toolbar.ToggleItem>
-                                      <Input
-                                        type="hidden"
-                                        defaultValue={user.name}
-                                        name="author"
-                                      />
-                                      <Input
-                                        type="hidden"
-                                        defaultValue={finance[0].id}
-                                        name="customerId"
-                                      />
-                                      <Input
-                                        type="hidden"
-                                        defaultValue={message.id}
-                                        name="id"
-                                      />
-                                      <Input
-                                        type="hidden"
-                                        defaultValue='Sales'
-                                        name="dept"
-                                      />
-                                      <Input
-                                        type="hidden"
-                                        defaultValue="updateFinanceNote"
-                                        name="intent"
-                                      />
-                                      <Input
-                                        type="hidden"
-                                        defaultValue={formData.customContent}
-                                        name="customContent"
-                                      />
-
-                                      <Input
-                                        type="hidden"
-                                        defaultValue={formData.urgentFinanceNote}
-                                        name="urgentFinanceNote"
-                                      />
-                                    </fetcher.Form>
-
-
-                                    <Toolbar.ToggleItem
-                                      type="submit"
-                                      name="intent"
-                                      value="editFinanceNote"
-                                      className="cursor-pointer mt-1 hover:text-[#02a9ff]"
-                                      onClick={() => handleEditClick(message.id)}
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="20px"
-                                        height="20px"
-                                        fill="none"
-                                        strokeWidth="1.2"
-                                        viewBox="0 0 24 24"
-                                        color="#d1d5db"
-                                      >
-                                        <path
-                                          stroke="#d1d5db"
-                                          strokeWidth="1.2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="m14.363 5.652 1.48-1.48a2 2 0 0 1 2.829 0l1.414 1.414a2 2 0 0 1 0 2.828l-1.48 1.48m-4.243-4.242-9.616 9.615a2 2 0 0 0-.578 1.238l-.242 2.74a1 1 0 0 0 1.084 1.085l2.74-.242a2 2 0 0 0 1.24-.578l9.615-9.616m-4.243-4.242 4.243 4.242"
-                                        ></path>
-                                      </svg>
-
-                                    </Toolbar.ToggleItem>
-                                    <fetcher.Form method="post">
-                                      <Toolbar.ToggleItem
-                                        type="submit"
-                                        value="deleteFinanceNote"
-                                        name="intent"
-                                        className="cursor-pointer mt-1 hover:text-[#02a9ff]"
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="20px"
-                                          height="20px"
-                                          fill="none"
-                                          strokeWidth="1.2"
-                                          viewBox="0 0 24 24"
-                                          color="#000000"
-                                        >
-                                          <path
-                                            stroke="#d1d5db"
-                                            strokeWidth="1.2"
-                                            d="m19.262 17.038 1.676-12.575a.6.6 0 0 0-.372-.636L16 2h-5.5l-.682 1.5L5 2 3.21 3.79a.6.6 0 0 0-.17.504l1.698 12.744a4 4 0 0 0 1.98 2.944l.32.183a10 10 0 0 0 9.923 0l.32-.183a4 4 0 0 0 1.98-2.944ZM16 2l-2 5M9 6.5l.818-3"
-                                          ></path>
-                                          <path
-                                            stroke="#d1d5db"
-                                            strokeWidth="1.2"
-                                            d="M3 5c2.571 2.667 15.429 2.667 18 0"
-                                          ></path>
-                                        </svg>
-                                      </Toolbar.ToggleItem>
-                                      <Input
-                                        type="hidden"
-                                        defaultValue={message.id}
-                                        name="id"
-                                      />
-                                      <Input
-                                        type="hidden"
-                                        defaultValue="deleteFinanceNote"
-                                        name="intent"
-                                      />
-                                    </fetcher.Form>
-
-                                    <DropdownMenu.Root>
-                                      <Toolbar.Button asChild>
-                                        <DropdownMenu.Trigger className="cursor-pointer hover:text-[#02a9ff]">
-                                          <svg width="20px" height="20px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.4449 0.608765C8.0183 -0.107015 6.9817 -0.107015 6.55509 0.608766L0.161178 11.3368C-0.275824 12.07 0.252503 13 1.10608 13H13.8939C14.7475 13 15.2758 12.07 14.8388 11.3368L8.4449 0.608765ZM7.4141 1.12073C7.45288 1.05566 7.54712 1.05566 7.5859 1.12073L13.9798 11.8488C14.0196 11.9154 13.9715 12 13.8939 12H1.10608C1.02849 12 0.980454 11.9154 1.02018 11.8488L7.4141 1.12073ZM6.8269 4.48611C6.81221 4.10423 7.11783 3.78663 7.5 3.78663C7.88217 3.78663 8.18778 4.10423 8.1731 4.48612L8.01921 8.48701C8.00848 8.766 7.7792 8.98664 7.5 8.98664C7.2208 8.98664 6.99151 8.766 6.98078 8.48701L6.8269 4.48611ZM8.24989 10.476C8.24989 10.8902 7.9141 11.226 7.49989 11.226C7.08567 11.226 6.74989 10.8902 6.74989 10.476C6.74989 10.0618 7.08567 9.72599 7.49989 9.72599C7.9141 9.72599 8.24989 10.0618 8.24989 10.476Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                                        </DropdownMenu.Trigger>
-                                      </Toolbar.Button>
-                                      <Form method="post">
-                                        <DropdownMenu.Content className="bg-white p-2 border border:w-[1px] border:bg-black shadow-sm ">
-
-                                          <DropdownMenu.Label >
-                                            Urgency?
-                                          </DropdownMenu.Label>
-
-                                          <fetcher.Form method="post"
-                                            onChange={(event) => {
-                                              submit(event.currentTarget);
-                                            }}
-                                          >
-                                            {urgentFinanceNoteList.map((item) => (
-                                              <DropdownMenu.Item key={item.name} className="group  leading-none rounded-[3px] pt-1 h-[25px] px-[5px]  pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-600 data-[highlighted]:text-violet1">
-                                                <div className=" flex  justify-between">
-                                                  <label htmlFor={item.name} className="text-sm mr-auto text-left text-[#fafafa]1">
-                                                    {item.label}
-                                                  </label>
-                                                  <input
-                                                    className="ml-auto"
-                                                    type="checkbox"
-                                                    id={item.name}
-                                                    name='urgentFinanceNote'
-                                                    value={item.value}
-                                                    checked={item.value === message.urgentFinanceNote}
-                                                    onChange={handleInputChange}
-
-                                                  />
-                                                </div>
-                                                <Input type="hidden" defaultValue={user.name} name="author" />
-                                                <Input type="hidden" defaultValue={finance[0].id} name="customerId" />
-                                                <Input type="hidden" defaultValue={message.id} name="id" />
-                                                <Input type="hidden" defaultValue="updateFinanceNote" name="intent" />
-                                              </DropdownMenu.Item>
-
-                                            ))}
-                                          </fetcher.Form>
-                                        </DropdownMenu.Content>
-                                      </Form>
-                                    </DropdownMenu.Root>
-
-                                  </Toolbar.ToggleGroup>
-                                </Toolbar.Root>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <div className=" "  >
-                          <fetcher.Form ref={formRef} method="post">
-                            <p
-                              className="block uppercase text-gray-300 text-xs font-bold mb-2 mt-2"
-                            >
-                              New Note</p>
-                            <TextArea
-                              placeholder="Type your message here."
-                              name="customContent"
-                              className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
-                            />
-                            <Input type="hidden" defaultValue={user.name} name="author" />
-                            <Input
-                              type="hidden"
-                              defaultValue={finance[0].id}
-                              name="customerId"
-                            />
-                            <Input
-                              type="hidden"
-                              defaultValue={finance[0].id}
-                              name="financeId"
-                            />
-                            <Input
-                              type="hidden"
-                              defaultValue={finance[0].name}
-                              name="name"
-                            />
-                            <Input
-                              type="hidden"
-                              defaultValue="saveFinanceNote"
-                              name="intent"
-                            />
-
-                            <div className="mt-2 flex justify-between cursor-pointer">
-                              <div className='flex' >
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                    {/* <div className='flex' >
                                 <p className='mr-2'>CC: </p>
                                 <Select name='ccUser' >
                                   <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
@@ -4346,52 +4269,71 @@ export default function Dashboard() {
                                   </SelectContent>
                                 </Select>
                               </div>
-                              {/* saveFinanceNote */}
-                              <Button
-                                variant='outline'
-                                name="intent"
-                                type="submit"
-                                className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-[#fafafa]"
-                                value="saveFinanceNote"
 
-                              >
-                                Save
-                              </Button>
-                            </div>
-                          </fetcher.Form>
+                               onSubmit={(event) => {
+                        event.preventDefault()
+                        if (inputLength === 0) return
+                        setMessages([
+                          ...messages,
+                          {
+                            role: "user",
+                            content: input,
+                          },
+                        ])
+                        setInput("")
+                      }}
 
-                        </div>
-                      </div>
+                             */}
+                    <fetcher.Form ref={formRef} method="post"
 
-                    </>
-
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
-                    <div className="text-xs text-[#909098]">
-                      Updated <time dateTime="2023-11-23">November 23, 2023</time>
-                    </div>
-                    <Pagination className="ml-auto mr-0 w-auto">
-                      <PaginationContent>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronLeft className="h-3.5 w-3.5" />
-                            <span className="sr-only">Previous Order</span>
-                          </Button>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronRight className="h-3.5 w-3.5" />
-                            <span className="sr-only">Next Order</span>
-                          </Button>
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
+                      className="flex w-full items-center space-x-2"
+                    >
+                      <Input
+                        id="message"
+                        placeholder="Type your message..."
+                        className="flex-1 bg-[#18181a] border-[#27272a]"
+                        autoComplete="off"
+                        value={input}
+                        onChange={(event) => setInput(event.target.value)}
+                        name="customContent"
+                      />
+                      <Button
+                        value="saveFinanceNote"
+                        type="submit"
+                        name="intent"
+                        size="icon"
+                        onClick={() => {
+                          toast.success(`Note saved`)
+                        }}
+                        disabled={inputLength === 0}
+                        className='bg-[#dc2626] '>
+                        <PaperPlaneIcon className="h-4 w-4" />
+                        <span className="sr-only">Send</span>
+                      </Button>
+                      <Input type="hidden" defaultValue={user.email} name="author" />
+                      <Input
+                        type="hidden"
+                        defaultValue={clientFile.id}
+                        name="customerId"
+                      />
+                      <input type="hidden" defaultValue={finance[0].id} name="financeId" />
+                      <Input
+                        type="hidden"
+                        defaultValue={finance[0].name}
+                        name="name"
+                      />
+                      <Input
+                        type="hidden"
+                        defaultValue="saveFinanceNote"
+                        name="intent"
+                      />
+                    </fetcher.Form>
                   </CardFooter>
                 </Card>
               </TabsContent>
               <TabsContent value="Apt History">
                 <Card
-                  className="overflow-hidden" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-[#f0f0f0]" x-chunk="dashboard-05-chunk-4"
                 >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
@@ -4403,467 +4345,596 @@ export default function Dashboard() {
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
                         >
                           <Copy className="h-3 w-3" />
-                          <span className="sr-only">Snap shot on customer interactions, whether they are buying something or a sales person following up to make a sale.</span>
+
                         </Button>
                       </CardTitle>
                     </div>
                     <div className="ml-auto flex items-center gap-1">
-                      <Button size="sm" variant="outline" className="h-8 gap-1">
-                        <Truck className="h-3.5 w-3.5" />
-                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                          Track Order
-                        </span>
-                      </Button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="outline" className="h-8 w-8">
-                            <MoreVertical className="h-3.5 w-3.5" />
-                            <span className="sr-only">More</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Export</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>Trash</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="ml-auto rounded-full"
+                              onClick={() => setOpenAppt(true)}
+                            >
+                              <PlusIcon className="h-4 w-4" />
+                              <span className="sr-only">CC Employee</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent sideOffset={10} className='bg-[#dc2626]'>Add Appointment</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-6 text-sm bg-[#09090b]">
-                    <div className="grid gap-3">
-                      <div className="py-6 px-6">
-                        <ul>
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                    <div className="grid gap-3 max-h-[20vh] h-auto">
+                      <Table className='w-auto overflow-x-scroll w-[650px]'>
+                        <TableHeader>
+                          <TableRow className="bg-accent border-[#27272a]">
+                            <TableHead>
+                              Title
+                            </TableHead>
+                            <TableHead className="hidden sm:table-cell">
+                              Type
+                            </TableHead>
+                            <TableHead className="hidden sm:table-cell">
+                              Date
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Completed
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Menu
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {aptFinance3.map((message) => {
+                            const isValidDate = message.start && message.start !== '1969-12-31 19:00';
+                            const formattedDateAppt = isValidDate ? new Date(message.start).toISOString() : 'TBD';
 
-                          {aptFinance3.map((message) => (
-                            <li
-                              key={message.id}
-                              style={{
-                                opacity: isDeleting ? 0.5 : 1,
-                              }}
-                              className="flex-cols-2 flex mb-4"
-                            >
-                              <Card
-                                className={`w-full rounded  bg-[#09090b] text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]
-${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
-                                    isPast(new Date(message.start)) ? 'border-red-500 border:w-[3px] bg-red-600' :
-                                      message.appStatus === 'completed' ? 'border-gray-500 border:w-[5px] bg-gray-600' :
-                                        message.completed === 'yes' ? 'border:w-[5px] border-black' :
-                                          'border-green-500 border:w-[5px]'
-                                  }`}
-                              >
-                                <CardContent className="flex flex-col " >
-                                  <div className="mt-1 flex justify-between">
-                                    <p className="text-thin text-[13px]">{message.start} </p>
-                                  </div>
-                                  <p className="text-thin text-[11px]">{message.contactMethod} </p>
-                                  <p className="text-thin text-[11px]">{message.title} </p>
-                                  {editItemId === message.id ? (
-                                    <TextArea
-                                      placeholder="Type your message here."
-                                      key={message.id}
-                                      name="note"
-                                      className=" mt-2 h-[50px] rounded-[0px]"
-                                      defaultValue={message.note}
-                                      onChange={handleChange}
-                                    />
+                            return (
+                              <TableRow
+                                key={message.id}
+                                className="bg-accent border-[#27272a]">
+                                <TableCell>
+                                  {message.title}
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell">
+                                  {message.contactMethod}
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell">
+                                  {formattedDateAppt}
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                  {message.completed === 'yes' ? (
+                                    <Badge className="text-xs bg-[#1e9b3d]" variant="secondary">
+                                      Completed!
+                                    </Badge>
                                   ) : (
-                                    <p className="text-thin text-[11px] text-left">
-                                      {message.note}
-                                    </p>
+                                    <Badge className="text-xs bg-transparent" variant="secondary">
+                                      Incomplete
+                                    </Badge>
                                   )}
-                                  {message.completed === 'yes' && (
-                                    <p className="text-thin text-[13px]">Completed! </p>
-
-                                  )}
-                                </CardContent>
-                              </Card>
-                              <Input
-                                type="hidden"
-                                defaultValue={user.name}
-                                name="author"
-                              />
-                              <Input
-                                type="hidden"
-                                defaultValue={finance[0].id}
-                                name="customerId"
-                              />
-
-                              {/* Toolbar */}
-                              < Toolbar.Root className="my-auto ml-auto mt-1 mt-1 flex h-full  w-[30px] justify-center  p-[10px]   bg-slate11" >
-                                <Toolbar.ToggleGroup
-                                  type="multiple"
-                                  className="flex flex-col"
-                                >
-
-                                  <fetcher.Form method="post" onSubmit={(event) => {
-                                    submit(event.currentTarget);
-                                  }}>
-                                    <Toolbar.ToggleItem
-                                      name="intent"
-                                      type="submit"
-                                      value="updateFinanceAppt"
-                                      className="cursor-pointer hover:text-[#02a9ff]"
-                                      onClick={() => { setEditItemId(null); }}  >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="20px"
-                                        height="20px"
-                                        fill="none"
-                                        strokeWidth="1.2"
-                                        viewBox="0 0 24 24"
-                                        color="#000000"
-                                      >
-                                        <path
-                                          stroke="#bed5db"
-                                          strokeWidth="1.2"
-                                          d="M3 19V5a2 2 0 0 1 2-2h11.172a2 2 0 0 1 1.414.586l2.828 2.828A2 2 0 0 1 21 7.828V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"
-                                        ></path>
-                                        <path
-                                          stroke="#bed5db"
-                                          strokeWidth="1.2"
-                                          d="M8.6 9h6.8a.6.6 0 0 0 .6-.6V3.6a.6.6 0 0 0-.6-.6H8.6a.6.6 0 0 0-.6.6v4.8a.6.6 0 0 0 .6.6ZM6 13.6V21h12v-7.4a.6.6 0 0 0-.6-.6H6.6a.6.6 0 0 0-.6.6Z"
-                                        ></path>
-                                      </svg>
-                                    </Toolbar.ToggleItem>
-
-                                    <Input type="hidden" defaultValue={user.name} name="author" />
-                                    <Input type="hidden" defaultValue={message.id} name="customerId" />
-                                    <Input type="hidden" defaultValue={message.id} name="messageId" />
-                                    <Input type="hidden" defaultValue="updateFinanceAppt" name="intent" />
-                                    <Input type="hidden" defaultValue={user.id} name="userId" />
-                                    <Input type="hidden" defaultValue={finance[0].id} name="financeId" />
-
-                                    <Toolbar.ToggleItem
-
-                                      value="updateFinanceAppt"
-                                      className="cursor-pointer mt-1 hover:text-[#02a9ff]"
-                                      onClick={() => {
-                                        handleEditClick(message.id)
-                                      }}
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="20px"
-                                        height="20px"
-                                        fill="none"
-                                        strokeWidth="1.2"
-                                        viewBox="0 0 24 24"
-                                        color="#000000"
-                                      >
-                                        <path
-                                          stroke="#bed5db"
-                                          strokeWidth="1.2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="m14.363 5.652 1.48-1.48a2 2 0 0 1 2.829 0l1.414 1.414a2 2 0 0 1 0 2.828l-1.48 1.48m-4.243-4.242-9.616 9.615a2 2 0 0 0-.578 1.238l-.242 2.74a1 1 0 0 0 1.084 1.085l2.74-.242a2 2 0 0 0 1.24-.578l9.615-9.616m-4.243-4.242 4.243 4.242"
-                                        ></path>
-                                      </svg>
-                                    </Toolbar.ToggleItem>
-                                  </fetcher.Form>
-
-                                  <fetcher.Form method="post">
-                                    <Input type="hidden" defaultValue={user.name} name="author" />
-                                    <Input type="hidden" defaultValue={user.id} name="userId" />
-                                    <Input type="hidden" defaultValue={finance[0].id} name="financeId" />
-                                    <Input type="hidden" defaultValue={message.id} name="messageId" />
-                                    <Input type="hidden" defaultValue={finance[0].customerState} name="customerState" />
-                                    <input type='hidden' value='completeApt' name='intent' />
-                                    <Toolbar.ToggleItem type="submit" value='completeApt' className="cursor-pointer mt-1 hover:text-[#02a9ff]"   >
-                                      <svg width="20px" height="20px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                                    </Toolbar.ToggleItem>
-                                  </fetcher.Form>
-
-                                  {user.email === 'skylerzanth@gmail.com' && (
-                                    <fetcher.Form method="post">
-                                      <Input type="hidden" defaultValue={user.name} name="author" />
-                                      <Input type="hidden" defaultValue={user.id} name="userId" />
-                                      <Input type="hidden" defaultValue={finance[0].id} name="financeId" />
-                                      <Input type="hidden" defaultValue={message.id} name="messageId" />
-                                      <Input type="hidden" defaultValue={finance[0].customerState} name="customerState" />
-                                      <Input type="hidden" defaultValue='yes' name="completed" />
-                                      <input type='hidden' value='deleteApt' name='intent' />
-                                      <Toolbar.ToggleItem type="submit" value='deleteApt' className="cursor-pointer mt-1 hover:text-[#02a9ff]"   >
-                                        <svg width="20px" height="20px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 1C5.22386 1 5 1.22386 5 1.5C5 1.77614 5.22386 2 5.5 2H9.5C9.77614 2 10 1.77614 10 1.5C10 1.22386 9.77614 1 9.5 1H5.5ZM3 3.5C3 3.22386 3.22386 3 3.5 3H5H10H11.5C11.7761 3 12 3.22386 12 3.5C12 3.77614 11.7761 4 11.5 4H11V12C11 12.5523 10.5523 13 10 13H5C4.44772 13 4 12.5523 4 12V4L3.5 4C3.22386 4 3 3.77614 3 3.5ZM5 4H10V12H5V4Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>                                          </Toolbar.ToggleItem>
-                                    </fetcher.Form>
-                                  )}
-
-                                </Toolbar.ToggleGroup>
-                              </Toolbar.Root>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="font-semibold">Order Details</div>
-                      <ul className="grid gap-3">
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">
-                            Glimmer Lamps x <span>2</span>
-                          </span>
-                          <span>$250.00</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">
-                            Aqua Filters x <span>1</span>
-                          </span>
-                          <span>$49.00</span>
-                        </li>
-                      </ul>
-                      <Separator className="my-2" />
-                      <ul className="grid gap-3">
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">Subtotal</span>
-                          <span>$299.00</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">Shipping</span>
-                          <span>$5.00</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">Tax</span>
-                          <span>$25.00</span>
-                        </li>
-                        <li className="flex items-center justify-between font-semibold">
-                          <span className="text-[#909098]">Total</span>
-                          <span>$329.00</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="grid gap-3">
-                        <div className="font-semibold">Shipping Information</div>
-                        <address className="grid gap-0.5 not-italic text-[#909098]">
-                          <span>Liam Johnson</span>
-                          <span>1234 Main St.</span>
-                          <span>Anytown, CA 12345</span>
-                        </address>
-                      </div>
-                      <div className="grid auto-rows-max gap-3">
-                        <div className="font-semibold">Billing Information</div>
-                        <div className="text-[#909098]">
-                          Same as shipping address
-                        </div>
-                      </div>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Customer Information</div>
-                      <dl className="grid gap-3">
-                        <div className="flex items-center justify-between">
-                          <dt className="text-[#909098]">Customer</dt>
-                          <dd>Liam Johnson</dd>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <dt className="text-[#909098]">Email</dt>
-                          <dd>
-                            <a href="mailto:">liam@acme.com</a>
-                          </dd>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <dt className="text-[#909098]">Phone</dt>
-                          <dd>
-                            <a href="tel:">+1 234 567 890</a>
-                          </dd>
-                        </div>
-                      </dl>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Payment Information</div>
-                      <dl className="grid gap-3">
-                        <div className="flex items-center justify-between">
-                          <dt className="flex items-center gap-1 text-[#909098]">
-                            <CreditCard className="h-4 w-4" />
-                            Visa
-                          </dt>
-                          <dd>**** **** **** 4532</dd>
-                        </div>
-                      </dl>
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell">
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button size="icon" variant="outline" className="h-8 w-8">
+                                        <MoreVertical className="h-3.5 w-3.5" />
+                                        <span className="sr-only">Menu</span>
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className='bg-[#18181a] text-white'>
+                                      <Form method='post'>
+                                        <DropdownMenuItem>
+                                          <button type='submit'
+                                            name='intent'
+                                            value='deleteApt' >
+                                            Delete
+                                          </button>
+                                        </DropdownMenuItem>
+                                        <input type='hidden' name='financeId' defaultValue={finance[0].id} />
+                                      </Form>
+                                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuItem>Trash</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
                     </div>
                   </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
-                    <div className="text-xs text-[#909098]">
+                  <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                    <div className="text-xs text-[#18181a]">
                       Updated <time dateTime="2023-11-23">November 23, 2023</time>
                     </div>
-                    <Pagination className="ml-auto mr-0 w-auto">
-                      <PaginationContent>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronLeft className="h-3.5 w-3.5" />
-                            <span className="sr-only">Previous Order</span>
-                          </Button>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronRight className="h-3.5 w-3.5" />
-                            <span className="sr-only">Next Order</span>
-                          </Button>
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
                   </CardFooter>
                 </Card>
+                <Dialog open={openAppt} onOpenChange={setOpenAppt}>
+                  <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                    <Form method='post'>
+                      <DialogHeader className="px-4 pb-4 pt-5">
+                        <DialogTitle>Add Appointment</DialogTitle>
+                      </DialogHeader>
+                      <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                      <div className="grid gap-3 mx-3 mb-3">
+                        <div className="grid gap-3">
+                          <Label htmlFor="name">Title</Label>
+                          <Input
+                            name="title"
+                            type="text"
+                            className="w-full bg-[#09090b] border-[#27272a] "
+                          />
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="name">Note</Label>
+                          <Select name='note' defaultValue="No Answer / Left Message">
+                            <SelectTrigger className="w-auto  border-[#27272a]  ">
+                              <SelectValue placeholder="Message examples" />
+                            </SelectTrigger>
+                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                              <SelectGroup>
+                                <SelectLabel>Message examples</SelectLabel>
+                                <SelectItem value="">-- Moving Forward --</SelectItem>
+                                <SelectItem value="Wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
+                                <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>
+                                <SelectItem value="Wants to get finance approval before moving forward">Wants to get approval before moving forward</SelectItem>
+                                <SelectItem value="Sent BOS to sign off on">Sent BOS to sign off on deal</SelectItem>
+                                <SelectItem value="Wants to come back in to view and negotiate">Wants to come back in to view and negotiate</SelectItem>
+
+                                <SelectItem value="">-- Stand Still --</SelectItem>
+                                <SelectItem value="Talked to spouse, client was not home">Talked to wife, husband was not home</SelectItem>
+                                <SelectItem value="Got ahold of the client, was busy, need to call back">Got ahold of the client, was busy need to call back</SelectItem>
+                                <SelectItem value="Gave pricing, need to follow up">Gave pricing, need to follow up</SelectItem>
+                                <SelectItem value="Needs to discuss with spouse">Needs to discuss with spouse</SelectItem>
+                                <SelectItem value="No Answer / Left Message">No Answer / Left Message</SelectItem>
+
+                                <SelectItem value="">-- Not Moving Forward --</SelectItem>
+                                <SelectItem value="Does not want to move forward right now wants me to call in the future">Does not want to move forward right now wants me to call in the future</SelectItem>
+                                <SelectItem value="Bought else where, set to lost">Bought else where</SelectItem>
+                                <SelectItem value="Does not want to move forward, set to lost">Does not want to move forward, set to lost</SelectItem>
+                                <SelectItem value=""></SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          <Input
+                            id="name"
+                            type="text"
+                            placeholder="or write a custom note..."
+                            className="w-full bg-[#09090b] border-[#27272a] mt-1"
+                          />
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="name">Contact Method</Label>
+                          <Select name='contactMethod' defaultValue="SMS">
+                            <SelectTrigger className="w-auto    bg-[#09090b] border-[#27272a]">
+                              <SelectValue placeholder="Contact Method" />
+                            </SelectTrigger>
+                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                              <SelectGroup>
+                                <SelectLabel>Contact Method</SelectLabel>
+                                <SelectItem value="Phone">Phone</SelectItem>
+                                <SelectItem value="In Person">In-Person</SelectItem>
+                                <SelectItem value="SMS">SMS</SelectItem>
+                                <SelectItem value="Email">Email</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="name">Type of appointment</Label>
+                          <Select name='resourceId' defaultValue="1">
+                            <SelectTrigger className="w-auto    bg-[#09090b] border-[#27272a]">
+                              <SelectValue placeholder="Type of Appointment" />
+                            </SelectTrigger>
+                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                              <SelectGroup>
+                                <SelectLabel>Type of Appointment</SelectLabel>
+                                <SelectItem value="1">Sales Calls</SelectItem>
+                                <SelectItem value="2">Sales Appointments</SelectItem>
+                                <SelectItem value="3">Deliveries</SelectItem>
+                                <SelectItem value="4">F & I Appointments</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="name">Result</Label>
+                          <Select name='resultOfcall' defaultValue="Attempted">
+                            <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                              <SelectValue placeholder="Result of call" />
+                            </SelectTrigger>
+                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                              <SelectGroup>
+                                <SelectLabel>Result of call</SelectLabel>
+                                <SelectItem value="Reached">Reached</SelectItem>
+                                <SelectItem value="N/A">N/A</SelectItem>
+                                <SelectItem value="Attempted">Left Message</SelectItem>
+                                <SelectItem value="Completed">Completed</SelectItem>
+                                <SelectItem value="Rescheduled">Rescheduled</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="name">Direction</Label>
+                          <Select name='direction' defaultValue="Outgoing">
+                            <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                              <SelectValue placeholder="Direction of call" />
+                            </SelectTrigger>
+                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                              <SelectGroup>
+                                <SelectLabel>Direction of call</SelectLabel>
+                                <SelectItem value="Incoming">Incoming</SelectItem>
+                                <SelectItem value="Outgoing">Outgoing</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className=' flex-col mx-auto justify-center'>
+                          <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]",
+                                    !date && " text-[#fafafa]"
+                                  )}
+                                >
+                                  <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                                    <CalendarIcon className="mr-2 size-8 " />
+                                    {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                                  </div>
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f0f0f0] border-[#27272a]" align="start">
+                                <div className='align-center my-3 flex justify-center   '>
+                                  <SmallCalendar
+                                    className='mx-auto w-auto   bg-[#09090b] text-[#fafafa]'
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={setDate}
+                                    initialFocus
+                                  />
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+                        </div>
+                        <div className=' flex-col mx-auto justify-center' >
+                          <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+
+                            <input type='hidden' value={String(date)} name='value' />
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]",
+                                    !date && " text-[#fafafa]"
+                                  )}
+                                >
+                                  <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                                    <ClockIcon className="mr-2 size-8 " />
+                                    {currentTime ? (time) : <span>Pick a Time</span>}
+                                  </div>
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f0f0f0] border-[#27272a]" align="start">
+                                <div className='align-center my-3 flex justify-center   '>
+                                  <Select name='pickHour'  >
+                                    <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]" >
+                                      <SelectValue defaultValue='09' />
+                                    </SelectTrigger>
+                                    <SelectContent className='bg-white text-black' >
+                                      <SelectGroup>
+                                        <SelectLabel>Hour</SelectLabel>
+                                        <SelectItem value="09">09</SelectItem>
+                                        <SelectItem value="10">10</SelectItem>
+                                        <SelectItem value="11">11</SelectItem>
+                                        <SelectItem value="12">12</SelectItem>
+                                        <SelectItem value="13">13</SelectItem>
+                                        <SelectItem value="14">14</SelectItem>
+                                        <SelectItem value="15">15</SelectItem>
+                                        <SelectItem value="16">16</SelectItem>
+                                        <SelectItem value="17">17</SelectItem>
+                                        <SelectItem value="18">18</SelectItem>
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+                                  <Select name='pickMin'   >
+                                    <SelectTrigger className="m-3 w-auto" >
+                                      <SelectValue defaultValue='10' />
+                                    </SelectTrigger>
+                                    <SelectContent className='bg-white text-black'  >
+                                      <SelectGroup>
+                                        <SelectLabel>Minute</SelectLabel>
+                                        <SelectItem value="10">10</SelectItem>
+                                        <SelectItem value="20">20</SelectItem>
+                                        <SelectItem value="30">30</SelectItem>
+                                        <SelectItem value="40">40</SelectItem>
+                                        <SelectItem value="50">50</SelectItem>
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+                        </div>
+                      </div>
+                      <input type='hidden' name='phone' defaultValue={finance[0].phone} />
+                      <input type='hidden' name='email' defaultValue={finance[0].email} />
+                      <input type='hidden' name='lastName' defaultValue={finance[0].lastName} />
+                      <input type='hidden' name='firstName' defaultValue={finance[0].firstName} />
+                      <input type='hidden' name='brand' defaultValue={finance[0].brand} />
+                      <input type='hidden' name='unit' defaultValue={finance[0].model} />
+                      <input type='hidden' name='brand' defaultValue={finance[0].brand} />
+                      <input type='hidden' name='financeId' defaultValue={finance[0].id} />
+                      <input type='hidden' name='userId' defaultValue={user.id} />
+                      <input type='hidden' name='apptType' defaultValue='sales' />
+                      <input type='hidden' name='min' defaultValue={minForm} />
+                      <input type='hidden' name='hour' defaultValue={hourForm} />
+                      <DialogFooter className=" border-t border-[#27272a] p-4  ">
+                        <div className='flex justify-center' >
+                          <Button
+                            value="addAppt"
+                            type="submit"
+                            name="intent"
+                            onClick={() => {
+                              toast.success(`Appointment Added!`)
+                            }}
+                            className='bg-[#dc2626] ml-auto  mr-auto'>
+                            Add Appointment
+                            <PaperPlaneIcon className="h-4 w-4 ml-2" />
+
+                          </Button>
+                        </div>
+                      </DialogFooter>
+                    </Form>
+
+                  </DialogContent>
+                </Dialog>
               </TabsContent>
               <TabsContent value="Communications">
                 <Card
-                  className="overflow-hidden" x-chunk="dashboard-05-chunk-4"
+                  className=" text-[#f0f0f0]" x-chunk="dashboard-05-chunk-4"
                 >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
-                        Actions
+                        Communications
                         <Button
                           size="icon"
                           variant="outline"
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
                         >
                           <Copy className="h-3 w-3" />
-                          <span className="sr-only">Snap shot on customer interactions, whether they are buying something or a sales person following up to make a sale.</span>
                         </Button>
                       </CardTitle>
-                      <CardDescription>Date: November 23, 2023</CardDescription>
                     </div>
                     <div className="ml-auto flex items-center gap-1">
-                      <Button size="sm" variant="outline" className="h-8 gap-1">
-                        <Truck className="h-3.5 w-3.5" />
-                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                          Track Order
-                        </span>
-                      </Button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="outline" className="h-8 w-8">
-                            <MoreVertical className="h-3.5 w-3.5" />
-                            <span className="sr-only">More</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Export</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>Trash</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="ml-auto rounded-full"
+                              onClick={() => setOpenComms(true)}
+                            >
+                              <PlusIcon className="h-4 w-4" />
+                              <span className="sr-only">Add Communication</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent sideOffset={10} className='bg-[#dc2626]'>Add Communication</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-6 text-sm bg-[#09090b]">
-                    <div className="flex flex-col">
-                      <div className="relative mx-3 mt-2 max-h-[600px] h-auto overflow-y-auto">
-                        <ul>
-                          {Coms.map((message) => (
-                            <li key={message.id} className="flex-cols-2 flex "  >
-                              <Card className="mr-1 mt-1 w-full rounded mb-3 bg-[#09090b]"  >
-                                <CardContent className="flex flex-col"  >
-                                  <div className="mt-1 flex justify-between">
-                                    <p className="text-thin text-[14px] text-gray-300">
-                                      Associate: {message.userName}
-                                    </p>
-                                    <p className="text-thin text-[14px] text-gray-300">
-                                      {message.direction} - {message.type} -  {message.result}
-                                    </p>
-                                    <p className="text-thin text-[14px] text-gray-300">
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                    <div className="grid gap-3 max-h-[20vh] h-auto">
+                      <Table className='w-auto overflow-x-scroll w-[650px]'>
+                        <TableHeader>
+                          <TableRow className="bg-accent border-[#27272a]">
+                            <TableHead className="hidden sm:table-cell">
+                              Direction
+                            </TableHead>
+                            <TableHead className="hidden sm:table-cell">
+                              Type
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Result
+                            </TableHead>
+                            <TableHead className=" w-[200px]">
+                              Title
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Content
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell w-[100px]">
+                              Employee
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {Coms.map((message) => {
+                            const isValidDate = message.start && message.start !== '1969-12-31 19:00';
+                            const formattedDateAppt = isValidDate ? new Date(message.start).toLocaleString() : 'TBD';
+                            return (
+                              <TableRow
+                                key={message.id}
+                                className="bg-accent border-[#27272a]">
+                                <TableCell>
+                                  {message.direction}
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell">
+                                  {message.type}
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell">
+                                  {message.result}
+                                </TableCell >
+                                <TableCell className='w-[150px]'>
+                                  {message.title}
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell">
+                                  {message.content}
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell w-[100px]">
+                                  {message.userName}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    <Dialog open={openComms} onOpenChange={setOpenComms}>
+                      <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                        <Form method='post'>
+                          <DialogHeader className="px-4 pb-4 pt-5">
+                            <DialogTitle>Add Communication</DialogTitle>
+                          </DialogHeader>
+                          <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                          <div className="grid gap-3 mx-3 mb-3">
+                            <div className="grid gap-3">
+                              <Label htmlFor="name">Title</Label>
+                              <Input
+                                id="title"
+                                type="text"
+                                className="w-full bg-[#09090b] border-[#27272a] "
+                              />
+                            </div>
+                            <div className="grid gap-3">
+                              <Label htmlFor="name">Note</Label>
+                              <Select name='note' defaultValue="Gave pricing, need to follow up">
+                                <SelectTrigger className="w-auto  border-[#27272a]  ">
+                                  <SelectValue placeholder="Message examples" />
+                                </SelectTrigger>
+                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                  <SelectGroup>
+                                    <SelectLabel>Message examples</SelectLabel>
+                                    <SelectItem value="">-- Moving Forward --</SelectItem>
+                                    <SelectItem value="Wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
+                                    <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>
+                                    <SelectItem value="Wants to get finance approval before moving forward">Wants to get approval before moving forward</SelectItem>
+                                    <SelectItem value="Sent BOS to sign off on">Sent BOS to sign off on deal</SelectItem>
+                                    <SelectItem value="Wants to come back in to view and negotiate">Wants to come back in to view and negotiate</SelectItem>
 
-                                    </p>
-                                    <button className='h-4 w-8' />
-                                    <p className="text-thin text-[14px] text-gray-300">
-                                      {new Date(message.createdAt).toLocaleDateString()}{" "}
-                                      {new Date(message.createdAt).toLocaleTimeString()}
-                                    </p>
-                                  </div>
+                                    <SelectItem value="">-- Stand Still --</SelectItem>
+                                    <SelectItem value="Talked to spouse, client was not home">Talked to wife, husband was not home</SelectItem>
+                                    <SelectItem value="Got ahold of the client, was busy, need to call back">Got ahold of the client, was busy need to call back</SelectItem>
+                                    <SelectItem value="Gave pricing, need to follow up">Gave pricing, need to follow up</SelectItem>
+                                    <SelectItem value="Needs to discuss with spouse">Needs to discuss with spouse</SelectItem>
+                                    <SelectItem value="No Answer / Left Message">No Answer / Left Message</SelectItem>
 
-                                  <p className="text-thin text-[12px] text-left text-gray-300">
-                                    {message.title}
-                                  </p>
-                                  <p className="text-thin text-[12px] text-left text-gray-300">
-                                    {message.content}
-                                  </p>
-                                </CardContent>
-                              </Card>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="grid gap-3">
-                        <div className="font-semibold">Shipping Information</div>
-                        <address className="grid gap-0.5 not-italic text-[#909098]">
-                          <span>Liam Johnson</span>
-                          <span>1234 Main St.</span>
-                          <span>Anytown, CA 12345</span>
-                        </address>
-                      </div>
-                      <div className="grid auto-rows-max gap-3">
-                        <div className="font-semibold">Billing Information</div>
-                        <div className="text-[#909098]">
-                          Same as shipping address
-                        </div>
-                      </div>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Customer Information</div>
-                      <dl className="grid gap-3">
-                        <div className="flex items-center justify-between">
-                          <dt className="text-[#909098]">Customer</dt>
-                          <dd>Liam Johnson</dd>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <dt className="text-[#909098]">Email</dt>
-                          <dd>
-                            <a href="mailto:">liam@acme.com</a>
-                          </dd>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <dt className="text-[#909098]">Phone</dt>
-                          <dd>
-                            <a href="tel:">+1 234 567 890</a>
-                          </dd>
-                        </div>
-                      </dl>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Payment Information</div>
-                      <dl className="grid gap-3">
-                        <div className="flex items-center justify-between">
-                          <dt className="flex items-center gap-1 text-[#909098]">
-                            <CreditCard className="h-4 w-4" />
-                            Visa
-                          </dt>
-                          <dd>**** **** **** 4532</dd>
-                        </div>
-                      </dl>
-                    </div>
+                                    <SelectItem value="">-- Not Moving Forward --</SelectItem>
+                                    <SelectItem value="Does not want to move forward right now wants me to call in the future">Does not want to move forward right now wants me to call in the future</SelectItem>
+                                    <SelectItem value="Bought else where, set to lost">Bought else where</SelectItem>
+                                    <SelectItem value="Does not want to move forward, set to lost">Does not want to move forward, set to lost</SelectItem>
+                                    <SelectItem value=""></SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              <Input
+                                id="name"
+                                type="text"
+                                placeholder="or write a custom note..."
+                                className="w-full bg-[#09090b] border-[#27272a] mt-1"
+                              />
+                            </div>
+                            <div className="grid gap-3">
+                              <Label htmlFor="name">Contact Method</Label>
+                              <Select name='contactMethod' defaultValue="Phone">
+                                <SelectTrigger className="w-auto    bg-[#09090b] border-[#27272a]">
+                                  <SelectValue placeholder="Contact Method" />
+                                </SelectTrigger>
+                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                  <SelectGroup>
+                                    <SelectLabel>Contact Method</SelectLabel>
+                                    <SelectItem value="Phone">Phone</SelectItem>
+                                    <SelectItem value="In Person">In-Person</SelectItem>
+                                    <SelectItem value="SMS">SMS</SelectItem>
+                                    <SelectItem value="Email">Email</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            <div className="grid gap-3">
+                              <Label htmlFor="name">Result</Label>
+                              <Select name='resultOfcall' defaultValue="Reached">
+                                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                                  <SelectValue placeholder="Result of call" />
+                                </SelectTrigger>
+                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                  <SelectGroup>
+                                    <SelectLabel>Result of call</SelectLabel>
+                                    <SelectItem value="Reached">Reached</SelectItem>
+                                    <SelectItem value="N/A">N/A</SelectItem>
+                                    <SelectItem value="Attempted">Left Message</SelectItem>
+                                    <SelectItem value="Completed">Completed</SelectItem>
+                                    <SelectItem value="Rescheduled">Rescheduled</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="grid gap-3">
+                              <Label htmlFor="name">Direction</Label>
+                              <Select name='direction' defaultValue="Incoming">
+                                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                                  <SelectValue placeholder="Direction of call" />
+                                </SelectTrigger>
+                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                  <SelectGroup>
+                                    <SelectLabel>Direction of call</SelectLabel>
+                                    <SelectItem value="Incoming">Incoming</SelectItem>
+                                    <SelectItem value="Outgoing">Outgoing</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                          </div>
+                          <DialogFooter className="flex items-center border-t border-[#27272a] p-4 sm:justify-between">
+                            <input type='hidden' name='financeId' defaultValue={finance[0].id} />
+                            <input type='hidden' name='userId' defaultValue={user.id} />
+
+                            <Button
+                              value="addComms"
+                              type="submit"
+                              name="intent"
+                              onClick={() => {
+                                toast.success(`Communication Added!`)
+                              }}
+                              className='bg-[#dc2626] ml-auto '>
+                              Add Communication
+                              <PaperPlaneIcon className=" ml-2 h-4 w-4" />
+                            </Button>
+                          </DialogFooter>
+                        </Form>
+                      </DialogContent>
+                    </Dialog>
                   </CardContent>
                   <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
-                    <div className="text-xs text-[#909098]">
+                    <div className="text-xs text-[#18181a]">
                       Updated <time dateTime="2023-11-23">November 23, 2023</time>
                     </div>
-                    <Pagination className="ml-auto mr-0 w-auto">
-                      <PaginationContent>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronLeft className="h-3.5 w-3.5" />
-                            <span className="sr-only">Previous Order</span>
-                          </Button>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronRight className="h-3.5 w-3.5" />
-                            <span className="sr-only">Next Order</span>
-                          </Button>
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
+
                   </CardFooter>
                 </Card>
               </TabsContent>
               <TabsContent value="Upload">
                 <Card
-                  className="overflow-hidden" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-[#f0f0f0]" x-chunk="dashboard-05-chunk-4"
                 >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
@@ -4880,52 +4951,51 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
                       </CardTitle>
                     </div>
                     <div className="ml-auto flex items-center gap-1">
-                      <Button size="sm" variant="outline" className="h-8 gap-1">
-                        <Truck className="h-3.5 w-3.5" />
+                      <Button onClick={() => navigate('/dealer/document/builder')} size="sm" variant="outline" className="h-8 gap-1">
+                        <File className="h-3.5 w-3.5" />
                         <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                          Track Order
+                          Document Builder
                         </span>
                       </Button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="outline" className="h-8 w-8">
-                            <MoreVertical className="h-3.5 w-3.5" />
-                            <span className="sr-only">More</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Export</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>Trash</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+
                     </div>
                   </CardHeader>
-                  <CardContent className="p-6 text-sm bg-[#09090b]">
-                    <div className="grid gap-3">
-                      <ul className="grid gap-3">
-                        <li className="flex items-center justify-between">
-                          <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="picture">File Upload</Label>
-                            <Input id="picture" type="file" />
-                          </div>
-                        </li>
-                      </ul>
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                    <div className="grid gap-3 max-h-[20vh] h-auto">
+                      <Form method='post'>
+                        <ul className="grid gap-3">
+                          <li className="flex items-center justify-between">
+                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <Label htmlFor="picture">File Upload</Label>
+                              <Input id="picture" type="file" className='border-[#27272a]' />
+                            </div>
+                          </li>
+                        </ul>
+                      </Form>
                       <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
                       <div className="font-semibold">Download Docs</div>
                       <ul className="grid gap-3">
                         <li className="flex items-center justify-between">
                           <span className="text-[#909098]">Drivers Lic</span>
-                          <span>File</span>
+                          <Button size="sm" variant="outline" className="h-8 gap-1 mr-3"  >
+                            <File className="h-3.5 w-3.5" />
+                            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                              Print
+                            </span>
+                          </Button>
                         </li>
                         <li className="flex items-center justify-between">
                           <span className="text-[#909098]">Test Drive Form</span>
-                          <span>File</span>
+                          <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" >
+                            <File className="h-3.5 w-3.5" />
+                            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                              Print
+                            </span>
+                          </Button>
                         </li>
                       </ul>
                     </div>
-                    <hr className=' text-white w-98 mx-auto] my-5' />
+                    <hr className=' text-[#27272a] w-98 mx-auto] my-5' />
                     <CustomerGen />
                   </CardContent>
                   <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
@@ -4960,7 +5030,6 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
 }
 function SidebarNav({ mergedFinanceList, finance }) {
   console.log(mergedFinanceList, 'mergedFinanceListp')
-
   function ImageSelectNav(brandId) {
     if (brandId === 'Can-Am') {
       return (
@@ -5139,12 +5208,10 @@ function SidebarNav({ mergedFinanceList, finance }) {
 
 
   }
-
-
   return (
     <nav
       className={cn(
-        "flex flex-col items-center gap-4 px-2 sm:py-4",
+        "flex flex-col items-center gap-4 px-2 sm:py-4 mt-10",
       )}
     >
       {mergedFinanceList && mergedFinanceList.map((item) => {
@@ -5155,15 +5222,15 @@ function SidebarNav({ mergedFinanceList, finance }) {
                 to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-[#909098] transition-colors hover:text-foreground md:h-8 md:w-8 bg-transparent hover:bg-transparent"
               >
-                <Button variant="ghost" className="bg-white  hover:bg-transparent hover:underline">
-                  <div className="h-5 w-5">
-                    <ImageSelectNav brandId={finance[0].brand} />
+                <Button variant="ghost" className="bg-transparente  hover:bg-transparent hover:underline">
+                  <div className="h-5 w-5 flex justify-center">
+                    <FaMotorcycle className='text-[#fafafa] text-3xl mx-auto' />
 
                   </div>
                 </Button>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right" className='bg-[#09090b] text-[#fafafa] '>
+            <TooltipContent side="right" className='bg-[#09090b] text-[#fafafa]  z-35 '>
               <div>
                 <p>{item.year} {item.brand}</p>
                 <p>{item.model.toString().slice(0, 28)}</p>
@@ -5410,6 +5477,7 @@ async function PullActivix(financeData) {
 }
 
 export const action: ActionFunction = async ({ req, request, params }) => {
+
   const formPayload = Object.fromEntries(await request.formData());
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
@@ -5497,22 +5565,72 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     return json({ updateApt });
   }
   if (intent === 'addAppt') {
-    const createApt = createClientApts(formData)
-    const LastContacted = LastContacted(formData)
-    const userIntegration = await prisma.userIntergration.findUnique({
-      where: { userEmail: user?.email }
+    console.log(formData, formPayload, 'formData')
+
+    const initialDate = new Date(formData.value);
+    const hour = parseInt(formPayload.hour, 10);
+    const minute = parseInt(formPayload.min, 10);
+    initialDate.setUTCHours(hour);
+    initialDate.setUTCMinutes(minute);
+    const updatedDateString = initialDate.toISOString();
+
+    const createApt = await prisma.clientApts.create({
+      data: {
+        phone: formData.phone,
+        email: formData.email,
+        lastName: formData.lastName,
+        firstName: formData.firstName,
+        brand: formData.brand,
+        unit: formData.unit,
+        note: formData.note,
+        apptType: formData.apptType,
+        apptStatus: formData.apptStatus,
+        completed: 'no',
+        contactMethod: formData.contactMethod,
+        //   end: formData.end,
+        title: formData.title,
+        start: updatedDateString,
+        userId: user?.id,
+        resourceId: Number(formData.resourceId),
+        userName: user?.name,
+        financeId: formData.financeId,
+        direction: formData.direction,
+        resultOfcall: formData.resultOfcall,
+      }
     })
-    const activixActivated = userIntegration.activixActivated
-    if (activixActivated === 'yes') {
-      await CreateTask(formData)
-    }
+
 
     return (createApt)
+  }
+  if (intent === 'addComms') {
+    const comdata = {
+      financeId: formData.financeId,
+      userId: formData.userId,
+      content: formData.note,
+      title: formData.title,
+      direction: formData.direction,
+      result: formData.resultOfcall,
+      subject: formData.messageContent,
+      userEmail: user.email,
+      type: formData.apptType,
+      userName: user?.name,
+      date: new Date().toISOString(),
+    }
+    const setComs = await prisma.communicationsOverview.create({
+      data: comdata,
+    });
+
+
+    return (setComs)
   }
   if (intent === 'deleteApt') {
     const newFormData = { ...formData };
     delete newFormData.intent;
-    const deleteNote = await deleteFinanceAppts(newFormData)
+    const deleteNote = await prisma.clientApts.create({
+      where: {
+        id: formData.financeId
+      }
+    })
 
     return json({ deleteNote });
   }
@@ -5558,10 +5676,20 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     return json({ updateNote });
   }
   if (intent === 'saveFinanceNote') {
-    await SaveFinanceNote({ formData, })
-    const notiFinance = await prisma.finance[0].findUnique({ where: { id: formData.financeId }, });
+    //  await SaveFinanceNote({ formData, })
+    const SaveFinanceNote = await prisma.financeNote.create({
+      data: {
+        financeId: formData.financeId,
+        slug: formData.slug,
+        customContent: formData.customContent,
+        urgentFinanceNote: formData.urgentFinanceNote,
+        author: formData.author,
+        customerId: formData.customerId,
+      },
+    });
+    const notiFinance = await prisma.finance.findUnique({ where: { id: formData.financeId }, });
     let notification;
-    if (formData.userEmail !== notifinance[0].userEmail) {
+    if (formData.userEmail !== notiFinance.userEmail) {
       notification = await prisma.notificationsUser.create({
         data: {
           title: `Note left on ${notiFinance?.name} by ${user?.username}`,
@@ -5746,7 +5874,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     return json({ updateClient, })
   }
   if (intent === 'dealProgress') {
-
+    console.log(formData, 'formdata')
     const currentDate = new Date().toISOString();
 
     const date = new Date();
@@ -5896,11 +6024,11 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         cancelled: String(cancelled),
         lost: String(lost),
         sold: String(sold),
-        referral: String(referral),
+        referral: formData.referral === 'on' && String(currentDate), //: String(referral),
         visited: String(visited),
         bookedApt: String(bookedApt),
         aptShowed: String(aptShowed),
-        aptNoShowed: String(aptNoShowed),
+        aptNoShowed: formData.aptNoShowed === 'on' && String(currentDate), //String(aptNoShowed),
         testDrive: String(testDrive),
         metService: String(metService),
         metManager: String(metManager),
@@ -5924,24 +6052,24 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         signBill: String(signBill),
         tradeInsp: String(tradeInsp),
 
-        pending: formData.pending,
+        //pending: formData.pending,
         //  bookedApt: formData.bookedApt,
         // aptShowed: formData.aptShowed,
         /// aptNoShowed: formData.aptNoShowed,
         // referral: formData.referral,
       },
     });
-
-    const userIntegration = await prisma.userIntergration.findUnique({
-      where: { userEmail: user?.email }
-    })
-    if (userIntegration) {
-      const activixActivated = userIntegration.activixActivated
-      if (activixActivated === 'yes') {
-        await UpdateLeadBasic(formData)
-      }
-      return json({ updateDealProgress })
-    }
+    /**const userIntegration = await prisma.userIntergration.findUnique({
+          where: { userEmail: user?.email }
+        })
+        if (userIntegration) {
+          const activixActivated = userIntegration.activixActivated
+          if (activixActivated === 'yes') {
+            await UpdateLeadBasic(formData)
+          }
+          return json({ updateDealProgress })
+        } */
+    return ({ updateDealProgress })
 
   }
   // trade
@@ -5954,6 +6082,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
       tradeColor: formData.tradeColor,
       tradeMileage: formData.tradeMileage,
       tradeVin: formData.tradeVin,
+      tradeLocation: formData.tradeLocation,
     }
     const finance = []
     const updateClient = await updateFinanceWithDashboard(financeId, financeData, finance)
@@ -5964,7 +6093,6 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   }
   // client info
   if (intent === 'updateClientInfoFinance') {
-    //console.log(formData.dashboardId, formData.clientId, formData.financeId, formData.clientfileId, formData.id, 'updateClientInfoFinance')
     const updateClient = await prisma.clientfile.update({
       where: { id: formData.clientId },
       data: {
@@ -5980,12 +6108,11 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         dl: formData.dl,
       }
     })
-    if (user?.activixActivated === 'yes') {
+    /** if (user?.activixActivated === 'yes') {
       await UpdateLeadBasic(formData)
       await UpdateLeademail(formData)
       await UpdateLeadPhone(formData)
-    }
-
+    } */
     return json({ updateClient })
   }
   else return null

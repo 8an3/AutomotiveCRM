@@ -15,6 +15,7 @@ const financeFormSchema = z.object({
   timeOfDay: zfd.text(z.string().optional()),
   liceningDone: zfd.text(z.string().optional()),
   conversationSid: zfd.text(z.string().optional()),
+  tradeLocation: zfd.text(z.string().optional()),
   name: zfd.text(z.string().optional()),
   statusBike: zfd.text(z.string().optional()),
   partNumbers: zfd.text(z.string().optional()),

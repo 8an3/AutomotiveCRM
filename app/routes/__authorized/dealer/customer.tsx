@@ -27,7 +27,7 @@ export const links: LinksFunction = () => [
 
 
 export function SidebarNav({ mergedFinanceList, }) {
-  console.log(mergedFinanceList, 'mergedFinanceListp')
+  // console.log(mergedFinanceList, 'mergedFinanceListp')
   return (
     <nav
       className={cn(
@@ -86,7 +86,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const notifications = await prisma.notificationsUser.findMany({
     where: { userId: user.id, }
   })
-  console.log(financeIds, financeId, 'quote loader');
+  // console.log(financeIds, financeId, 'quote loader');
 
   return returnThis && json({ ok: true, mergedFinanceList, clientfileId, finance, deFees, sliderWidth, user, financeNotes, financeId, notifications, financeList }, { headers: { 'Set-Cookie': await sixsixcommit(session) } });
 

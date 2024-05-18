@@ -1,5 +1,5 @@
 /* eslint-disable tailwindcss/classnames-order */
-import { Input, Separator, Button } from '~/components/ui/index'
+import { Input, Separator, Button, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, } from '~/components'
 import Calendar from 'react-calendar';
 import React, { useState, useEffect } from "react";
 import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigation } from '@remix-run/react'
@@ -12,7 +12,8 @@ import MesasageContent from "./messageContent";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { testLeademail, testLeadPhone } from '~/routes/__authorized/dealer/api/activix';
 import { isDate } from 'date-fns';
-
+import { FaSave } from "react-icons/fa";
+import IndeterminateCheckbox from './InderterminateCheckbox';
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -127,6 +128,16 @@ export default function ClientCard({ data }) {
         return ClientDetails;
     }
 
+
+
+    const handleCheckboxChange = (name, isChecked) => {
+        setCheckedItems((prevCheckedItems) => ({
+            ...prevCheckedItems,
+            [name]: isChecked ? (prevCheckedItems[name] ?? new Date().toISOString()) : false,
+        }));
+    };
+    const [checkedItems, setCheckedItems] = useState({});
+
     return (
         <>
             <Sheet>
@@ -151,36 +162,49 @@ export default function ClientCard({ data }) {
                             {ClientDetailsFunction({ data, finance })
                                 .map((fee, index) => (
                                     <div key={index}>
-                                        <Input
-                                            name={fee.name}
-                                            defaultValue={fee.value}
-                                            placeholder={fee.placeHolder}
-                                            className='mt-2 h-8 text-[#fafafa] bg-[#09090b]'
-                                        />
+                                        <fieldset className=" " >
+                                            <legend className="-ml-1 px-1 text-sm font-medium flex">
+                                                {fee.placeHolder}
+                                            </legend>
+                                            <Input
+                                                name={fee.name}
+                                                defaultValue={fee.value}
+                                                placeholder={fee.placeHolder}
+                                                className='mt-2 h-8 text-[#fafafa] bg-[#09090b] border-[#27272a] '
+                                            />
+                                        </fieldset>
                                     </div>
                                 ))}
 
-                            <p className="mt-4">Prefered Contact</p>
-                            <Separator className='w-[90%] mb-3' />
-                            <select defaultValue={data.typeOfContact}
-                                name='typeOfContact'
-                                placeholder='Best Form To Contact '
-                                className="w-2/3 mb-2 rounded text-[#fafafa] cursor-pointer border-[#c7c7cb] ml-2 mr-2 bg-[#09090b] px-3 py-3 text-sm  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
-                                <option value="na">Best Form To Contact </option>
-                                <option value="Phone">Phone</option>
-                                <option value="Text">Text</option>
-                                <option value="Email">Email</option>
-                            </select>
-                            <select defaultValue={data.timeToContact}
-                                name='timeToContact'
-                                placeholder='Best Time To Contact'
-                                className="mx-automt-3 w-2/3 text-[#fafafa] cursor-pointer rounded border-[#c7c7cb] ml-2 mr-2 bg-[#09090b] px-3 py-3 text-sm placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
-                                <option value="na">Best Time To Contact</option>
-                                <option value="Morning">Morning</option>
-                                <option value="Afternoon">Afternoon</option>
-                                <option value="Evening">Evening</option>
-                                <option value="Do Not Contact">Do Not Contact</option>
-                            </select>
+                            <Select name='typeOfContact' defaultValue={data.typeOfContact || "Best Form To Contact"} >
+                                <SelectTrigger className="w-auto  mt-2  bg-[#09090b] border-[#27272a]">
+                                    <SelectValue placeholder="Best Form To Contact" />
+                                </SelectTrigger>
+                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                    <SelectGroup>
+                                        <SelectLabel>Best Form To Contact</SelectLabel>
+                                        <SelectItem value="Phone">Phone</SelectItem>
+                                        <SelectItem value="In Person">In-Person</SelectItem>
+                                        <SelectItem value="SMS">SMS</SelectItem>
+                                        <SelectItem value="Email">Email</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                            <Select name='timeToContact' defaultValue={data.timeToContact || "Best Time To Contact"} >
+                                <SelectTrigger className="w-auto mt-2   bg-[#09090b] border-[#27272a]">
+                                    <SelectValue placeholder="Best Time To Contact" />
+                                </SelectTrigger>
+                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                    <SelectGroup>
+                                        <SelectLabel>Best Time To Contact</SelectLabel>
+                                        <SelectItem value="Morning">Morning</SelectItem>
+                                        <SelectItem value="Afternoon">Afternoon</SelectItem>
+                                        <SelectItem value="Evening">Evening</SelectItem>
+                                        <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+
 
 
 
@@ -190,21 +214,41 @@ export default function ClientCard({ data }) {
                                         Result
                                     </AccordionTrigger>
                                     <AccordionContent>
-                                        {ClientResultFunction({ formData, finance, dashBoardCustURL })
-                                            .map((item) => (
-                                                <div key={item.name} className='flex justify-between items-center ml-3'>
-                                                    <label htmlFor={item.name}>{item.label}</label>
-                                                    <input
-                                                        className='mr-3 cursor-pointer'
-                                                        type="checkbox"
-                                                        id={item.name}
-                                                        name={item.name}
-                                                        checked={item.value === 'on' || (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'))}
-                                                        onChange={(e) => handleInputChange(item.name, e.target.checked)}
-                                                    />
-                                                </div>
-                                            ))}
-
+                                        <Form method="post">
+                                            {ClientResultFunction({ formData, finance, dashBoardCustURL })
+                                                .map((item) => {
+                                                    const isChecked =
+                                                        item.value === 'on' ||
+                                                        new Date(item.value) > new Date('2022-01-01');
+                                                    return (
+                                                        <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
+                                                            <label htmlFor={item.name}>{item.label}</label>
+                                                            <IndeterminateCheckbox
+                                                                name={item.name}
+                                                                indeterminate={checkedItems[item.name] === undefined && isChecked}
+                                                                checked={checkedItems[item.name] ?? isChecked}
+                                                                onChange={(e) => handleCheckboxChange(item.name, e.target.checked)}
+                                                                className="border-[#c72323]"
+                                                            />
+                                                        </div>
+                                                    )
+                                                }
+                                                )}
+                                            <input type="hidden" defaultValue={finance[0].id} name="financeId" />
+                                            <ButtonLoading
+                                                size="sm"
+                                                value="dealProgress"
+                                                className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-[#dc2626]"
+                                                name="intent"
+                                                type="submit"
+                                                isSubmitting={isSubmitting}
+                                                onClick={() => toast.success(`${data.firstName}'s customer file is updated...`)}
+                                                loadingText={`${data.firstName}'s customer file is updated...`}
+                                            >
+                                                Save
+                                                <FaSave className="h-4 w-4 ml-2" />
+                                            </ButtonLoading>
+                                        </Form>
                                     </AccordionContent>
                                 </AccordionItem>
                             </Accordion>

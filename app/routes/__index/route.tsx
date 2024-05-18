@@ -74,7 +74,6 @@ export default function Index() {
     <>
       <div className='bg-black'>
         <NavigationMenuSales />
-
         <AlertBox />
         <NewHeader />
         <NewSection />
@@ -544,9 +543,9 @@ function NewSection() {
             <p className='px-[40px] py-[10px]  text-center  text-myColor-200 '>
               However, adopting our CRM will significantly elevate your sales game, surpassing the impact of the last five sales training sessions. Guaranteed to be the most significant change in your career, whether you're a newcomer, a sales superstar, or a seasoned salesperson who isn't tech-savvy. You'll undoubtedly see a remarkable increase—Just read the upcoming story about wasting time with mass emails.
             </p>
-            <p className='px-[40px] py-[10px]  text-center  text-myColor-200 '>
-              Click on the card to continue.
-            </p>
+            <Button >
+              Continue
+            </Button>
           </div>
 
           <div className='p4 mx-auto h-[900px] w-[550px] cursor-pointer   rounded-md border border-white text-[#fafafa] hover:border-[#02a9ff]'
@@ -571,9 +570,9 @@ function NewSection() {
                 Discover more benefits by exploring our system. Stay tuned for an in-depth video covering the entire system and addressing how the industry has done us wrong. If you're here, you're already moving in the right direction. To top it off, we have one advatange none of the CRM providors have.
               </p>
             </div>
-            <p className='px-[40px] py-[10px]  text-center  text-myColor-200 '>
-              Click on the card to continue.
-            </p>
+            <Button >
+              Continue
+            </Button>
           </div>
         </div>
       )}

@@ -683,8 +683,8 @@ export default function ClientEmail() {
                                 setLabel(folder.displayName);
                               }}
                               className={`mt-3 flex cursor-pointer items-start text-left text-[#fff] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === folder.displayName
-                                  ? "text-[#02a9ff]"
-                                  : ""
+                                ? "text-[#02a9ff]"
+                                : ""
                                 }`}
                             >
                               {(() => {

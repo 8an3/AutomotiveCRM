@@ -26,7 +26,26 @@ import lvsixTemplateBack from '~/components/document/levesixBack.json'
 import QUEBECATTOURNEYTemplate from '~/components/document/QUEBECATTOURNEY.json'
 import stickyBackTemplate from '~/components/document/stickyBack.json'
 import bosTemplate from '~/components/document/bos.json'
-
+import { Button } from "~/components";
+import {
+    ChevronLeft,
+    ChevronRight,
+    Copy,
+    CreditCard,
+    File,
+    Home,
+    LineChart,
+    ListFilter,
+    MoreVertical,
+    Package,
+    Package2,
+    PanelLeft,
+    Search,
+    Settings,
+    ShoppingCart,
+    Truck,
+    Users2,
+} from "lucide-react"
 interface Template { fileName: string; }
 
 export default function CustomerGen() {
@@ -227,120 +246,98 @@ export default function CustomerGen() {
     }, [merged, userId]);
 
     const inputsPDF = Array.isArray(merged) ? merged : [merged];
-
-
     // <button onClick={generateAllPDFs}>Print</button>
-
     return (
         <div className="mx-auto justify-center mt-10">
-
             <h1>PDF Generator</h1>
-            <h4>Print needed documents for your customers</h4>
-            <hr className="text-[#fff]" />
-
+            <hr className="text-[#27272a]" />
             {templateList.map((template: any, index) => (
                 template && 'fileName' in template ? (
                     <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
                         {template.fileName && (
-                            <p className="text-[#fff]">{template.fileName}</p>
+                            <p className="text-[#909098]">{template.fileName}</p>
                         )}
-                        <button
-                            className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
-                            id='myButton'
-                            onClick={() => Yellow(inputs, template)}>
-                            Print
-                        </button>
+                        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => Yellow(inputs, template)}>
+                            <File className="h-3.5 w-3.5" />
+                            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                                Print
+                            </span>
+                        </Button>
                     </div>
                 ) : null
             ))}
-
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#fff]" > Work Order </p>
-                <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
-                    disabled={isLoading}
-                    id='myButton2'
-                    onClick={() => {
-                        setworkOrder('workOrder');
-                    }}
-                >Print</button>
+                <p className="text-[#909098]" > Work Order </p>
+                <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setworkOrder('workOrder')}>
+                    <File className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Print
+                    </span>
+                </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#fff]" >UCDA</p>
-                <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
-                    disabled={isLoading}
-                    id='myButton3'
-                    onClick={() => {
-                        setucda('ucda');
-                    }}
-                >Print</button>
-            </div>
-
-            <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#fff]" >Yellow Jacket</p>
-                <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
-                    disabled={isLoading}
-                    onClick={() => {
-                        setfileFront('fileFront');
-                    }}
-                >Print</button>
+                <p className="text-[#909098]" >UCDA</p>
+                <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setucda('ucda')}>
+                    <File className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Print
+                    </span>
+                </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#fff]" >LV6</p>
-                <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
-                    disabled={isLoading}
-                    onClick={() => {
-                        setlvsix('lvsix');
-                    }}
-                >Print</button>
+                <p className="text-[#909098]" >Yellow Jacket</p>
+                <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setfileFront('fileFront')}>
+                    <File className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Print
+                    </span>
+                </Button>
+            </div>
+            <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <p className="text-[#909098]" >LV6</p>
+                <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setlvsix('lvsix')}>
+                    <File className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Print
+                    </span>
+                </Button>
             </div>
             <div className='mt-5 align-center ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#fff]" >LV6 - 2</p>
-                <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
-                    disabled={isLoading}
-                    onClick={() => {
-                        setlvsixBack('lvsixBack');
-
-                    }}
-                >Print</button>
+                <p className="text-[#909098]" >LV6 - 2</p>
+                <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setlvsixBack('lvsixBack')}>
+                    <File className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Print
+                    </span>
+                </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#fff]" >Quebec - Power of Attourney</p>
-                <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
-                    disabled={isLoading}
-                    onClick={() => {
-                        setQUEBECATTOURNEY('QUEBECATTOURNEY');
-                    }}
-                >Print</button>
+                <p className="text-[#909098]" >Quebec - Power of Attourney</p>
+                <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setQUEBECATTOURNEY('QUEBECATTOURNEY')}>
+                    <File className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Print
+                    </span>
+                </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#fff]" >Sticky Back - Into Customers Name</p>
-                <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
-                    disabled={isLoading}
-                    onClick={() => {
-                        setstickyBack('stickyBack');
-                    }}
-                >Print</button>
+                <p className="text-[#909098]" >Sticky Back - Into Customers Name</p>
+                <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setstickyBack('stickyBack')}>
+                    <File className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Print
+                    </span>
+                </Button>
             </div>
-
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#fff]" >BOS</p>
-                <button
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
-                    disabled={isLoading}
-                    onClick={() => {
-                        setbos('bos');
-                    }}
-                >Print</button>
+                <p className="text-[#909098]" >BOS</p>
+                <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setbos('bos')}>
+                    <File className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Print
+                    </span>
+                </Button>
             </div>
-
-
         </div>
     );
 }

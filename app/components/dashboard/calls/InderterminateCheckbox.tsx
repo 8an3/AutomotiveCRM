@@ -16,10 +16,10 @@ function IndeterminateCheckbox({
       ref.current.indeterminate = !rest.checked && indeterminate
     }
   }, [ref, indeterminate])
-
+// p-3
   return (
     <div className="inline-flex items-center">
-      <label className="relative flex items-center p-3 rounded-full cursor-pointer" htmlFor="blue">
+      <label className="relative flex items-center  rounded-full cursor-pointer" htmlFor="blue">
         <input type="checkbox"
           id="blue"
           ref={ref}
