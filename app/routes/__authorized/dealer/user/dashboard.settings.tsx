@@ -41,13 +41,13 @@ export async function loader({ request, params }: LoaderFunction) {
   const userId = user?.id
   const dataPDF = await getDailyPDF(userEmail)
   const statsData = await getMergedFinance(userEmail)
-  const comsRecords = await prisma.communicationsOverview.findMany({ where: { userId: userId, }, });
+  const comsRecords = await prisma.previousComms.findMany({ where: { userEmail: user.email, }, });
   if (user?.subscriptionId === 'active' || user?.subscriptionId === 'trialing') {
     // const client = await getLatestFinanceAndDashDataForClientfile(userId)
     //const finance = client.finance
     return ({ user, deFees, dataPDF, statsData, comsRecords })
   }
-  return redirect('/subscription/renew');
+  return redirect('/subscribe');
 }
 
 export function StatsTable({ statsData, comsRecords }) {
@@ -241,47 +241,47 @@ export function StatsTable({ statsData, comsRecords }) {
     // More objects for other time periods...
   ];
   return (
-    <Table>
+    <Table className='bg-[#09090b] text-[#fafafa]'>
       <TableCaption>List of Stats</TableCaption>
       <TableHeader>
-        <TableRow>
-          <TableHead className='text-[#fafafa]'>Period</TableHead>
-          <TableHead className='text-[#fafafa]'>Quotes</TableHead>
-          <TableHead className='text-[#fafafa]'>Deposits</TableHead>
-          <TableHead className='text-[#fafafa]'>Financed</TableHead>
-          <TableHead className='text-[#fafafa]'>Delivered</TableHead>
-          <TableHead className='text-[#fafafa]'>Repeat Cust</TableHead>
-          <TableHead className='text-[#fafafa]'>Walk-in</TableHead>
-          <TableHead className='text-[#fafafa]'>Web-lead</TableHead>
-          <TableHead className='text-[#fafafa]'>Phone-lead</TableHead>
-          <TableHead className='text-[#fafafa]'>Total</TableHead>
-          <TableHead className='text-[#fafafa]'>emailsSent</TableHead>
-          <TableHead className='text-[#fafafa]'>smsSent</TableHead>
-          <TableHead className='text-[#fafafa]'>phoneCallsMade</TableHead>
-          <TableHead className='text-[#fafafa]'>timesContacted</TableHead>
-          <TableHead className='text-[#fafafa]'>Appts</TableHead>
-          <TableHead className='text-[#fafafa]'>Appts Showed</TableHead>
+        <TableRow className="bg-accent border-[#27272a]">
+          <TableHead >Period</TableHead>
+          <TableHead >Quotes</TableHead>
+          <TableHead >Deposits</TableHead>
+          <TableHead >Financed</TableHead>
+          <TableHead >Delivered</TableHead>
+          <TableHead >Repeat Cust</TableHead>
+          <TableHead >Walk-in</TableHead>
+          <TableHead >Web-lead</TableHead>
+          <TableHead >Phone-lead</TableHead>
+          <TableHead >Total</TableHead>
+          <TableHead >emailsSent</TableHead>
+          <TableHead >smsSent</TableHead>
+          <TableHead >phoneCallsMade</TableHead>
+          <TableHead >timesContacted</TableHead>
+          <TableHead >Appts</TableHead>
+          <TableHead >Appts Showed</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {stats.map((stat) => (
-          <TableRow key={stat.period}>
-            <TableCell className='text-[#fafafa]'>{stat.period}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.quotes}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.deposits}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.financed}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.delivered}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.repeatCustomer}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.walkIn}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.webLead}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.phoneLead}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.total}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.emailsSent}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.smsSent}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.phoneCallsMade}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.timesContacted}</TableCell>
-            <TableCell className='text-[#fafafa]'>Appts</TableCell>
-            <TableCell className='text-[#fafafa]'>Appts Showed</TableCell>
+          <TableRow key={stat.period} className="bg-accent border-[#27272a]">
+            <TableCell >{stat.period}</TableCell>
+            <TableCell >{stat.quotes}</TableCell>
+            <TableCell >{stat.deposits}</TableCell>
+            <TableCell >{stat.financed}</TableCell>
+            <TableCell >{stat.delivered}</TableCell>
+            <TableCell >{stat.repeatCustomer}</TableCell>
+            <TableCell >{stat.walkIn}</TableCell>
+            <TableCell >{stat.webLead}</TableCell>
+            <TableCell >{stat.phoneLead}</TableCell>
+            <TableCell >{stat.total}</TableCell>
+            <TableCell >{stat.emailsSent}</TableCell>
+            <TableCell >{stat.smsSent}</TableCell>
+            <TableCell >{stat.phoneCallsMade}</TableCell>
+            <TableCell >{stat.timesContacted}</TableCell>
+            <TableCell >Appts</TableCell>
+            <TableCell >Appts Showed</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -301,6 +301,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
   let omvicNumber
   let dealerAddress
   let dealerProv
+
   if (deFees && deFees.dealerPhone) {
     dealerPhone = deFees.dealerPhone || ''
   } else {
@@ -316,12 +317,12 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
   } else {
     console.error('The object or dealerAddress property is undefined.');
   }
-
   if (deFees && deFees.dealerProv) {
     dealerProv = deFees.dealerProv || ''
   } else {
     console.error('The object or dealerProv property is undefined.');
   }
+  const [dealerCity, dealerProvince, dealerPostal] = dealerProv.split(',').map(part => part.trim());
 
   const [open, setOpen] = React.useState(false);
   const eventDateRef = React.useRef(new Date());
@@ -370,13 +371,11 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
     setActivixActivated(event.target.checked);
   };
   return (
-    <Tabs defaultValue="dealerFees" className="w-[80%] mx-auto mr-5" >
-
+    <Tabs defaultValue="dealerFees" className="w-[75%] ml-5 mr-auto" >
       <TabsList className="grid grid-cols-3 rounded-md bg-[#3e3e3f]">
         <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
         <TabsTrigger className='rounded-md' value="account">Account</TabsTrigger>
         <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>
-
       </TabsList>
       <TabsContent value="stats" className='rounded-md'>
         <Card className='rounded-md text-[#fafafa] border-[#3e3e3f] border'>
@@ -395,331 +394,316 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
         </Card>
       </TabsContent>
       <TabsContent value="dealerFees" className='rounded-md'>
-        <Card>
-          <CardContent className="space-y-2  text-[#fafafa] rounded-md">
-            <Form method="post" className="">
-
-              <div className="grid grid-cols-1 gap-4 mx-auto">
-                {/* Row 1 */}
-                <div className=" p-4">
-                  <div className=" mt-5">
-                    <h2 className="text-2xl font-thin">
-                      DEALER FEES
-                    </h2>
-                    <p className="text-sm text-[#fafafa]">
-                      This is where you can change values like freight, admin, taxes and
-                      such. If you don't have all this information with you, dont worry, you can always come back and update it later.
-                    </p>
-                    <Separator className="my-4" />
-
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    {Dealerfees.map((fee, index) => (
-                      <div key={index}>
-                        <label className=''>{fee.placeholder}</label>
-                        <Input
-                          name={fee.name}
-                          defaultValue={fee.value}
-
-                          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                        />
-                      </div>
-                    ))}
-                    <div className="">
-                      <label>Licensing (Required)</label>
-                      <Input
-                        defaultValue={deFees.userLicensing}
-                        name="userLicensing"
-                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      {errors?.userLicensing ? (
-                        <em className="text-[#ff0202]">{errors.userLicensing}</em>
-                      ) : null}
-                    </div>
-
-                    <div className="">
-                      <label>Sales tax (Required)</label>
-                      <Input
-                        defaultValue={deFees.userTax}
-                        name="userTax"
-                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                      />
-                      {errors?.userTax ? (
-                        <em className="text-[#ff0202]">{errors.userTax}</em>
-                      ) : null}
-                    </div>
-                    <div className="">
-                      <label>Service Labour (Required)</label>
-                      <Input
-                        defaultValue={deFees.userLabour}
-                        name="userLabour"
-                        className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#ff0202]  mx-1"
-                      />
-                      {errors?.userLabour ? (
-                        <em className="text-[#ff0202]">{errors.userLabour}</em>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Row 2 */}
-                <h2 className="text-2xl font-thin mt-4">
-                  OPTIONS
-                </h2>
-                <Separator className="mb-4" />
-                <div className="p-4 grid gap-2">
-                  <div className="h-[250px] grid grid-cols-3 gap-2 ">
-                    {FinanceOptions.map((option, index) => (
-                      <div key={index}>
-                        <label className='mt-2'>{option.placeholder}</label>
-                        <Input
-                          name={option.name}
-                          defaultValue={option.value}
-                          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                        />
-                      </div>
-                    ))}
-
-                    <Input type='hidden'
-                      defaultValue={user.email}
-                      name="userEmail"
+        <Card className='text-[#fafafa] bg-[#09090b]'>
+          <Form method="post" className="">
+            <CardHeader className=" grid grid-cols-1 bg-[#18181a] rounded-md">
+              <CardTitle className="group flex items-center text-sm">
+                DEALER FEES
+              </CardTitle>
+              <CardDescription>
+                This is where you can change values like freight, admin, taxes and
+                such. If you don't have all this information with you, dont worry, you can always come back and update it later.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-5 gap-2 w-[90%] mx-auto">
+                {Dealerfees.map((fee, index) => (
+                  <div key={index} className="relative mt-4 mx-3">
+                    <Input
+                      name={fee.name}
+                      defaultValue={fee.value}
+                      className="border-[#27272a] bg-[#09090b] "
                     />
-                    <Input type='hidden'
-                      defaultValue='updateUser'
-                      name="intent"
-                    />
-                    <ButtonLoading
-                      size="lg"
-                      className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#02a9ff]"
-                      type="submit"
-                      isSubmitting={isSubmitting}
-                      onClick={() => toast.success(`Update complete.`)}
-                      loadingText="Updating information..."
-                    >
-                      Update
-                    </ButtonLoading>
-
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
                   </div>
+                ))}
+                <div className="relative mt-4  mx-3">
+                  <Input
+                    defaultValue={deFees.userLicensing}
+                    name="userLicensing"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLicensing ? (
+                    <em className="text-[#ff0202]">{errors.userLicensing}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
+                </div>
+                <div className="relative mt-4  mx-3">
+                  <Input
+                    defaultValue={deFees.userTax}
+                    name="userTax"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userTax ? (
+                    <em className="text-[#ff0202]">{errors.userTax}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax</label>
+                </div>
+                <div className="relative mt-4  mx-3">
+                  <Input
+                    defaultValue={deFees.userLabour}
+                    name="userLabour"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLabour ? (
+                    <em className="text-[#ff0202]">{errors.userLabour}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour</label>
                 </div>
               </div>
-            </Form>
-          </CardContent>
-        </Card>
-      </TabsContent>
-      <TabsContent value="account" className='rounded-md'>
-        <Card className='rounded-md text-[#fafafa]'>
-          <CardHeader className=''>
-            <CardTitle className='text-[#fafafa]'>
-              <h3 className="text-2xl font-thin uppercase text-[#fafafa]">
-                EDIT ACCOUNT
-              </h3>
-            </CardTitle>
-            <CardDescription>
-              <p className="text-[#fafafa] text-sm">
-                Name, Phone # and email will show up in emails sent to customers.
-              </p>
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2 bg-slate11 text-[#fafafa]">
-            <fetcher.Form method="post" className=''>
-              <div className="grid sm:grid-cols-3 grid-cols-1  gap-2">
-
-                <div className="grid gap-2 mt-2 ">
-                  <Label htmlFor="area">Name</Label>
-                  <Input
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none   focus:text-[#02a9ff]   mx-1"
-                    placeholder="name"
-                    type="text"
-                    name="name"
-                    defaultValue={name}
-                  />
-                </div>
-
-                <div className="grid gap-2 mt-2">
-                  <Label htmlFor="area">Phone</Label>
-                  <Input
-                    defaultValue={phone}
-                    placeholder="Phone Number"
-                    type="text"
-                    name="phone"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]    mx-1"
-                  />
-                </div>
-
-                <div className="grid gap-2 mt-2">
-                  <Label htmlFor="area" className=''>Email</Label>
-                  <Input
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]   mx-1"
-                    placeholder="youremail@here.com"
-                    type="email"
-                    name="userEmail"
-                    defaultValue={user.email}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label className='mt-2' htmlFor="area">Full Name</Label>
-                  <Input
-                    defaultValue={user.username}
-                    placeholder="Phone Number"
-                    type="text"
-                    name="username"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none   focus:text-[#02a9ff]   mx-1"
-                  />
-                </div>
+              <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+              <div className="font-semibold ml-[50px]">Options</div>
+              <div className="my-4 grid grid-cols-5 gap-2 w-[90%] mx-auto">
+                {FinanceOptions.map((option, index) => (
+                  <div key={index} className="relative mt-3 mx-3">
+                    <Input
+                      name={option.name}
+                      defaultValue={option.value}
+                      className="border-[#27272a] bg-[#09090b] "
+                    />
+                    <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{option.placeholder}</label>
+                  </div>
+                ))}
+                <Input type='hidden' defaultValue={user.email} name="userEmail" />
               </div>
-              <p className="text-[#fafafa] text-sm mt-10">
-                Dealer Information - This will only be for contracts.
-              </p>
-              <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
-
-                <div className="grid gap-2">
-                  <label htmlFor="area" className=''>Dealer Name</label>
-                  <Input
-                    defaultValue={deFees?.dealer}
-                    placeholder="Dealer Name"
-                    name="dealer"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="area" className='mt-2'>Dealer Address</Label>
-                  <Input
-                    placeholder="123 Dealer Street"
-                    name="dealerAddress"
-                    defaultValue={dealerAddress}
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]   mx-1"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label className='mt-2' htmlFor="area">Dealer City, Prov, Postal Code</Label>
-                  <Input
-                    defaultValue={dealerProv}
-                    placeholder="Toronto, ON, K1K K1K"
-                    name="dealerProv"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none   focus:text-[#02a9ff]    mx-1"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label className='mt-2' htmlFor="area">Dealer Phone Number</Label>
-                  <Input
-                    placeholder="1231231234"
-                    type="phone"
-                    name="dealerPhone"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none focus:text-[#02a9ff]    mx-1"
-                    defaultValue={dealerPhone}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label className='mt-2' htmlFor="area">OMVIC / GOV Lic</Label>
-                  <Input
-                    defaultValue={omvicNumber}
-                    placeholder="1231234"
-                    type="text"
-                    name="omvicNumber"
-                    className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                  />
-                </div>
-                <Input
-                  type='hidden'
-                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                  name="email"
-                  defaultValue={user.email}
-                />
-                <Input
-                  type='hidden'
-                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
-                  name="userEmail"
-                  defaultValue={user.email}
-                />
-                <input type='hidden' name='intent' value='updateFees' />
-
-                {/* Add more inputs as needed */}
-              </div>
+            </CardContent>
+            <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
               <ButtonLoading
-                size="lg"
-                className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                size="sm"
+                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
                 type="submit"
+                name='intent'
+                value='updateUser'
                 isSubmitting={isSubmitting}
                 onClick={() => toast.success(`Update complete.`)}
                 loadingText="Updating information..."
               >
                 Update
               </ButtonLoading>
-
-            </fetcher.Form >
-          </CardContent>
+            </CardFooter>
+          </Form>
         </Card>
 
-        <Card className='rounded-md text-[#fafafa] mt-5 w-1/3'>
-          <Form method='post' >
-            <CardHeader className=''>
-              <CardTitle className='text-[#fafafa]'>Feature Settings</CardTitle>
-              <CardDescription className='text-[#fafafa]'>Manage your cookie settings here.</CardDescription>
+      </TabsContent>
+      <TabsContent value="account" className='rounded-md  grid grid-cols-2'>
+        <Card className='text-[#fafafa] bg-[#09090b] mr-2 mb-4'>
+          <Form method="post" className="">
+            <CardHeader className="   bg-[#18181a] rounded-md">
+              <CardTitle className="group flex items-center text-sm">
+                EDIT ACCOUNT
+              </CardTitle>
+              <CardDescription>
+                Name, Phone # and email will show up in emails sent to customers.
+              </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6 text-[#fafafa] space-y-2 bg-slate11">
-              <div className="flex items-center justify-between space-x-2">
-                <Label htmlFor="necessary" className="flex flex-col space-y-1 mt-2">
-                  <span>Activix Integration</span>
-                  <span className="font-normal leading-snug text-muted-foreground">
-                    Will unlock featues and functions that will only benefit users who currently use activix. Essentially replacing activix as a crm, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers.
-                  </span>
-                </Label>
-                <input
-                  className='scale-150 p-3'
-                  type='checkbox'
-                  id='necessary'
-                  name='activixActivated'
-                  checked={activixActivated}
-                  onChange={handleCheckboxChange}
-                />
-                {/* Hidden input with a value based on activixActivated state */}
-                <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
-
+            <CardContent>
+              <div className="grid grid-cols-1 gap-2">
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={name}
+                    name="name"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLicensing ? (
+                    <em className="text-[#ff0202]">{errors.userLicensing}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                </div>
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={phone}
+                    name="phone"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLicensing ? (
+                    <em className="text-[#ff0202]">{errors.userLicensing}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                </div>
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={user.email}
+                    name="userEmail"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userTax ? (
+                    <em className="text-[#ff0202]">{errors.userTax}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                </div>
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={user.username}
+                    name="username"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLabour ? (
+                    <em className="text-[#ff0202]">{errors.userLabour}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Full Name</label>
+                </div>
               </div>
-              {user.activixActivated === 'yes' && (
-                <>
-                  <div className="grid gap-2 mt-2">
-                    <Label htmlFor="area">Activix Email</Label>
-
-                  </div>
-                  <div className="grid gap-2 mt-2">
-                    <Label htmlFor="area">Dealer Account Id</Label>
-                    <Input
-                      defaultValue={user.activixEmail}
-                      placeholder="activix@email.com"
-                      type="text"
-                      name="activixEmail"
-                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                  focus:outline-none  focus:text-[#02a9ff]    mx-1"
+              <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+              <div className="font-semibold"> Dealer Information - This will only be for contracts.</div>
+              <div className="grid grid-cols-1 gap-2">
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={deFees?.dealer}
+                    name="dealer"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLabour ? (
+                    <em className="text-[#ff0202]">{errors.userLabour}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
+                </div>
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={dealerAddress}
+                    name="dealerAddress"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLabour ? (
+                    <em className="text-[#ff0202]">{errors.userLabour}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
+                </div>
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={dealerCity}
+                    name="dealerCity"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLabour ? (
+                    <em className="text-[#ff0202]">{errors.userLabour}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
+                </div>
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={dealerProvince}
+                    name="dealerProv"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLabour ? (
+                    <em className="text-[#ff0202]">{errors.userLabour}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
+                </div>
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={dealerPostal}
+                    name="dealerPostal"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLabour ? (
+                    <em className="text-[#ff0202]">{errors.userLabour}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
+                </div>
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={dealerPhone}
+                    name="dealerPhone"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLabour ? (
+                    <em className="text-[#ff0202]">{errors.userLabour}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
+                </div>
+                <div className="relative mt-4">
+                  <Input
+                    defaultValue={omvicNumber}
+                    name="omvicNumber"
+                    className="border-[#27272a] bg-[#09090b] "
+                  />
+                  {errors?.userLabour ? (
+                    <em className="text-[#ff0202]">{errors.userLabour}</em>
+                  ) : null}
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">OMVIC / GOV Lic</label>
+                </div>
+                <Input type='hidden' defaultValue={user.email} name="userEmail" />
+                <Input type='hidden' defaultValue={user.email} name="email" />
+              </div>
+            </CardContent>
+            <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+              <ButtonLoading
+                size="sm"
+                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                type="submit"
+                name='intent'
+                value='updateFees'
+                isSubmitting={isSubmitting}
+                onClick={() => toast.success(`Update complete.`)}
+                loadingText="Updating information..."
+              >
+                Update
+              </ButtonLoading>
+            </CardFooter>
+          </Form>
+        </Card>
+        <Card className='text-[#fafafa] bg-[#09090b] ml-2 mb-4'>
+          <Form method="post" className="">
+            <CardHeader className=" grid grid-cols-1 bg-[#18181a] rounded-md">
+              <CardTitle className="group flex items-center text-sm">
+                Integration Settings
+              </CardTitle>
+              <CardDescription>
+                Will unlock featues and functions that will only benefit users who currently use other CRMs. Essentially replacing your current crm dashboard and processes, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers. If you do not see your CRM here let us know and we will integrate with them.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className='flex-grow !grow '>
+              <ul className="grid gap-3 text-sm mt-3">
+                <li className="flex items-center justify-between">
+                  <span className="text-[#909098]">
+                    Activix
+                  </span>
+                  <span>
+                    <input
+                      className='scale-150 p-3'
+                      type='checkbox'
+                      id='necessary'
+                      name='activixActivated'
+                      checked={activixActivated}
+                      onChange={handleCheckboxChange}
                     />
+                  </span>
+                  <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
+                </li>
+              </ul>
+
+              {user.activixActivated === 'yes' && (
+                <div className="flex flex-col ">
+                  <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                  <div className="font-semibold ml-[50px]">Activx</div>
+                  <div className="relative mt-3">
+                    <Input
+                      className="border-[#27272a] bg-[#09090b]  "
+                      type="email"
+                      name="activixEmail"
+                      defaultValue={user.activixEmail}
+                    />
+                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Activix Email</label>
                   </div>
-                </>
+                  <div className="relative mt-3">
+                    <Input
+                      className="border-[#27272a] bg-[#09090b]  "
+                      type="email"
+                      name="activixEmail"
+                      defaultValue={user.activixEmail}
+                    />
+                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Account Id</label>
+                  </div>
+                </div>
               )}
               <Input type='hidden' name="email" defaultValue={user.email} />
               <Input type='hidden' name="userEmail" defaultValue={user.email} />
             </CardContent>
-            <CardFooter className='text-[#fafafa] bg-slate11'>
+            <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
               <ButtonLoading
-                size="lg"
-                className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                size="sm"
+                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
                 type="submit"
                 name='intent'
                 value='activixActivated'
@@ -732,6 +716,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
             </CardFooter>
           </Form>
         </Card>
+
       </TabsContent>
     </Tabs >
   )
@@ -748,7 +733,7 @@ export const action: ActionFunction = async ({ request }) => {
         dealer: Input.dealer,
         omvicNumber: Input.omvicNumber,
         dealerPhone: Input.dealerPhone,
-        dealerProv: Input.dealerProv,
+        dealerProv: Input.dealerCity + ', ' + Input.dealerProvince + ', ' + Input.dealerPostal,
         dealerAddress: Input.dealerAddress,
       },
       where: {

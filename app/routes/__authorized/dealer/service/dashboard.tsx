@@ -1171,14 +1171,15 @@ export async function loader({ params, request }: DataFunctionArgs) {
 
   const aptFinance3 = await getAppointmentsForFinance(financeId)
   let finance
+  /*
   if (user?.activixActivated === 'yes') {
     finance = await GetMergedWithActivix(financeId)
     await UpdateClientFromActivix(finance)
   } else {
     finance = await getMergedFinanceOnFinance(financeId)
-  }
-  const dashboardIdCookie = await prisma.finance.findUnique({ where: { id: financeId } })
-  const SetClient66Cookie = await SetClient66(userId, clientId, financeId, dashboardIdCookie.dashboardId, request)
+  }*/
+  //const dashboardIdCookie = await prisma.finance.findUnique({ where: { id: financeId } })
+  //const SetClient66Cookie = await SetClient66(userId, clientId, financeId, dashboardIdCookie.dashboardId, request)
 
   const brand = finance?.brand
   const financeNotes = await getAllFinanceNotes(financeId)
@@ -1617,37 +1618,37 @@ export async function loader({ params, request }: DataFunctionArgs) {
   if (brand === 'Manitou') {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit })
+    return json({ ok: true, mergedFinanceList, getTemplates, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit })
   }
   if (brand === 'Switch') {
     const modelData = await getDataByModel(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'Kawasaki') {
     const modelData = await getDataKawasaki(finance);
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'BMW-Motorrad') {
     const bmwMoto = await getLatestBMWOptions(financeId)
     const bmwMoto2 = await getLatestBMWOptions2(financeId)
     const modelData = await getDataBmwMoto(finance);
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientfileId, clientUnit })
+    return json({ ok: true, mergedFinanceList, getTemplates, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientfileId, clientUnit })
   }
   if (brand === 'Triumph') {
     const modelData = await getDataTriumph(finance);
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'Harley-Davidson') {
     const modelData = await getDataHarley(finance);
     const apptFinance2 = await getAllFinanceApts2(financeId)
     const aptFinance3 = await getAllFinanceApts(financeId)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'Indian' || brand === 'Can-Am' || brand === 'Sea-Doo' || brand === 'Ski-Doo' || brand === 'Suzuki' || brand === 'Spyder' || brand === 'Can-Am-SXS') {
     const modelData = await getDataByModel(finance)
     return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, UploadedDocs, userList, parts, clientUnit })
 
   }
-  return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId, UploadedDocs, userList, parts, clientUnit, clientfileId })
+  return json({ ok: true, mergedFinanceList, getTemplates, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId, UploadedDocs, userList, parts, clientUnit, clientfileId })
 }

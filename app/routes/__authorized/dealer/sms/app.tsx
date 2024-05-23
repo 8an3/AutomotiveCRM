@@ -76,7 +76,6 @@ export async function loader({ request, params }: LoaderFunction) {
                 newToken = token
             })
             .catch(() => {
-
             })
             .finally(() => {
             });
@@ -151,7 +150,7 @@ export async function loader({ request, params }: LoaderFunction) {
                 participantSid: participantSid,
                 userSid: userSid,
                 username: username,
-                userEmail: email,
+                userEmail: 'skylerzanth@gmail.com', // email,
                 passClient: password,
                 proxyPhone: proxyPhone,
             }
@@ -167,7 +166,7 @@ export async function loader({ request, params }: LoaderFunction) {
     }
 
     const conversation = await prisma.getConversation.findFirst({
-        where: { userEmail: user.email },
+        where: { userEmail: 'skylerzanth@gmail.com'/*user.email*/ },
         orderBy: {
             createdAt: 'desc', // or updatedAt: 'desc'
         },
@@ -917,44 +916,3 @@ function SendMessage(item, user) {
         .catch(error => console.error('Error:', error));
 
 }
-
-/**
- *
-  useEffect(() => {
-    const testRedux = 'testReduxSuccessful'
-    if (selectedChannelSid) {
-      const handleMessagesUpdate = (newMessages) => {
-        dispatch(setMessages(newMessages));
-      };
-
-      const handleSelectedChannelUpdate = (selectedChannelSid) => {
-        dispatch(setSelectedChannel(selectedChannelSid));
-      };
-      handleSelectedChannelUpdate(testRedux)
-      handleMessagesUpdate(testRedux)
-    }
-  }, []);
-
-const mapStateToProps = (state) => ({
-  messages: state.myReducer.messages,
-  selectedChannelSid: state.myReducer.selectedChannelSid,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  setMessages: (messages) => dispatch({ type: 'SET_MESSAGES', payload: messages }),
-  setSelectedChannel: (channelSid) => dispatch({ type: 'SET_SELECTED_CHANNEL', payload: channelSid }),
-});
- */
-
-//export default connect(mapStateToProps, mapDispatchToProps)(ChatApp);
-export default ChatApp
-
-
-/** <div className="bg-black border border-[#262626] mt-[60px]">
-      <div className="w-[30%] border !border-[#262626]" >
-
-      </div>
-      <div className="w-[70%] border !border-[#262626]">
-
-      </div>
-    </div> */

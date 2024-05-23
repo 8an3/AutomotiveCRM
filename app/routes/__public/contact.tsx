@@ -1,9 +1,16 @@
 import { Form, useLoaderData } from '@remix-run/react'
-import { Button, Input, TextArea, Textarea } from '~/components/ui/index'
-import ContactForm from '~/components/shared/contactForm';
-import ScriptForm from '~/components/shared/scriptsForm';
+import { Button, } from '~/components/ui/index'
 import { json, type ActionFunction, type DataFunctionArgs, type MetaFunction } from '@remix-run/node'
 
+import { Bird, Rabbit, Turtle } from "lucide-react"
+
+import {
+  TextArea, Select, Input,
+  SelectContent, Label,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/"
 import { model } from '~/models'
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 
@@ -34,49 +41,43 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function ProfileForm() {
-  const { user } = useLoaderData()
-  //console.log('contact us', user)
-  const name = user.name
-  const email = user.email
+
+
+export default function Component() {
   return (
+    <div
+      className="relative  flex-col items-start gap-8 md:flex pl-3 pr-3 md:w-[30%] text-[#fafafa] mx-auto"
+    >
+      <Form method='post' action='/send/contactPublic' className="grid w-full items-start gap-6">
 
-    <>
-      <div className="border-none p-0">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-thin">
-              CONTACT
-            </h2>
-            <p className="text-sm text-surface-500 dark:text-black">
-              If a feature could help you sell more, but we dont have it? Let us
-              know, we can implement it.
-            </p>
+        <fieldset className="grid gap-6 rounded-lg border p-4 border-[#27272a]  bg-[#09090b]">
+          <legend className="-ml-1 px-1 text-sm font-medium">Contact</legend>
+          <div className="grid gap-3">
+            <Label htmlFor="role">First Name</Label>
+            <Input name="userFname" placeholder='John' className="bg-[#09090b] text-[#fafafa]  border-[#27272a] " />
           </div>
-        </div>
-        <hr className="solid" />
-        <Form method="post" action='/emails/send/contact'>
-          <div className="grid inputSet mt-[50px]  contactUsInputSection">
-            <Form method="post" action="/emails/send/custom">
-              <Input name="userFname" placeholder='John' />
-              <Input name="userFname" placeholder='Doe' />
-              <Input name="useremail" placeholder='johndoe@gmail.com' />
-
-              <TextArea
-                placeholder="Type your message here."
-                name="customContent"
-                className="h-[200px]"
-              />
-
-              <Button className="w-full mt-3 cursor-pointer " type="submit" name="intent" value="contactForm">
-                Email
-              </Button>
-            </Form>
+          <div className="grid gap-3">
+            <Label htmlFor="role">Last Name</Label>
+            <Input name="userFname" placeholder='Wick' className="bg-[#09090b] text-[#fafafa]  border-[#27272a] " />
           </div>
-
-
-        </Form>
-      </div>
-    </>
+          <div className="grid gap-3">
+            <Label htmlFor="role">Email</Label>
+            <Input name="useremail" placeholder='johnwick@thecontinental.com' className="bg-[#09090b] text-[#fafafa]  border-[#27272a] " />
+          </div>
+          <div className="grid gap-3">
+            <Label htmlFor="content">Content</Label>
+            <TextArea
+              id="content"
+              name="customContent"
+              placeholder="Type your message here..."
+              className="bg-[#09090b] min-h-[9.5rem] text-[#fafafa]  border-[#27272a]"
+            />
+          </div>
+          <Button name='intent' value='contactForm' size='sm' className='mx-auto bg-[#dc2626] text-[#fafafa]  mt-3'>
+            Submit
+          </Button>
+        </fieldset>
+      </Form>
+    </div>
   )
 }

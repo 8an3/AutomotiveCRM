@@ -53,7 +53,7 @@ export default function Mainboard() {
     return (
         <div className='bg-[#09090b]'>
 
-            <Tabs defaultValue="dashboard" className=''>
+            <Tabs defaultValue="dashboard" className='mt-[50px]'>
                 <TabsList className="ml-[19px] grid w-[600px] grid-cols-4">
                     <TabsTrigger onClick={() => {
                         setSelectedTab("null")
@@ -1364,17 +1364,14 @@ export function MainDashbaord() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-                // <CallClient />
+
                 //<SmsClient data={data} />
-
-
                 const [isButtonPressed, setIsButtonPressed] = useState(false);
-
                 return <>
                     <div className='my-2 grid grid-cols-3 gap-3'>
                         <LogCall data={data} />
-                        {/*<EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
-                        <Logtext data={data} />*/}
+                        <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
+                        <Logtext data={data} />
                     </div>
                 </>
             },

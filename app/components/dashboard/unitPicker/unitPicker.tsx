@@ -1227,7 +1227,7 @@ export default function UnitPicker({ data }) {
     <Dialog.Root  >
 
       <Dialog.Trigger>
-        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3 border-[#27272a] bg-[#18181a] text-[#f2f2f2]"  >
+        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3 border-[#f2f2f2] bg-[#09090b] text-[#f2f2f2]"  >
           <Truck className="h-3.5 w-3.5" />
           <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
             Assign Stock Unit

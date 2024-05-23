@@ -14,7 +14,7 @@ export async function CreateCommunications(comdata) {
 }
 export async function getComsOverview(financeId) {
   try {
-    const finance = await prisma.communicationsOverview.findMany({
+    const finance = await prisma.previousComms.findMany({
       where: {
         financeId: financeId,
       },

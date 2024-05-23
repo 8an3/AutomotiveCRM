@@ -423,7 +423,7 @@ export default function WishList() {
               Add
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-[#09090b] text-[#fafafa]">
+          <DialogContent className="sm:max-w-[425px] bg-[#09090b] border-[#27272a] text-[#fafafa]">
             <DialogHeader>
               <DialogTitle>Wish List</DialogTitle>
               <DialogDescription>
@@ -431,59 +431,46 @@ export default function WishList() {
               </DialogDescription>
             </DialogHeader>
             <Form method='post' className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
+              <div className="grid grid-cols-1 items-center gap-4">
                 <input type='hidden' name='userId' value={user.id} />
-                <Label htmlFor="name" className="text-right">
-                  First Name
-                </Label>
-                <Input
-                  name="firstName"
-                  placeholder="Pedro "
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Last Name
-                </Label>
-                <Input
-                  name="lastName"
-                  placeholder="Duarte"
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Email
-                </Label>
-                <Input
-                  name="email"
-                  placeholder="pedroduarte@gmail.com"
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Phone
-                </Label>
-                <Input
-                  name="phone"
-                  placeholder="613-613-6134"
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Brand
-                </Label>
-                <Input
-                  className=" col-span-3"
-                  placeholder="Brand (required)"
-                  type="text"
-                  list="ListOptions1"
-                  name="brand"
-                  onChange={handleBrand}
-                />
+                <div className="relative mt-3">
+                  <Input
+                    name="firstName"
+                    className="col-span-3 bg-[#09090b] border-[#27272a]"
+                  />
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">First Name</label>
+                </div>
+                <div className="relative mt-3">
+                  <Input
+                    name="lastName"
+                    className="col-span-3 bg-[#09090b] border-[#27272a]"
+                  />
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Last Name</label>
+                </div>
+                <div className="relative mt-3">
+                  <Input
+                    name="email"
+                    className="col-span-3 bg-[#09090b] border-[#27272a]"
+                  />
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Email</label>
+                </div>
+                <div className="relative mt-3">
+                  <Input
+                    name="phone"
+                    className="col-span-3 bg-[#09090b] border-[#27272a]"
+                  />
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Phone</label>
+                </div>
+                <div className="relative mt-3">
+                  <Input
+                    className=" col-span-3 bg-[#09090b] border-[#27272a]"
+                    type="text"
+                    list="ListOptions1"
+                    name="brand"
+                    onChange={handleBrand}
+                  />
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Brand</label>
+                </div>
                 <datalist id="ListOptions1">
                   <option value="BMW-Motorrad" />
                   <option value="Can-Am" />
@@ -501,14 +488,13 @@ export default function WishList() {
                   <option value="Spyder" />
                   <option value="Yamaha" />
                 </datalist>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Model
-                </Label>
+
                 {modelList && (
                   <>
-                    <Input className=" col-span-3" placeholder="Model" type="text" list="ListOptions2" name="model" />
+                    <div className="relative mt-3">
+                      <Input className=" col-span-3 bg-[#09090b] border-[#27272a]" type="text" list="ListOptions2" name="model" />
+                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Model</label>
+                    </div>
                     <datalist id="ListOptions2">
                       {modelList.models.map((item, index) => (
                         <option key={index} value={item.model} />
@@ -517,68 +503,62 @@ export default function WishList() {
                   </>
                 )}
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Brand 2
-                </Label>
+
+              <div className="relative mt-3">
                 <Input
-                  className=" col-span-3"
-                  placeholder="Brand (required)"
+                  className=" col-span-3 bg-[#09090b] border-[#27272a]"
                   type="text"
                   list="ListOptions2"
                   name="brand2"
                   onChange={handleBrand2}
                 />
-                <datalist id="ListOptions2">
-                  <option value="BMW-Motorrad" />
-                  <option value="Can-Am" />
-                  <option value="Can-Am-SXS" />
-                  <option value="Harley-Davidson" />
-                  <option value="Indian" />
-                  <option value="Kawasaki" />
-                  <option value="KTM" />
-                  <option value="Manitou" />
-                  <option value="Sea-Doo" />
-                  <option value="Switch" />
-                  <option value="Ski-Doo" />
-                  <option value="Suzuki" />
-                  <option value="Triumph" />
-                  <option value="Spyder" />
-                  <option value="Yamaha" />
-                </datalist>
+                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Brand 2</label>
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Model 2
-                </Label>
-                {modelList2 && (
-                  <>
-                    <Input className=" col-span-3" placeholder="Model" type="text" list="ListOptions3" name="model2" />
-                    <datalist id="ListOptions3">
-                      {modelList2.models.map((item, index) => (
-                        <option key={index} value={item.model} />
-                      ))}
-                    </datalist>
-                  </>
-                )}
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Notes
-                </Label>
+              <datalist id="ListOptions2">
+                <option value="BMW-Motorrad" />
+                <option value="Can-Am" />
+                <option value="Can-Am-SXS" />
+                <option value="Harley-Davidson" />
+                <option value="Indian" />
+                <option value="Kawasaki" />
+                <option value="KTM" />
+                <option value="Manitou" />
+                <option value="Sea-Doo" />
+                <option value="Switch" />
+                <option value="Ski-Doo" />
+                <option value="Suzuki" />
+                <option value="Triumph" />
+                <option value="Spyder" />
+                <option value="Yamaha" />
+              </datalist>
+
+              {modelList2 && (
+                <>
+                  <div className="relative mt-3">
+                    <Input className=" col-span-3 bg-[#09090b] border-[#27272a]" type="text" list="ListOptions3" name="model2" />
+                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Model 2</label>
+                  </div>
+                  <datalist id="ListOptions3">
+                    {modelList2.models.map((item, index) => (
+                      <option key={index} value={item.model} />
+                    ))}
+                  </datalist>
+                </>
+              )}
+              <div className="relative mt-3">
                 <Input
                   name="wishListNotes"
                   placeholder="wants less than 50k kms"
-                  className="col-span-3"
+                  className="col-span-3 bg-[#09090b] border-[#27272a]"
                 />
+                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Notes</label>
               </div>
               <Button onClick={() => toast.success(`Added to wish list!`)}
-                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-[#09090b] w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff] border-[#262626] hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-[#09090b] w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-[#dc2626] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff] border-[#262626] hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
               >
                 Save
               </Button>
             </Form>
-
           </DialogContent>
         </Dialog>
 

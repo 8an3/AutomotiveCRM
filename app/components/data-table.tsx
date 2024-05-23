@@ -578,7 +578,7 @@ export function DataTable<TData, TValue>({
             </DropdownMenuContent>
           </DropdownMenu>
           <AddCustomer />
-          <Link to='/calendar/sales'>
+          <Link to='/dealer/calendar/sales'>
             <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' >
               <CalendarCheck color="#cbd0d4" size={20} strokeWidth={1.5} />
             </button>

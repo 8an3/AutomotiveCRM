@@ -368,13 +368,24 @@ model StaffChat {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  message    String?
-  sender     String?
-  senderName String?
-  to         String?
-  toName     String?
-  room       String?
-  token      String?
+  body      String
+  userEmail String
+  username  String
+  dept      String
+  reaction  String?
+  reactions Reactions[]
+}
+
+model Reactions {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  reaction String?
+
+  staffChatId String
+  staffchat   StaffChat @relation(fields: [staffChatId], references: [id])
+
+  @@index([staffChatId])
 }
 
 model Automation {
@@ -737,7 +748,8 @@ model UploadDocs {
   financeId String?
   category  String?
   fileName  String?
-  userId    String?
+  userEmail String?
+  itemId    String?
 }
 
 model TwilioSMSDetails {
@@ -749,6 +761,7 @@ model TwilioSMSDetails {
   participantSid  String?
   userSid         String?
   username        String?
+  password        String?
   userEmail       String? @unique
   passClient      String?
   myPhone         String?
@@ -777,9 +790,8 @@ model FinanceNote {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  finance   Finance? @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
-  financeId         String?   @unique
+  financeId         String?
   slug              String    @unique @default(cuid())
   customContent     String?
   urgentFinanceNote String?
@@ -852,24 +864,21 @@ model CheckLatestEmail {
   isRead        String?
 }
 
-model CommunicationsOverview {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  finance   Finance? @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  financeId String?
-  userId    String?
-  title     String?
-  content   String?
-  date      String?
-  userName  String?
-  type      String?
-  lead_id   String?
-  direction String?
-  subject   String?
-  result    String?
-  method    String?
-  userEmail String?
+model PreviousComms {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  finance       Finance? @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  financeId     String?
+  body          String?
+  userName      String?
+  type          String?
+  customerEmail String?
+  direction     String?
+  subject       String?
+  result        String?
+  userEmail     String?
+  dept          String?
 
   @@index([financeId])
 }
@@ -1089,16 +1098,15 @@ model Finance {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  finManOptions          FinManOptions[]          @relation("finance")
-  bmwMotoOptions         BmwMotoOptions[]         @relation("finance")
-  bmwMotoOptions2        BmwMotoOptions2[]        @relation("finance")
-  financeNote            FinanceNote[]            @relation("finance")
-  financeStorage         FinanceStorage[]         @relation("finance")
-  clientApts             ClientApts[]             @relation("finance")
-  uCDAForm               UCDAForm[]               @relation("finance")
-  communications         Communications[]         @relation("finance")
-  communicationsOverview CommunicationsOverview[] @relation("finance")
-  FinCanOptions          FinCanOptions[]          @relation("finance")
+  finManOptions   FinManOptions[]   @relation("finance")
+  bmwMotoOptions  BmwMotoOptions[]  @relation("finance")
+  bmwMotoOptions2 BmwMotoOptions2[] @relation("finance")
+  financeStorage  FinanceStorage[]  @relation("finance")
+  clientApts      ClientApts[]      @relation("finance")
+  uCDAForm        UCDAForm[]        @relation("finance")
+  communications  Communications[]  @relation("finance")
+  previousComms   PreviousComms[]   @relation("finance")
+  FinCanOptions   FinCanOptions[]   @relation("finance")
 }
 
 model Finance2 {

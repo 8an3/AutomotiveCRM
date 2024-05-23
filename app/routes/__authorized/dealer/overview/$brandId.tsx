@@ -13,7 +13,7 @@ import DisplayModel from '~/overviewUtils/modelDisplay'
 import DealerFeesDisplay from '~/overviewUtils/dealerFeesDisplay'
 import ContactInfoDisplay from '~/overviewUtils/contactInfoDisplay'
 import * as Tooltip from '@radix-ui/react-tooltip';
-import { Input, Button, Checkbox } from "~/components/ui/index"
+import { Input, Button, Checkbox, ButtonLoading } from "~/components/ui/index"
 import { quotebrandIdActionLoader } from '~/components/actions/quote$brandIdAL'
 import { Badge } from '~/other/badge'
 import { Theme, ThemePanel } from '@radix-ui/themes';
@@ -1899,7 +1899,8 @@ export function Overview({ outletSize }) {
                 <>
                     <div className="flex justify-between mb-[50px] mt-3">
                         <div>
-                            <Button
+                            <ButtonLoading
+                                size='sm'
                                 type="submit"
                                 name='intent'
                                 value='updateFinance'
@@ -1912,7 +1913,7 @@ export function Overview({ outletSize }) {
 
                             >
                                 Update
-                            </Button>
+                            </ButtonLoading>
                         </div>
                         <div>
                             <FeaturePop finance={finance} user={user} />

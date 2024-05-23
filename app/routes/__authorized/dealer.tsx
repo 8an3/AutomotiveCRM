@@ -1,6 +1,6 @@
 import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react'
 import { json, redirect, type LoaderFunction } from '@remix-run/node';
-import { Outlet, useLoaderData } from '@remix-run/react';
+import { Outlet, useLoaderData, useLocation } from '@remix-run/react';
 import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
@@ -27,7 +27,8 @@ export default function SettingsLayout() {
   const userIsADMIN = getUserIsAllowed(user, ["ADMIN"]);
   const userIsMANAGER = getUserIsAllowed(user, ["MANAGER"]);
   const [isOpen, setIsOpen] = useState(false);
-
+  const location = useLocation();
+  const pathname = location.pathname
   const openDialog = () => {
     setIsOpen(true);
     console.log(isOpen)
@@ -37,15 +38,21 @@ export default function SettingsLayout() {
   const closeDialog = () => {
     setIsOpen(false);
   };
+  console.log(pathname);
+
   return (
     <>
-      <UserSideBar
-        user={user}
-        email={email}
-      />
-      <Sidebar user={user} email={email} />
-      <NotificationSystem />
 
+      {(pathname !== '/dealer/email/dashboardClient' && pathname !== '/dealer/sms/dashMsger') && (
+        <>
+          <UserSideBar
+            user={user}
+            email={email}
+          />
+          <Sidebar user={user} email={email} />
+          <NotificationSystem />
+        </>
+      )}
       <Outlet />
     </>
   )

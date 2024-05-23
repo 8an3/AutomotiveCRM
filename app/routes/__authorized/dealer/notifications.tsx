@@ -92,7 +92,15 @@ export default function NotificationSystem() {
     [key],
   );
 
-  const { data: userMessages } = useSWR(
+  const fetchData = async (url) => {
+  const response = await fetch(url);
+  return response.json();
+};
+const useSWRWithInterval = (url, refreshInterval) => {
+  return useSWR(url, fetchData, { refreshInterval });
+};
+
+/**  const { data: userMessages } = useSWR(
     url1,
     (url) => fetch(url).then((res) => res.json()),
     { refreshInterval: 180000 }
@@ -114,7 +122,11 @@ export default function NotificationSystem() {
     url4,
     (url) => fetch(url).then((res) => res.json()),
     { refreshInterval: 300000 }
-  );
+  ); */
+  const userMessages = useSWRWithInterval(url1, 180000);
+  const newUpdates = useSWRWithInterval(url2, 180000);
+  const notificationsNewLead = useSWRWithInterval(url3, 180000);
+  const notificationsEmail = useSWRWithInterval(url4, 300000);
 
 
   const [unread, setUnread] = useState(0);

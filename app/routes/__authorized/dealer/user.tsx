@@ -50,12 +50,8 @@ export default function Quote() {
 
   const sidebarNavItems = [
     {
-      title: "Change Password",
-      to: "/dealer/user/dashboard/password",
-    },
-    {
-      title: "Dealer Fees",
-      to: "/dealer/user/dashboard/dealerfees",
+      title: "Settings",
+      to: "/dealer/user/dashboard/settings",
     },
     {
       title: "Docs",
@@ -74,22 +70,21 @@ export default function Quote() {
       to: "/dealer/user/dashboard/scripts",
     },
     {
-      title: "Settings",
-      to: "/dealer/user/dashboard/settings",
-    },
-    {
       title: "Template Builder",
       to: "/dealer/user/dashboard/templates",
+    },
+    {
+      title: "Document Builder",
+      to: "/dealer/document/builder",
     },
     {
       title: "Log out",
       to: "/auth/logout",
     },
-
   ]
   return (
     <>
-      <div className=" space-y-6 p-10 pb-16 max-h-screen max-w-screen">
+      <div className=" space-y-6 p-10 pb-16 h-screen w-screen">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight text-[#fafafa]">User Settings</h2>
           <p className="text-[#fafafa]">
@@ -98,7 +93,7 @@ export default function Quote() {
         </div>
         <div className="  my-6" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/5 text-[#fafafa]">
+          <aside className="-mx-4 lg:w-1/8 text-[#fafafa]">
             <p className='text-[#fafafa]'>Menu</p>
             <hr className="text-[#fafafa] w-[90%] mb-5" />
             <SidebarNav items={sidebarNavItems} />

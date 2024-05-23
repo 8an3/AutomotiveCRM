@@ -673,11 +673,12 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                 </Pagination>
               </CardFooter>
             </Card>
-            < fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9]   border-[#27272a] " >
 
+
+            < fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9]   border-[#27272a] " >
               <legend className="-ml-1 px-1 text-sm font-medium flex">
                 <RocketIcon className="h-4 w-4 mr-2" />
-                Demo {page} {start} {end} {diff}
+                Demo
               </legend>
               <div className="grid gap-3">
                 <Label htmlFor="role" className='text-2xl'>{formData.heading}</Label>
@@ -711,8 +712,6 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                     {page === 0 || page === 1 || page === 2 || page === 3 ? "Next" : "Submit"}
                   </Button>
                 )}
-
-
               </div>
             </fieldset >
           </div>

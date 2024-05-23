@@ -26,12 +26,12 @@ export default function UserSideBar(user: any, email: any,) {
   return (
     <>
       <Sheet modal={false}  >
-        <SheetTrigger>
+        <SheetTrigger className='text-[#fafafa]'>
           <div
             onClick={() => {
               openDialog()
             }}
-            className=' cursor-pointer text-[#fff] left-[25px] top-[25px]  fixed'>
+            className=' cursor-pointer text-[#fafafa] left-[25px] top-[25px]  fixed'>
             {user && user?.email === 'skylerzanth@outlook.com' ?
               <Code size={32} color="#fff" strokeWidth={1.5} />
               :
@@ -47,7 +47,7 @@ export default function UserSideBar(user: any, email: any,) {
           </div>
         </SheetTrigger>
 
-        <SheetContent side='left' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto' >
+        <SheetContent side='left' className='bg-[#09090b] text-[#fafafa] w-full md:w-[50%] overflow-y-auto' >
           <SheetHeader>
             <SheetTitle>
               <h2>

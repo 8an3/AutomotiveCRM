@@ -3,22 +3,27 @@ import {
   MsalProvider,
   UnauthenticatedTemplate,
   useMsal,
-} from "@azure/msal-react"
-import { type ActionFunction, json, redirect, type LoaderFunction } from "@remix-run/node"
-import { Outlet, useLoaderData } from "@remix-run/react"
+} from "@azure/msal-react";
+import {
+  type ActionFunction,
+  json,
+  redirect,
+  type LoaderFunction,
+} from "@remix-run/node";
+import { Outlet, useLoaderData } from "@remix-run/react";
 
-import { useAppContext } from "~/components/microsoft/AppContext"
-import Sidebar from "~/components/shared/sidebar"
-import { prisma } from "~/libs"
+import { useAppContext } from "~/components/microsoft/AppContext";
+import Sidebar from "~/components/shared/sidebar";
+import { prisma } from "~/libs";
 import {
   authSessionStorage,
   commitSession,
   destroySession,
   getSession,
-} from "~/sessions/auth-session.server"
-import { CheckSub } from "~/utils/checksub.server"
-import { GetUser } from "~/utils/loader.server"
-import { updateUser } from '~/utils/user.server';
+} from "~/sessions/auth-session.server";
+import { CheckSub } from "~/utils/checksub.server";
+import { GetUser } from "~/utils/loader.server";
+import { updateUser } from "~/utils/user.server";
 
 /**export async function loader({ request, params }: LoaderFunction) {
   let session = await getSession(request.headers.get("Cookie"))
@@ -32,77 +37,58 @@ import { updateUser } from '~/utils/user.server';
 } */
 
 export async function loader({ request, params }: ActionFunction) {
-  let session = await getSession(request.headers.get("Cookie"))
-  const email = session.get('email')
-  const name = session.get('name')
-  const user = await GetUser(email);
-  console.log('User data:', user);
+  let session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email");
+  const name = session.get("name");
+  try {
+    let user = await GetUser(email);
+    if (user.email) {
+      console.log("found user");
+      session.set("email", email);
+      await CheckSub({ user });
+      const subscriptionId = user?.subscriptionId;
 
-  if (email) {
-    console.log('found user')
-    session.set("email", email)
-    await CheckSub({ user });
-    const subscriptionId = user?.subscriptionId;
-
-    if (subscriptionId) {
-      console.log(subscriptionId, 'checking subscription');
-      console.log(user?.returning, 'returning');
-      if (user?.returning === true) {
-        if (subscriptionId === 'trialing' || subscriptionId === 'active') {
-          console.log('subscription valid1');
-          return redirect('/dealer/quote/Harley-Davidson', {
-            headers: { "Set-Cookie": await commitSession(session), },
-          });
-        } else {
-          console.log('subscription not valid2');
-          return redirect('/subscribe');
+      if (subscriptionId) {
+        console.log(subscriptionId, "checking subscription");
+        console.log(user?.returning, "returning");
+        if (user?.returning === true) {
+          if (subscriptionId === "trialing" || subscriptionId === "active") {
+            console.log("subscription valid1");
+            return redirect("/dealer/quote/Harley-Davidson", {
+              headers: { "Set-Cookie": await commitSession(session) },
+            });
+          } else {
+            console.log("subscription not valid2");
+            return redirect("/subscribe");
+          }
+        } else if (user?.returning === false) {
+          console.log(subscriptionId, "new user, checking new subscription3");
+          if (subscriptionId === "trialing" || subscriptionId === "active") {
+            console.log("new subscription valid4");
+            await updateUser({ email: user.email, returning: true });
+            return redirect("/dealer/user/dashboard/settings", {
+              headers: { "Set-Cookie": await commitSession(session) },
+            });
+          } else {
+            console.log("subscription not valid5");
+            return redirect("/subscribe");
+          }
         }
-      } else if (user?.returning === false) {
-        console.log(subscriptionId, 'new user, checking new subscription3');
-        if (subscriptionId === 'trialing' || subscriptionId === 'active') {
-          console.log('new subscription valid4');
-          await updateUser({ email: user.email, returning: true });
-          return redirect('/dealer/user/dashboard/settings', {
-            headers: { "Set-Cookie": await commitSession(session), },
-          });
-        } else {
-          console.log('subscription not valid5');
-          return redirect('/subscribe');
-        }
+      } else {
+        console.log("subscription not valid6");
+        return redirect("/subscribe");
       }
-    } else {
-      console.log('subscription not valid6');
-      return redirect('/subscribe');
+      return <p>failed check</p>;
     }
-    return (
-      <p>failed check</p>
-    )
-  }
-  /**
-    Get the current timestamp in milliseconds
-const currentTime = Date.now();
-
-// Extract expiration time from idTokenClaims (in seconds)
-const expirationTimeSeconds = idTokenClaims.exp;
-
-// Convert expiration time from seconds to milliseconds
-const expirationTimeMillis = expirationTimeSeconds * 1000;
-
-// Check if the current time has passed the expiration time
-if (currentTime > expirationTimeMillis) {
-  console.log('Token has expired');
-}
- */
-  const isUser = user
-
-  if (!user.email) {
-    const defaultUserRole = await prisma.userRole.findFirst({ where: { symbol: "NORMAL" } })
-
-    let user = await prisma.user.create({
+  } catch (error) {
+    const defaultUserRole = await prisma.userRole.findFirst({
+      where: { symbol: "NORMAL" },
+    });
+    user = await prisma.user.create({
       data: {
-        name: isUser.name,
-        username: isUser.email,
-        email: isUser.email,
+        name: name,
+        username: email,
+        email: email,
         // expires_in: String(expiry),
         // idToken: idToken,
         // refreshToken: refresh_token,
@@ -115,13 +101,13 @@ if (currentTime > expirationTimeMillis) {
           },
         },
       },
-    })
+    });
     await prisma.userIntergration.create({
       data: {
-        userEmail: isUser.email,
+        userEmail: user.email,
         activixActivated: "no",
       },
-    })
+    });
     await prisma.dealerFees.create({
       data: {
         dealer: "Auto Sales",
@@ -154,9 +140,9 @@ if (currentTime > expirationTimeMillis) {
         destinationCharge: 0,
         userFreight: "0",
         userAdmin: "699",
-        userEmail: isUser.email,
+        userEmail: user.email,
       },
-    })
+    });
     const clientfile = await prisma.clientfile.create({
       data: {
         email: "skylerzanth@outlook.com",
@@ -169,9 +155,9 @@ if (currentTime > expirationTimeMillis) {
         postal: "k1j23V2",
         province: "ON",
         dl: "HS02QI3J0DF",
-        userId: isUser.email,
+        userId: user.email,
       },
-    })
+    });
     const finance = await prisma.finance.create({
       data: {
         ///  id: 'clrkwvcwo00013aljooz2z4g8',
@@ -248,7 +234,7 @@ if (currentTime > expirationTimeMillis) {
         color: null,
         modelCode: null,
         msrp: null,
-        userEmail: "skylerzanth@outlook.com",
+        userEmail: user.email,
         tradeValue: "0",
         tradeDesc: null,
         tradeColor: null,
@@ -261,7 +247,7 @@ if (currentTime > expirationTimeMillis) {
         vin: null,
         leadNote: null,
       },
-    })
+    });
     const dashboard = await prisma.dashboard.create({
       data: {
         financeId: finance.id,
@@ -335,7 +321,7 @@ if (currentTime > expirationTimeMillis) {
         color: null,
         modelCode: null,
         msrp: null,
-        userEmail: "skylerzanth@outlook.com",
+        userEmail: user.email,
         tradeValue: "0",
         tradeDesc: null,
         tradeColor: null,
@@ -348,7 +334,7 @@ if (currentTime > expirationTimeMillis) {
         vin: null,
         leadNote: null,
       },
-    })
+    });
     await prisma.finance.update({
       where: {
         id: finance.id,
@@ -358,9 +344,9 @@ if (currentTime > expirationTimeMillis) {
         dashboardId: dashboard.id,
         financeId: finance.id,
         financeManager: "skylerzanth@outlook.com",
-        userEmail: isUser.email,
+        userEmail: user.email,
       },
-    })
+    });
     const aptsData = [
       {
         title: "Welcome new user! NEW LEAD",
@@ -372,7 +358,7 @@ if (currentTime > expirationTimeMillis) {
         clientfileId: clientfile.id,
         to: "",
         from: "",
-        userId: isUser.id,
+        userId: user.id,
       },
       {
         title: "Welcome new user! MESSAGES",
@@ -384,7 +370,7 @@ if (currentTime > expirationTimeMillis) {
         clientfileId: clientfile.id,
         to: "",
         from: "",
-        userId: isUser.id,
+        userId: user.id,
       },
       {
         title: "Welcome new user! UPDATES",
@@ -396,7 +382,7 @@ if (currentTime > expirationTimeMillis) {
         clientfileId: clientfile.id,
         to: "",
         from: "",
-        userId: isUser.id,
+        userId: user.id,
       },
       {
         title: "Welcome new user! EMAIL",
@@ -408,9 +394,9 @@ if (currentTime > expirationTimeMillis) {
         clientfileId: clientfile.id,
         to: "",
         from: "",
-        userId: isUser.id,
+        userId: user.id,
       },
-    ]
+    ];
     for (const clientApts of aptsData) {
       const {
         financeId,
@@ -423,7 +409,7 @@ if (currentTime > expirationTimeMillis) {
         apptType,
         notes,
         userId,
-      } = clientApts
+      } = clientApts;
 
       await prisma.clientApts.create({
         data: {
@@ -438,46 +424,13 @@ if (currentTime > expirationTimeMillis) {
           notes,
           userId,
         },
-      })
+      });
     }
-    console.log('found user')
-    session.set("email", email)
-    session.set("expiry", expiry)
-    await CheckSub({ user });
-    const subscriptionId = user?.subscriptionId;
+    console.log("found user");
+    session.set("email", email);
+    session.set("name", name);
 
-    if (subscriptionId) {
-      console.log(subscriptionId, 'checking subscription');
-      console.log(user?.returning, 'returning');
-      if (user?.returning === true) {
-        if (subscriptionId === 'trialing' || subscriptionId === 'active') {
-          console.log('subscription valid1');
-          return redirect('/dealer/quote/Harley-Davidson', {
-            headers: { "Set-Cookie": await commitSession(session), },
-          });
-        } else {
-          console.log('subscription not valid2');
-          return redirect('/subscribe');
-        }
-      } else if (user?.returning === false) {
-        console.log(subscriptionId, 'new user, checking new subscription3');
-        if (subscriptionId === 'trialing' || subscriptionId === 'active') {
-          console.log('new subscription valid4');
-          await updateUser({ email: user.email, returning: true });
-          return redirect('/dealer/user/dashboard/settings', {
-            headers: { "Set-Cookie": await commitSession(session), },
-          });
-        } else {
-          console.log('subscription not valid5');
-          return redirect('/subscribe');
-        }
-      }
-    } else {
-      console.log('subscription not valid6');
-      return redirect('/subscribe');
-    }
-    return (
-      <p>failed check</p>
-    )
+    return redirect("/usercheck");
   }
+  console.log("User data:", user);
 }

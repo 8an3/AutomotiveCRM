@@ -23,6 +23,16 @@ export const metadata = {
 }
 
 const todoRoadmap = [
+  { type: "NTBC", desc: "API Docs" },
+  { type: "NTBC", desc: "Demo Day Dashboard" },
+  { type: "NTBC", desc: "Owners dashboard" },
+  { type: "NTBC", desc: "Dept Leaderboards" },
+  { type: "NTBC", desc: "Finance Dashboard" },
+  { type: "NTBC", desc: "Call center Section" },
+  { type: "NTBC", desc: "Owner Section" },
+  { type: "NTBC", desc: "manager Dashboard" },
+  { type: "NTBC", desc: "Dept and General Staff Chat" },
+  { type: "NTBC", desc: "Trade in pricing from the kelley blue book integrated right into our quoting system." },
   // ------------------------------------------------------------------------------DONE NEEDS TESTING--------------------------------------------------------------------------------
   { type: "done needs testing", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
   { type: "done needs testing", desc: "API file upload will be released once google approves gmail as its still in the process right now - done needs testing" },
@@ -33,13 +43,11 @@ const todoRoadmap = [
   { type: "WIP", desc: "finish automation dash - wip" },
   { type: "WIP", desc: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
   { type: "WIP", desc: "mass email/sms - wip" },
-  { type: "WIP", desc: "sales manager dash since they seem to know Activix less than the salespeople" },
+  { type: "WIP", desc: "sales manager dash" },
   { type: "WIP", desc: "dev control panel needs to send email to new dealers with sign in info" },
   { type: "WIP", desc: "https://developers.klaviyo.com/en/reference/get_campaigns" },
-  { type: "WIP", desc: "redesign subscription page to include 2 optoinns for stand alone sales people and dealers" },
 
   // ------------------------------------------------------------------------------ISSUE----------------------------------------------------------------------------------------
-  { type: "issue", desc: "move staff chat to sms messenger" },
   { type: "issue", desc: "need to change how to load overview,   by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
 
   // ------------------------------------------------------------------------------AUTOMATION----------------------------------------------------------------------------------------
@@ -48,7 +56,6 @@ const todoRoadmap = [
   { type: "Automation", desc: "auto email at 5, 2.5 months and 30, 7 days before consent expires, 2 years if bought, 6 months if not" },
   { type: "Automation", desc: "customer 2 months after pick up to make sure everything is still good" },
   // ------------------------------------------------------------------------------AUTOMATION----------------------------------------------------------------------------------------
-  { type: "website sales", desc: "try out section where people can see how much quicker the process can be" },
 
   // ------------------------------------------------------------------------------DEALER----------------------------------------------------------------------------------------
   // ------------------------------------------------------------------------------DEALER----------------------------------------------------------------------------------------
@@ -149,6 +156,9 @@ const DoneRoadMap = [
   { type: "quote", desc: "Save form to LOCAL STORASGE(CHECK REMIX SITE FOR SOLUTIONp) incase something happens to connection or if they srep awway from their computer that way whenever you come back the form is filled out the way you left it" },
   { type: "WIP", desc: "calendar to set store hours" },
   { type: "nonUrgent", desc: "to add onto the last one - unit sold in territories, report already out there owners of dealers get them" },
+  { type: "WIP", desc: "redesign subscription page to include 2 optoinns for stand alone sales people and dealers" },
+  { type: "issue", desc: "move staff chat to sms messenger" },
+  { type: "website sales", desc: "try out section where people can see how much quicker the process can be" },
   { type: 'google', desc: 'tasks' },
   { type: 'google', desc: 'Calendar' },
   { type: "Automation", desc: "sales person schedule for lead rotation" },

@@ -17,7 +17,6 @@ import { SalesTab } from "~/components/dashboardCustId/salesTab";
 import { SalesComms } from "~/components/dashboardCustId/salesComs";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { updateClientFileRecord, updateFinanceWithDashboard } from "~/utils/finance/update.server";
-import SaveFinanceNote from "~/components/dashboard/calls/actions/createFinanceNote";
 import DeleteCustomer from "~/components/dashboard/calls/actions/DeleteCustomer";
 import { deleteFinanceNote } from "~/utils/financeNote/delete.server";
 import { updateFinanceNote } from "~/utils/financeNote/update.server";
@@ -27,7 +26,7 @@ import { getComsOverview } from "~/utils/communications/communications.server";
 import { prisma } from "~/libs";
 import { commitSession as commitIds, getSession as getIds, SetClient66 } from '~/utils/misc.user.server';
 import { getSession } from "~/sessions/auth-session.server";
-import { UpdateLeadBasic, UpdateLeadApiOnly, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, UpdateNoteCreateTask, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "~/routes/__authorized/dealer/api/activix";
+import { UpdateLeadBasic, UpdateLeadApiOnly, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote,CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "~/routes/__authorized/dealer/api/activix";
 import axios from "axios";
 import { GetUser } from "~/utils/loader.server";
 import base from "~/styles/base.css";
@@ -125,7 +124,7 @@ import {
   Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup,
   RemixNavLink, Input, Separator, Button, TextArea, Label, PopoverTrigger, PopoverContent, Popover,
 } from "~/components"
-import { CheckIcon, PaperPlaneIcon, PlusIcon } from "@radix-ui/react-icons"
+import { CheckIcon, PaperPlaneIcon, PlusIcon, UploadIcon } from "@radix-ui/react-icons"
 import {
   Command,
   CommandEmpty,
@@ -215,6 +214,69 @@ export default function Dashboard() {
   const [financeInfo, setFinanceInfo] = useState(true);
   const [PickUpCalendar, setPickUpCalendar] = useState('off');
 
+    useEffect(() => {
+    const serializedUser = JSON.stringify(user);
+    const cust = {
+      email: finance[0].email,
+      name: finance[0].name,
+      financeId: finance[0].financeId,
+    }
+    const serializedCust = JSON.stringify(cust);
+    window.localStorage.setItem("user", serializedUser);
+    window.localStorage.setItem("customer", serializedCust);
+  }, []);
+
+  const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
+  const MyIFrameComponent = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+      const handleHeightMessage = (event: MessageEvent) => {
+        if (
+          event.data &&
+          event.data.type === "iframeHeight" &&
+          event.data.height
+        ) {
+          setIsLoading(false);
+          if (iFrameRef.current) {
+            iFrameRef.current.style.height = `${event.data.height}px`;
+          }
+        }
+      };
+      const currentHost =
+        typeof window !== "undefined" ? window.location.host : null;
+      if (iFrameRef.current) {
+        if (currentHost === "localhost:3000") {
+          iFrameRef.current.src = "http://localhost:3000/dealer/email/file";
+        }
+        if (currentHost === "dealersalesassistant.ca") {
+          iFrameRef.current.src =
+            "https://www.dealersalesassistant.ca/dealer/email/file";
+        }
+        window.addEventListener("message", handleHeightMessage);
+      }
+      return () => {
+        if (iFrameRef.current) {
+          window.removeEventListener("message", handleHeightMessage);
+        }
+      };
+    }, []);
+
+    return (
+      <>
+        <div className="size-full ">
+          <iframe
+            ref={iFrameRef}
+            title="my-iframe"
+            width="100%"
+            className=" border-none"
+            style={{
+              minHeight: '30vh'
+            }}
+          />
+        </div>
+      </>
+    );
+  };
 
   let isAdding =
     fetcher.state === "submitting" &&
@@ -417,9 +479,6 @@ export default function Dashboard() {
 
   let isDeleting = fetcher.state === "submitting" && fetcher.formData?.get("intent") === "deleteFinanceNote";
 
-
-
-
   const copyText = (text) => {
     navigator.clipboard.writeText(text)
       .then(() => {
@@ -434,7 +493,6 @@ export default function Dashboard() {
   React.useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, [])
-
 
   const users = [
     {
@@ -463,8 +521,6 @@ export default function Dashboard() {
       avatar: "/avatars/04.png",
     },
   ] as const
-
-
 
   type User = (typeof users)[number]
 
@@ -1910,7 +1966,7 @@ export default function Dashboard() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="h-7 gap-1 text-sm text-[#f2f2f2] border-[#f2f2f2]"
+                          className="h-7 gap-1 text-sm text-[#fafafa] border-[#f2f2f2]"
                         >
                           Customer Progress
                         </Button>
@@ -2096,69 +2152,69 @@ export default function Dashboard() {
                         </DialogHeader>
                         <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
                         <div className="grid gap-3 mx-3 mb-3">
-                          <div className="grid gap-3">
-                            <Label htmlFor="name"> First Name</Label>
+                          <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.firstName} name='firstName'
                               type="text"
                               className="w-full bg-[#09090b] border-[#27272a] "
                             />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
                           </div>
-                          <div className="grid gap-3">
-                            <Label htmlFor="name"> Last Name</Label>
+                          <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.lastName} name='lastName'
                               type="text"
                               className="w-full bg-[#09090b] border-[#27272a] "
                             />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
                           </div>
-                          <div className="grid gap-3">
-                            <Label htmlFor="name">Phone</Label>
+                          <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.phone} name='phone'
                               type="text"
                               className="w-full bg-[#09090b] border-[#27272a] "
                             />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
                           </div>
-                          <div className="grid gap-3">
-                            <Label htmlFor="name">Email</Label>
+                          <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.email} name='email'
                               type="text"
                               className="w-full bg-[#09090b] border-[#27272a] "
                             />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
                           </div>
-                          <div className="grid gap-3">
-                            <Label htmlFor="name">Address</Label>
+                          <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.address} name='address'
                               type="text"
                               className="w-full bg-[#09090b] border-[#27272a] "
                             />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
                           </div>
-                          <div className="grid gap-3">
-                            <Label htmlFor="name">City</Label>
+                          <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.city} name='city'
                               type="text"
                               className="w-full bg-[#09090b] border-[#27272a] "
                             />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">City</label>
                           </div>
-                          <div className="grid gap-3">
-                            <Label htmlFor="name">Postal Code</Label>
+                          <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.postal} name='postal'
                               type="text"
                               className="w-full bg-[#09090b] border-[#27272a] "
                             />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Postal Code</label>
                           </div>
-                          <div className="grid gap-3">
-                            <Label htmlFor="name">Driver's Lic.</Label>
+                          <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.dl} name='dl'
                               type="text"
                               className="w-full bg-[#09090b] border-[#27272a] "
                             />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Drivers Lic.</label>
                           </div>
 
                         </div>
@@ -2415,7 +2471,7 @@ export default function Dashboard() {
                 </TabsList>
 
               </div>
-              <TabsContent value="Sales" className="  text-[#f2f2f2] rounded-lg">
+              <TabsContent value="Sales" className="  text-[#fafafa] rounded-lg">
                 <div className='grid grid-cols-2' >
                   <Card
                     className="overflow-hidden  flex flex-col h-full" x-chunk="dashboard-05-chunk-4 mx-2"
@@ -2494,7 +2550,7 @@ export default function Dashboard() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-7 gap-1 text-sm text-[#f2f2f2] border-[#f2f2f2]"
+                            className="h-7 gap-1 text-sm text-[#fafafa] border-[#f2f2f2]"
                           >
                             <ListFilter className="h-3.5 w-3.5" />
                             <span className="sr-only sm:not-sr-only"> Sales Person</span>
@@ -2825,20 +2881,20 @@ export default function Dashboard() {
                                   </span>
                                 </li>
                                 {/*
-          {modelData.trailer > 0 && (
-            <li className="flex items-center justify-between font-semibold">
-              <span className="text-[#8a8a93]">Trailer</span>
-              <span>${modelData.trailer}</span>
-            </li>
-          )}
-          {modelData.painPrem > 0 && (
-            <li className="flex items-center justify-between font-semibold">
-              <span className="text-[#8a8a93]">Paint Premium</span>
-              <span> ${modelData.painPrem}</span>
-            </li>
-          )}
-           */}
-                              </ul>
+                            {modelData.trailer > 0 && (
+                              <li className="flex items-center justify-between font-semibold">
+                                <span className="text-[#8a8a93]">Trailer</span>
+                                <span>${modelData.trailer}</span>
+                              </li>
+                            )}
+                            {modelData.painPrem > 0 && (
+                              <li className="flex items-center justify-between font-semibold">
+                                <span className="text-[#8a8a93]">Paint Premium</span>
+                                <span> ${modelData.painPrem}</span>
+                              </li>
+                            )}
+                            */}
+                                                </ul>
                             </div>
                             <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                             <div className="font-semibold">Standard Terms</div>
@@ -4256,38 +4312,8 @@ export default function Dashboard() {
                     </div>
                   </CardContent>
                   <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
-                    {/* <div className='flex' >
-                                <p className='mr-2'>CC: </p>
-                                <Select name='ccUser' >
-                                  <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
-                                    <SelectValue>Sales Person</SelectValue>
-                                  </SelectTrigger>
-                                  <SelectContent className='bg-slate1 text-[#fafafa]'>
-                                    {userList.map((user, index) => (
-                                      <SelectItem key={index} value={user.email}>{user.name}</SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
 
-                               onSubmit={(event) => {
-                        event.preventDefault()
-                        if (inputLength === 0) return
-                        setMessages([
-                          ...messages,
-                          {
-                            role: "user",
-                            content: input,
-                          },
-                        ])
-                        setInput("")
-                      }}
-
-                             */}
-                    <fetcher.Form ref={formRef} method="post"
-
-                      className="flex w-full items-center space-x-2"
-                    >
+                    <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
                       <Input
                         id="message"
                         placeholder="Type your message..."
@@ -4465,19 +4491,18 @@ export default function Dashboard() {
                       </DialogHeader>
                       <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
                       <div className="grid gap-3 mx-3 mb-3">
-                        <div className="grid gap-3">
-                          <Label htmlFor="name">Title</Label>
+                        <div className="relative mt-3">
                           <Input
                             name="title"
                             type="text"
                             className="w-full bg-[#09090b] border-[#27272a] "
                           />
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Title</label>
                         </div>
-                        <div className="grid gap-3">
-                          <Label htmlFor="name">Note</Label>
+                        <div className="relative mt-3">
                           <Select name='note' defaultValue="No Answer / Left Message">
-                            <SelectTrigger className="w-auto  border-[#27272a]  ">
-                              <SelectValue placeholder="Message examples" />
+                            <SelectTrigger className="w-full  border-[#27272a]  ">
+                              <SelectValue />
                             </SelectTrigger>
                             <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
                               <SelectGroup>
@@ -4504,18 +4529,19 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
-                          <Input
-                            id="name"
-                            type="text"
-                            placeholder="or write a custom note..."
-                            className="w-full bg-[#09090b] border-[#27272a] mt-1"
-                          />
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
                         </div>
-                        <div className="grid gap-3">
-                          <Label htmlFor="name">Contact Method</Label>
+                        <div className="relative mt-3">
+                          <Input
+                            type="text"
+                            className="w-full bg-[#09090b] border-[#27272a]"
+                          />
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
+                        </div>
+                        <div className="relative mt-3">
                           <Select name='contactMethod' defaultValue="SMS">
-                            <SelectTrigger className="w-auto    bg-[#09090b] border-[#27272a]">
-                              <SelectValue placeholder="Contact Method" />
+                            <SelectTrigger className="w-full    bg-[#09090b] border-[#27272a]">
+                              <SelectValue />
                             </SelectTrigger>
                             <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
                               <SelectGroup>
@@ -4527,12 +4553,12 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
                         </div>
-                        <div className="grid gap-3">
-                          <Label htmlFor="name">Type of appointment</Label>
+                        <div className="relative mt-3">
                           <Select name='resourceId' defaultValue="1">
-                            <SelectTrigger className="w-auto    bg-[#09090b] border-[#27272a]">
-                              <SelectValue placeholder="Type of Appointment" />
+                            <SelectTrigger className="w-full    bg-[#09090b] border-[#27272a]">
+                              <SelectValue />
                             </SelectTrigger>
                             <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
                               <SelectGroup>
@@ -4544,12 +4570,12 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Type of Appointment</label>
                         </div>
-                        <div className="grid gap-3">
-                          <Label htmlFor="name">Result</Label>
+                        <div className="relative mt-3">
                           <Select name='resultOfcall' defaultValue="Attempted">
-                            <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
-                              <SelectValue placeholder="Result of call" />
+                            <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                              <SelectValue />
                             </SelectTrigger>
                             <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
                               <SelectGroup>
@@ -4562,12 +4588,12 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
                         </div>
-                        <div className="grid gap-3">
-                          <Label htmlFor="name">Direction</Label>
+                        <div className="relative mt-3">
                           <Select name='direction' defaultValue="Outgoing">
-                            <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
-                              <SelectValue placeholder="Direction of call" />
+                            <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                              <SelectValue placeholder="" />
                             </SelectTrigger>
                             <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
                               <SelectGroup>
@@ -4577,6 +4603,7 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
                         </div>
                         <div className=' flex-col mx-auto justify-center'>
                           <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
@@ -4686,6 +4713,7 @@ export default function Dashboard() {
                       <DialogFooter className=" border-t border-[#27272a] p-4  ">
                         <div className='flex justify-center' >
                           <Button
+                            size='sm'
                             value="addAppt"
                             type="submit"
                             name="intent"
@@ -4695,7 +4723,6 @@ export default function Dashboard() {
                             className='bg-[#dc2626] ml-auto  mr-auto'>
                             Add Appointment
                             <PaperPlaneIcon className="h-4 w-4 ml-2" />
-
                           </Button>
                         </div>
                       </DialogFooter>
@@ -4706,7 +4733,7 @@ export default function Dashboard() {
               </TabsContent>
               <TabsContent value="Communications">
                 <Card
-                  className=" text-[#f0f0f0]" x-chunk="dashboard-05-chunk-4"
+                  className=" text-[#fafafa]" x-chunk="dashboard-05-chunk-4"
                 >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
@@ -4783,10 +4810,10 @@ export default function Dashboard() {
                                   {message.result}
                                 </TableCell >
                                 <TableCell className='w-[150px]'>
-                                  {message.title}
+                                  {message.subject}
                                 </TableCell>
                                 <TableCell className="hidden sm:table-cell">
-                                  {message.content}
+                                  {message.body}
                                 </TableCell>
                                 <TableCell className="hidden sm:table-cell w-[100px]">
                                   {message.userName}
@@ -4805,18 +4832,17 @@ export default function Dashboard() {
                           </DialogHeader>
                           <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
                           <div className="grid gap-3 mx-3 mb-3">
-                            <div className="grid gap-3">
-                              <Label htmlFor="name">Title</Label>
+                            <div className="relative mt-3">
                               <Input
                                 id="title"
                                 type="text"
                                 className="w-full bg-[#09090b] border-[#27272a] "
                               />
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Title</label>
                             </div>
-                            <div className="grid gap-3">
-                              <Label htmlFor="name">Note</Label>
+                            <div className="relative mt-3">
                               <Select name='note' defaultValue="Gave pricing, need to follow up">
-                                <SelectTrigger className="w-auto  border-[#27272a]  ">
+                                <SelectTrigger className="w-full  border-[#27272a]  ">
                                   <SelectValue placeholder="Message examples" />
                                 </SelectTrigger>
                                 <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
@@ -4844,18 +4870,21 @@ export default function Dashboard() {
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
+                            </div>
+                            <div className="relative mt-3">
                               <Input
                                 id="name"
                                 type="text"
-                                placeholder="or write a custom note..."
-                                className="w-full bg-[#09090b] border-[#27272a] mt-1"
+
+                                className="w-full bg-[#09090b] border-[#27272a]  "
                               />
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
                             </div>
-                            <div className="grid gap-3">
-                              <Label htmlFor="name">Contact Method</Label>
+                            <div className="relative mt-3">
                               <Select name='contactMethod' defaultValue="Phone">
-                                <SelectTrigger className="w-auto    bg-[#09090b] border-[#27272a]">
-                                  <SelectValue placeholder="Contact Method" />
+                                <SelectTrigger className="w-full    bg-[#09090b] border-[#27272a]">
+                                  <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
                                   <SelectGroup>
@@ -4867,13 +4896,12 @@ export default function Dashboard() {
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
                             </div>
-
-                            <div className="grid gap-3">
-                              <Label htmlFor="name">Result</Label>
+                            <div className="relative mt-3">
                               <Select name='resultOfcall' defaultValue="Reached">
-                                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
-                                  <SelectValue placeholder="Result of call" />
+                                <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                                  <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
                                   <SelectGroup>
@@ -4886,12 +4914,12 @@ export default function Dashboard() {
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
                             </div>
-                            <div className="grid gap-3">
-                              <Label htmlFor="name">Direction</Label>
+                            <div className="relative mt-3">
                               <Select name='direction' defaultValue="Incoming">
-                                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
-                                  <SelectValue placeholder="Direction of call" />
+                                <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                                  <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
                                   <SelectGroup>
@@ -4901,6 +4929,7 @@ export default function Dashboard() {
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
+                              <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
                             </div>
 
                           </div>
@@ -4961,17 +4990,30 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                  <div className="parent-container">
+                            <MyIFrameComponent />
+                          </div>
                     <div className="grid gap-3 max-h-[20vh] h-auto">
-                      <Form method='post'>
-                        <ul className="grid gap-3">
-                          <li className="flex items-center justify-between">
-                            <div className="grid w-full max-w-sm items-center gap-1.5">
-                              <Label htmlFor="picture">File Upload</Label>
-                              <Input id="picture" type="file" className='border-[#27272a]' />
-                            </div>
-                          </li>
-                        </ul>
-                      </Form>
+                      {/*<Form method='post' className='flex items-center'>
+                        <div className="relative mt-5">
+                          <Input id="file" type="file" className='border-[#27272a] button:border-[#27272a] rounded-md text-[#fafafa] bg-[#09090b] button:text-[#fafafa]  button:bg-[#09090b] px-2 ' name='document' />
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">File Upload</label>
+                        </div>
+                        <input type='hidden' name='intent' value='' />
+                        <Button
+                          value="uploadFile"
+                          type="submit"
+                          name="intent"
+                          size="icon"
+                          onClick={() => {
+                            toast.success(`File uploaded!`)
+                          }}
+                          disabled={inputLength === 0}
+                          className='bg-[#dc2626] ml-2'>
+                          <UploadIcon className="h-4 w-4" />
+                          <span className="sr-only">Upload</span>
+                        </Button>
+                        </Form>*/}
                       <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
                       <div className="font-semibold">Download Docs</div>
                       <ul className="grid gap-3">
@@ -6567,7 +6609,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
     merged[key] = String(merged[key]);
   }
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: email } });
-  const UploadedDocs = await prisma.uploadDocs.findMany({ where: { financeId: finance?.id } });
+ // const UploadedDocs = await prisma.uploadDocs.findMany({ where: { financeId: finance?.id } });
   const userList = await prisma.user.findMany()
   const parts = await prisma.part.findMany()
   const clientUnit = await prisma.inventoryMotorcycle.findFirst({ where: { stockNumber: merged.stockNum } })
@@ -6580,39 +6622,39 @@ export async function loader({ params, request }: DataFunctionArgs) {
   if (brand === 'Manitou') {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes,   userList, parts, clientUnit })
   }
   if (brand === 'Switch') {
     const modelData = await getDataByModel(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes,  userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'Kawasaki') {
     const modelData = await getDataKawasaki(finance);
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes,  userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'BMW-Motorrad') {
     const bmwMoto = await getLatestBMWOptions(financeId)
     const bmwMoto2 = await getLatestBMWOptions2(financeId)
     const modelData = await getDataBmwMoto(finance);
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientfileId, clientUnit })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes,   userList, parts, clientfileId, clientUnit })
   }
   if (brand === 'Triumph') {
     const modelData = await getDataTriumph(finance);
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes,   userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'Harley-Davidson') {
     const modelData = await getDataHarley(finance);
     const apptFinance2 = await getAllFinanceApts2(financeId)
     const aptFinance3 = await getAllFinanceApts(financeId)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes, UploadedDocs, userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes,  userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'Indian' || brand === 'Can-Am' || brand === 'Sea-Doo' || brand === 'Ski-Doo' || brand === 'Suzuki' || brand === 'Spyder' || brand === 'Can-Am-SXS') {
     const modelData = await getDataByModel(finance)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, UploadedDocs, userList, parts, clientUnit })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId,  userList, parts, clientUnit })
 
   }
-  return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId, UploadedDocs, userList, parts, clientUnit, clientfileId })
+  return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId,   userList, parts, clientUnit, clientfileId })
 }
 
 type ValuePiece = Date | null;

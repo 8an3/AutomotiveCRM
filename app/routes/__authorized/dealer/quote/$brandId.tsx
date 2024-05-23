@@ -416,7 +416,7 @@ export default function Quote() {
                                 <Input type="hidden" name="userEmail" defaultValue={email} />
                                 <Input type="hidden" name="userName" defaultValue={name} />
                                 <ButtonLoading
-                                    size="lg"
+                                    size="sm"
                                     type="submit"
                                     className="w-auto cursor-pointer ml-auto mt-5 bg-white hover:bg-transparent"
                                     name="intent"

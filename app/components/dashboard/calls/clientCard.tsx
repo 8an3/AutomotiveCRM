@@ -1,5 +1,5 @@
 /* eslint-disable tailwindcss/classnames-order */
-import { Input, Separator, Button, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, } from '~/components'
+import { Input, Separator, Button } from '~/components/ui/index'
 import Calendar from 'react-calendar';
 import React, { useState, useEffect } from "react";
 import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigation } from '@remix-run/react'
@@ -11,9 +11,8 @@ import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHe
 import MesasageContent from "./messageContent";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { testLeademail, testLeadPhone } from '~/routes/__authorized/dealer/api/activix';
-import { isDate } from 'date-fns';
-import { FaSave } from "react-icons/fa";
-import IndeterminateCheckbox from './InderterminateCheckbox';
+import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
+
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -116,7 +115,7 @@ export default function ClientCard({ data }) {
         let ClientDetails = [
             { name: "firstName", value: data.firstName, placeHolder: "First Name" },
             { name: "lastName", value: data.lastName, placeHolder: "Last Name" },
-            { name: "phone", value: data.phone, placeHolder: "Phone - +16136136134" },
+            { name: "phone", value: data.phone, placeHolder: "Phone" },
             { name: "email", value: data.email, placeHolder: "Email" },
             { name: "address", value: data.address, placeHolder: "Address" },
             { name: "city", value: data.city, placeHolder: "City" },
@@ -127,7 +126,7 @@ export default function ClientCard({ data }) {
         ];
         return ClientDetails;
     }
-
+    const [checkedItems, setCheckedItems] = useState({});
 
 
     const handleCheckboxChange = (name, isChecked) => {
@@ -136,7 +135,6 @@ export default function ClientCard({ data }) {
             [name]: isChecked ? (prevCheckedItems[name] ?? new Date().toISOString()) : false,
         }));
     };
-    const [checkedItems, setCheckedItems] = useState({});
 
     return (
         <>
@@ -144,7 +142,7 @@ export default function ClientCard({ data }) {
                 <SheetTrigger asChild>
                     <p>{data.firstName} </p>
                 </SheetTrigger>
-                <SheetContent side='left' className='bg-[#09090b] text-[#fafafa] w-full h-screen md:w-[50%] overflow-y-auto   ' >
+                <SheetContent side='left' className='bg-[#09090b] text-[#fafafa] w-full md:w-[50%] overflow-y-auto border  border-[#27272a] ' >
                     <Form method="post" >
                         <SheetHeader>
                             <SheetTitle>
@@ -160,51 +158,41 @@ export default function ClientCard({ data }) {
                         <div className="grid grid-cols-1  mt-3 w-[90%] ">
                             {/* Content for the first column */}
                             {ClientDetailsFunction({ data, finance })
-                                .map((fee, index) => (
-                                    <div key={index}>
-                                        <fieldset className=" " >
-                                            <legend className="-ml-1 px-1 text-sm font-medium flex">
-                                                {fee.placeHolder}
-                                            </legend>
+                                .map((fee, index) =>
+                                (
+                                    <div key={index} className="  mt-3">
+                                        <div className="relative mt-3">
                                             <Input
                                                 name={fee.name}
                                                 defaultValue={fee.value}
-                                                placeholder={fee.placeHolder}
-                                                className='mt-2 h-8 text-[#fafafa] bg-[#09090b] border-[#27272a] '
+                                                className='mt-2 h-8 text-[#fafafa] bg-[#09090b] border-[#27272a]'
                                             />
-                                        </fieldset>
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeHolder}</label>
+                                        </div>
                                     </div>
                                 ))}
 
-                            <Select name='typeOfContact' defaultValue={data.typeOfContact || "Best Form To Contact"} >
-                                <SelectTrigger className="w-auto  mt-2  bg-[#09090b] border-[#27272a]">
-                                    <SelectValue placeholder="Best Form To Contact" />
-                                </SelectTrigger>
-                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
-                                    <SelectGroup>
-                                        <SelectLabel>Best Form To Contact</SelectLabel>
-                                        <SelectItem value="Phone">Phone</SelectItem>
-                                        <SelectItem value="In Person">In-Person</SelectItem>
-                                        <SelectItem value="SMS">SMS</SelectItem>
-                                        <SelectItem value="Email">Email</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                            <Select name='timeToContact' defaultValue={data.timeToContact || "Best Time To Contact"} >
-                                <SelectTrigger className="w-auto mt-2   bg-[#09090b] border-[#27272a]">
-                                    <SelectValue placeholder="Best Time To Contact" />
-                                </SelectTrigger>
-                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
-                                    <SelectGroup>
-                                        <SelectLabel>Best Time To Contact</SelectLabel>
-                                        <SelectItem value="Morning">Morning</SelectItem>
-                                        <SelectItem value="Afternoon">Afternoon</SelectItem>
-                                        <SelectItem value="Evening">Evening</SelectItem>
-                                        <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-
+                            <p className="mt-4">Prefered Contact</p>
+                            <Separator className='w-[90%] mb-3' />
+                            <select defaultValue={data.typeOfContact}
+                                name='typeOfContact'
+                                placeholder='Best Form To Contact'
+                                className="bg-[#09090b] text-[#fafafa] border-[#27272a] w-2/3 mb-2 rounded   cursor-pointer border-0 ml-2 mr-2   px-3 py-3 text-sm  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                                <option value="na">Best Form To Contact </option>
+                                <option value="Phone">Phone</option>
+                                <option value="Text">Text</option>
+                                <option value="Email">Email</option>
+                            </select>
+                            <select defaultValue={data.timeToContact}
+                                name='timeToContact'
+                                placeholder='Best Time To Contact'
+                                className="bg-[#09090b] text-[#fafafa] border-[#27272a] mx-automt-3 w-2/3  cursor-pointer rounded border-0 ml-2 mr-2   px-3 py-3 text-sm placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                                <option value="na">Best Time To Contact</option>
+                                <option value="Morning">Morning</option>
+                                <option value="Afternoon">Afternoon</option>
+                                <option value="Evening">Evening</option>
+                                <option value="Do Not Contact">Do Not Contact</option>
+                            </select>
 
 
 
@@ -214,41 +202,25 @@ export default function ClientCard({ data }) {
                                         Result
                                     </AccordionTrigger>
                                     <AccordionContent>
-                                        <Form method="post">
-                                            {ClientResultFunction({ formData, finance, dashBoardCustURL })
-                                                .map((item) => {
-                                                    const isChecked =
-                                                        item.value === 'on' ||
-                                                        new Date(item.value) > new Date('2022-01-01');
-                                                    return (
-                                                        <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
-                                                            <label htmlFor={item.name}>{item.label}</label>
-                                                            <IndeterminateCheckbox
-                                                                name={item.name}
-                                                                indeterminate={checkedItems[item.name] === undefined && isChecked}
-                                                                checked={checkedItems[item.name] ?? isChecked}
-                                                                onChange={(e) => handleCheckboxChange(item.name, e.target.checked)}
-                                                                className="border-[#c72323]"
-                                                            />
-                                                        </div>
-                                                    )
-                                                }
-                                                )}
-                                            <input type="hidden" defaultValue={finance[0].id} name="financeId" />
-                                            <ButtonLoading
-                                                size="sm"
-                                                value="dealProgress"
-                                                className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-[#dc2626]"
-                                                name="intent"
-                                                type="submit"
-                                                isSubmitting={isSubmitting}
-                                                onClick={() => toast.success(`${data.firstName}'s customer file is updated...`)}
-                                                loadingText={`${data.firstName}'s customer file is updated...`}
-                                            >
-                                                Save
-                                                <FaSave className="h-4 w-4 ml-2" />
-                                            </ButtonLoading>
-                                        </Form>
+                                        {ClientResultFunction({ formData, finance, dashBoardCustURL })
+                                            .map((item) => {
+                                                const isChecked =
+                                                    item.value === 'on' ||
+                                                    new Date(item.value) > new Date('2022-01-01');
+                                                return (
+                                                    <div key={item.name} className='flex justify-between items-center ml-3 mt-3'>
+                                                        <label htmlFor={item.name}>{item.label}</label>
+                                                        <IndeterminateCheckbox
+                                                            name={item.name}
+                                                            indeterminate={checkedItems[item.name] === undefined && isChecked}
+                                                            checked={checkedItems[item.name] ?? isChecked}
+                                                            onChange={(e) => handleCheckboxChange(item.name, e.target.checked)}
+                                                            className="border-[#c72323]"
+                                                        />
+                                                    </div>
+                                                )
+                                            })}
+
                                     </AccordionContent>
                                 </AccordionItem>
                             </Accordion>
@@ -266,7 +238,7 @@ export default function ClientCard({ data }) {
                                     <select defaultValue={data.pickUpTime}
                                         name='pickUpTime'
                                         placeholder='Time of day'
-                                        className="mx-auto rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                                        className="mx-auto rounded border-0 ml-2 mr-2 bg-[#09090b] border-[#27272a]  px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                                         <option>Time of day</option>
                                         <option value="9:00">9:00</option>
                                         <option value="9:30">9:30</option>
@@ -306,9 +278,9 @@ export default function ClientCard({ data }) {
                             <input type='hidden' name='emailId' value={data.emailId} />
                         </div>
                         <ButtonLoading
-                            size="lg"
+                            size="sm"
                             value='updateFinanceTwo'
-                            className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                            className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
                             name="intent" type="submit"
                             isSubmitting={isSubmitting}
                             onClick={() => toast.success(`Quote updated for ${data.firstName}`)}
@@ -323,8 +295,8 @@ export default function ClientCard({ data }) {
                         <input type='hidden' name='financeManager' value={user.email} />
                         <input type='hidden' name='financeId' value={data.id} />
                         <ButtonLoading
-                            size="lg"
-                            className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                            size="sm"
+                            className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
                             type="submit"
                             isSubmitting={isSubmitting}
                             onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
@@ -338,9 +310,9 @@ export default function ClientCard({ data }) {
 
                         <a href={`/dealer/customer/${data.clientfileId}/${data.id}`} target="_blank">
                             <ButtonLoading
-                                size="lg"
+                                size="sm"
                                 type="submit"
-                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                                className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
                                 name="intent"
                                 value="clientProfile"
                                 isSubmitting={isSubmitting}
@@ -352,9 +324,9 @@ export default function ClientCard({ data }) {
                         {data.activixId && (
                             <a href={`https://crm.activix.ca/leads/${data.activixId}`} target="_blank">
                                 <ButtonLoading
-                                    size="lg"
+                                    size="sm"
                                     type="submit"
-                                    className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                                    className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
                                     name="intent"
                                     value="clientProfile"
                                     isSubmitting={isSubmitting}
@@ -374,11 +346,11 @@ export default function ClientCard({ data }) {
                             {data.model && (
 
                                 <ButtonLoading
-                                    size="lg"
+                                    size="sm"
                                     name='intent'
                                     value='returnToQuote'
                                     type='submit'
-                                    className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                                    className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
                                 >
                                     Quote
                                 </ButtonLoading>
@@ -391,7 +363,7 @@ export default function ClientCard({ data }) {
                             <input type='hidden' name='id' value={data.id} />
                             <input type='hidden' name='clientId' value={data.id} />
                             {!data.model && (
-                                <Button name='intent' value='createQuote' type='submit' className="bg-[#02a9ff] cursor-pointer p-3 text-[#fafafa] active:bg-black font-bold uppercase   border border-slate1 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+                                <Button size='sm' name='intent' value='createQuote' type='submit' className="bg-[#02a9ff] cursor-pointer p-3 text-[#fafafa] active:bg-black font-bold uppercase   border border-[#27272a] text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
                                     Create Quote
                                 </Button>
                             )}

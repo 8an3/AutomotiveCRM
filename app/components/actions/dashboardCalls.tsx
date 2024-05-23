@@ -11,7 +11,6 @@ import { updateFinanceNote } from "~/utils/client/updateFinanceNote.server";
 import { prisma } from "~/libs";
 import { deleteFinanceAppts } from "~/utils/financeAppts/delete.server";
 import UpdateAppt from "../dashboard/calls/actions/updateAppt";
-import createFinanceNotes from "../dashboard/calls/actions/createFinanceNote";
 import updateFinanceNotes from "../dashboard/calls/actions/updateFinanceNote";
 import CreateAppt from "../dashboard/calls/actions/createAppt";
 import updateFinance23 from "../dashboard/calls/actions/updateFinance";
@@ -47,25 +46,29 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
   const customerId = finance?.id;
-  const financeNotes = await getAllFinanceNotes(customerId);
+  const financeNotes = await prisma.financeNote.findMany({
+    orderBy: { createdAt: "desc" },
+  });
   const searchData = await prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
   const webLeadData = await prisma.finance.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: null } });
   const dashData2 = await prisma.dashboard.findMany({ where: { customerState: 'turnOver' }, });
   const financeData2 = await prisma.finance.findMany({ where: { id: dashData2.financeId }, });
   const financeNewLead = await Promise.all(financeData2.map(async (financeRecord) => {
     const correspondingDashRecord = dashData2.find(dashRecord => dashRecord.financeId === financeRecord.id);
-    const comsCounter = await prisma.communications.findUnique({
+    const comsCounter = await prisma.communications.findMany({
       where: {
         financeId: financeRecord.id
       },
     });
     return {
-      ...comsCounter,
-      ...correspondingDashRecord,
+      communications: comsCounter,
       ...financeRecord,
+      ...correspondingDashRecord,
     };
   }));
-  const conversations = await prisma.communicationsOverview.findMany({})
+  const conversations = await prisma.previousComms.findMany({
+    orderBy: { createdAt: "desc" },
+  });
   const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
   const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
 
@@ -1765,7 +1768,17 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     return updateFinanceNotes;
   }
   if (intent === "createFinanceNote") {
-    await createFinanceNotes({ formData });
+    const createFinanceNotes = await prisma.financeNote.create({
+      data: {
+        slug: formData.slug,
+        customContent: formData.customContent,
+        urgentFinanceNote: formData.urgentFinanceNote,
+        author: formData.author,
+        isPublished: formData.isPublished,
+        customerId: formData.customerId,
+        dept: formData.dept,
+      },
+    });
     return createFinanceNotes;
   }
   if (intent === "updateFinanceNote") {

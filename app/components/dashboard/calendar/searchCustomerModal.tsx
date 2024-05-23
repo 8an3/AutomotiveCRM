@@ -62,7 +62,7 @@ export function SearchCustomerModal() {
           <div className="mx-auto justify-center text-center lowercase">
             <Button
               variant="ghost"
-              className='text-black'
+              className='text-[#fafafa]'
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
               First Name
@@ -88,7 +88,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-black'
+              className='text-[#fafafa]'
 
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -113,7 +113,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-black'
+              className='text-[#fafafa]'
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
@@ -137,7 +137,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-black'
+              className='text-[#fafafa]'
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
@@ -162,7 +162,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-black'
+              className='text-[#fafafa]'
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
@@ -186,7 +186,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-black'
+              className='text-[#fafafa]'
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
@@ -265,7 +265,7 @@ export function SearchCustomerModal() {
           </>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[1000px] bg-white">
+      <DialogContent className="sm:max-w-[1000px] border-[#27272a] bg-[#09090b] text-[#fafafa] ">
         <DialogHeader>
           <DialogTitle>Search Clients</DialogTitle>
         </DialogHeader>
@@ -273,7 +273,7 @@ export function SearchCustomerModal() {
           <div className="flex items-center py-4">
             <DebouncedInput
               value={globalFilter ?? ''}
-              onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-black bg-white p-2 text-black shadow"
+              onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-[#27272a] bg-[#09090b] p-2 text-[#fafafa] shadow"
               placeholder="Search all columns..."
             />
             <Input
@@ -284,7 +284,7 @@ export function SearchCustomerModal() {
               onChange={(event) =>
                 table.getColumn('phone')?.setFilterValue(event.target.value)
               }
-              className="ml-2 max-w-sm border-black bg-white text-black "
+              className="ml-2 max-w-sm border-[#27272a] bg-[#09090b] "
             />
 
 
@@ -293,14 +293,14 @@ export function SearchCustomerModal() {
               Clear
             </Button>
           </div>
-          <div className="rounded-md border border-black ">
-            <Table2 className='w-full overflow-x-auto border-black text-[#fafafa]'>
-              <TableHeader>
+          <div className="rounded-md border border-[#27272a] ">
+            <Table2 className='w-full overflow-x-auto border-[#27272a] text-[#fafafa] bg-[#09090b]'>
+              <TableHeader className='text-[#fafafa] border-[#27272a]'>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className=' border-black'>
+                  <TableRow key={headerGroup.id} className=' border-[#27272a] text-[#fafafa]'>
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead className='items-center ' key={header.id}>
+                        <TableHead className='items-center border-[#27272a]' key={header.id}>
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -308,7 +308,7 @@ export function SearchCustomerModal() {
                               header.getContext()
                             )}
                           {header.column.getCanFilter() && showFilter && (
-                            <div className="mx-auto cursor-pointer items-center justify-center border-black text-center">
+                            <div className="mx-auto cursor-pointer items-center justify-center border-[#27272a] text-center">
                               <Filter column={header.column} table={table} />
                             </div>
                           )}
@@ -318,12 +318,12 @@ export function SearchCustomerModal() {
                   </TableRow>
                 ))}
               </TableHeader>
-              <TableBody>
+              <TableBody className='  border-[#27272a] bg-[#09090b]  text-[#fafafa]  '>
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
                     <TableRow
                       key={row.id}
-                      className='cursor-pointer border-black bg-white p-4 capitalize text-black hover:text-[#02a9ff]'
+                      className='cursor-pointer border-[#27272a] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
                       data-state={row.getIsSelected() && "selected"}
                     >
                       {row.getVisibleCells().map((cell) => (
@@ -340,7 +340,7 @@ export function SearchCustomerModal() {
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                      className="h-24 cursor-pointer bg-[#09090b] border-[#27272a] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
                     >
                       No results.
                     </TableCell>
@@ -350,7 +350,6 @@ export function SearchCustomerModal() {
             </Table2>
           </div>
           <div className="flex items-center justify-end space-x-2 py-4">
-
             <div className="space-x-2">
               <Button
                 variant="outline"
@@ -366,7 +365,6 @@ export function SearchCustomerModal() {
                 size="sm"
                 onClick={() => table.nextPage()}
                 className="border-slate1 text-[#fafafa]"
-
                 disabled={!table.getCanNextPage()}
               >
                 Next

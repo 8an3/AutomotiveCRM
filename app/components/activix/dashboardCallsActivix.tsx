@@ -11,7 +11,7 @@ import { updateFinanceNote } from "~/utils/client/updateFinanceNote.server";
 
 import { deleteFinanceAppts } from "~/utils/financeAppts/delete.server";
 import UpdateAppt from "../dashboard/calls/actions/updateAppt";
-import createFinanceNotes from "../dashboard/calls/actions/createFinanceNote";
+
 import updateFinanceNotes from "../dashboard/calls/actions/updateFinanceNote";
 import CreateAppt from "../dashboard/calls/actions/createAppt";
 import updateFinance23 from "../dashboard/calls/actions/updateFinance";
@@ -1880,7 +1880,18 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     return updateFinanceNotes;
   }
   if (intent === "createFinanceNote") {
-    const localNote = await createFinanceNotes(formData);
+    const localNote = await prisma.financeNote.create({
+      data: {
+        slug: formData.slug,
+        customContent: formData.customContent,
+        urgentFinanceNote: formData.urgentFinanceNote,
+        author: formData.author,
+        isPublished: formData.isPublished,
+        customerId: formData.customerId,
+        dept: formData.dept,
+      },
+    });
+    return createFinanceNotes;
     const apiNote = await CreateNote(formData)
     return ({ localNote, apiNote });
   }

@@ -61,18 +61,21 @@ export default function Sidebar(user, email) {
             to={item.to}
             key={item.to}
             className="justify-start" >
-            <Button
-              variant='ghost'
-              className={cn(
-                'justify-start text-left',
-                buttonVariants({ variant: 'ghost' }),
-                pathname === item.to
-                  ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                  : "hover:bg-[#232324]  w-[90%]  ",
-                "justify-start w-[90%]"
-              )} >
-              {item.title}
-            </Button>
+            <SheetClose className='w-[90%]'>
+              <Button
+                variant='ghost'
+                className={cn(
+                  'justify-start text-left',
+                  buttonVariants({ variant: 'ghost' }),
+                  pathname === item.to
+                    ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
+                    : "hover:bg-[#232324]  w-[90%]  ",
+                  "justify-start w-[90%]"
+                )} >
+                {item.title}
+
+              </Button>
+            </SheetClose>
           </Link>
         ))}
       </nav>
@@ -102,7 +105,21 @@ export default function Sidebar(user, email) {
                       Menu
                     </AccordionTrigger>
                     <AccordionContent>
-                      <SidebarNav items={userNavSidebarNav} />
+                      <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                      <div className="font-semibold">Sales</div>
+                      <div className="my-4">
+                        <SidebarNav items={salesNavSidebarNav} />
+                      </div>
+                      <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                      <div className="font-semibold">Document</div>
+                      <div className="my-4">
+                        <SidebarNav items={documentNavSidebarNav} />
+                      </div>
+                      <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                      <div className="font-semibold">User</div>
+                      <div className="my-4">
+                        <SidebarNav items={userNavSidebarNav} />
+                      </div>
                       {userIsFinance && (
                         <Link to='/dealer/leads/finance'>
                           <Button
@@ -148,7 +165,16 @@ export default function Sidebar(user, email) {
                         Admin Menu
                       </AccordionTrigger>
                       <AccordionContent>
-                        <SidebarNav items={adminSidebarNav} />
+                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <div className="font-semibold">Admin</div>
+                        <div className="my-4">
+                          <SidebarNav items={adminSidebarNav} />
+                        </div>
+                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <div className="font-semibold">User</div>
+                        <div className="my-4">
+                          <SidebarNav items={userNavSidebarNav} />
+                        </div>
                       </AccordionContent>
                     </AccordionItem>
                   ) : (null)}
@@ -158,7 +184,16 @@ export default function Sidebar(user, email) {
                         Dev Menu
                       </AccordionTrigger>
                       <AccordionContent>
-                        <SidebarNav items={devSidebarNav} />
+                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <div className="font-semibold">Dev</div>
+                        <div className="my-4">
+                          <SidebarNav items={devSidebarNav} />
+                        </div>
+                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <div className="font-semibold">User</div>
+                        <div className="my-4">
+                          <SidebarNav items={userNavSidebarNav} />
+                        </div>
                       </AccordionContent>
                     </AccordionItem>
                   ) : (null)}
@@ -168,17 +203,35 @@ export default function Sidebar(user, email) {
                         Manager Menu
                       </AccordionTrigger>
                       <AccordionContent>
-                        <SidebarNav items={managerSidebarNav} />
+                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <div className="font-semibold">Manager</div>
+                        <div className="my-4">
+                          <SidebarNav items={managerSidebarNav} />
+                        </div>
+                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <div className="font-semibold">User</div>
+                        <div className="my-4">
+                          <SidebarNav items={userNavSidebarNav} />
+                        </div>
                       </AccordionContent>
                     </AccordionItem>
                   ) : (null)}
                   {user && user?.email === 'skylerzanth@outlook.com' ? (
-                    <AccordionItem value="item-4">
+                    <AccordionItem value="item-5">
                       <AccordionTrigger>
                         Service Menu
                       </AccordionTrigger>
                       <AccordionContent>
-                        <SidebarNav items={serviceNavSidebarNav} />
+                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <div className="font-semibold">Service</div>
+                        <div className="my-4">
+                          <SidebarNav items={serviceNavSidebarNav} />
+                        </div>
+                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <div className="font-semibold">User</div>
+                        <div className="my-4">
+                          <SidebarNav items={userNavSidebarNav} />
+                        </div>
                       </AccordionContent>
                     </AccordionItem>
                   ) : (null)}
@@ -369,12 +422,39 @@ export const serviceNavSidebarNav = [
 ]
 export const userNavSidebarNav = [
   {
-    title: "Email Client",
-    to: "/dealer/email/client",
+    title: "Staff Area",
+    to: "/dealer/staff/chat",
   },
   {
-    title: "SMS Client",
-    to: "/dealer/sms/app",
+    title: "Settings",
+    to: "/dealer/user/dashboard/settings",
+  },
+  {
+    title: "Logout",
+    to: "/auth/logout",
+  },
+
+]
+export const documentNavSidebarNav = [
+  {
+    title: "Document Builder",
+    to: "/dealer/document/builder",
+  },
+  {
+    title: "Template Builder",
+    to: "/dealer/user/dashboard/templates",
+  },
+  {
+    title: "Scripts",
+    to: "/dealer/user/dashboard/scripts",
+  },
+
+
+]
+export const salesNavSidebarNav = [
+  {
+    title: "Email Client",
+    to: "/dealer/email/client",
   },
   {
     title: "Dashboard",
@@ -392,34 +472,7 @@ export const userNavSidebarNav = [
     title: "Motorcycle Inventory",
     to: "/dealer/inventory/motorcycle",
   },
-  {
-    title: "Document Builder",
-    to: "/dealer/document/builder",
-  },
-  {
-    title: "Template Builder",
-    to: "/dealer/user/dashboard/templates",
-  },
-  {
-    title: "Scripts",
-    to: "/dealer/user/dashboard/scripts",
-  },
-  {
-    title: "Sales Tracker",
-    to: "/dealer/user/dashboard/salestracker",
-  },
-  {
-    title: "Roadmap",
-    to: "/dealer/user/dashboard/roadmap",
-  },
-  {
-    title: "Settings",
-    to: "/dealer/user/dashboard/settings",
-  },
-  {
-    title: "Logout",
-    to: "/auth/logout",
-  },
+
 
 ]
 export const adminSidebarNav = [

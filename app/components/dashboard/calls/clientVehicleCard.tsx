@@ -135,7 +135,7 @@ export default function ClientVehicleCard({ data, }) {
             <select
               name='selectBrand'
 
-              className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-[#c7c7cb] text-[#c7c7cb] h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
+              className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-[#c7c7cb] text-[#fafafa] h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
             >
               <option value="">Select Brand</option>
               {options.map((option, index) => (
@@ -157,12 +157,12 @@ export default function ClientVehicleCard({ data, }) {
       )}
       <SheetHeader>
         <SheetTitle>
-          <SheetContent side='left' className='bg-[#09090b] text-[#c7c7cb] w-full h-screen md:w-[50%] overflow-y-auto   ' >
+          <SheetContent side='left' className='bg-[#09090b] text-[#fafafa] w-full h-screen md:w-[50%] overflow-y-auto   ' >
 
-            <h3 className="text-2xl font-thin text-[#c7c7cb]">CLIENT VEHICLE CARD</h3>
+            <h3 className="text-2xl font-thin text-[#fafafa]">CLIENT VEHICLE CARD</h3>
 
             <Form method='post'>
-              <div className="grid grid-cols-1 text-[#c7c7cb]">
+              <div className="grid grid-cols-1 text-[#fafafa]">
                 {/* Left column with inputs */}
                 <div>
                   <div className="mx-3 my-3 w-[90%]">
@@ -174,7 +174,7 @@ export default function ClientVehicleCard({ data, }) {
                     <Input type="hidden" defaultValue='updateFinance' name="intent" />
 
                   </div>
-                  <div className="mx-3 my-3 w-[95%]">
+                  <div className="mx-3 my-3 w-[99%]">
                     <Tabs defaultValue="model" className="my-x mx-3 w-auto">
                       <TabsList className="flex w-full flex-row  ">
                         <TabsTrigger value="model">Model</TabsTrigger>
@@ -250,18 +250,18 @@ export default function ClientVehicleCard({ data, }) {
                         {data.desiredPayments === "Standard Payment" && (
                           <>
                             <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
+                              <p className="mt-2 basis-2/4  text-[#fafafa]  text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end  text-right text-sm font-thin ">
                                 ${data.total}
                               </p>
                             </div>
-                            <div className="mt-2 flex flex-wrap justify-between text-[#c7c7cb]  ">
-                              <p className="mt-2 basis-2/4   text-sm text-[#c7c7cb]  font-thin">
+                            <div className="mt-2 flex flex-wrap justify-between text-[#fafafa]  ">
+                              <p className="mt-2 basis-2/4   text-sm text-[#fafafa]  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
                                 ${data.onTax}
                               </p>
                             </div>
@@ -269,19 +269,19 @@ export default function ClientVehicleCard({ data, }) {
                         )}
                         {data.desiredPayments === "Payments with Options" && (
                           <>
-                            <div className="mt-2 flex flex-wrap justify-between text-[#c7c7cb] ">
-                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap justify-between text-[#fafafa] ">
+                              <p className="mt-2 basis-2/4  text-[#fafafa]  text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4 text-[#c7c7cb]  items-end  justify-end text-right text-sm font-thin ">
+                              <p className="flex basis-2/4 text-[#fafafa]  items-end  justify-end text-right text-sm font-thin ">
                                 ${data.totalWithOptions}
                               </p>
                             </div>
-                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
-                              <p className="mt-2 basis-2/4 text-[#c7c7cb]   text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#fafafa]  justify-between ">
+                              <p className="mt-2 basis-2/4 text-[#fafafa]   text-sm  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
                                 ${data.qcTax}
                               </p>
                             </div>
@@ -289,11 +289,11 @@ export default function ClientVehicleCard({ data, }) {
                         )}
                         {data.desiredPayments === "No Tax Payment" && (
                           <>
-                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
-                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#fafafa]  justify-between ">
+                              <p className="mt-2 basis-2/4  text-[#fafafa]  text-sm  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  text-[#c7c7cb]  items-end   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  text-[#fafafa]  items-end   justify-end  text-right text-sm font-thin ">
                                 ${data.native}
                               </p>
                             </div>
@@ -301,11 +301,11 @@ export default function ClientVehicleCard({ data, }) {
                         )}
                         {data.desiredPayments === "No Tax Payment with Options" && (
                           <>
-                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
-                              <p className="mt-2 basis-2/4 text-[#c7c7cb]   text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#fafafa]  justify-between ">
+                              <p className="mt-2 basis-2/4 text-[#fafafa]   text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end  text-right text-sm font-thin ">
                                 ${data.totalWithOptions}
                               </p>
                             </div>
@@ -597,63 +597,75 @@ export default function ClientVehicleCard({ data, }) {
                   </div>
                 </div>
                 {/* right column with inputs */}
-                <div>
-                  <div className="mx-3 my-3 w-[90%]">
-                    <h3 className="text-2xl font-thin">TRADE</h3>
+                <div className="mx-3 my-3 w-[90%]">
+                  <h3 className="text-2xl font-thin">TRADE</h3>
+                  <div className="relative mt-5">
                     <Input
-                      className="mr-3 mt-2 h-8 bg-slate11   "
-                      placeholder="Make"
+                      className="mr-3 mt-2 h-8 border-[#27272a] bg-[#09090b]    "
                       name="tradeMake"
                       defaultValue={data.tradeMake}
                     />
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
+                  </div>
+                  <div className="relative mt-5">
                     <Input
-                      className="mt-2 h-8 pr-5 bg-slate11  "
-                      placeholder="Model"
+                      className="mt-2 h-8 pr-5 border-[#27272a] bg-[#09090b]  "
                       name="tradeDesc"
                       defaultValue={data.tradeDesc}
                     />
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
+                  </div>
+                  <div className="relative mt-5">
                     <Input
-                      className="mt-2  h-8 bg-slate11  "
-                      placeholder="Year"
+                      className="mt-2  h-8 border-[#27272a] bg-[#09090b]  "
                       name="tradeYear"
                       defaultValue={data.tradeYear}
                     />
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Year</label>
+                  </div>
+                  <div className="relative mt-5">
                     <Input
-                      className="mt-2 h-8 bg-slate11  "
-                      placeholder="Trim"
+                      className="mt-2 h-8 border-[#27272a] bg-[#09090b]  "
                       name="tradeTrim"
                       defaultValue={data.tradeTrim}
                     />
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Trim</label>
+                  </div>
+                  <div className="relative mt-5">
                     <Input
-                      className="mt-2  h-8  bg-slate11  "
-                      placeholder="Color"
+                      className="mt-2  h-8  border-[#27272a] bg-[#09090b]  "
                       name="tradeColor"
                       defaultValue={data.tradeColor}
                     />
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Color</label>
+                  </div>
+                  <div className="relative mt-5">
                     <Input
-                      className="mt-2  h-8 bg-slate11  "
-                      placeholder="vin"
+                      className="mt-2  h-8 border-[#27272a] bg-[#09090b]  "
                       name="tradeVin"
                       defaultValue={data.tradeVin}
                     />
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">VIN</label>
+                  </div>
+                  <div className="relative mt-5">
                     <Input
-                      className="mt-2  h-8 bg-slate11  "
-                      placeholder="Mileage"
+                      className="mt-2  h-8 border-[#27272a] bg-[#09090b]  "
                       name="tradeMileage"
                       defaultValue={data.tradeMileage}
                     />
-                    <input type='hidden' name='vehicleIdWTrade' defaultValue={data.vehicleIdWTrade} />
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Mileage</label>
                   </div>
+                  <input type='hidden' name='vehicleIdWTrade' defaultValue={data.vehicleIdWTrade} />
                   <div className="mx-3 my-3 grid w-[90%] grid-cols-2 p-2">
                     <p className=" text-sm ">Trade Value</p>
                     <Input
-                      className="  ml-3 h-8 w-auto  text-right  bg-slate11  text-sm "
+                      className="  ml-3 h-8 w-auto  text-right  border-[#27272a] bg-[#09090b]  text-sm "
                       name="tradeValue"
                       defaultValue={data.tradeValue}
                     />
                     <p className=" mt-2  text-sm ">Needed Repairs</p>
                     <Input
-                      className="  ml-3 mt-2 h-8  w-auto  text-right bg-slate11   text-sm "
+                      className="  ml-3 mt-2 h-8  w-auto  text-right border-[#27272a] bg-[#09090b]   text-sm "
                       name="tradeRepairs"
                       defaultValue={data.tradeRepairs}
                     />
@@ -677,7 +689,7 @@ export default function ClientVehicleCard({ data, }) {
                 <div className="mb-auto mr-auto p-3">
 
                   <ButtonLoading
-                    size="lg"
+                    size="sm"
                     value='updateFinanceTrade'
                     className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
                     name="intent" type="submit"
@@ -853,7 +865,7 @@ export default async function ClientVehicleCard({ data }) {
               <select
                 name='selectBrand'
                 onChange={handleSelectChange}
-                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-[#c7c7cb] h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] mx-auto"
+                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-[#fafafa] h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] mx-auto"
               >
                 <option value="">Select Brand</option>
                 {options.map((option, index) => (
@@ -868,10 +880,10 @@ export default async function ClientVehicleCard({ data }) {
       </p>
       <SheetHeader>
         <SheetTitle>
-          <SheetContent side='left' className='bg-[#1c2024] w-full md:w-[50%]  overflow-y-auto    shadow-[0_2px_10px] text-[#c7c7cb]' >
-            <h3 className="text-2xl font-thin text-[#c7c7cb]">CLIENT VEHICLE CARD</h3>
+          <SheetContent side='left' className='bg-[#1c2024] w-full md:w-[50%]  overflow-y-auto    shadow-[0_2px_10px] text-[#fafafa]' >
+            <h3 className="text-2xl font-thin text-[#fafafa]">CLIENT VEHICLE CARD</h3>
             <Form method='post'>
-              <div className="grid grid-cols-1 text-[#c7c7cb]">
+              <div className="grid grid-cols-1 text-[#fafafa]">
                 <div>
                   <div className="mx-3 my-3 w-[90%]">
                     <h3 className="text-2xl font-thin">PURCHASING</h3>
@@ -956,18 +968,18 @@ export default async function ClientVehicleCard({ data }) {
                         {data.desiredPayments === "Standard Payment" && (
                           <>
                             <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
+                              <p className="mt-2 basis-2/4  text-[#fafafa]  text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end  text-right text-sm font-thin ">
                                 ${data.total}
                               </p>
                             </div>
-                            <div className="mt-2 flex flex-wrap justify-between text-[#c7c7cb]  ">
-                              <p className="mt-2 basis-2/4   text-sm text-[#c7c7cb]  font-thin">
+                            <div className="mt-2 flex flex-wrap justify-between text-[#fafafa]  ">
+                              <p className="mt-2 basis-2/4   text-sm text-[#fafafa]  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
                                 ${data.onTax}
                               </p>
                             </div>
@@ -975,19 +987,19 @@ export default async function ClientVehicleCard({ data }) {
                         )}
                         {data.desiredPayments === "Payments with Options" && (
                           <>
-                            <div className="mt-2 flex flex-wrap justify-between text-[#c7c7cb] ">
-                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap justify-between text-[#fafafa] ">
+                              <p className="mt-2 basis-2/4  text-[#fafafa]  text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4 text-[#c7c7cb]  items-end  justify-end text-right text-sm font-thin ">
+                              <p className="flex basis-2/4 text-[#fafafa]  items-end  justify-end text-right text-sm font-thin ">
                                 ${data.totalWithOptions}
                               </p>
                             </div>
-                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
-                              <p className="mt-2 basis-2/4 text-[#c7c7cb]   text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#fafafa]  justify-between ">
+                              <p className="mt-2 basis-2/4 text-[#fafafa]   text-sm  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
                                 ${data.qcTax}
                               </p>
                             </div>
@@ -995,11 +1007,11 @@ export default async function ClientVehicleCard({ data }) {
                         )}
                         {data.desiredPayments === "No Tax Payment" && (
                           <>
-                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
-                              <p className="mt-2 basis-2/4  text-[#c7c7cb]  text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#fafafa]  justify-between ">
+                              <p className="mt-2 basis-2/4  text-[#fafafa]  text-sm  font-thin">
                                 After Tax
                               </p>
-                              <p className="flex basis-2/4  text-[#c7c7cb]  items-end   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  text-[#fafafa]  items-end   justify-end  text-right text-sm font-thin ">
                                 ${data.native}
                               </p>
                             </div>
@@ -1007,11 +1019,11 @@ export default async function ClientVehicleCard({ data }) {
                         )}
                         {data.desiredPayments === "No Tax Payment with Options" && (
                           <>
-                            <div className="mt-2 flex flex-wrap text-[#c7c7cb]  justify-between ">
-                              <p className="mt-2 basis-2/4 text-[#c7c7cb]   text-sm  font-thin">
+                            <div className="mt-2 flex flex-wrap text-[#fafafa]  justify-between ">
+                              <p className="mt-2 basis-2/4 text-[#fafafa]   text-sm  font-thin">
                                 Total
                               </p>
-                              <p className="flex basis-2/4  items-end text-[#c7c7cb]   justify-end  text-right text-sm font-thin ">
+                              <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end  text-right text-sm font-thin ">
                                 ${data.totalWithOptions}
                               </p>
                             </div>
@@ -1307,43 +1319,43 @@ export default async function ClientVehicleCard({ data }) {
                   <div className="mx-3 my-3 w-[90%]">
                     <h3 className="text-2xl font-thin">TRADE</h3>
                     <Input
-                      className="mr-3 mt-2 h-8 bg-slate11   "
+                      className="mr-3 mt-2 h-8 border-[#27272a] bg-[#09090b]   "
                       placeholder="Make"
                       name="tradeMake"
                       defaultValue={data.tradeMake}
                     />
                     <Input
-                      className="mt-2 h-8 pr-5 bg-slate11  "
+                      className="mt-2 h-8 pr-5 border-[#27272a] bg-[#09090b]  "
                       placeholder="Model"
                       name="tradeDesc"
                       defaultValue={data.tradeDesc}
                     />
                     <Input
-                      className="mt-2  h-8 bg-slate11  "
+                      className="mt-2  h-8 border-[#27272a] bg-[#09090b]  "
                       placeholder="Year"
                       name="tradeYear"
                       defaultValue={data.tradeYear}
                     />
                     <Input
-                      className="mt-2 h-8 bg-slate11  "
+                      className="mt-2 h-8 border-[#27272a] bg-[#09090b]  "
                       placeholder="Trim"
                       name="tradeTrim"
                       defaultValue={data.tradeTrim}
                     />
                     <Input
-                      className="mt-2  h-8  bg-slate11  "
+                      className="mt-2  h-8  border-[#27272a] bg-[#09090b]  "
                       placeholder="Color"
                       name="tradeColor"
                       defaultValue={data.tradeColor}
                     />
                     <Input
-                      className="mt-2  h-8 bg-slate11  "
+                      className="mt-2  h-8 border-[#27272a] bg-[#09090b]  "
                       placeholder="vin"
                       name="tradeVin"
                       defaultValue={data.tradeVin}
                     />
                     <Input
-                      className="mt-2  h-8 bg-slate11  "
+                      className="mt-2  h-8 border-[#27272a] bg-[#09090b]  "
                       placeholder="Mileage"
                       name="tradeMileage"
                       defaultValue={data.tradeMileage}
@@ -1353,13 +1365,13 @@ export default async function ClientVehicleCard({ data }) {
                   <div className="mx-3 my-3 grid w-[90%] grid-cols-2 p-2">
                     <p className=" text-sm ">Trade Value</p>
                     <Input
-                      className="  ml-3 h-8 w-auto  text-right  bg-slate11  text-sm "
+                      className="  ml-3 h-8 w-auto  text-right  border-[#27272a] bg-[#09090b]  text-sm "
                       name="tradeValue"
                       defaultValue={data.tradeValue}
                     />
                     <p className=" mt-2  text-sm ">Needed Repairs</p>
                     <Input
-                      className="  ml-3 mt-2 h-8  w-auto  text-right bg-slate11   text-sm "
+                      className="  ml-3 mt-2 h-8  w-auto  text-right border-[#27272a] bg-[#09090b]   text-sm "
                       name="tradeRepairs"
                       defaultValue={data.tradeRepairs}
                     />

@@ -7,6 +7,7 @@ import { type AuthCodeMSALBrowserAuthenticationProvider } from '@microsoft/micro
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import type { User, Event, Message } from '@microsoft/microsoft-graph-types';
+import { prisma } from '~/libs';
 
 let graphClient: Client | undefined = undefined;
 
@@ -435,7 +436,7 @@ export async function ComposeEmail(
       }
     ]
   };
-  var email = await graphClient!.api("/me/messages").post(message);
+  var email = await graphClient!.api("/me/sendMail").post(message);
   return email;
 }
 
@@ -485,18 +486,101 @@ export async function SendNewEmail(
   };
 
   try {
-    const email = await graphClient!.api("/me/sendMail").post(sendMail);
+    const email = await graphClient!.api("/me/sendMail")
+      .post(sendMail);
     return email;
   } catch (error) {
     console.error("Error sending email:", error);
     throw error;
   }
 }
-
-/** ccRecipients: [
+export async function ComposeEmailDashboardEmailClient(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  subject: any,
+  body: any,
+  to: any,
+) {
+  ensureClient(authProvider);
+  console.log(subject, to, body, ' emails tff')
+  const sendMail = {
+    message: {
+      subject: subject,
+      body: {
+        contentType: 'HTML',
+        content: body
+      },
+      toRecipients: [
         {
           emailAddress: {
-            address: 'danas@contoso.com'
+            address: to
           }
         }
-      ] */
+      ]
+    },
+    saveToSentItems: 'false'
+  };
+  const email = await graphClient!.api('/me/sendMail')
+    .post(sendMail);
+
+
+  return email
+}
+
+
+export async function ComposeEmailTwo(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  subject: any,
+  body: any,
+  to: any,
+) {
+  ensureClient(authProvider);
+  console.log(subject, to, body, ' emails tff')
+  const sendMail = {
+    message: {
+      subject: subject,
+      body: {
+        contentType: 'HTML',
+        content: body
+      },
+      toRecipients: [
+        {
+          emailAddress: {
+            address: to
+          }
+        }
+      ]
+    },
+    saveToSentItems: 'false'
+  };
+  const email = await graphClient!.api('/me/sendMail')
+    .post(sendMail);
+
+
+  return email;
+}
+
+export async function UploadItem(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  document: any,
+  filename: any,
+) {
+  try {
+    ensureClient(authProvider);
+    const stream = document;
+    const upload = await graphClient!.api(`/me/drive/items/root:/${filename}:/content`).put(stream);
+    return upload;
+  } catch (error) {
+    console.error("Error uploading item:", error);
+    return null; // Returning null in case of an error
+  }
+}
+
+export async function DownloadItem(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  itemId: any,
+) {
+  ensureClient(authProvider);
+  let stream = await client.api(`/me/drive/items/${itemId}/content`)
+	.get();
+  return stream;
+}

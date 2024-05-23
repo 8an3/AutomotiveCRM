@@ -1387,72 +1387,7 @@ export function PaymentCalc({ outletSize }) {
                 Payment Calculator
               </CardTitle>
             </div>
-            <div className="ml-auto flex items-center gap-1">
-              <Button size="sm" variant="outline" className="h-8 gap-1">
-                <Truck className="h-3.5 w-3.5" />
-                <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                  Emails
-                </span>
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="outline" className="h-8 w-8">
-                    <MoreVertical className="h-3.5 w-3.5" />
-                    <span className="sr-only">More</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <a
-                    className="mx-auto w-full"
-                    href="/dealer/leads/sales"
-                    target="_blank"
-                  >
-                    <DropdownMenuItem>Dashboard</DropdownMenuItem>
-                  </a>
-                  <a
-                    className="mx-auto w-full"
-                    href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
-                    target="_blank"
-                  >
-                    <DropdownMenuItem>Client File</DropdownMenuItem>
-                  </a>
 
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <PrintSpec />
-                  </DropdownMenuItem>
-                  <Form method="post">
-                    <DropdownMenuItem>
-                      <input
-                        type="hidden"
-                        name="intent"
-                        value="financeTurnover"
-                      />
-                      <input type="hidden" name="locked" value={lockedValue} />
-                      <input
-                        type="hidden"
-                        name="financeId"
-                        value={finance.id}
-                      />
-                      <ButtonLoading
-                        size="lg"
-                        className="ml-auto w-full cursor-pointer p-5 hover:text-[#02a9ff]"
-                        type="submit"
-                        isSubmitting={isSubmitting}
-                        onClick={() =>
-                          toast.success(
-                            `Informing finance managers of requested turnover...`
-                          )
-                        }
-                        loadingText="Notifying finance managers..."
-                      >
-                        Finance Turnover
-                      </ButtonLoading>
-                    </DropdownMenuItem>
-                  </Form>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
           </CardHeader>
           {firstPage && (
             <>
@@ -1576,13 +1511,31 @@ export function PaymentCalc({ outletSize }) {
                     )}
                     <li className="flex items-center justify-between">
                       <span className="text-[#8a8a93]">Accessories</span>
-                      <span>${accessories}</span>
+                      <span>
+                        <Input
+                          className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                          defaultValue={formData.accessories}
+                          placeholder="commodity"
+                          type="text"
+                          name="accessories"
+                          onChange={handleChange}
+                        />
+                      </span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-[#8a8a93]">
                         Labour Hours
                       </span>
-                      <span>${finance.labour}</span>
+                      <span>
+                        <Input
+                          className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                          defaultValue={formData.labour}
+                          placeholder="commodity"
+                          type="text"
+                          name="labour"
+                          onChange={handleChange}
+                        />
+                      </span>
                     </li>
                     <li className="flex items-center justify-between font-semibold">
                       <span className="text-[#8a8a93]">Licensing</span>

@@ -34,7 +34,7 @@ const FeaturePop = ({ finance, user }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className='rounded-md border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border bg-transparent hover:bg-transparent' >
+        <Button size='sm' className='rounded-md border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border bg-transparent hover:bg-transparent' >
           Features
         </Button>
       </PopoverTrigger>
