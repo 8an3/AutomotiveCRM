@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, } from "react";
 
 export default function EmailBody() {
   const [htmlBody, setHtmlBody] = useState('')

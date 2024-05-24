@@ -1,5 +1,5 @@
 import { json, redirect, createCookie } from "@remix-run/node";
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteError, } from "@remix-run/react";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useLoaderData, useRouteError, } from "@remix-run/react";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
 import { IconoirProvider } from "iconoir-react";
 import React, { useEffect, useState } from "react";
@@ -58,6 +58,7 @@ export async function loader({ request }: LoaderArgs) {
     return json({ ENV });
   }
   const referrer = request.headers.get('referer');
+  const  =
 
   const loaderData = {
     ENV,
@@ -66,7 +67,12 @@ export async function loader({ request }: LoaderArgs) {
   } satisfies RootLoaderData;
 
   return json(
-    { loaderData, user, referrer },
+    {
+      loaderData, user, referrer,
+      ENV: {
+        PROD_CALLBACK_URL: process.env.PROD_CALLBACK_URL,
+      }
+    },
     {
       headers: { "Set-Cookie": await commitSession(userSession) },
     }
@@ -75,6 +81,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App({ pca }: AppProps) {
   const [financeId, setFinanceId] = useState(null);
+  const data = useLoaderData<typeof loader>();
 
   // <Provider store={store}>
   //         </Provider>
@@ -102,6 +109,13 @@ export default function App({ pca }: AppProps) {
                 }}
               >
                 <Outlet />
+                <script
+                  dangerouslySetInnerHTML={{
+                    __html: `window.ENV = ${JSON.stringify(
+                      data.ENV
+                    )}`,
+                  }}
+                />
                 <Toaster richColors />
                 {configDev.isDevelopment &&
                   configDev.features.debugScreens && (

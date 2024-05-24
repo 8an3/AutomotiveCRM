@@ -9,12 +9,11 @@ import {
 } from '@azure/msal-browser';
 
 export const tenantId = "fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6";
-const callbackURL = process.env.PROD_CALLBACK_URL
 
 export const msalConfig = {
   clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
   clientSecret: "rut8Q~s5LpXMnEjujrxkcJs9H3KpUzxO~LfAOc-D",
-  redirectUri: callbackURL,//`http://localhost:3000/auth/login`,
+  redirectUri: window.ENV.callbackURL,//`http://localhost:3000/auth/login`,
   // redirectUri: `https://www.dealersalesassistant.ca/auth/login`,
   authorizationUrl: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
   tokenUrl: `https://login.microsoftonline.com/common/oauth2/v2.0/token?`,
@@ -57,7 +56,7 @@ export const config = {
     clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
     clientSecret: '4hN8Q~RtcN.b9c.1LTCnHtY0UurShP1PIIFQGakw',
     tenantId: 'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6',
-    redirectUri: callbackURL,// `http://localhost:3000/auth/login`,
+    redirectUri: window.ENV.callbackURL,// `http://localhost:3000/auth/login`,
     // redirectUri: `https://www.dealersalesassistant.ca/auth/login`,
     authority: `https://login.microsoftonline.com/common`,
     postLogoutRedirectUri: "/",
