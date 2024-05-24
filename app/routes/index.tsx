@@ -332,7 +332,6 @@ export const dealerFeatures = [
   { name: "Trade Evaluations - Extra Fees Apply - Coming Soon!", description: "Trade in pricing from the kelley blue book integrated right into our quoting system.", },
 
 
-
 ];
 export function DealerPrice() {
   return (
