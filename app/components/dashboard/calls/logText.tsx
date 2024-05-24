@@ -151,7 +151,7 @@ export default function EmailClient({ data }) {
 
               </TabsContent>
               <TabsContent value="password">
-                <Card className="  text-[#f0f0f0] w-auto mx-auto" x-chunk="dashboard-05-chunk-4 "  >
+                <Card className="  text-[#f1f1f1] w-auto mx-auto" x-chunk="dashboard-05-chunk-4 "  >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
@@ -212,7 +212,7 @@ export default function EmailClient({ data }) {
               <TabsContent value="notes" className="">
                 <div className='max-h-[900px] '>
                   <>
-                    <Card className="overflow-hidden text-[#f0f0f0] w-auto mx-auto" x-chunk="dashboard-05-chunk-4 "  >
+                    <Card className="overflow-hidden text-[#f1f1f1] w-auto mx-auto" x-chunk="dashboard-05-chunk-4 "  >
                       <CardHeader className="flex flex-row items-start bg-[#18181a]">
                         <div className="grid gap-0.5">
                           <CardTitle className="group flex items-center gap-2 text-lg">

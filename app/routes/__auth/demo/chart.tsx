@@ -125,7 +125,7 @@ export default function Component() {
 
             </Card>
             <Card
-              className="w-auto overflow-hidden text-[#f0f0f0] ml-2" x-chunk="dashboard-05-chunk-4"
+              className="w-auto overflow-hidden text-[#f1f1f1] ml-2" x-chunk="dashboard-05-chunk-4"
             >
               <CardHeader className="flex flex-row items-start bg-[#18181a]">
                 <div className="grid gap-0.5">

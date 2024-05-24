@@ -485,24 +485,8 @@ export const adminSidebarNav = [
     to: "/dealer/admin/users",
   },
   {
-    title: "Import / Export Motor",
-    to: "/dealer/admin/import/motorcycle",
-  },
-  {
-    title: "Import / Export Parts",
-    to: "/dealer/admin/import/parts",
-  },
-  {
-    title: "Import / Export Acc",
-    to: "/dealer/admin/import/acc",
-  },
-  {
-    title: "Import / Export Service",
-    to: "/dealer/admin/import/service",
-  },
-  {
-    title: "Import / Export Leads",
-    to: "/dealer/admin/import/leads",
+    title: "Import / Export",
+    to: "/dealer/admin/importExport",
   },
   {
     title: "Search Leads",
@@ -561,43 +545,9 @@ export const managerSidebarNav = [
     to: "/dealer/manager/csi",
   },
   {
-    title: "Import Leads",
-    to: "/dealer/manager/import/leads",
+    title: "Import / Export",
+    to: "/dealer/manager/importExport",
   },
-  {
-    title: "Export Leads",
-    to: "/dealer/manager/Export/leads",
-  },
-  {
-    title: "Import Motorcycle Inv",
-    to: "/dealer/manager/import/motorcycle",
-  },
-  {
-    title: "Export Motorcycle Inv",
-    to: "/dealer/manager/export/motorcycle",
-  },
-  {
-    title: "Import Parts",
-    to: "/dealer/manager/import/parts",
-  },
-  {
-    title: "Export Parts",
-    to: "/dealer/manager/export/parts",
-  },
-  {
-    title: "Import Accessories",
-    to: "/dealer/manager/import/accessories",
-  },
-  {
-    title: "Export Accessories",
-    to: "/dealer/manager/export/accessories",
-  },
-  {
-    title: "Import Motor Local Test",
-    to: "/dealer/manager/import/motorcycle/client",
-  },
-
-
 ]
 export const my24Watercraft = [
   {

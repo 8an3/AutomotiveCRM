@@ -235,7 +235,7 @@ export default function ChatAppDashboardClient() {
   }
 
   return (
-    <Card className=" z-50 text-[#f0f0f0]" x-chunk="dashboard-05-chunk-4" >
+    <Card className=" z-50 text-[#f1f1f1]" x-chunk="dashboard-05-chunk-4" >
       <CardHeader className="flex flex-row items-start bg-[#18181a]">
         <div className="grid gap-0.5">
           <CardTitle className="group flex items-center gap-2 text-lg">

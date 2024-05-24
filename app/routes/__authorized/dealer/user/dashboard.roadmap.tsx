@@ -16,6 +16,8 @@ import {
 } from "~/components/ui/tabs"
 import { useState, useEffect } from "react"
 import { Separator } from "~/components"
+import { GiBullseye } from "react-icons/gi";
+import { Target } from 'lucide-react';
 
 export const metadata = {
   title: "Dashboard",
@@ -23,22 +25,12 @@ export const metadata = {
 }
 
 const todoRoadmap = [
-  { type: "NTBC", desc: "API Docs" },
-  { type: "NTBC", desc: "Demo Day Dashboard" },
-  { type: "NTBC", desc: "Owners dashboard" },
-  { type: "NTBC", desc: "Dept Leaderboards" },
-  { type: "NTBC", desc: "Finance Dashboard" },
-  { type: "NTBC", desc: "Call center Section" },
-  { type: "NTBC", desc: "Owner Section" },
-  { type: "NTBC", desc: "manager Dashboard" },
-  { type: "NTBC", desc: "Dept and General Staff Chat" },
-  { type: "NTBC", desc: "Trade in pricing from the kelley blue book integrated right into our quoting system." },
-  // ------------------------------------------------------------------------------DONE NEEDS TESTING--------------------------------------------------------------------------------
+  // ----------------------------------------------------------DONE NEEDS TESTING---------------------------------------
   { type: "done needs testing", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
   { type: "done needs testing", desc: "API file upload will be released once google approves gmail as its still in the process right now - done needs testing" },
   { type: "done needs testing", desc: "webhook for incoming emails, save notifiation and messeages" },
-
-  // ------------------------------------------------------------------------------WIP----------------------------------------------------------------------------------------
+  { type: "done needs testing", desc: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
+  // -----------------------------------------------------------WIP-----------------------------------------------------
   { type: "WIP", desc: "have your own csi reporting for the dealer that can be sent to customers" },
   { type: "WIP", desc: "finish automation dash - wip" },
   { type: "WIP", desc: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
@@ -46,90 +38,77 @@ const todoRoadmap = [
   { type: "WIP", desc: "sales manager dash" },
   { type: "WIP", desc: "dev control panel needs to send email to new dealers with sign in info" },
   { type: "WIP", desc: "https://developers.klaviyo.com/en/reference/get_campaigns" },
-
-  // ------------------------------------------------------------------------------ISSUE----------------------------------------------------------------------------------------
+  // ---------------------------------------------------------ISSUE-----------------------------------------------------
   { type: "issue", desc: "need to change how to load overview,   by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
-
-  // ------------------------------------------------------------------------------AUTOMATION----------------------------------------------------------------------------------------
+  // -----------------------------------------------------OWNER---------------------------------------------------------
+  { type: "owner", desc: "Owners dashboard" },
+  { type: "owner", desc: "Owner Section" },
+  // -----------------------------------------------------OWNER---------------------------------------------------------
+  // -----------------------------------------------------DOCS----------------------------------------------------------
+  { type: "docs", desc: "Videos for docs" },
+  // -----------------------------------------------------DOCS----------------------------------------------------------
+  // -----------------------------------------------------DEALER--------------------------------------------------------
+  { type: "dealer", desc: "Dept Leaderboards" },
+  // -----------------------------------------------------DEALER--------------------------------------------------------
+  // -----------------------------------------------------------SALES---------------------------------------------------
+  { type: "sales", desc: "Demo Day Dashboard" },
+  { type: "sales", desc: "Call center Section" },
+  { type: "sales", desc: "Finance Dashboard" },
+  { type: "sales", desc: "Trade in pricing from the kelley blue book integrated right into our quoting system." },
+  { type: "sales", desc: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
+  { type: "sales", desc: "sales bot 2 - customer onboarding" },
+  { type: "sales", desc: "sales bot 3 - after sales" },
+  // -------------------------------------------------------------SALES-------------------------------------------------
+  // ------------------------------------------------------AUTOMATION---------------------------------------------------
   { type: "Automation", desc: "for lead rotation, if customer pending after an hour it goes up onto a free for all board so anyone can respond to him" },
   { type: "Automation", desc: "customer set time before delivery of what to bring" },
   { type: "Automation", desc: "auto email at 5, 2.5 months and 30, 7 days before consent expires, 2 years if bought, 6 months if not" },
   { type: "Automation", desc: "customer 2 months after pick up to make sure everything is still good" },
-  // ------------------------------------------------------------------------------AUTOMATION----------------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------DEALER----------------------------------------------------------------------------------------
-  // ------------------------------------------------------------------------------DEALER----------------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------DEALER ONBOARDING------------------------------------------------------------------------
-  { type: "dealer onboarding", desc: "invite user section where it send an email with links to the crm and " },
-
-  { type: "dealer onboarding", desc: "role specific invites, for example when invitiing a tech only show him what hes going to be using maybe even see if you can book mark for them to make it super easy" },
-  { type: "dealer onboarding", desc: "new sales page with upgrades" },
-  { type: "dealer onboarding", desc: "automate on boarding" },
-  { type: "dealer onboarding", desc: "quote how-to" },
-  { type: "dealer onboarding", desc: "sales dashboard how-to" },
-  { type: "dealer onboarding", desc: "calendar how-to" },
-  { type: "dealer onboarding", desc: "automation how-to" },
-  { type: "dealer onboarding", desc: "template how-to" },
-  { type: "dealer onboarding", desc: "inventory how-to" },
-  { type: "dealer onboarding", desc: "document builder how-to" },
-  { type: "dealer onboarding", desc: "sales process start to finsih" },
-  { type: "dealer onboarding", desc: "free simple install with insructions, fee for total install - for dealer that already have an it team it would save them money" },
-  // ------------------------------------------------------------------------------DEALER ONBOARDING------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------SALES----------------------------------------------------------------------------------------
-  { type: "sales", desc: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
-  { type: "sales", desc: "sales bot 2 - customer onboarding" },
-  { type: "sales", desc: "sales bot 3 - after sales" },
-  { type: "sales", desc: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
-  // ------------------------------------------------------------------------------SALES----------------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------SERVICE----------------------------------------------------------------------------------------
+  // ----------------------------------------------------AUTOMATION-----------------------------------------------------
+  // -------------------------------------------------------------SERVICE-----------------------------------------------
   { type: "service", desc: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
   { type: "service", desc: "service writer dash" },
   { type: "service", desc: "tech dash" },
-  // ------------------------------------------------------------------------------SERVICE----------------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------QUOTE----------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------SERVICE---------------------------------------------
+  // --------------------------------------------------------------QUOTE------------------------------------------------
   { type: "quote", desc: "set up parts pages - started - Manitou done - switch started" },
-  // ------------------------------------------------------------------------------QUOTE----------------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------PARTS----------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------QUOTE-----------------------------------------------
+  // -------------------------------------------------------------PARTS-------------------------------------------------
   { type: "parts", desc: "parts dash" },
   { type: "parts", desc: "shpping and receiving dash" },
   { type: "parts", desc: "parts specfic page to print label, make changes etc, have search table that switch from table to part view using use state like the one in newleads" },
-  // ------------------------------------------------------------------------------PARTS----------------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------accessories----------------------------------------------------------------------------------
+  // -----------------------------------------------------------------PARTS---------------------------------------------
+  // -----------------------------------------------------------accessories---------------------------------------------
   { type: "accessories", desc: "acc dash" },
-  // ------------------------------------------------------------------------------accessories----------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------ADMIN----------------------------------------------------------------------------------------
+  // ----------------------------------------------------------accessories----------------------------------------------
+  // -----------------------------------------------------------MANAGER-------------------------------------------------
+  { type: "manager", desc: "cross platform ad manager, post it once here and push it to different providors" },
+  { type: "manager", desc: "manager Dashboard" },
+  // ----------------------------------------------------------MANAGER--------------------------------------------------
+  // ---------------------------------------------------------ADMIN-----------------------------------------------------
   { type: "admin", desc: "export customers" },
   { type: "admin", desc: "export parts" },
   { type: "admin", desc: "export acc" },
-  { type: "admin", desc: "import customers" },
-  { type: "admin", desc: "import parts" },
-  { type: "admin", desc: "import acc" },
+  { type: "admin", desc: "employee onboarding" },
   { type: "admin", desc: "have it populate api keys so managers can hand them out" },
-
-  // ------------------------------------------------------------------------------ADMIN----------------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------INFASTRUCTURE------------------------------------------------------------------------------
+  // ----------------------------------------------------------ADMIN----------------------------------------------------
+  // ---------------------------------------------------DEALER ONBOARDING-----------------------------------------------
+  { type: "dealer onboarding", desc: "invite user section where it send an email with links to the crm and" },
+  { type: "dealer onboarding", desc: "role specific invites, for example when invitiing a tech only show him what hes going to be using maybe even see if you can book mark for them to make it super easy" },
+  { type: "dealer onboarding", desc: "automate on boarding" },
+  { type: "dealer onboarding", desc: "free simple install with insructions, fee for total install - for dealer that already have an it team it would save them money" },
+  // ------------------------------------------------------DEALER ONBOARDING--------------------------------------------
+  // ------------------------------------------------INFASTRUCTURE------------------------------------------------------
   { type: "infastructure", desc: "have a second non-cloud option, either as a rack for a server or tower for a non tech orientated dealer to be hosted on site but would need a license key that needs a new token every 30 days/6 months/12 months to operate based on payment plan, hardware to be paid upfront before build, payments start once activated at dealer" },
-  // ------------------------------------------------------------------------------INFASTRUCTURE--------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------DASH----------------------------------------------------------------------------------------
-  { type: "dash", desc: "cross platform ad manager, post it once here and push it to different providors" },
+  // -------------------------------------------------INFASTRUCTURE-----------------------------------------------------
+  // ------------------------------------------------DASH---------------------------------------------------------------
   { type: "dash", desc: "dynamic dashboard widgets" },
-  // ------------------------------------------------------------------------------DASH----------------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------COMMUINICATIONS-----------------------------------------------------------------------------
+  // ---------------------------------------------DASH------------------------------------------------------------------
+  // ----------------------------------------COMMUINICATIONS------------------------------------------------------------
   { type: "communications", desc: "email / sms campaigns" },
   { type: "communications", desc: "fb msgr integration" },
-  // ------------------------------------------------------------------------------COMMUINICATIONS-----------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------PAID FEATURE----------------------------------------------------------------------------------------
+  // ---------------------------------------COMMUINICATIONS-------------------------------------------------------------
+  // ----------------------------------PAID FEATURE---------------------------------------------------------------------
   { type: "paid feature - ai", desc: "predictive analysis of sales trends" },
   { type: "paid feature - ai", desc: "customter analysis, retention, customer $ worth, visits, and more" },
   { type: "paid feature - ai", desc: "Predictive Customer Behavior Modeling, Utilize advanced machine learning models to predict future customer behaviors and preferences based on historical data. ie percentages on how liuekly the customer can be closed if asked at that time" },
@@ -139,11 +118,8 @@ const todoRoadmap = [
   { type: 'paid feature - ai', desc: 'have ai take in last 5 emails with customer and suggest your next communication/script - not done yet but easy enough to complete in components folder' },
   { type: 'paid feature - ai', desc: 'vercel has a nice write up on this to do in their platform - ai - wip - https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts' },
   { type: "paid feature - ai", desc: "Ai assistant to book apointments, complete and etc like gowrench or just a work flow to customers to guide themselves" },
+  // ----------------------------------PAID FEATURE---------------------------------------------------------------------
 
-  // ------------------------------------------------------------------------------PAID FEATURE----------------------------------------------------------------------------------------
-
-  // ------------------------------------------------------------------------------AI----------------------------------------------------------------------------------------
-  // ------------------------------------------------------------------------------AI----------------------------------------------------------------------------------------
 
 ];
 
@@ -153,12 +129,26 @@ const DoneRoadMap = [
   { type: 'google', desc: 'has a push notiications for new incoming emails' },
   { type: "dealer onboarding", desc: "initial data can be put into seed file filed out by dealer" },
   { type: "done needs testing", desc: "roles based access - done needs testing" },
-  { type: "quote", desc: "Save form to LOCAL STORASGE(CHECK REMIX SITE FOR SOLUTIONp) incase something happens to connection or if they srep awway from their computer that way whenever you come back the form is filled out the way you left it" },
+  { type: "NTBC", desc: "API Docs" },
+  { type: "quote", desc: "Save form to LOCAL STORASGE(CHECK REMIX SITE FOR SOLUTIONp) incase something happens to connection or if they srep awway from their computer that way whenever you come back the form is filled out the way you left it" }, { type: "admin", desc: "import customers" },
+  { type: "admin", desc: "import parts" },
+  { type: "dealer onboarding", desc: "new sales page with upgrades" },
+  { type: "admin", desc: "import acc" },
+  { type: "dealer onboarding", desc: "docs videos" },
+  { type: "dealer onboarding", desc: "quote how-to" },
+  { type: "dealer onboarding", desc: "sales dashboard how-to" },
+  { type: "dealer onboarding", desc: "calendar how-to" },
+  { type: "dealer onboarding", desc: "automation how-to" },
+  { type: "dealer onboarding", desc: "template how-to" },
+  { type: "dealer onboarding", desc: "inventory how-to" },
+  { type: "dealer onboarding", desc: "document builder how-to" },
+  { type: "dealer onboarding", desc: "sales process start to finsih" },
   { type: "WIP", desc: "calendar to set store hours" },
   { type: "nonUrgent", desc: "to add onto the last one - unit sold in territories, report already out there owners of dealers get them" },
   { type: "WIP", desc: "redesign subscription page to include 2 optoinns for stand alone sales people and dealers" },
   { type: "issue", desc: "move staff chat to sms messenger" },
   { type: "website sales", desc: "try out section where people can see how much quicker the process can be" },
+  { type: "NTBC", desc: "Dept and General Staff Chat" },
   { type: 'google', desc: 'tasks' },
   { type: 'google', desc: 'Calendar' },
   { type: "Automation", desc: "sales person schedule for lead rotation" },
@@ -545,30 +535,29 @@ export default function DashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium flex">
-                      <img
-                        loading="lazy"
-                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
-                        className=" w-4 "
-                        alt="Logo"
-                      />
                       <p className='mr-3'>
                         Total Completed
                       </p>
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
+                        className=" w-4 ml-2 "
+                        alt="Logo"
+                      />
                     </CardTitle>
-
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{doneCount}</div>
                     <p className="text-xs text-muted-foreground">
                       Current projects in progess: {wipCount}
-
                     </p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
+                    <CardTitle className="text-sm font-medium flex">
                       Current plans/ideas that need completion!
+                      <Target color="#ff0000" className='text-2xl ml-2  ' />
                     </CardTitle>
 
                   </CardHeader>

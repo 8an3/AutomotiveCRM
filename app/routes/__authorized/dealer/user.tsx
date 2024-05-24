@@ -55,7 +55,7 @@ export default function Quote() {
     },
     {
       title: "Docs",
-      to: "/dealer/user/docs",
+      to: "/dealer/docs/sales",
     },
     {
       title: "Roadmap",

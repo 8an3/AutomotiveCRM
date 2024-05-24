@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react';
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType } from '@zxing/library';
+import { Button } from '~/components';
+
+
+
 
 const BarcodeScanner = () => {
   useEffect(() => {
@@ -7,7 +11,16 @@ const BarcodeScanner = () => {
     console.log('ZXing code reader initialized');
 
     const hints = new Map();
-    const formats = [BarcodeFormat.PDF_417]; // Add support for PDF417 format
+    const formats = [
+      BarcodeFormat.PDF_417,
+      BarcodeFormat.QR_CODE,
+      BarcodeFormat.ITF,
+      // Add support for PDF417 format
+      BarcodeFormat.PDF_417,
+      BarcodeFormat.PDF_417,
+      BarcodeFormat.PDF_417,
+      BarcodeFormat.PDF_417,
+    ];
     hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
 
     codeReader.getVideoInputDevices()
@@ -73,12 +86,12 @@ const BarcodeScanner = () => {
       <section className="container" id="demo-content">
         <h1 className="title">Scan barcode from Video Camera or Image</h1>
         <div>
-          <button className="button" id="startButton">Start</button>
-          <button className="button" id="resetButton">Reset</button>
+          <Button size='sm' className="button bg-[ff0000] mr-3" id="startButton">Start</Button>
+          <Button size='sm' className="button bg-[ff0000] mr-3" id="resetButton">Reset</Button>
           <input type="file" id="imageUploadButton" accept="image/*" style={{ display: 'inline-block', marginLeft: '10px' }} />
         </div>
-        <div style={{ padding: 0, width: '100%', maxHeight: '200px', overflow: 'hidden', border: '1px solid gray' }}>
-          <video id="video" style={{ width: '100%' }}></video>
+        <div style={{ padding: 0, width: '200px', maxHeight: '200px', overflow: 'hidden', border: '1px solid gray' }}>
+          <video id="video" style={{ width: '200px' }}></video>
         </div>
         <div id="sourceSelectPanel" style={{ display: 'none' }}>
           <label htmlFor="sourceSelect">Change video source:</label>
@@ -87,6 +100,8 @@ const BarcodeScanner = () => {
         <label>Result:</label>
         <pre><code id="result"></code></pre>
       </section>
+      <div className='mt-10' >
+      </div>
     </main>
   );
 };

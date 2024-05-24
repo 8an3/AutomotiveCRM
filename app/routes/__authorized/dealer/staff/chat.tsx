@@ -195,7 +195,7 @@ export default function StaffChat() {
 
   return (
     <Card
-      className=" z-50 w-[800px] text-[#f0f0f0] max-h-[80vh]"
+      className=" z-50 w-[800px] text-[#f1f1f1] max-h-[80vh]"
       x-chunk="dashboard-05-chunk-4"
     >
       <CardHeader className="flex flex-row items-start bg-[#18181a]">

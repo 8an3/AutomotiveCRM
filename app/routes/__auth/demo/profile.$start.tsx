@@ -1138,7 +1138,7 @@ export default function MainForm() {
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f0f0f0] border-[#27272a]" align="start">
+                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <SmallCalendar
                         className='mx-auto w-auto   bg-[#09090b] text-[#fafafa]'
@@ -1171,7 +1171,7 @@ export default function MainForm() {
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f0f0f0] border-[#27272a]" align="start">
+                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <Select name='pickHour'  >
                         <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]" >
@@ -1354,7 +1354,7 @@ export default function MainForm() {
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f0f0f0] border-[#27272a]" align="start">
+                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <SmallCalendar
                         className='mx-auto w-auto   bg-[#09090b] text-[#fafafa]'
@@ -1387,7 +1387,7 @@ export default function MainForm() {
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f0f0f0] border-[#27272a]" align="start">
+                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <Select name='pickHour'  >
                         <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]" >

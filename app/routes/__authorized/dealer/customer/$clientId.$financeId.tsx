@@ -26,7 +26,7 @@ import { getComsOverview } from "~/utils/communications/communications.server";
 import { prisma } from "~/libs";
 import { commitSession as commitIds, getSession as getIds, SetClient66 } from '~/utils/misc.user.server';
 import { getSession } from "~/sessions/auth-session.server";
-import { UpdateLeadBasic, UpdateLeadApiOnly, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote,CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "~/routes/__authorized/dealer/api/activix";
+import { UpdateLeadBasic, UpdateLeadApiOnly, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "~/routes/__authorized/dealer/api/activix";
 import axios from "axios";
 import { GetUser } from "~/utils/loader.server";
 import base from "~/styles/base.css";
@@ -214,7 +214,7 @@ export default function Dashboard() {
   const [financeInfo, setFinanceInfo] = useState(true);
   const [PickUpCalendar, setPickUpCalendar] = useState('off');
 
-    useEffect(() => {
+  useEffect(() => {
     const serializedUser = JSON.stringify(user);
     const cust = {
       email: finance[0].email,
@@ -246,11 +246,11 @@ export default function Dashboard() {
         typeof window !== "undefined" ? window.location.host : null;
       if (iFrameRef.current) {
         if (currentHost === "localhost:3000") {
-          iFrameRef.current.src = "http://localhost:3000/dealer/email/file";
+          iFrameRef.current.src = "http://localhost:3000/IFrameComp/email/file";
         }
         if (currentHost === "dealersalesassistant.ca") {
           iFrameRef.current.src =
-            "https://www.dealersalesassistant.ca/dealer/email/file";
+            "https://www.dealersalesassistant.ca/IFrameComp/email/file";
         }
         window.addEventListener("message", handleHeightMessage);
       }
@@ -2894,7 +2894,7 @@ export default function Dashboard() {
                               </li>
                             )}
                             */}
-                                                </ul>
+                              </ul>
                             </div>
                             <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                             <div className="font-semibold">Standard Terms</div>
@@ -4143,7 +4143,7 @@ export default function Dashboard() {
               </TabsContent>
               <TabsContent value="Notes">
                 <Card
-                  className="overflow-hidden text-[#f0f0f0]" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-[#f1f1f1]" x-chunk="dashboard-05-chunk-4"
                 >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
@@ -4359,7 +4359,7 @@ export default function Dashboard() {
               </TabsContent>
               <TabsContent value="Apt History">
                 <Card
-                  className="overflow-hidden text-[#f0f0f0]" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-[#f1f1f1]" x-chunk="dashboard-05-chunk-4"
                 >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
@@ -4622,7 +4622,7 @@ export default function Dashboard() {
                                   </div>
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f0f0f0] border-[#27272a]" align="start">
+                              <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
                                 <div className='align-center my-3 flex justify-center   '>
                                   <SmallCalendar
                                     className='mx-auto w-auto   bg-[#09090b] text-[#fafafa]'
@@ -4655,7 +4655,7 @@ export default function Dashboard() {
                                   </div>
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f0f0f0] border-[#27272a]" align="start">
+                              <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
                                 <div className='align-center my-3 flex justify-center   '>
                                   <Select name='pickHour'  >
                                     <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]" >
@@ -4963,7 +4963,7 @@ export default function Dashboard() {
               </TabsContent>
               <TabsContent value="Upload">
                 <Card
-                  className="overflow-hidden text-[#f0f0f0]" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-[#f1f1f1]" x-chunk="dashboard-05-chunk-4"
                 >
                   <CardHeader className="flex flex-row items-start bg-[#18181a]">
                     <div className="grid gap-0.5">
@@ -4990,9 +4990,9 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
-                  <div className="parent-container">
-                            <MyIFrameComponent />
-                          </div>
+                    <div className="parent-container">
+                      <MyIFrameComponent />
+                    </div>
                     <div className="grid gap-3 max-h-[20vh] h-auto">
                       {/*<Form method='post' className='flex items-center'>
                         <div className="relative mt-5">
@@ -5013,7 +5013,7 @@ export default function Dashboard() {
                           <UploadIcon className="h-4 w-4" />
                           <span className="sr-only">Upload</span>
                         </Button>
-                        </Form>*/}
+                        </Form>
                       <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
                       <div className="font-semibold">Download Docs</div>
                       <ul className="grid gap-3">
@@ -5036,6 +5036,7 @@ export default function Dashboard() {
                           </Button>
                         </li>
                       </ul>
+                      */}
                     </div>
                     <hr className=' text-[#27272a] w-98 mx-auto] my-5' />
                     <CustomerGen />
@@ -6609,7 +6610,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
     merged[key] = String(merged[key]);
   }
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: email } });
- // const UploadedDocs = await prisma.uploadDocs.findMany({ where: { financeId: finance?.id } });
+  // const UploadedDocs = await prisma.uploadDocs.findMany({ where: { financeId: finance?.id } });
   const userList = await prisma.user.findMany()
   const parts = await prisma.part.findMany()
   const clientUnit = await prisma.inventoryMotorcycle.findFirst({ where: { stockNumber: merged.stockNum } })
@@ -6622,39 +6623,39 @@ export async function loader({ params, request }: DataFunctionArgs) {
   if (brand === 'Manitou') {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes,   userList, parts, clientUnit })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit })
   }
   if (brand === 'Switch') {
     const modelData = await getDataByModel(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes,  userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'Kawasaki') {
     const modelData = await getDataKawasaki(finance);
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes,  userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'BMW-Motorrad') {
     const bmwMoto = await getLatestBMWOptions(financeId)
     const bmwMoto2 = await getLatestBMWOptions2(financeId)
     const modelData = await getDataBmwMoto(finance);
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes,   userList, parts, clientfileId, clientUnit })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit })
   }
   if (brand === 'Triumph') {
     const modelData = await getDataTriumph(finance);
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes,   userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'Harley-Davidson') {
     const modelData = await getDataHarley(finance);
     const apptFinance2 = await getAllFinanceApts2(financeId)
     const aptFinance3 = await getAllFinanceApts(financeId)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes,  userList, parts, clientUnit, clientfileId })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId })
   }
   if (brand === 'Indian' || brand === 'Can-Am' || brand === 'Sea-Doo' || brand === 'Ski-Doo' || brand === 'Suzuki' || brand === 'Spyder' || brand === 'Can-Am-SXS') {
     const modelData = await getDataByModel(finance)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId,  userList, parts, clientUnit })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit })
 
   }
-  return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId,   userList, parts, clientUnit, clientfileId })
+  return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, clientfileId })
 }
 
 type ValuePiece = Date | null;

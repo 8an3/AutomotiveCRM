@@ -921,6 +921,26 @@ model Part {
   @@index([partNumber])
 }
 
+model Accessory {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partNumber  Int     @default(autoincrement())
+  brand       String?
+  name        String?
+  price       Int?
+  cost        Int?
+  quantity    Int?
+  description String?
+  category    String?
+  subCategory String?
+  onOrder     Int?
+  distributer String?
+
+  @@index([partNumber])
+}
+
 model PartsOrder {
   orderNumber Int @id @default(autoincrement())
 
@@ -947,9 +967,8 @@ model Clientfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  financeId String? @unique
-  userId    String?
-
+  financeId      String? @unique
+  userId         String?
   firstName      String?
   lastName       String?
   name           String?
