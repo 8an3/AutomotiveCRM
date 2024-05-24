@@ -58,7 +58,6 @@ export async function loader({ request }: LoaderArgs) {
     return json({ ENV });
   }
   const referrer = request.headers.get('referer');
-  const  =
 
   const loaderData = {
     ENV,

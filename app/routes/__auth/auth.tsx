@@ -28,31 +28,20 @@ import {
 } from "@azure/msal-browser";
 import { config } from "~/components/microsoft/Config";
 
-/*export async function loader({ request, params, req }: LoaderFunction) {
-  let session = await getSession(request.headers.get("Cookie"));
-  if (session) {
-    let email = session.get("email");
-    if (email) {
-      let user = await GetUser(email);
-      if (user) {
-        return json({ user, email });
-      } else {
-        return redirect("/usercheck");
-      }
-    }
-  } else {
-    return redirect("/auth/logout");
-  }
+export async function loader({ request, params, req }: LoaderFunction) {
+  const PROD_CALLBACK_URL = process.env.PROD_CALLBACK_URL
+  return json({ PROD_CALLBACK_URL });
 }
-*/
 
 export default function Root() {
+  const { PROD_CALLBACK_URL } = useLoaderData()
+
   const config = {
     auth: {
       clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
       clientSecret: '4hN8Q~RtcN.b9c.1LTCnHtY0UurShP1PIIFQGakw',
       tenantId: 'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6',
-      redirectUri: window.ENV.PROD_CALLBACK_URL,
+      redirectUri: PROD_CALLBACK_URL,
       authority: `https://login.microsoftonline.com/common`,
       postLogoutRedirectUri: "/",
       prompt: "login",

@@ -7,10 +7,12 @@ import {
   EventType,
   type EventMessage,
   type AuthenticationResult,
+  LogLevel,
 } from '@azure/msal-browser';
 import { MsalProvider, AuthenticatedTemplate, useMsal, UnauthenticatedTemplate } from '@azure/msal-react';
 import { config } from '~/components/microsoft/Config';
 import secondary from "~/styles/secondary.css";
+import { json } from '@remix-run/node';
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: secondary },
@@ -18,8 +20,56 @@ export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
 ];
 
+export async function loader({ request, params, req }: LoaderFunction) {
+  const PROD_CALLBACK_URL = process.env.PROD_CALLBACK_URL
+  return json({ PROD_CALLBACK_URL });
+}
 
 export default function Root() {
+  const { PROD_CALLBACK_URL } = useLoaderData()
+
+  const config = {
+    auth: {
+      clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
+      clientSecret: '4hN8Q~RtcN.b9c.1LTCnHtY0UurShP1PIIFQGakw',
+      tenantId: 'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6',
+      redirectUri: PROD_CALLBACK_URL,
+      authority: `https://login.microsoftonline.com/common`,
+      postLogoutRedirectUri: "/",
+      prompt: "login",
+    },
+    cache: {
+      cacheLocation: 'localStorage',
+      temporaryCacheLocation: "localStorage",
+    },
+    system: {
+      loggerOptions: {
+        loggerCallback: (level, message, containsPii) => {
+          if (containsPii) {
+            return;
+          }
+          switch (level) {
+            case LogLevel.Error:
+              console.error(message);
+              return;
+            case LogLevel.Info:
+              console.info(message);
+              return;
+            case LogLevel.Verbose:
+              console.debug(message);
+              return;
+            case LogLevel.Warning:
+              console.warn(message);
+              return;
+            default:
+              return;
+          }
+        },
+      },
+    },
+
+  }
+
   const msalInstance = new PublicClientApplication(config);
 
   const accounts = msalInstance.getAllAccounts();
