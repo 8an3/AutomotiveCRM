@@ -55,7 +55,7 @@ export async function loader({ request }: LoaderArgs) {
     return json({ ENV });
   }
   const referrer = request.headers.get('referer');
-  const user = await model.user.query.getForSession({ email: userSession.email });
+  const user = await model.user.query.getForSession({ email: email });
 
   const loaderData = {
     ENV,
