@@ -83,7 +83,7 @@ export async function loader({ request, params, req }: LoaderFunction) {
 
       }
     })
-    await prisma.dealerFees.create({
+    await prisma.dealer.create({
       data: {
         dealer: 'Auto Sales',
         dealerAddress: '1234 sales st',

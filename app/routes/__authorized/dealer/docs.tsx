@@ -29,7 +29,7 @@ export const loader = async ({ request }) => {
 
   const notifications = await prisma.notificationsUser.findMany({
     where: {
-      userId: user.id,
+      userEmail: email
     }
   })
   if (!user) {
@@ -115,222 +115,222 @@ export default function Quote() {
 export const accDocsSidebarNav = [
   {
     name: "Accessories Dashboard",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Calendar",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Client Profile",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
 ]
 export const adminDocsSidebarNav = [
   {
     name: "Employee Management",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Export / Import",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Client Profile",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
 ]
 export const apiDocsSidebarNav = [
   {
     name: "Lead Upload",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
 ]
 export const financeDocsSidebarNav = [
   {
     name: "Finance Dashboard",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Finance Handover",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Client Profile",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Calendar",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
 ]
 export const managerDocsSidebarNav = [
   {
     name: "Manager Dashboard",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Export / Import",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "CSI Reporting",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Sales Schedule",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Store Hours",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Calendar",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Inventory",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Ad Campaigns",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Ad Manager",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Sales Statistics",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Email Client",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Template Builder",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Doc Builder",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Scripts",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Quotes",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Client Profile",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Sales Tracker / Leaderboard",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Settings",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Automation",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
 ]
 export const partsDocsSidebarNav = [
   {
     name: "Parts Dashboard",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Client Profile",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Calendar",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
 ]
 export const salesDocsSidebarNav = [
   {
     name: "Sales Dashboard",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Email Client",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Template Builder",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Doc Builder",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Scripts",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Quotes",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Client Profile",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Sales Tracker / Leaderboard",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Settings",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Automation",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Calendar",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Inventory",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
 ]
 export const serviceDocsSidebarNav = [
   {
     name: "Service Dashboard",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Calendar",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Client Profile",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
 ]
 export const techDocsSidebarNav = [
   {
     name: "Technician Dashboard",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Calendar",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
   {
     name: "Workorders",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ?si=Vn0N9BZS2dU3OBc7&amp;start=42",
+    url: "https://youtu.be/dQw4w9WgXcQ?si=15lpKIQVyl2BikPC&t=42",
   },
 ]

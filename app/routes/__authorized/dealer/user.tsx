@@ -29,7 +29,7 @@ export const loader = async ({ request }) => {
 
   const notifications = await prisma.notificationsUser.findMany({
     where: {
-      userId: user.id,
+      userEmail: email
     }
   })
   if (!user) {

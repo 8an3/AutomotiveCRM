@@ -124,7 +124,7 @@ const sortConversationsByDept = (conversations, labels) => {
 export default function StaffChat() {
   function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-  const { user, conversationsList } = useLoaderData();
+  const { user, conversationsList, interruptionsData } = useLoaderData();
   const [conversations, setConversations] = useState([]);
   const [filtererdConversations, setFilteredConversations] = useState([]);
   const [roomLabel, setRoomLabel] = useState("General");
@@ -139,6 +139,13 @@ export default function StaffChat() {
     }, []);
     setFilteredConversations(filteredConversations);
   }, []);
+  const [interruptions, setInterruptions] = useState();
+
+
+  useEffect(() => {
+    setInterruptions(interruptionsData);
+  }, []);
+
 
   const [input, setInput] = useState("");
   const inputLength = input.trim().length;
@@ -198,7 +205,7 @@ export default function StaffChat() {
       className=" z-50 w-[800px] text-[#f1f1f1] max-h-[80vh]"
       x-chunk="dashboard-05-chunk-4"
     >
-      <CardHeader className="flex flex-row items-start bg-[#18181a]">
+      <CardHeader className="flex flex-row items-start bg-[#18181a] rouned-lg">
         <div className="grid gap-0.5">
           <CardTitle className="group flex items-center gap-2 text-lg">
             Staff Chat
@@ -228,7 +235,7 @@ export default function StaffChat() {
             </CardContent>
           </Card>
           <Card className="col-span-6">
-            <CardContent className="flex-grow  overflow-x-clip overflow-y-scroll">
+            <CardContent className="flex-grow  overflow-x-clip overflow-y-scroll rouned-b-md">
               <div className="mt-5 h-auto  max-h-[800px] space-y-4">
                 {filtererdConversations.map((conversation) => (
                   <div
@@ -255,7 +262,7 @@ export default function StaffChat() {
           </Card>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+      <CardFooter className="flex flex-row items-center border-t rounded-lg border-[#27272a] bg-[#18181a] px-6 py-3">
         <fetcher.Form
           ref={formRef}
           method="post"
@@ -304,7 +311,9 @@ export async function loader({ request, params }) {
   const user = await GetUser(email);
   const conversationsList = await prisma.staffChat.findMany();
   console.log(user);
-  return json({ user, conversationsList });
+  const interruptionsData = await prisma.interruptions.findMany();
+
+  return json({ user, conversationsList, interruptionsData });
 }
 
 export async function action({ request }: ActionFunction) {
@@ -312,14 +321,7 @@ export async function action({ request }: ActionFunction) {
   const formData = financeFormSchema.parse(formPayload);
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email");
-  const saveMessage = await prisma.staffChat.create({
-    data: {
-      body: formData.body,
-      userEmail: formData.userEmail,
-      username: formData.username,
-      dept: formData.dept,
-    },
-  });
+
 
   return saveMessage;
 }

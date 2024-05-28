@@ -22,7 +22,7 @@ export const loader = async ({ request }) => {
 
   const user = await GetUser(email)
   const notifications = await prisma.notificationsUser.findMany({
-    where: { userId: user.id, }
+    where: { userEmail: email }
   })
   const notificationsNewLead = await prisma.notificationsUser.findMany({
     where: { type: 'New Lead', }

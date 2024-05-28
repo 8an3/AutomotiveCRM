@@ -47,138 +47,46 @@ export const action: ActionFunction = async ({ request }) => {
       id: 1
     }
   })
-  if (!DealerInfo) {
-    if (intent === 'updateUser') {
-      delete formData.intent;
+  if (intent === 'updateUser') {
+    delete formData.intent;
 
-      const saveUser = await updateUser(formData)
-      const saveDealer = await updateDealerFees(formData)
-      return ({ saveUser, saveDealer })
-    }
-    if (intent === 'dailyPPDF') {
-      const userId = formData.userId
-      const delete2 = await deleteDailyPDF(userId)
-      delete formData.intent;
-      const savedaily = await saveDailyWorkPlan(formData)
-      console.log(savedaily)
-      return ({ savedaily, delete2 })
-
-    }
-    const errors = {
-      userLicensing: (userLicensing && parseInt(userLicensing) > 1) ? null : "Licensing is required",
-      userTax: (userTax && parseInt(userTax) > 1) ? null : "Tax is required",
-      userLabour: (userLabour && parseInt(userLabour) > 1) ? null : "Labour is required",
-    };
-    const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
-    if (hasErrors) {
-      return json(errors);
-    }
-
-    invariant(typeof userLicensing === "string", "Licensing must be a string");
-    invariant(typeof userTax === "string", "Tax must be a string");
-    invariant(typeof userLabour === "string", "Labour must be a string");
-
-    // Check if a record already exists for the user's email
-    const existingDealerFees = await prisma.dealerFees.findUnique({
-      where: { userEmail: userEmail },
-    });
-    if (existingDealerFees) {
-      /* If a record exists, update it
-      await prisma.dealerFees.update({
-        where: { userEmail: userEmail },
-        data: {
-          dealer: formData.dealer,
-          dealerAddress: formData.dealerAddress,
-          dealerProv: formData.dealerProv,
-          dealerPhone: formData.dealerPhone,
-          omvicNumber: formData.omvicNumber,
-          userLoanProt: formData.userLoanProt,
-          userTireandRim: formData.userTireandRim,
-          userGap: formData.userGap,
-          userExtWarr: formData.userExtWarr,
-          userServicespkg: formData.userServicespkg,
-          vinE: formData.vinE,
-          lifeDisability: formData.lifeDisability,
-          rustProofing: formData.rustProofing,
-          userLicensing: formData.userLicensing,
-          userFinance: formData.userFinance,
-          userDemo: formData.userDemo,
-          userGasOnDel: formData.userGasOnDel,
-          userOMVIC: formData.userOMVIC,
-          userOther: formData.userOther,
-          userTax: formData.userTax,
-          userAirTax: formData.userAirTax,
-          userTireTax: formData.userTireTax,
-          userGovern: formData.userGovern,
-          userPDI: formData.userPDI,
-          userLabour: formData.userLabour,
-          userMarketAdj: formData.userMarketAdj,
-          userCommodity: formData.userCommodity,
-          email: userEmail,
-          destinationCharge: formData.destinationCharge,
-          userFreight: formData.userFreight,
-          userAdmin: formData.userAdmin,
-          userEmail: formData.userEmail,
-        },
-      });*/
-      return redirect("/welcome/quote");
-
-    }
-    if (!existingDealerFees) {
-      console.log('no dealer fees something is wrong')
-      await prisma.dealerFees.update({
-        where: { userEmail: email },
-
-        data: {
-          dealer: formData.dealer,
-          dealerAddress: formData.dealerAddress,
-          dealerProv: formData.dealerProv,
-          dealerPhone: formData.dealerPhone,
-          omvicNumber: formData.omvicNumber,
-          userLoanProt: formData.userLoanProt,
-          userTireandRim: formData.userTireandRim,
-          userGap: formData.userGap,
-          userExtWarr: formData.userExtWarr,
-          userServicespkg: formData.userServicespkg,
-          vinE: formData.vinE,
-          lifeDisability: formData.lifeDisability,
-          rustProofing: formData.rustProofing,
-          userLicensing: formData.userLicensing,
-          userFinance: formData.userFinance,
-          userDemo: formData.userDemo,
-          userGasOnDel: formData.userGasOnDel,
-          userOMVIC: formData.userOMVIC,
-          userOther: formData.userOther,
-          userTax: formData.userTax,
-          userAirTax: formData.userAirTax,
-          userTireTax: formData.userTireTax,
-          userGovern: formData.userGovern,
-          userPDI: formData.userPDI,
-          userLabour: formData.userLabour,
-          userMarketAdj: formData.userMarketAdj,
-          userCommodity: formData.userCommodity,
-          destinationCharge: formData.destinationCharge,
-          userFreight: formData.userFreight,
-          userAdmin: formData.userAdmin,
-
-        },
-      });
-    }
-    return redirect("/dealer/welcome/quote");
+    const saveUser = await updateUser(formData)
+    const saveDealer = await updateDealerFees(formData)
+    return ({ saveUser, saveDealer })
   }
-  if (DealerInfo) {
-    const deFees = await prisma.dealerFeesAdmin.findUnique({
-      where: { id: 1 },
-    });/*
-    const DealerFees = await prisma.dealerFees.create({
+  if (intent === 'dailyPPDF') {
+    const userId = formData.userId
+    const delete2 = await deleteDailyPDF(userId)
+    delete formData.intent;
+    const savedaily = await saveDailyWorkPlan(formData)
+    console.log(savedaily)
+    return ({ savedaily, delete2 })
 
+  }
+  const errors = {
+    userLicensing: (userLicensing && parseInt(userLicensing) > 1) ? null : "Licensing is required",
+    userTax: (userTax && parseInt(userTax) > 1) ? null : "Tax is required",
+    userLabour: (userLabour && parseInt(userLabour) > 1) ? null : "Labour is required",
+  };
+  const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
+  if (hasErrors) {
+    return json(errors);
+  }
 
+  invariant(typeof userLicensing === "string", "Licensing must be a string");
+  invariant(typeof userTax === "string", "Tax must be a string");
+  invariant(typeof userLabour === "string", "Labour must be a string");
+
+  if (user?.plan === 'prod_Q9tYUe0dEVzaRf') {
+    return redirect("/dealer/welcome/quote");
+  } else {
+    await prisma.dealer.create({
       data: {
-        dealer: 'Dealer Name',
-        dealerAddress: '1234 street ave',
-        dealerProv: 'Toronto, ON, K1K1K1',
-        dealerPhone: '416-416-4164',
-        omvicNumber: formData.omvicNumber,
+        userEmail: userEmail,
+        dealerName: formData.dealer,
+        dealerAddress: formData.dealerAddress,
+        dealerProv: formData.dealerProv,
+        dealerPhone: formData.dealerPhone,
         userLoanProt: formData.userLoanProt,
         userTireandRim: formData.userTireandRim,
         userGap: formData.userGap,
@@ -204,14 +112,12 @@ export const action: ActionFunction = async ({ request }) => {
         destinationCharge: formData.destinationCharge,
         userFreight: formData.userFreight,
         userAdmin: formData.userAdmin,
-
-        userEmail: email,
-
-      }
-    });*/
-    return redirect("/dealer/welcome/quote")
+      },
+    });
+    return redirect("/dealer/welcome/quote");
   }
 }
+
 
 export const loader = async ({ request, params }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -220,132 +126,87 @@ export const loader = async ({ request, params }) => {
   if (!user) {
     redirect('/login')
   }
+  if (user?.plan === 'prod_OY8EMf7RNoJXhX') {
+    redirect('/dealer/user/dashboard/settings')
 
-  let deFees
-  // if (!deFees) { deFees = await prisma.dealerFees.findUnique({ where: { userEmail: user?.email } }); }
+  }
+  // if (!deFees) { deFees = await prisma.dealer.findUnique({ where: { userEmail: user?.email } }); }
   const urlSegmentsDashboard = new URL(request.url).pathname.split('/');
   const url = urlSegmentsDashboard.slice(0, 3).join('/');
   console.log(url)
-  const DealerInfo = await prisma.dealerInfo.findUnique({
-    where: {
-      id: 1
-    }
-  })
-  if (DealerInfo) {
-    deFees = await prisma.dealerFeesAdmin.findUnique({
-      where: { id: 1 },
-    });
-    const Dealerfees = [
-      { name: "userAdmin", value: '0', placeholder: "Admin" },
-      { name: "userFreight", value: '0', placeholder: "Freight" },
-      { name: "userCommodity", value: '0', placeholder: "Commodity" },
-      { name: "userPDI", value: '0', placeholder: "PDI" },
-      { name: "userAirTax", value: '0', placeholder: "Air Tax" },
-      { name: "userTireTax", value: '0', placeholder: "Tire Tax" },
-      { name: "userGovern", value: '0', placeholder: "Government Fees" },
-      { name: "userFinance", value: '0', placeholder: "Finance Fees" },
-      { name: "destinationCharge", value: '0', placeholder: "Destination Charge" },
-      { name: "userGasOnDel", value: '0', placeholder: "Gas On Delivery" },
-      { name: "userMarketAdj", value: '0', placeholder: "Market Adjustment" },
-      { name: "userDemo", value: '0', placeholder: "Demonstratration Fee" },
-      { name: "userOMVIC", value: '60', placeholder: "OMVIC or Other" },
-    ];
-    const FinanceOptions = [
-      { name: "userExtWarr", value: '0', placeholder: 'Extended Warranty' },
-      { name: "userLoanProt", value: '0', placeholder: 'Loan Protection' },
-      { name: "userGap", value: '0', placeholder: 'Gap Protection' },
-      { name: "userTireandRim", value: '0', placeholder: 'Tire and Rim' },
-      { name: "vinE", value: '0', placeholder: 'Vin Etching' },
-      { name: "rustProofing", value: '0', placeholder: 'Under Coating' },
-      { name: "userServicespkg", value: '0', placeholder: 'Service Package' },
-      { name: "lifeDisability", value: '0', placeholder: 'Life and Disability' },
-      { name: "userOther", value: '0', placeholder: 'Other data Package' },
-    ];
-    console.log(DealerInfo, deFees)
-    return json({ request, user, deFees, Dealerfees, FinanceOptions });
-
+  let DealerInfo
+  const Dealerfees = [
+    { name: "userAdmin", value: '0', placeholder: "Admin" },
+    { name: "userFreight", value: '0', placeholder: "Freight" },
+    { name: "userCommodity", value: '0', placeholder: "Commodity" },
+    { name: "userPDI", value: '0', placeholder: "PDI" },
+    { name: "userAirTax", value: '0', placeholder: "Air Tax" },
+    { name: "userTireTax", value: '0', placeholder: "Tire Tax" },
+    { name: "userGovern", value: '0', placeholder: "Government Fees" },
+    { name: "userFinance", value: '0', placeholder: "Finance Fees" },
+    { name: "destinationCharge", value: '0', placeholder: "Destination Charge" },
+    { name: "userGasOnDel", value: '0', placeholder: "Gas On Delivery" },
+    { name: "userMarketAdj", value: '0', placeholder: "Market Adjustment" },
+    { name: "userDemo", value: '0', placeholder: "Demonstratration Fee" },
+    { name: "userOMVIC", value: '60', placeholder: "OMVIC or Other" },
+  ];
+  const FinanceOptions = [
+    { name: "userExtWarr", value: '0', placeholder: 'Extended Warranty' },
+    { name: "userLoanProt", value: '0', placeholder: 'Loan Protection' },
+    { name: "userGap", value: '0', placeholder: 'Gap Protection' },
+    { name: "userTireandRim", value: '0', placeholder: 'Tire and Rim' },
+    { name: "vinE", value: '0', placeholder: 'Vin Etching' },
+    { name: "rustProofing", value: '0', placeholder: 'Under Coating' },
+    { name: "userServicespkg", value: '0', placeholder: 'Service Package' },
+    { name: "lifeDisability", value: '0', placeholder: 'Life and Disability' },
+    { name: "userOther", value: '0', placeholder: 'Other data Package' },
+  ];
+  let deFees
+  try {
+    deFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
+  } catch (error) {
+    deFees = await prisma.dealer.findFirst();
   }
-  if (!DealerInfo) {
-    deFees = await prisma.dealerFees.findUnique({
-      where: { userEmail: email },
+  if (!deFees) {
+    deFees = await prisma.dealer.create({
+      data: {
+        dealer: 'Dealer Name',
+        dealerAddress: '1234 Example St',
+        dealerProv: 'Ottawa, ON K1A 0B1',
+        dealerPhone: '8198198194',
+        omvicNumber: '1234567',
+        userLoanProt: 0,
+        userTireandRim: '0',
+        userGap: 0,
+        userExtWarr: '0',
+        userServicespkg: 0,
+        vinE: 0,
+        lifeDisability: 0,
+        rustProofing: 0,
+        userLicensing: 60,
+        userFinance: '0',
+        userDemo: '0',
+        userGasOnDel: '0',
+        userOMVIC: '60',
+        userOther: 0,
+        userTax: '13',
+        userAirTax: '0',
+        userTireTax: '0',
+        userGovern: '0',
+        userPDI: '0',
+        userLabour: '118',
+        userMarketAdj: '0',
+        userCommodity: '0',
+        email: 'email@example.com',
+        destinationCharge: 0,
+        userFreight: '0',
+        userAdmin: '0',
+        userEmail: user?.email,
+      },
     });
-    if (!deFees) {
-      // If no record exists, create a new one
-      deFees = await prisma.dealerFees.create({
-        data: {
-          dealer: 'Dealer Name',
-          dealerAddress: '1234 Example St',
-          dealerProv: 'Ottawa, ON K1A 0B1',
-          dealerPhone: '8198198194',
-          omvicNumber: '1234567',
-          userLoanProt: 0,
-          userTireandRim: '0',
-          userGap: 0,
-          userExtWarr: '0',
-          userServicespkg: 0,
-          vinE: 0,
-          lifeDisability: 0,
-          rustProofing: 0,
-          userLicensing: 60,
-          userFinance: '0',
-          userDemo: '0',
-          userGasOnDel: '0',
-          userOMVIC: '60',
-          userOther: 0,
-          userTax: '13',
-          userAirTax: '0',
-          userTireTax: '0',
-          userGovern: '0',
-          userPDI: '0',
-          userLabour: '118',
-          userMarketAdj: '0',
-          userCommodity: '0',
-          email: 'email@example.com',
-          destinationCharge: 0,
-          userFreight: '0',
-          userAdmin: '0',
-          userEmail: user?.email,
-        },
-      });
-
-      const Dealerfees = [
-        { name: "userAdmin", value: '0', placeholder: "Admin" },
-        { name: "userFreight", value: '0', placeholder: "Freight" },
-        { name: "userCommodity", value: '0', placeholder: "Commodity" },
-        { name: "userPDI", value: '0', placeholder: "PDI" },
-        { name: "userAirTax", value: '0', placeholder: "Air Tax" },
-        { name: "userTireTax", value: '0', placeholder: "Tire Tax" },
-        { name: "userGovern", value: '0', placeholder: "Government Fees" },
-        { name: "userFinance", value: '0', placeholder: "Finance Fees" },
-        { name: "destinationCharge", value: '0', placeholder: "Destination Charge" },
-        { name: "userGasOnDel", value: '0', placeholder: "Gas On Delivery" },
-        { name: "userMarketAdj", value: '0', placeholder: "Market Adjustment" },
-        { name: "userDemo", value: '0', placeholder: "Demonstratration Fee" },
-        { name: "userOMVIC", value: '60', placeholder: "OMVIC or Other" },
-      ];
-      const FinanceOptions = [
-        { name: "userExtWarr", value: '0', placeholder: 'Extended Warranty' },
-        { name: "userLoanProt", value: '0', placeholder: 'Loan Protection' },
-        { name: "userGap", value: '0', placeholder: 'Gap Protection' },
-        { name: "userTireandRim", value: '0', placeholder: 'Tire and Rim' },
-        { name: "vinE", value: '0', placeholder: 'Vin Etching' },
-        { name: "rustProofing", value: '0', placeholder: 'Under Coating' },
-        { name: "userServicespkg", value: '0', placeholder: 'Service Package' },
-        { name: "lifeDisability", value: '0', placeholder: 'Life and Disability' },
-        { name: "userOther", value: '0', placeholder: 'Other data Package' },
-      ];
-
-      return json({ request, user, deFees, Dealerfees, FinanceOptions });
-    }
-    else {
-      return json({ DealerInfo, user })
-
-    }
-    deFees = await prisma.dealerFees.findUnique({
-      where: { userEmail: user?.email },
-    });
-    return json({ user })
   }
+  return json({ request, user, deFees, Dealerfees, FinanceOptions });
+
 }
 
 export const meta = () => {
@@ -551,7 +412,7 @@ export const asdsaloader: LoaderFunction = async ({ request }) => {
   if (!user) {
     redirect('/login')
   }
-  let deFees = await prisma.dealerFees.findUnique({
+  let deFees = await prisma.dealer.findUnique({
     where: { userEmail: email },
   });
   console.log('loader', deFees, email, user)

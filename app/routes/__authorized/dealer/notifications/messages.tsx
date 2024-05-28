@@ -11,7 +11,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const user = await GetUser(email)
   const notifications = await prisma.notificationsUser.findMany({
     where: {
-      userId: user.id,
+      userEmail: email,
     }
   })
   let messages = notifications.filter(notification =>

@@ -73,7 +73,7 @@ export const loader = async ({ request }) => {
       console.error('Error fetching user:', error);
     }
   }
-  const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
+  const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const symbol = user.role.symbol
   if (symbol !== 'ADMIN' && symbol !== 'MANAGER' && symbol !== 'EDITOR') {

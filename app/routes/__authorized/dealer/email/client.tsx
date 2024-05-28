@@ -125,6 +125,7 @@ import {
 
 import secondary from "~/styles/secondary.css";
 import { SaveDraft, SendEmail } from "./server";
+import { type LinksFunction } from "@remix-run/node";
 
 
 export const links: LinksFunction = () => [
@@ -585,7 +586,7 @@ export default function ClientEmail() {
                                 <svg
                                   width="20px"
                                   height="20px"
-                                  stroke-width="1.1"
+                                  strokeWidth="1.1"
                                   viewBox="0 0 24 24"
                                   fill="none"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -594,7 +595,7 @@ export default function ClientEmail() {
                                   <path
                                     d="M2 11V4.6C2 4.26863 2.26863 4 2.6 4H8.77805C8.92127 4 9.05977 4.05124 9.16852 4.14445L12.3315 6.85555C12.4402 6.94876 12.5787 7 12.722 7H21.4C21.7314 7 22 7.26863 22 7.6V11M2 11V19.4C2 19.7314 2.26863 20 2.6 20H21.4C21.7314 20 22 19.7314 22 19.4V11M2 11H22"
                                     stroke="#fff"
-                                    stroke-width="1.1"
+                                    strokeWidth="1.1"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                   ></path>
@@ -772,7 +773,7 @@ export default function ClientEmail() {
                                       <svg
                                         width="20px"
                                         height="20px"
-                                        stroke-width="1.1"
+                                        strokeWidth="1.1"
                                         viewBox="0 0 24 24"
                                         fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
@@ -781,7 +782,7 @@ export default function ClientEmail() {
                                         <path
                                           d="M2 11V4.6C2 4.26863 2.26863 4 2.6 4H8.77805C8.92127 4 9.05977 4.05124 9.16852 4.14445L12.3315 6.85555C12.4402 6.94876 12.5787 7 12.722 7H21.4C21.7314 7 22 7.26863 22 7.6V11M2 11V19.4C2 19.7314 2.26863 20 2.6 20H21.4C21.7314 20 22 19.7314 22 19.4V11M2 11H22"
                                           stroke="#fff"
-                                          stroke-width="1.1"
+                                          strokeWidth="1.1"
                                           stroke-linecap="round"
                                           stroke-linejoin="round"
                                         ></path>
@@ -821,11 +822,11 @@ export default function ClientEmail() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               color="#fff"
-              stroke-width="1.1"
+              strokeWidth="1.1"
             >
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM7.53044 11.9697C7.23755 11.6768 6.76268 11.6768 6.46978 11.9697C6.17689 12.2626 6.17689 12.7374 6.46978 13.0303L9.46978 16.0303C9.76268 16.3232 10.2376 16.3232 10.5304 16.0303L17.5304 9.03033C17.8233 8.73744 17.8233 8.26256 17.5304 7.96967C17.2375 7.67678 16.7627 7.67678 16.4698 7.96967L10.0001 14.4393L7.53044 11.9697Z"
                 fill="#fff"
               ></path>

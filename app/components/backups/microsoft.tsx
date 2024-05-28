@@ -264,7 +264,7 @@ export const action = async ({ request }: ActionArgs) => {
 
             }
           })
-          await prisma.dealerFees.create({
+          await prisma.dealer.create({
             data: {
               dealer: 'Auto Sales',
               dealerAddress: '1234 sales st',

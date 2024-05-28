@@ -156,7 +156,7 @@
     "class-variance-authority": "^0.6.0",
     "cloudinary": "^2.1.0",
     "clsx": "^1.2.1",
-    "cmdk": "^0.2.0",
+    "cmdk": "^0.2.1",
     "cross-env": "^7.0.3",
     "csv-parse": "^5.5.5",
     "csv-parser": "^3.0.0",

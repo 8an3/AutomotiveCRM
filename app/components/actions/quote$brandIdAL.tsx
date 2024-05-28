@@ -27,53 +27,48 @@ export function invariant(
 export async function quoteAction({ params, request }: ActionArgs) {
   const urlSegments = new URL(request.url).pathname.split('/');
   //const { financeId } = params;
+  const brandId = params.brandId
+
   let formPayload = Object.fromEntries(await request.formData());
   const name = formPayload.firstName + ' ' + formPayload.lastName
   const status = 'Active'
   formPayload = { ...formPayload, name, status }
   const formData = financeFormSchema.parse(formPayload)
-  // console.log(formData, 'checking formdata quote action')
-  const firstName = formPayload.firstName
-  const lastName = formPayload.lastName
-  const email = formPayload.email;
-  const model = formPayload.model;
-  const phone = "+1" + formPayload.phone;
+
   let financeId
   if (formData.activixId && (formData.financeId.length > 20)) {
     financeId = formData.financeId
   } else {
     financeId = urlSegments[urlSegments.length - 1]
   }
+  const today = new Date()
+  const phone = "+1" + formPayload.phone;
   const phoneRegex = /^\+1\d{3}\d{7}$/; // Regex pattern to match +1 followed by 3-digit area code and 7 more digits
 
   const errors = {
-    firstName: firstName ? null : "First name is required...",
-    lastName: lastName ? null : "Last name is required...",
-    email: email ? null : "Email is required...",
-    model: model ? null : "Model is required...",
+    firstName: formPayload.firstName ? null : "First name is required...",
+    lastName: formPayload.lastName ? null : "Last name is required...",
+    email: formPayload.email ? null : "Email is required...",
+    model: formPayload.model ? null : "Model is required...",
     phone: phoneRegex.test(phone) ? null : "Phone must be in the format +14164164164", // Add phone validation using regex
-
   };
   const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
   if (hasErrors) {
     return json(errors);
   }
 
-  invariant(typeof firstName === "string", "First Name must be a string");
-  invariant(typeof lastName === "string", "Last Name must be a string");
-  invariant(typeof email === "string", "Email must be a string");
-  invariant(typeof model === "string", "Model must be a string");
+  invariant(typeof formPayload.firstName === "string", "First Name must be a string");
+  invariant(typeof formPayload.lastName === "string", "Last Name must be a string");
+  invariant(typeof formPayload.email === "string", "Email must be a string");
+  invariant(typeof formPayload.model === "string", "Model must be a string");
   invariant(typeof phone === "string", "Phone must be a string");
   const session2 = await getSession(request.headers.get("Cookie"));
   const userEmail = session2.get("email")
+  const email = userEmail
   const user = await prisma.user.findUnique({ where: { email: userEmail } });
 
-  console.log(user, userEmail, 'formData.financeIdFromDash')
-
   const referer = request.headers.get('Referer');
-  console.log('Referer:', referer);
 
-  console.log(formData.toStock, 'tostock in aaction')
   if (formData.activixRoute === 'yes') {// if (referer === 'http://localhost:3000/leads/activix' && formData.activixId && (formData.financeId.length > 20)) {
     const formData = financeFormSchema.parse(formPayload)
     const userId = user?.id;
@@ -180,12 +175,6 @@ export async function quoteAction({ params, request }: ActionArgs) {
         trim: formData.trim,
         vin: formData.vin,
         lien: formData.lien,
-      },
-    });
-    const dashboard = await prisma.dashboard.update({
-      where: { financeId: formData.financeId },
-      data: {
-        financeId: financeId,
         lastContact: today.toISOString(),
         referral: 'off',
         visited: 'off',
@@ -236,112 +225,246 @@ export async function quoteAction({ params, request }: ActionArgs) {
         progress: formData.progress,
       },
     });
-    return json({ finance, dashboard, updateActivix }, redirect(`/dealer/overview/${brand}`), { headers: { "Set-Cookie": serializedSession, } }
+
+    return json({ finance, updateActivix }, redirect(`/dealer/overview/${brand}`), { headers: { "Set-Cookie": serializedSession, } }
     );
 
   } else {
     console.log('less than 20')
     const brand = formData.brand
-    delete formData.userId
-    delete formData.followUpDay
+    const activixActivated = user?.activixActivated
     let { financeId, clientData, dashData, financeData } = DataForm(formData);
-    clientData = {
-      ...clientData,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      name: formData.firstName + ' ' + formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      city: formData.city,
-      province: formData.province,
-      dl: formData.dl,
-      userEmail: formData.userEmail,
+    if (activixActivated === 'yes') {
+      await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
     }
-    const userId = formData.userId
-    if (formData.brand === 'Used') {
-      const email = formData.email
-      let createQuoteServer
-      const userIntegration = await prisma.userIntergration.findUnique({
-        where: { userEmail: user?.email }
-      })
-      const activixActivated = userIntegration.activixActivated
-      if (activixActivated === 'yes') {
-        createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
-      } else {
-        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
-      }
-      return json({ createQuoteServer, }), redirect(`/dealer/overview/Used`)
+    async function Clientfile() {
+      const clientfileUpdate = await prisma.clientfile.findUnique({ where: { email: formData.email, }, });
+      return clientfileUpdate
     }
-    if (formData.brand === 'Switch') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
-
-      const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer, }), redirect(`/dealer/options/${brand}`)
-    }
-    if (formData.brand === 'Manitou') {
-      const email = formData.email
-      let createQuoteServer
-      const userIntegration = await prisma.userIntergration.findUnique({
-        where: { userEmail: user?.email }
-      })
-      const activixActivated = userIntegration.activixActivated
-      if (activixActivated === 'yes') {
-        createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
-      } else {
-        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
-      } const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer, }), redirect(`/dealer/options/${brand}`)
-    }
-    if (formData.brand === 'BMW-Motorrad') {
-      const financeId = finance.id
-      const email = formData.email
-      let createQuoteServer
-      const userIntegration = await prisma.userIntergration.findUnique({
-        where: { userEmail: user?.email }
-      })
-      const activixActivated = userIntegration.activixActivated
-      if (activixActivated === 'yes') {
-        createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
-      } else {
-        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
-      } const updatingFinance = await createBMWOptions(financeId)
-      const updatingFinance2 = await createBMWOptions2(financeId)
-      return json({ updatingFinance, updatingFinance2, createQuoteServer, }), redirect(`/dealer/options/${brand}`)
-    }
-    else {
-      const email = formData.email
-      let createQuoteServer
-      const userIntegration = await prisma.userIntergration.findUnique({
-        where: { userEmail: user?.email }
-      })
-      if (userIntegration) {
-        const activixActivated = userIntegration.activixActivated
-        if (activixActivated === null || activixActivated === undefined) {
-          createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
-        } else if (activixActivated === 'yes') {
-          createQuoteServer = await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
-        } else {
-          createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData,)
+    if (Clientfile) {
+      try {
+        async function CreateFinance() {
+          await prisma.finance.create({
+            data: {
+              clientfileId: Clientfile.id,
+              email: formData.email,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              phone: formData.phone,
+              name: formData.name,
+              address: formData.address,
+              city: formData.city,
+              postal: formData.postal,
+              province: formData.province,
+              iRate: formData.iRate,
+              months: formData.months,
+              deposit: formData.deposit,
+              accessories: formData.accessories,
+              labour: formData.labour,
+              year: formData.year,
+              brand: formData.brand,
+              model: formData.model,
+              model1: formData.model1,
+              color: formData.color,
+              userEmail: formData.userEmail,
+              tradeValue: formData.tradeValue,
+              lastContact: today.toISOString(),
+              nextAppointment: 'TBD',
+              referral: 'off',
+              visited: 'off',
+              bookedApt: 'off',
+              aptShowed: 'off',
+              aptNoShowed: 'off',
+              testDrive: 'off',
+              metService: 'off',
+              metManager: 'off',
+              metParts: 'off',
+              sold: 'off',
+              depositMade: 'off',
+              refund: 'off',
+              turnOver: 'off',
+              financeApp: 'off',
+              approved: 'off',
+              signed: 'off',
+              pickUpSet: 'off',
+              demoed: 'off',
+              delivered: 'off',
+              notes: 'off',
+              metSalesperson: 'off',
+              metFinance: 'off',
+              financeApplication: 'off',
+              pickUpTime: 'off',
+              depositTakenDate: 'off',
+              docsSigned: 'off',
+              tradeRepairs: 'off',
+              seenTrade: 'off',
+              lastNote: 'off',
+              dLCopy: 'off',
+              insCopy: 'off',
+              testDrForm: 'off',
+              voidChq: 'off',
+              loanOther: 'off',
+              signBill: 'off',
+              ucda: 'off',
+              tradeInsp: 'off',
+              customerWS: 'off',
+              otherDocs: 'off',
+              urgentFinanceNote: 'off',
+              funded: 'off',
+              status: 'Active',
+              result: formData.result,
+              followUpDay: 'TBD',
+              deliveredDate: 'TBD',
+              pickUpDate: 'TBD',
+            }
+          })
         }
-        return json({ createQuoteServer, }), redirect(`/dealer/overview/${brand}`)
+        const create = CreateFinance()
+        switch (brand) {
+          case "Used":
+            return json({ create }), redirect(`/dealer/overview/Used`)
+          case "Switch":
+            await createFinanceManitou(formData)
+            return json({ create }), redirect(`/dealer/options/${brand}`)
+          case "Manitou":
+            await createFinanceManitou(formData)
+            return json({ create }), redirect(`/dealer/options/${brand}`)
+          case "BMW-Motorrad":
+            await createBMWOptions(formData)
+            return json({ create }), redirect(`/dealer/options/${brand}`)
+          default:
+            return json({ create }), redirect(`/dealer/overview/${brand}`)
+        }
+      } catch (error) {
+        console.log(error)
+        return error
       }
-      else {
-        createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData, user, userEmail,)
-        return json({ createQuoteServer, }), redirect(`/dealer/overview/${brand}`)
-
+    } else {
+      try {
+        async function CreateClientfile() {
+          const clientfile = await prisma.clientfile.create({
+            data: {
+              userId: formData.userId,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+              address: formData.address,
+              city: formData.city,
+              postal: formData.postal,
+              province: formData.province,
+            }
+          })
+          return clientfile
+        }
+        async function CreateFinance() {
+          await prisma.finance.create({
+            data: {
+              clientfileId: CreateClientfile.id,
+              email: formData.email,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              phone: formData.phone,
+              name: formData.name,
+              address: formData.address,
+              city: formData.city,
+              postal: formData.postal,
+              province: formData.province,
+              iRate: formData.iRate,
+              months: formData.months,
+              deposit: formData.deposit,
+              accessories: formData.accessories,
+              labour: formData.labour,
+              year: formData.year,
+              brand: formData.brand,
+              model: formData.model,
+              model1: formData.model1,
+              color: formData.color,
+              userEmail: formData.userEmail,
+              tradeValue: formData.tradeValue,
+              lastContact: today.toISOString(),
+              nextAppointment: 'TBD',
+              referral: 'off',
+              visited: 'off',
+              bookedApt: 'off',
+              aptShowed: 'off',
+              aptNoShowed: 'off',
+              testDrive: 'off',
+              metService: 'off',
+              metManager: 'off',
+              metParts: 'off',
+              sold: 'off',
+              depositMade: 'off',
+              refund: 'off',
+              turnOver: 'off',
+              financeApp: 'off',
+              approved: 'off',
+              signed: 'off',
+              pickUpSet: 'off',
+              demoed: 'off',
+              delivered: 'off',
+              notes: 'off',
+              metSalesperson: 'off',
+              metFinance: 'off',
+              financeApplication: 'off',
+              pickUpTime: 'off',
+              depositTakenDate: 'off',
+              docsSigned: 'off',
+              tradeRepairs: 'off',
+              seenTrade: 'off',
+              lastNote: 'off',
+              dLCopy: 'off',
+              insCopy: 'off',
+              testDrForm: 'off',
+              voidChq: 'off',
+              loanOther: 'off',
+              signBill: 'off',
+              ucda: 'off',
+              tradeInsp: 'off',
+              customerWS: 'off',
+              otherDocs: 'off',
+              urgentFinanceNote: 'off',
+              funded: 'off',
+              status: 'Active',
+              result: formData.result,
+              followUpDay: 'TBD',
+              deliveredDate: 'TBD',
+              pickUpDate: 'TBD',
+            }
+          })
+        }
+        const createFile = createClientfile()
+        const create = CreateFinance()
+        switch (brand) {
+          case "Used":
+            return json({ createFile, create }), redirect(`/dealer/overview/Used`)
+          case "Switch":
+            await createFinanceManitou(formData)
+            return json({ createFile, create }), redirect(`/dealer/options/${brand}`)
+          case "Manitou":
+            await createFinanceManitou(formData)
+            return json({ createFile, create }), redirect(`/dealer/options/${brand}`)
+          case "BMW-Motorrad":
+            await createBMWOptions(formData)
+            return json({ createFile, create }), redirect(`/dealer/options/${brand}`)
+          default:
+            return json({ createFile, create }), redirect(`/dealer/overview/${brand}`)
+        }
+      } catch (error) {
+        console.log(error)
+        return error
       }
-
     }
   }
 }
 export function quotebrandIdActionLoader({ params, request }: DataFunctionArgs) {
   const { financeId } = params;
+
   if (financeId) {
     return financeIdLoader({ financeId, request });
   } else {
-    return overviewLoader({ request });
+    return overviewLoader({ request, params });
   }
 }
 export async function quoteLoader({ request, params }: LoaderFunction) {

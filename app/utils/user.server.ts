@@ -64,12 +64,12 @@ export async function verifyLogin(
 }
 
 export async function updateUser({
-  name, username, email, phone, returning, subscriptionId, userId, customerId
+  name, username, email, phone, returning, subscriptionId, customerId
 }) {
   try {
     const userUpdate = await prisma.user.update({
       data: {
-        name, username, email, phone, returning, subscriptionId, userId, customerId
+        name, username, email, phone, returning, subscriptionId, customerId
 
       },
       where: { email: email },
@@ -87,7 +87,7 @@ export async function updateUser({
 
 export async function updateDealerFees({
   userOMVIC,
-  dealer,
+  dealerName,
   userLoanProt,
   userTireandRim,
   userGap,
@@ -120,12 +120,10 @@ export async function updateDealerFees({
   email,
 }) {
   //console.log(email, 'in prisma')
-  const DealerFees = await prisma.dealerFees.update({
+  const DealerFees = await prisma.dealer.update({
     data: {
       userOMVIC,
-      dealer,
-
-      omvicNumber,
+      dealerName,
       dealerPhone,
       dealerProv,
       dealerAddress,
@@ -153,10 +151,9 @@ export async function updateDealerFees({
       vinE,
       userLabour,
       destinationCharge,
-      email,
     },
     where: {
-      email: email,
+      id: 1,
     },
   });
   console.log("userUpdated !!!!");
@@ -165,7 +162,7 @@ export async function updateDealerFees({
 
 export async function createDealerFees({ ...data }) {
   try {
-    const finance = await prisma.dealerFees.create({
+    const finance = await prisma.dealer.create({
       data: {
         ...data,
       },
@@ -180,15 +177,15 @@ export async function createDealerFees({ ...data }) {
 }
 
 export async function getDealerFeesbyEmailAdmin() {
-  return prisma.dealerFeesAdmin.findUnique({ where: { id: 1 } });
+  return prisma.dealer.findUnique({ where: { id: 1 } });
 }
 export async function getDealerFeesbyEmail(email) {
-  return prisma.dealerFees.findUnique({ where: { userEmail: email } });
+  return prisma.dealer.findUnique({ where: { userEmail: email } });
 }
 
 export async function createDealerfees({ ...data }) {
   try {
-    const finance = await prisma.dealerFees.create({
+    const finance = await prisma.dealer.create({
       data: {
         ...data,
       },
@@ -203,7 +200,7 @@ export async function createDealerfees({ ...data }) {
 
 export async function createDealerfeesAdmin({ ...data }) {
   try {
-    const finance = await prisma.dealerFeesAdmin.create({
+    const finance = await prisma.dealer.create({
       data: {
         ...data,
       },

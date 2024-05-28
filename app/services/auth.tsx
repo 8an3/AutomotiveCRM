@@ -214,11 +214,11 @@ async function GetProfile(email, profile, accessToken) {
             },
           },
         });
-        let dealerFees = await prisma.dealerFees.findFirst({
+        let dealerFees = await prisma.dealer.findFirst({
           where: { userEmail: email },
         });
         if (!dealerFees) {
-          dealerFees = await prisma.dealerFees.create({
+          dealerFees = await prisma.dealer.create({
             data: {
               dealer: "Auto Sales",
               dealerAddress: "1234 sales st",
@@ -578,11 +578,11 @@ async function CreateUser(email, profile) {
         },
       },
     });
-    let dealerFees = await prisma.dealerFees.findFirst({
+    let dealerFees = await prisma.dealer.findFirst({
       where: { userEmail: email },
     });
     if (!dealerFees) {
-      dealerFees = await prisma.dealerFees.create({
+      dealerFees = await prisma.dealer.create({
         data: {
           dealer: "Auto Sales",
           dealerAddress: "1234 sales st",

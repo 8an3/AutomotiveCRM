@@ -91,7 +91,7 @@ export default function StaffChat() {
         <fieldset className="col-span-6   gap-6 rounded-lg border p-4  h-auto w-auto  ml-1 flex-grow !grow border-[#27272a]   " >
           <legend className="-ml-1 px-1 text-lg font-medium text-[#f1f1f1]">{video}</legend>
           <div className='flex justify-center'>
-            <iframe width="750" height="500" src={String(videoUrl)} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen autoplay ></iframe>
+            <iframe width="1100" height="600" src={String(videoUrl)} allow="autoplay; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
           </div>
         </fieldset>
       </CardContent>
@@ -101,7 +101,7 @@ export default function StaffChat() {
     </Card>
   );
 }
-/**          <iframe width="auto" height='auto'  src={videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen ></iframe> */
+/**            <iframe autoplay width="750" height="500" src={String(videoUrl)} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen autoplay ></iframe> */
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: "/dashboard.svg" },

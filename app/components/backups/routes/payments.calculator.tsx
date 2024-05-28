@@ -48,12 +48,12 @@ export async function loader({ request, params }: LoaderFunction) {
 
     const user = await GetUser(email)
     if (!user) { redirect('/login') }
-    const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
+    const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
     const userId = user?.id
     let finance = await prisma.finance.findFirst({ orderBy: { createdAt: 'desc', }, });
     const financeId = finance?.id
     //  const { finance, dashboard, clientfile, } = await getClientFinanceAndDashData(financeId)
-    const deFees = await prisma.dealerFees.findUnique({ where: { userEmail: email, } })
+    const deFees = await prisma.dealer.findUnique({ where: { userEmail: email, } })
     const modelData = await getDataByModel(finance)
     const sliderWidth = '50%'
     return json({ ok: true, modelData, finance, deFees, sliderWidth, notifications })

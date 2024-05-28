@@ -21,7 +21,7 @@ export async function loader({ request, params }: LoaderFunction) {
   if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const userEmail = user?.email
-  const deFees = await prisma.dealerFees.findUnique({ where: { userEmail: user.email } });
+  const deFees = await prisma.dealer.findUnique({ where: { userEmail: user.email } });
   const userId = user?.id
   const comsRecords = await prisma.communicationsOverview.findMany({ where: { userId: userId, }, });
   if (user?.subscriptionId === 'active' || user?.subscriptionId === 'trialing') {

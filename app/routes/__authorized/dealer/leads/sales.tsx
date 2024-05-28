@@ -33,6 +33,7 @@ import Logtext from "~/components/dashboard/calls/logText";
 import { Badge } from "~/ui/badge";
 import WishList from '~/components/dashboard/wishlist/wishList'
 import secondary from "~/styles/secondary.css";
+import DemoDay from '~/components/dashboard/demoDay/demoDay';
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
@@ -47,14 +48,13 @@ export let action = dashboardAction
 
 export default function Mainboard() {
     const [selectedTab, setSelectedTab] = useState("dashboard");
-    const { user } = useRootLoaderData();
-    //<TabsTrigger onClick={() => setSelectedTab("calendar")} value="calendar">Calendar</TabsTrigger>
-    const { notifications } = useLoaderData()
+    const { user, } = useRootLoaderData();
+    const { notifications, getDemoDay } = useLoaderData()
     return (
         <div className='bg-[#09090b]'>
 
             <Tabs defaultValue="dashboard" className='mt-[50px]'>
-                <TabsList className="ml-[19px] grid w-[600px] grid-cols-4">
+                <TabsList className="ml-[19px] grid w-[600px] grid-cols-5">
                     <TabsTrigger onClick={() => {
                         setSelectedTab("null")
                         setSelectedTab("dashboard")
@@ -67,6 +67,7 @@ export default function Mainboard() {
                         value="newLeads">New Leads</TabsTrigger>
                     <TabsTrigger onClick={() => setSelectedTab("search")} value="search">Search Leads</TabsTrigger>
                     <TabsTrigger onClick={() => setSelectedTab("wishList")} value="wishList">Wish List</TabsTrigger>
+                    <TabsTrigger onClick={() => setSelectedTab("demoDay")} value="demoDay">Demo Day</TabsTrigger>
 
                 </TabsList>
                 {selectedTab === "dashboard" && (
@@ -87,6 +88,11 @@ export default function Mainboard() {
                 {selectedTab === "wishList" && (
                     <TabsContent className="w-[98%]" value="wishList">
                         <WishList />
+                    </TabsContent>
+                )}
+                {selectedTab === "demoDay" && (
+                    <TabsContent className="w-[98%]" value="demoDay">
+                        <DemoDay />
                     </TabsContent>
                 )}
             </Tabs>
@@ -1308,34 +1314,30 @@ export function MainDashbaord() {
             ),
             cell: ({ row }) => {
                 const data = row.original;
-                const formatDate = (dateString) => {
-                    const date = new Date(dateString);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const hours = date.getHours();
-                    const minutes = String(date.getMinutes()).padStart(2, '0');
 
-                    return `${year}-${month}-${day} ${hours}:${minutes}`;
+                const date = new Date(data.nextAppointment);
+                const options = {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
                 };
 
-                const formattedDate = data.nextAppointment && data.nextAppointment !== '1969-12-31 19:00' ? formatDate(data.nextAppointment) : 'TBD';
-
                 return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff]  ">
-                    {data.nextAppointment === 'TBD' ? <p>TBD</p> : formattedDate}
+                    {data.nextAppointment === 'TBD' || data.nextAppointment === 'Wed, Dec 31, 1969, 07:00:00 PM' ? <p>TBD</p> : date.toLocaleDateString('en-US', options)}
                 </div>
             },
         },
         {
-
             accessorKey: "customerState",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="State" />
             ), cell: ({ row }) => {
                 const data = row.original
                 //  const id = data.id ? data.id.toString() : '';
-
-
                 return <div className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff]">
 
                     {data.customerState === 'Pending' ? (<AttemptedOrReached data={data} />
@@ -1520,24 +1522,20 @@ export function MainDashbaord() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-                const formatDate = (dateString) => {
-                    const date = new Date(dateString);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const hours = date.getHours();
-                    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-                    return `${year}-${month}-${day} ${hours}:${minutes}`;
+                const date = new Date(data.lastContact);
+                const options = {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
                 };
-
-                // usage
-                const formattedDate = formatDate(data.lastContact);
-                if (formattedDate) {
-                    const lastContact1 = data.lastContact
+                if (date) {
                     return (
                         <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
-                            {formattedDate === '1969-12-31 19:00' || formattedDate === null ? 'TBD' : formattedDate}
+                            {date === 'TBD' ? <p>TBD</p> : date.toLocaleDateString('en-US', options)}
                         </div>
                     );
                 }
@@ -2111,8 +2109,8 @@ export function MainDashbaord() {
 }
 export type Payment = {
     id: string
-    fiannceId: string
-    userEmail: string
+    fiannceId: string//
+    userEmail: string//
     isSubmitting: any
     firstName: string
     lastName: string
@@ -2133,7 +2131,7 @@ export type Payment = {
     customerState: string
     result: string
     timesContacted: number
-    nextAppointment: string
+    nextAppointment: string//
     completeCall: string
     followUpDay: number
     state: string
@@ -2246,501 +2244,3 @@ export const meta = () => {
         },
     ];
 };
-/**export function WishList() {
-    const { user } = useLoaderData();
-    const { getWishList } = useLoaderData();
-    const data = getWishList
-    type Payment = {
-        id: string
-        firstName: string
-        lastName: string
-        email: string
-        phone: string
-        model: number
-        model2: string
-        notes: string
-        userId: string
-    }
-    const [sorting, setSorting] = React.useState<SortingState>([])
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    )
-    const [globalFilter, setGlobalFilter] = React.useState('')
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({ id: false, })
-    const [rowSelection, setRowSelection] = React.useState({})
-
-    const columns: ColumnDef<Payment>[] = [
-
-        {
-            accessorKey: "id",
-            header: "Id",
-            cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("id")}</div>
-            ),
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "firstName",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            First Name
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-
-            },
-            cell: ({ row }) => <div className="text-center  lowercase">
-                {row.getValue("firstName")}
-            </div>
-
-        },
-
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "lastName",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Last Name
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center  lowercase">
-                {row.getValue("lastName")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "email",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Email
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center lowercase">
-                {row.getValue("email")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "phone",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            phone #
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-
-            },
-            cell: ({ row }) => <div className="text-center lowercase">
-                {row.getValue("phone")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "model",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Model
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center lowercase">
-                {row.getValue("model")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "model2",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Model 2
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center lowercase">
-                {row.getValue("model2")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "wishListNotes",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Notes
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center lowercase">
-                {row.getValue("wishListNotes")}
-            </div>,
-        },
-        {
-            accessorKey: "editWishlist",
-            header: ({ column }) => (<p>Edit</p>),
-            cell: ({ row }) => {
-                const data = row.original
-                return <>
-                    <div className=''>
-                        <EditWishList data={data} />
-
-                    </div>
-                </>
-            },
-        },
-        {
-            accessorKey: "deletewishlist",
-            header: ({ column }) => (<p>Delete</p>),
-            cell: ({ row }) => {
-                const data = row.original
-                return <>
-                    <div className='mx-auto my-auto'>
-                        <Form method='post'>
-                            <input type='hidden' name='rowId' value={data.id} />
-
-                            <Button variant='outline' name='intent' value='deleteWishList' className="active:bg-black mx-auto my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
-                            >
-                                Delete
-                            </Button>
-                        </Form>
-                    </div>
-                </>
-            },
-        },
-    ]
-    const table = useReactTable({
-        data,
-        columns,
-        filterFns: {
-            fuzzy: fuzzyFilter,
-        },
-        onGlobalFilterChange: setGlobalFilter,
-        globalFilterFn: fuzzyFilter,
-        onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
-        getFacetedRowModel: getFacetedRowModel(),
-        getFacetedUniqueValues: getFacetedUniqueValues(),
-        getFacetedMinMaxValues: getFacetedMinMaxValues(),
-
-        state: {
-            sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
-            globalFilter,
-        },
-    })
-
-    const [models, setModels] = useState([]);
-
-    const [filterBy, setFilterBy] = useState('');
-
-    const handleInputChange = (name) => {
-        setFilterBy(name);
-    };
-    // clears filters
-    const setAllFilters = () => {
-        setColumnFilters([]);
-        setSorting([])
-        setFilterBy('')
-        setGlobalFilter('')
-    };
-
-    // toggle column filters
-    const [showFilter, setShowFilter] = useState(false);
-
-    const toggleFilter = () => {
-        setShowFilter(!showFilter);
-    };
-
-    useEffect(() => {
-        async function fetchModels() {
-            const uniqueModels = [
-                ...new Set(getWishList.map(wishList => wishList.model)),
-                ...new Set(getWishList.map(wishList => wishList.model2)) // Add this line
-            ];
-            setModels(uniqueModels);
-        }
-
-        fetchModels();
-    }, []);
-
-    const handleDropdownChange = (event) => {
-        setGlobalFilter(event.target.value);
-    };
-    return (
-        <div className="mx-auto w-[95%] ">
-            <div className="flex items-center py-4">
-                <Input
-                    value={globalFilter ?? ''}
-                    onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-block w-[400px] border border-[#878787] bg-white p-2 text-black shadow"
-                    placeholder="Search all columns..."
-                />
-                <Input
-                    placeholder={`Search phone # ...`}
-                    value={
-                        (table.getColumn('phone')?.getFilterValue() as string) ?? ""
-                    }
-                    onChange={(event) =>
-                        table.getColumn('phone')?.setFilterValue(event.target.value)
-                    }
-                    className="ml-2 max-w-sm border-[#878787] bg-white text-black"
-                />
-
-
-
-                <select value={filterBy} onChange={handleDropdownChange}
-                    className={`border-white text-black placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-white px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-                >
-                    <option value='' >Search By Model</option>
-                    {models.map((model, index) => (
-                        <option key={index} value={model}>
-                            {model}
-                        </option>
-                    ))}
-                </select>
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
-                >
-                    Clear
-                </Button>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
-                        >
-                            Add
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px] bg-[#fff]">
-                        <DialogHeader>
-                            <DialogTitle>Wish List</DialogTitle>
-                            <DialogDescription>
-                                Add customer to wish list. Once sold, you can transfer to clients.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <Form method='post' className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <input type='hidden' name='userId' value={user.id} />
-                                <Label htmlFor="name" className="text-right">
-                                    First Name
-                                </Label>
-                                <Input
-                                    name="firstName"
-                                    placeholder="Pedro "
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="username" className="text-right">
-                                    Last Name
-                                </Label>
-                                <Input
-                                    name="lastName"
-                                    placeholder="Duarte"
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="username" className="text-right">
-                                    Email
-                                </Label>
-                                <Input
-                                    name="email"
-                                    placeholder="pedroduarte@gmail.com"
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="username" className="text-right">
-                                    Phone
-                                </Label>
-                                <Input
-                                    name="phone"
-                                    placeholder="613-613-6134"
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="username" className="text-right">
-                                    Model
-                                </Label>
-                                <Input
-                                    name="model"
-                                    placeholder="2021 Road Glide"
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="username" className="text-right">
-                                    Model 2
-                                </Label>
-                                <Input
-                                    name="model2"
-                                    placeholder="2021 Road King"
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="username" className="text-right">
-                                    Notes
-                                </Label>
-                                <Input
-                                    name="wishListNotes"
-                                    placeholder="wants less than 50k kms"
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <Button onClick={() => toast.success(`Added to wish list!`)}
-                                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-black w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
-                            >
-                                Save
-                            </Button>
-                        </Form>
-
-                    </DialogContent>
-                </Dialog>
-
-            </div>
-            <div className="rounded-md border border-[#262626] ">
-                <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className=' border-[#262626]'>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead className='items-center ' key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                            {header.column.getCanFilter() && showFilter && (
-                                                <div className="mx-auto cursor-pointer items-center justify-center border-[#262626] text-center">
-                                                    <Filter column={header.column} table={table} />
-                                                </div>
-                                            )}
-                                        </TableHead>
-                                    )
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell className='justify-center' key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-slate8 text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
-                                >
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table2>
-            </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                        className="border-slate1 text-[#fafafa]"
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.nextPage()}
-                        className="border-slate1 text-[#fafafa]"
-
-                        disabled={!table.getCanNextPage()}
-                    >
-                        Next
-                    </Button>
-                </div>
-            </div>
-        </div>
-    )
-} */

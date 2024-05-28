@@ -22,8 +22,6 @@ async function seed() {
   await seedCanam();
   await seedUsers();
   await seed24Harley();
-  await dealerFeesAdminCreate();
-  await dealerInfo();
   await DealerFees()
   await SeedLockFinanceTerminals()
   await FirstCustomer()
@@ -119,13 +117,15 @@ export async function SeedLockFinanceTerminals() {
 export async function DealerFees() {
   console.log(chalk.yellow("Seeding dealer fees ..."));
 
-  const data = await prisma.dealerFees.create({
+  const data = await prisma.dealer.create({
     data: {
-      dealer: 'Freedom H-D',
+      dealerName: 'Freedom H-D',
       dealerAddress: '1963 Merivale Rd',
-      dealerProv: 'Ottawa, ON, K2G 1G1',
+      dealerCity: 'Ottawa',
+      dealerProv: 'ON',
+      dealerPostal: 'K2G 1G1',
       dealerPhone: '613-736-8899',
-      omvicNumber: '123456',
+      dealerEmail: 'skylerzanth@outlook.com',
       userLoanProt: 0,
       userTireandRim: '0',
       userGap: 0,
@@ -151,7 +151,7 @@ export async function DealerFees() {
       destinationCharge: 0,
       userFreight: '1250',
       userAdmin: '699',
-      userEmail: 'skylerzanth@outlook.com'
+      // userEmail: 'skylerzanth@outlook.com'
     },
   });
   console.log(chalk.green("dealer fees seeded!"));
@@ -209,10 +209,7 @@ export async function FirstCustomer() {
   })
   const finance = await prisma.finance.create({
     data: {
-      ///  id: 'clrkwvcwo00013aljooz2z4g8',
       clientfileId: clientfile.id,
-      // dashboardId: 'clrkwvd0h00023aljgsywagtb',
-      // financeId: 'clrkwvcwo00013aljooz2z4g8',
       financeManager: null,
       email: 'skylerzanth@outlook.com',
       firstName: 'skyler',
@@ -296,13 +293,7 @@ export async function FirstCustomer() {
       vin: null,
       leadNote: null,
 
-    }
-  })
-  const dashboard = await prisma.dashboard.create({
-    data: {
-      financeId: finance.id,
-      userEmail: 'skylerzanth@outlook.com',
-      clientfileId: null,
+
       referral: null,
       visited: null,
       bookedApt: null,
@@ -366,82 +357,13 @@ export async function FirstCustomer() {
     }
   })
 
-  const finance2 = await prisma.finance.update({
-    where: {
-      id: finance.id
-    },
-    data: {
-      // clientfileId: client.id,
-      dashboardId: dashboard.id,
-      financeId: finance.id,
-      financeManager: 'skylerzanth@outlook.com',
-      email: 'skylerzanth@outlook.com',
-      userEmail: 'skylerzanth@outlook.com',
-    }
-  })
+
   console.log(chalk.green("First customer seeded!"));
 
-  return json({ user, finance, dashboard, clientfile, finance2 })
+  return json({ user, finance, clientfile, })
 }
-export async function dealerInfo() {
-  console.log(chalk.yellow("Seeding dealer info ..."));
 
-  const data = await prisma.dealerInfo.create({
-    data: {
-      dealerName: 'Freedom H-D',
-      dealerAddress: '1234 Road Rd',
-      dealerCity: 'Ottawa',
-      dealerProv: 'ON',
-      dealerPostal: 'k0C1g1',
-      dealerPhone: '6137877777'
-    }
-  })
-  console.log(chalk.green("Dealer info seeded!"));
 
-  return data
-}
-export async function dealerFeesAdminCreate() {
-  console.log(chalk.yellow("Seeding dealer admin fees ..."));
-
-  const data = await prisma.dealerFeesAdmin.create({
-    data: {
-      dealer: 'Freedom H-D',
-      dealerAddress: '1234 Road Rd',
-      dealerProv: 'Ottawa, ON, K0C1G1',
-      dealerPhone: '6137877777',
-      omvicNumber: '515115',
-      userLoanProt: 0,
-      userTireandRim: '0',
-      userGap: 0,
-      userExtWarr: '0',
-      userServicespkg: 0,
-      vinE: 0,
-      lifeDisability: 0,
-      rustProofing: 0,
-      userLicensing: 55,
-      userFinance: '0',
-      userDemo: '0',
-      userGasOnDel: '0',
-      userOMVIC: '0',
-      userOther: 0,
-      userTax: '13',
-      userAirTax: '0',
-      userTireTax: '0',
-      userGovern: '0',
-      userPDI: '0',
-      userLabour: '156',
-      userMarketAdj: '0',
-      userCommodity: '0',
-      destinationCharge: 0,
-      userFreight: '0',
-      userAdmin: '0'
-    }
-  })
-  console.log(chalk.green("dealer admin fees seeded!"));
-
-  return data
-
-}
 export async function FirstMsgNotification() {
   console.log(chalk.yellow("Seeding notifications ..."));
 

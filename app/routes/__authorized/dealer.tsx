@@ -1,9 +1,10 @@
 import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react'
-import { json, redirect, type LoaderFunction } from '@remix-run/node';
+import { json, redirect, type LoaderFunction, type ActionFunction } from '@remix-run/node';
 import { Outlet, useLoaderData, useLocation } from '@remix-run/react';
 import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import { prisma } from '~/libs';
 
 import Sidebar, { managerSidebarNav, adminSidebarNav, devSidebarNav, } from '~/components/shared/sidebar'
 import { Code, Banknote, Laptop, X } from 'lucide-react';
@@ -12,16 +13,75 @@ import { useEffect, useState, } from 'react';
 import { Sheet, SheetClose, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "~/components/ui/userSideBarSheet"
 import { Button } from '~/components';
 import UserSideBar from '~/components/shared/userSideBar';
+import Interruptions from '~/components/shared/interruptions';
+import financeFormSchema from '~/overviewUtils/financeFormSchema';
 
 export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   let user = await GetUser(email)
-  return json({ user, email });
+  const interruptionsData = await prisma.interruptions.findMany({ where: { userEmail: email, read: 'false' } });
+
+  return json({ user, email, interruptionsData });
 }
 
+export async function action({ request, params }: ActionFunction) {
+  const formPayload = Object.fromEntries(await request.formData())
+  const formData = financeFormSchema.parse(formPayload);
+  const session = await getSession(request.headers.get('Cookie'));
+  const email = session.get('email')
+  const user = await GetUser(email)
+  const location = String(formData.pathname)
+  const title = ''
+  const date = new Date()
+  const options = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  };
+  if (formData.intent === 'createInterruption') {
+    console.log('dealerdealer')
+
+    console.log(location, 'locationl,ocations')
+    const saveInt = await prisma.interruptions.create({
+      data: {
+        userEmail: user?.email,
+        location: location,
+        date: date.toLocaleDateString('en-US', options),
+        title: title,
+        read: 'false'
+      }
+    })
+    return saveInt
+  }
+  if (formData.intent === 'updateInterruption') {
+    try {
+      console.log('dealerdealer');
+      await prisma.interruptions.update({
+        where: { id: formData.id },
+        data: {
+          read: 'true'
+        }
+      });
+      const location = formData.pathname
+      return redirect(String(location));
+    } catch (error) {
+      console.error('Error updating interruption:', error);
+      // Handle the error gracefully, such as displaying a message to the user or logging additional information
+      throw error; // Rethrow the error to propagate it further if needed
+    }
+  }
+
+  return json({ user });
+};
+
+
 export default function SettingsLayout() {
-  const { user, email } = useLoaderData()
+  const { user, email, interruptionsData } = useLoaderData()
   const userIsFinance = getUserIsAllowed(user, ["FINANCE"]);
   const userIsDEV = getUserIsAllowed(user, ["DEV"]);
   const userIsADMIN = getUserIsAllowed(user, ["ADMIN"]);
@@ -38,19 +98,24 @@ export default function SettingsLayout() {
   const closeDialog = () => {
     setIsOpen(false);
   };
-  console.log(pathname);
+
 
   return (
     <>
 
       {(pathname !== '/dealer/email/dashboardClient' && pathname !== '/dealer/sms/dashMsger') && (
         <>
+          <Interruptions
+            user={user}
+            email={email}
+          //  pathname={pathname}
+          />
           <UserSideBar
             user={user}
             email={email}
           />
           <Sidebar user={user} email={email} />
-          <NotificationSystem />
+          <NotificationSystem interruptionsData={interruptionsData} />
         </>
       )}
       <Outlet />

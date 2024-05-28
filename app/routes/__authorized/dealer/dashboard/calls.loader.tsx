@@ -13,12 +13,8 @@ export async function loader({ request, params }: LoaderFunction) {
     const email = session.get("email")
     const user = await GetUser(email)
     if (!user) { redirect('/login') }
-    //const dataSet = await getMergedFinance(email);
-
     const financeList = await prisma.finance.findMany({ where: { userEmail: user?.email }, });
-    const financeIds = financeList.map(financeRecord => financeRecord.id);
-    const dataSet = await getClientListMerged(financeIds);
-    console.log(dataSet, financeList, financeIds, 'dataSet loader')
+    const dataSet = financeList
     return json(dataSet)
 }
 

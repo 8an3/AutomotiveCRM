@@ -107,7 +107,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       createdAt: 'desc' // Ordering by created_at field in descending order
     }
   }); const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
-  const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
+  const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
 
   const fetchLatestNotes = async (webLeadData) => {
     const promises = webLeadData.map(async (webLeadData) => {

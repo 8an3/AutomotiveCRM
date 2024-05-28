@@ -39,7 +39,9 @@ const todoRoadmap = [
   { type: "WIP", desc: "dev control panel needs to send email to new dealers with sign in info" },
   { type: "WIP", desc: "https://developers.klaviyo.com/en/reference/get_campaigns" },
   // ---------------------------------------------------------ISSUE-----------------------------------------------------
-  { type: "issue", desc: "need to change how to load overview,   by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
+  { type: "issue", desc: "notifications" },
+  { type: "issue", desc: "overview emails" },
+  { type: "issue", desc: "export in managers section" },
   // -----------------------------------------------------OWNER---------------------------------------------------------
   { type: "owner", desc: "Owners dashboard" },
   { type: "owner", desc: "Owner Section" },
@@ -125,6 +127,7 @@ const todoRoadmap = [
 
 const DoneRoadMap = [
   { type: "issue", desc: "add ping system for notes - COMPLETED BUT NEEDS TESTING" },
+  { type: "issue", desc: "need to change how to load overview,   by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
   { type: "google", desc: "utilize other services from google, notes, to-do, sms, voice chat, call recording, video calling, teaam chat?, tasks and plans,  " },
   { type: 'google', desc: 'has a push notiications for new incoming emails' },
   { type: "dealer onboarding", desc: "initial data can be put into seed file filed out by dealer" },

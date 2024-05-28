@@ -79,12 +79,12 @@ export const action: ActionFunction = async ({ request }) => {
     invariant(typeof userLabour === "string", "Labour must be a string");
 
     // Check if a record already exists for the user's email
-    const existingDealerFees = await prisma.dealerFees.findUnique({
+    const existingDealerFees = await prisma.dealer.findUnique({
       where: { userEmail: userEmail },
     });
     if (existingDealerFees) {
       /* If a record exists, update it
-      await prisma.dealerFees.update({
+      await prisma.dealer.update({
         where: { userEmail: userEmail },
         data: {
           dealer: formData.dealer,
@@ -126,7 +126,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
     if (!existingDealerFees) {
       console.log('no dealer fees something is wrong')
-      await prisma.dealerFees.update({
+      await prisma.dealer.update({
         where: { userEmail: email },
 
         data: {
@@ -170,7 +170,7 @@ export const action: ActionFunction = async ({ request }) => {
     const deFees = await prisma.dealerFeesAdmin.findUnique({
       where: { id: 1 },
     });/*
-    const DealerFees = await prisma.dealerFees.create({
+    const DealerFees = await prisma.dealer.create({
 
 
       data: {
@@ -226,7 +226,7 @@ export const loader = async ({ request, params }) => {
   if (!user) { return json({ status: 302, redirect: '/login' }); };
 
   let deFees
-  // if (!deFees) { deFees = await prisma.dealerFees.findUnique({ where: { userEmail: user?.email } }); }
+  // if (!deFees) { deFees = await prisma.dealer.findUnique({ where: { userEmail: user?.email } }); }
   const urlSegmentsDashboard = new URL(request.url).pathname.split('/');
   const url = urlSegmentsDashboard.slice(0, 3).join('/');
   console.log(url)
@@ -270,12 +270,12 @@ export const loader = async ({ request, params }) => {
 
   }
   if (!DealerInfo) {
-    deFees = await prisma.dealerFees.findUnique({
+    deFees = await prisma.dealer.findUnique({
       where: { userEmail: email },
     });
     if (!deFees) {
       // If no record exists, create a new one
-      deFees = await prisma.dealerFees.create({
+      deFees = await prisma.dealer.create({
         data: {
           dealer: 'Dealer Name',
           dealerAddress: '1234 Example St',
@@ -345,7 +345,7 @@ export const loader = async ({ request, params }) => {
       return ({ DealerInfo, user })
 
     }
-    deFees = await prisma.dealerFees.findUnique({
+    deFees = await prisma.dealer.findUnique({
       where: { userEmail: user?.email },
     });
     return user
@@ -555,7 +555,7 @@ export const asdsaloader: LoaderFunction = async ({ request }) => {
   if (!user) {
     redirect('/login')
   }
-  let deFees = await prisma.dealerFees.findUnique({
+  let deFees = await prisma.dealer.findUnique({
     where: { userEmail: email },
   });
   console.log('loader', deFees, email, user)

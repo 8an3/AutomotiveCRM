@@ -125,6 +125,7 @@ export async function loader({ request, params }: LoaderFunction) {
     };
   });
   const mappedDatesForCurrentWeek = mapSavedDatesToCurrentWeek(formattedEvents);
+
   // console.log(mappedDatesForCurrentWeek, ' loader events')
   return json({ events: mappedDatesForCurrentWeek, email })
 }
@@ -133,7 +134,7 @@ export async function action({ request }: ActionFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   const formPayload = Object.fromEntries(await request.formData())
-  console.log(formPayload, 'formPayload')
+  console.log(email, formPayload, 'formPayload')
   const day = getDayName(formPayload.start) || '';
   const saveDay = await prisma.storeHours.findMany({ where: { userEmail: email, } }) || '';
   try {
@@ -313,14 +314,14 @@ export function StoreHoursCalendar() {
 
 export default function SettingsAccountPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-[#fafafa]">
       <div>
         <h3 className="text-lg font-medium">Store Hours</h3>
         <p className="text-sm text-muted-foreground">
           Update your stores hours to enable apps functionality.
         </p>
       </div>
-      <hr className="solid text-[#fafafa]" />
+      <hr className="solid text-[#2b2b2d]" />
       <StoreHoursCalendar />
     </div>
   )

@@ -14,62 +14,49 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover"
-import { prisma } from "~/libs";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "~/components/ui/tabs"
-import { Bell, BellRing, BookOpenCheck, Milestone, X } from 'lucide-react';
+import { Bell, BellRing, BookOpenCheck, Mail, Milestone, X } from 'lucide-react';
 import { Button, Input, Label } from "~/components/ui";
 import useSWR, { SWRConfig, mutate } from 'swr';
 import EmailMessages from "./notifications/email";
+import {
+  CalendarIcon,
+  CheckIcon,
+  EnvelopeClosedIcon,
+  FaceIcon,
+  GearIcon,
+  PersonIcon,
+  RocketIcon,
+} from "@radix-ui/react-icons"
 
-export async function loader({ request, params }: LoaderFunction) {
-  const session = await getSession(request.headers.get("Cookie"));
-  const email = session.get("email")
-
-  const user = await GetUser(email)
-  if (!user) { redirect('/login') }
-  const notifications = await prisma.notificationsUser.findMany()
-  return json({ user, notifications });
-}
-
-export async function action({ request }: LoaderArgs) {
-  const formData = await request.formData();
-  const lastMessage = formData.get("lastMessage")
-  const title = formData.get('title')
-  const userId = formData.get('userId')
-  const financeId = formData.get('financeId')
-  const clientfileId = formData.get('clientfileId')
-  const isRead = formData.get('isRead')
-  const message = `${lastMessage}`
-  emitter.emit("notification", message);
-  const intent = formData.get('intent')
-  if (intent === 'reading') {
-    const isRead = await prisma.notificationsUser.update({
-      where: {
-        id: notification.id
-      },
-      data: {
-        read: true
-      }
-    })
-    return isRead
-  }
-  const saved = await prisma.notificationsUser.create({
-    data: {
-      title: title,
-      content: lastMessage,
-      read: isRead,
-      userId: userId,
-      financeId: financeId,
-      clientfileId: clientfileId,
-    }
-  })
-  return json({ message, saved });
-}
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "~/components/ui/command"
+import Handler from "../IFrameComp/newEmails";
+import { cn } from "~/utils";
+import { testInbox } from "~/components/microsoft/GraphService";
+import {
+  IoIosMailUnread,
+  IoIosMail,
+  IoMdAlert,
+  IoIosArrowForward,
+  IoIosArrowBack,
+} from "react-icons/io";
+import { prisma } from "~/libs/prisma.server";
+import financeFormSchema from '~/overviewUtils/financeFormSchema';
+import InterruptionsForm from "~/components/shared/interruptionsForm";
 
 function NotificationSkeleton() {
   return (
@@ -82,7 +69,22 @@ let url3 = 'http://localhost:3000/dealer/notifications/newLead'
 let url2 = 'http://localhost:3000/dealer/notifications/updates'
 let url1 = 'http://localhost:3000/dealer/notifications/messages'
 
-export default function NotificationSystem() {
+export default function NotificationSystem(interruptionsData) {
+  const { } = useLoaderData()
+  const [notifications, setNotifications] = useState()
+  const [emails, setEmails] = useState([])
+  const [emailsCount, setEmailsCount] = useState(0)
+  const [value, setValue] = React.useState("")
+  const [open, setOpen] = useState(false)
+  const submit = useSubmit();
+  const fetcher = useFetcher()
+
+  useEffect(() => {
+    const getEmails = window.localStorage.getItem("emails");
+    const parseemailData = getEmails ? JSON.parse(getEmails) : [];
+    setEmails(parseemailData);
+  }, []);
+
   const $form = useRef<HTMLFormElement>(null);
   const { key } = useLocation();
   useEffect(
@@ -93,38 +95,15 @@ export default function NotificationSystem() {
   );
 
   const fetchData = async (url) => {
-  const response = await fetch(url);
-  return response.json();
-};
-const useSWRWithInterval = (url, refreshInterval) => {
-  return useSWR(url, fetchData, { refreshInterval });
-};
+    const response = await fetch(url);
+    return response.json();
+  };
+  const useSWRWithInterval = (url, refreshInterval) => {
+    return useSWR(url, fetchData, { refreshInterval });
+  };
 
-/**  const { data: userMessages } = useSWR(
-    url1,
-    (url) => fetch(url).then((res) => res.json()),
-    { refreshInterval: 180000 }
-  );
-
-  const { data: newUpdates } = useSWR(
-    url2,
-    (url) => fetch(url).then((res) => res.json()),
-    { refreshInterval: 180000 }
-  );
-
-  const { data: notificationsNewLead } = useSWR(
-    url3,
-    (url) => fetch(url).then((res) => res.json()),
-    { refreshInterval: 180000 }
-  );
-
-  const { data: notificationsEmail } = useSWR(
-    url4,
-    (url) => fetch(url).then((res) => res.json()),
-    { refreshInterval: 300000 }
-  ); */
   const userMessages = useSWRWithInterval(url1, 180000);
-  const newUpdates = useSWRWithInterval(url2, 180000);
+  const newUpdates = useSWRWithInterval(url2, 180000) || [];
   const notificationsNewLead = useSWRWithInterval(url3, 180000);
   const notificationsEmail = useSWRWithInterval(url4, 300000);
 
@@ -157,17 +136,267 @@ const useSWRWithInterval = (url, refreshInterval) => {
 
   const totalNotifications = unread + leadCount + updateCount + messageCount;
 
-  console.log(totalNotifications, 'amount of  otifications')
-  /**{totalNotifications > 1 && (
-  <>
-  <span className="relative t-3 r-3 h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#02a9ff] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0085c7]"></span>
-            </span>
-  </>
-            )} */
+  const handleRowClick = async (notification) => {
+    const formData = new FormData();
+    formData.append("read", true);
+    formData.append("intent", "reading");
+    formData.append("id", notification.id);
+    submit(formData, { method: "post" });
+    await fetch(url2, {
+      method: 'put',
+    });
+    mutate()
+  };
+
+  const handleRowClickNewLeads = async (notification) => {
+    const formData = new FormData();
+    formData.append("read", true);
+    formData.append("intent", "reading");
+    formData.append("id", notification.id);
+    submit(formData, { method: "post" });
+    await fetch(url3, {
+      method: 'put',
+    });
+    mutate()
+  };
+
+  //const newLeads = newUpdates
+  //console.log(emails, 'notifications', newUpdates, 'notifications', notificationsNewLead, 'notificationsNewLead')
+  // <Bell color="#fff" strokeWidth={1.5} className="text-2xl hover:text-[#02a9ff]" />
   return (
-    <Popover>
+    <>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]" aria-expanded={open}>
+            <div className=" h-t relative w-7">
+              <div className="pointer-events-none absolute -right-4 -top-0.5 flex size-full">
+                <span className="relative flex size-3">
+                  <span className="absolute inline-flex  size-full animate-ping rounded-full bg-[#02a9ff] opacity-75"></span>
+                  <span className="relative inline-flex size-3 rounded-full bg-[#0078b4]"></span>
+                </span>
+              </div>
+              <IoIosMailUnread color="#ededed" className="text-2xl hover:text-[#02a9ff] text-[##ededed]" />
+            </div>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[250px] p-0">
+          <Command className="rounded-lg border shadow-md bg-[#09090b] border-[#27272a] text-[#f1f1f1]">
+            <CommandInput className='bg-[#09090b] border-[#27272a] text-[#f1f1f1]' placeholder="Type a command or search..." />
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup heading="Messages">
+                {Array.isArray(emails) &&
+                  emails.map((email) => (
+                    <CommandItem
+                      key={email.id}
+                      value={email.sender.emailAddress.address}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue)
+                        setOpen(false)
+                      }}
+                      className='cursor-pointer'
+                    >
+                      <ul className="grid gap-3 text-sm mt-2">
+                        <li className="flex items-center justify-between">
+                          <span className=" ">
+                            {email.sender.emailAddress.name}
+                          </span>
+                          <span className="text-[#909098] text-xs">
+                            {email.createdDateTime}
+                          </span>
+                        </li>
+                        <li className="flex items-center justify-between">
+                          <span className=" text-[#909098]">
+                            {email.subject}
+                          </span>
+                          <span className="">
+                          </span>
+                        </li>
+                      </ul>
+                      <Mail
+                        color="#ffffff"
+                        className={cn(
+                          "ml-auto h-4 w-4",
+                          value === email.sender.emailAddress.address ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup heading="Updates">
+                {newUpdates && newUpdates.length > 0 ? (
+                  newUpdates.map((notification) => (
+                    <CommandItem
+                      key={notification.id}
+                      value={notification.emailAddress.address}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue);
+                        setOpen(false);
+                        handleRowClickNewLeads(notification);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <ul className="grid gap-3 text-sm mt-2">
+                        <li className="flex items-center justify-between">
+                          <span>{notification.title}</span>
+                          <span className="text-[#909098] text-xs">
+                            {new Date(notification.createdAt).toLocaleString()}
+                          </span>
+                        </li>
+                      </ul>
+                    </CommandItem>
+                  ))
+                ) : <CommandItem>No new updates, currently.   </CommandItem>}
+
+              </CommandGroup>
+              <CommandGroup heading="New Leads">
+                {notificationsNewLead && notificationsNewLead.length > 0 ? (
+                  notificationsNewLead.map((notification) => (
+                    <CommandItem
+                      key={notification.id}
+                      value={notification.emailAddress.address}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue);
+                        setOpen(false);
+                        handleRowClickNewLeads(notification);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <ul className="grid gap-3 text-sm mt-2">
+                        <li className="flex items-center justify-between">
+                          <span>{notification.title}</span>
+                          <span className="text-[#909098] text-xs">
+                            {new Date(notification.createdAt).toLocaleString()}
+                          </span>
+                        </li>
+                      </ul>
+                    </CommandItem>
+                  ))
+                ) : (
+                  <CommandItem>No new leads, currently.</CommandItem>
+                )
+                }
+              </CommandGroup>
+              <CommandGroup heading="Reminders">
+
+                <InterruptionsForm interruptionsData={interruptionsData} />
+              </CommandGroup>
+
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover >
+    </>
+  )
+
+}
+
+export async function loader({ request, params }: LoaderFunction) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  const interruptions = await prisma.interruptions.findMany({ where: { userEmail: email, read: 'false' } })
+  const user = await GetUser(email)
+  if (!user) { redirect('/login') }
+  const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
+  return json({ user, notifications, interruptions });
+}
+
+export async function action({ request }: LoaderArgs) {
+  const formPayload = Object.fromEntries(await request.formData())
+  const formData = financeFormSchema.parse(formPayload);
+  const lastMessage = formData.get("lastMessage")
+  const title = formData.get('title')
+  const userId = formData.get('userId')
+  const financeId = formData.get('financeId')
+  const clientfileId = formData.get('clientfileId')
+  const isRead = formData.get('isRead')
+  const message = `${lastMessage}`
+  emitter.emit("notification", message);
+  const session = await getSession(request.headers.get('Cookie'));
+  const email = session.get('email')
+  const user = await GetUser(email)
+  const intent = formData.get('intent')
+  if (intent === 'reading') {
+    const isRead = await prisma.notificationsUser.update({
+      where: {
+        id: notification.id
+      },
+      data: {
+        read: true
+      }
+    })
+    return isRead
+  }
+
+
+  return json({ message, });
+}
+
+
+/**  const { data: userMessages } = useSWR(
+    url1,
+    (url) => fetch(url).then((res) => res.json()),
+    { refreshInterval: 180000 }
+  );
+
+  const { data: newUpdates } = useSWR(
+    url2,
+    (url) => fetch(url).then((res) => res.json()),
+    { refreshInterval: 180000 }
+  );
+
+  const { data: notificationsNewLead } = useSWR(
+    url3,
+    (url) => fetch(url).then((res) => res.json()),
+    { refreshInterval: 180000 }
+  );
+
+  const { data: notificationsEmail } = useSWR(
+    url4,
+    (url) => fetch(url).then((res) => res.json()),
+    { refreshInterval: 300000 }
+  ); */
+
+/**{totalNotifications > 1 && (
+<>
+<span className="relative t-3 r-3 h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#02a9ff] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0085c7]"></span>
+          </span>
+</>
+          )} */
+
+/**
+ *
+ *
+ *     <li key={notification.id} className={`rounded-md shadow mt-2 mx-auto ${notification.isRead ? 'bg-[#454954]' : 'bg-[#45495486]'}`}>
+                      <Link to='/leads/sales'>
+
+                        <div className="grid grid-cols-10 ">
+                          <div className="col-span-9 p-3" onClick={() => { handleRowClick(notification); }} >
+                            <div className="flex justify-between" >
+                              <h2 className='text-[#fff]'>
+                                {notification.title}
+                              </h2>
+                              <p className='text-[#ffffffad] text-sm mt-auto'>
+                                {new Date(notification.createdAt).toLocaleString()}
+                              </p>
+                            </div>
+                            <p className='text-[#fff]'>
+                              {notification.content}
+                            </p>
+                          </div>
+                          <div className="col-span-1">
+                          </div>
+                        </div>
+                      </Link>
+                    </li>
+
+
+
+
+                    <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]">
           <div className=' relative h-t w-7'>
@@ -215,26 +444,9 @@ const useSWRWithInterval = (url, refreshInterval) => {
           </TabsContent>
         </Tabs>
       </PopoverContent>
-    </Popover>
-  )
-
-}
+    </Popover>`` */
 
 
-export async function GetEmails(accessToken) {
-  const response = await fetch(`https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages`, {// or https://graph.microsoft.com/v1.0/me/messages
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
-    }
-  })
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  const data = await response.json();
-  return data;
-}
 
 export async function GetEmailsCount(accessToken) {
   const response = await fetch(`https://graph.microsoft.com/v1.0/me/mailFolders/inbox`, {// or https://graph.microsoft.com/v1.0/me/messages
@@ -276,14 +488,13 @@ function NotificationTemplate({ data, mutate, url1, url4 }) {
   useEffect(() => {
     const GetEmailsData = async () => {
       const getEmails = await GetEmails(idToken)
-      const getEmailsCount = await GetEmailsCount(idToken)
+      //const getEmailsCount = await GetEmailsCount(idToken)
       setEmails(getEmails.value)
-      setEmailsCount(getEmailsCount.value)
+      // setEmailsCount(getEmailsCount.value)
     }
     GetEmailsData()
-  }, [idToken]);
+  }, []);
 
-  console.log(notifications, ' in notifications fist tab')
   return (
     <>
       <ul>
@@ -427,14 +638,13 @@ const UpdateMesages = ({ data, mutate, url2 }) => {
     });
     mutate()
   };
-  console.log(notifications, ' in UpdateMesages')
   return (
     <ul>
       {notifications && notifications.length > 0 ? (
         notifications.map((notification) => (
           <li key={notification.id} className={`rounded-md shadow mt-2 mx-auto ${notification.isRead ? 'bg-[#454954]' : 'bg-[#45495486]'}`}>
             <div className="grid grid-cols-10 ">
-              <div className="col-span-9 p-3" onClick={() => { handleRowClick(notification); }} >
+              <div className="col-span-9 p-3" onClick={() => { }} >
                 <div className="flex justify-between" >
                   <h2 className='text-[#fff]'>
                     {notification.title}
@@ -497,6 +707,7 @@ const NotificationsNewLead = ({ data, mutate, url3 }) => {
   const notifications = data
 
   const submit = useSubmit();
+
   const handleRowClick = async (notification) => {
 
     const formData = new FormData();
@@ -514,8 +725,8 @@ const NotificationsNewLead = ({ data, mutate, url3 }) => {
   return (
     <div className='max-h-96 overflow-y-scroll'>
       <ul>
-        {notifications && notifications.length > 0 ? (
-          notifications.map((notification) => (
+        {newLeads && newLeads.length > 0 ? (
+          newLeads.map((notification) => (
             <li key={notification.id} className={`rounded-md shadow mt-2 mx-auto ${notification.isRead ? 'bg-[#454954]' : 'bg-[#45495486]'}`}>
               <Link to='/leads/sales'>
 

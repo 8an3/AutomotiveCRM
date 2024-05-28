@@ -33,26 +33,19 @@ export const handle = createSitemap();
 export async function loader({ request, params }: LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
-
   const user = await GetUser(email)
-  /// console.log(user, account, 'wquiote loadert')
   if (!user) {
     redirect('/login')
   }
-  if (!user) { return json({ status: 302, redirect: '/login' }); };
-
   const metrics = await model.admin.query.getMetrics();
-  const dealerInfo = await prisma.dealerInfo.findUnique({
+  const dealerInfo = await prisma.dealer.findUnique({
     where: { id: 1 }
   })
   const userEmail = user?.email
-  const deFees = await prisma.dealerFeesAdmin.findUnique({ where: { id: 1 } })
+  const deFees = dealerInfo
   const dataPDF = await getDailyPDF(userEmail)
   const statsData = await getMergedFinance(userEmail)
-  const comsRecords = await prisma.communicationsOverview.findMany({ where: { userId: user.id, }, });
-
-
+  const comsRecords = await prisma.previousComms.findMany({ where: { userEmail: user.email, }, });
   return json(
     { user, metrics, dealerInfo, deFees, dataPDF, statsData, comsRecords },
     { headers: createCacheHeaders(request) }
@@ -66,7 +59,7 @@ export async function action({ request }: ActionArgs) {
   const intent = formPayload.intent
 
   if (intent === 'updateDealerFeesAdmin') {
-    await prisma.updateDealerFeesAdmin.update({
+    await prisma.dealer.update({
       where: {
         id: 1
       },
@@ -93,7 +86,7 @@ export async function action({ request }: ActionArgs) {
     return ({ savedaily, delete2 })
 
   }
-  const dealer = await prisma.dealerInfo.update({
+  const dealer = await prisma.dealer.update({
     data: {
       dealerName: formData.dealer,
       dealerAddress: formData.dealerAddress,
@@ -191,15 +184,14 @@ export default function Route() {
 
   return (
     <>
-      <Tabs defaultValue="dealerFees" className="w-[95%] mx-auto " >
-        <TabsList className="grid w-full grid-cols-4 rounded-md">
+      <Tabs defaultValue="dealerFees" className="w-auto mx-auto " >
+        <TabsList className="grid   grid-cols-4 rounded-md">
           <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
-
           <TabsTrigger className='rounded-md' value="account">Account Variables</TabsTrigger>
           <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>
 
         </TabsList>
-        <TabsContent value="stats" className='rounded-md'>
+        <TabsContent value="stats" className='rounded-md bg-[#09090b] text-[#fafafa]'>
           <Card className='rounded-md text-[#fafafa]'>
             <CardHeader className='bg-myColor-900'>
               <CardTitle className='text-[#fafafa]'>
@@ -217,7 +209,7 @@ export default function Route() {
         </TabsContent>
         <TabsContent value="dealerFees" className='rounded-md'>
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-[#fafafa] rounded-md">
+            <CardContent className="space-y-2 bg-[#09090b] text-[#fafafa] border-[#27272a] rounded-md">
               <Form method="post" className="">
 
                 <div className="grid grid-cols-1 gap-4 mx-auto">
@@ -237,73 +229,68 @@ export default function Route() {
 
                     <div className="grid grid-cols-3 gap-2">
                       {Dealerfees.map((fee, index) => (
-                        <div key={index}>
-                          <label className=''>{fee.placeholder}</label>
+                        <div className="relative mt-3" key={index}>
                           <Input
                             name={fee.name}
                             defaultValue={fee.value}
 
-                            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
+                            className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                           />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
                         </div>
                       ))}
-                      <div className="">
-                        <label>Licensing (Required)</label>
+                      <div className="relative mt-3"  >
                         <Input
                           defaultValue={deFees.userLicensing}
                           name="userLicensing"
-                          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
+                          className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
                         {errors?.userLicensing ? (
                           <em className="text-[#ff0202]">{errors.userLicensing}</em>
                         ) : null}
+                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
                       </div>
-
-                      <div className="">
-                        <label>Sales tax (Required)</label>
+                      <div className="relative mt-3"  >
                         <Input
                           defaultValue={deFees.userTax}
                           name="userTax"
-                          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
+                          className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
                         {errors?.userTax ? (
                           <em className="text-[#ff0202]">{errors.userTax}</em>
                         ) : null}
+                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax </label>
                       </div>
-                      <div className="">
-                        <label>Service Labour (Required)</label>
+                      <div className="relative mt-3"  >
                         <Input
                           defaultValue={deFees.userLabour}
                           name="userLabour"
-                          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#ff0202]  mx-1"
+                          className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
                         {errors?.userLabour ? (
                           <em className="text-[#ff0202]">{errors.userLabour}</em>
                         ) : null}
+                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour </label>
                       </div>
                     </div>
                   </div>
 
                   {/* Row 2 */}
-                  <h2 className="text-2xl font-thin mt-4">
+                  <h2 className="text-2xl font-thin mt-1">
                     OPTIONS
+                    <hr className="mb-4 text-[#27272a]" />
+
                   </h2>
-                  <Separator className="mb-4" />
                   <div className="p-4 grid gap-2">
                     <div className="h-[250px] grid grid-cols-3 gap-2 ">
                       {FinanceOptions.map((option, index) => (
-                        <div key={index}>
-                          <label className='mt-2'>{option.placeholder}</label>
+                        <div className="relative mt-3" key={index}>
                           <Input
                             name={option.name}
                             defaultValue={option.value}
-                            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
+                            className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                           />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{option.placeholder}</label>
                         </div>
                       ))}
                       <Input type='hidden'
@@ -314,7 +301,7 @@ export default function Route() {
                         defaultValue='updateDealerFeesAdmin'
                         name="intent"
                       />
-                      <Button className="bg-[#02a9ff] mb-10 w-[75px] ml-2  mr-2 cursor-pointer text-[#fafafa] active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" type="submit"
+                      <Button size='sm' className="bg-[#dc2626] ml-auto mr-2" type="submit"
                         onClick={() => {
                           setIsButtonPressed(true);
                           toast.message('Dealer Fees Updated', {})
@@ -332,95 +319,79 @@ export default function Route() {
         </TabsContent>
         <TabsContent value="account">
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-[#fafafa] rounded-md">
+            <CardContent className="space-y-2 bg-[#09090b] text-[#fafafa] border-[#27272a] rounded-md">
               <Form method="post" className="">
                 <h1 className='text-[#fafafa]'>Dealer Info</h1>
                 <hr className="text-[#fafafa]" />
                 <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
 
-                  <div className="grid gap-2">
-                    <label htmlFor="area" className=''>Dealer Name</label>
+                  <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerName}
                       placeholder="Dealer Name"
                       name="dealer"
-                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="area" className='mt-2'>Dealer Address</Label>
+                  <div className="relative mt-3"  >
                     <Input
                       placeholder="123 Dealer Street"
                       name="dealerAddress"
                       defaultValue={dealerAddress}
-                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]   mx-1"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address </label>
                   </div>
-                  <div className="grid gap-2">
-                    <Label className='mt-2' htmlFor="area">Dealer City, Prov, Postal Code</Label>
+                  <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerCity}
                       placeholder="Toronto"
                       name="dealerCity"
-                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none   focus:text-[#02a9ff]    mx-1"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City </label>
                   </div>
-                  <div className="grid gap-2">
-                    <Label className='mt-2' htmlFor="area">Dealer City, Prov, Postal Code</Label>
+                  <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerProv}
                       placeholder="ON"
                       name="dealerProv"
-                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none   focus:text-[#02a9ff]    mx-1"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Prov </label>
                   </div>
-                  <div className="grid gap-2">
-                    <Label className='mt-2' htmlFor="area">Dealer City, Prov, Postal Code</Label>
+                  <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerPostal}
                       placeholder="K1K K1K"
                       name="dealerPostal"
-                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none   focus:text-[#02a9ff]    mx-1"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
                   </div>
-                  <div className="grid gap-2">
-                    <Label className='mt-2' htmlFor="area">Dealer Phone Number</Label>
+                  <div className="relative mt-3"  >
                     <Input
                       placeholder="6136136134"
                       type="phone"
                       name="dealerPhone"
-                      className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none focus:text-[#02a9ff]    mx-1"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                       defaultValue={dealerPhone}
                     />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone Number</label>
                   </div>
+                  <Button
+                    type='submit'
+                    name='intent'
+                    value='updateDealer'
+                    size='sm'
+                    className='ml-3 mr-2 bg-[#dc2626]'
+                  >
+                    Save changes
+                  </Button>
+                </div>
+              </Form>
 
-                </div>
-              </Form>
-              <Form method="post" encType="multipart/form-data">
-                <h1 className='text-[#fafafa]'>Import Parts</h1>
-                <hr className="text-[#fafafa]" />
-                <div className="grid w-full max-w-sm items-center gap-1.5">
-                  <Label htmlFor="picture">Parts</Label>
-                  <Input id="picture" type="file" />
-                </div>
-              </Form>
-              {data.status === "success" && <p>File uploaded successfully!</p>}
-              <Form method="post" encType="multipart/form-data">
-
-                <h1 className='text-[#fafafa]'>Import Accessories</h1>
-                <hr className="text-[#fafafa]" />
-                <div className="grid w-full max-w-sm items-center gap-1.5">
-                  <Label htmlFor="picture">Acessories</Label>
-                  <Input id="picture" type="file" />
-                </div>
-              </Form>
-              {data.status === "success" && <p>File uploaded successfully!</p>}
             </CardContent>
           </Card>
         </TabsContent>

@@ -6,7 +6,7 @@ export async function GetUser(email) {
   if (!email) {
     return redirect('/login')
   }
-  let oldUser = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: { email: email },
     select: {
       id: true,
@@ -26,14 +26,17 @@ export async function GetUser(email) {
       activisUserId: true,
       activixEmail: true,
       activixActivated: true,
+      newLook: true,
+      activixId: true,
+      dealerAccountId: true,
+      microId: true,
+      givenName: true,
+      familyName: true,
+      identityProvider: true,
+      plan: true,
       role: { select: { symbol: true, name: true } },
     },
   });
-  const integrationSec = await prisma.userIntergration.findUnique({ where: { userEmail: oldUser?.email } });
 
-  const user = {
-    ...oldUser,
-    ...integrationSec
-  }
   return user
 }

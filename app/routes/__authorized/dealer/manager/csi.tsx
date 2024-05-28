@@ -87,8 +87,8 @@ export default function SettingsAccountPage() {
         <p className="text-sm text-[#fafafa]">
           Create your own CSI to see where your dealer needs to improve.
         </p>
+        <hr className="solid text-[#27272a]" />
       </div>
-      <hr className="solid text-[#fafafa]" />
       <Tabs defaultValue="account" className="w-[50%]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="account">Create</TabsTrigger>
@@ -170,7 +170,7 @@ export function CSI() {
       <Input
         name='title'
         onChange={(e) => setTitle(e.target.value)}
-        className='w-auto'
+        className='w-auto bg-[#09090b] border-[#27272a] text-[#fafafa] '
       />
       {departments.map((department, departmentIndex) => (
         <div key={departmentIndex}>
@@ -184,13 +184,13 @@ export function CSI() {
                   defaultValue={input.question}
                   onChange={(e) => handleInputChange(departmentIndex, inputIndex, 'question', e.target.value)}
                   placeholder="Question"
-                  className="  text-black bg-white mr-3 w-auto"
+                  className="  bg-[#09090b] border-[#27272a] text-[#fafafa]  mr-3 w-auto"
 
                 />
                 <select
                   defaultValue={input.answerFormat}
                   onChange={(e) => handleInputChange(departmentIndex, inputIndex, 'answerFormat', e.target.value)}
-                  className="text-black bg-white mr-3 p-1 rounded-md"
+                  className="bg-[#09090b] border-[#27272a] text-[#fafafa] mr-3 p-1 rounded-md"
 
                 >
                   <option value="">Select answer format</option>
@@ -208,7 +208,7 @@ export function CSI() {
                   <Input
                     type="text"
                     defaultValue={choice}
-                    className="text-black bg-white w-auto ml-[200px]"
+                    className="bg-[#09090b] border-[#27272a] text-[#fafafa]  w-auto ml-[200px]"
 
                     onChange={(e) => {
                       const updatedChoices = [...input.customMultipleChoiceAnswers];
@@ -240,9 +240,10 @@ export function CSI() {
           </div>
         ))}
         <Button
-          variant='ghost'
+          variant='outline'
+          size='sm'
           type='submit'
-          className='text-[#fafafa] bg-transparent hover:bg-transparent border-white'
+          className='text-[#fafafa] bg-transparent hover:bg-transparent bg-[#dc2626] '
         >
           Save
         </Button>

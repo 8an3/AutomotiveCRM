@@ -17,7 +17,7 @@ import {
 import { Form, useFetcher, useSubmit } from '@remix-run/react';
 import { DownloadIcon, PaperPlaneIcon, UploadIcon } from '@radix-ui/react-icons';
 import { toast } from "sonner"
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Papa from 'papaparse';
 
 
@@ -94,6 +94,47 @@ export default function ImportExport() {
     }
   };
 
+  const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
+  const MyIFrameComponent = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+      const handleHeightMessage = (event: MessageEvent) => {
+        if (event.data && event.data.type === 'iframeHeight' && event.data.height) {
+          setIsLoading(false);
+
+          if (iFrameRef.current) {
+            iFrameRef.current.style.height = `${event.data.height}px`;
+          }
+        }
+      };
+
+      if (iFrameRef.current) {
+        // iFrameRef.current.src = 'http://localhost:3000/body';
+        iFrameRef.current.src = 'https://crmsat.vercel.app/admin/import/motorcycle';
+        window.addEventListener('message', handleHeightMessage);
+      }
+
+      return () => {
+        if (iFrameRef.current) {
+          window.removeEventListener('message', handleHeightMessage);
+        }
+      };
+    }, []);
+
+    return (
+      <>
+        <div className="h-full w-full ">
+          <iframe
+            ref={iFrameRef}
+            title="my-iframe"
+            width="100%"
+            className=' border-none'
+            style={{ minHeight: '840px' }}
+          />
+        </div>
+      </>
+    );
+  };
   // action={`/dealer/manager/import/${link}`}
   return (
     <Card className="overflow-hidden text-[#f1f1f1] w-[600px] mt-[50px] mx-auto" x-chunk="dashboard-05-chunk-4" >
@@ -177,10 +218,11 @@ export default function ImportExport() {
 
             </ul>
           </fetcher.Form>
-          <fetcher.Form
-
-
-          >
+          <p>Test from other site</p>
+          <div style={{ textAlign: 'center' }}>
+            <MyIFrameComponent />
+          </div>
+          <fetcher.Form  >
             <div>
               <label htmlFor="contact-file">
                 <span>Upload a file</span>

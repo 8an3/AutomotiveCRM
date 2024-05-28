@@ -32,7 +32,7 @@ export async function loader({ request, params }: LoaderFunction) {
   if (!user) { redirect('/login') }
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const userEmail = user?.email
-  const deFees = await prisma.dealerFees.findUnique({ where: { userEmail: user.email } });
+  const deFees = await prisma.dealer.findUnique({ where: { userEmail: user.email } });
   const userId = user?.id
   const dataPDF = await getDailyPDF(userEmail)
   const statsData = await getMergedFinance(userEmail)
@@ -745,7 +745,7 @@ export const action: ActionFunction = async ({ request }) => {
   const Input = financeFormSchema.parse(formPayload)
   const intent = formPayload.intent
   if (intent === 'updateFees') {
-    const saveDealer = await prisma.dealerFees.update({
+    const saveDealer = await prisma.dealer.update({
       data: {
         userOMVIC: Input.userOMVIC,
         dealer: Input.dealer,
@@ -775,7 +775,7 @@ export const action: ActionFunction = async ({ request }) => {
     delete Input.intent;
 
 
-    const saveDealer = await prisma.dealerFees.update({
+    const saveDealer = await prisma.dealer.update({
       data: {
         userOMVIC: Input.userOMVIC,
         dealer: Input.dealer,

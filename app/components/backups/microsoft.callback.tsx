@@ -110,7 +110,7 @@ export async function loader({ request, params, req }: LoaderFunction) {
 
       }
     })
-    await prisma.dealerFees.create({
+    await prisma.dealer.create({
       data: {
         dealer: 'Auto Sales',
         dealerAddress: '1234 sales st',
@@ -546,11 +546,11 @@ export default async function GetProfile() {
 
       }
     })
-    let dealerFees = await prisma.dealerFees.findFirst({
+    let dealerFees = await prisma.dealer.findFirst({
       where: { userEmail: email },
     });
     if (!dealerFees) {
-      dealerFees = await prisma.dealerFees.create({
+      dealerFees = await prisma.dealer.create({
         data: {
           dealer: 'Auto Sales',
           dealerAddress: '1234 sales st',
@@ -983,7 +983,7 @@ export async function loader({ request, params, req }: LoaderFunction) {
 
       }
     })
-    await prisma.dealerFees.create({
+    await prisma.dealer.create({
       data: {
         dealer: 'Auto Sales',
         dealerAddress: '1234 sales st',

@@ -1186,7 +1186,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const docTemplates = await getDocsbyUserId(userId)
   const clientFile = await getClientFileById(clientfileId)
   const Coms = await getComsOverview(financeId)
-  const dealerFees = await prisma.dealerFees.findUnique({ where: { userEmail: user?.email } })
+  const dealerFees = await prisma.dealer.findUnique({ where: { userEmail: user?.email } })
   const dealerInfo = await prisma.dealerInfo.findFirst()
   // ------------------ nav
   const financeEmail = await prisma.finance.findFirst({ where: { id: financeId }, });

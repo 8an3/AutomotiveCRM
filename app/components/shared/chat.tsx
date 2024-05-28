@@ -25,7 +25,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const notifications = await prisma.notificationsUser.findMany({
     where: {
-      userId: user.id,
+      userEmail: email
     }
   })
   console.log(notifications, 'nmoti')

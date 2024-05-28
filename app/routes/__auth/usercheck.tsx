@@ -42,49 +42,47 @@ export async function loader({ request, params }: ActionFunction) {
   const name = session.get("name");
   try {
     let user = await GetUser(email);
-    if (user.email) {
-      console.log("found user");
-      session.set("email", email);
-      await CheckSub({ user });
-      const subscriptionId = user?.subscriptionId;
+    console.log("found user");
+    session.set("email", email);
+    await CheckSub(user);
+    const subscriptionId = user?.subscriptionId;
 
-      if (subscriptionId) {
-        console.log(subscriptionId, "checking subscription");
-        console.log(user?.returning, "returning");
-        if (user?.returning === true) {
-          if (subscriptionId === "trialing" || subscriptionId === "active") {
-            console.log("subscription valid1");
-            return redirect("/dealer/quote/Harley-Davidson", {
-              headers: { "Set-Cookie": await commitSession(session) },
-            });
-          } else {
-            console.log("subscription not valid2");
-            return redirect("/subscribe");
-          }
-        } else if (user?.returning === false) {
-          console.log(subscriptionId, "new user, checking new subscription3");
-          if (subscriptionId === "trialing" || subscriptionId === "active") {
-            console.log("new subscription valid4");
-            await updateUser({ email: user.email, returning: true });
-            return redirect("/dealer/user/dashboard/settings", {
-              headers: { "Set-Cookie": await commitSession(session) },
-            });
-          } else {
-            console.log("subscription not valid5");
-            return redirect("/subscribe");
-          }
+    if (subscriptionId) {
+      console.log(subscriptionId, "checking subscription");
+      console.log(user?.returning, "returning");
+      if (user?.returning === true) {
+        if (subscriptionId === "trialing" || subscriptionId === "active") {
+          console.log("subscription valid1");
+          return redirect("/dealer/quote/Harley-Davidson", {
+            headers: { "Set-Cookie": await commitSession(session) },
+          });
+        } else {
+          console.log("subscription not valid2");
+          return redirect("/subscribe");
         }
-      } else {
-        console.log("subscription not valid6");
-        return redirect("/subscribe");
+      } else if (user?.returning === false) {
+        console.log(subscriptionId, "new user, checking new subscription3");
+        if (subscriptionId === "trialing" || subscriptionId === "active") {
+          console.log("new subscription valid4");
+          await updateUser({ email: user.email, returning: true });
+          return redirect("/dealer/user/dashboard/settings", {
+            headers: { "Set-Cookie": await commitSession(session) },
+          });
+        } else {
+          console.log("subscription not valid5");
+          return redirect("/subscribe");
+        }
       }
-      return <p>failed check</p>;
+    } else {
+      console.log("subscription not valid6");
+      return redirect("/subscribe");
     }
+    return <p>failed check</p>;
   } catch (error) {
     const defaultUserRole = await prisma.userRole.findFirst({
       where: { symbol: "NORMAL" },
     });
-    user = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         name: name,
         username: email,
@@ -102,19 +100,12 @@ export async function loader({ request, params }: ActionFunction) {
         },
       },
     });
-    await prisma.userIntergration.create({
+    await prisma.dealer.create({
       data: {
-        userEmail: user.email,
-        activixActivated: "no",
-      },
-    });
-    await prisma.dealerFees.create({
-      data: {
-        dealer: "Auto Sales",
+        dealerName: "Auto Sales",
         dealerAddress: "1234 sales st",
         dealerProv: "ON",
         dealerPhone: "+14164164167",
-        omvicNumber: "123456",
         userLoanProt: 0,
         userTireandRim: "0",
         userGap: 0,
@@ -248,189 +239,10 @@ export async function loader({ request, params }: ActionFunction) {
         leadNote: null,
       },
     });
-    const dashboard = await prisma.dashboard.create({
-      data: {
-        financeId: finance.id,
-        //    financeManager: 'skylerzanth@outlook.com',
-        email: "skylerzanth@outlook.com",
-        firstName: "skyler",
-        lastName: "zanth",
-        phone: "6136134",
-        name: "skyler zanth",
-        address: "1234 st",
-        city: "Otawa",
-        postal: "k1j23V2",
-        province: "ON",
-        dl: "HS02QI3J0DF",
-        typeOfContact: "phone",
-        timeToContact: "Morning",
-        iRate: "10.99",
-        months: "60",
-        discount: "0",
-        total: null,
-        onTax: null,
-        on60: null,
-        biweekly: null,
-        weekly: null,
-        weeklyOth: null,
-        biweekOth: null,
-        oth60: null,
-        weeklyqc: null,
-        biweeklyqc: null,
-        qc60: null,
-        deposit: "0",
-        biweeklNatWOptions: null,
-        weeklylNatWOptions: null,
-        nat60WOptions: null,
-        weeklyOthWOptions: null,
-        biweekOthWOptions: null,
-        oth60WOptions: null,
-        biweeklNat: null,
-        weeklylNat: null,
-        nat60: null,
-        qcTax: null,
-        otherTax: null,
-        totalWithOptions: null,
-        otherTaxWithOptions: null,
-        desiredPayments: null,
-        freight: null,
-        admin: null,
-        commodity: null,
-        pdi: null,
-        discountPer: null,
-        userLoanProt: null,
-        userTireandRim: null,
-        userGap: null,
-        userExtWarr: null,
-        userServicespkg: null,
-        deliveryCharge: null,
-        vinE: null,
-        lifeDisability: null,
-        rustProofing: null,
-        userOther: null,
-        paintPrem: null,
-        licensing: null,
-        stockNum: null,
-        options: null,
-        accessories: null,
-        labour: null,
-        year: null,
-        brand: "Harley-Davidson",
-        model: "Low Rider S - Color - FXLRS",
-        model1: null,
-        color: null,
-        modelCode: null,
-        msrp: null,
-        userEmail: user.email,
-        tradeValue: "0",
-        tradeDesc: null,
-        tradeColor: null,
-        tradeYear: null,
-        tradeMake: null,
-        tradeVin: null,
-        tradeTrim: null,
-        tradeMileage: null,
-        trim: null,
-        vin: null,
-        leadNote: null,
-      },
-    });
-    await prisma.finance.update({
-      where: {
-        id: finance.id,
-      },
-      data: {
-        // clientfileId: client.id,
-        dashboardId: dashboard.id,
-        financeId: finance.id,
-        financeManager: "skylerzanth@outlook.com",
-        userEmail: user.email,
-      },
-    });
-    const aptsData = [
-      {
-        title: "Welcome new user! NEW LEAD",
-        content: "Welcome new user! NEW LEAD",
-        read: "false",
-        dimiss: "",
-        type: "New Lead",
-        financeId: finance.id,
-        clientfileId: clientfile.id,
-        to: "",
-        from: "",
-        userId: user.id,
-      },
-      {
-        title: "Welcome new user! MESSAGES",
-        content: "Welcome new user! MESSAGES",
-        read: "false",
-        dimiss: "",
-        type: "messages",
-        financeId: finance.id,
-        clientfileId: clientfile.id,
-        to: "",
-        from: "",
-        userId: user.id,
-      },
-      {
-        title: "Welcome new user! UPDATES",
-        content: "Welcome new user! UPDATES",
-        read: "false",
-        dimiss: "",
-        type: "updates",
-        financeId: finance.id,
-        clientfileId: clientfile.id,
-        to: "",
-        from: "",
-        userId: user.id,
-      },
-      {
-        title: "Welcome new user! EMAIL",
-        content: "Welcome new user! EMAIL",
-        read: "false",
-        dimiss: "",
-        type: "email",
-        financeId: finance.id,
-        clientfileId: clientfile.id,
-        to: "",
-        from: "",
-        userId: user.id,
-      },
-    ];
-    for (const clientApts of aptsData) {
-      const {
-        financeId,
-        contactMethod,
-        apptDay,
-        apptTime,
-        appointment,
-        completed,
-        apptStatus,
-        apptType,
-        notes,
-        userId,
-      } = clientApts;
-
-      await prisma.clientApts.create({
-        data: {
-          financeId,
-          contactMethod,
-          apptDay,
-          apptTime,
-          appointment,
-          completed,
-          apptStatus,
-          apptType,
-          notes,
-          userId,
-        },
-      });
-    }
-    console.log("found user");
+    console.log("create user");
     session.set("email", email);
     session.set("name", name);
-
-    return redirect("/usercheck");
+    console.log("User data:", user);
+    return json({ clientfile, finance }, redirect("/usercheck"))
   }
-  console.log("User data:", user);
 }

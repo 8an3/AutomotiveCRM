@@ -23,69 +23,72 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     let user = await GetUser(email);
     if (!user) { redirect('/login') }
-
+    const brandId = params.brandId
+    switch (user?.newLook) {
+        case 'on':
+            return redirect(`/dealer/quote/new/${brandId}`)
+        default:
+            null
+    }
     let modelList;
-    // MY 24
-    if (params.brandId === 'Harley-DavidsonMY24') {
-        modelList = await prisma.harley24.findMany()
-    }
-    if (params.brandId === 'Can-Am-SXS-MY24') {
-        modelList = await prisma.my24canam.findMany()
-    }
-    if (params.brandId === 'Ski-Doo-MY24') {
-        modelList = await prisma.my24canam.findMany()
-    }
-    // MY 23
-    if (params.brandId === 'Kawasaki') {
-        modelList = await prisma.kawasaki.findMany()
-    }
-    if (params.brandId === 'Manitou') {
-        modelList = await prisma.manitou.findMany()
-    }
-    if (params.brandId === 'Sea-Doo') {
-        modelList = await prisma.seadoo.findMany()
-    }
-    if (params.brandId === 'Switch') {
-        modelList = await prisma.switch.findMany()
-    }
-    if (params.brandId === 'Can-Am') {
-        modelList = await prisma.canam.findMany()
-    }
-    if (params.brandId === 'Can-Am-SXS') {
-        modelList = await prisma.canamsxs.findMany()
-    }
-    if (params.brandId === 'Switch') {
-        modelList = await prisma.switch.findMany()
-    }
-    if (params.brandId === 'KTM') {
-        modelList = await prisma.harley24.findMany()
-    }
-    if (params.brandId === 'Ski-Doo') {
-        modelList = await prisma.skidoo.findMany()
-    }
-    if (params.brandId === 'Suzuki') {
-        modelList = await prisma.suzuki.findMany()
-    }
-    if (params.brandId === 'Triumph') {
-        modelList = await prisma.triumph.findMany()
-    }
-    if (params.brandId === 'BMW-Motorrad') {
-        modelList = await prisma.bmwmoto.findMany()
-    }
-    if (params.brandId === 'Indian') {
-        modelList = await prisma.harley24.findMany()
-    }
-    if (params.brandId === 'Yamaha') {
-        modelList = await prisma.harley24.findMany()
-    }
-    if (params.brandId === 'Suzuki') {
-        modelList = await prisma.suzuki.findMany()
-    }
-    if (params.brandId === 'Spyder') {
-        modelList = await prisma.spyder.findMany()
-    }
-    if (params.brandId === 'Harley-Davidson') {
-        modelList = await prisma.harley.findMany()
+
+    switch (brandId) {
+        case 'Harley-DavidsonMY24':
+            modelList = await prisma.harley24.findMany()
+            break;
+        case 'Ski-Doo-MY24':
+            modelList = await prisma.my24canam.findMany()
+            break;
+        case 'Can-Am-SXS-MY24':
+            modelList = await prisma.my24canam.findMany()
+            break;
+        case 'Kawasaki':
+            modelList = await prisma.kawasaki.findMany()
+            break;
+        case 'Manitou':
+            modelList = await prisma.manitou.findMany()
+            break;
+        case 'Sea-Doo':
+            modelList = await prisma.seadoo.findMany()
+            break;
+        case 'Switch':
+            modelList = await prisma.switch.findMany()
+            break;
+        case 'Can-Am':
+            modelList = await prisma.canam.findMany()
+            break;
+        case 'Can-Am-SXS':
+            modelList = await prisma.canamsxs.findMany()
+            break;
+        case 'KTM':
+            modelList = await prisma.harley24.findMany()
+            break;
+        case 'Ski-Doo':
+            modelList = await prisma.skidoo.findMany()
+            break;
+        case 'Suzuki':
+            modelList = await prisma.suzuki.findMany()
+            break;
+        case 'Triumph':
+            modelList = await prisma.triumph.findMany()
+            break;
+        case 'BMW-Motorrad':
+            modelList = await prisma.bmwmoto.findMany()
+            break;
+        case 'Indian':
+            modelList = await prisma.harley24.findMany()
+            break;
+        case 'Yamaha':
+            modelList = await prisma.harley24.findMany()
+            break;
+        case 'Spyder':
+            modelList = await prisma.spyder.findMany()
+            break;
+        case 'Harley-Davidson':
+            modelList = await prisma.harley.findMany()
+            break;
+        default:
+            null
     }
 
     const userId = user?.id

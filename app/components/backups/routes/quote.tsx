@@ -45,7 +45,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
     const notifications = await prisma.notificationsUser.findMany({
         where: {
-            userId: user.id,
+            userEmail: email
         }
     })
     if (user?.subscriptionId === 'active' || user?.subscriptionId === 'trialing') {

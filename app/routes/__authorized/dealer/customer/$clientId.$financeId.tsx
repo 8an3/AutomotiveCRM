@@ -201,7 +201,9 @@ import UnitPicker from "~/components/dashboard/unitPicker/unitPicker";
 
 
 export default function Dashboard() {
-  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList } = useLoaderData();
+  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications } = useLoaderData();
+
+
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
   const submit = useSubmit();
@@ -217,9 +219,9 @@ export default function Dashboard() {
   useEffect(() => {
     const serializedUser = JSON.stringify(user);
     const cust = {
-      email: finance[0].email,
-      name: finance[0].name,
-      financeId: finance[0].financeId,
+      email: finance.email,
+      name: finance.name,
+      financeId: finance.financeId,
     }
     const serializedCust = JSON.stringify(cust);
     window.localStorage.setItem("user", serializedUser);
@@ -294,10 +296,10 @@ export default function Dashboard() {
 
 
   useEffect(() => {
-    if (finance[0].id) {
-      setFinanceIdState(finance[0].id)
+    if (finance.id) {
+      setFinanceIdState(finance.id)
     }
-  }, [finance[0].id]);
+  }, [finance.id]);
 
   let data = { ...finance, ...finance, ...user }
 
@@ -554,50 +556,50 @@ export default function Dashboard() {
   const isSubmitting = navigation.state === "submitting";
 
   const WantedData = [
-    { name: 'year', value: finance[0].year, placeholder: 'Year' },
-    { name: 'brand', value: finance[0].brand, placeholder: 'Brand' },
-    { name: 'model', value: finance[0].model, placeholder: 'Model' },
-    { name: 'trim', value: finance[0].submodel, placeholder: 'Trim' },
-    { name: 'stockNum', value: finance[0].stockNum, placeholder: 'Stock Number' },
-    { name: 'modelCode', value: finance[0].modelCode, placeholder: 'Model Code' },
-    { name: 'color', value: finance[0].color, placeholder: 'Color' },
-    { name: 'mileage', value: finance[0].mileage, placeholder: 'Mileage' },
-    { name: 'location', value: finance[0].location, placeholder: 'Location' },
-    { name: 'vin', value: finance[0].vin, placeholder: 'VIN' },
+    { name: 'year', value: finance.year, placeholder: 'Year' },
+    { name: 'brand', value: finance.brand, placeholder: 'Brand' },
+    { name: 'model', value: finance.model, placeholder: 'Model' },
+    { name: 'trim', value: finance.submodel, placeholder: 'Trim' },
+    { name: 'stockNum', value: finance.stockNum, placeholder: 'Stock Number' },
+    { name: 'modelCode', value: finance.modelCode, placeholder: 'Model Code' },
+    { name: 'color', value: finance.color, placeholder: 'Color' },
+    { name: 'mileage', value: finance.mileage, placeholder: 'Mileage' },
+    { name: 'location', value: finance.location, placeholder: 'Location' },
+    { name: 'vin', value: finance.vin, placeholder: 'VIN' },
   ]
   const TradeData = [
-    { name: 'tradeYear', value: finance[0].tradeYear, placeholder: 'Year' },
-    { name: 'tradeMake', value: finance[0].tradeMake, placeholder: 'Brand' },
-    { name: 'tradeDesc', value: finance[0].tradeDesc, placeholder: 'Model' },
-    { name: 'tradeTrim', value: finance[0].tradeTrim, placeholder: 'Trim' },
-    { name: 'tradeColor', value: finance[0].tradeColor, placeholder: 'Color' },
-    { name: 'tradeMileage', value: finance[0].tradeMileage, placeholder: 'Mileage' },
-    { name: 'tradeLocation', value: finance[0].tradeLocation, placeholder: 'Location' },
-    { name: 'tradeVin', value: finance[0].tradeVin, placeholder: 'VIN' },
+    { name: 'tradeYear', value: finance.tradeYear, placeholder: 'Year' },
+    { name: 'tradeMake', value: finance.tradeMake, placeholder: 'Brand' },
+    { name: 'tradeDesc', value: finance.tradeDesc, placeholder: 'Model' },
+    { name: 'tradeTrim', value: finance.tradeTrim, placeholder: 'Trim' },
+    { name: 'tradeColor', value: finance.tradeColor, placeholder: 'Color' },
+    { name: 'tradeMileage', value: finance.tradeMileage, placeholder: 'Mileage' },
+    { name: 'tradeLocation', value: finance.tradeLocation, placeholder: 'Location' },
+    { name: 'tradeVin', value: finance.tradeVin, placeholder: 'VIN' },
   ]
 
   const customerStates = [
-    { label: 'Reached', value: finance[0].reached, name: 'reached' },
-    { label: 'Attempted', value: finance[0].attempted, name: 'attempted' },
-    { label: 'Pending', value: finance[0].pending, name: 'pending' },
-    { label: 'Visited', value: finance[0].visited, name: 'visited' },
-    { label: 'Booked Apt', value: finance[0].bookedApt, name: 'bookedApt' },
-    { label: 'Apt Showed', value: finance[0].aptShowed, name: 'aptShowed' },
-    { label: 'Apt No Showed', value: finance[0].aptNoShowed, name: 'aptNoShowed' },
-    { label: 'Sold', value: finance[0].sold, name: 'sold' },
-    { label: 'Deposit', value: finance[0].deposit, name: 'deposit' },
-    { label: 'Turn Over', value: finance[0].turnOver, name: 'turnOver' },
-    { label: 'Application Done', value: finance[0].applicationDone, name: 'applicationDone' },
-    { label: 'Approved', value: finance[0].approved, name: 'approved' },
-    { label: 'Signed', value: finance[0].signed, name: 'signed' },
-    { label: 'Licensing Sent', value: finance[0].licensingSent, name: 'licensingSent' },
-    { label: 'Licening Done', value: finance[0].liceningDone, name: 'liceningDone' },
-    { label: 'Pick Up Set', value: finance[0].pickUpSet, name: 'pickUpSet' },
-    { label: 'Delivered', value: finance[0].delivered, name: 'delivered' },
-    { label: 'Refunded', value: finance[0].refunded, name: 'refunded' },
-    { label: 'Funded', value: finance[0].funded, name: 'funded' },
-    { label: 'Cancelled', value: finance[0].cancelled, name: 'cancelled' },
-    { label: 'Lost', value: finance[0].lost, name: 'lost' },
+    { label: 'Reached', value: finance.reached, name: 'reached' },
+    { label: 'Attempted', value: finance.attempted, name: 'attempted' },
+    { label: 'Pending', value: finance.pending, name: 'pending' },
+    { label: 'Visited', value: finance.visited, name: 'visited' },
+    { label: 'Booked Apt', value: finance.bookedApt, name: 'bookedApt' },
+    { label: 'Apt Showed', value: finance.aptShowed, name: 'aptShowed' },
+    { label: 'Apt No Showed', value: finance.aptNoShowed, name: 'aptNoShowed' },
+    { label: 'Sold', value: finance.sold, name: 'sold' },
+    { label: 'Deposit', value: finance.deposit, name: 'deposit' },
+    { label: 'Turn Over', value: finance.turnOver, name: 'turnOver' },
+    { label: 'Application Done', value: finance.applicationDone, name: 'applicationDone' },
+    { label: 'Approved', value: finance.approved, name: 'approved' },
+    { label: 'Signed', value: finance.signed, name: 'signed' },
+    { label: 'Licensing Sent', value: finance.licensingSent, name: 'licensingSent' },
+    { label: 'Licening Done', value: finance.liceningDone, name: 'liceningDone' },
+    { label: 'Pick Up Set', value: finance.pickUpSet, name: 'pickUpSet' },
+    { label: 'Delivered', value: finance.delivered, name: 'delivered' },
+    { label: 'Refunded', value: finance.refunded, name: 'refunded' },
+    { label: 'Funded', value: finance.funded, name: 'funded' },
+    { label: 'Cancelled', value: finance.cancelled, name: 'cancelled' },
+    { label: 'Lost', value: finance.lost, name: 'lost' },
 
   ];
 
@@ -610,7 +612,6 @@ export default function Dashboard() {
 
   const errors = useActionData() as Record<string, string | null>;
 
-  const { modelData, deFees, manOptions, bmwMoto, bmwMoto2, notifications } = useLoaderData()
   const toFormat = new Date();
   const today = toFormat.toISOString();
   let { brandId } = useParams()
@@ -633,11 +634,11 @@ export default function Dashboard() {
   console.log(deFees, finance, 'deFees')
   const initial = {
     userLabour: parseInt(deFees.userLabour) || 0,
-    accessories: finance[0].accessories ? parseFloat(finance[0].accessories) : 0,
-    labour: parseInt(finance[0].labour) || 0,
-    lien: parseInt(finance[0].lien) || 0,
-    msrp: parseInt(finance[0].msrp) || 0,
-    financeId: finance[0].id,
+    accessories: finance.accessories ? parseFloat(finance.accessories) : 0,
+    labour: parseInt(finance.labour) || 0,
+    lien: parseInt(finance.lien) || 0,
+    msrp: parseInt(finance.msrp) || 0,
+    financeId: finance.id,
     userDemo: parseFloat(deFees.userDemo) || 0,
     userGovern: parseFloat(deFees.userGovern) || 0,
     userGasOnDel: parseFloat(deFees.userGasOnDel) || 0,
@@ -654,70 +655,70 @@ export default function Dashboard() {
     userLoanProt: parseFloat(deFees.userLoanProt) || 0,
     userTireandRim: parseInt(deFees.userTireandRim) || 0,
     lifeDisability: parseInt(deFees.lifeDisability) || 0,
-    deliveryCharge: parseInt(finance[0].deliveryCharge) || 0,
-    brand: finance[0].brand,
+    deliveryCharge: parseInt(finance.deliveryCharge) || 0,
+    brand: finance.brand,
     paintPrem: 0, //parseInt(modelData.paintPrem) || 0,
     modelCode: 0, //modelData.modelCode || null,
-    model: finance[0].model,
-    color: finance[0].color,
-    stockNum: finance[0].stockNum,
-    trade: parseInt(finance[0].tradeValue) || 0,
+    model: finance.model,
+    color: finance.color,
+    stockNum: finance.stockNum,
+    trade: parseInt(finance.tradeValue) || 0,
     freight: parseInt(deFees.userFreight) || 0,
     licensing: parseInt(deFees.userLicensing) || 0,
-    licensingFinance: parseInt(finance[0].licensing) || 0,
+    licensingFinance: parseInt(finance.licensing) || 0,
     commodity: parseInt(deFees.userCommodity) || 0,
     pdi: parseInt(deFees.userPDI) || 0,
     admin: parseInt(deFees.userAdmin) || 0,
-    biweeklNatWOptions: parseInt(finance[0].biweeklNatWOptions) || 0,
-    nat60WOptions: parseInt(finance[0].nat60WOptions) || 0,
-    weeklylNatWOptions: parseInt(finance[0].weeklylNatWOptions) || 0,
+    biweeklNatWOptions: parseInt(finance.biweeklNatWOptions) || 0,
+    nat60WOptions: parseInt(finance.nat60WOptions) || 0,
+    weeklylNatWOptions: parseInt(finance.weeklylNatWOptions) || 0,
     userTireTax: parseInt(deFees.userTireTax) || 0,
-    nat60: parseInt(finance[0].nat60) || 0,
+    nat60: parseInt(finance.nat60) || 0,
     userOMVIC: parseInt(deFees.userOMVIC) || 0,
-    tradeValue: parseInt(finance[0].tradeValue) || 0,
-    deposit: parseInt(finance[0].deposit) || 500,
-    discount: parseInt(finance[0].discount) || 0,
-    iRate: parseInt(finance[0].iRate) || 10.99,
-    months: parseInt(finance[0].months) || 60,
-    discountPer: parseInt(finance[0].discountPer) || 0,
+    tradeValue: parseInt(finance.tradeValue) || 0,
+    deposit: parseInt(finance.deposit) || 500,
+    discount: parseInt(finance.discount) || 0,
+    iRate: parseInt(finance.iRate) || 10.99,
+    months: parseInt(finance.months) || 60,
+    discountPer: parseInt(finance.discountPer) || 0,
     biweeklyqc: 0,
     weeklyqc: 0,
     biweeklNat: 0,
     weeklylNat: 0,
     biweekOth: 0,
     weeklyOth: 0,
-    othTax: parseInt(finance[0].othTax) || 13,
-    firstName: finance[0].firstName,
-    lastName: finance[0].lastName,
+    othTax: parseInt(finance.othTax) || 13,
+    firstName: finance.firstName,
+    lastName: finance.lastName,
     panAmAdpRide: 0,
     panAmTubelessLacedWheels: 0,
     hdWarrAmount: 0,
 
-    referral: finance[0].referral,
-    visited: finance[0].visited,
-    bookedApt: finance[0].bookedApt,
-    aptShowed: finance[0].aptShowed,
-    aptNoShowed: finance[0].aptNoShowed,
-    testDrive: finance[0].testDrive,
-    seenTrade: finance[0].seenTrade,
-    metService: finance[0].metService,
-    metManager: finance[0].metManager,
-    metParts: finance[0].metParts,
-    sold: finance[0].sold,
-    //  deposit: finance[0].deposit,
-    refund: finance[0].refund,
-    turnOver: finance[0].turnOver,
-    financeApp: finance[0].financeApp,
-    approved: finance[0].approved,
-    signed: finance[0].signed,
-    licensingSent: finance[0].licensingSent,
-    liceningDone: finance[0].liceningDone,
-    pickUpSet: finance[0].pickUpSet,
-    demoed: finance[0].demoed,
-    delivered: finance[0].delivered,
-    funded: finance[0].funded,
-    cancelled: finance[0].cancelled,
-    lost: finance[0].lost,
+    referral: finance.referral,
+    visited: finance.visited,
+    bookedApt: finance.bookedApt,
+    aptShowed: finance.aptShowed,
+    aptNoShowed: finance.aptNoShowed,
+    testDrive: finance.testDrive,
+    seenTrade: finance.seenTrade,
+    metService: finance.metService,
+    metManager: finance.metManager,
+    metParts: finance.metParts,
+    sold: finance.sold,
+    //  deposit: finance.deposit,
+    refund: finance.refund,
+    turnOver: finance.turnOver,
+    financeApp: finance.financeApp,
+    approved: finance.approved,
+    signed: finance.signed,
+    licensingSent: finance.licensingSent,
+    liceningDone: finance.liceningDone,
+    pickUpSet: finance.pickUpSet,
+    demoed: finance.demoed,
+    delivered: finance.delivered,
+    funded: finance.funded,
+    cancelled: finance.cancelled,
+    lost: finance.lost,
   };
 
 
@@ -1392,7 +1393,7 @@ export default function Dashboard() {
 
   const numberOfMonths = parseInt(formData.months.toString())
   const msrp1 = (msrp * (100 - discountPer)) / 100;
-  const manitouRandomFees = (finance[0].brand === 'Manitou' ? 475 : 0)
+  const manitouRandomFees = (finance.brand === 'Manitou' ? 475 : 0)
 
   let essentials = 0
 
@@ -1604,8 +1605,8 @@ export default function Dashboard() {
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value, }))
   }
 
-  if (!finance[0].model1) {
-    const model1 = finance[0].model
+  if (!finance.model1) {
+    const model1 = finance.model
   }
 
   const [mainButton, setMainButton] = useState('payments');
@@ -1990,7 +1991,7 @@ export default function Dashboard() {
                                 </DropdownMenuCheckboxItem>
                               );
                             })}
-                            <input type='hidden' name='financeId' value={finance[0].id} />
+                            <input type='hidden' name='financeId' value={finance.id} />
 
 
                           </ScrollArea>
@@ -2011,7 +2012,7 @@ export default function Dashboard() {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to={`/dealer/quote/${finance[0].brand}`}>
+                  <Link to={`/dealer/quote/${finance.brand}`}>
                     Quote
                   </Link>
                 </BreadcrumbLink>
@@ -2019,7 +2020,7 @@ export default function Dashboard() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to={`/dealer/overview/${finance[0].brand}/${finance[0].id}`}>
+                  <Link to={`/dealer/overview/${finance.brand}/${finance.id}`}>
                     Overview
                   </Link>
                 </BreadcrumbLink>
@@ -2056,13 +2057,13 @@ export default function Dashboard() {
                       <span className="text-[#909098]">
                         First Name
                       </span>
-                      <span>{finance[0].firstName}</span>
+                      <span>{finance.firstName}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-[#909098]">
                         Last Name
                       </span>
-                      <span> {finance[0].lastName}</span>
+                      <span> {finance.lastName}</span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
@@ -2072,15 +2073,15 @@ export default function Dashboard() {
                         <Button
                           size="icon"
                           variant="outline"
-                          onClick={() => copyText(finance[0].phone)}
+                          onClick={() => copyText(finance.phone)}
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
                         >
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].phone && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.phone && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
                       </div>
-                      <span>{finance[0].phone}  </span>
+                      <span>{finance.phone}  </span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
@@ -2090,15 +2091,15 @@ export default function Dashboard() {
                         <Button
                           size="icon"
                           variant="outline"
-                          onClick={() => copyText(finance[0].email)}
+                          onClick={() => copyText(finance.email)}
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
                         >
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].email && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.email && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
                       </div>
-                      <span>{finance[0].email}  </span>
+                      <span>{finance.email}  </span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
@@ -2108,33 +2109,33 @@ export default function Dashboard() {
                         <Button
                           size="icon"
                           variant="outline"
-                          onClick={() => copyText(finance[0].address)}
+                          onClick={() => copyText(finance.address)}
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
                         >
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].address && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.address && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
                       </div>
-                      <span>{finance[0].address}  </span>
+                      <span>{finance.address}  </span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-[#909098]">
                         City
                       </span>
-                      <span>{finance[0].city}</span>
+                      <span>{finance.city}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-[#909098]">
                         Postal
                       </span>
-                      <span>{finance[0].postal}</span>
+                      <span>{finance.postal}</span>
                     </li>
                   </ul>
                 </CardContent>
                 <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
                   <div>
-                    <Badge >{finance[0].customerState}</Badge>
+                    <Badge >{finance.customerState}</Badge>
                   </div>
                   <Dialog  >
                     <DialogTrigger asChild>
@@ -2218,20 +2219,20 @@ export default function Dashboard() {
                           </div>
 
                         </div>
-                        <input type='hidden' name='phone' defaultValue={finance[0].phone} />
-                        <input type='hidden' name='email' defaultValue={finance[0].email} />
-                        <input type='hidden' name='lastName' defaultValue={finance[0].lastName} />
-                        <input type='hidden' name='firstName' defaultValue={finance[0].firstName} />
-                        <input type='hidden' name='brand' defaultValue={finance[0].brand} />
-                        <input type='hidden' name='unit' defaultValue={finance[0].model} />
-                        <input type='hidden' name='brand' defaultValue={finance[0].brand} />
-                        <input type='hidden' name='financeId' defaultValue={finance[0].id} />
+                        <input type='hidden' name='phone' defaultValue={finance.phone} />
+                        <input type='hidden' name='email' defaultValue={finance.email} />
+                        <input type='hidden' name='lastName' defaultValue={finance.lastName} />
+                        <input type='hidden' name='firstName' defaultValue={finance.firstName} />
+                        <input type='hidden' name='brand' defaultValue={finance.brand} />
+                        <input type='hidden' name='unit' defaultValue={finance.model} />
+                        <input type='hidden' name='brand' defaultValue={finance.brand} />
+                        <input type='hidden' name='financeId' defaultValue={finance.id} />
                         <input type='hidden' name='userId' defaultValue={user.id} />
                         <input type='hidden' name='apptType' defaultValue='sales' />
                         <input type='hidden' name='min' defaultValue={minForm} />
                         <input type='hidden' name='hour' defaultValue={hourForm} />
-                        <input type='hidden' name="dashboardId" defaultValue={finance[0].dashboardId} />
-                        <input type='hidden' name="clientId" defaultValue={finance[0].id} />
+                        <input type='hidden' name="dashboardId" defaultValue={finance.dashboardId} />
+                        <input type='hidden' name="clientId" defaultValue={finance.id} />
                         <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
 
                         <DialogFooter className=" border-t border-[#27272a] p-4  ">
@@ -2262,7 +2263,7 @@ export default function Dashboard() {
                                     name="intent"
                                     type="submit"
                                     isSubmitting={isSubmitting}
-                                    onClick={() => toast.success(`${finance[0].firstName}'s customer file is updated...`)}
+                                    onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
                                     loadingText={`${data.firstName}'s customer file is updated...`}
                                   >
                                     <AlertDialogAction>Continue
@@ -2303,13 +2304,13 @@ export default function Dashboard() {
                       <span className="text-[#909098]">
                         Year
                       </span>
-                      <span>{finance[0].year}</span>
+                      <span>{finance.year}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-[#909098]">
                         Brand
                       </span>
-                      <span>{finance[0].brand}</span>
+                      <span>{finance.brand}</span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
@@ -2319,22 +2320,22 @@ export default function Dashboard() {
                         <Button
                           size="icon"
                           variant="outline"
-                          onClick={() => copyText(finance[0].model)}
+                          onClick={() => copyText(finance.model)}
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
                         >
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
                       </div>
-                      <span>{finance[0].model}  </span>
+                      <span>{finance.model}  </span>
                     </li>
 
                     <li className="flex items-center justify-between">
                       <span className="text-[#909098]">
                         Color
                       </span>
-                      <span>{finance[0].color}</span>
+                      <span>{finance.color}</span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
@@ -2344,28 +2345,28 @@ export default function Dashboard() {
                         <Button
                           size="icon"
                           variant="outline"
-                          onClick={() => copyText(finance[0].vin)}
+                          onClick={() => copyText(finance.vin)}
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
                         >
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
                       </div>
-                      <span>{finance[0].vin}  </span>
+                      <span>{finance.vin}  </span>
                     </li>
 
                     <li className="flex items-center justify-between">
                       <span className="text-[#909098]">
                         Current Mileage
                       </span>
-                      <span>{finance[0].mileage}</span>
+                      <span>{finance.mileage}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-[#909098]">
                         Location
                       </span>
-                      <span>{finance[0].location}</span>
+                      <span>{finance.location}</span>
                     </li>
                   </ul>
 
@@ -2404,7 +2405,7 @@ export default function Dashboard() {
                               </div>
                             );
                           })}
-                        <input type="hidden" defaultValue={finance[0].id} name="financeId" />
+                        <input type="hidden" defaultValue={finance.id} name="financeId" />
 
                         <ButtonLoading
                           size="sm"
@@ -2413,14 +2414,15 @@ export default function Dashboard() {
                           name="intent"
                           type="submit"
                           isSubmitting={isSubmitting}
-                          onClick={() => toast.success(`${finance[0].firstName}'s customer file is updated...`)}
+                          onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
                           loadingText={`${data.firstName}'s customer file is updated...`}
                         >
                           Save
                           <FaSave className="h-4 w-4 ml-2" />
                         </ButtonLoading>
                       </Form>
-                    )}
+                    )
+                    }
                     {editProgress === false && (
                       items
                         .filter((item) => {
@@ -2556,7 +2558,7 @@ export default function Dashboard() {
                             <span className="sr-only sm:not-sr-only"> Sales Person</span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent align="end" className="text-[#fafafa] bg-[#09090b] border-[#27272a]">
                           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuCheckboxItem checked>
@@ -2682,7 +2684,7 @@ export default function Dashboard() {
                               </a>
                               <a
                                 className="mx-auto w-full"
-                                href={`/dealer/customer/${finance[0].clientfileId}/${finance[0].id}`}
+                                href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
                                 target="_blank"
                               >
                                 <DropdownMenuItem>Client File</DropdownMenuItem>
@@ -2703,7 +2705,7 @@ export default function Dashboard() {
                                   <input
                                     type="hidden"
                                     name="financeId"
-                                    value={finance[0].id}
+                                    value={finance.id}
                                   />
                                   <ButtonLoading
                                     size="lg"
@@ -2732,36 +2734,36 @@ export default function Dashboard() {
                               <div className="font-semibold">Payment Details</div>
                               <li className="flex items-center justify-between">
                                 <span className="text-[#8a8a93]">Brand</span>
-                                <span>{finance[0].brand}</span>
+                                <span>{finance.brand}</span>
                               </li>
                               <li className="flex items-center justify-between">
                                 <span className="text-[#8a8a93]">Model</span>
-                                <span> {finance[0].model}</span>
+                                <span> {finance.model}</span>
                               </li>
-                              {finance[0].brand !== "BMW-Motorrad" && (
+                              {finance.brand !== "BMW-Motorrad" && (
                                 <>
                                   <li className="flex items-center justify-between">
                                     <span className="text-[#8a8a93]">Color</span>
-                                    <span>{finance[0].color}</span>
+                                    <span>{finance.color}</span>
                                   </li>
                                 </>
                               )}
-                              {finance[0].modelCode !== null && (
+                              {finance.modelCode !== null && (
                                 <li className="flex items-center justify-between">
                                   <span className="text-[#8a8a93]">Model Code</span>
-                                  <span>{finance[0].modelCode}</span>
+                                  <span>{finance.modelCode}</span>
                                 </li>
                               )}
-                              {finance[0].modelCode !== null && (
+                              {finance.modelCode !== null && (
                                 <li className="flex items-center justify-between">
                                   <span className="text-[#8a8a93]">Year</span>
-                                  <span>{finance[0].year}</span>
+                                  <span>{finance.year}</span>
                                 </li>
                               )}
-                              {finance[0].stockNum !== null && (
+                              {finance.stockNum !== null && (
                                 <li className="flex items-center justify-between">
                                   <span className="text-[#8a8a93]">Stock Number</span>
-                                  <span>{finance[0].stockNum}</span>
+                                  <span>{finance.stockNum}</span>
                                 </li>
                               )}
 
@@ -3448,36 +3450,36 @@ export default function Dashboard() {
 
                                 <li className="flex items-center justify-between">
                                   <span className="text-[#8a8a93]">Brand</span>
-                                  <span>{finance[0].brand}</span>
+                                  <span>{finance.brand}</span>
                                 </li>
                                 <li className="flex items-center justify-between">
                                   <span className="text-[#8a8a93]">Model</span>
-                                  <span> {finance[0].model}</span>
+                                  <span> {finance.model}</span>
                                 </li>
-                                {finance[0].brand !== "BMW-Motorrad" && (
+                                {finance.brand !== "BMW-Motorrad" && (
                                   <>
                                     <li className="flex items-center justify-between">
                                       <span className="text-[#8a8a93]">Color</span>
-                                      <span>{finance[0].color}</span>
+                                      <span>{finance.color}</span>
                                     </li>
                                   </>
                                 )}
-                                {finance[0].modelCode !== null && (
+                                {finance.modelCode !== null && (
                                   <li className="flex items-center justify-between">
                                     <span className="text-[#8a8a93]">Model Code</span>
-                                    <span>{finance[0].modelCode}</span>
+                                    <span>{finance.modelCode}</span>
                                   </li>
                                 )}
-                                {finance[0].modelCode !== null && (
+                                {finance.modelCode !== null && (
                                   <li className="flex items-center justify-between">
                                     <span className="text-[#8a8a93]">Year</span>
-                                    <span>{finance[0].year}</span>
+                                    <span>{finance.year}</span>
                                   </li>
                                 )}
-                                {finance[0].stockNum !== null && (
+                                {finance.stockNum !== null && (
                                   <li className="flex items-center justify-between">
                                     <span className="text-[#8a8a93]">Stock Number</span>
-                                    <span>{finance[0].stockNum}</span>
+                                    <span>{finance.stockNum}</span>
                                   </li>
                                 )}
 
@@ -3529,13 +3531,13 @@ export default function Dashboard() {
                                   <span>${licensing}</span>
                                 </li>
 
-                                {finance[0].brand === 'Sea-Doo' && modelData.trailer > 0 && (
+                                {finance.brand === 'Sea-Doo' && modelData.trailer > 0 && (
                                   <li className="flex items-center justify-between font-semibold">
                                     <span className="text-[#8a8a93]">Trailer</span>
                                     <span>${modelData.trailer}</span>
                                   </li>
                                 )}
-                                {finance[0].brand === 'Triumph' && modelData.painPrem > 0 && (
+                                {finance.brand === 'Triumph' && modelData.painPrem > 0 && (
                                   <li className="flex items-center justify-between font-semibold">
                                     <span className="text-[#8a8a93]">Paint Premium</span>
                                     <span> ${modelData.painPrem}</span>
@@ -4183,26 +4185,7 @@ export default function Dashboard() {
                       <Card>
                         <CardContent>
                           <div className="space-y-4 mt-5">
-                            {messages.map((message, index) => (
-                              <div
-                                key={index}
-                                className={cn(
-                                  "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                  message.role === "user"
-                                    ? "ml-auto bg-[#dc2626] text-[#fafafa]"
-                                    : "bg-[#262626]"
-                                )}
-                              >
-                                <div className='grid grid-cols-1'>
-                                  {message.role !== "user" && (
-                                    <p className='text-[#8c8c8c]'>
-                                      {message.role}
-                                    </p>
-                                  )}
-                                  {message.content}
-                                </div>
-                              </div>
-                            ))}
+
                             {financeNotes.map((message, index) => (
                               <div
                                 key={index}
@@ -4342,10 +4325,10 @@ export default function Dashboard() {
                         defaultValue={clientFile.id}
                         name="customerId"
                       />
-                      <input type="hidden" defaultValue={finance[0].id} name="financeId" />
+                      <input type="hidden" defaultValue={finance.id} name="financeId" />
                       <Input
                         type="hidden"
-                        defaultValue={finance[0].name}
+                        defaultValue={finance.name}
                         name="name"
                       />
                       <Input
@@ -4462,7 +4445,7 @@ export default function Dashboard() {
                                             Delete
                                           </button>
                                         </DropdownMenuItem>
-                                        <input type='hidden' name='financeId' defaultValue={finance[0].id} />
+                                        <input type='hidden' name='financeId' defaultValue={finance.id} />
                                       </Form>
                                       <DropdownMenuItem>Edit</DropdownMenuItem>
                                       <DropdownMenuSeparator />
@@ -4698,14 +4681,14 @@ export default function Dashboard() {
                           </div>
                         </div>
                       </div>
-                      <input type='hidden' name='phone' defaultValue={finance[0].phone} />
-                      <input type='hidden' name='email' defaultValue={finance[0].email} />
-                      <input type='hidden' name='lastName' defaultValue={finance[0].lastName} />
-                      <input type='hidden' name='firstName' defaultValue={finance[0].firstName} />
-                      <input type='hidden' name='brand' defaultValue={finance[0].brand} />
-                      <input type='hidden' name='unit' defaultValue={finance[0].model} />
-                      <input type='hidden' name='brand' defaultValue={finance[0].brand} />
-                      <input type='hidden' name='financeId' defaultValue={finance[0].id} />
+                      <input type='hidden' name='phone' defaultValue={finance.phone} />
+                      <input type='hidden' name='email' defaultValue={finance.email} />
+                      <input type='hidden' name='lastName' defaultValue={finance.lastName} />
+                      <input type='hidden' name='firstName' defaultValue={finance.firstName} />
+                      <input type='hidden' name='brand' defaultValue={finance.brand} />
+                      <input type='hidden' name='unit' defaultValue={finance.model} />
+                      <input type='hidden' name='brand' defaultValue={finance.brand} />
+                      <input type='hidden' name='financeId' defaultValue={finance.id} />
                       <input type='hidden' name='userId' defaultValue={user.id} />
                       <input type='hidden' name='apptType' defaultValue='sales' />
                       <input type='hidden' name='min' defaultValue={minForm} />
@@ -4934,7 +4917,7 @@ export default function Dashboard() {
 
                           </div>
                           <DialogFooter className="flex items-center border-t border-[#27272a] p-4 sm:justify-between">
-                            <input type='hidden' name='financeId' defaultValue={finance[0].id} />
+                            <input type='hidden' name='financeId' defaultValue={finance.id} />
                             <input type='hidden' name='userId' defaultValue={user.id} />
 
                             <Button
@@ -5296,12 +5279,10 @@ export const links: LinksFunction = () => [
 
 async function GetMergedWithActivix(financeId) {
   try {
-    const financeData = await prisma.finance[0].findUnique({ where: { id: financeId, }, });
-    const dashData = await prisma.dashboard.findUnique({ where: { id: financeData.dashboardId, }, });
+    const financeData = await prisma.finance.findUnique({ where: { id: financeId, }, });
     const activixData = await prisma.activixLead.findUnique({ where: { financeId: financeId } })
     const newData = {
       ...activixData,
-      ...dashData,
       ...financeData,
     };
     console.log('newData:', newData);
@@ -5332,8 +5313,8 @@ async function PullActivix(financeData) {
   const formData = await CallActi();
   try {
     const activixIdString = formData?.id.toString()
-    const findFinance = await prisma.finance[0].findFirst({ where: { activixId: activixIdString } })
-    const financeData = await prisma.finance[0].update({
+    const findFinance = await prisma.finance.findFirst({ where: { activixId: activixIdString } })
+    const financeData = await prisma.finance.update({
       where: { id: findFinance?.id },
       data: {
         firstName: formData.first_name,
@@ -6169,7 +6150,11 @@ export async function loader({ params, request }: DataFunctionArgs) {
   if (!user) { redirect('/login') }
 
   const userId = user?.id
-  const deFees = await getDealerFeesbyEmail(user.email)
+  let deFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
+  if (!deFees) {
+    deFees = await prisma.dealer.findFirst();
+  }
+
   let clientfileId = undefined
   let { clientId, financeId } = params;
   if (clientfileId === undefined) { clientfileId = clientId }
@@ -6181,7 +6166,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
     finance = await GetMergedWithActivix(financeId)
     await UpdateClientFromActivix(finance)
   } else {
-    finance = await getMergedFinanceOnFinance(financeId)
+    finance = await prisma.finance.findUnique({ where: { id: financeId, }, });
   }
   const dashboardIdCookie = await prisma.finance.findUnique({ where: { id: financeId } })
   const SetClient66Cookie = await SetClient66(userId, clientId, financeId, dashboardIdCookie.dashboardId, request)
@@ -6191,8 +6176,11 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const docTemplates = await getDocsbyUserId(userId)
   const clientFile = await getClientFileById(clientfileId)
   const Coms = await getComsOverview(financeId)
-  const dealerFees = await prisma.dealerFees.findUnique({ where: { userEmail: user?.email } })
-  const dealerInfo = await prisma.dealerInfo.findFirst()
+  let dealerFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
+  if (!dealerFees) {
+    dealerFees = await prisma.dealer.findFirst();
+  }
+  const dealerInfo = dealerFees
   // ------------------ nav
   const financeEmail = await prisma.finance.findFirst({ where: { id: financeId }, });
   const financeList = await prisma.finance.findMany({ where: { email: financeEmail?.email }, });
@@ -6202,25 +6190,23 @@ export async function loader({ params, request }: DataFunctionArgs) {
   let merged
   if (user?.activixActivated === 'yes') {
     merged = {
-
-
-      tradeMileage: finance[0].tradeMileage,
+      tradeMileage: finance.tradeMileage,
       userName: user?.username,
-      year: finance[0].year === null ? ' ' : finance[0].year,
-      tradeYear: finance[0].tradeYear === null ? ' ' : finance[0].tradeYear,
-      vin: finance[0].vin === null ? ' ' : finance[0].vin,
-      tradeVin: finance[0].tradeVin === null ? ' ' : finance[0].tradeVin,
-      stockNum: finance[0].stockNum === null ? ' ' : finance[0].stockNum,
-      namextwar: finance[0].userExtWarr === null ? ' ' : 'Extended Warranty',
-      asdasd: finance[0].userOther === null ? ' ' : 'Other',
-      nameloan: finance[0].userLoanProt === null ? ' ' : 'Loan Protection',
-      namegap: finance[0].userGap === null ? ' ' : 'Gap Insurance',
-      nameTireandRim: finance[0].userTireandRim === null ? ' ' : 'Warranty',
-      namevinE: finance[0].vinE === null ? ' ' : 'Vin Etching',
-      namerust: finance[0].rustProofing === null ? ' asdasdsa' : 'Rust Proofing',
-      namelife: finance[0].lifeDisability === null ? ' ' : 'Life and Disability Ins.',
-      nameservice: finance[0].userServicespkg === null ? ' ' : 'Service Package',
-      namedelivery: finance[0].deliveryCharge === null ? ' ' : 'Delivery Charge',
+      year: finance.year === null ? ' ' : finance.year,
+      tradeYear: finance.tradeYear === null ? ' ' : finance.tradeYear,
+      vin: finance.vin === null ? ' ' : finance.vin,
+      tradeVin: finance.tradeVin === null ? ' ' : finance.tradeVin,
+      stockNum: finance.stockNum === null ? ' ' : finance.stockNum,
+      namextwar: finance.userExtWarr === null ? ' ' : 'Extended Warranty',
+      asdasd: finance.userOther === null ? ' ' : 'Other',
+      nameloan: finance.userLoanProt === null ? ' ' : 'Loan Protection',
+      namegap: finance.userGap === null ? ' ' : 'Gap Insurance',
+      nameTireandRim: finance.userTireandRim === null ? ' ' : 'Warranty',
+      namevinE: finance.vinE === null ? ' ' : 'Vin Etching',
+      namerust: finance.rustProofing === null ? ' asdasdsa' : 'Rust Proofing',
+      namelife: finance.lifeDisability === null ? ' ' : 'Life and Disability Ins.',
+      nameservice: finance.userServicespkg === null ? ' ' : 'Service Package',
+      namedelivery: finance.deliveryCharge === null ? ' ' : 'Delivery Charge',
       userGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : dealerFees?.userGovern,
       nameGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : 'Government Fees',
       userAirTax: Number(dealerFees?.userAirTax) < 0 ? ' ' : dealerFees?.userAirTax,
@@ -6237,40 +6223,40 @@ export async function loader({ params, request }: DataFunctionArgs) {
       nameOMVIC: Number(dealerFees?.userOMVIC) < 0 ? ' ' : 'OMVIC / Gov Fee',
       userDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : dealerFees?.userDemo,
       nameDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : 'Demonstration Fee',
-      discountPer: Number(finance[0].discountPer) < 0 ? ' ' : finance[0].discountPer,
-      namediscountPer: Number(finance[0].discountPer) < 0 ? ' ' : 'Discount %',
-      discount: Number(finance[0].discount) < 0 ? ' ' : finance[0].discount,
-      namediscount: Number(finance[0].discount) < 0 ? ' ' : 'Discount',
-      namefreight: Number(finance[0].freight) < 0 ? ' ' : 'Freight',
-      nameadmin: Number(finance[0].admin) < 0 ? ' ' : 'Admin',
-      namepdi: Number(finance[0].pdi) < 0 ? ' ' : 'PDI',
-      namcomm: Number(finance[0].commodity) < 0 ? ' ' : 'Commodity',
-      nameaccessories: Number(finance[0].accessories) < 0 ? ' ' : 'Other Accessories',
-      namelabour: Number(finance[0].labour) < 0 ? ' ' : 'Labour',
-      netDifference: (Number(finance[0].total) - Number(finance[0].tradeValue)),
-      hstSubTotal: (Number(finance[0].total) + Number(finance[0].onTax)),
-      withLicensing: (Number(finance[0].total) + Number(finance[0].onTax) + Number(finance[0].licensing)),
-      withLien: (Number(finance[0].total) + Number(finance[0].onTax) + Number(finance[0].licensing) + Number(finance[0].lien)),
-      payableAfterDel: (Number(finance[0].total) + Number(finance[0].onTax) + Number(finance[0].licensing) + Number(finance[0].lien) - Number(finance[0].deposit)),
+      discountPer: Number(finance.discountPer) < 0 ? ' ' : finance.discountPer,
+      namediscountPer: Number(finance.discountPer) < 0 ? ' ' : 'Discount %',
+      discount: Number(finance.discount) < 0 ? ' ' : finance.discount,
+      namediscount: Number(finance.discount) < 0 ? ' ' : 'Discount',
+      namefreight: Number(finance.freight) < 0 ? ' ' : 'Freight',
+      nameadmin: Number(finance.admin) < 0 ? ' ' : 'Admin',
+      namepdi: Number(finance.pdi) < 0 ? ' ' : 'PDI',
+      namcomm: Number(finance.commodity) < 0 ? ' ' : 'Commodity',
+      nameaccessories: Number(finance.accessories) < 0 ? ' ' : 'Other Accessories',
+      namelabour: Number(finance.labour) < 0 ? ' ' : 'Labour',
+      netDifference: (Number(finance.total) - Number(finance.tradeValue)),
+      hstSubTotal: (Number(finance.total) + Number(finance.onTax)),
+      withLicensing: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing)),
+      withLien: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing) + Number(finance.lien)),
+      payableAfterDel: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing) + Number(finance.lien) - Number(finance.deposit)),
 
       dealerName: dealerInfo?.dealerName,
       dealerAddress: dealerInfo?.dealerAddress,
       dealerProv: `${dealerInfo?.dealerCity}, ${dealerInfo?.dealerProv}, ${dealerInfo?.dealerPostal}`,
       dealerPhone: dealerInfo?.dealerPhone,
-      userLoanProt: finance[0].userLoanProt,
-      userTireandRim: finance[0].userTireandRim,
-      userGap: finance[0].userGap,
-      userExtWarr: finance[0].userExtWarr,
-      userServicespkg: finance[0].userServicespkg,
-      vinE: finance[0].vinE,
-      lifeDisability: finance[0].lifeDisability,
-      rustProofing: finance[0].rustProofing,
+      userLoanProt: finance.userLoanProt,
+      userTireandRim: finance.userTireandRim,
+      userGap: finance.userGap,
+      userExtWarr: finance.userExtWarr,
+      userServicespkg: finance.userServicespkg,
+      vinE: finance.vinE,
+      lifeDisability: finance.lifeDisability,
+      rustProofing: finance.rustProofing,
       userLicensing: dealerFees?.userLicensing,
       //  userFinance: dealerFees?.userFinance,
       //  userDemo: dealerFees?.userDemo,
       userGasOnDel: dealerFees?.userGasOnDel,
       //   userOMVIC: dealerFees?.userOMVIC,
-      userOther: finance[0].userOther,
+      userOther: finance.userOther,
       userTax: dealerFees?.userTax,
       //  userAirTax: dealerFees?.userAirTax,
       //  userTireTax: dealerFees?.userTireTax,
@@ -6282,141 +6268,141 @@ export async function loader({ params, request }: DataFunctionArgs) {
       // destinationCharge: dealerFees?.destinationCharge,
       userFreight: dealerFees?.userFreight,
       userAdmin: dealerFees?.userAdmin,
-      iRate: finance[0].iRate,
-      months: finance[0].months,
-      //  discount: finance[0].discount,
-      total: finance[0].total,
-      onTax: finance[0].onTax,
-      on60: finance[0].on60,
-      biweekly: finance[0].biweekly,
-      weekly: finance[0].weekly,
-      weeklyOth: finance[0].weeklyOth,
-      biweekOth: finance[0].biweekOth,
-      oth60: finance[0].oth60,
-      weeklyqc: finance[0].weeklyqc,
-      biweeklyqc: finance[0].biweeklyqc,
-      qc60: finance[0].qc60,
-      deposit: finance[0].deposit,
-      biweeklNatWOptions: finance[0].biweeklNatWOptions,
-      weeklylNatWOptions: finance[0].weeklylNatWOptions,
-      nat60WOptions: finance[0].nat60WOptions,
-      weeklyOthWOptions: finance[0].weeklyOthWOptions,
-      biweekOthWOptions: finance[0].biweekOthWOptions,
-      oth60WOptions: finance[0].oth60WOptions,
-      biweeklNat: finance[0].biweeklNat,
-      weeklylNat: finance[0].weeklylNat,
-      nat60: finance[0].nat60,
-      qcTax: finance[0].qcTax,
-      otherTax: finance[0].otherTax,
-      totalWithOptions: finance[0].totalWithOptions,
-      otherTaxWithOptions: finance[0].otherTaxWithOptions,
-      desiredPayments: finance[0].desiredPayments,
-      freight: finance[0].freight,
-      admin: finance[0].admin,
-      commodity: finance[0].commodity,
-      pdi: finance[0].pdi,
-      //   discountPer: finance[0].discountPer,
-      deliveryCharge: finance[0].deliveryCharge,
-      paintPrem: finance[0].paintPrem,
-      msrp: finance[0].msrp,
-      licensing: finance[0].licensing,
-      options: finance[0].options,
-      accessories: finance[0].accessories,
-      labour: finance[0].labour,
-      //year: finance[0].year,
-      brand: finance[0].brand,
-      model: finance[0].model,
-      //  stockNum: finance[0].stockNum,
-      model1: finance[0].model1,
-      color: finance[0].color,
-      modelCode: finance[0].modelCode,
-      tradeValue: finance[0].tradeValue,
-      tradeDesc: finance[0].tradeDesc,
-      tradeColor: finance[0].tradeColor,
-      //  tradeYear: finance[0].tradeYear,
-      tradeMake: finance[0].tradeMake,
-      //  tradeVin: finance[0].tradeVin,
-      tradeTrim: finance[0].tradeTrim,
-      //  tradeMileage: finance[0].tradeMileage,
-      trim: finance[0].trim,
-      //vin: finance[0].vin,
-      lien: finance[0].lien,
+      iRate: finance.iRate,
+      months: finance.months,
+      //  discount: finance.discount,
+      total: finance.total,
+      onTax: finance.onTax,
+      on60: finance.on60,
+      biweekly: finance.biweekly,
+      weekly: finance.weekly,
+      weeklyOth: finance.weeklyOth,
+      biweekOth: finance.biweekOth,
+      oth60: finance.oth60,
+      weeklyqc: finance.weeklyqc,
+      biweeklyqc: finance.biweeklyqc,
+      qc60: finance.qc60,
+      deposit: finance.deposit,
+      biweeklNatWOptions: finance.biweeklNatWOptions,
+      weeklylNatWOptions: finance.weeklylNatWOptions,
+      nat60WOptions: finance.nat60WOptions,
+      weeklyOthWOptions: finance.weeklyOthWOptions,
+      biweekOthWOptions: finance.biweekOthWOptions,
+      oth60WOptions: finance.oth60WOptions,
+      biweeklNat: finance.biweeklNat,
+      weeklylNat: finance.weeklylNat,
+      nat60: finance.nat60,
+      qcTax: finance.qcTax,
+      otherTax: finance.otherTax,
+      totalWithOptions: finance.totalWithOptions,
+      otherTaxWithOptions: finance.otherTaxWithOptions,
+      desiredPayments: finance.desiredPayments,
+      freight: finance.freight,
+      admin: finance.admin,
+      commodity: finance.commodity,
+      pdi: finance.pdi,
+      //   discountPer: finance.discountPer,
+      deliveryCharge: finance.deliveryCharge,
+      paintPrem: finance.paintPrem,
+      msrp: finance.msrp,
+      licensing: finance.licensing,
+      options: finance.options,
+      accessories: finance.accessories,
+      labour: finance.labour,
+      //year: finance.year,
+      brand: finance.brand,
+      model: finance.model,
+      //  stockNum: finance.stockNum,
+      model1: finance.model1,
+      color: finance.color,
+      modelCode: finance.modelCode,
+      tradeValue: finance.tradeValue,
+      tradeDesc: finance.tradeDesc,
+      tradeColor: finance.tradeColor,
+      //  tradeYear: finance.tradeYear,
+      tradeMake: finance.tradeMake,
+      //  tradeVin: finance.tradeVin,
+      tradeTrim: finance.tradeTrim,
+      //  tradeMileage: finance.tradeMileage,
+      trim: finance.trim,
+      //vin: finance.vin,
+      lien: finance.lien,
 
       date: new Date().toLocaleDateString(),
-      dl: finance[0].dl,
-      email: finance[0].email,
-      firstName: finance[0].firstName,
-      lastName: finance[0].lastName,
-      phone: finance[0].phone,
-      name: finance[0].name,
-      address: finance[0].address,
-      city: finance[0].city,
-      postal: finance[0].postal,
-      province: finance[0].province,
-      referral: finance[0].referral,
-      visited: finance[0].visited,
-      bookedApt: finance[0].bookedApt,
-      aptShowed: finance[0].aptShowed,
-      aptNoShowed: finance[0].aptNoShowed,
-      testDrive: finance[0].testDrive,
-      metService: finance[0].metService,
-      metManager: finance[0].metManager,
-      metParts: finance[0].metParts,
-      sold: finance[0].sold,
-      depositMade: finance[0].depositMade,
-      refund: finance[0].refund,
-      turnOver: finance[0].turnOver,
-      financeApp: finance[0].financeApp,
-      approved: finance[0].approved,
-      signed: finance[0].signed,
-      pickUpSet: finance[0].pickUpSet,
-      demoed: finance[0].demoed,
-      delivered: finance[0].delivered,
-      status: finance[0].status,
-      customerState: finance[0].customerState,
-      result: finance[0].result,
-      notes: finance[0].notes,
-      metSalesperson: finance[0].metSalesperson,
-      metFinance: finance[0].metFinance,
-      financeApplication: finance[0].financeApplication,
-      pickUpTime: finance[0].pickUpTime,
-      depositTakenDate: finance[0].depositTakenDate,
-      docsSigned: finance[0].docsSigned,
-      tradeRepairs: finance[0].tradeRepairs,
-      seenTrade: finance[0].seenTrade,
-      lastNote: finance[0].lastNote,
-      dLCopy: finance[0].dLCopy,
-      insCopy: finance[0].insCopy,
-      testDrForm: finance[0].testDrForm,
-      voidChq: finance[0].voidChq,
-      loanOther: finance[0].loanOther,
-      signBill: finance[0].signBill,
-      ucda: finance[0].ucda,
-      tradeInsp: finance[0].tradeInsp,
-      customerWS: finance[0].customerWS,
-      otherDocs: finance[0].otherDocs,
-      urgentFinanceNote: finance[0].urgentFinanceNote,
-      funded: finance[0].funded,
+      dl: finance.dl,
+      email: finance.email,
+      firstName: finance.firstName,
+      lastName: finance.lastName,
+      phone: finance.phone,
+      name: finance.name,
+      address: finance.address,
+      city: finance.city,
+      postal: finance.postal,
+      province: finance.province,
+      referral: finance.referral,
+      visited: finance.visited,
+      bookedApt: finance.bookedApt,
+      aptShowed: finance.aptShowed,
+      aptNoShowed: finance.aptNoShowed,
+      testDrive: finance.testDrive,
+      metService: finance.metService,
+      metManager: finance.metManager,
+      metParts: finance.metParts,
+      sold: finance.sold,
+      depositMade: finance.depositMade,
+      refund: finance.refund,
+      turnOver: finance.turnOver,
+      financeApp: finance.financeApp,
+      approved: finance.approved,
+      signed: finance.signed,
+      pickUpSet: finance.pickUpSet,
+      demoed: finance.demoed,
+      delivered: finance.delivered,
+      status: finance.status,
+      customerState: finance.customerState,
+      result: finance.result,
+      notes: finance.notes,
+      metSalesperson: finance.metSalesperson,
+      metFinance: finance.metFinance,
+      financeApplication: finance.financeApplication,
+      pickUpTime: finance.pickUpTime,
+      depositTakenDate: finance.depositTakenDate,
+      docsSigned: finance.docsSigned,
+      tradeRepairs: finance.tradeRepairs,
+      seenTrade: finance.seenTrade,
+      lastNote: finance.lastNote,
+      dLCopy: finance.dLCopy,
+      insCopy: finance.insCopy,
+      testDrForm: finance.testDrForm,
+      voidChq: finance.voidChq,
+      loanOther: finance.loanOther,
+      signBill: finance.signBill,
+      ucda: finance.ucda,
+      tradeInsp: finance.tradeInsp,
+      customerWS: finance.customerWS,
+      otherDocs: finance.otherDocs,
+      urgentFinanceNote: finance.urgentFinanceNote,
+      funded: finance.funded,
     }
   } else {
     merged = {
-      tradeMileage: finance[0].tradeMileage,
+      tradeMileage: finance.tradeMileage,
       userName: user?.username,
-      year: finance[0].year === null ? ' ' : finance[0].year,
-      tradeYear: finance[0].tradeYear === null ? ' ' : finance[0].tradeYear,
-      vin: finance[0].vin === null ? ' ' : finance[0].vin,
-      tradeVin: finance[0].tradeVin === null ? ' ' : finance[0].tradeVin,
-      stockNum: finance[0].stockNum === null ? ' ' : finance[0].stockNum,
-      namextwar: finance[0].userExtWarr === null ? ' ' : 'Extended Warranty',
-      asdasd: finance[0].userOther === null ? ' ' : 'Other',
-      nameloan: finance[0].userLoanProt === null ? ' ' : 'Loan Protection',
-      namegap: finance[0].userGap === null ? ' ' : 'Gap Insurance',
-      nameTireandRim: finance[0].userTireandRim === null ? ' ' : 'Warranty',
-      namevinE: finance[0].vinE === null ? ' ' : 'Vin Etching',
-      namerust: finance[0].rustProofing === null ? ' asdasdsa' : 'Rust Proofing',
-      namelife: finance[0].lifeDisability === null ? ' ' : 'Life and Disability Ins.',
-      nameservice: finance[0].userServicespkg === null ? ' ' : 'Service Package',
-      namedelivery: finance[0].deliveryCharge === null ? ' ' : 'Delivery Charge',
+      year: finance.year === null ? ' ' : finance.year,
+      tradeYear: finance.tradeYear === null ? ' ' : finance.tradeYear,
+      vin: finance.vin === null ? ' ' : finance.vin,
+      tradeVin: finance.tradeVin === null ? ' ' : finance.tradeVin,
+      stockNum: finance.stockNum === null ? ' ' : finance.stockNum,
+      namextwar: finance.userExtWarr === null ? ' ' : 'Extended Warranty',
+      asdasd: finance.userOther === null ? ' ' : 'Other',
+      nameloan: finance.userLoanProt === null ? ' ' : 'Loan Protection',
+      namegap: finance.userGap === null ? ' ' : 'Gap Insurance',
+      nameTireandRim: finance.userTireandRim === null ? ' ' : 'Warranty',
+      namevinE: finance.vinE === null ? ' ' : 'Vin Etching',
+      namerust: finance.rustProofing === null ? ' asdasdsa' : 'Rust Proofing',
+      namelife: finance.lifeDisability === null ? ' ' : 'Life and Disability Ins.',
+      nameservice: finance.userServicespkg === null ? ' ' : 'Service Package',
+      namedelivery: finance.deliveryCharge === null ? ' ' : 'Delivery Charge',
       userGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : dealerFees?.userGovern,
       nameGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : 'Government Fees',
       userAirTax: Number(dealerFees?.userAirTax) < 0 ? ' ' : dealerFees?.userAirTax,
@@ -6433,40 +6419,40 @@ export async function loader({ params, request }: DataFunctionArgs) {
       nameOMVIC: Number(dealerFees?.userOMVIC) < 0 ? ' ' : 'OMVIC / Gov Fee',
       userDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : dealerFees?.userDemo,
       nameDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : 'Demonstration Fee',
-      discountPer: Number(finance[0].discountPer) < 0 ? ' ' : finance[0].discountPer,
-      namediscountPer: Number(finance[0].discountPer) < 0 ? ' ' : 'Discount %',
-      discount: Number(finance[0].discount) < 0 ? ' ' : finance[0].discount,
-      namediscount: Number(finance[0].discount) < 0 ? ' ' : 'Discount',
-      namefreight: Number(finance[0].freight) < 0 ? ' ' : 'Freight',
-      nameadmin: Number(finance[0].admin) < 0 ? ' ' : 'Admin',
-      namepdi: Number(finance[0].pdi) < 0 ? ' ' : 'PDI',
-      namcomm: Number(finance[0].commodity) < 0 ? ' ' : 'Commodity',
-      nameaccessories: Number(finance[0].accessories) < 0 ? ' ' : 'Other Accessories',
-      namelabour: Number(finance[0].labour) < 0 ? ' ' : 'Labour',
-      netDifference: (Number(finance[0].total) - Number(finance[0].tradeValue)),
-      hstSubTotal: (Number(finance[0].total) + Number(finance[0].onTax)),
-      withLicensing: (Number(finance[0].total) + Number(finance[0].onTax) + Number(finance[0].licensing)),
-      withLien: (Number(finance[0].total) + Number(finance[0].onTax) + Number(finance[0].licensing) + Number(finance[0].lien)),
-      payableAfterDel: (Number(finance[0].total) + Number(finance[0].onTax) + Number(finance[0].licensing) + Number(finance[0].lien) - Number(finance[0].deposit)),
+      discountPer: Number(finance.discountPer) < 0 ? ' ' : finance.discountPer,
+      namediscountPer: Number(finance.discountPer) < 0 ? ' ' : 'Discount %',
+      discount: Number(finance.discount) < 0 ? ' ' : finance.discount,
+      namediscount: Number(finance.discount) < 0 ? ' ' : 'Discount',
+      namefreight: Number(finance.freight) < 0 ? ' ' : 'Freight',
+      nameadmin: Number(finance.admin) < 0 ? ' ' : 'Admin',
+      namepdi: Number(finance.pdi) < 0 ? ' ' : 'PDI',
+      namcomm: Number(finance.commodity) < 0 ? ' ' : 'Commodity',
+      nameaccessories: Number(finance.accessories) < 0 ? ' ' : 'Other Accessories',
+      namelabour: Number(finance.labour) < 0 ? ' ' : 'Labour',
+      netDifference: (Number(finance.total) - Number(finance.tradeValue)),
+      hstSubTotal: (Number(finance.total) + Number(finance.onTax)),
+      withLicensing: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing)),
+      withLien: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing) + Number(finance.lien)),
+      payableAfterDel: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing) + Number(finance.lien) - Number(finance.deposit)),
 
       dealerName: dealerInfo?.dealerName,
       dealerAddress: dealerInfo?.dealerAddress,
       dealerProv: `${dealerInfo?.dealerCity}, ${dealerInfo?.dealerProv}, ${dealerInfo?.dealerPostal}`,
       dealerPhone: dealerInfo?.dealerPhone,
-      userLoanProt: finance[0].userLoanProt,
-      userTireandRim: finance[0].userTireandRim,
-      userGap: finance[0].userGap,
-      userExtWarr: finance[0].userExtWarr,
-      userServicespkg: finance[0].userServicespkg,
-      vinE: finance[0].vinE,
-      lifeDisability: finance[0].lifeDisability,
-      rustProofing: finance[0].rustProofing,
+      userLoanProt: finance.userLoanProt,
+      userTireandRim: finance.userTireandRim,
+      userGap: finance.userGap,
+      userExtWarr: finance.userExtWarr,
+      userServicespkg: finance.userServicespkg,
+      vinE: finance.vinE,
+      lifeDisability: finance.lifeDisability,
+      rustProofing: finance.rustProofing,
       userLicensing: dealerFees?.userLicensing,
       //  userFinance: dealerFees?.userFinance,
       //  userDemo: dealerFees?.userDemo,
       userGasOnDel: dealerFees?.userGasOnDel,
       //   userOMVIC: dealerFees?.userOMVIC,
-      userOther: finance[0].userOther,
+      userOther: finance.userOther,
       userTax: dealerFees?.userTax,
       //  userAirTax: dealerFees?.userAirTax,
       //  userTireTax: dealerFees?.userTireTax,
@@ -6478,121 +6464,121 @@ export async function loader({ params, request }: DataFunctionArgs) {
       // destinationCharge: dealerFees?.destinationCharge,
       userFreight: dealerFees?.userFreight,
       userAdmin: dealerFees?.userAdmin,
-      iRate: finance[0].iRate,
-      months: finance[0].months,
-      //  discount: finance[0].discount,
-      total: finance[0].total,
-      onTax: finance[0].onTax,
-      on60: finance[0].on60,
-      biweekly: finance[0].biweekly,
-      weekly: finance[0].weekly,
-      weeklyOth: finance[0].weeklyOth,
-      biweekOth: finance[0].biweekOth,
-      oth60: finance[0].oth60,
-      weeklyqc: finance[0].weeklyqc,
-      biweeklyqc: finance[0].biweeklyqc,
-      qc60: finance[0].qc60,
-      deposit: finance[0].deposit,
-      biweeklNatWOptions: finance[0].biweeklNatWOptions,
-      weeklylNatWOptions: finance[0].weeklylNatWOptions,
-      nat60WOptions: finance[0].nat60WOptions,
-      weeklyOthWOptions: finance[0].weeklyOthWOptions,
-      biweekOthWOptions: finance[0].biweekOthWOptions,
-      oth60WOptions: finance[0].oth60WOptions,
-      biweeklNat: finance[0].biweeklNat,
-      weeklylNat: finance[0].weeklylNat,
-      nat60: finance[0].nat60,
-      qcTax: finance[0].qcTax,
-      otherTax: finance[0].otherTax,
-      totalWithOptions: finance[0].totalWithOptions,
-      otherTaxWithOptions: finance[0].otherTaxWithOptions,
-      desiredPayments: finance[0].desiredPayments,
-      freight: finance[0].freight,
-      admin: finance[0].admin,
-      commodity: finance[0].commodity,
-      pdi: finance[0].pdi,
-      //   discountPer: finance[0].discountPer,
-      deliveryCharge: finance[0].deliveryCharge,
-      paintPrem: finance[0].paintPrem,
-      msrp: finance[0].msrp,
-      licensing: finance[0].licensing,
-      options: finance[0].options,
-      accessories: finance[0].accessories,
-      labour: finance[0].labour,
-      //year: finance[0].year,
-      brand: finance[0].brand,
-      model: finance[0].model,
-      //  stockNum: finance[0].stockNum,
-      model1: finance[0].model1,
-      color: finance[0].color,
-      modelCode: finance[0].modelCode,
-      tradeValue: finance[0].tradeValue,
-      tradeDesc: finance[0].tradeDesc,
-      tradeColor: finance[0].tradeColor,
-      //  tradeYear: finance[0].tradeYear,
-      tradeMake: finance[0].tradeMake,
-      //  tradeVin: finance[0].tradeVin,
-      tradeTrim: finance[0].tradeTrim,
-      //  tradeMileage: finance[0].tradeMileage,
-      trim: finance[0].trim,
-      //vin: finance[0].vin,
-      lien: finance[0].lien,
+      iRate: finance.iRate,
+      months: finance.months,
+      //  discount: finance.discount,
+      total: finance.total,
+      onTax: finance.onTax,
+      on60: finance.on60,
+      biweekly: finance.biweekly,
+      weekly: finance.weekly,
+      weeklyOth: finance.weeklyOth,
+      biweekOth: finance.biweekOth,
+      oth60: finance.oth60,
+      weeklyqc: finance.weeklyqc,
+      biweeklyqc: finance.biweeklyqc,
+      qc60: finance.qc60,
+      deposit: finance.deposit,
+      biweeklNatWOptions: finance.biweeklNatWOptions,
+      weeklylNatWOptions: finance.weeklylNatWOptions,
+      nat60WOptions: finance.nat60WOptions,
+      weeklyOthWOptions: finance.weeklyOthWOptions,
+      biweekOthWOptions: finance.biweekOthWOptions,
+      oth60WOptions: finance.oth60WOptions,
+      biweeklNat: finance.biweeklNat,
+      weeklylNat: finance.weeklylNat,
+      nat60: finance.nat60,
+      qcTax: finance.qcTax,
+      otherTax: finance.otherTax,
+      totalWithOptions: finance.totalWithOptions,
+      otherTaxWithOptions: finance.otherTaxWithOptions,
+      desiredPayments: finance.desiredPayments,
+      freight: finance.freight,
+      admin: finance.admin,
+      commodity: finance.commodity,
+      pdi: finance.pdi,
+      //   discountPer: finance.discountPer,
+      deliveryCharge: finance.deliveryCharge,
+      paintPrem: finance.paintPrem,
+      msrp: finance.msrp,
+      licensing: finance.licensing,
+      options: finance.options,
+      accessories: finance.accessories,
+      labour: finance.labour,
+      //year: finance.year,
+      brand: finance.brand,
+      model: finance.model,
+      //  stockNum: finance.stockNum,
+      model1: finance.model1,
+      color: finance.color,
+      modelCode: finance.modelCode,
+      tradeValue: finance.tradeValue,
+      tradeDesc: finance.tradeDesc,
+      tradeColor: finance.tradeColor,
+      //  tradeYear: finance.tradeYear,
+      tradeMake: finance.tradeMake,
+      //  tradeVin: finance.tradeVin,
+      tradeTrim: finance.tradeTrim,
+      //  tradeMileage: finance.tradeMileage,
+      trim: finance.trim,
+      //vin: finance.vin,
+      lien: finance.lien,
 
       date: new Date().toLocaleDateString(),
-      dl: finance[0].dl,
-      email: finance[0].email,
-      firstName: finance[0].firstName,
-      lastName: finance[0].lastName,
-      phone: finance[0].phone,
-      name: finance[0].name,
-      address: finance[0].address,
-      city: finance[0].city,
-      postal: finance[0].postal,
-      province: finance[0].province,
-      referral: finance[0].referral,
-      visited: finance[0].visited,
-      bookedApt: finance[0].bookedApt,
-      aptShowed: finance[0].aptShowed,
-      aptNoShowed: finance[0].aptNoShowed,
-      testDrive: finance[0].testDrive,
-      metService: finance[0].metService,
-      metManager: finance[0].metManager,
-      metParts: finance[0].metParts,
-      sold: finance[0].sold,
-      depositMade: finance[0].depositMade,
-      refund: finance[0].refund,
-      turnOver: finance[0].turnOver,
-      financeApp: finance[0].financeApp,
-      approved: finance[0].approved,
-      signed: finance[0].signed,
-      pickUpSet: finance[0].pickUpSet,
-      demoed: finance[0].demoed,
-      delivered: finance[0].delivered,
-      status: finance[0].status,
-      customerState: finance[0].customerState,
-      result: finance[0].result,
-      notes: finance[0].notes,
-      metSalesperson: finance[0].metSalesperson,
-      metFinance: finance[0].metFinance,
-      financeApplication: finance[0].financeApplication,
-      pickUpTime: finance[0].pickUpTime,
-      depositTakenDate: finance[0].depositTakenDate,
-      docsSigned: finance[0].docsSigned,
-      tradeRepairs: finance[0].tradeRepairs,
-      seenTrade: finance[0].seenTrade,
-      lastNote: finance[0].lastNote,
-      dLCopy: finance[0].dLCopy,
-      insCopy: finance[0].insCopy,
-      testDrForm: finance[0].testDrForm,
-      voidChq: finance[0].voidChq,
-      loanOther: finance[0].loanOther,
-      signBill: finance[0].signBill,
-      ucda: finance[0].ucda,
-      tradeInsp: finance[0].tradeInsp,
-      customerWS: finance[0].customerWS,
-      otherDocs: finance[0].otherDocs,
-      urgentFinanceNote: finance[0].urgentFinanceNote,
-      funded: finance[0].funded,
+      dl: finance.dl,
+      email: finance.email,
+      firstName: finance.firstName,
+      lastName: finance.lastName,
+      phone: finance.phone,
+      name: finance.name,
+      address: finance.address,
+      city: finance.city,
+      postal: finance.postal,
+      province: finance.province,
+      referral: finance.referral,
+      visited: finance.visited,
+      bookedApt: finance.bookedApt,
+      aptShowed: finance.aptShowed,
+      aptNoShowed: finance.aptNoShowed,
+      testDrive: finance.testDrive,
+      metService: finance.metService,
+      metManager: finance.metManager,
+      metParts: finance.metParts,
+      sold: finance.sold,
+      depositMade: finance.depositMade,
+      refund: finance.refund,
+      turnOver: finance.turnOver,
+      financeApp: finance.financeApp,
+      approved: finance.approved,
+      signed: finance.signed,
+      pickUpSet: finance.pickUpSet,
+      demoed: finance.demoed,
+      delivered: finance.delivered,
+      status: finance.status,
+      customerState: finance.customerState,
+      result: finance.result,
+      notes: finance.notes,
+      metSalesperson: finance.metSalesperson,
+      metFinance: finance.metFinance,
+      financeApplication: finance.financeApplication,
+      pickUpTime: finance.pickUpTime,
+      depositTakenDate: finance.depositTakenDate,
+      docsSigned: finance.docsSigned,
+      tradeRepairs: finance.tradeRepairs,
+      seenTrade: finance.seenTrade,
+      lastNote: finance.lastNote,
+      dLCopy: finance.dLCopy,
+      insCopy: finance.insCopy,
+      testDrForm: finance.testDrForm,
+      voidChq: finance.voidChq,
+      loanOther: finance.loanOther,
+      signBill: finance.signBill,
+      ucda: finance.ucda,
+      tradeInsp: finance.tradeInsp,
+      customerWS: finance.customerWS,
+      otherDocs: finance.otherDocs,
+      urgentFinanceNote: finance.urgentFinanceNote,
+      funded: finance.funded,
 
 
 

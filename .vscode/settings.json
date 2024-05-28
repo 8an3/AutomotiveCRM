@@ -41,5 +41,16 @@
     "titleBar.activeForeground": "#15202b",
     "titleBar.inactiveBackground": "#3399cc99",
     "titleBar.inactiveForeground": "#15202b99"
-  }
+  },
+  "automaton.list": {
+    "commentDown": {
+        "description" : "Fold MOTHERFUCKER!@",
+
+        "action" :[
+                "editor.foldLevel1",
+                "editor.foldLevel2"
+            ]
+
+    },
+}
 }

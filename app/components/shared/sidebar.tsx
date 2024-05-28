@@ -32,6 +32,8 @@ export default function Sidebar(user, email) {
   const [isActive, setIsActive] = useState(false);
   const location = useLocation()
   const pathname = location.pathname
+  let quoteUrl = '/dealer/quote/'
+
 
   const handleButtonClick = (e) => {
     e.preventDefault();
@@ -55,7 +57,7 @@ export default function Sidebar(user, email) {
     const pathname = location.pathname
     console.log(pathname)
     return (
-      <nav className={cn("flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1", className)} {...props} >
+      <nav className={cn("flex space-x-2 flex-col lg:space-x-0 lg:space-y-1", className)} {...props} >
         {items.map((item) => (
           <Link
             to={item.to}
@@ -69,7 +71,7 @@ export default function Sidebar(user, email) {
                   buttonVariants({ variant: 'ghost' }),
                   pathname === item.to
                     ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                    : "hover:bg-[#232324]  w-[90%]  ",
+                    : "hover:bg-[#232324] text-[#a1a1aa]  w-[90%]  ",
                   "justify-start w-[90%]"
                 )} >
                 {item.title}
@@ -81,6 +83,117 @@ export default function Sidebar(user, email) {
       </nav>
     )
   }
+  const my24Watercraft = [
+    {
+      title: "Kawasaki",
+      to: quoteUrl + "Kawasaki",
+    },
+  ]
+  const my23Watercraft = [
+    {
+      title: "Kawasaki",
+      to: quoteUrl + "Kawasaki",
+    },
+    {
+      title: "Manitou",
+      to: quoteUrl + "Manitou",
+    },
+    {
+      title: "Sea-Doo",
+      to: quoteUrl + "Sea-Doo",
+    },
+    {
+      title: "Sea-Doo Switch",
+      to: quoteUrl + "Switch",
+    },
+
+  ]
+  const my24Moto = [
+    {
+      title: "Harley-Davidson",
+      to: quoteUrl + "Harley-DavidsonMY24",
+    },
+  ]
+  const my23Moto = [
+    {
+      title: "BMW Motorrad",
+      to: quoteUrl + "BMW-Motorrad",
+    },
+    {
+      title: "Harley-Davidson",
+      to: quoteUrl + "Harley-Davidson",
+    },
+    {
+      title: "Kawasaki",
+      to: quoteUrl + "Kawasaki",
+    },
+    {
+      title: "KTM",
+      to: quoteUrl + "KTM",
+    },
+    {
+      title: "Indian",
+      to: quoteUrl + "Indian",
+    },
+    {
+      title: "Suzuki",
+      to: quoteUrl + "Suzuki",
+    },
+    {
+      title: "Spyder",
+      to: quoteUrl + "Spyder",
+    },
+    {
+      title: "Triumph",
+      to: quoteUrl + "Triumph",
+    },
+    {
+      title: "Yamaha",
+      to: quoteUrl + "Yamaha",
+    },
+
+  ]
+  const my24OffRoad = [
+    {
+      title: "Can-AM SxS",
+      to: quoteUrl + "Can-Am-SXS-MY24",
+    },
+    {
+      title: "Can-AM Ski-Doo",
+      to: quoteUrl + "Ski-Doo-MY24",
+    },
+  ]
+  const my23OffRoad = [
+    {
+      title: "Can-AM",
+      to: quoteUrl + "Can-Am",
+    },
+    {
+      title: "Can-AM SXS",
+      to: quoteUrl + "Can-Am-SXS",
+    },
+    {
+      title: "KTM",
+      to: quoteUrl + "KTM",
+    },
+    {
+      title: "Kawasaki",
+      to: quoteUrl + "Kawasaki",
+    },
+    {
+      title: "Ski-Doo",
+      to: quoteUrl + "Ski-Doo",
+    },
+    {
+      title: "Suzuki",
+      to: quoteUrl + "Suzuki",
+    },
+    {
+      title: "Triumph",
+      to: quoteUrl + "Triumph",
+    },
+  ]
+
   return (
     <>
       <Sheet >
@@ -347,7 +460,7 @@ export default function Sidebar(user, email) {
             </TabsContent>
             <TabsContent value="Contact">
               <>
-                <div className="border-none p-0">
+                <div className="border-none p-0 text-[#fafafa]">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <h2 className="text-2xl font-thin text-[#fafafa]">
@@ -355,20 +468,29 @@ export default function Sidebar(user, email) {
                       </h2>
                       <p className="text-sm dark:text-black text-[#fafafa]">
                         If a feature could help you sell more, but we dont have it? Let us
-                        know, we can implement it.
+                        know, we can implement it. Or would like to submit a script or maybe you found a bug, let us know!
                       </p>
                     </div>
                   </div>
                   <hr className="solid mt-4 mb-4" />
                   <fetcher.Form method="post" action='/dealer/emails/send/contact'>
-                    <TextArea
-                      placeholder="Type your message here."
-                      name="customContent"
-                      className="h-[200px]     w-[95%]"
-                    />
-                    <Input name="userFname" className="w-[95%]" placeholder="John Doe" />
-                    <Input name="userEmail" className="w-[95%]" placeholder="johndoe@gmail.com" />
-                    <Button name='intent' value='contactForm' type='submit' className="bg-[#02a9ff] mt-3 w-[75px] ml-2  mr-2 text-[#fafafa]  active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+                    <div className="relative mt-5">
+                      <TextArea
+                        placeholder="Type your message here."
+                        name="customContent"
+                        className="h-[200px]     w-[95%] border-[#27272a] bg-[#09090b]"
+                      />
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Message Body</label>
+                    </div>
+                    <div className="relative mt-5">
+                      <Input name="userFname" className="w-[95%] border-[#27272a] bg-[#09090b]" />
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Name</label>
+                    </div>
+                    <div className="relative mt-5">
+                      <Input name="userEmail" className="w-[95%] border-[#27272a] bg-[#09090b]" />
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                    </div>
+                    <Button name='intent' value='contactForm' type='submit' className="bg-[#ff0000] mt-3 w-[75px] ml-2  mr-2 text-[#fafafa]    font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
                       onClick={() => {
                         toast.success('Event has been created')
                       }}
@@ -377,29 +499,7 @@ export default function Sidebar(user, email) {
                     </Button>
                   </fetcher.Form>
                 </div>
-                <div className="mt-[50px] mx-auto ">
-                  <h2 className="text-2xl font-thin text-[#fafafa]">
-                    Scripts, closes and rebuttals
-                  </h2>
-                  <p className="text-sm text-[#fafafa]">
-                    The tool box is there so
-                    you and other sales people can refer to it whenever you need it.
-                  </p>
-                  <Form method="post" action="/dealeremails/send/contact">
-                    <Textarea placeholder="Type your message here." name="customContent" className="h-[200px] w-[95%]" />
-                    <Input name="userFname" className="w-[95%]" placeholder="John Doe" />
-                    <Input name="userEmail" className="w-[95%]" placeholder="johndoe@gmail.com" />
-                    <Input type="hidden" name="userFname" value='test' />
 
-                    <Button name='intent' value='scriptForm' type='submit' className="mt-3 bg-[#02a9ff] w-[75px] ml-2  mr-2 text-[#fafafa]  active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" onClick={() => {
-                      toast.success('Event has been created')
-
-                    }}  >
-                      Email
-                    </Button>
-
-                  </Form>
-                </div>
               </>
             </TabsContent>
           </Tabs>
@@ -547,116 +647,6 @@ export const managerSidebarNav = [
   {
     title: "Import / Export",
     to: "/dealer/manager/importExport",
-  },
-]
-export const my24Watercraft = [
-  {
-    title: "Dashboard",
-    to: "/dealer/manager/dashboard",
-  },
-]
-export const my23Watercraft = [
-  {
-    title: "Kawasaki",
-    to: "/dealer/quote/Kawasaki",
-  },
-  {
-    title: "Manitou",
-    to: "/dealer/quote/Manitou",
-  },
-  {
-    title: "Sea-Doo",
-    to: "/dealer/quote/Sea-Doo",
-  },
-  {
-    title: "Sea-Doo Switch",
-    to: "/dealer/quote/Switch",
-  },
-
-]
-export const my24Moto = [
-  {
-    title: "Harley-Davidson",
-    to: "/dealer/quote/Harley-DavidsonMY24",
-  },
-]
-export const my23Moto = [
-  {
-    title: "BMW Motorrad",
-    to: "/dealer/quote/BMW-Motorrad",
-  },
-  {
-    title: "Harley-Davidson",
-    to: "/dealer/quote/Harley-Davidson",
-  },
-  {
-    title: "Kawasaki",
-    to: "/dealer/quote/Kawasaki",
-  },
-  {
-    title: "KTM",
-    to: "/dealer/quote/KTM",
-  },
-  {
-    title: "Indian",
-    to: "/dealer/quote/Indian",
-  },
-  {
-    title: "Suzuki",
-    to: "/dealer/quote/Suzuki",
-  },
-  {
-    title: "Spyder",
-    to: "/dealer/quote/Spyder",
-  },
-  {
-    title: "Triumph",
-    to: "/dealer/quote/Triumph",
-  },
-  {
-    title: "Yamaha",
-    to: "/dealer/quote/Yamaha",
-  },
-
-]
-export const my24OffRoad = [
-  {
-    title: "Can-AM SxS",
-    to: "/dealer/quote/Can-Am-SXS-MY24",
-  },
-  {
-    title: "Can-AM Ski-Doo",
-    to: "/dealer/quote/Ski-Doo-MY24",
-  },
-]
-export const my23OffRoad = [
-  {
-    title: "Can-AM",
-    to: "/dealer/quote/Can-Am",
-  },
-  {
-    title: "Can-AM SXS",
-    to: "/dealer/quote/Can-Am-SXS",
-  },
-  {
-    title: "KTM",
-    to: "/dealer/quote/KTM",
-  },
-  {
-    title: "Kawasaki",
-    to: "/dealer/quote/Kawasaki",
-  },
-  {
-    title: "Ski-Doo",
-    to: "/dealer/quote/Ski-Doo",
-  },
-  {
-    title: "Suzuki",
-    to: "/dealer/quote/Suzuki",
-  },
-  {
-    title: "Triumph",
-    to: "/dealer/quote/Triumph",
   },
 ]
 

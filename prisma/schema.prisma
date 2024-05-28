@@ -27,23 +27,42 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name                  String
-  username              String   @unique
-  email                 String   @unique(map: "User.email_unique")
-  phone                 String?  @unique
-  lastSubscriptionCheck String?
-  expires_in            String?
-  omvicNumber           String?
-  dealer                String?
-  position              String?
-  roleId                String
-  profileId             String   @unique
-  customerId            String?  @unique
-  returning             Boolean? @default(false)
+  name      String
+  username  String  @unique
+  email     String  @unique(map: "User.email_unique")
+  profileId String  @unique
+  phone     String? @unique
+  roleId    String
+
+  // appearance
+  newLook String?
+
+  // stripe
   subscriptionId        String?
-  activixActivated      String?
-  activixEmail          String?
-  activisUserId         String?
+  returning             Boolean? @default(false)
+  lastSubscriptionCheck String?
+  customerId            String?  @unique
+  plan                  String?
+
+  // dealer
+  omvicNumber String?
+  dealer      String?
+  position    String?
+  dept        String?
+
+  // activix
+  activixActivated String?
+  activixEmail     String?
+  activisUserId    String?
+  activixId        String?
+  dealerAccountId  String?
+
+  // microsoft
+  microId          String?
+  // name             String?
+  givenName        String?
+  familyName       String?
+  identityProvider String?
 
   role          UserRole           @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
   profile       UserProfile        @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -57,6 +76,68 @@ model User {
 
   @@index([roleId])
   @@index([profileId])
+}
+
+model Dealer {
+  id        Int      @id @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // dealer info
+  dealerName    String?
+  dealerAddress String?
+  dealerCity    String?
+  dealerProv    String?
+  dealerPostal  String?
+  dealerPhone   String?
+  dealerEmail   String?
+  vercel        String?
+  github        String?
+
+  // store hours
+  //  day   String?   @unique
+  //  start DateTime?
+  //  end   DateTime?
+
+  // dealer fees
+  userLoanProt      Int?
+  userTireandRim    String?
+  userGap           Int?
+  userExtWarr       String?
+  userServicespkg   Int?
+  vinE              Int?
+  lifeDisability    Int?
+  rustProofing      Int?
+  userLicensing     Int?
+  userFinance       String?
+  userDemo          String?
+  userGasOnDel      String?
+  userOMVIC         String?
+  userOther         Int?
+  userTax           String?
+  userAirTax        String?
+  userTireTax       String?
+  userGovern        String?
+  userPDI           String?
+  userLabour        String?
+  userMarketAdj     String?
+  userCommodity     String?
+  destinationCharge Int?
+  userFreight       String?
+  userAdmin         String?
+  userEmail         String? @unique
+}
+
+model Interruptions {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userEmail String?
+  location  String?
+  date      String?
+  read      String?
+  title     String?
 }
 
 model microsoftAccount {
@@ -150,7 +231,7 @@ model NotificationsUser {
   title        String?
   content      String? @db.Text
   read         String?
-  userId       String
+  userEmail    String?
   dimiss       String?
   type         String?
   financeId    String?
@@ -219,21 +300,6 @@ model NoteImage {
 // ----------------------------------------------------------------------------
 // -------------------------------dev-----------------------------------------
 // -----------------------------------------------------------------------------
-model DealerCustomer {
-  id             String   @id @default(cuid())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  dealerName     String?
-  dealerPhone    String?
-  dealerAddress  String?
-  dealerCity     String?
-  dealerProvince String?
-  dealerPostal   String?
-  dealerEmail    String?
-  planetScale    String?
-  vercel         String?
-  github         String?
-}
 
 // ----------------------------------------------------------------------------
 // -------------------------------dev-----------------------------------------
@@ -244,16 +310,17 @@ model DealerCustomer {
 // ----------------------------------------------------------------------------
 // -------------------------------dealer-----------------------------------------
 // -----------------------------------------------------------------------------
-model userIntergration {
-  id               String   @id @default(cuid())
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  userEmail        String   @unique
-  activixId        String?
-  activixActivated String?
-  dealerAccountId  String?
-  activixEmail     String?
-}
+// got this one in dealer
+//model userIntergration {
+// id               String   @id @default(cuid())
+// createdAt        DateTime @default(now())
+// updatedAt        DateTime @updatedAt
+//  userEmail        String   @unique
+//  activixId        String?
+//  activixActivated String?
+//  dealerAccountId  String?
+//  activixEmail     String?
+//}
 
 model CsiQuestion {
   id                          Int      @id @default(autoincrement())
@@ -269,6 +336,7 @@ model CsiQuestion {
   customMultipleChoiceAnswers String[] // Array for multiple custom answers
 }
 
+// dont think we can put this one in dealer because it will have multiple savews for eachd ay
 model StoreHours {
   id        String    @id @default(cuid())
   createdAt DateTime  @default(now())
@@ -277,91 +345,6 @@ model StoreHours {
   start     DateTime?
   end       DateTime?
   userEmail String?
-}
-
-model DealerFees {
-  id                String   @id @default(cuid())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  dealer            String?
-  dealerAddress     String?
-  dealerProv        String?
-  dealerPhone       String?
-  omvicNumber       String?
-  userLoanProt      Int?
-  userTireandRim    String?
-  userGap           Int?
-  userExtWarr       String?
-  userServicespkg   Int?
-  vinE              Int?
-  lifeDisability    Int?
-  rustProofing      Int?
-  userLicensing     Int?
-  userFinance       String?
-  userDemo          String?
-  userGasOnDel      String?
-  userOMVIC         String?
-  userOther         Int?
-  userTax           String?
-  userAirTax        String?
-  userTireTax       String?
-  userGovern        String?
-  userPDI           String?
-  userLabour        String?
-  userMarketAdj     String?
-  userCommodity     String?
-  destinationCharge Int?
-  userFreight       String?
-  userAdmin         String?
-  userEmail         String?  @unique
-}
-
-model DealerInfo {
-  id            Int      @id @default(1)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  dealerName    String?
-  dealerAddress String?
-  dealerCity    String?
-  dealerProv    String?
-  dealerPostal  String?
-  dealerPhone   String?
-}
-
-model DealerFeesAdmin {
-  id                Int      @id @default(1)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  dealer            String?
-  dealerAddress     String?
-  dealerProv        String?
-  dealerPhone       String?
-  omvicNumber       String?
-  userLoanProt      Int?
-  userTireandRim    String?
-  userGap           Int?
-  userExtWarr       String?
-  userServicespkg   Int?
-  vinE              Int?
-  lifeDisability    Int?
-  rustProofing      Int?
-  userLicensing     Int?
-  userFinance       String?
-  userDemo          String?
-  userGasOnDel      String?
-  userOMVIC         String?
-  userOther         Int?
-  userTax           String?
-  userAirTax        String?
-  userTireTax       String?
-  userGovern        String?
-  userPDI           String?
-  userLabour        String?
-  userMarketAdj     String?
-  userCommodity     String?
-  destinationCharge Int?
-  userFreight       String?
-  userAdmin         String?
 }
 
 model StaffChat {
@@ -772,7 +755,7 @@ model TwilioSMSDetails {
 // -------------------------------print docs---------------------------
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-// finance / clients
+//                              finance / clients
 // -----------------------------------------------------------------------------
 model FinanceStorage {
   id        String   @id @default(cuid())
@@ -837,21 +820,6 @@ model ClientApts {
   @@index([financeId])
 }
 
-model Communications {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  finance   Finance? @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  financeId String?  @unique
-  InPerson  Int?
-  Phone     Int?
-  SMS       Int?
-  Email     Int?
-  Other     Int?
-
-  @@index([financeId])
-}
-
 model CheckLatestEmail {
   id            Int      @id @default(autoincrement())
   createdAt     DateTime @default(now())
@@ -899,6 +867,24 @@ model WishList {
   model2        String?
   wishListNotes String?
   notified      String?
+}
+
+model DemoDay {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userEmail String?
+  firstName String?
+  lastName  String?
+  email     String?
+  phone     String?
+  brand     String?
+  brand2    String?
+  model     String?
+  model2    String?
+  leadNote  String?
+  notified  String?
 }
 
 model Part {
@@ -1019,8 +1005,8 @@ model Finance {
   id String @id @default(cuid())
 
   clientfileId        String?
-  dashboardId         String? @unique
-  financeId           String? @unique
+  // dashboardId         String? @unique
+  //  financeId           String? @unique
   activixId           String? @unique
   theRealActId        String?
   financeManager      String?
@@ -1114,36 +1100,13 @@ model Finance {
   dob                 String?
   othTax              String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  finManOptions   FinManOptions[]   @relation("finance")
-  bmwMotoOptions  BmwMotoOptions[]  @relation("finance")
-  bmwMotoOptions2 BmwMotoOptions2[] @relation("finance")
-  financeStorage  FinanceStorage[]  @relation("finance")
-  clientApts      ClientApts[]      @relation("finance")
-  uCDAForm        UCDAForm[]        @relation("finance")
-  communications  Communications[]  @relation("finance")
-  previousComms   PreviousComms[]   @relation("finance")
-  FinCanOptions   FinCanOptions[]   @relation("finance")
-}
-
-model Finance2 {
-  id      String  @id @default(cuid())
-  finance String? @unique
-
-  leadOrigin   String?
+  // finance 2
+  // leadOrigin   String?
   optionsTotal String?
-  lienPyout    String?
-  lienReg      String?
-}
+  lienPayout   String?
+  // lienReg      String?
 
-model Dashboard {
-  id String @id @default(cuid())
-
-  financeId          String? @unique
-  clientfileId       String?
-  userEmail          String?
+  // dashboard
   referral           String?
   visited            String?
   bookedApt          String?
@@ -1200,15 +1163,28 @@ model Dashboard {
   tradeInsp          String?
   customerWS         String?
   otherDocs          String?
-  deposit            String?
   urgentFinanceNote  String?
   funded             String?
   leadSource         String?
 
+  // coms
+  InPerson Int?
+  Phone    Int?
+  SMS      Int?
+  Email    Int?
+  Other    Int?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([financeId])
+  finManOptions  FinManOptions[]  @relation("finance")
+  bmwMotoOptions BmwMotoOptions[] @relation("finance")
+  financeStorage FinanceStorage[] @relation("finance")
+  clientApts     ClientApts[]     @relation("finance")
+  uCDAForm       UCDAForm[]       @relation("finance")
+
+  previousComms PreviousComms[] @relation("finance")
+  FinCanOptions FinCanOptions[] @relation("finance")
 }
 
 model FinManOptions {
@@ -1391,12 +1367,8 @@ model BmwMotoOptions {
   passengerKitLowSeat String?
   comfortPsgrSeat     String?
   mPsgrSeat           String?
-}
 
-model BmwMotoOptions2 {
-  id                 String   @id @default(cuid())
-  finance            Finance? @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  financeId          String   @unique
+  // bmwoptions2
   comfortSeat        String?
   designW            String?
   loweringKit        String?
@@ -1450,6 +1422,13 @@ model BmwMotoOptions2 {
   blackWheel         String?
   aeroPkg719         String?
 }
+
+//model BmwMotoOptions2 {
+// id                 String   @id @default(cuid())
+// finance            Finance? @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+// financeId          String   @unique
+
+//}
 
 // -----------------------------------------------------------------------------
 // aactivix records

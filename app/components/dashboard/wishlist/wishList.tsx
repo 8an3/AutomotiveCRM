@@ -2,7 +2,7 @@ import { Filter, DebouncedInput, invariant, type Payment, type TableMeta, defaul
 import React, { HTMLAttributes, HTMLProps, useState, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Form, Link, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
-import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label } from "~/components/ui/index";
+import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/index";
 import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
 
 import { getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns } from "@tanstack/react-table";
@@ -24,6 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog"
+import { Save, FilePlus, Trash2 } from 'lucide-react';
 
 export let loader = dashboardLoader
 
@@ -32,7 +33,15 @@ export let action = dashboardAction
 export default function WishList() {
   const { user } = useLoaderData();
   const { getWishList } = useLoaderData();
-  const data = getWishList
+  const [data, setData] = useState(getWishList)
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [wishListNotes, setWishListNotes] = useState("");
+  const [notified, setNotified] = useState("");
+  const submit = useSubmit()
+
   type Payment = {
     id: string
     firstName: string
@@ -80,9 +89,6 @@ export default function WishList() {
         )
 
       },
-      cell: ({ row }) => <div className="text-center  lowercase">
-        {row.getValue("firstName")}
-      </div>
 
     },
 
@@ -103,9 +109,7 @@ export default function WishList() {
           </div>
         )
       },
-      cell: ({ row }) => <div className="text-center  lowercase">
-        {row.getValue("lastName")}
-      </div>,
+
     },
     {
       filterFn: 'fuzzy',
@@ -124,9 +128,7 @@ export default function WishList() {
           </div>
         )
       },
-      cell: ({ row }) => <div className="text-center lowercase">
-        {row.getValue("email")}
-      </div>,
+
     },
     {
       filterFn: 'fuzzy',
@@ -146,9 +148,7 @@ export default function WishList() {
         )
 
       },
-      cell: ({ row }) => <div className="text-center lowercase">
-        {row.getValue("phone")}
-      </div>,
+
     },
     {
       filterFn: 'fuzzy',
@@ -209,68 +209,163 @@ export default function WishList() {
           </div>
         )
       },
-      cell: ({ row }) => <div className="text-center lowercase">
-        {row.getValue("wishListNotes")}
-      </div>,
+
     },
     {
-      accessorKey: "editWishlist",
-      header: ({ column }) => (<p>Edit</p>),
-      cell: ({ row }) => {
-        const data = row.original
-        return <>
-          <div className=''>
-            <EditWishList data={data} />
-
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      accessorKey: "setNotified",
+      header: ({ column }) => {
+        return (
+          <div className="mx-auto justify-center text-center lowercase">
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              Edit Contacted
+              <CaretSortIcon className="ml-2 h-4 w-4" />
+            </Button>
           </div>
-        </>
+        )
       },
-    },
-    {
-      accessorKey: "convertWishList",
-      header: ({ column }) => (<p>Convert to Client</p>),
       cell: ({ row }) => {
         const data = row.original
-        return <>
-          <div className='mx-auto my-auto'>
+        return (
+          <>
+            <Form method="post" onChange={(event) => { submit(event.currentTarget); }} >
+              <input type='hidden' name='id' defaultValue={data.id} />
+              <input type='hidden' name='intent' defaultValue='editWishList' />
+              <Select name='notified' >
+                <SelectTrigger className="w-full mx-auto bg-[#09090b] border-[#27272a]">
+                  <SelectValue placeholder='Edit Contacted' />
+                </SelectTrigger>
+                <SelectContent className='bg-[#09090b] border-[#27272a] text-[#fafafa]'>
+                  <SelectGroup>
+                    <SelectItem value="yes" className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md'>Yes</SelectItem>
+                    <SelectItem value="no answer" className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md'>No Answer</SelectItem>
+                    <SelectItem value="LVM" className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md'>LVM</SelectItem>
+                    <SelectItem value="no" className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md'>No</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </Form>
+          </>
+        )
+      }
+    },
+    {
+      id: "edit",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const data = row.original
+        return (
+          <>
             <Form method='post'>
-              <input type='hidden' name='rowId' value={data.id} />
-
-              <Button variant='outline' name='intent' value='convertWishList' className="active:bg-[#09090b] mx-auto my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] border border-[#262626] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
-              >
-                Convert
+              <input type='hidden' name='id' defaultValue={data.id} />
+              <input type='hidden' name='userId' defaultValue={user.id} />
+              <input type='hidden' name='firstName' defaultValue={firstName || data.firstName} />
+              <input type='hidden' name='lastName' defaultValue={lastName || data.lastName} />
+              <input type='hidden' name='phone' defaultValue={phone || data.phone} />
+              <input type='hidden' name='notified' defaultValue={notified || data.notified} />
+              <input type='hidden' name='email' defaultValue={email || data.email} />
+              <input type='hidden' name='leadNote' defaultValue={wishListNotes || data.wishListNotes} />
+              <input type='hidden' name='name' defaultValue={firstName + ' ' + lastName || data.firstName + ' ' + data.lastName} />
+              <input type='hidden' name='intent' defaultValue='editWishList' />
+              <Button onClick={() => submit} size='icon' className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md mx-auto' >
+                <Save color="#ededed" className="mx-auto" />
               </Button>
             </Form>
-          </div>
-        </>
+          </>
+        )
       },
     },
     {
-      accessorKey: "deletewishlist",
-      header: ({ column }) => (<p>Delete</p>),
+      id: "convertToCustomer",
+      enableHiding: false,
       cell: ({ row }) => {
         const data = row.original
-        return <>
-          <div className='mx-auto my-auto'>
+        return (
+          <>
             <Form method='post'>
-              <input type='hidden' name='rowId' value={data.id} />
+              <input type='hidden' name='userEmail' defaultValue={user.email} />
+              <input type='hidden' name='userId' defaultValue={user.id} />
+              <input type='hidden' name='id' defaultValue={data.id} />
+              <input type='hidden' name='firstName' defaultValue={data.firstName} />
+              <input type='hidden' name='lastName' defaultValue={data.lastName} />
+              <input type='hidden' name='phone' defaultValue={data.phone} />
+              <input type='hidden' name='name' defaultValue={data.firstName + ' ' + data.lastName} />
+              <input type='hidden' name='brand' defaultValue={data.brand} />
+              <input type='hidden' name='model' defaultValue={data.model} />
+              <input type='hidden' name='intent' defaultValue='demoDayConvert' />
+              <Button onClick={() => submit} size='icon' className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md mx-auto' >
+                <FilePlus color="#ededed" className="mx-auto" />
 
-              <Button variant='outline' name='intent' value='deleteWishList' className="active:bg-[#09090b] mx-auto my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] border border-[#262626] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
-              >
-                Delete
               </Button>
             </Form>
-          </div>
-        </>
+          </>
+        )
       },
     },
+    {
+      id: "deleteCustomer",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const data = row.original
+        return (
+          <>
+            <Form method='post'>
+              <input type='hidden' name='userEmail' defaultValue={user.email} />
+              <input type='hidden' name='userId' defaultValue={user.id} />
+              <input type='hidden' name='id' defaultValue={data.id} />
+              <input type='hidden' name='intent' defaultValue='demoDayDelete' />
+              <Button onClick={() => submit} size='icon' className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md mx-auto' >
+                <Trash2 color="#ededed" className="mx-auto" />
+              </Button>
+            </Form>
+          </>
+        )
+      },
+    }
   ]
+  const updateEditingRow = (rowIndex, columnId, value) => {
+    switch (columnId) {
+      case 'firstName': setFirstName(value); break;
+      case 'lastName': setLastName(value); break;
+      case 'email': setEmail(value); break;
+      case 'phone': setPhone(value); break;
+      case 'wishListNotes': setLeadNote(value); break;
+      case 'notified': setNotified(value); break;
+      default: break;
+    }
+  };
+  const defaultColumn: Partial<ColumnDef<Payment>> = {
+    cell: ({ getValue, row: { index }, column: { id }, table }) => {
+      const initialValue = getValue();
+      const [value, setValue] = useState(initialValue);
+
+      useEffect(() => {
+        setValue(initialValue);
+      }, [initialValue]);
+
+      const onBlur = () => {
+        table.options.meta?.updateData(index, id, value)
+      }
+
+      return (
+        <Input
+          value={value as string}
+          onChange={e => setValue(e.target.value)}
+          className='mx-auto bg-[#09090b] border-[#27272a] text-center '
+          onBlur={onBlur}
+        />
+      )
+    }
+  }
   const table = useReactTable({
     data,
     columns,
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
+    defaultColumn,
+
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: fuzzyFilter,
     onSortingChange: setSorting,
@@ -291,6 +386,26 @@ export default function WishList() {
       columnVisibility,
       rowSelection,
       globalFilter,
+    },
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    meta: {
+      updateData: (rowIndex, columnId, value) => {
+        updateEditingRow(rowIndex, columnId, value)
+        setData(old =>
+          old?.map((row: any, index: any) => {
+            if (index === rowIndex) {
+              return {
+                ...old[rowIndex]!,
+                [columnId]: value,
+              }
+            }
+            return row
+          })
+        )
+
+      },
     },
   })
 
@@ -343,26 +458,18 @@ export default function WishList() {
     console.log(brandId, modelList)
   };
   const handleBrand2 = (e) => {
-    setBrandId(e.target.value);
+    setBrandId2(e.target.value);
     console.log(brandId, modelList)
   };
 
   useEffect(() => {
     async function getData() {
-      const res = await fetch(`/api/modelList/${brandId}`);
+      const res = await fetch(`/dealer/api/modelList/${brandId}`);
       if (!res.ok) {
         throw new Error("Failed to fetch data");
       }
       return res.json();
     }
-    async function getData2() {
-      const res = await fetch(`/api/modelList/${brandId}`);
-      if (!res.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      return res.json();
-    }
-
     if (brandId.length > 3) {
       const fetchData = async () => {
         const result = await getData();
@@ -373,7 +480,7 @@ export default function WishList() {
     }
     if (brandId2.length > 3) {
       const fetchData = async () => {
-        const result = await getData2();
+        const result = await getData();
         setModelList2(result);
         console.log(brandId2, result); // Log the updated result
       };
@@ -383,39 +490,38 @@ export default function WishList() {
 
   return (
     <div className="mx-auto w-[95%] ">
-      <div className="flex items-center py-4">
-        <Input
-          value={globalFilter ?? ''}
-          onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-[#262626] w-[400px] border border-[#262626] bg-[#09090b] p-2 text-[#fafafa] shadow"
-          placeholder="Search all columns..."
-        />
-        <Input
-          placeholder={`Search phone # ...`}
-          value={
-            (table.getColumn('phone')?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn('phone')?.setFilterValue(event.target.value)
-          }
-          className="ml-2 max-w-sm border-[#262626] bg-[#09090b] p-2 text-[#fafafa]"
-        />
-
-
-
-        <select value={filterBy} onChange={handleDropdownChange}
-          className={`border-[#262626] bg-[#09090b] p-2 text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-        >
-          <option value='' >Search By Model</option>
-          {models.map((model, index) => (
-            <option key={index} value={model}>
-              {model}
-            </option>
-          ))}
-        </select>
-        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-[#262626] bg-[#09090b] p-2 text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
-        >
-          Clear
-        </Button>
+      <div className="flex items-center py-4 justify-between">
+        <div className='flex'>
+          <Input
+            value={globalFilter ?? ''}
+            onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-[#262626] w-[400px] border border-[#262626] bg-[#09090b] p-2 text-[#fafafa] shadow"
+            placeholder="Search all columns..."
+          />
+          <Input
+            placeholder={`Search phone # ...`}
+            value={
+              (table.getColumn('phone')?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn('phone')?.setFilterValue(event.target.value)
+            }
+            className="ml-2 max-w-sm border-[#262626] bg-[#09090b] p-2 text-[#fafafa]"
+          />
+          <select value={filterBy} onChange={handleDropdownChange}
+            className={`border-[#262626] bg-[#09090b] p-2 text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+          >
+            <option value='' >Search By Model</option>
+            {models.map((model, index) => (
+              <option key={index} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
+          <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-[#262626] bg-[#09090b] p-2 text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+          >
+            Clear
+          </Button>
+        </div>
         <Dialog>
           <DialogTrigger asChild>
             <Button variant='outline' className="active:bg-[#09090b]  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] border border-[#262626] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"

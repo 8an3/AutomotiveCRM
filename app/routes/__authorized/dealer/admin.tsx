@@ -42,13 +42,12 @@ export const loader = async ({ request }) => {
   const email = session.get("email")
   let user = await GetUser(email)
 
-  const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
   if (!user) { return json({ status: 302, redirect: '/login' }); };
   const symbol = user.role.symbol
   if (symbol !== 'ADMIN' && symbol !== 'MANAGER' && symbol !== 'EDITOR') {
     return redirect(`/`);
   } else {
-    return json({ user, notifications });
+    return json({ user, });
   }
 }
 
@@ -88,11 +87,14 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           <p className="text-muted-foreground">
             Manage your site.
           </p>
+          <hr className="my-3 text-[#27272a]" />
+
         </div>
-        <Separator className="my-6" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/5">
-            <SearchForm action="/admin/search" />
+          <aside className="-mx-4 lg:w-1/6">
+            <SearchForm action="/dealer/admin/search" />
+            <hr className="my-3 text-[#09090b]" />
+
             <SidebarNav items={adminSidebarNav} />
           </aside>
           <div className="flex-1 grow pb-10">

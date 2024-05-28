@@ -1,8 +1,21 @@
 import stripe from 'stripe';
 import { updateUser } from '~/utils/user.server'
 import { redirect } from "@remix-run/node";
+import { prisma } from '~/libs';
 
-export async function CheckSub({ user }) {
+async function UpdateUser(email, subscriptionId, customerId, subscriptions) {
+    const update = await prisma.user.update({
+        where: { email: email },
+        data: {
+            lastSubscriptionCheck: String(new Date()),
+            subscriptionId: subscriptionId,
+            customerId: customerId,
+            plan: subscriptions.data[0].plan.product,
+        }
+    })
+    return update
+}
+export async function CheckSub(user) {
     const email = user.email
     const apikey = process.env.STRIPE_SECRET_KEY;
     const customer = await stripe(apikey).customers.list({ email: email, limit: 1 });
@@ -11,20 +24,20 @@ export async function CheckSub({ user }) {
         const customerId = customer.data[0].id;
         console.log('1')
         const subscriptions = await stripe(apikey).subscriptions.list({ status: "trialing" || "active", customer: customerId });
-        console.log('subscriptions', subscriptions)
+        console.log('subscriptions', subscriptions, subscriptions.data[0].plan)
         if (subscriptions && subscriptions.data && subscriptions.data[0] && subscriptions.data[0].status) {
             const subscriptionId = subscriptions.data[0].status;
             console.log('2')
             if (subscriptionId === "trialing") {
                 console.log('3', email)
                 console.log("subscriptionId", subscriptionId)
-                const update = await updateUser({ email: email, subscriptionId: subscriptionId, customerId: customerId })
+                const update = await UpdateUser(email, subscriptionId, customerId, subscriptions)
                 return update
             }
             else if (subscriptionId === "active") {
                 //console.log("subscriptionId", subscriptionId)
                 console.log('4')
-                const update = await updateUser({ email: email, subscriptionId: subscriptionId, customerId: customerId })
+                const update = await UpdateUser(email, subscriptionId, customerId, subscriptions)
                 return update
             }
         }

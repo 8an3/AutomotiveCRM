@@ -157,68 +157,30 @@ export default function Route() {
     return <span>No users. Please register new.</span>;
   }
   return (
-    <Tabs defaultValue="Users" className="m-5 w-[1000px]">
-      <TabsList className="grid w-full grid-cols-3">
+    <Tabs defaultValue="Users" className="m-5  ">
+      <TabsList className="grid   grid-cols-3">
         <TabsTrigger value="Users">Users</TabsTrigger>
         <TabsTrigger value="Add">Add Users</TabsTrigger>
         <TabsTrigger value="UserRoles">User Roles</TabsTrigger>
       </TabsList>
       <TabsContent value="Users">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-myColor-900  text-[#fafafa] border-black">
+          <CardContent className="space-y-2 rounded-md bg-[#09090b] text-[#fafafa] border-[#27272a]">
             <Form method="post" className="">
-
-              <div className=' text-[#fafafa]'>
-                <PageAdminHeader size="xs">
-
-                  <div className="queue">
-
-                    {configDev.isDevelopment && (
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="outline">
-                            <span>Delete All {formatPluralItems("User", userCount)}</span>
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className='bg-white'>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone. This will permanently delete your
-                              accounts and remove your data from our servers.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction>
-                              <RemixForm method="delete">
-                                <Button
-
-                                  variant="outline"
-                                  name="intent"
-                                  value="delete-all-users"
-                                  disabled={userCount <= 0}
-                                >
-                                  <Trash className="size-sm" />
-                                  <span>Delete All {formatPluralItems("User", userCount)}</span>
-                                </Button>
-                              </RemixForm>
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-
-                    )}
-                  </div>
-                </PageAdminHeader>
+              <div className='mt-5 text-[#fafafa]'>
                 <div className='max-w-xl   text-[#fafafa]'>
                   <header>
-                    <span>{formatPluralItems("user", usersCount)}</span>
+
                   </header>
                   {!isRowSelected ? (
                     <>
                       <CardHeader>
-                        <CardTitle>Team Members</CardTitle>
+                        <CardTitle className='flex justify-between'>
+                          <p>
+                            Team Members
+                          </p>
+                          <span>{formatPluralItems("user", usersCount)}</span>
+                        </CardTitle>
                         <CardDescription>
                           Invite your team members to collaborate.
                         </CardDescription>
@@ -227,50 +189,81 @@ export default function Route() {
                         {users.map((user) => {
                           const userNotesCount = user.notes?.length;
                           const userImagesCount = user.images?.length;
-
+                          const initials = user.name.split(' ').map(word => word[0]).join('');
                           return (
                             <li key={user.id}>
-                              <CardContent className="grid gap-6">
-                                <div className="flex items-center justify-between space-x-4">
-                                  <div className="flex items-center space-x-4">
-                                    <Avatar className='bg-black t'>
-                                      <AvatarImage src="/avatars/01.png" />
-                                      <AvatarFallback>OM</AvatarFallback>
-                                    </Avatar>
-                                    <div className='grid grid-colds-2'>
-                                      <div className='flex items-center justify-between'>
-                                        <p className="text-sm font-medium leading-none mr-2">{user.name}</p>
-                                        <p className="text-sm text-muted-foreground ml-2">@{user.username}</p>
+                              <div className="relative mt-3"  >
+                                <CardContent className="grid gap-6 border-[#27272a]">
+                                  <div className="flex items-center justify-between space-x-4">
+                                    <div className="flex items-center space-x-4">
+                                      <Avatar className='bg-black border-[#fafafa]'>
+                                        <AvatarImage src="/avatars/01.png" />
+                                        <AvatarFallback>{initials}</AvatarFallback>
+                                      </Avatar>
+                                      <div className='grid grid-colds-2'>
+                                        <div className='flex items-center justify-between'>
+                                          <p className="text-sm text-muted-foreground ml-2">@{user.username}</p>
+                                          <Badge className='mt-2'>{user.role.name}</Badge>
+                                        </div>
+                                        <div className='flex items-center justify-between'>
+                                          <p className="text-sm text-muted-foreground mr-2">{user.email}</p>
+                                          <p className="text-sm text-muted-foreground ml-2">{user.phone}</p>
+                                        </div>
                                       </div>
-                                      <div className='flex items-center justify-between'>
-                                        <p className="text-sm text-muted-foreground mr-2">{user.email}</p>
-                                        <p className="text-sm text-muted-foreground ml-2">{user.phone}</p>
-                                      </div>
-                                      <Badge className='mt-2'>{user.role.name}</Badge>
                                     </div>
+                                    <RemixLink
+                                      prefetch="intent"
+                                      onClick={() => {
+                                        handleRowClick(user);
+                                      }}
+                                      className="card hover:card-hover queue-center"
+                                    >
+                                      <Button size='sm' variant="outline" className="ml-autp bg-[#dc2626]">
+                                        Edit
+                                      </Button>
+                                    </RemixLink>
                                   </div>
-
-
-                                  <RemixLink
-                                    prefetch="intent"
-                                    onClick={() => {
-                                      handleRowClick(user);
-
-                                    }}
-                                    className="card hover:card-hover queue-center"
-                                  >
-                                    <Button variant="outline" className="ml-auto">
-                                      Edit
-                                    </Button>
-                                  </RemixLink>
-
-                                </div>
-
-                              </CardContent>
+                                </CardContent>
+                                <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{user.name}</label>
+                              </div>
                             </li>
                           );
                         })}
                       </ul>
+                      {configDev.isDevelopment && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size='sm' variant="outline" className="bg-[#dc2626]">
+                              <span>Delete All {formatPluralItems("User", userCount)}</span>
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className='bg-white'>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete your
+                                accounts and remove your data from our servers.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction>
+                                <RemixForm method="delete">
+                                  <Button
+                                    variant="outline"
+                                    name="intent"
+                                    value="delete-all-users"
+                                    disabled={userCount <= 0}
+                                  >
+                                    <Trash className="size-sm" />
+                                    <span>Delete All {formatPluralItems("User", userCount)}</span>
+                                  </Button>
+                                </RemixForm>
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
                     </>
                   ) : (
                     <Form method='post' className='max-w-sm' >
@@ -350,91 +343,59 @@ export default function Route() {
 
       <TabsContent value="Add">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-slate11 text-[#fafafa]">
-            <Form method="post" className="">
-
-              <div className="mt-2  grid  grid-cols-1 gap-2">
-                <Form method='post' className='space-y-3 max-w-sm '>
-                  <div className='mt-5'>
-                    <Label className='text-lg'>
-                      Name
-                    </Label>
-                    <Input name='name' placeholder="Justin Doe" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
-                  </div>
-                  <div>
-                    <Label className='text-lg'>
-                      Username
-                    </Label>
-                    <Input name='username' placeholder="Justin" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
-                  </div>
-                  <div>
-                    <Label className='text-lg'>
-                      Email
-                    </Label>
-                    <Input name='email' placeholder="justindoe@mail.com" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
-                  </div>
-                  <div>
-                    <Label className='text-lg'>
-                      Phone
-                    </Label>
-                    <Input name='phone' placeholder="6136136134" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
-                  </div>
-                  <div>
-                    <Label className='text-lg'>
-                      Position
-                    </Label>
-                    <Input name='phone' placeholder="6136136134" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
-                  </div>
-                  <div>
-                    <Label className='text-lg'>
-                      OMVIC #
-                    </Label>
-                    <Input name='omvicNumber' placeholder="654165" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
-                  </div>
-                  <div>
-                    <Label className='text-lg'>
-                      Role
-                    </Label>
-
-                    <Select name='userRole'>
-                      <SelectTrigger className='mr-3 w-auto border-[#02a9ff]  text-[#02a9ff]'>
-                        Role
-                      </SelectTrigger>
-                      <SelectContent align="end" className='bg-slate1 text-[#fafafa] '>
-                        {userRole.map((role) => (
-                          <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-[#02a9ff] hover:underline">
-                            {role.symbol}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className='text-lg'>
-                      Password
-                    </Label>
-                    <Input name='password' className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
-                  </div>
-                  <Button variant='outline' type='submit' name='intent' value='addUser' className='mt-5'>
-                    Add User
-                  </Button>
-                </Form>
-              </div>
-            </Form>
+          <CardContent className="space-y-2 rounded-md bg-[#09090b] text-[#fafafa] border-[#27272a]">
+            <div className="mt-2  grid  grid-cols-1 gap-2">
+              <Form method='post' className='space-y-3 max-w-sm '>
+                <div className="relative mt-3"  >
+                  <Input name='name' placeholder="Justin Doe" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Name</label>
+                </div>
+                <div className="relative mt-3"  >
+                  <Input name='username' placeholder="Justin" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Username</label>
+                </div>
+                <div className="relative mt-3"  >
+                  <Input name='email' placeholder="justindoe@mail.com" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Email</label>
+                </div>
+                <div className="relative mt-3"  >
+                  <Input name='phone' placeholder="6136136134" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">S Phone</label>
+                </div>
+                <div className="relative mt-3"  >
+                  <Input name='phone' placeholder="6136136134" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Position</label>
+                </div>
+                <div className="relative mt-3"  >
+                  <Input name='omvicNumber' placeholder="654165" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  OMVIC #</label>
+                </div>
+                <div className="relative mt-3"  >
+                  <Select name='userRole'>
+                    <SelectTrigger className='mr-3 bg-[#09090b] text-[#fafafa] border-[#27272a]'>
+                    </SelectTrigger>
+                    <SelectContent align="end" className='bg-[#09090b] text-[#fafafa] border-[#8c8c91]'>
+                      {userRole.map((role) => (
+                        <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-[#02a9ff] hover:underline">
+                          {role.symbol}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500"> Role</label>
+                </div>
+                <Button size='sm' variant='outline' type='submit' name='intent' value='addUser' className='mt-5 bg-[#dc2626]'>
+                  Add User
+                </Button>
+              </Form>
+            </div>
           </CardContent>
         </Card>
-      </TabsContent>
+      </TabsContent >
 
       <TabsContent value="UserRoles">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-slate11 text-[#fafafa]  mt-5">
+          <CardContent className="space-y-2 rounded-md bg-[#09090b] text-[#fafafa] border-[#27272a] mt-5">
             <div className='flex justify-between'>
               <Button variant='outline' onClick={() => { setAddUserRole(true) }}>
                 Add User Role

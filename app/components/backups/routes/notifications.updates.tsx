@@ -9,9 +9,9 @@ export async function loader({ request, params }: LoaderFunction) {
   const email = session.get("email")
 
   const user = await GetUser(email)
-  const upcoming = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
+  const upcoming = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
 
-  const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
+  const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
   let newUpdates = notifications.filter(notification => notification.userId === user.id && notification.type === 'updates');
   return json({ user, newUpdates })
 }

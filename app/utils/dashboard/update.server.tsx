@@ -2,9 +2,10 @@ import { prisma } from "~/libs";
 
 export async function updateDashData(updatingFinanceId, statusData) {
   // Update the finance record
-  const dashboard = await prisma.dashboard.update({
+  delete statusData.financeId
+  const dashboard = await prisma.finance.update({
     where: {
-      financeId: updatingFinanceId, // Assuming the financeId is also the id of the dashboard
+      id: updatingFinanceId, // Assuming the financeId is also the id of the dashboard
     },
     data: { ...statusData }
   });

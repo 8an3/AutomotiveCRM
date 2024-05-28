@@ -5,8 +5,9 @@ export default function EmailMessages() {
   const [emails, setEmails] = useState();
   useEffect(() => {
     const fetchUnreadCount = async () => {
-      const response = await fetch('/dealer/email/newEmails');
-      const data = await response.json();
+      const response = await fetch('/dealer/IFrameComp/newEmails');
+      const serializedEmail = response.value
+      const data = await serializedEmail.json();
       console.log(data)
       if (data) {
         setEmails(data);

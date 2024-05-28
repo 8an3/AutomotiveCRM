@@ -17,19 +17,28 @@ export const links: LinksFunction = () => [{ rel: "stylesheet", href: slider }];
 export async function loader({ request, params }: LoaderFunctionArgs) {
     const session = await getSession(request.headers.get("Cookie"));
     const email = session.get("email");
+    let newLook = false
     let user = await GetUser(email);
     let sliderWidth = session.get("sliderWidth");
     if (!sliderWidth) {
         sliderWidth = "50";
     }
-    return json({ email, user, sliderWidth });
+    const brandId = params.brandId
+    switch (user?.newLook) {
+        case 'on':
+            newLook = true
+            break;
+        default:
+            null
+    }
+    return json({ email, user, sliderWidth, newLook });
 }
 
 export default function Quote() {
-
+    const { newLook } = useLoaderData()
     return (
         <>
-            <div className="flex h-[100vh] bg-slate1 text-black px-4 sm:px-6 lg:px-8">
+            <div className={`flex h-[100vh]  px-4 sm:px-6 lg:px-8 ${newLook === true ? 'bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-black'}`}>
                 <div className="w-full overflow-hidden rounded-lg ">
                     <div className="mx-auto my-auto md:flex">
                         <div className="mx-auto my-auto" >

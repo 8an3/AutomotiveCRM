@@ -84,7 +84,7 @@ export async function loader({ request, params }: LoaderFunction) {
 
   const returnThis = redirect(`/customer/${clientId}/${financeId}`)
   const notifications = await prisma.notificationsUser.findMany({
-    where: { userId: user.id, }
+    where: { userEmail: email }
   })
   // console.log(financeIds, financeId, 'quote loader');
 

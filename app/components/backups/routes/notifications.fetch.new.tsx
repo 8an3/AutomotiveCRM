@@ -28,7 +28,7 @@ export async function loader({ request, params }: LoaderFunction) {
         // Fetch new notifications from the database
         const notifications = await prisma.notificationsUser.findMany({
           where: {
-            userId: user?.id, // Replace this with your actual session handling logic
+            userEmail: email, // Replace this with your actual session handling logic
             read: false,
             createdAt: {
               gte: new Date(Date.now() - 1000 * 60 * 60),

@@ -140,7 +140,7 @@ export async function loader({ request, params }: LoaderFunction) {
     redirect("/login");
   }
   const notifications = await prisma.notificationsUser.findMany({
-    where: { userId: user.id },
+    where: { userEmail: email },
   });
   const userId = user?.id;
   let finance = await prisma.finance.findFirst({
@@ -148,7 +148,7 @@ export async function loader({ request, params }: LoaderFunction) {
   });
   const financeId = finance?.id;
   //  const { finance, dashboard, clientfile, } = await getClientFinanceAndDashData(financeId)
-  const deFees = await prisma.dealerFees.findUnique({
+  const deFees = await prisma.dealer.findUnique({
     where: { userEmail: email },
   });
   const modelData = await getDataByModel(finance);

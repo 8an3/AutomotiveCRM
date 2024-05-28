@@ -5,7 +5,7 @@ import DailySheet from '~/components/formToPrint/dailyWorkPlan'
 import { getUserById, updateUser, updateDealerFees, getDealerFeesbyEmail, getDealerFeesbyEmailAdmin } from '~/utils/user.server'
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { toast } from "sonner"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getMergedFinance } from '~/utils/dashloader/dashloader.server'
 import { deleteDailyPDF } from '~/utils/dailyPDF/delete.server'
 import { saveDailyWorkPlan } from '~/utils/dailyPDF/create.server'
@@ -18,36 +18,46 @@ import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, Tabl
 import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
+import { getSession as getAppearance, commitSession as commitAppearance, } from '~/sessions/appearance-session.server'
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import axios from 'axios'
-
+import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-  let user = await GetUser(email)
+  try {
+    let user = await GetUser(email)
+    if (user?.subscriptionId === 'active' || user?.subscriptionId === 'trialing') {
+      let deFees;
+      if (user.plan === 'prod_OY8EMf7RNoJXhX') {
+        deFees = await prisma.dealer.findFirst();
+      } else {
+        deFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
+      }
 
-  if (!user) { redirect('/login') }
-  if (!user) { return json({ status: 302, redirect: '/login' }); };
-  const userEmail = user?.email
-  const deFees = await prisma.dealerFees.findUnique({ where: { userEmail: user.email } });
-  const integration = await prisma.userIntergration.findUnique({ where: { userEmail: user.email } });
-  user = {
-    ...user,
-    ...integration,
+      const dataPDF = await getDailyPDF(email)
+      const statsData = await prisma.finance.findMany({
+        where: {
+          userEmail: {
+            equals: email,
+          },
+        },
+      });
+      const comsRecords = await prisma.previousComms.findMany({ where: { userEmail: email }, });
+      const session2 = await getAppearance(request.headers.get("Cookie"));
+      const getNewLook = user.newLook
+      console.log(getNewLook, 'checking appearance')
+      return ({ user, deFees, dataPDF, statsData, comsRecords, getNewLook })
+    } else {
+      return redirect('/subscribe');
+    }
+  } catch (error) {
+    console.log(error)
+    return redirect('/auth/login');
   }
-  const userId = user?.id
-  const dataPDF = await getDailyPDF(userEmail)
-  const statsData = await getMergedFinance(userEmail)
-  const comsRecords = await prisma.previousComms.findMany({ where: { userEmail: user.email, }, });
-  if (user?.subscriptionId === 'active' || user?.subscriptionId === 'trialing') {
-    // const client = await getLatestFinanceAndDashDataForClientfile(userId)
-    //const finance = client.finance
-    return ({ user, deFees, dataPDF, statsData, comsRecords })
-  }
-  return redirect('/subscribe');
 }
 
 export function StatsTable({ statsData, comsRecords }) {
@@ -290,7 +300,7 @@ export function StatsTable({ statsData, comsRecords }) {
 }
 
 
-function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
+function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook }) {
   let finance = ''
   let data = ''
   const fetcher = useFetcher()
@@ -341,16 +351,16 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
     { name: "userTireTax", value: deFees.userTireTax, placeholder: "Tire Tax" },
     { name: "userGovern", value: deFees.userGovern, placeholder: "Government Fees" },
     { name: "userFinance", value: deFees.userFinance, placeholder: "Finance Fees" },
-    { name: "destinationCharge", value: deFees.destinationCharge, placeholder: "Destination Charge" },
+    { name: "destinationCharge", value: deFees.destinationCharge, placeholder: "Dest. Charge" },
     { name: "userGasOnDel", value: deFees.userGasOnDel, placeholder: "Gas On Delivery" },
-    { name: "userMarketAdj", value: deFees.userMarketAdj, placeholder: "Market Adjustment" },
-    { name: "userDemo", value: deFees.userDemo, placeholder: "Demonstratration Fee" },
+    { name: "userMarketAdj", value: deFees.userMarketAdj, placeholder: "Market Adj" },
+    { name: "userDemo", value: deFees.userDemo, placeholder: "Demo Fee" },
     { name: "userOMVIC", value: deFees.userOMVIC, placeholder: "OMVIC or Other" },
   ];
 
 
   const FinanceOptions = [
-    { name: "userExtWarr", value: deFees.userExtWarr, placeholder: 'Extended Warranty' },
+    { name: "userExtWarr", value: deFees.userExtWarr, placeholder: 'Ext Warranty' },
     { name: "userLoanProt", value: deFees.userLoanProt, placeholder: 'Loan Protection' },
     { name: "userGap", value: deFees.userGap, placeholder: 'Gap Protection' },
     { name: "userTireandRim", deFees: deFees.userTireandRim, placeholder: 'Tire and Rim' },
@@ -358,9 +368,9 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
     { name: "rustProofing", value: deFees.rustProofing, placeholder: 'Under Coating' },
     { name: "userServicespkg", value: deFees.userServicespkg, placeholder: 'Service Package' },
     { name: "lifeDisability", value: deFees.lifeDisability, placeholder: 'Life and Disability' },
-    { name: "userOther", value: deFees.userOther, placeholder: 'Other data Package' },
+    { name: "userOther", value: deFees.userOther, placeholder: 'Other' },
   ];
-  //      <video loop autoPlay width='750' height='750' src='https://youtu.be/u1MLfrFzCBo' className='mx-auto z-49' frameBorder="0" allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+
   const errors = useActionData() as Record<string, string | null>;
   const navigation = useNavigation();
 
@@ -370,6 +380,8 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
   const handleCheckboxChange = (event) => {
     setActivixActivated(event.target.checked);
   };
+
+  const [newLook, setNewLook] = useState(getNewLook);
   return (
     <Tabs defaultValue="dealerFees" className="w-[75%] ml-5 mr-auto" >
       <TabsList className="grid grid-cols-3 rounded-md bg-[#3e3e3f]">
@@ -406,80 +418,90 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-5 gap-2 w-[90%] mx-auto">
-                {Dealerfees.map((fee, index) => (
-                  <div key={index} className="relative mt-4 mx-3">
-                    <Input
-                      name={fee.name}
-                      defaultValue={fee.value}
-                      className="border-[#27272a] bg-[#09090b] "
-                    />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
+              {user.plan === 'prod_OY8EMf7RNoJXhX' ? (
+                <p className='text-center mt-5'>Dealer management will set the dealer fees for you.</p>
+              ) : (
+                <>
+                  <div className="grid grid-cols-5 gap-2 w-[90%] mx-auto">
+                    {Dealerfees.map((fee, index) => (
+                      <div key={index} className="relative mt-4 mx-3">
+                        <Input
+                          name={fee.name}
+                          defaultValue={fee.value}
+                          className="border-[#27272a] bg-[#09090b] "
+                        />
+                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
+                      </div>
+                    ))}
+                    <div className="relative mt-4  mx-3">
+                      <Input
+                        defaultValue={deFees.userLicensing}
+                        name="userLicensing"
+                        className="border-[#27272a] bg-[#09090b] "
+                      />
+                      {errors?.userLicensing ? (
+                        <em className="text-[#ff0202]">{errors.userLicensing}</em>
+                      ) : null}
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
+                    </div>
+                    <div className="relative mt-4  mx-3">
+                      <Input
+                        defaultValue={deFees.userTax}
+                        name="userTax"
+                        className="border-[#27272a] bg-[#09090b] "
+                      />
+                      {errors?.userTax ? (
+                        <em className="text-[#ff0202]">{errors.userTax}</em>
+                      ) : null}
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax</label>
+                    </div>
+                    <div className="relative mt-4  mx-3">
+                      <Input
+                        defaultValue={deFees.userLabour}
+                        name="userLabour"
+                        className="border-[#27272a] bg-[#09090b] "
+                      />
+                      {errors?.userLabour ? (
+                        <em className="text-[#ff0202]">{errors.userLabour}</em>
+                      ) : null}
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour</label>
+                    </div>
                   </div>
-                ))}
-                <div className="relative mt-4  mx-3">
-                  <Input
-                    defaultValue={deFees.userLicensing}
-                    name="userLicensing"
-                    className="border-[#27272a] bg-[#09090b] "
-                  />
-                  {errors?.userLicensing ? (
-                    <em className="text-[#ff0202]">{errors.userLicensing}</em>
-                  ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
-                </div>
-                <div className="relative mt-4  mx-3">
-                  <Input
-                    defaultValue={deFees.userTax}
-                    name="userTax"
-                    className="border-[#27272a] bg-[#09090b] "
-                  />
-                  {errors?.userTax ? (
-                    <em className="text-[#ff0202]">{errors.userTax}</em>
-                  ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax</label>
-                </div>
-                <div className="relative mt-4  mx-3">
-                  <Input
-                    defaultValue={deFees.userLabour}
-                    name="userLabour"
-                    className="border-[#27272a] bg-[#09090b] "
-                  />
-                  {errors?.userLabour ? (
-                    <em className="text-[#ff0202]">{errors.userLabour}</em>
-                  ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour</label>
-                </div>
-              </div>
-              <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
-              <div className="font-semibold ml-[50px]">Options</div>
-              <div className="my-4 grid grid-cols-5 gap-2 w-[90%] mx-auto">
-                {FinanceOptions.map((option, index) => (
-                  <div key={index} className="relative mt-3 mx-3">
-                    <Input
-                      name={option.name}
-                      defaultValue={option.value}
-                      className="border-[#27272a] bg-[#09090b] "
-                    />
-                    <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{option.placeholder}</label>
+                  <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                  <div className="font-semibold ml-[50px]">Options</div>
+                  <div className="my-4 grid grid-cols-5 gap-2 w-[90%] mx-auto">
+                    {FinanceOptions.map((option, index) => (
+                      <div key={index} className="relative mt-3 mx-3">
+                        <Input
+                          name={option.name}
+                          defaultValue={option.value}
+                          className="border-[#27272a] bg-[#09090b] "
+                        />
+                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{option.placeholder}</label>
+                      </div>
+                    ))}
+                    <Input type='hidden' defaultValue={user.email} name="userEmail" />
                   </div>
-                ))}
-                <Input type='hidden' defaultValue={user.email} name="userEmail" />
-              </div>
+                </>
+              )}
             </CardContent>
             <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
-              <ButtonLoading
-                size="sm"
-                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
-                type="submit"
-                name='intent'
-                value='updateUser'
-                isSubmitting={isSubmitting}
-                onClick={() => toast.success(`Update complete.`)}
-                loadingText="Updating information..."
-              >
-                Update
-              </ButtonLoading>
+              {user.plan === 'prod_OY8EMf7RNoJXhX' ? (
+                null
+              ) : (
+                <ButtonLoading
+                  size="sm"
+                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                  type="submit"
+                  name='intent'
+                  value='updateUser'
+                  isSubmitting={isSubmitting}
+                  onClick={() => toast.success(`Update complete.`)}
+                  loadingText="Updating information..."
+                >
+                  Update
+                </ButtonLoading>
+              )}
             </CardFooter>
           </Form>
         </Card>
@@ -497,6 +519,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
+
               <div className="grid grid-cols-1 gap-2">
                 <div className="relative mt-4">
                   <Input
@@ -626,6 +649,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
                 <Input type='hidden' defaultValue={user.email} name="userEmail" />
                 <Input type='hidden' defaultValue={user.email} name="email" />
               </div>
+
             </CardContent>
             <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
               <ButtonLoading
@@ -643,82 +667,137 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
             </CardFooter>
           </Form>
         </Card>
-        <Card className='text-[#fafafa] bg-[#09090b] ml-2 mb-4'>
-          <Form method="post" className="">
-            <CardHeader className=" grid grid-cols-1 bg-[#18181a] rounded-md">
-              <CardTitle className="group flex items-center text-sm">
-                Integration Settings
-              </CardTitle>
-              <CardDescription>
-                Will unlock featues and functions that will only benefit users who currently use other CRMs. Essentially replacing your current crm dashboard and processes, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers. If you do not see your CRM here let us know and we will integrate with them.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className='flex-grow !grow '>
-              <ul className="grid gap-3 text-sm mt-3">
-                <li className="flex items-center justify-between">
-                  <span className="text-[#909098]">
-                    Activix
-                  </span>
-                  <span>
-                    <input
-                      className='scale-150 p-3'
-                      type='checkbox'
-                      id='necessary'
-                      name='activixActivated'
-                      checked={activixActivated}
-                      onChange={handleCheckboxChange}
-                    />
-                  </span>
-                  <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
-                </li>
-              </ul>
+        <div className='grid grid-cols-1'>
+          <Card className='text-[#fafafa] bg-[#09090b] ml-2 mb-4'>
+            <Form method="post" className="">
+              <CardHeader className=" grid grid-cols-1 bg-[#18181a] rounded-md">
+                <CardTitle className="group flex items-center text-sm">
+                  Integration Settings
+                </CardTitle>
+                <CardDescription>
+                  Will unlock featues and functions that will only benefit users who currently use other CRMs. Essentially replacing your current crm dashboard and processes, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers. If you do not see your CRM here let us know and we will integrate with them.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className=' '>
+                <ul className="grid gap-3 text-sm mt-3">
+                  <li className="flex items-center justify-between">
+                    <span className="text-[#909098]">
+                      Activix
+                    </span>
+                    <span>
+                      <input
+                        className='scale-150 p-3'
+                        type='checkbox'
+                        id='necessary'
+                        name='activixActivated'
+                        checked={activixActivated}
+                        onChange={handleCheckboxChange}
+                      />
+                    </span>
+                    <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
+                  </li>
+                </ul>
 
-              {user.activixActivated === 'yes' && (
-                <div className="flex flex-col ">
-                  <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
-                  <div className="font-semibold ml-[50px]">Activx</div>
-                  <div className="relative mt-3">
-                    <Input
-                      className="border-[#27272a] bg-[#09090b]  "
-                      type="email"
-                      name="activixEmail"
-                      defaultValue={user.activixEmail}
-                    />
-                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Activix Email</label>
+                {user.activixActivated === 'yes' && (
+                  <div className="flex flex-col ">
+                    <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                    <div className="font-semibold ml-[50px]">Activx</div>
+                    <div className="relative mt-3">
+                      <Input
+                        className="border-[#27272a] bg-[#09090b]  "
+                        type="email"
+                        name="activixEmail"
+                        defaultValue={user.activixEmail}
+                      />
+                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Activix Email</label>
+                    </div>
+                    <div className="relative mt-3">
+                      <Input
+                        className="border-[#27272a] bg-[#09090b]  "
+                        type="email"
+                        name="activixEmail"
+                        defaultValue={user.activixEmail}
+                      />
+                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Account Id</label>
+                    </div>
                   </div>
-                  <div className="relative mt-3">
-                    <Input
-                      className="border-[#27272a] bg-[#09090b]  "
-                      type="email"
-                      name="activixEmail"
-                      defaultValue={user.activixEmail}
-                    />
-                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Account Id</label>
-                  </div>
-                </div>
-              )}
-              <Input type='hidden' name="email" defaultValue={user.email} />
-              <Input type='hidden' name="userEmail" defaultValue={user.email} />
-            </CardContent>
-            <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
-              <ButtonLoading
-                size="sm"
-                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
-                type="submit"
-                name='intent'
-                value='activixActivated'
-                isSubmitting={isSubmitting}
-                onClick={() => toast.success(`Update complete.`)}
-                loadingText="Updating information..."
-              >
-                Update
-              </ButtonLoading>
-            </CardFooter>
-          </Form>
-        </Card>
+                )}
+                <Input type='hidden' name="email" defaultValue={user.email} />
+                <Input type='hidden' name="userEmail" defaultValue={user.email} />
+              </CardContent>
+              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                <ButtonLoading
+                  size="sm"
+                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                  type="submit"
+                  name='intent'
+                  value='activixActivated'
+                  isSubmitting={isSubmitting}
+                  onClick={() => toast.success(`Update complete.`)}
+                  loadingText="Updating information..."
+                >
+                  Update
+                </ButtonLoading>
+              </CardFooter>
+            </Form>
+          </Card>
+          <Card className='text-[#fafafa] bg-[#09090b] ml-2 mb-4 mt-4'>
+            <Form method="post" className="">
+              <CardHeader className=" grid grid-cols-1 bg-[#18181a] rounded-md">
+                <CardTitle className="group flex items-center text-sm">
+                  New Quote and Overview Appearance {newLook}
+                </CardTitle>
+                <CardDescription>
+                  Changes the look of the quote and overview pages.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className=' '>
+                <Input type='hidden' name="userEmail" defaultValue={user.email} />
 
+                <ul className="grid gap-3 text-sm mt-3">
+                  <li className="flex items-center justify-between">
+                    <span className="text-[#909098]">
+                      Change looks?
+                    </span>
+                    <span>
+                      <IndeterminateCheckbox
+                        className='  border-[#ff0202]'
+                        id='necessary'
+                        name='newLook'
+                        checked={newLook === 'on'}
+                        onChange={() => {
+                          if (newLook === 'off') {
+                            setNewLook('on')
+                          } else {
+                            setNewLook('off')
+                          }
+                        }}
+                      />
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                <ButtonLoading
+                  size="sm"
+                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                  type="submit"
+                  name='intent'
+                  value='appearance'
+                  isSubmitting={isSubmitting}
+                  onClick={() => {
+                    toast.success(`Update complete.`)
+                  }}
+                  loadingText="Updating information..."
+                >
+                  Update
+                </ButtonLoading>
+              </CardFooter>
+            </Form>
+          </Card>
+        </div>
       </TabsContent>
-    </Tabs >
+    </Tabs>
   )
 }
 
@@ -727,7 +806,7 @@ export const action: ActionFunction = async ({ request }) => {
   const Input = financeFormSchema.parse(formPayload)
   const intent = formPayload.intent
   if (intent === 'updateFees') {
-    const saveDealer = await prisma.dealerFees.update({
+    const saveDealer = await prisma.dealer.update({
       data: {
         userOMVIC: Input.userOMVIC,
         dealer: Input.dealer,
@@ -757,7 +836,7 @@ export const action: ActionFunction = async ({ request }) => {
     delete Input.intent;
 
 
-    const saveDealer = await prisma.dealerFees.update({
+    const saveDealer = await prisma.dealer.update({
       data: {
         userOMVIC: Input.userOMVIC,
         dealer: Input.dealer,
@@ -806,7 +885,17 @@ export const action: ActionFunction = async ({ request }) => {
     return ({ savedaily, delete2 })
 
   }
-
+  if (intent === 'appearance') {
+    const updateAppearance = await prisma.user.update({
+      where: {
+        email: Input.userEmail
+      },
+      data: {
+        newLook: Input.newLook
+      }
+    })
+    return updateAppearance
+  }
   if (intent === 'activixActivated') {
     const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
     // const activix = await prisma.user.update({      where: { email: Input.userEmail },      data: {        activixActivated: Input.activixActivated,        activixEmail: Input.activixEmail,     }    })
@@ -877,7 +966,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Mainbody() {
-  const { user, deFees, dataPDF, statsData, comsRecords } = useLoaderData()
+  const { user, deFees, dataPDF, statsData, comsRecords, getNewLook } = useLoaderData()
   const userIsAllowed = getUserIsAllowed(user, ["ADMIN"]);
   console.log(userIsAllowed, user, user.role); // Expected output: true
   return (
@@ -885,7 +974,7 @@ export default function Mainbody() {
       <div className="flex h-[100%] w-[98vw] left-0">
 
         <div className='w-[98%]'>
-          <ProfileForm user={user} deFees={deFees} dataPDF={dataPDF} statsData={statsData} comsRecords={comsRecords} />
+          <ProfileForm user={user} deFees={deFees} dataPDF={dataPDF} statsData={statsData} comsRecords={comsRecords} getNewLook={getNewLook} />
         </div>
       </div>
     </>

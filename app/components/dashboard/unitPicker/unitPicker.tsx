@@ -142,11 +142,11 @@ export const columns: ColumnDef<Payment>[] = [
       return (
         <Button
           variant="ghost"
-          className='text-black'
+          className=''
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Stock #
-          <CaretSortIcon className="ml-2 h-4 w-4 text-black" />
+          <CaretSortIcon className="ml-2 h-4 w-4 " />
         </Button>
       )
     },
@@ -160,7 +160,7 @@ export const columns: ColumnDef<Payment>[] = [
       return (
         <Button
           variant="ghost"
-          className='text-black'
+          className=''
 
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -169,7 +169,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("year")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("year")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -179,7 +179,7 @@ export const columns: ColumnDef<Payment>[] = [
       return (
         <Button
           variant="ghost"
-          className='text-black'
+          className=''
 
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -188,7 +188,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("make")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("make")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -222,7 +222,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("modelName")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("modelName")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -239,7 +239,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("model2")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("model2")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -256,7 +256,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("submodel")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("submodel")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -273,7 +273,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("price")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("price")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -290,7 +290,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("exteriorColor")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("exteriorColor")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -307,7 +307,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("mileage")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("mileage")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -324,7 +324,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("consignment")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("consignment")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -341,7 +341,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("onOrder")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("onOrder")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -358,7 +358,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("expectedOn")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("expectedOn")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -375,7 +375,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("status")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("status")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -392,7 +392,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("orderStatus")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("orderStatus")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -409,7 +409,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("vin")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("vin")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -426,7 +426,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("age")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("age")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -443,7 +443,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("floorPlanDueDate")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("floorPlanDueDate")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -460,7 +460,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("location")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("location")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -477,7 +477,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("isNew")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("isNew")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -494,7 +494,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("keyNumber")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("keyNumber")}</div>,
   },
   {
     filterFn: 'fuzzy',
@@ -511,7 +511,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-black">{row.getValue("sold")}</div>,
+    cell: ({ row }) => <div className="lowercase ">{row.getValue("sold")}</div>,
   },
 
 
@@ -907,44 +907,43 @@ export function UnitPickerTable({ finance, }) {
   const [selectedModel, setSelectedModel] = useState()
   console.log(selectedModel, 'selceceted model')
   return (
-    <div className="w-auto overflow-x-scroll">
+    <div className="w-auto  ">
       <div className="flex items-center py-4">
-
-
         <Input
           value={globalFilter ?? ''}
           onChange={event => setGlobalFilter(event.target.value)}
-          className="font-lg border-block w-[400px] border border-[#878787] bg-white p-2 text-black shadow"
+          className="font-lg border-block w-[400px] border text-[#fafafa] bg-[#09090b] border-[#27272a] shadow"
           placeholder="Search all columns..."
         />
-        <Select
-          className='text-black border-black focus:border-[#02a9ff] ml-2'
-          onValueChange={(value) => {
-            const item = DeliveriesList.find((i) => i.key === value);
-            if (item) {
-              handleFilterChange(item.key);
-              setTodayfilterBy(item.name);
-            }
-          }}
-        >
-          <SelectTrigger className="w-auto text-black border-black focus:border-[#02a9ff]  ml-2">
-            <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
-          </SelectTrigger>
-          <SelectContent className='bg-white text-black'>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="ml-3 text-[#fafafa] border-[#f2f2f2]">
+              {todayfilterBy || "Default Filters"} <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className='bg-white'>
             {DeliveriesList.map((item) => (
-              <SelectItem key={item.key} value={item.key}>
+              <DropdownMenuCheckboxItem
+                key={item.key}
+                value={item.key}
+                checked={todayfilterBy === item.key}
+                onCheckedChange={() => {
+                  handleFilterChange(item.key);
+                  setTodayfilterBy(item.key);
+                }}>
                 {item.name}
-              </SelectItem>
+              </DropdownMenuCheckboxItem>
             ))}
-          </SelectContent>
-        </Select>
-        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <Button size="sm" onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="text-[#fafafa] bg-[#09090b] border-[#f2f2f2] mx-2 my-auto h-7  cursor-pointer rounded   px-3 py-2  text-center text-xs  font-bold uppercase  shadow outline-none  transition-all duration-150 ease-linear  hover:shadow-md focus:outline-none"
         >
           Clear
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto text-black border-black">
+            <Button variant="outline" size="sm" className="ml-auto text-[#fafafa] border-[#f2f2f2]">
               Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -969,13 +968,13 @@ export function UnitPickerTable({ finance, }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border border-black">
-        <Table className='w-full overflow-x-auto border-black text-black'>
+      <div className="rounded-md border text-[#fafafa] bg-[#09090b] border-[#27272a]">
+        <Table className='w-full overflow-x-auto text-[#fafafa] bg-[#09090b] border-[#27272a]'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className=' border-black'
+                className=' text-[#fafafa] bg-[#09090b] border-[#27272a]'
               >
                 {headerGroup.headers.map((header) => {
                   return (
@@ -999,7 +998,7 @@ export function UnitPickerTable({ finance, }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className='cursor-pointer border-black bg-white p-4 capitalize text-black hover:text-[#02a9ff]'
+                  className='cursor-pointer text-[#fafafa] bg-[#09090b] border-[#27272a]'
                   onClick={() => {
                     handleRowClick(row)
                     console.log(row, 'row')
@@ -1021,7 +1020,7 @@ export function UnitPickerTable({ finance, }) {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 cursor-pointer bg-white text-center capitalize text-black hover:text-[#02a9ff]"
+                  className="h-24 cursor-pointer  text-center capitalize text-[#fafafa] bg-[#09090b] border-[#27272a]"
 
                 >
                   No results.
@@ -1031,8 +1030,10 @@ export function UnitPickerTable({ finance, }) {
           </TableBody>
         </Table>
       </div>
-      <button
-        className="border rounded p-2 mb-2 mt-2 "
+      <Button
+        variant="outline"
+        size="sm"
+        className="border rounded p-2 mb-2 mt-2 border-[#f2f2f2] text-[#fafafa]"
         onClick={() =>
           console.info(
             'table.getSelectedRowModel().flatRows',
@@ -1041,7 +1042,7 @@ export function UnitPickerTable({ finance, }) {
         }
       >
         Select Unit
-      </button>
+      </Button>
       <Form method='post'>
 
 
@@ -1081,7 +1082,7 @@ export function UnitPickerTable({ finance, }) {
         </button>
       </Form>
       < div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-black">
+        <div className="flex-1 text-sm text-[#fafafa] bg-[#09090b]  ">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
@@ -1089,7 +1090,7 @@ export function UnitPickerTable({ finance, }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-black border-black"
+            className="  text-[#fafafa] bg-[#09090b] border-[#f2f2f2]"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -1098,7 +1099,7 @@ export function UnitPickerTable({ finance, }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-black border-black"
+            className="text-[#fafafa] bg-[#09090b] border-[#f2f2f2]"
 
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
@@ -1235,11 +1236,10 @@ export default function UnitPicker({ data }) {
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="z-50 bg-[#09090b]/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
-        <Dialog.Content className="z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y  md:w-[95%] max-w-[80%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none text-black">
+        <Dialog.Overlay className="z-50 bg-white/80 backdrop-blur-md currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
+        <Dialog.Content className="text-[#fafafa] bg-[#09090b] border-[#fafafab0] z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y  md:w-[95%] max-w-[80%] translate-x-[-50%] translate-y-[-50%] rounded-[6px]   p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none  ">
           <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
             Confirm Unit for Current Client
-
             <TooltipProvider>
               <Tooltip open={isOpen} onOpenChange={setIsOpen}>
                 <TooltipTrigger asChild>
@@ -1248,27 +1248,23 @@ export default function UnitPicker({ data }) {
                     <HelpCircle strokeWidth={1.5} />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side='bottom' data-state="closed" className='bg-white border border-black'>
+                <TooltipContent side='bottom' data-state="closed" className='text-[#fafafa] bg-[#09090b] border-[#27272a]'>
                   <><p>Select unit the customer has picked.</p>
                     <p>Press select unit.</p>
                     <p>Then save with save selection.</p></>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-
-
           </Dialog.Title>
           <UnitPickerTable finance={finance} />
           <Dialog.Close asChild>
             <button className=" absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
               aria-label="Close"
-
             >
               <Cross2Icon />
             </button>
           </Dialog.Close>
         </Dialog.Content>
-
       </Dialog.Portal>
     </Dialog.Root >
   )

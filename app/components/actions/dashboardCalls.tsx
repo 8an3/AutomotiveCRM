@@ -1,9 +1,7 @@
 import { json, type ActionFunction, createCookie, type LoaderFunction, redirect, } from "@remix-run/node";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
-////import { authenticator } from "~/services";
 import { findDashboardDataById, findQuoteById, getDataBmwMoto, getDataByModel, getDataByModelManitou, getDataHarley, getDataKawasaki, getDataTriumph, getLatestBMWOptions, getLatestBMWOptions2, getLatestOptionsManitou, getRecords, } from "~/utils/finance/get.server";
 import { getDealerFeesbyEmail } from "~/utils/user.server";
-import { getAllFinanceNotes } from "~/utils/financeNote/get.server";
 import { deleteFinanceNote } from "~/utils/financeNote/delete.server";
 import UpdateStatus from "../dashboard/calls/actions/UpdateStatus";
 import DeleteCustomer from "../dashboard/calls/actions/DeleteCustomer";
@@ -15,17 +13,16 @@ import updateFinanceNotes from "../dashboard/calls/actions/updateFinanceNote";
 import CreateAppt from "../dashboard/calls/actions/createAppt";
 import updateFinance23 from "../dashboard/calls/actions/updateFinance";
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
-import { getMergedFinance } from "~/utils/dashloader/dashloader.server";
 import { model } from "~/models";
 import { getSession, commitSession } from '~/sessions/auth-session.server';
-import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
-import { QuoteServer } from "~/utils/quote/quote.server";
+
 import { GetUser } from "~/utils/loader.server";
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
-
+import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
+import { QuoteServerActivix } from '~/utils/quote/quote.server';
 
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
@@ -41,7 +38,13 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const userEmail = user?.email
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: userEmail, }, });
   let finance;
-  finance = await getMergedFinance(userEmail);
+  finance = await prisma.finance.findMany({
+    where: {
+      userEmail: {
+        equals: userEmail,
+      },
+    },
+  });
   const brand = finance?.brand;
   const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
@@ -51,26 +54,13 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   });
   const searchData = await prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
   const webLeadData = await prisma.finance.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: null } });
-  const dashData2 = await prisma.dashboard.findMany({ where: { customerState: 'turnOver' }, });
-  const financeData2 = await prisma.finance.findMany({ where: { id: dashData2.financeId }, });
-  const financeNewLead = await Promise.all(financeData2.map(async (financeRecord) => {
-    const correspondingDashRecord = dashData2.find(dashRecord => dashRecord.financeId === financeRecord.id);
-    const comsCounter = await prisma.communications.findMany({
-      where: {
-        financeId: financeRecord.id
-      },
-    });
-    return {
-      communications: comsCounter,
-      ...financeRecord,
-      ...correspondingDashRecord,
-    };
-  }));
+  // const financeData2 = await prisma.finance.findMany({ where: { id: dashData2.financeId }, });
   const conversations = await prisma.previousComms.findMany({
     orderBy: { createdAt: "desc" },
   });
   const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
-  const notifications = await prisma.notificationsUser.findMany({ where: { userId: user.id, } })
+
+  const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
 
   const fetchLatestNotes = async (webLeadData) => {
     const promises = webLeadData.map(async (webLeadData) => {
@@ -159,12 +149,13 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     console.error('Error processing wish list:', error);
   });
 
+  const getDemoDay = await prisma.demoDay.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: 'skylerzanth@outlook.com' } });
 
   if (brand === "Manitou") {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(user.email);
     return json({
-      ok: true,
+      ok: true, getDemoDay,
       modelData,
       finance,
       deFees,
@@ -176,7 +167,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       dashBoardCustURL,
       getWishList,
       conversations,
-      financeNewLead,
       latestNotes,
       notifications,
       request
@@ -190,7 +180,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     const modelData = await getDataByModel(finance);
     const manOptions = await getLatestOptionsManitou(email);
     return json({
-      ok: true,
+      ok: true, getDemoDay,
       modelData,
       finance,
       deFees,
@@ -202,7 +192,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       latestNotes,
       conversations,
-      financeNewLead,
       notifications,
       dashBoardCustURL,
       request
@@ -216,14 +205,13 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   if (brand === "Kawasaki") {
     const modelData = await getDataKawasaki(finance);
     return json({
-      ok: true,
+      ok: true, getDemoDay,
       modelData,
       finance,
       deFees,
       sliderWidth,
       user,
       financeNotes,
-      financeNewLead,
       latestNotes,
       conversations,
       wishlistMatches,
@@ -244,7 +232,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     const bmwMoto2 = await getLatestBMWOptions2(financeId);
     const modelData = await getDataBmwMoto(finance);
     return json({
-      ok: true,
+      ok: true, getDemoDay,
       modelData,
       finance,
       deFees,
@@ -255,7 +243,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       user,
       wishlistMatches,
       financeNotes,
-      financeNewLead,
       conversations,
       getWishList,
       notifications,
@@ -271,7 +258,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   if (brand === "Triumph") {
     const modelData = await getDataTriumph(finance);
     return json({
-      ok: true,
+      ok: true, getDemoDay,
       modelData,
       finance,
       deFees,
@@ -279,7 +266,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       user,
       latestNotes,
       financeNotes,
-      financeNewLead,
       getWishList,
       conversations,
       notifications,
@@ -296,7 +282,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   if (brand === "Harley-Davidson") {
     const modelData = await getDataHarley(finance);
     return json({
-      ok: true,
+      ok: true, getDemoDay,
       modelData,
       finance,
       deFees,
@@ -307,7 +293,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       dashBoardCustURL,
       getWishList,
       conversations,
-      financeNewLead,
       notifications,
       getTemplates,
       request,
@@ -323,7 +308,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       let modelData;
       modelData = await getDataByModel(finance);
       return json({
-        ok: true,
+        ok: true, getDemoDay,
         modelData,
         finance,
         deFees,
@@ -335,7 +320,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         latestNotes,
         searchData,
         conversations,
-        financeNewLead,
         getWishList,
         notifications,
         webLeadData,
@@ -348,7 +332,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       });
     }
     return json({
-      ok: true,
+      ok: true, getDemoDay,
       modelData,
       finance,
       deFees,
@@ -360,7 +344,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getTemplates,
       conversations,
       searchData,
-      financeNewLead,
       getWishList,
       notifications,
       webLeadData,
@@ -373,6 +356,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     });
   }
 }
+
 export async function CompleteLastAppt(userId, financeId) {
   console.log('CompleteLastAppt')
   const lastApt = await prisma.clientApts.findFirst({
@@ -381,7 +365,6 @@ export async function CompleteLastAppt(userId, financeId) {
       createdAt: 'desc',
     },
   })
-
 
   if (lastApt) {
     let apptId = lastApt?.id;
@@ -612,7 +595,393 @@ export async function TokenRegen(request) {
   }
   return googleTokens
 }
-
+export async function QuoteServer(formData) {
+  const brand = formData.brand
+  try {
+    const clientfile = await prisma.clientfile.findUnique({ where: { email: formData.email, }, });
+    async function CreateFinance() {
+      await prisma.finance.create({
+        data: {
+          clientfileId: clientfile.id,
+          activixId: formData.activixId,
+          theRealActId: formData.theRealActId,
+          financeManager: formData.financeManager,
+          email: formData.email,
+          firstName: formData.firstName,
+          mileage: formData.mileage,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          name: formData.name,
+          address: formData.address,
+          city: formData.city,
+          postal: formData.postal,
+          province: formData.province,
+          dl: formData.dl,
+          typeOfContact: formData.typeOfContact,
+          timeToContact: formData.timeToContact,
+          iRate: formData.iRate,
+          months: formData.months,
+          discount: formData.discount,
+          total: formData.total,
+          onTax: formData.onTax,
+          on60: formData.on60,
+          biweekly: formData.biweekly,
+          weekly: formData.weekly,
+          weeklyOth: formData.weeklyOth,
+          biweekOth: formData.biweekOth,
+          oth60: formData.oth60,
+          weeklyqc: formData.weeklyqc,
+          biweeklyqc: formData.biweeklyqc,
+          qc60: formData.qc60,
+          deposit: formData.deposit,
+          biweeklNatWOptions: formData.biweeklNatWOptions,
+          weeklylNatWOptions: formData.weeklylNatWOptions,
+          nat60WOptions: formData.nat60WOptions,
+          weeklyOthWOptions: formData.weeklyOthWOptions,
+          biweekOthWOptions: formData.biweekOthWOptions,
+          oth60WOptions: formData.oth60WOptions,
+          biweeklNat: formData.biweeklNat,
+          weeklylNat: formData.weeklylNat,
+          nat60: formData.nat60,
+          qcTax: formData.qcTax,
+          otherTax: formData.otherTax,
+          totalWithOptions: formData.totalWithOptions,
+          otherTaxWithOptions: formData.otherTaxWithOptions,
+          desiredPayments: formData.desiredPayments,
+          freight: formData.freight,
+          admin: formData.admin,
+          commodity: formData.commodity,
+          pdi: formData.pdi,
+          discountPer: formData.discountPer,
+          userLoanProt: formData.userLoanProt,
+          userTireandRim: formData.userTireandRim,
+          userGap: formData.userGap,
+          userExtWarr: formData.userExtWarr,
+          userServicespkg: formData.userServicespkg,
+          deliveryCharge: formData.deliveryCharge,
+          vinE: formData.vinE,
+          lifeDisability: formData.lifeDisability,
+          rustProofing: formData.rustProofing,
+          userOther: formData.userOther,
+          paintPrem: formData.paintPrem,
+          licensing: formData.licensing,
+          stockNum: formData.stockNum,
+          options: formData.options,
+          accessories: formData.accessories,
+          labour: formData.labour,
+          year: formData.year,
+          brand: formData.brand,
+          model: formData.model,
+          model1: formData.model1,
+          color: formData.color,
+          modelCode: formData.modelCode,
+          msrp: formData.msrp,
+          userEmail: formData.userEmail,
+          tradeValue: formData.tradeValue,
+          tradeDesc: formData.tradeDesc,
+          tradeColor: formData.tradeColor,
+          tradeYear: formData.tradeYear,
+          tradeMake: formData.tradeMake,
+          tradeVin: formData.tradeVin,
+          tradeTrim: formData.tradeTrim,
+          tradeMileage: formData.tradeMileage,
+          tradeLocation: formData.tradeLocation,
+          trim: formData.trim,
+          vin: formData.vin,
+          leadNote: formData.leadNote,
+          sendToFinanceNow: formData.sendToFinanceNow,
+          dealNumber: formData.dealNumber,
+          bikeStatus: formData.bikeStatus,
+          lien: formData.lien,
+          dob: formData.dob,
+          othTax: formData.othTax,
+          optionsTotal: formData.optionsTotal,
+          lienPayout: formData.lienPayout,
+          referral: formData.referral,
+          visited: formData.visited,
+          bookedApt: formData.bookedApt,
+          aptShowed: formData.aptShowed,
+          aptNoShowed: formData.aptNoShowed,
+          testDrive: formData.testDrive,
+          metService: formData.metService,
+          metManager: formData.metManager,
+          metParts: formData.metParts,
+          sold: formData.sold,
+          depositMade: formData.depositMade,
+          refund: formData.refund,
+          turnOver: formData.turnOver,
+          financeApp: formData.financeApp,
+          approved: formData.approved,
+          signed: formData.signed,
+          pickUpSet: formData.pickUpSet,
+          demoed: formData.demoed,
+          delivered: formData.delivered,
+          lastContact: formData.lastContact,
+          status: formData.status,
+          customerState: formData.customerState,
+          result: formData.result,
+          timesContacted: formData.timesContacted,
+          nextAppointment: formData.nextAppointment,
+          followUpDay: formData.followUpDay,
+          deliveredDate: formData.deliveredDate,
+          notes: formData.notes,
+          visits: formData.visits,
+          progress: formData.progress,
+          metSalesperson: formData.metSalesperson,
+          metFinance: formData.metFinance,
+          financeApplication: formData.financeApplication,
+          pickUpDate: formData.pickUpDate,
+          pickUpTime: formData.pickUpTime,
+          depositTakenDate: formData.depositTakenDate,
+          docsSigned: formData.docsSigned,
+          tradeRepairs: formData.tradeRepairs,
+          seenTrade: formData.seenTrade,
+          lastNote: formData.lastNote,
+          applicationDone: formData.applicationDone,
+          licensingSent: formData.licensingSent,
+          liceningDone: formData.liceningDone,
+          refunded: formData.refunded,
+          cancelled: formData.cancelled,
+          lost: formData.lost,
+          dLCopy: formData.dLCopy,
+          insCopy: formData.insCopy,
+          testDrForm: formData.testDrForm,
+          voidChq: formData.voidChq,
+          loanOther: formData.loanOther,
+          signBill: formData.signBill,
+          ucda: formData.ucda,
+          tradeInsp: formData.tradeInsp,
+          customerWS: formData.customerWS,
+          otherDocs: formData.otherDocs,
+          urgentFinanceNote: formData.urgentFinanceNote,
+          funded: formData.funded,
+          //  leadSource: formData.leadSource,
+          // InPerson: formData.InPerson,
+          // Phone: formData.Phone,
+          // SMS: formData.SMS,
+          // Email: formData.Email,
+          // Other: formData.Other,
+        }
+      })
+    }
+    const create = CreateFinance()
+    switch (brand) {
+      case "Used":
+        return json({ create })
+      case "Switch":
+        await createFinanceManitou(formData)
+        return json({ create })
+      case "Manitou":
+        await createFinanceManitou(formData)
+        return json({ create })
+      case "BMW-Motorrad":
+        await createBMWOptions(formData)
+        return json({ create })
+      default:
+        return json({ create })
+    }
+  } catch (error) {
+    let createClientfile = async () => {
+      const clientfile = await prisma.clientfile.create({
+        data: {
+          userId: formData.userId,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          postal: formData.postal,
+          province: formData.province,
+        }
+      })
+      return clientfile
+    }
+    async function CreateFinance() {
+      await prisma.finance.create({
+        data: {
+          clientfileId: clientfile.id,
+          activixId: formData.activixId,
+          theRealActId: formData.theRealActId,
+          financeManager: formData.financeManager,
+          email: formData.email,
+          firstName: formData.firstName,
+          mileage: formData.mileage,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          name: formData.name,
+          address: formData.address,
+          city: formData.city,
+          postal: formData.postal,
+          province: formData.province,
+          dl: formData.dl,
+          typeOfContact: formData.typeOfContact,
+          timeToContact: formData.timeToContact,
+          iRate: formData.iRate,
+          months: formData.months,
+          discount: formData.discount,
+          total: formData.total,
+          onTax: formData.onTax,
+          on60: formData.on60,
+          biweekly: formData.biweekly,
+          weekly: formData.weekly,
+          weeklyOth: formData.weeklyOth,
+          biweekOth: formData.biweekOth,
+          oth60: formData.oth60,
+          weeklyqc: formData.weeklyqc,
+          biweeklyqc: formData.biweeklyqc,
+          qc60: formData.qc60,
+          deposit: formData.deposit,
+          biweeklNatWOptions: formData.biweeklNatWOptions,
+          weeklylNatWOptions: formData.weeklylNatWOptions,
+          nat60WOptions: formData.nat60WOptions,
+          weeklyOthWOptions: formData.weeklyOthWOptions,
+          biweekOthWOptions: formData.biweekOthWOptions,
+          oth60WOptions: formData.oth60WOptions,
+          biweeklNat: formData.biweeklNat,
+          weeklylNat: formData.weeklylNat,
+          nat60: formData.nat60,
+          qcTax: formData.qcTax,
+          otherTax: formData.otherTax,
+          totalWithOptions: formData.totalWithOptions,
+          otherTaxWithOptions: formData.otherTaxWithOptions,
+          desiredPayments: formData.desiredPayments,
+          freight: formData.freight,
+          admin: formData.admin,
+          commodity: formData.commodity,
+          pdi: formData.pdi,
+          discountPer: formData.discountPer,
+          userLoanProt: formData.userLoanProt,
+          userTireandRim: formData.userTireandRim,
+          userGap: formData.userGap,
+          userExtWarr: formData.userExtWarr,
+          userServicespkg: formData.userServicespkg,
+          deliveryCharge: formData.deliveryCharge,
+          vinE: formData.vinE,
+          lifeDisability: formData.lifeDisability,
+          rustProofing: formData.rustProofing,
+          userOther: formData.userOther,
+          paintPrem: formData.paintPrem,
+          licensing: formData.licensing,
+          stockNum: formData.stockNum,
+          options: formData.options,
+          accessories: formData.accessories,
+          labour: formData.labour,
+          year: formData.year,
+          brand: formData.brand,
+          model: formData.model,
+          model1: formData.model1,
+          color: formData.color,
+          modelCode: formData.modelCode,
+          msrp: formData.msrp,
+          userEmail: formData.userEmail,
+          tradeValue: formData.tradeValue,
+          tradeDesc: formData.tradeDesc,
+          tradeColor: formData.tradeColor,
+          tradeYear: formData.tradeYear,
+          tradeMake: formData.tradeMake,
+          tradeVin: formData.tradeVin,
+          tradeTrim: formData.tradeTrim,
+          tradeMileage: formData.tradeMileage,
+          tradeLocation: formData.tradeLocation,
+          trim: formData.trim,
+          vin: formData.vin,
+          leadNote: formData.leadNote,
+          sendToFinanceNow: formData.sendToFinanceNow,
+          dealNumber: formData.dealNumber,
+          bikeStatus: formData.bikeStatus,
+          lien: formData.lien,
+          dob: formData.dob,
+          othTax: formData.othTax,
+          optionsTotal: formData.optionsTotal,
+          lienPayout: formData.lienPayout,
+          referral: formData.referral,
+          visited: formData.visited,
+          bookedApt: formData.bookedApt,
+          aptShowed: formData.aptShowed,
+          aptNoShowed: formData.aptNoShowed,
+          testDrive: formData.testDrive,
+          metService: formData.metService,
+          metManager: formData.metManager,
+          metParts: formData.metParts,
+          sold: formData.sold,
+          depositMade: formData.depositMade,
+          refund: formData.refund,
+          turnOver: formData.turnOver,
+          financeApp: formData.financeApp,
+          approved: formData.approved,
+          signed: formData.signed,
+          pickUpSet: formData.pickUpSet,
+          demoed: formData.demoed,
+          delivered: formData.delivered,
+          lastContact: formData.lastContact,
+          status: formData.status,
+          customerState: formData.customerState,
+          result: formData.result,
+          timesContacted: formData.timesContacted,
+          nextAppointment: formData.nextAppointment,
+          followUpDay: formData.followUpDay,
+          deliveredDate: formData.deliveredDate,
+          notes: formData.notes,
+          visits: formData.visits,
+          progress: formData.progress,
+          metSalesperson: formData.metSalesperson,
+          metFinance: formData.metFinance,
+          financeApplication: formData.financeApplication,
+          pickUpDate: formData.pickUpDate,
+          pickUpTime: formData.pickUpTime,
+          depositTakenDate: formData.depositTakenDate,
+          docsSigned: formData.docsSigned,
+          tradeRepairs: formData.tradeRepairs,
+          seenTrade: formData.seenTrade,
+          lastNote: formData.lastNote,
+          applicationDone: formData.applicationDone,
+          licensingSent: formData.licensingSent,
+          liceningDone: formData.liceningDone,
+          refunded: formData.refunded,
+          cancelled: formData.cancelled,
+          lost: formData.lost,
+          dLCopy: formData.dLCopy,
+          insCopy: formData.insCopy,
+          testDrForm: formData.testDrForm,
+          voidChq: formData.voidChq,
+          loanOther: formData.loanOther,
+          signBill: formData.signBill,
+          ucda: formData.ucda,
+          tradeInsp: formData.tradeInsp,
+          customerWS: formData.customerWS,
+          otherDocs: formData.otherDocs,
+          urgentFinanceNote: formData.urgentFinanceNote,
+          funded: formData.funded,
+          //  leadSource: formData.leadSource,
+          // InPerson: formData.InPerson,
+          // Phone: formData.Phone,
+          // SMS: formData.SMS,
+          // Email: formData.Email,
+          // Other: formData.Other,
+        }
+      })
+    }
+    const createFile = createClientfile()
+    const create = CreateFinance()
+    switch (brand) {
+      case "Used":
+        return json({ createFile, create })
+      case "Switch":
+        await createFinanceManitou(formData)
+        return json({ createFile, create })
+      case "Manitou":
+        await createFinanceManitou(formData)
+        return json({ createFile, create })
+      case "BMW-Motorrad":
+        await createBMWOptions(formData)
+        return json({ createFile, create })
+      default:
+        return json({ createFile, create })
+    }
+  }
+}
 
 export const dashboardAction: ActionFunction = async ({ request, }) => {
   const formPayload = Object.fromEntries(await request.formData())
@@ -625,8 +994,93 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     redirect('/login')
   }
   const userId = user?.id;
-  console.log(formData)
   const intent = formPayload.intent;
+  if (intent === 'demoDayEdit') {
+    const addtoWishList = await prisma.demoDay.update({
+      where: {
+        id: formData.id,
+      },
+      data: {
+        userEmail: formData.userEmail,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        leadNote: formData.leadNote,
+        notified: formData.notified,
+      }
+    })
+    return addtoWishList
+  }
+  if (intent === 'demoDayDelete') {
+    const edit = await prisma.demoDay.delete({
+      where: {
+        id: formData.id,
+      }
+    })
+    return null
+  }
+  if (intent === 'demoDayConvert') {
+    try {
+      const clientfile = await prisma.clientfile.findUnique({ where: { email: formData.email, }, });
+      const convert = await prisma.finance.create({
+        data: {
+          clientfileId: clientfile?.id,
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          name: formData.name,
+          brand: formData.brand,
+          model: formData.model,
+          userEmail: formData.userEmail,
+        }
+      })
+      return convert
+    } catch (error) {
+      const clientfile = await prisma.clientfile.create({
+        data: {
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          name: formData.name,
+          userId: user.id,
+        },
+      });
+      const convert = await prisma.finance.create({
+        data: {
+          clientfileId: clientfile.id,
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          name: formData.name,
+          brand: formData.brand,
+          model: formData.model,
+          userEmail: formData.userEmail,
+        }
+      })
+      return json({ convert, clientfile })
+    }
+  }
+  if (intent === 'addDemoDay') {
+    const addtoWishList = await prisma.demoDay.create({
+      data: {
+        userEmail: formData.userEmail,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        brand: formData.brand,
+        model: formData.model,
+        brand2: formData.brand2,
+        model2: formData.model2,
+        leadNote: formData.notes,
+      }
+    })
+    return addtoWishList
+  }
   if (intent === 'selectBrand') {
     console.log(formData.phone)
     const sessionOrder = await getOrder(request.headers.get("Cookie"));
@@ -686,12 +1140,217 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         lastName: formData.lastName,
         email: formData.email,
         phone: formData.phone,
-        model: formData.model,
-        model2: formData.model2,
-        notes: formData.notes,
+        wishListNotes: formData.wishListNotes,
       }
     })
     return addtoWishList
+  }
+  if (intent === 'wishListConvert') {
+    try {
+      const clientfile = await prisma.clientfile.findUnique({ where: { email: formData.email, }, });
+      const convert = await prisma.finance.create({
+        data: {
+          clientfileId: clientfile?.id,
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          name: formData.name,
+          brand: formData.brand,
+          model: formData.model,
+          userEmail: formData.userEmail,
+        }
+      })
+      return convert
+    } catch (error) {
+      const clientfile = await prisma.clientfile.create({
+        data: {
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          name: formData.name,
+          userId: user.id,
+        },
+      });
+      const convert = await prisma.finance.create({
+        data: {
+          clientfileId: clientfile.id,
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          name: formData.name,
+          brand: formData.brand,
+          model: formData.model,
+          userEmail: formData.userEmail,
+        }
+      })
+      return json({ convert, clientfile })
+    }
+    /*
+        const convert = await prisma.finance.create({
+          data: {
+            clientfileId: formData.clientfileId,
+            dashboardId: formData.dashboardId,
+            financeId: formData.financeId,
+            activixId: formData.activixId,
+            theRealActId: formData.theRealActId,
+            financeManager: formData.financeManager,
+            email: formData.email,
+            firstName: formData.firstName,
+            mileage: formData.mileage,
+            lastName: formData.lastName,
+            phone: formData.phone,
+            name: formData.name,
+            address: formData.address,
+            city: formData.city,
+            postal: formData.postal,
+            province: formData.province,
+            dl: formData.dl,
+            typeOfContact: formData.typeOfContact,
+            timeToContact: formData.timeToContact,
+            iRate: formData.iRate,
+            months: formData.months,
+            discount: formData.discount,
+            total: formData.total,
+            onTax: formData.onTax,
+            on60: formData.on60,
+            biweekly: formData.biweekly,
+            weekly: formData.weekly,
+            weeklyOth: formData.weeklyOth,
+            biweekOth: formData.biweekOth,
+            oth60: formData.oth60,
+            weeklyqc: formData.weeklyqc,
+            biweeklyqc: formData.biweeklyqc,
+            qc60: formData.qc60,
+            deposit: formData.deposit,
+            biweeklNatWOptions: formData.biweeklNatWOptions,
+            weeklylNatWOptions: formData.weeklylNatWOptions,
+            nat60WOptions: formData.nat60WOptions,
+            weeklyOthWOptions: formData.weeklyOthWOptions,
+            biweekOthWOptions: formData.biweekOthWOptions,
+            oth60WOptions: formData.oth60WOptions,
+            biweeklNat: formData.biweeklNat,
+            weeklylNat: formData.weeklylNat,
+            nat60: formData.nat60,
+            qcTax: formData.qcTax,
+            otherTax: formData.otherTax,
+            totalWithOptions: formData.totalWithOptions,
+            otherTaxWithOptions: formData.otherTaxWithOptions,
+            desiredPayments: formData.desiredPayments,
+            freight: formData.freight,
+            admin: formData.admin,
+            commodity: formData.commodity,
+            pdi: formData.pdi,
+            discountPer: formData.discountPer,
+            userLoanProt: formData.userLoanProt,
+            userTireandRim: formData.userTireandRim,
+            userGap: formData.userGap,
+            userExtWarr: formData.userExtWarr,
+            userServicespkg: formData.userServicespkg,
+            deliveryCharge: formData.deliveryCharge,
+            vinE: formData.vinE,
+            lifeDisability: formData.lifeDisability,
+            rustProofing: formData.rustProofing,
+            userOther: formData.userOther,
+            paintPrem: formData.paintPrem,
+            licensing: formData.licensing,
+            stockNum: formData.stockNum,
+            options: formData.options,
+            accessories: formData.accessories,
+            labour: formData.labour,
+            year: formData.year,
+            brand: formData.brand,
+            model: formData.model,
+            model1: formData.model1,
+            color: formData.color,
+            modelCode: formData.modelCode,
+            msrp: formData.msrp,
+            userEmail: formData.userEmail,
+            tradeValue: formData.tradeValue,
+            tradeDesc: formData.tradeDesc,
+            tradeColor: formData.tradeColor,
+            tradeYear: formData.tradeYear,
+            tradeMake: formData.tradeMake,
+            tradeVin: formData.tradeVin,
+            tradeTrim: formData.tradeTrim,
+            tradeMileage: formData.tradeMileage,
+            tradeLocation: formData.tradeLocation,
+            trim: formData.trim,
+            vin: formData.vin,
+            leadNote: formData.leadNote,
+            sendToFinanceNow: formData.sendToFinanceNow,
+            dealNumber: formData.dealNumber,
+            bikeStatus: formData.bikeStatus,
+            lien: formData.lien,
+            dob: formData.dob,
+            othTax: formData.othTax,
+            optionsTotal: formData.optionsTotal,
+            lienPayout: formData.lienPayout,
+            referral: formData.referral,
+            visited: formData.visited,
+            bookedApt: formData.bookedApt,
+            aptShowed: formData.aptShowed,
+            aptNoShowed: formData.aptNoShowed,
+            testDrive: formData.testDrive,
+            metService: formData.metService,
+            metManager: formData.metManager,
+            metParts: formData.metParts,
+            sold: formData.sold,
+            depositMade: formData.depositMade,
+            refund: formData.refund,
+            turnOver: formData.turnOver,
+            financeApp: formData.financeApp,
+            approved: formData.approved,
+            signed: formData.signed,
+            pickUpSet: formData.pickUpSet,
+            demoed: formData.demoed,
+            delivered: formData.delivered,
+            lastContact: formData.lastContact,
+            status: formData.status,
+            customerState: formData.customerState,
+            result: formData.result,
+            timesContacted: formData.timesContacted,
+            nextAppointment: formData.nextAppointment,
+            followUpDay: formData.followUpDay,
+            deliveredDate: formData.deliveredDate,
+            notes: formData.notes,
+            visits: formData.visits,
+            progress: formData.progress,
+            metSalesperson: formData.metSalesperson,
+            metFinance: formData.metFinance,
+            financeApplication: formData.financeApplication,
+            pickUpDate: formData.pickUpDate,
+            pickUpTime: formData.pickUpTime,
+            depositTakenDate: formData.depositTakenDate,
+            docsSigned: formData.docsSigned,
+            tradeRepairs: formData.tradeRepairs,
+            seenTrade: formData.seenTrade,
+            lastNote: formData.lastNote,
+            applicationDone: formData.applicationDone,
+            licensingSent: formData.licensingSent,
+            liceningDone: formData.liceningDone,
+            refunded: formData.refunded,
+            cancelled: formData.cancelled,
+            lost: formData.lost,
+            dLCopy: formData.dLCopy,
+            insCopy: formData.insCopy,
+            testDrForm: formData.testDrForm,
+            voidChq: formData.voidChq,
+            loanOther: formData.loanOther,
+            signBill: formData.signBill,
+            ucda: formData.ucda,
+            tradeInsp: formData.tradeInsp,
+            customerWS: formData.customerWS,
+            otherDocs: formData.otherDocs,
+            urgentFinanceNote: formData.urgentFinanceNote,
+            funded: formData.funded,
+            leadSource: formData.leadSource,
+          }
+        })
+    */
+
   }
   if (intent === 'deleteWishList') {
     const deleteWishList = await prisma.wishList.delete({
@@ -760,59 +1419,14 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
 
   if (intent === 'newLead') {
-    console.log('less than 20')
     const brand = formData.brand
-    delete formData.financeId
-    delete formData.userId
-    delete formData.followUpDay
+    const activixActivated = user?.activixActivated
     let { financeId, clientData, dashData, financeData } = DataForm(formData);
-    clientData = {
-      ...clientData,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      name: formData.firstName + ' ' + formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      city: formData.city,
-      province: formData.province,
-      dl: formData.dl,
-      userEmail: formData.userEmail,
+    if (activixActivated === 'yes') {
+      await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
     }
-    const userId = formData.userId
-    if (formData.brand === 'Used') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      //   console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ QuoteServer })
-    }
-    if (formData.brand === 'Switch') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-
-      const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer })
-    }
-    if (formData.brand === 'Manitou') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer })
-    }
-    if (formData.brand === 'BMW-Motorrad') {
-      const financeId = finance.id
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      const updatingFinance = await createBMWOptions(financeId)
-      const updatingFinance2 = await createBMWOptions2(financeId)
-      return json({ updatingFinance, updatingFinance2, createQuoteServer })
-    }
-    else {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      // console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ createQuoteServer })
-    }
+    const create = await QuoteServer(formData)
+    return create
   }
   // calls
   if (intent === "EmailClient") {
@@ -1110,192 +1724,50 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     console.log(formData, ' update finance data')
 
     let brand = formPayload.brand
-    let customerState = formData.customerState
-    if (formData.customerState === 'Pending') {
-      customerState = 'Pending'
-    }
-    if (formData.customerState === 'Attempted') {
-      customerState = 'Attempted'
-    }
-    if (formData.customerState === 'Reached') {
-      customerState = 'Reached'
-    }
-    if (formData.customerState === 'Lost') {
-      customerState = 'Lost'
-    }
-    if (formData.sold === 'on') {
-      customerState = 'sold'
-    }
-    if (formData.depositMade === 'on') {
-      customerState = 'depositMade'
-    }
-    if (formData.turnOver === 'on') {
-      customerState = 'turnOver'
-    }
-    if (formData.financeApp === 'on') {
-      customerState = 'financeApp'
-    }
-    if (formData.approved === 'on') {
-      customerState = 'approved'
-    }
-    if (formData.signed === 'on') {
-      customerState = 'signed'
-    }
-    if (formData.pickUpSet === 'on') {
-      customerState = 'pickUpSet'
-    }
-    if (formData.delivered === 'on') {
-      customerState = 'delivered'
-    }
-    if (formData.refund === 'on') {
-      customerState = 'refund'
-    }
-    if (formData.funded === 'on') {
-      customerState = 'funded'
-    }
+    const determineCustomerState = (formData) => {
+      switch (true) {
+        case formData.customerState === 'Pending':
+          return 'Pending';
+        case formData.customerState === 'Attempted':
+          return 'Attempted';
+        case formData.customerState === 'Reached':
+          return 'Reached';
+        case formData.customerState === 'Lost':
+          return 'Lost';
+        case formData.sold === 'on':
+          return 'sold';
+        case formData.depositMade === 'on':
+          return 'depositMade';
+        case formData.turnOver === 'on':
+          return 'turnOver';
+        case formData.financeApp === 'on':
+          return 'financeApp';
+        case formData.approved === 'on':
+          return 'approved';
+        case formData.signed === 'on':
+          return 'signed';
+        case formData.pickUpSet === 'on':
+          return 'pickUpSet';
+        case formData.delivered === 'on':
+          return 'delivered';
+        case formData.refund === 'on':
+          return 'refund';
+        case formData.funded === 'on':
+          return 'funded';
+        default:
+          return null;
+      }
+    };
+    const customerState = determineCustomerState(formData);
+
     let pickUpDate = ''
     if (formData.pickUpDate) {
       pickUpDate = new Date(formData.pickUpDate).toISOString()
     }
     let lastContact = new Date().toISOString()
     const date = new Date();
-    let sold;
-    let referral;
-    let visited;
-    let bookedApt;
-    let aptShowed;
-    let aptNoShowed;
-    let testDrive;
-    let metService;
-    let metManager;
-    let metParts;
-    let depositMade;
-    let refund;
-    let turnOver;
-    let financeApp;
-    let approved;
-    let signed;
-    let pickUpSet;
-    let demoed;
-    let delivered;
-    let deliveredDate;
-    let docsSigned;
-    let funded;
-    let seenTrade;
-    let financeApplication;
-    let metSalesperson;
-    let metFinance;
-    let signBill;
-    let tradeInsp;
-    let applicationDone;
-    let licensingSent;
-    let liceningDone;
-    let cancelled;
-    let lost;
 
-    if (formData.tradeInsp === 'on') {
-      tradeInsp = date
-    }
-    if (formData.sold === 'on') {
-      sold = date;
-    }
-    if (formData.signBill === 'on') {
-      signBill = date;
-    }
-    if (formData.metFinance === 'on') {
-      metFinance = date;
-    }
-    if (formData.metSalesperson === 'on') {
-      metSalesperson = date;
-    }
-    if (formData.financeApplication === 'on') {
-      financeApplication = date;
-    }
-    if (formData.seenTrade === 'on') {
-      seenTrade = date;
-    }
-    if (formData.funded === 'on') {
-      funded = date;
-    }
-    if (formData.docsSigned === 'on') {
-      docsSigned = date;
-    }
-    if (formData.deliveredDate === 'on') {
-      deliveredDate = date;
-    }
-    if (formData.delivered === 'on') {
-      delivered = date;
-    }
-    if (formData.demoed === 'on') {
-      demoed = date;
-    }
-    if (formData.pickUpSet === 'on') {
-      pickUpSet = date;
-    }
-    if (formData.signed === 'on') {
-      signed = date;
-    }
-    if (formData.approved === 'on') {
-      approved = date;
-    }
-    if (formData.financeApp === 'on') {
-      financeApp = date;
-    }
-    if (formData.turnOver === 'on') {
-      turnOver = date;
-    }
-    if (formData.refund === 'on') {
-      refund = date;
-    }
-    if (formData.depositMade === 'on') {
-      depositMade = date;
-    }
-    if (formData.metParts === 'on') {
-      metParts = date;
-    }
-    if (formData.metManager === 'on') {
-      metManager = date;
-    }
-    if (formData.metService === 'on') {
-      metService = date;
-    }
-    if (formData.testDrive === 'on') {
-      testDrive = date;
-    }
-    if (formData.aptNoShowed === 'on') {
-      aptNoShowed = date;
-    }
-    if (formData.aptShowed === 'on') {
-      aptShowed = date;
-    }
-    if (formData.bookedApt === 'on') {
-      bookedApt = date;
-    }
-    if (formData.visited === 'on') {
-      visited = date;
-    }
-    if (formData.referral === 'on') {
-      referral = date;
-    }
-    if (formData.applicationDone === 'on') {
-      applicationDone = date;
-    }
-    if (formData.licensingSent === 'on') {
-      licensingSent = date;
-    }
-    if (formData.liceningDone === 'on') {
-      liceningDone = date;
-    }
-    if (formData.cancelled === 'on') {
-      cancelled = date;
-    }
-    if (formData.lost === 'on') {
-      lost = date;
-    }
-
-    console.log(financeId, 'finaceCheckId')
     const financeData = {
-
       email: formData.email,
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -1365,7 +1837,6 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       color: formData.color,
       modelCode: formData.modelCode,
       msrp: formData.msrp,
-      userEmail: formData.userEmail,
       tradeValue: formData.tradeValue,
       tradeDesc: formData.tradeDesc,
       tradeColor: formData.tradeColor,
@@ -1378,43 +1849,41 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       trim: formData.trim,
       vin: formData.vin,
       lien: formData.lien,
-    }
-    const dashData = {
       userEmail: formData.userEmail,
 
-      applicationDone: String(applicationDone),
-      licensingSent: String(licensingSent),
-      liceningDone: String(liceningDone),
-      cancelled: String(cancelled),
-      lost: String(lost),
-      sold: String(sold),
-      referral: String(referral),
-      visited: String(visited),
-      bookedApt: String(bookedApt),
-      aptShowed: String(aptShowed),
-      aptNoShowed: String(aptNoShowed),
-      testDrive: String(testDrive),
-      metService: String(metService),
-      metManager: String(metManager),
-      metParts: String(metParts),
-      depositMade: String(depositMade),
-      refund: String(refund),
-      turnOver: String(turnOver),
-      financeApp: String(financeApp),
-      approved: String(approved),
-      signed: String(signed),
-      pickUpSet: String(pickUpSet),
-      demoed: String(demoed),
-      delivered: String(delivered),
-      deliveredDate: String(deliveredDate),
-      docsSigned: String(docsSigned),
-      funded: String(funded),
-      seenTrade: String(seenTrade),
-      financeApplication: String(financeApplication),
-      metSalesperson: String(metSalesperson),
-      metFinance: String(metFinance),
-      signBill: String(signBill),
-      tradeInsp: String(tradeInsp),
+      applicationDone: formData.applicationDone === 'on' ? date : null,
+      licensingSent: formData.licensingSent === 'on' ? date : null,
+      liceningDone: formData.liceningDone === 'on' ? date : null,
+      cancelled: formData.cancelled === 'on' ? date : null,
+      lost: formData.lost === 'on' ? date : null,
+      sold: formData.sold === 'on' ? date : null,
+      referral: formData.referral === 'on' ? date : null,
+      visited: formData.visited === 'on' ? date : null,
+      bookedApt: formData.bookedApt === 'on' ? date : null,
+      aptShowed: formData.aptShowed === 'on' ? date : null,
+      aptNoShowed: formData.aptNoShowed === 'on' ? date : null,
+      testDrive: formData.testDrive === 'on' ? date : null,
+      metService: formData.metService === 'on' ? date : null,
+      metManager: formData.metManager === 'on' ? date : null,
+      metParts: formData.metParts === 'on' ? date : null,
+      depositMade: formData.depositMade === 'on' ? date : null,
+      refund: formData.refund === 'on' ? date : null,
+      turnOver: formData.turnOver === 'on' ? date : null,
+      financeApp: formData.financeApp === 'on' ? date : null,
+      approved: formData.approved === 'on' ? date : null,
+      signed: formData.signed === 'on' ? date : null,
+      pickUpSet: formData.pickUpSet === 'on' ? date : null,
+      demoed: formData.demoed === 'on' ? date : null,
+      delivered: formData.delivered === 'on' ? date : null,
+      deliveredDate: formData.deliveredDate === 'on' ? date : null,
+      docsSigned: formData.docsSigned === 'on' ? date : null,
+      funded: formData.funded === 'on' ? date : null,
+      seenTrade: formData.seenTrade === 'on' ? date : null,
+      financeApplication: formData.financeApplication === 'on' ? date : null,
+      metSalesperson: formData.metSalesperson === 'on' ? date : null,
+      metFinance: formData.metFinance === 'on' ? date : null,
+      signBill: formData.signBill === 'on' ? date : null,
+      tradeInsp: formData.tradeInsp === 'on' ? date : null,
 
       lastContact: lastContact,
       status: formData.status,
@@ -1466,20 +1935,11 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
             where: {
               id: financeId,
             },
-            data: { ...financeData },
-          });
-
-          // Update the dashboard record
-          const dashboard = await prisma.dashboard.update({
-            where: {
-              financeId: financeId, // Assuming the financeId is also the id of the dashboard
+            data: {
+              ...financeData,
             },
-            data: { ...dashData, }
           });
-
-          console.log("Finance and Dashboard records updated successfully");
-
-          return { finance, dashboard };
+          return { finance };
         } catch (error) {
           console.error("An error occurred while updating the records:", error);
           throw error;  // re-throw the error so it can be handled by the caller
@@ -1488,10 +1948,14 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   if (intent === "updateFinanceWanted") {
     const financeData = {
-
+      activixId: formData.activixId,
+      theRealActId: formData.theRealActId,
+      financeManager: formData.financeManager,
       email: formData.email,
       firstName: formData.firstName,
+      mileage: formData.mileage,
       lastName: formData.lastName,
+      phone: formData.phone,
       name: formData.name,
       address: formData.address,
       city: formData.city,
@@ -1566,13 +2030,18 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       tradeVin: formData.tradeVin,
       tradeTrim: formData.tradeTrim,
       tradeMileage: formData.tradeMileage,
-      bikeStatus: formData.bikeStatus,
+      tradeLocation: formData.tradeLocation,
       trim: formData.trim,
       vin: formData.vin,
+      leadNote: formData.leadNote,
+      sendToFinanceNow: formData.sendToFinanceNow,
+      dealNumber: formData.dealNumber,
+      bikeStatus: formData.bikeStatus,
       lien: formData.lien,
-    }
-    const dashData = {
-      userEmail: formData.userEmail,
+      dob: formData.dob,
+      othTax: formData.othTax,
+      optionsTotal: formData.optionsTotal,
+      lienPayout: formData.lienPayout,
       referral: formData.referral,
       visited: formData.visited,
       bookedApt: formData.bookedApt,
@@ -1592,15 +2061,13 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       pickUpSet: formData.pickUpSet,
       demoed: formData.demoed,
       delivered: formData.delivered,
-      // lastContact: lastContact,
+      lastContact: formData.lastContact,
       status: formData.status,
-      //  customerState: customerState,
+      customerState: formData.customerState,
       result: formData.result,
       timesContacted: formData.timesContacted,
       nextAppointment: formData.nextAppointment,
-      completeCall: formData.completeCall,
       followUpDay: formData.followUpDay,
-      state: formData.state,
       deliveredDate: formData.deliveredDate,
       notes: formData.notes,
       visits: formData.visits,
@@ -1608,13 +2075,19 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       metSalesperson: formData.metSalesperson,
       metFinance: formData.metFinance,
       financeApplication: formData.financeApplication,
-      pickUpDate: pickUpDate,
+      pickUpDate: formData.pickUpDate,
       pickUpTime: formData.pickUpTime,
       depositTakenDate: formData.depositTakenDate,
       docsSigned: formData.docsSigned,
       tradeRepairs: formData.tradeRepairs,
       seenTrade: formData.seenTrade,
       lastNote: formData.lastNote,
+      applicationDone: formData.applicationDone,
+      licensingSent: formData.licensingSent,
+      liceningDone: formData.liceningDone,
+      refunded: formData.refunded,
+      cancelled: formData.cancelled,
+      lost: formData.lost,
       dLCopy: formData.dLCopy,
       insCopy: formData.insCopy,
       testDrForm: formData.testDrForm,
@@ -1627,32 +2100,24 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       otherDocs: formData.otherDocs,
       urgentFinanceNote: formData.urgentFinanceNote,
       funded: formData.funded,
-      countsInPerson: formData.countsInPerson,
-      countsPhone: formData.countsPhone,
-      countsSMS: formData.countsSMS,
-      countsOther: formData.countsOther,
-      countsEmail: formData.countsEmail,
+      //  leadSource: formData.leadSource,
+      // InPerson: formData.InPerson,
+      // Phone: formData.Phone,
+      // SMS: formData.SMS,
+      // Email: formData.Email,
+      // Other: formData.Other,
     }
     const fullName = user.username;
     const words = fullName.split(' ');
     const firstName = words[0];
     const lastName = words[1];
 
-    const newData = {
-      ...financeData,
-      ...dashData
-    }
     const updateLocal = await prisma.finance.update({
       where: { id: formData.financeId },
       data: { ...financeData, }
     })
-    const updateLocalDash = await prisma.dashboard.update({
-      where: { financeId: formData.financeId },
-      data: { ...dashData, }
-    })
-    // const lead = await UpdateLeadWantedVeh(formData)
-    //console.log(lead, 'lead')
-    return json({ updateLocal, updateLocalDash })
+
+    return json({ updateLocal })
   }
   // create
   if (intent === "createQuote") {
@@ -1704,59 +2169,8 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   // customer
   if (intent === "AddCustomer") {
-    console.log('less than 20')
-    const brand = formData.brand
-    delete formData.financeId
-    delete formData.userId
-    delete formData.followUpDay
-    let { financeId, clientData, dashData, financeData } = DataForm(formData);
-    clientData = {
-      ...clientData,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      name: formData.firstName + ' ' + formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      city: formData.city,
-      province: formData.province,
-      dl: formData.dl,
-      userEmail: formData.userEmail,
-    }
-    const userId = formData.userId
-    if (formData.brand === 'Used') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      //   console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ createQuoteServer })
-    }
-    if (formData.brand === 'Switch') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-
-      const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer })
-    }
-    if (formData.brand === 'Manitou') {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      const manitouOptionsCreated = await createFinanceManitou(formData)
-      return json({ manitouOptionsCreated, createQuoteServer })
-    }
-    if (formData.brand === 'BMW-Motorrad') {
-      const financeId = finance.id
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      const updatingFinance = await createBMWOptions(financeId)
-      const updatingFinance2 = await createBMWOptions2(financeId)
-      return json({ updatingFinance, updatingFinance2, createQuoteServer })
-    }
-    else {
-      const email = formData.email
-      const createQuoteServer = await QuoteServer(clientData, financeId, email, financeData, dashData)
-      // console.log('Created createQuoteServer:', createQuoteServer)
-      return json({ createQuoteServer })
-    }
+    const create = await QuoteServer(formData)
+    return create
   }
   if (intent === "deleteCustomer") {
     await DeleteCustomer({ formData, formPayload });

@@ -3,6 +3,7 @@ import { redirect, json, type LoaderFunctionArgs } from "@remix-run/node";
 import { getSession, commitSession } from '~/sessions/auth-session.server';
 import { updateUser } from '~/utils/user.server';
 import { GetUser } from '~/utils/loader.server';
+import { prisma } from '~/libs';
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
     const session = await getSession(request.headers.get("Cookie"));
@@ -11,7 +12,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     // if (!user) { redirect('/login') }
 
     console.log(user, 'email')
-    await CheckSub({ user });
+    await CheckSub(user);
     const subscriptionId = user?.subscriptionId;
 
     if (subscriptionId) {
@@ -26,6 +27,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
             console.log(subscriptionId, 'checking new subscription');
             if (subscriptionId === 'trialing' || subscriptionId === 'active') {
                 await updateUser({ email: user.email, returning: true });
+                await prisma.user.update({
+                    where: { email: email },
+                    data: {
+                        returning: true,
+
+                    }
+                })
                 return redirect('/dealer/welcome/dealerfees');
             } else {
                 return redirect('/subscribe');
