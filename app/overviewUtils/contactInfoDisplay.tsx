@@ -18,11 +18,10 @@ type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export default function ContactInfoDisplay({ finance, handleChange, formData, totalLabour, deliveryCharge, discount }) {
-  const [value, onChange] = useState<Value>(new Date());
   const firstName = finance?.firstName
   const lastName = finance?.lastName
+  const [value, onChange] = useState<Value>(new Date());
   const [date, setDate] = React.useState<Date>('')
-
   const now = new Date();
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
@@ -402,6 +401,7 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
                         <SelectContent className='text-black bg-white'  >
                           <SelectGroup>
                             <SelectLabel>Minute</SelectLabel>
+                            <SelectItem value="00">00</SelectItem>
                             <SelectItem value="10">10</SelectItem>
                             <SelectItem value="20">20</SelectItem>
                             <SelectItem value="30">30</SelectItem>

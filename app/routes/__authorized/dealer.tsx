@@ -45,8 +45,49 @@ export async function action({ request, params }: ActionFunction) {
   };
   if (formData.intent === 'createInterruption') {
     console.log('dealerdealer')
+    const url = '/dealer/quote/new/Harley-Davidson';
+    const segments = url.split('/');
+    const firstTwoParams = `/${segments[1]}/${segments[2]}`;
+    const threeParams = `/${segments[1]}/${segments[2]}/${segments[3]}`;
+    let title;
+    switch (firstTwoParams) {
+      case '/dealer/customer':
+        const customer = await prisma.finance.findUnique({
+          where: { id: segments[2] }
+        })
+        title = `${customer.firstName} ${customer.lastName}`
+        break;
+      case '/dealer/email':
+        title = `Was in the email client.`
+        break;
+      case '/dealer/admin':
+        title = `Was in the admin section.`
+        break;
+      case '/dealer/calendar':
+        title = `Was on the calendar.`
+        break;
+      case '/dealer/docs':
+        title = `Was going over the docs.`
+        break;
+      case '/dealer/document':
+        title = `Was building a document.`
+        break;
+      case '/dealer/editor':
+        title = `Was creating a template.`
+        break;
+      case '/dealer/inventory':
+        title = `Was going over inventory.`
+        break;
+      case '/dealer/leads':
+        title = `Was working on the dashboard.`
+        break;
+      case '/dealer/manager':
+        title = `Was in the manager section.`
+        break;
+      default:
+        title = location
+    }
 
-    console.log(location, 'locationl,ocations')
     const saveInt = await prisma.interruptions.create({
       data: {
         userEmail: user?.email,

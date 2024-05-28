@@ -22,7 +22,7 @@ export async function overviewLoader({ request, params }: LoaderFunction) {
     const user = await GetUser(email)
 
     const userId = user?.id
-    let finance = await prisma.finance.fidnMany({
+    let finance = await prisma.finance.findMany({
         orderBy: {
             createdAt: 'desc',
         },
@@ -145,10 +145,8 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     const email = userSession.get("email");
     const user = await GetUser(email)
     if (!user) { return json({ status: 302, redirect: 'login' }); };
-    const latestDashboard = await prisma.dashboard.findFirst({ orderBy: { createdAt: 'desc', }, });
-    const financeId = formData.financeId        //console.log(DataForm, 'dataform')
+    const financeId = formData.financeId
     const sliderWidth = formData.sliderWidth
-    // const token66 = await SetToken66(sliderWidth)
     const tokens = userSession.get('accessToken')
 
     if (formPayload.intent === 'financeTurnover') {
@@ -210,7 +208,27 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
         return finance
     }
     if (formPayload.intent === 'updateFinance') {
+        let dateModal = new Date(formData.pickedDate);
+        const timeOfDayModal = formData.pickHour + ':' + formData.pickMin;
+        const [hours, minutes] = timeOfDayModal.split(':').map(Number);
+        dateModal.setHours(hours, minutes);
+        const year = dateModal.getFullYear();
+        const month = String(dateModal.getMonth() + 1).padStart(2, '0');  // Months are 0-indexed in JavaScript
+        const day = String(dateModal.getDate()).padStart(2, '0');
+        const hour = String(dateModal.getHours()).padStart(2, '0');
+        const minute = String(dateModal.getMinutes()).padStart(2, '0');
+        const dateTimeString = `${year}-${month}-${day}T${hour}:${minute}:00.000`;
+        console.log(dateTimeString, 'datemodal');
         console.log(formData, 'formdata from overview')
+        const options = {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        };
         const finance = await prisma.finance.update({
             where: {
                 id: formData.financeId
@@ -286,7 +304,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 color: formData.color,
                 modelCode: formData.modelCode,
                 msrp: formData.msrp,
-                userEmail: formData.userEmail,
+                userEmail: user.email,
                 tradeValue: formData.tradeValue,
                 tradeDesc: formData.tradeDesc,
                 tradeColor: formData.tradeColor,
@@ -298,7 +316,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 trim: formData.trim,
                 vin: formData.vin,
                 lien: formData.lien,
-                lastContact: today.toISOString(),
+                lastContact: today.toLocaleDateString('en-US', options),
                 nextAppointment: 'TBD',
                 referral: 'off',
                 visited: 'off',
@@ -320,7 +338,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 demoed: 'off',
                 delivered: 'off',
                 notes: 'off',
-                metSalesperson: 'off',
+                metSalesperson: 'on',
                 metFinance: 'off',
                 financeApplication: 'off',
                 pickUpTime: 'off',
@@ -342,13 +360,13 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 urgentFinanceNote: 'off',
                 funded: 'off',
                 status: 'Active',
-                result: formData.result,
+                result: 'Quoted',
                 customerState: formData.customerState,
                 timesContacted: formData.timesContacted,
                 followUpDay: 'TBD',
                 deliveredDate: 'TBD',
-                visits: formData.visits,
-                progress: formData.progress,
+                // visits: formData.visits,
+                //  progress: formData.progress,
                 pickUpDate: 'TBD',
             },
         });

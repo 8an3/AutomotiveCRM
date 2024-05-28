@@ -163,7 +163,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
         color: formData.color,
         modelCode: formData.modelCode,
         msrp: formData.msrp,
-        userEmail: formData.userEmail,
+        userEmail: user.email,
         tradeValue: formData.tradeValue,
         tradeDesc: formData.tradeDesc,
         tradeColor: formData.tradeColor,
@@ -237,224 +237,364 @@ export async function quoteAction({ params, request }: ActionArgs) {
     if (activixActivated === 'yes') {
       await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
     }
-    async function Clientfile() {
-      const clientfileUpdate = await prisma.clientfile.findUnique({ where: { email: formData.email, }, });
-      return clientfileUpdate
-    }
-    if (Clientfile) {
-      try {
-        async function CreateFinance() {
-          await prisma.finance.create({
-            data: {
-              clientfileId: Clientfile.id,
-              email: formData.email,
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-              phone: formData.phone,
-              name: formData.name,
-              address: formData.address,
-              city: formData.city,
-              postal: formData.postal,
-              province: formData.province,
-              iRate: formData.iRate,
-              months: formData.months,
-              deposit: formData.deposit,
-              accessories: formData.accessories,
-              labour: formData.labour,
-              year: formData.year,
-              brand: formData.brand,
-              model: formData.model,
-              model1: formData.model1,
-              color: formData.color,
-              userEmail: formData.userEmail,
-              tradeValue: formData.tradeValue,
-              lastContact: today.toISOString(),
-              nextAppointment: 'TBD',
-              referral: 'off',
-              visited: 'off',
-              bookedApt: 'off',
-              aptShowed: 'off',
-              aptNoShowed: 'off',
-              testDrive: 'off',
-              metService: 'off',
-              metManager: 'off',
-              metParts: 'off',
-              sold: 'off',
-              depositMade: 'off',
-              refund: 'off',
-              turnOver: 'off',
-              financeApp: 'off',
-              approved: 'off',
-              signed: 'off',
-              pickUpSet: 'off',
-              demoed: 'off',
-              delivered: 'off',
-              notes: 'off',
-              metSalesperson: 'off',
-              metFinance: 'off',
-              financeApplication: 'off',
-              pickUpTime: 'off',
-              depositTakenDate: 'off',
-              docsSigned: 'off',
-              tradeRepairs: 'off',
-              seenTrade: 'off',
-              lastNote: 'off',
-              dLCopy: 'off',
-              insCopy: 'off',
-              testDrForm: 'off',
-              voidChq: 'off',
-              loanOther: 'off',
-              signBill: 'off',
-              ucda: 'off',
-              tradeInsp: 'off',
-              customerWS: 'off',
-              otherDocs: 'off',
-              urgentFinanceNote: 'off',
-              funded: 'off',
-              status: 'Active',
-              result: formData.result,
-              followUpDay: 'TBD',
-              deliveredDate: 'TBD',
-              pickUpDate: 'TBD',
-            }
-          })
-        }
-        const create = CreateFinance()
-        switch (brand) {
+    try {
+      const clientfileUpdate = await prisma.clientfile.findUnique({
+        where: { email: formData.email },
+      });
+
+      const options = {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      };
+
+      if (clientfileUpdate) {
+        await prisma.finance.create({
+          data: {
+            clientfileId: clientfile.id,
+
+            lastContact: today.toLocaleDateString('en-US', options),
+            nextAppointment: 'TBD',
+            referral: 'off',
+            visited: 'off',
+            bookedApt: 'off',
+            aptShowed: 'off',
+            aptNoShowed: 'off',
+            testDrive: 'off',
+            metService: 'off',
+            metManager: 'off',
+            metParts: 'off',
+            sold: 'off',
+            depositMade: 'off',
+            refund: 'off',
+            turnOver: 'off',
+            financeApp: 'off',
+            approved: 'off',
+            signed: 'off',
+            pickUpSet: 'off',
+            demoed: 'off',
+            delivered: 'off',
+            notes: 'off',
+            metSalesperson: 'off',
+            metFinance: 'off',
+            financeApplication: 'off',
+            pickUpTime: 'off',
+            depositTakenDate: 'off',
+            docsSigned: 'off',
+            tradeRepairs: 'off',
+            seenTrade: 'off',
+            lastNote: 'off',
+            dLCopy: 'off',
+            insCopy: 'off',
+            testDrForm: 'off',
+            voidChq: 'off',
+            loanOther: 'off',
+            signBill: 'off',
+            ucda: 'off',
+            tradeInsp: 'off',
+            customerWS: 'off',
+            otherDocs: 'off',
+            urgentFinanceNote: 'off',
+            funded: 'off',
+            status: 'Active',
+            followUpDay: 'TBD',
+            deliveredDate: 'TBD',
+            pickUpDate: 'TBD',
+            mileage: formData.mileage,
+
+            dl: formData.dl,
+            typeOfContact: formData.typeOfContact,
+            timeToContact: formData.timeToContact,
+            userEmail: user.email,
+
+            discount: formData.discount,
+            total: formData.total,
+            onTax: formData.onTax,
+            on60: formData.on60,
+            biweekly: formData.biweekly,
+            weekly: formData.weekly,
+            weeklyOth: formData.weeklyOth,
+            biweekOth: formData.biweekOth,
+            oth60: formData.oth60,
+            weeklyqc: formData.weeklyqc,
+            biweeklyqc: formData.biweeklyqc,
+            qc60: formData.qc60,
+
+            biweeklNatWOptions: formData.biweeklNatWOptions,
+            weeklylNatWOptions: formData.weeklylNatWOptions,
+            nat60WOptions: formData.nat60WOptions,
+            weeklyOthWOptions: formData.weeklyOthWOptions,
+            biweekOthWOptions: formData.biweekOthWOptions,
+            oth60WOptions: formData.oth60WOptions,
+            biweeklNat: formData.biweeklNat,
+            weeklylNat: formData.weeklylNat,
+            nat60: formData.nat60,
+            qcTax: formData.qcTax,
+            otherTax: formData.otherTax,
+            totalWithOptions: formData.totalWithOptions,
+            otherTaxWithOptions: formData.otherTaxWithOptions,
+            desiredPayments: formData.desiredPayments,
+            freight: formData.freight,
+            admin: formData.admin,
+            commodity: formData.commodity,
+            pdi: formData.pdi,
+            discountPer: formData.discountPer,
+            userLoanProt: formData.userLoanProt,
+            userTireandRim: formData.userTireandRim,
+            userGap: formData.userGap,
+            userExtWarr: formData.userExtWarr,
+            userServicespkg: formData.userServicespkg,
+            deliveryCharge: formData.deliveryCharge,
+            vinE: formData.vinE,
+            lifeDisability: formData.lifeDisability,
+            rustProofing: formData.rustProofing,
+            userOther: formData.userOther,
+            paintPrem: formData.paintPrem,
+            licensing: formData.licensing,
+            stockNum: formData.stockNum,
+            options: formData.options,
+
+            modelCode: formData.modelCode,
+            msrp: formData.msrp,
+
+            tradeDesc: formData.tradeDesc,
+            tradeColor: formData.tradeColor,
+            tradeYear: formData.tradeYear,
+            tradeMake: formData.tradeMake,
+            tradeVin: formData.tradeVin,
+            tradeTrim: formData.tradeTrim,
+            tradeMileage: formData.tradeMileage,
+            tradeLocation: formData.tradeLocation,
+            trim: formData.trim,
+            vin: formData.vin,
+            leadNote: formData.leadNote,
+            sendToFinanceNow: formData.sendToFinanceNow,
+            dealNumber: formData.dealNumber,
+            bikeStatus: formData.bikeStatus,
+            lien: formData.lien,
+            dob: formData.dob,
+            othTax: formData.othTax,
+            optionsTotal: formData.optionsTotal,
+            lienPayout: formData.lienPayout,
+
+            customerState: formData.customerState,
+
+            timesContacted: formData.timesContacted,
+
+            visits: formData.visits,
+            progress: formData.progress,
+
+            applicationDone: formData.applicationDone,
+            licensingSent: formData.licensingSent,
+            liceningDone: formData.liceningDone,
+            refunded: formData.refunded,
+            cancelled: formData.cancelled,
+            lost: formData.lost,
+
+            leadSource: formData.leadSource,
+          },
+        });
+
+        switch (formData.brand) {
           case "Used":
-            return json({ create }), redirect(`/dealer/overview/Used`)
+            return redirect(`/dealer/overview/Used`);
           case "Switch":
-            await createFinanceManitou(formData)
-            return json({ create }), redirect(`/dealer/options/${brand}`)
+            await createFinanceManitou(formData);
+            return redirect(`/dealer/options/${formData.brand}`);
           case "Manitou":
-            await createFinanceManitou(formData)
-            return json({ create }), redirect(`/dealer/options/${brand}`)
+            await createFinanceManitou(formData);
+            return redirect(`/dealer/options/${formData.brand}`);
           case "BMW-Motorrad":
-            await createBMWOptions(formData)
-            return json({ create }), redirect(`/dealer/options/${brand}`)
+            await createBMWOptions(formData);
+            return redirect(`/dealer/options/${formData.brand}`);
           default:
-            return json({ create }), redirect(`/dealer/overview/${brand}`)
+            return redirect(`/dealer/overview/${formData.brand}`);
         }
-      } catch (error) {
-        console.log(error)
-        return error
-      }
-    } else {
-      try {
-        async function CreateClientfile() {
-          const clientfile = await prisma.clientfile.create({
-            data: {
-              userId: formData.userId,
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-              name: formData.name,
-              email: formData.email,
-              phone: formData.phone,
-              address: formData.address,
-              city: formData.city,
-              postal: formData.postal,
-              province: formData.province,
-            }
-          })
-          return clientfile
-        }
-        async function CreateFinance() {
-          await prisma.finance.create({
-            data: {
-              clientfileId: CreateClientfile.id,
-              email: formData.email,
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-              phone: formData.phone,
-              name: formData.name,
-              address: formData.address,
-              city: formData.city,
-              postal: formData.postal,
-              province: formData.province,
-              iRate: formData.iRate,
-              months: formData.months,
-              deposit: formData.deposit,
-              accessories: formData.accessories,
-              labour: formData.labour,
-              year: formData.year,
-              brand: formData.brand,
-              model: formData.model,
-              model1: formData.model1,
-              color: formData.color,
-              userEmail: formData.userEmail,
-              tradeValue: formData.tradeValue,
-              lastContact: today.toISOString(),
-              nextAppointment: 'TBD',
-              referral: 'off',
-              visited: 'off',
-              bookedApt: 'off',
-              aptShowed: 'off',
-              aptNoShowed: 'off',
-              testDrive: 'off',
-              metService: 'off',
-              metManager: 'off',
-              metParts: 'off',
-              sold: 'off',
-              depositMade: 'off',
-              refund: 'off',
-              turnOver: 'off',
-              financeApp: 'off',
-              approved: 'off',
-              signed: 'off',
-              pickUpSet: 'off',
-              demoed: 'off',
-              delivered: 'off',
-              notes: 'off',
-              metSalesperson: 'off',
-              metFinance: 'off',
-              financeApplication: 'off',
-              pickUpTime: 'off',
-              depositTakenDate: 'off',
-              docsSigned: 'off',
-              tradeRepairs: 'off',
-              seenTrade: 'off',
-              lastNote: 'off',
-              dLCopy: 'off',
-              insCopy: 'off',
-              testDrForm: 'off',
-              voidChq: 'off',
-              loanOther: 'off',
-              signBill: 'off',
-              ucda: 'off',
-              tradeInsp: 'off',
-              customerWS: 'off',
-              otherDocs: 'off',
-              urgentFinanceNote: 'off',
-              funded: 'off',
-              status: 'Active',
-              result: formData.result,
-              followUpDay: 'TBD',
-              deliveredDate: 'TBD',
-              pickUpDate: 'TBD',
-            }
-          })
-        }
-        const createFile = createClientfile()
-        const create = CreateFinance()
-        switch (brand) {
+      } else {
+        const clientfile = await prisma.clientfile.create({
+          data: {
+            userId: formData.userId,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            postal: formData.postal,
+            province: formData.province,
+          },
+        });
+
+        const finance = await prisma.finance.create({
+          data: {
+            clientfileId: clientfile.id,
+
+            lastContact: today.toLocaleDateString('en-US', options),
+            nextAppointment: 'TBD',
+            referral: 'off',
+            visited: 'off',
+            bookedApt: 'off',
+            aptShowed: 'off',
+            aptNoShowed: 'off',
+            testDrive: 'off',
+            metService: 'off',
+            metManager: 'off',
+            metParts: 'off',
+            sold: 'off',
+            depositMade: 'off',
+            refund: 'off',
+            turnOver: 'off',
+            financeApp: 'off',
+            approved: 'off',
+            signed: 'off',
+            pickUpSet: 'off',
+            demoed: 'off',
+            delivered: 'off',
+            notes: 'off',
+            metSalesperson: 'off',
+            metFinance: 'off',
+            financeApplication: 'off',
+            pickUpTime: 'off',
+            depositTakenDate: 'off',
+            docsSigned: 'off',
+            tradeRepairs: 'off',
+            seenTrade: 'off',
+            lastNote: 'off',
+            dLCopy: 'off',
+            insCopy: 'off',
+            testDrForm: 'off',
+            voidChq: 'off',
+            loanOther: 'off',
+            signBill: 'off',
+            ucda: 'off',
+            tradeInsp: 'off',
+            customerWS: 'off',
+            otherDocs: 'off',
+            urgentFinanceNote: 'off',
+            funded: 'off',
+            status: 'Active',
+            followUpDay: 'TBD',
+            deliveredDate: 'TBD',
+            pickUpDate: 'TBD',
+            mileage: formData.mileage,
+
+            dl: formData.dl,
+            typeOfContact: formData.typeOfContact,
+            timeToContact: formData.timeToContact,
+
+            discount: formData.discount,
+            total: formData.total,
+            onTax: formData.onTax,
+            on60: formData.on60,
+            biweekly: formData.biweekly,
+            weekly: formData.weekly,
+            weeklyOth: formData.weeklyOth,
+            biweekOth: formData.biweekOth,
+            oth60: formData.oth60,
+            weeklyqc: formData.weeklyqc,
+            biweeklyqc: formData.biweeklyqc,
+            qc60: formData.qc60,
+
+            biweeklNatWOptions: formData.biweeklNatWOptions,
+            weeklylNatWOptions: formData.weeklylNatWOptions,
+            nat60WOptions: formData.nat60WOptions,
+            weeklyOthWOptions: formData.weeklyOthWOptions,
+            biweekOthWOptions: formData.biweekOthWOptions,
+            oth60WOptions: formData.oth60WOptions,
+            biweeklNat: formData.biweeklNat,
+            weeklylNat: formData.weeklylNat,
+            nat60: formData.nat60,
+            qcTax: formData.qcTax,
+            otherTax: formData.otherTax,
+            totalWithOptions: formData.totalWithOptions,
+            otherTaxWithOptions: formData.otherTaxWithOptions,
+            desiredPayments: formData.desiredPayments,
+            freight: formData.freight,
+            admin: formData.admin,
+            commodity: formData.commodity,
+            pdi: formData.pdi,
+            discountPer: formData.discountPer,
+            userLoanProt: formData.userLoanProt,
+            userTireandRim: formData.userTireandRim,
+            userGap: formData.userGap,
+            userExtWarr: formData.userExtWarr,
+            userServicespkg: formData.userServicespkg,
+            deliveryCharge: formData.deliveryCharge,
+            vinE: formData.vinE,
+            lifeDisability: formData.lifeDisability,
+            rustProofing: formData.rustProofing,
+            userOther: formData.userOther,
+            paintPrem: formData.paintPrem,
+            licensing: formData.licensing,
+            stockNum: formData.stockNum,
+            options: formData.options,
+
+            modelCode: formData.modelCode,
+            msrp: formData.msrp,
+
+            tradeDesc: formData.tradeDesc,
+            tradeColor: formData.tradeColor,
+            tradeYear: formData.tradeYear,
+            tradeMake: formData.tradeMake,
+            tradeVin: formData.tradeVin,
+            tradeTrim: formData.tradeTrim,
+            tradeMileage: formData.tradeMileage,
+            tradeLocation: formData.tradeLocation,
+            trim: formData.trim,
+            vin: formData.vin,
+            leadNote: formData.leadNote,
+            sendToFinanceNow: formData.sendToFinanceNow,
+            dealNumber: formData.dealNumber,
+            bikeStatus: formData.bikeStatus,
+            lien: formData.lien,
+            dob: formData.dob,
+            othTax: formData.othTax,
+            optionsTotal: formData.optionsTotal,
+            lienPayout: formData.lienPayout,
+
+            customerState: formData.customerState,
+
+            timesContacted: formData.timesContacted,
+
+            visits: formData.visits,
+            progress: formData.progress,
+
+            applicationDone: formData.applicationDone,
+            licensingSent: formData.licensingSent,
+            liceningDone: formData.liceningDone,
+            refunded: formData.refunded,
+            cancelled: formData.cancelled,
+            lost: formData.lost,
+
+            leadSource: formData.leadSource,
+
+          },
+        });
+
+        switch (formData.brand) {
           case "Used":
-            return json({ createFile, create }), redirect(`/dealer/overview/Used`)
+            return json({ finance }), redirect(`/dealer/overview/Used`);
           case "Switch":
-            await createFinanceManitou(formData)
-            return json({ createFile, create }), redirect(`/dealer/options/${brand}`)
+            await createFinanceManitou(formData);
+            return redirect(`/dealer/options/${formData.brand}`);
           case "Manitou":
-            await createFinanceManitou(formData)
-            return json({ createFile, create }), redirect(`/dealer/options/${brand}`)
+            await createFinanceManitou(formData);
+            return redirect(`/dealer/options/${formData.brand}`);
           case "BMW-Motorrad":
-            await createBMWOptions(formData)
-            return json({ createFile, create }), redirect(`/dealer/options/${brand}`)
+            await createBMWOptions(formData);
+            return redirect(`/dealer/options/${formData.brand}`);
           default:
-            return json({ createFile, create }), redirect(`/dealer/overview/${brand}`)
+            return redirect(`/dealer/overview/${formData.brand}`);
         }
-      } catch (error) {
-        console.log(error)
-        return error
       }
+    } catch (error) {
+      console.error(error);
+      return error;
     }
   }
 }

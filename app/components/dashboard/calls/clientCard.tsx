@@ -1,5 +1,5 @@
 /* eslint-disable tailwindcss/classnames-order */
-import { Input, Separator, Button } from '~/components/ui/index'
+import { Input, Separator, Button, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, } from '~/components'
 import Calendar from 'react-calendar';
 import React, { useState, useEffect } from "react";
 import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigation } from '@remix-run/react'
@@ -171,28 +171,41 @@ export default function ClientCard({ data }) {
                                         </div>
                                     </div>
                                 ))}
+                            <div className="relative mt-3">
+                                <Select name='timeToContact'                                                >
+                                    <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                                        <SelectValue defaultValue={finance.timeToContact} />
+                                    </SelectTrigger>
+                                    <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
+                                        <SelectGroup>
+                                            <SelectLabel>Best Time To Contact</SelectLabel>
+                                            <SelectItem value="Morning">Morning</SelectItem>
+                                            <SelectItem value="Afternoon">Afternoon</SelectItem>
+                                            <SelectItem value="Evening">Evening</SelectItem>
+                                            <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Time To Be Contacted</label>
+                            </div>
+                            <div className="relative mt-3">
 
-                            <p className="mt-4">Prefered Contact</p>
-                            <Separator className='w-[90%] mb-3' />
-                            <select defaultValue={data.typeOfContact}
-                                name='typeOfContact'
-                                placeholder='Best Form To Contact'
-                                className="bg-[#09090b] text-[#fafafa] border-[#27272a] w-2/3 mb-2 rounded   cursor-pointer border-0 ml-2 mr-2   px-3 py-3 text-sm  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
-                                <option value="na">Best Form To Contact </option>
-                                <option value="Phone">Phone</option>
-                                <option value="Text">Text</option>
-                                <option value="Email">Email</option>
-                            </select>
-                            <select defaultValue={data.timeToContact}
-                                name='timeToContact'
-                                placeholder='Best Time To Contact'
-                                className="bg-[#09090b] text-[#fafafa] border-[#27272a] mx-automt-3 w-2/3  cursor-pointer rounded border-0 ml-2 mr-2   px-3 py-3 text-sm placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
-                                <option value="na">Best Time To Contact</option>
-                                <option value="Morning">Morning</option>
-                                <option value="Afternoon">Afternoon</option>
-                                <option value="Evening">Evening</option>
-                                <option value="Do Not Contact">Do Not Contact</option>
-                            </select>
+                                <Select name='typeOfContact'                                                >
+                                    <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                                        <SelectValue defaultValue={finance.typeOfContact} />
+                                    </SelectTrigger>
+                                    <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
+                                        <SelectGroup>
+                                            <SelectLabel>Contact Method</SelectLabel>
+                                            <SelectItem value="Phone">Phone</SelectItem>
+                                            <SelectItem value="InPerson">In-Person</SelectItem>
+                                            <SelectItem value="SMS">SMS</SelectItem>
+                                            <SelectItem value="Email">Email</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Type To Be Contacted</label>
+                            </div>
 
 
 

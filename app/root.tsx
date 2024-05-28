@@ -22,6 +22,7 @@ import { type IPublicClientApplication } from "@azure/msal-browser";
 import { GetUser } from "~/utils/loader.server";
 import GetUserFromRequest from "~/utils/auth/getUser";
 import { ThemeProvider, BaseStyles } from '@primer/react'
+import { model } from "~/models";
 import base from "~/styles/base.css";
 import tailwind from "~/styles/tailwind.css";
 import font from "~/styles/font.css";
@@ -46,8 +47,6 @@ type AppProps = {
 };
 
 export async function loader({ request }: LoaderArgs) {
-  const user = await GetUserFromRequest(request);
-  if (!user) { return redirect('/login'); }
 
   const ENV = getEnv();
   const userSession = await getSession(request.headers.get("Cookie"));
@@ -56,6 +55,7 @@ export async function loader({ request }: LoaderArgs) {
     return json({ ENV });
   }
   const referrer = request.headers.get('referer');
+  const user = await model.user.query.getForSession({ email: userSession.email });
 
   const loaderData = {
     ENV,
@@ -63,17 +63,7 @@ export async function loader({ request }: LoaderArgs) {
     user,
   } satisfies RootLoaderData;
 
-  return json(
-    {
-      loaderData, user, referrer,
-      ENV: {
-        PROD_CALLBACK_URL: process.env.PROD_CALLBACK_URL,
-      }
-    },
-    {
-      headers: { "Set-Cookie": await commitSession(userSession) },
-    }
-  );
+  return json({ loaderData });
 }
 
 export default function App({ pca }: AppProps) {

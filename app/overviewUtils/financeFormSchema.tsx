@@ -19,6 +19,7 @@ const financeFormSchema = z.object({
   slug: zfd.text(z.string().optional()),
   brand2: zfd.text(z.string().optional()),
   liceningDone: zfd.text(z.string().optional()),
+  pickedDate: zfd.text(z.string().optional()),
   conversationSid: zfd.text(z.string().optional()),
   tradeLocation: zfd.text(z.string().optional()),
   name: zfd.text(z.string().optional()),

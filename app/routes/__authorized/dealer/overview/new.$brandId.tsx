@@ -4,51 +4,33 @@
 import { overviewLoader, overviewAction, financeIdLoader } from '~/components/actions/overviewActions'
 import { useFetcher, useLoaderData, useNavigation, useParams, useRouteLoaderData, useActionData, Form, useSubmit } from '@remix-run/react'
 import React, { useEffect, useState } from 'react'
-import { ImageSelect } from '~/overviewUtils/imageselectInverted'
-import EmailSheet from '~/overviewUtils/Emails'
-import FeaturePop from '~/overviewUtils/FeaturePop'
 import BMWOptions from '~/overviewUtils/bmwOptions'
 import ManitouOptions from '~/overviewUtils/manitouOptions'
-import DisplayModel from '~/overviewUtils/modelDisplay'
-import DealerFeesDisplay from '~/overviewUtils/dealerFeesDisplay'
-import ContactInfoDisplay from '~/overviewUtils/contactInfoDisplay'
 import { Checkbox, ButtonLoading } from "~/components/ui/index"
-import { quotebrandIdActionLoader } from '~/components/actions/quote$brandIdAL'
-import { Theme, ThemePanel } from '@radix-ui/themes';
 import { toast } from "sonner"
 import { GetUser } from "~/utils/loader.server";
 import { getSession } from '~/sessions/auth-session.server';
 import { json, type ActionFunction, type DataFunctionArgs, type LoaderFunction, redirect } from '@remix-run/node'
 import { prisma } from '~/libs';
-import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { commitSession as commitPref, getSession as getPref } from "~/utils/pref.server";
 import { getDataKawasaki, getLatestBMWOptions, getLatestBMWOptions2, getDataBmwMoto, getDataByModel, getDataHarley, getDataTriumph, findQuoteById, findDashboardDataById, getDataByModelManitou, getLatestOptionsManitou } from "~/utils/finance/get.server";
 import {
     Tabs, Badge, TabsContent, TabsList, TabsTrigger, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Card, CardContent, CardDescription, CardFooter, Alert, Debug, InputPassword, Layout, PageHeader, RemixForm, RemixLinkText, CardHeader, CardTitle, Tooltip, TooltipContent, TooltipTrigger, TooltipProvider, Avatar, AvatarFallback, AvatarImage,
     Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, RemixNavLink, Input, Separator, Button, TextArea, Label, PopoverTrigger, PopoverContent, Popover, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "~/components"
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "~/components/ui/command"
-import { CiEdit } from 'react-icons/ci'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "~/components/ui/command"
 import { MoreVertical, ChevronLeft, ChevronRight, Menu } from 'lucide-react'
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from '~/components/ui/drawer'
-import {
-    Pagination,
-    PaginationContent,
-    PaginationItem,
-} from "~/components/ui/pagination"
+import { Pagination, PaginationContent, PaginationItem, } from "~/components/ui/pagination"
 import { PrintSpec } from '~/overviewUtils/printSpec'
 import IndeterminateCheckbox from '~/components/dashboard/calls/InderterminateCheckbox'
 import { ModelPage } from '~/overviewUtils/modelPage'
 import { CaretSortIcon, CheckIcon, PaperPlaneIcon } from "@radix-ui/react-icons"
 import { cn } from '~/utils'
 import EmailPreview from '~/emails/preview'
+import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
+import { Calendar } from '~/components/ui/calendar';
+import { format } from "date-fns"
 
 export let action = overviewAction;
 
@@ -1413,6 +1395,20 @@ export function Overview({ outletSize }) {
         deFees: { ...deFees },
         body: body,
     });
+
+    const [valueCal, onChange] = useState<Value>(new Date());
+    const [dateCal, setDate] = React.useState<Date>('')
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentSecond = now.getSeconds();
+    const [hour, setHour] = useState(currentHour)
+    const [min, setMin] = useState(currentMinute)
+    const [secs, setSecs] = useState(currentSecond)
+    const currentTime = `${hour}:${min}:${currentSecond}`
+    console.log(`Current time is `, currentTime);
+    const time = `${hour}:${min}:00`
+
     return (
         <div className="">
             <div className="mx-auto mt-10 mb-10">
@@ -1506,7 +1502,7 @@ export function Overview({ outletSize }) {
                                         <span className="sr-only">More</span>
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className='   bg-[#18181a] text-[#fafafa] border-[#27272a] w-[90%] rounded-md '>
+                                <DropdownMenuContent align="end" className='   border-[#262626] bg-[#09090b] text-[#fafafa] w-[90%] rounded-md '>
                                     <a
                                         className="mx-auto w-[90%]"
                                         href="/dealer/leads/sales"
@@ -1956,12 +1952,12 @@ export function Overview({ outletSize }) {
 
                                     <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                                     <div className="font-semibold">Contract Variables</div>
-                                    <div className="grid grid-cols-2 ">
-                                        <div className=" mt-2 ">
-                                            <div className="grid w-full max-w-sm items-center gap-1.5">
-                                                <label htmlFor="Term">Term</label>
+                                    <ul className="grid gap-3">
+                                        <li className="flex items-center justify-between">
+                                            <span className="text-[#8a8a93]">Term</span>
+                                            <span>
                                                 <Input
-                                                    className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                                                    className="h-8 w-20 bg-[#09090b] text-right border-[#27272a] "
                                                     name="months"
                                                     id="months"
                                                     autoComplete="months"
@@ -1969,13 +1965,11 @@ export function Overview({ outletSize }) {
                                                     onChange={handleChange}
                                                     type="number"
                                                 />
-                                            </div>
-                                        </div>
-                                        <div className="mt-2 grid items-end justify-end ">
-                                            <div className="grid w-full max-w-sm items-center gap-1.5">
-                                                <label className="text-right" htmlFor="iRate">
-                                                    Rate
-                                                </label>
+                                            </span>
+                                        </li>
+                                        <li className="flex items-center justify-between">
+                                            <span className="text-[#8a8a93]">Rate</span>
+                                            <span>
                                                 <Input
                                                     className="h-8 w-20 items-end justify-end text-right bg-[#09090b] border-[#27272a]  "
                                                     name="iRate"
@@ -1984,13 +1978,13 @@ export function Overview({ outletSize }) {
                                                     defaultValue={iRate}
                                                     onChange={handleChange}
                                                 />
-                                            </div>
-                                        </div>
-                                        <div className=" mt-2 ">
-                                            <div className="grid w-full max-w-sm items-center gap-1.5">
-                                                <label htmlFor="deposit">Deposit</label>
+                                            </span>
+                                        </li>
+                                        <li className="flex items-center justify-between">
+                                            <span className="text-[#8a8a93]">Deposit</span>
+                                            <span>
                                                 <Input
-                                                    className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                                                    className="h-8 w-20 bg-[#09090b] text-right border-[#27272a] "
                                                     name="deposit"
                                                     id="deposit"
                                                     autoComplete="deposit"
@@ -1998,11 +1992,11 @@ export function Overview({ outletSize }) {
                                                     onChange={handleChange}
                                                     type="number"
                                                 />
-                                            </div>
-                                        </div>
-                                        <div className=" mt-2 grid items-end justify-end ">
-                                            <div className="grid w-full max-w-sm items-center gap-1.5 ">
-                                                <label htmlFor="tradeValue">Trade Value</label>
+                                            </span>
+                                        </li>
+                                        <li className="flex items-center justify-between">
+                                            <span className="text-[#8a8a93]">Trade Value</span>
+                                            <span>
                                                 <Input
                                                     className="ml-auto h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
                                                     name="tradeValue"
@@ -2011,13 +2005,13 @@ export function Overview({ outletSize }) {
                                                     defaultValue={tradeValue}
                                                     onChange={handleChange}
                                                 />
-                                            </div>
-                                        </div>
-                                        <div className=" mt-2 ">
-                                            <div className="grid w-full max-w-sm items-center gap-1.5">
-                                                <label htmlFor="deposit">Lien</label>
+                                            </span>
+                                        </li>
+                                        <li className="flex items-center justify-between">
+                                            <span className="text-[#8a8a93]">Lien</span>
+                                            <span>
                                                 <Input
-                                                    className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                                                    className="h-8 w-20 bg-[#09090b] text-right border-[#27272a] "
                                                     name="lien"
                                                     id="lien"
                                                     autoComplete="lien"
@@ -2025,70 +2019,340 @@ export function Overview({ outletSize }) {
                                                     onChange={handleChange}
                                                     type="number"
                                                 />
-                                            </div>
+                                            </span>
+                                        </li>
+                                    </ul>
+
+
+
+                                    <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                                    <div className="font-semibold">Customer Detail Confirmation</div>
+                                    <div className='grid grid-cols-2 justify-between gap-3 mx-3 mb-3' >
+                                        <div className="relative mt-5">
+                                            <Input
+                                                defaultValue={formData.firstName} name='firstName'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
                                         </div>
+                                        <div className="relative mt-5">
+                                            <Input
+                                                defaultValue={formData.lastName} name='lastName'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.phone} name='phone'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.email} name='email'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.address} name='address'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.city} name='city'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">City</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.province} name='province'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Province</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.postal} name='postal'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Postal Code</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.dl} name='dl'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Drivers Lic.</label>
+                                        </div>
+                                    </div>
+                                    <div className='grid grid-cols-2 justify-between gap-3 mx-3 mb-3' >
+
+                                        <div className="relative mt-3">
+                                            <Select name='timeToContact'                                                >
+                                                <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                                                    <SelectValue defaultValue={finance.timeToContact} />
+                                                </SelectTrigger>
+                                                <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
+                                                    <SelectGroup>
+                                                        <SelectLabel>Best Time To Contact</SelectLabel>
+                                                        <SelectItem value="Morning">Morning</SelectItem>
+                                                        <SelectItem value="Afternoon">Afternoon</SelectItem>
+                                                        <SelectItem value="Evening">Evening</SelectItem>
+                                                        <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Time To Be Contacted</label>
+                                        </div>
+                                        <div className="relative mt-3">
+
+                                            <Select name='typeOfContact'                                                >
+                                                <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                                                    <SelectValue defaultValue={finance.typeOfContact} />
+                                                </SelectTrigger>
+                                                <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
+                                                    <SelectGroup>
+                                                        <SelectLabel>Contact Method</SelectLabel>
+                                                        <SelectItem value="Phone">Phone</SelectItem>
+                                                        <SelectItem value="InPerson">In-Person</SelectItem>
+                                                        <SelectItem value="SMS">SMS</SelectItem>
+                                                        <SelectItem value="Email">Email</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Type To Be Contacted</label>
+                                        </div>
+
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <div className="relative mt-3">
+                                                    <Button variant={"outline"}
+                                                        className={cn(
+                                                            "w-full justify-start  font-normal  text-center",
+                                                            !dateCal && "text-muted-foreground")} >
+                                                        <CalendarIcon className="mr-2 h-4 w-4 " />
+                                                        {dateCal ? format(dateCal, "PPP") : <span>Pick a date</span>}
+                                                    </Button>
+                                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Pick A Date</label>
+                                                </div>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0 bg-white text-black" align="start">
+                                                <Calendar
+                                                    className='bg-white text-black'
+                                                    mode="single"
+                                                    selected={dateCal}
+                                                    onSelect={setDate}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <input type='hidden' value={String(dateCal)} name='pickedDate' />
+
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <div className="relative mt-3">
+                                                    <Button variant={"outline"}
+                                                        className={cn(
+                                                            "w-full justify-start text-right font-normal",
+                                                            !dateCal && "text-muted-foreground")}  >
+                                                        <ClockIcon className="mr-2 h-4 w-4 " />
+                                                        {currentTime ? (time) : <span>Pick a Time</span>}
+                                                    </Button>
+                                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Pick A Time</label>
+                                                </div>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0 bg-white text-black" align="start">
+                                                <div className='flex items-center' >
+                                                    <Select name='pickHour' value={hour} onValueChange={setHour}>
+                                                        <SelectTrigger className="w-auto m-3" >
+                                                            <SelectValue placeholder='hour' />
+                                                        </SelectTrigger>
+                                                        <SelectContent className='text-black bg-white' >
+                                                            <SelectGroup>
+                                                                <SelectLabel>Hour</SelectLabel>
+                                                                <SelectItem value="09">09</SelectItem>
+                                                                <SelectItem value="10">10</SelectItem>
+                                                                <SelectItem value="11">11</SelectItem>
+                                                                <SelectItem value="12">12</SelectItem>
+                                                                <SelectItem value="13">13</SelectItem>
+                                                                <SelectItem value="14">14</SelectItem>
+                                                                <SelectItem value="15">15</SelectItem>
+                                                                <SelectItem value="16">16</SelectItem>
+                                                                <SelectItem value="17">17</SelectItem>
+                                                                <SelectItem value="18">18</SelectItem>
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+
+                                                    <Select name='pickMin' value={min} onValueChange={setMin} >
+                                                        <SelectTrigger className="w-auto m-3" >
+                                                            <SelectValue placeholder='min' />
+                                                        </SelectTrigger>
+                                                        <SelectContent className='text-black bg-white'  >
+                                                            <SelectGroup>
+                                                                <SelectLabel>Minute</SelectLabel>
+                                                                <SelectItem value="00">00</SelectItem>
+                                                                <SelectItem value="10">10</SelectItem>
+                                                                <SelectItem value="20">20</SelectItem>
+                                                                <SelectItem value="30">30</SelectItem>
+                                                                <SelectItem value="40">40</SelectItem>
+                                                                <SelectItem value="50">50</SelectItem>
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
 
                                     <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
-                                    <Drawer>
+                                    <div className="font-semibold">Trade Information</div>
+                                    <div className='grid grid-cols-2 justify-between gap-3 mx-3 mb-3' >
+                                        <div className="relative mt-5">
+                                            <Input
+                                                defaultValue={finance.tradeYear} name='tradeYear'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Year</label>
+                                        </div>
+                                        <div className="relative mt-5">
+                                            <Input
+                                                defaultValue={finance.tradeMake} name='tradeMake'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Make</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.tradeDesc} name='tradeDesc'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.tradeColor} name='tradeColor'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Color</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.tradeVin} name='tradeVin'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">VIN</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.tradeMileage} name='tradeMileage'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Mileage</label>
+                                        </div>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                defaultValue={finance.tradeLocation} name='tradeLocation'
+                                                type="text"
+                                                className="w-full bg-[#09090b] border-[#27272a] "
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Trade Location</label>
+                                        </div>
+                                    </div>
+                                    <Drawer direction='left'>
                                         <DrawerTrigger asChild>
-                                            <Button size='sm' variant="outline">Other Inputs</Button>
+                                            <Button size='sm' className='ml-auto' variant="outline">Other Inputs</Button>
                                         </DrawerTrigger>
                                         <DrawerContent className='bg-[#09090b] text-[#fafafa]'>
-                                            <div className="mx-auto w-full max-w-sm">
+                                            <div className="mx-auto h-full w-full lg:w-[700px] max-w-sm">
                                                 <DrawerHeader>
                                                     <DrawerTitle>Other Inputs</DrawerTitle>
                                                     <DrawerDescription>Changes to discounts and such</DrawerDescription>
                                                 </DrawerHeader>
-                                                <div className="p-4 pb-0 flex items-center justify-center space-x-2 w-[500px]">
-                                                    <ul className="grid gap-3">
-                                                        <li className="flex items-center justify-between">
-                                                            <span className="text-[#8a8a93]">Discount $</span>
-                                                            <span>
-                                                                <Input
-                                                                    name="discount"
-                                                                    id="msrp"
-                                                                    className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
-                                                                    autoComplete="msrp"
-                                                                    defaultValue={discount}
-                                                                    onChange={handleChange}
-                                                                />
-                                                            </span>
-                                                        </li>
-                                                        <li className="flex items-center justify-between">
-                                                            <span className="text-[#8a8a93]"> Discount (1.1-15)%</span>
-                                                            <span>
-                                                                <Input
-                                                                    name="discountPer"
-                                                                    id="msrp"
-                                                                    className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
-                                                                    autoComplete="msrp"
-                                                                    defaultValue={0}
-                                                                    onChange={handleChange}
-                                                                />
-                                                            </span>
-                                                        </li>
-                                                        <li className="flex items-center justify-between">
-                                                            <span className="text-[#8a8a93]">Delivery Charge</span>
-                                                            <span>
-                                                                <Input
-                                                                    name="deliveryCharge"
-                                                                    id="msrp"
-                                                                    className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
-                                                                    autoComplete="msrp"
-                                                                    defaultValue={deliveryCharge}
-                                                                    onChange={handleChange}
-                                                                />
-                                                            </span>
-                                                        </li>
-                                                        {totalLabour > 0 && (
-                                                            <li className="flex items-center justify-between">
-                                                                <span className="text-[#8a8a93]">Total Labour</span>
-                                                                <span> ${totalLabour}</span>
-                                                            </li>
-                                                        )}
-                                                    </ul>
-                                                </div>
+                                                <ul className="grid gap-3">
+                                                    <li className="flex items-center justify-between">
+                                                        <span className="text-[#8a8a93]">Discount $</span>
+                                                        <span>
+                                                            <Input
+                                                                name="discount"
+
+                                                                className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+
+                                                                defaultValue={discount}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </span>
+                                                    </li>
+                                                    <li className="flex items-center justify-between">
+                                                        <span className="text-[#8a8a93]">Discount (1.1-15)%</span>
+                                                        <span>
+                                                            <Input
+                                                                name="discountPer"
+
+                                                                className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+
+                                                                defaultValue={0}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </span>
+                                                    </li>
+                                                    <li className="flex items-center justify-between">
+                                                        <span className="text-[#8a8a93]">Delivery Charge</span>
+                                                        <span>
+                                                            <Input
+                                                                name="deliveryCharge"
+                                                                id="msrp"
+                                                                className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                                                autoComplete="msrp"
+                                                                defaultValue={deliveryCharge}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </span>
+                                                    </li>
+                                                    <li className="flex items-center justify-between">
+                                                        <span className="text-[#8a8a93]">Total Labour</span>
+                                                        <span>
+                                                            ${totalLabour}
+                                                        </span>
+                                                    </li>
+                                                    <li className="flex items-center justify-between">
+                                                        <span className="text-[#8a8a93]">Lien</span>
+                                                        <span>
+                                                            <Input
+                                                                className="h-8 w-20 bg-[#09090b] text-right border-[#27272a] "
+                                                                name="lien"
+                                                                id="lien"
+                                                                autoComplete="lien"
+                                                                defaultValue={lien}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </span>
+                                                    </li>
+                                                </ul>
+
                                                 <DrawerFooter>
                                                     <DrawerClose asChild>
                                                         <Button variant="outline">Close</Button>
@@ -2097,8 +2361,6 @@ export function Overview({ outletSize }) {
                                             </div>
                                         </DrawerContent>
                                     </Drawer>
-
-
                                     <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
                                     <div className="font-semibold">Total</div>
                                     <ul className="grid gap-3">
@@ -2861,6 +3123,9 @@ export function Overview({ outletSize }) {
                         <Input type="hidden" defaultValue={formData.userTireandRim} name="userTireandRim" />
                         <Input type="hidden" defaultValue={formData.userOther} name="userOther" />
                         <Input type="hidden" defaultValue={formData.lifeDisability} name="lifeDisability" />
+                        <Input type="hidden" defaultValue={formData.discount} name="discount" />
+                        <Input type="hidden" defaultValue={formData.deliveryCharge} name="deliveryCharge" />
+                        <Input type="hidden" defaultValue={formData.discountPer} name="discountPer" />
                         <Input type="hidden" defaultValue={total} name="total" />
                         <Input type="hidden" defaultValue={msrp} name="msrp" />
                         <Input type="hidden" defaultValue={modelData.color} name="color" />
