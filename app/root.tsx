@@ -29,6 +29,7 @@ import font from "~/styles/font.css";
 import secondary from "~/styles/secondary.css";
 import { Copy } from "lucide-react";
 import { FaCheck } from "react-icons/fa";
+import Spinner from "./components/shared/spinner";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwind },
@@ -114,7 +115,7 @@ export default function App({ pca }: AppProps) {
             <ScrollRestoration />
             <Scripts />
             <LiveReload />
-            <GlobalLoading />
+            <Spinner />
           </BaseStyles>
         </ThemeProvider>
       </body>

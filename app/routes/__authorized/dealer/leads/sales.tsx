@@ -1,7 +1,7 @@
-import React, { HTMLAttributes, HTMLProps, useState, useEffect } from 'react'
+import React, { HTMLAttributes, HTMLProps, useState, useEffect, Suspense, } from 'react'
 import ReactDOM from 'react-dom/client'
-import { Form, Link, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
-import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label } from "~/components/ui/index";
+import { Await, Form, Link, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
+import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, } from "~/components/ui/index";
 import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
 
 import { getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns } from "@tanstack/react-table";
@@ -34,7 +34,16 @@ import { Badge } from "~/ui/badge";
 import WishList from '~/components/dashboard/wishlist/wishList'
 import secondary from "~/styles/secondary.css";
 import DemoDay from '~/components/dashboard/demoDay/demoDay';
-
+import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
+import Spinner from '~/components/shared/spinner';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "~/components/ui/card"
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
     { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
@@ -48,8 +57,6 @@ export let action = dashboardAction
 
 export default function Mainboard() {
     const [selectedTab, setSelectedTab] = useState("dashboard");
-    const { user, } = useRootLoaderData();
-    const { notifications, getDemoDay } = useLoaderData()
     return (
         <div className='bg-[#09090b]'>
 
@@ -922,6 +929,34 @@ export function WebleadsTable() {
     const handleBrand = (e) => {
         setBrandId(e.target.value);
     };
+
+    const [brandId, setBrandId] = useState('');
+    const [modelList, setModelList] = useState();
+
+    const handleBrand = (e) => {
+        setBrandId(e.target.value);
+        console.log(brandId, modelList)
+    };
+
+    useEffect(() => {
+        async function getData() {
+            const res = await fetch(`/api/modelList/${brandId}`);
+            if (!res.ok) {
+                throw new Error("Failed to fetch data");
+            }
+            return res.json();
+        }
+
+        if (brandId.length > 3) {
+            const fetchData = async () => {
+                const result = await getData();
+                setModelList(result);
+                console.log(brandId, result); // Log the updated result
+            };
+            fetchData();
+        }
+    }, [brandId]);
+
     return (
         <div className="mx-auto mt-[75px] w-[95%] justify-center ">
             {!isRowSelected ? (
@@ -1012,148 +1047,175 @@ export function WebleadsTable() {
                     </div>
                 </>
             ) : (
-                <div className='grid grid-cols-1 mx-auto  mt-3 max-w-sm mb-3'>
+                <Card className="w-[350px] border-[#27272a] text-[#fafafa]">
                     <Form method="post" >
-                        <h1 className=' text-black' >
-                            Customer Info
-                        </h1>
-                        <hr className=' max-w-sm  text-black' />
-                        <div className='flex' >
+
+                        <CardHeader>
+                            <CardTitle>Create project</CardTitle>
+                            <CardDescription>Deploy your new project in one-click.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid gap-3 mx-3 mb-3">
+                                <div className="relative mt-3">
+                                    <Input
+                                        defaultValue={clientFirstName} name='firstName'
+                                        type="text"
+                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                    />
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                                </div>
+                                <div className="relative mt-3">
+                                    <Input
+                                        defaultValue={clientLastName} name='lastName'
+                                        type="text"
+                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                    />
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
+                                </div>
+                                <div className="relative mt-3">
+                                    <Input
+                                        defaultValue={clientPhone} name='phone'
+                                        type="text"
+                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                    />
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                                </div>
+                                <div className="relative mt-3">
+                                    <Input
+                                        defaultValue={clientEmail} name='email'
+                                        type="text"
+                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                    />
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                                </div>
+                                <div className="relative mt-3">
+                                    <Input
+                                        defaultValue={clientAddress} name='address'
+                                        type="text"
+                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                    />
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
+                                </div>
+                                <div className="relative mt-3">
+                                    <Input
+                                        defaultValue={clientLeadNote} name='leadNote'
+                                        type="text"
+                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                    />
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Client Notes</label>
+                                </div>
+                                <div className="relative mt-5">
+
+                                    <Select name='typeOfContact'                                                >
+                                        <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                                            <SelectValue defaultValue={data.typeOfContact} />
+                                        </SelectTrigger>
+                                        <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
+                                            <SelectGroup>
+                                                <SelectLabel>Contact Method</SelectLabel>
+                                                <SelectItem value="Phone">Phone</SelectItem>
+                                                <SelectItem value="InPerson">In-Person</SelectItem>
+                                                <SelectItem value="SMS">SMS</SelectItem>
+                                                <SelectItem value="Email">Email</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Type To Be Contacted</label>
+                                </div>
+                                <div className="relative mt-3">
+                                    <Input
+                                        className={`input border-[#27272a] bg-[#09090b]
+
+                     `}
+                                        onChange={(e) => handleChange('firstName', e.target.value)}
+                                        type="text"
+                                        list="ListOptions1"
+                                        name="brand"
+                                    />
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
+                                </div>
+                                <datalist id="ListOptions1">
+                                    <option value="BMW-Motorrad" />
+                                    <option value="Can-Am" />
+                                    <option value="Can-Am-SXS" />
+                                    <option value="Harley-Davidson" />
+                                    <option value="Indian" />
+                                    <option value="Kawasaki" />
+                                    <option value="KTM" />
+                                    <option value="Manitou" />
+                                    <option value="Sea-Doo" />
+                                    <option value="Switch" />
+                                    <option value="Ski-Doo" />
+                                    <option value="Suzuki" />
+                                    <option value="Triumph" />
+                                    <option value="Spyder" />
+                                    <option value="Yamaha" />
+                                </datalist>
+                                {modelList && (
+                                    <>
+                                        <div className="relative mt-3">
+                                            <Input
+                                                className="  "
+                                                type="text" list="ListOptions2" name="model"
+                                            />
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
+                                        </div>
+                                        <datalist id="ListOptions2">
+                                            {modelList.models.map((item, index) => (
+                                                <option key={index} value={item.model} />
+                                            ))}
+                                        </datalist>
+                                    </>
+                                )}
+
+                            </div>
                             <Input
-                                className="mt-3 max-w-[186px] border-[#878787] bg-white text-black"
-                                placeholder="First Name"
-                                type="text"
-                                defaultValue={clientFirstName}
-                                name="firstName"
+                                className="mt-3  max-w-sm  border-[#878787] bg-white text-black"
+                                placeholder="User Email"
+                                type="hidden"
+                                defaultValue={user?.email}
+                                name="userEmail"
                             />
-                            {errors?.firstName ? (
-                                <em className="text-[#ff0202]">{errors.firstName}</em>
-                            ) : null}
-                            <Input
-                                className="mt-3 ml-3 max-w-[186px] border-[#878787] bg-white text-black"
-                                placeholder="Last Name"
-                                type="text"
-                                defaultValue={clientLastName}
-                                name="lastName"
-                            />
-                            {errors?.lastName ? (
-                                <em className="text-[#ff0202] text-right">{errors.lastName}</em>
-                            ) : null}
-                        </div>
-                        <div className='flex' >
-                            <Input
-                                className="mt-3 max-w-[186px] border-[#878787] bg-white text-black"
-                                placeholder="Email"
-                                type="email"
-                                defaultValue={clientEmail}
-                                name="email"
-                            />
-                            {errors?.email ? (
-                                <em className="text-[#ff0202] text-right">{errors.email}</em>
-                            ) : null}
-                            <Input
-                                className="mt-3 ml-3 max-w-[186px] border-[#878787] bg-white text-black"
-                                placeholder="phone"
-                                type="text"
-                                defaultValue={clientPhone}
-                                name="phone"
-                            />
-                        </div>
-                        <Input
-                            className="mt-3 max-w-sm border-[#878787] bg-white text-black"
-                            placeholder="Address"
-                            type="text"
-                            defaultValue={clientAddress}
-                            name="address"
-                        />
-                        <TextArea
-                            defaultValue={clientLeadNote}
-                            name="leadNote"
-                            className="mt-3 max-w-sm border-[#878787] bg-white text-black"
-                            placeholder="Type your message here."
-                        />
-                        <Input
-                            className="mt-3 max-w-sm border-[#878787] bg-white text-black"
-                            placeholder="Brand (required)"
-                            type="text"
-                            list="ListOptions1"
-                            name="brand"
-                            onChange={handleBrand}
-                        />
-                        <datalist id="ListOptions1">
-                            <option value="BMW-Motorrad" />
-                            <option value="Can-Am" />
-                            <option value="Can-Am-SXS" />
-                            <option value="Harley-Davidson" />
-                            <option value="Indian" />
-                            <option value="Kawasaki" />
-                            <option value="KTM" />
-                            <option value="Manitou" />
-                            <option value="Sea-Doo" />
-                            <option value="Switch" />
-                            <option value="Ski-Doo" />
-                            <option value="Suzuki" />
-                            <option value="Triumph" />
-                            <option value="Spyder" />
-                            <option value="Yamaha" />
-                        </datalist>
-                        <Input
-                            className=" mt-3 max-w-sm border-[#878787] bg-white text-black "
-                            placeholder="Model"
-                            type="text"
-                            list="ListOptions"
-                            name="model"
-                        />
-                        {errors?.model ? (
-                            <em className="text-[#ff0202]">{errors.model}</em>
-                        ) : null}
-                        <ListSelection2 brandId={brandId} />
-                        <Input
-                            className="mt-3  max-w-sm  border-[#878787] bg-white text-black"
-                            placeholder="User Email"
-                            type="hidden"
-                            defaultValue={user?.email}
-                            name="userEmail"
-                        />
-                        <h1 className=' text-black mt-3' >
-                            Contact Customer
-                        </h1>
-                        <hr className=' max-w-sm  text-black' />
-                        <div className='gap-3 my-2 grid grid-cols-3 max-w-sm '>
-                            <LogCall data={data} />
-                            {/* <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
+                            <h1 className=' text-black mt-3' >
+                                Contact Customer
+                            </h1>
+                            <hr className=' max-w-sm  text-black' />
+                            <div className='gap-3 my-2 grid grid-cols-3 max-w-sm '>
+                                <LogCall data={data} />
+                                {/* <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
                             <Logtext data={data} />*/}
-                        </div>
-                        <h1 className=' text-black mt-3' >
-                            Quick Follow-up
-                        </h1>
-                        <hr className=' max-w-sm  text-black' />
-                        <div className='mr-auto mt-3'>
-                            <TwoDaysFromNow data={data} isSubmitting={isSubmitting} />
-                        </div>
-                        <h1 className=' text-black mt-3' >
-                            In-depth Follow-up
-                        </h1>
-                        <hr className=' max-w-sm  text-black' />
-                        <div className='mr-auto mt-3'>
-                            <CompleteCall data={data} contactMethod={contactMethod} />
-                        </div>
+                            </div>
+                            <h1 className=' text-black mt-3' >
+                                Quick Follow-up
+                            </h1>
+                            <hr className=' max-w-sm  text-black' />
+                            <div className='mr-auto mt-3'>
+                                <TwoDaysFromNow data={data} isSubmitting={isSubmitting} />
+                            </div>
+                            <h1 className=' text-black mt-3' >
+                                In-depth Follow-up
+                            </h1>
+                            <hr className=' max-w-sm  text-black' />
+                            <div className='mr-auto mt-3'>
+                                <CompleteCall data={data} contactMethod={contactMethod} />
+                            </div>
 
-                        <input type='hidden' value={clientFinanceId} name='financeId' />
-                        <input type='hidden' value={user.email} name='userEmail' />
+                            <input type='hidden' value={clientFinanceId} name='financeId' />
+                            <input type='hidden' value={user.email} name='userEmail' />
 
-                        <input type='hidden' value={clientFirstName} name='firstName' />
-                        <input type='hidden' value={brand} name='brand' />
-                        <input type='hidden' value={clientLastName} name='lastName' />
-                        <input type="hidden" defaultValue={clientEmail} name="email" />
-                        <input type="hidden" defaultValue={clientId} name="clientId" />
-                        <Input type="hidden" name="iRate" defaultValue={10.99} />
-                        <Input type="hidden" name="tradeValue" defaultValue={0} />
-                        <Input type="hidden" name="discount" defaultValue={0} />
-                        <Input type="hidden" name="deposit" defaultValue={0} />
-                        <Input type="hidden" name="months" defaultValue={60} />
-                        <Input type="hidden" name="userEmail" defaultValue={userEmail} />
-                        <div className="mt-[25px] flex ">
+                            <input type='hidden' value={clientFirstName} name='firstName' />
+                            <input type='hidden' value={brand} name='brand' />
+                            <input type='hidden' value={clientLastName} name='lastName' />
+                            <input type="hidden" defaultValue={clientEmail} name="email" />
+                            <input type="hidden" defaultValue={clientId} name="clientId" />
+                            <Input type="hidden" name="iRate" defaultValue={10.99} />
+                            <Input type="hidden" name="tradeValue" defaultValue={0} />
+                            <Input type="hidden" name="discount" defaultValue={0} />
+                            <Input type="hidden" name="deposit" defaultValue={0} />
+                            <Input type="hidden" name="months" defaultValue={60} />
+                            <Input type="hidden" name="userEmail" defaultValue={userEmail} />
+                        </CardContent>
+                        <CardFooter className="flex justify-between">
                             <Button
                                 onClick={() => {
                                     toast.success(`Quote updated for ${data.firstName}`)
@@ -1174,18 +1236,16 @@ export function WebleadsTable() {
                                 </Link>
 
                             </Button>
-                        </div>
-
+                        </CardFooter>
                     </Form>
-
-                </div>
-
+                </Card>
             )}
-        </div >
+        </div>
     )
 }
 // leads dashboard
 export async function getData(): Promise<dashBoardType[]> {
+
     //turn into dynamic route and have them call the right loader like q  uote qand overview
     const res = await fetch('/dealer/dashboard/calls/loader')
     if (!res.ok) {
@@ -1195,8 +1255,20 @@ export async function getData(): Promise<dashBoardType[]> {
 }
 // wish list
 
+export function Loading() {
+    return (
+        <ul>
+            {Array.from({ length: 12 }).map((_, i) => (
+                <li key={i}>
+                    <div className="spinner" />
+                </li>
+            ))}
+        </ul>
+    )
+}
 export function MainDashbaord() {
-    const [data, setPaymentData,] = useState<dashBoardType[]>([]);
+    const { finance, } = useLoaderData();
+    const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
     useEffect(() => {
         const data = async () => {
             const result = await getData();
@@ -1204,6 +1276,20 @@ export function MainDashbaord() {
         };
         data()
     }, []);
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === "submitting";
+    const dataFetcher = (url) => fetch(url).then(res => res.json());
+    const { data: swrData } = useSWR(isSubmitting ? 'http://localhost:3000/dealer/dashboard/calls/loader' : null, dataFetcher, {})
+
+    useEffect(() => {
+        if (swrData) {
+            setPaymentData(swrData);
+            console.log('hitswr!! ')
+        }
+    }, [swrData]);
+
+
+
     const defaultColumn: Partial<ColumnDef<Payment>> = {
         cell: ({ getValue, row: { index }, column: { id }, table }) => {
             const initialValue = getValue()
@@ -1229,7 +1315,6 @@ export function MainDashbaord() {
             )
         },
     }
-    /**  */
     const columns: ColumnDef<Payment>[] = [
         {
             id: 'select',
@@ -1562,15 +1647,15 @@ export function MainDashbaord() {
 
 
                 /**
-                 * <FinanceTurnover data={data} lockedValue={lockedValue}   />
-                            <input type='hidden' name='intent' value='financeTurnover' />
-                                         <Form method='post' onSubmit={handleSubmit}>
-                            <input type='hidden' name='locked' value={lockedValue} />
-                            <input type='hidden' name='financeId' value={data.id} />
-                        </Form>
+                 * <FinanceTurnover data={data} lockedValue={lockedValue} />
+                    <input type='hidden' name='intent' value='financeTurnover' />
+                    <Form method='post' onSubmit={handleSubmit}>
+                        <input type='hidden' name='locked' value={lockedValue} />
+                        <input type='hidden' name='financeId' value={data.id} />
+                    </Form>
 
-                 *
-                */
+                    *
+                    */
                 return <>
                     <div className='w-[175px] cursor-pointer'>
                         <Form method='post' >
@@ -2099,6 +2184,11 @@ export function MainDashbaord() {
 
 
     ]
+    //  <Await resolve={data}>
+    //            </Await>
+    //<Suspense fallback={<Loading />}>
+    // </Suspense>
+
     return (
         <>
             <div className="bg-[#09090b] text-gray-300 uppercase mt-10">

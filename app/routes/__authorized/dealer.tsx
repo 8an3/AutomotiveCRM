@@ -21,8 +21,10 @@ export async function loader({ request }: LoaderFunction) {
   const email = session.get("email")
   let user = await GetUser(email)
   const interruptionsData = await prisma.interruptions.findMany({ where: { userEmail: email, read: 'false' } });
-
-  return json({ user, email, interruptionsData });
+  const loadNewLead = await prisma.notificationsUser.findMany({
+    where: { type: 'New Lead', read: 'false', }
+  })
+  return json({ user, email, interruptionsData, loadNewLead });
 }
 
 export async function action({ request, params }: ActionFunction) {
@@ -108,6 +110,7 @@ export async function action({ request, params }: ActionFunction) {
           read: 'true'
         }
       });
+      const finance = await prisma
       const location = formData.pathname
       return redirect(String(location));
     } catch (error) {
@@ -116,47 +119,34 @@ export async function action({ request, params }: ActionFunction) {
       throw error; // Rethrow the error to propagate it further if needed
     }
   }
+  if (formData.intent === 'updateNewLead') {
+    await prisma.notificationsUser.update({
+      where: { id: formData.id },
+      data: {
+        read: 'true'
+      }
+    });
+    const location = `/dealer/customer/${formData.clientfileId}/${formData.financeId}`
+    return redirect(location);
+  }
 
-  return json({ user });
+
+  return null
 };
 
-
 export default function SettingsLayout() {
-  const { user, email, interruptionsData } = useLoaderData()
-  const userIsFinance = getUserIsAllowed(user, ["FINANCE"]);
-  const userIsDEV = getUserIsAllowed(user, ["DEV"]);
-  const userIsADMIN = getUserIsAllowed(user, ["ADMIN"]);
-  const userIsMANAGER = getUserIsAllowed(user, ["MANAGER"]);
-  const [isOpen, setIsOpen] = useState(false);
+  const { user, email, interruptionsData, loadNewLead } = useLoaderData()
   const location = useLocation();
   const pathname = location.pathname
-  const openDialog = () => {
-    setIsOpen(true);
-    console.log(isOpen)
-
-  };
-
-  const closeDialog = () => {
-    setIsOpen(false);
-  };
-
 
   return (
     <>
-
       {(pathname !== '/dealer/email/dashboardClient' && pathname !== '/dealer/sms/dashMsger') && (
         <>
-          <Interruptions
-            user={user}
-            email={email}
-          //  pathname={pathname}
-          />
-          <UserSideBar
-            user={user}
-            email={email}
-          />
+          <Interruptions user={user} email={email} />
+          <UserSideBar user={user} email={email} />
           <Sidebar user={user} email={email} />
-          <NotificationSystem interruptionsData={interruptionsData} />
+          <NotificationSystem interruptionsData={interruptionsData} loadNewLead={loadNewLead} />
         </>
       )}
       <Outlet />
@@ -164,110 +154,3 @@ export default function SettingsLayout() {
   )
 }
 
-
-
-
-/***
- *      {isOpen === false && (
-          <div
-            onClick={() => {
-              openDialog();
-              setIsOpen(true);
-            }}
-            className=' fixed left-[25px] top-[25px] cursor-pointer bg-none  text-[#fff]'>
-            {user && user?.email === 'skylerzanth@outlook.com' ?
-              <Code size={32} color="#fff" strokeWidth={1.5} />
-              :
-              userIsDEV && user?.email !== 'skylerzanth@outlook.com' ?
-                <Code size={32} color="#fff" strokeWidth={1.5} />
-                :
-                userIsMANAGER && user?.email !== 'skylerzanth@outlook.com' ?
-                  <Banknote size={32} color="#fff" strokeWidth={1.5} />
-                  :
-                  userIsADMIN && user?.email !== 'skylerzanth@outlook.com' ?
-                    <Laptop size={32} color="#fff" strokeWidth={1.5} />
-                    : ''}
-          </div>
-        )}
-        {isOpen === true && (
-          <div
-            onClick={closeDialog}
-            className=' fixed left-[25px] top-[25px] cursor-pointer bg-none  text-[#fff]'>
-            <X size={32} color="#fff" strokeWidth={1.5} />
-          </div>
-        )}
- *     {isOpen && (
-        <UserSideBar
-          user={user}
-          email={email}
-          closeDialog={closeDialog}
-          setIsOpen={setIsOpen}
-          isOpen={isOpen}
-        />
-      )}
- *
- *
- *
- *
- *
- *
- *
- *
-
-import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react'
-import { json, redirect, type LoaderFunction } from '@remix-run/node';
-import { Outlet, useLoaderData } from '@remix-run/react';
-import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
-import { GetUser } from "~/utils/loader.server";
-import Sidebar from "~/components/shared/sidebar";
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
-import UserSideBar from '~/components/shared/userSideBar';
-
-
-export async function loader({ request, params, req }: LoaderFunction) {
-  let session = await getSession(request.headers.get("Cookie"));
-  let email = session.get("email")
-  let expiry = session.get("expiry")
-  const currentTime = Date.now();
-
-  const expirationTimeSeconds = expiry
-
-  const expirationTimeMillis = expirationTimeSeconds * 1000;
-
-  if (currentTime > expirationTimeMillis) {
-    console.log('Token has expired');
-  }
-  let user = await GetUser(email)
-  if (!user.email) {
-    await destroySession(session)
-    return redirect('/auth/login')
-  }
-  if (session.data.length < 5000) { await destroySession(session); session = await getSession(request.headers.get("Cookie")); }
-  session.set("email", email);
-
-  if (user) {
-    return json({
-      user, email,
-    },
-      {
-        headers: {
-          'Set-Cookie': await commitSession(session),
-        },
-      },
-    )
-  }
-  console.log('doesnt have user but has user?')
-  return null
-}
- * export default function Home() {
-  const { user, email } = useLoaderData()
-  return (
-    <>
-      <UserSideBar user={user} email={email} />
-      <Sidebar user={user} email={email} />
-      <NotificationSystem />
-      <Outlet />
-    </>
-  );
-}
- */

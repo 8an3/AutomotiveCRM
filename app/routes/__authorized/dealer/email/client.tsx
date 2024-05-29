@@ -126,7 +126,7 @@ import {
 import secondary from "~/styles/secondary.css";
 import { SaveDraft, SendEmail } from "./server";
 import { type LinksFunction } from "@remix-run/node";
-
+import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: secondary },
@@ -167,6 +167,15 @@ export default function ClientEmail() {
   const [text, setText] = React.useState("");
   const [contentValue, setContentValue] = useState(text);
   const contentRef = useRef<HTMLInputElement>(null);
+
+  const dataFetcher = testInbox(app.authProvider!); //(url) => fetch(url).then(res => res.json());
+  const { data, error, isLoading, isValidating } = useSWR(dataFetcher, { refreshInterval: 15000 })
+  useEffect(() => {
+    if (data) {
+      setEmails(data.value);
+    }
+  }, [data]);
+
   useEffect(() => {
     // fetch emails
     const fetchEmails = async () => {

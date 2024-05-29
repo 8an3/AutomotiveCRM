@@ -24,11 +24,10 @@ export async function action({ request, params }: ActionFunction) {
   return json({ user });
 };
 
-export default function InterruptionsForm(interruptionsData) {
+export default function InterruptionsForm(interruptionsData, data) {
   const { user } = useLoaderData()
   const submit = useSubmit();
-  const location = useLocation();
-  const pathname = location.pathname
+
   const fetcher = useFetcher()
   // action={pathname}
   /**onClick={() => {
@@ -41,30 +40,7 @@ export default function InterruptionsForm(interruptionsData) {
               }} */
   return (
     <div>
-      {interruptionsData ? (
-        interruptionsData.interruptionsData.interruptionsData.map((notification) => (
-          <fetcher.Form method='post' key={notification.id} >
-            <Button type='submit' variant='ghost' className='text-left mb-2'          >
-              <input type='hidden' name='id' value={notification.id} />
-              <input type='hidden' name='intent' value='updateInterruption' />
-              <input type='hidden' name='pathname' value={pathname} />
-              <input type='hidden' name='location' value={notification.location} />
-              <CommandItem value={notification.location} className="cursor-pointer hover:bg-[#232324] rounded-md"  >
-                <ul className="grid gap-3 text-sm mt-2">
-                  <li className="grid grid-cols-1 items-center ">
-                    <span>{notification.title}</span>
-                    <span className="text-[#909098] text-xs">
-                      {notification.date}
-                    </span>
-                  </li>
-                </ul>
-              </CommandItem>
-            </Button>
-          </fetcher.Form>
-        ))
-      ) : (
-        <CommandItem>No reminders to be remembered.</CommandItem>
-      )}
+
     </div>
   )
 }

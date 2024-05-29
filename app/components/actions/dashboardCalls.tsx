@@ -1,4 +1,4 @@
-import { json, type ActionFunction, createCookie, type LoaderFunction, redirect, } from "@remix-run/node";
+import { json, type ActionFunction, createCookie, type LoaderFunction, redirect, defer } from "@remix-run/node";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { findDashboardDataById, findQuoteById, getDataBmwMoto, getDataByModel, getDataByModelManitou, getDataHarley, getDataKawasaki, getDataTriumph, getLatestBMWOptions, getLatestBMWOptions2, getLatestOptionsManitou, getRecords, } from "~/utils/finance/get.server";
 import { getDealerFeesbyEmail } from "~/utils/user.server";
@@ -28,39 +28,28 @@ import { QuoteServerActivix } from '~/utils/quote/quote.server';
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
-  console.log('session2', email)
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
   const session = await sixSession(request.headers.get("Cookie"));
 
   const sliderWidth = session.get("sliderWidth");
-  const userEmail = user?.email
-  const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: userEmail, }, });
-  let finance;
-  finance = await prisma.finance.findMany({
-    where: {
-      userEmail: {
-        equals: userEmail,
-      },
-    },
-  });
+  // const userEmail = user?.email
+  const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user.email, }, });
+  //let finance = [];
+  const finance = await prisma.finance.findMany({ where: { userEmail: user?.email }, });
   const brand = finance?.brand;
   const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
-  const customerId = finance?.id;
-  const financeNotes = await prisma.financeNote.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-  const searchData = await prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
-  const webLeadData = await prisma.finance.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: null } });
+  //const customerId = finance?.id;
+  const financeNotes = await prisma.financeNote.findMany({ orderBy: { createdAt: "desc" }, });
+  //const searchData = prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
+  const webLeadData = await prisma.finance.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: user?.email } });
   // const financeData2 = await prisma.finance.findMany({ where: { id: dashData2.financeId }, });
-  const conversations = await prisma.previousComms.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const conversations = await prisma.previousComms.findMany({ orderBy: { createdAt: "desc" }, });
   const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
 
-  const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
+  // const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
 
   const fetchLatestNotes = async (webLeadData) => {
     const promises = webLeadData.map(async (webLeadData) => {
@@ -78,7 +67,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
     return Promise.all(promises);
   };
-  const latestNotes = await fetchLatestNotes(finance);
+  const latestNotes = fetchLatestNotes(webLeadData);
 
 
 
@@ -151,6 +140,17 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
   const getDemoDay = await prisma.demoDay.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: 'skylerzanth@outlook.com' } });
 
+  /** if (brand === "Manitou") {
+     const modelData = await getDataByModelManitou(finance);
+     const manOptions = await getLatestOptionsManitou(user.email);
+     const deferredData = {
+       finance, deFees, sliderWidth, wishlistMatches, financeNotes, dashBoardCustURL, getWishList, conversations, latestNotes, notifications, request, //  manOptions,
+     };
+     return defer({ data: deferredData },
+       json({ ok: true, getDemoDay, modelData, user, },
+         { headers: { "Set-Cookie": await commitSession(session2), }, }
+       ));
+   } */
   if (brand === "Manitou") {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(user.email);
@@ -168,7 +168,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       conversations,
       latestNotes,
-      notifications,
+      // notifications,
       request
     }, {
       headers: {
@@ -192,7 +192,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       latestNotes,
       conversations,
-      notifications,
+      // notifications,
       dashBoardCustURL,
       request
     }, {
@@ -216,7 +216,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       conversations,
       wishlistMatches,
       getWishList,
-      notifications,
+      // notifications,
       dashBoardCustURL,
       request
     }, {
@@ -245,7 +245,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNotes,
       conversations,
       getWishList,
-      notifications,
+      // notifications,
       dashBoardCustURL,
       request
     }, {
@@ -268,7 +268,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNotes,
       getWishList,
       conversations,
-      notifications,
+      // notifications,
       wishlistMatches,
       dashBoardCustURL,
       request
@@ -293,7 +293,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       dashBoardCustURL,
       getWishList,
       conversations,
-      notifications,
+      // notifications,
       getTemplates,
       request,
       wishlistMatches,
@@ -318,10 +318,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         dashBoardCustURL,
         getTemplates,
         latestNotes,
-        searchData,
+        //  searchData,
         conversations,
         getWishList,
-        notifications,
+        // notifications,
         webLeadData,
         wishlistMatches,
         request,
@@ -343,9 +343,9 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       latestNotes,
       getTemplates,
       conversations,
-      searchData,
+      //  searchData,
       getWishList,
-      notifications,
+      // notifications,
       webLeadData,
       wishlistMatches,
       request
@@ -432,10 +432,9 @@ export async function TwoDays(followUpDay3, formData, financeId, user) {
   };
   const userId = user.Id
   const formPayload = formData
-  const dashboardId = formData.dashboardId
   const nextAppointment = newDate
   const followUpDay = newDate
-  const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, dashboardId }
+  const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, }
   const updating = await updateFinance23(financeId, formData, formPayload);
   const createFollowup = await createfinanceApt(user, clientAptsData, formData)
   const completeApt = await CompleteLastAppt(userId, financeId)
@@ -485,7 +484,7 @@ export async function FollowUpApt(formData, user, userId) {
 
   const nextAppointment = newDate
   const followUpDay = newDate
-  const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, dashboardId }
+  const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, }
   const updating = await updateFinance23(financeId, formData3, formPayload);
 
 
@@ -1403,8 +1402,6 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   const clientfileId = formData.clientfileId;
   const date = new Date().toISOString()
   const financeId = formData?.financeId;
-  const dashboard = await prisma.dashboard.findUnique({ where: { financeId: financeId, }, });
-  const dashboardId = dashboard?.id;
   console.log(financeId, 'finance id from dashboard calls')
   const session66 = await sixSession(request.headers.get("Cookie"));
   session66.set("financeId", financeId);
@@ -1563,7 +1560,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
     const nextAppointment = newDate
     const followUpDay = newDate
-    const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, dashboardId }
+    const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, }
     const updating = await updateFinance23(financeId, formData3, formPayload);
     const comdata = {
       financeId: formData.financeId,
@@ -1674,7 +1671,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
     const nextAppointment = dateTimeString
     const followUpDay = dateTimeString
-    const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, dashboardId }
+    const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, }
     const updating = await updateFinance23(financeId, formData3, formPayload);
 
     const createFollowup = await prisma.clientApts.create({
@@ -2130,8 +2127,15 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   if (intent === "updateStatus") {
     delete formData.brand;
     //console.log(formData)
-    await UpdateStatus(formData);
-    return UpdateStatus;
+    const dashboard = await prisma.finance.update({
+      where: {
+        id: formData.id, // Assuming the financeId is also the id of the dashboard
+      },
+      data: {
+        status: formData.status,
+      }
+    });
+    return json({ dashboard });
   }
   // navigation
   if (intent === "clientProfile") {

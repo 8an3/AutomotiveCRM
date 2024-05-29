@@ -1,6 +1,6 @@
 import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
 import { json, redirect, } from "@remix-run/node";
-import { Form, Link, useLoaderData, useLocation, Await, useFetcher, useSubmit, useNavigate } from "@remix-run/react";
+import { Form, Link, useLoaderData, useLocation, Await, useFetcher, useSubmit, useNavigate, useRouteLoaderData } from "@remix-run/react";
 import React, { useEffect, useRef, useState, Suspense } from "react";
 import { useEventSource } from "remix-utils";
 import { emitter } from "~/services/emitter";
@@ -57,6 +57,7 @@ import {
 import { prisma } from "~/libs/prisma.server";
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import InterruptionsForm from "~/components/shared/interruptionsForm";
+import NewLeadForm from "~/components/shared/newLeadForm";
 
 function NotificationSkeleton() {
   return (
@@ -65,19 +66,28 @@ function NotificationSkeleton() {
 }
 
 let url4 = 'http://localhost:3000/dealer/notifications/email'
-let url3 = 'http://localhost:3000/dealer/notifications/newLead'
+let url3 = ''
 let url2 = 'http://localhost:3000/dealer/notifications/updates'
 let url1 = 'http://localhost:3000/dealer/notifications/messages'
 
-export default function NotificationSystem(interruptionsData) {
-  const { } = useLoaderData()
+export default function NotificationSystem(interruptionsData,) {
+  const { loadNewLead: newLoadNewLead } = useLoaderData()
+  const { loadNewLead } = interruptionsData;
+  const location = useLocation();
+  const pathname = location.pathname
   const [notifications, setNotifications] = useState()
   const [emails, setEmails] = useState([])
   const [emailsCount, setEmailsCount] = useState(0)
-  const [value, setValue] = React.useState("")
+  const [value, setValue] = useState("")
   const [open, setOpen] = useState(false)
   const submit = useSubmit();
   const fetcher = useFetcher()
+  const [notificationsNewLead, setNotificationsNewLead] = useState(loadNewLead);
+  const [interruptions, setsetinterruptions] = useState(interruptionsData.interruptionsData);
+  const [unread, setUnread] = useState(0);
+  const [leadCount, setLeadCount] = useState(0);
+  const [updateCount, setUpdateCount] = useState(0);
+  const [messageCount, setMessageCount] = useState(0);
 
   useEffect(() => {
     const getEmails = window.localStorage.getItem("emails");
@@ -85,99 +95,56 @@ export default function NotificationSystem(interruptionsData) {
     setEmails(parseemailData);
   }, []);
 
-  const $form = useRef<HTMLFormElement>(null);
-  const { key } = useLocation();
-  useEffect(
-    function clearFormOnSubmit() {
-      $form.current?.reset();
-    },
-    [key],
-  );
 
-  const fetchData = async (url) => {
-    const response = await fetch(url);
-    return response.json();
-  };
-  const useSWRWithInterval = (url, refreshInterval) => {
-    return useSWR(url, fetchData, { refreshInterval });
-  };
-
-  const userMessages = useSWRWithInterval(url1, 180000);
-  const newUpdates = useSWRWithInterval(url2, 180000) || [];
-  const notificationsNewLead = useSWRWithInterval(url3, 180000);
-  const notificationsEmail = useSWRWithInterval(url4, 300000);
-
-
-  const [unread, setUnread] = useState(0);
-  const [leadCount, setLeadCount] = useState(0);
-  const [updateCount, setUpdateCount] = useState(0);
-  const [messageCount, setMessageCount] = useState(0);
-  const combined = {
-    ...userMessages, ...notificationsEmail
+  const newNotifications = {
+    ...interruptionsData.interruptionsData,
+    ...loadNewLead,
   }
+  const options = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  };
+
+  // -------- leads
+  const [lead, setLead] = useState([])
+  const dataFetcher = (url) => fetch(url).then(res => res.json());
+  const { data, error, isLoading, isValidating } = useSWR('http://localhost:3000/dealer/notifications/newLead', dataFetcher, { refreshInterval: 15000 })
   useEffect(() => {
-    if (Array.isArray(userMessages)) {
-      const unreadCount = userMessages.filter((message) => !message.read).length;
-      setUnread(unreadCount);
+    if (data) {
+      setLead(data);
     }
-    if (Array.isArray(notificationsNewLead)) {
-      const unreadCount = notificationsNewLead.filter((notification) => !notification.read).length;
-      setLeadCount(unreadCount);
-    }
-    if (Array.isArray(newUpdates)) {
-      const unreadCount = newUpdates.filter((update) => !update.read).length;
-      setUpdateCount(unreadCount);
-    }
-    if (Array.isArray(combined)) {
-      const unreadCount = combined.filter((email) => !email.read).length;
-      setMessageCount(unreadCount);
-    }
-  }, [userMessages, notificationsNewLead, newUpdates, notificationsEmail, combined]);
+  }, [data]);
+  if (error) return <div>failed to load</div>
+  if (isLoading) return <div>loading...</div>
+  // -------- leads
+  const length = Object.keys(newNotifications).length + Object.keys(lead).length;
 
-  const totalNotifications = unread + leadCount + updateCount + messageCount;
-
-  const handleRowClick = async (notification) => {
-    const formData = new FormData();
-    formData.append("read", true);
-    formData.append("intent", "reading");
-    formData.append("id", notification.id);
-    submit(formData, { method: "post" });
-    await fetch(url2, {
-      method: 'put',
-    });
-    mutate()
-  };
-
-  const handleRowClickNewLeads = async (notification) => {
-    const formData = new FormData();
-    formData.append("read", true);
-    formData.append("intent", "reading");
-    formData.append("id", notification.id);
-    submit(formData, { method: "post" });
-    await fetch(url3, {
-      method: 'put',
-    });
-    mutate()
-  };
-
-  //const newLeads = newUpdates
-  //console.log(emails, 'notifications', newUpdates, 'notifications', notificationsNewLead, 'notificationsNewLead')
-  // <Bell color="#fff" strokeWidth={1.5} className="text-2xl hover:text-[#02a9ff]" />
   return (
     <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]" aria-expanded={open}>
-            <div className=" h-t relative w-7">
-              <div className="pointer-events-none absolute -right-4 -top-0.5 flex size-full">
-                <span className="relative flex size-3">
-                  <span className="absolute inline-flex  size-full animate-ping rounded-full bg-[#02a9ff] opacity-75"></span>
-                  <span className="relative inline-flex size-3 rounded-full bg-[#0078b4]"></span>
-                </span>
+          {length > 0 ? (
+            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]" aria-expanded={open}>
+              <div className=" h-t relative w-7">
+                <div className="pointer-events-none absolute -right-4 -top-0.5 flex size-full">
+                  <span className="relative flex size-3">
+                    <span className="absolute inline-flex  size-full animate-ping rounded-full bg-[#02a9ff] opacity-75"></span>
+                    <span className="relative inline-flex size-3 rounded-full bg-[#0078b4]"></span>
+                  </span>
+                </div>
+                <IoIosMailUnread color="#ededed" className="text-2xl hover:text-[#02a9ff] text-[##ededed]" />
               </div>
+            </Button>
+          ) : (
+            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]" aria-expanded={open}>
               <IoIosMailUnread color="#ededed" className="text-2xl hover:text-[#02a9ff] text-[##ededed]" />
-            </div>
-          </Button>
+            </Button>
+          )}
         </PopoverTrigger>
         <PopoverContent className="w-[250px] p-0">
           <Command className="rounded-lg border shadow-md bg-[#09090b] border-[#27272a] text-[#f1f1f1]">
@@ -185,104 +152,63 @@ export default function NotificationSystem(interruptionsData) {
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup heading="Messages">
-                {Array.isArray(emails) &&
-                  emails.map((email) => (
-                    <CommandItem
-                      key={email.id}
-                      value={email.sender.emailAddress.address}
-                      onSelect={(currentValue) => {
-                        setValue(currentValue === value ? "" : currentValue)
-                        setOpen(false)
-                      }}
-                      className='cursor-pointer'
-                    >
-                      <ul className="grid gap-3 text-sm mt-2">
-                        <li className="flex items-center justify-between">
-                          <span className=" ">
-                            {email.sender.emailAddress.name}
-                          </span>
-                          <span className="text-[#909098] text-xs">
-                            {email.createdDateTime}
-                          </span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className=" text-[#909098]">
-                            {email.subject}
-                          </span>
-                          <span className="">
-                          </span>
-                        </li>
-                      </ul>
-                      <Mail
-                        color="#ffffff"
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          value === email.sender.emailAddress.address ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
+
               </CommandGroup>
               <CommandSeparator />
               <CommandGroup heading="Updates">
-                {newUpdates && newUpdates.length > 0 ? (
-                  newUpdates.map((notification) => (
-                    <CommandItem
-                      key={notification.id}
-                      value={notification.emailAddress.address}
-                      onSelect={(currentValue) => {
-                        setValue(currentValue === value ? "" : currentValue);
-                        setOpen(false);
-                        handleRowClickNewLeads(notification);
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <ul className="grid gap-3 text-sm mt-2">
-                        <li className="flex items-center justify-between">
-                          <span>{notification.title}</span>
-                          <span className="text-[#909098] text-xs">
-                            {new Date(notification.createdAt).toLocaleString()}
-                          </span>
-                        </li>
-                      </ul>
-                    </CommandItem>
-                  ))
-                ) : <CommandItem>No new updates, currently.   </CommandItem>}
 
               </CommandGroup>
               <CommandGroup heading="New Leads">
-                {notificationsNewLead && notificationsNewLead.length > 0 ? (
-                  notificationsNewLead.map((notification) => (
-                    <CommandItem
-                      key={notification.id}
-                      value={notification.emailAddress.address}
-                      onSelect={(currentValue) => {
-                        setValue(currentValue === value ? "" : currentValue);
-                        setOpen(false);
-                        handleRowClickNewLeads(notification);
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <ul className="grid gap-3 text-sm mt-2">
-                        <li className="flex items-center justify-between">
-                          <span>{notification.title}</span>
-                          <span className="text-[#909098] text-xs">
-                            {new Date(notification.createdAt).toLocaleString()}
-                          </span>
-                        </li>
-                      </ul>
-                    </CommandItem>
-                  ))
-                ) : (
-                  <CommandItem>No new leads, currently.</CommandItem>
-                )
+                {lead && lead.map((notification) => (
+                  <fetcher.Form method='post' key={notification.id}>
+                    <Button type='submit' variant='ghost' className='text-left mb-4'>
+                      <input type='hidden' name='id' value={notification.id} />
+                      <input type='hidden' name='intent' value='updateNewLead' />
+                      <input type='hidden' name='financeId' value={notification.financeId} />
+                      <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                      <CommandItem className="cursor-pointer hover:bg-[#232324] rounded-md">
+                        <ul className="grid gap-3 text-sm mt-2">
+                          <li className="grid grid-cols-1 items-center">
+                            <span>{notification.title}</span>
+                            <span className="text-[#909098] text-xs">{notification.content}</span>
+                            <span className="text-[#909098] text-xs">
+                              {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
+                            </span>
+                          </li>
+                        </ul>
+                      </CommandItem>
+                      {isValidating ? <div className="spinner" /> : null}
+                    </Button>
+                  </fetcher.Form>
+                ))
                 }
               </CommandGroup>
               <CommandGroup heading="Reminders">
-
-                <InterruptionsForm interruptionsData={interruptionsData} />
+                {interruptions ? (
+                  interruptions.map((notification) => (
+                    <fetcher.Form method='post' key={notification.id} >
+                      <Button type='submit' variant='ghost' className='text-left mb-2'          >
+                        <input type='hidden' name='id' value={notification.id} />
+                        <input type='hidden' name='intent' value='updateInterruption' />
+                        <input type='hidden' name='pathname' value={pathname} />
+                        <input type='hidden' name='location' value={notification.location} />
+                        <CommandItem value={notification.location} className="cursor-pointer hover:bg-[#232324] rounded-md"  >
+                          <ul className="grid gap-3 text-sm mt-2">
+                            <li className="grid grid-cols-1 items-center ">
+                              <span>{notification.title}</span>
+                              <span className="text-[#909098] text-xs">
+                                {notification.date}
+                              </span>
+                            </li>
+                          </ul>
+                        </CommandItem>
+                      </Button>
+                    </fetcher.Form>
+                  ))
+                ) : (
+                  <CommandItem>No reminders to be remembered.</CommandItem>
+                )}
               </CommandGroup>
-
             </CommandList>
           </Command>
         </PopoverContent>
@@ -291,6 +217,7 @@ export default function NotificationSystem(interruptionsData) {
   )
 
 }
+//
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -298,8 +225,11 @@ export async function loader({ request, params }: LoaderFunction) {
   const interruptions = await prisma.interruptions.findMany({ where: { userEmail: email, read: 'false' } })
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
+  const loadNewLead = await prisma.notificationsUser.findMany({
+    where: { type: 'New Lead', read: 'false', }
+  })
   const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
-  return json({ user, notifications, interruptions });
+  return json({ user, notifications, interruptions, loadNewLead });
 }
 
 export async function action({ request }: LoaderArgs) {
@@ -334,29 +264,47 @@ export async function action({ request }: LoaderArgs) {
 }
 
 
-/**  const { data: userMessages } = useSWR(
-    url1,
-    (url) => fetch(url).then((res) => res.json()),
-    { refreshInterval: 180000 }
-  );
-
-  const { data: newUpdates } = useSWR(
-    url2,
-    (url) => fetch(url).then((res) => res.json()),
-    { refreshInterval: 180000 }
-  );
-
-  const { data: notificationsNewLead } = useSWR(
+/**
+ *
+   {notificationsNewLead ? (
+                  notificationsNewLead.map((notification) => (
+                    <fetcher.Form method='post' key={notification.id}>
+                      <Button type='submit' variant='ghost' className='text-left mb-4'>
+                        <input type='hidden' name='id' value={notification.id} />
+                        <input type='hidden' name='intent' value='updateNewLead' />
+                        <input type='hidden' name='financeId' value={notification.financeId} />
+                        <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                        <CommandItem className="cursor-pointer hover:bg-[#232324] rounded-md">
+                          <ul className="grid gap-3 text-sm mt-2">
+                            <li className="grid grid-cols-1 items-center">
+                              <span>1{notification.title}</span>
+                              <span className="text-[#909098] text-xs">{notification.content}</span>
+                              <span className="text-[#909098] text-xs">
+                                {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
+                              </span>
+                            </li>
+                          </ul>
+                        </CommandItem>
+                      </Button>
+                    </fetcher.Form>
+                  ))
+                ) : (
+                  <div>No new leads found</div>
+                )} const { data: notificationsNewLead } = useSWR(
     url3,
     (url) => fetch(url).then((res) => res.json()),
     { refreshInterval: 180000 }
-  );
-
-  const { data: notificationsEmail } = useSWR(
-    url4,
-    (url) => fetch(url).then((res) => res.json()),
-    { refreshInterval: 300000 }
-  ); */
+  );   const handleRowClick = async (notification) => {
+  const formData = new FormData();
+  formData.append("read", true);
+  formData.append("intent", "reading");
+  formData.append("id", notification.id);
+  submit(formData, { method: "post" });
+  await fetch(url2, {
+    method: 'put',
+  });
+  mutate()
+};*/
 
 /**{totalNotifications > 1 && (
 <>
@@ -462,8 +410,6 @@ export async function GetEmailsCount(accessToken) {
   const data = await response.json();
   return data;
 }
-
-
 function NotificationTemplate({ data, mutate, url1, url4 }) {
   const [notifications, setNotifications] = useState(data.userMessages)
   const [emails, setEmails] = useState([])
@@ -618,8 +564,6 @@ function NotificationTemplate({ data, mutate, url1, url4 }) {
 
   )
 }
-
-
 const UpdateMesages = ({ data, mutate, url2 }) => {
   const notifications = data.newUpdates
   const location = useLocation()
@@ -699,10 +643,6 @@ const UpdateMesages = ({ data, mutate, url2 }) => {
     </ul >
   )
 }
-
-
-
-
 const NotificationsNewLead = ({ data, mutate, url3 }) => {
   const notifications = data
 
@@ -762,7 +702,6 @@ const NotificationsNewLead = ({ data, mutate, url3 }) => {
     </div>
   )
 }
-
 export async function getStaticProps1() {
   const res = await fetch(url1);
   const post = await res.json();
@@ -775,7 +714,6 @@ export async function getStaticProps1() {
     revalidate: 180,
   };
 }
-
 export async function getStaticProps2() {
   const res = await fetch(url2);
   const post = await res.json();
@@ -788,8 +726,6 @@ export async function getStaticProps2() {
     revalidate: 170,
   };
 }
-
-
 export async function getStaticProps3() {
   const res = await fetch(url3);
   const post = await res.json();
@@ -802,8 +738,6 @@ export async function getStaticProps3() {
     revalidate: 120,
   };
 }
-
-
 export async function getStaticProps4() {
   const res = await fetch(url4);
   const post = await res.json();

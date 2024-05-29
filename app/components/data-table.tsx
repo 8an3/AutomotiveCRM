@@ -1,13 +1,14 @@
 "use client";
 import { Button, Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, } from "~/components/ui/index";
-import React, { useMemo, useEffect, useState, useRef } from "react";
+import React, { useMemo, useEffect, useState, useRef, Suspense } from "react";
+import { ClientOnly } from "remix-utils";
 
 import { ScrollArea } from "~/other/scrollarea";
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, type SortingState, getSortedRowModel, sortingFns, SortingFn, FilterFns, FilterFn, type VisibilityState, getFilteredRowModel, type ColumnFiltersState, } from "@tanstack/react-table";
 import { DataTablePagination } from "./dashboard/calls/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/other/table";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/other/dropdown-menu";
-import { Form, Link, useFetcher, useLoaderData, useTransition, } from "@remix-run/react";
+import { Form, Link, useFetcher, useLoaderData, useTransition, Await } from "@remix-run/react";
 import AddCustomer from "./dashboard/calls/addCustomer";
 import Filter from "./dashboard/calls/Filter";
 import { Flex, Text, TextArea, TextField, Heading } from '@radix-ui/themes';
@@ -476,11 +477,11 @@ export function DataTable<TData, TValue>({
   const toggleFilter = () => {
     setShowFilter(!showFilter);
   };
-
+  //
+  // </ClientOnly>
 
   //defaultValue={todayfilterBy}>
   return (
-
     <div className="mb-[20px]  even:bg-[#09090b]  rounded overflow-x-hidden   justify-center">
       <div className="flex items-center">
 
@@ -586,6 +587,7 @@ export function DataTable<TData, TValue>({
         </div>
       </div >
       <div className="mt-[20px] rounded-md  border border-[#262626] text-[#fafafa]">
+
         <Table className="rounded-md overflow-x-auto border-[#262626]">
           <TableHeader>
 
@@ -645,12 +647,28 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+
       </div>
       <DataTablePagination table={table} />
     </div >
   );
 }
-
+function SimplerStaticVersion() {
+  return (
+    <p>Not working contact support...</p>
+  )
+}
+function Loading() {
+  return (
+    <ul>
+      {Array.from({ length: 12 }).map((_, i) => (
+        <li key={i}>
+          <div className="spinner" />
+        </li>
+      ))}
+    </ul>
+  )
+}
 /*const FilterForm = ({ column }) => {
     const { filterValue, setFilter } = column;
     return (

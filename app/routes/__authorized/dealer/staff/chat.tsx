@@ -124,7 +124,7 @@ const sortConversationsByDept = (conversations, labels) => {
 export default function StaffChat() {
   function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-  const { user, conversationsList, interruptionsData } = useLoaderData();
+  const { user, conversationsList, } = useLoaderData();
   const [conversations, setConversations] = useState([]);
   const [filtererdConversations, setFilteredConversations] = useState([]);
   const [roomLabel, setRoomLabel] = useState("General");
@@ -139,12 +139,6 @@ export default function StaffChat() {
     }, []);
     setFilteredConversations(filteredConversations);
   }, []);
-  const [interruptions, setInterruptions] = useState();
-
-
-  useEffect(() => {
-    setInterruptions(interruptionsData);
-  }, []);
 
 
   const [input, setInput] = useState("");
@@ -155,12 +149,9 @@ export default function StaffChat() {
   let formRef = useRef();
   const timerRef = useRef(0);
 
-  const url1 = "/dealer/staff/getConvos";
-  const { data: userMessages } = useSWR(
-    url1,
-    (url) => fetch(url).then((res) => res.json()),
-    { refreshInterval: 180000 }
-  );
+  const dataFetcher = (url) => fetch(url).then(res => res.json());
+  const { data: userMessages, error, isLoading, isValidating } = useSWR('http://localhost:3000/dealer/staff/getConvos', dataFetcher, { refreshInterval: 15000 })
+
 
   useEffect(() => {
     if (Array.isArray(userMessages)) {

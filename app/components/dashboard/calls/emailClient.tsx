@@ -26,39 +26,48 @@ export default function EmailClient({ data }) {
   const [open, setOpen] = React.useState(false)
 
   useEffect(() => {
-    function getNotesByFinanceId(notes, financeId) {
-      return notes.filter(note => note.financeId === financeId);
-    }
-    const filteredNotes = getNotesByFinanceId(financeNotes, data.financeId);
+    if (data) {
 
-    setFinanceNoteList(filteredNotes)
-    console.log(filteredNotes, 'email client notes')
-    function GetConversationsByID(conversations, financeId) {
-      return conversations.filter(conversation => conversation.financeId === financeId);
-    }
-    const filteredConversations = GetConversationsByID(conversations, data.financeId);
+      function getNotesByFinanceId(notes, financeId) {
+        return notes.filter(note => note.financeId === financeId);
+      }
+      const filteredNotes = getNotesByFinanceId(financeNotes, data.financeId);
 
-    setConversationsList(filteredConversations)
-    console.log(filteredNotes, 'email client notes')
+      setFinanceNoteList(filteredNotes)
+      console.log(filteredNotes, 'email client notes')
+      function GetConversationsByID(conversations, financeId) {
+        return conversations.filter(conversation => conversation.financeId === financeId);
+      }
+      const filteredConversations = GetConversationsByID(conversations, data.financeId);
+
+      setConversationsList(filteredConversations)
+      console.log(filteredNotes, 'email client notes')
+    }
+
   }, [data.financeId]);
 
 
   useEffect(() => {
-    const serializedUser = JSON.stringify(user);
-    const cust = {
-      email: data.email,
-      name: data.name,
-      financeId: data.financeId,
+    if (data) {
+      const serializedUser = JSON.stringify(user);
+      const cust = {
+        email: data.email,
+        name: data.name,
+        financeId: data.financeId,
+      }
+      const serializedCust = JSON.stringify(cust);
+      window.localStorage.setItem("user", serializedUser);
+      window.localStorage.setItem("customer", serializedCust);
     }
-    const serializedCust = JSON.stringify(cust);
-    window.localStorage.setItem("user", serializedUser);
-    window.localStorage.setItem("customer", serializedCust);
+
   }, []);
 
   useEffect(() => {
-    const getemailData = window.localStorage.getItem("emailData");
-    const parseemailData = getemailData ? JSON.parse(getemailData) : [];
-    setEmailData(parseemailData)
+    if (data) {
+      const getemailData = window.localStorage.getItem("emailData");
+      const parseemailData = getemailData ? JSON.parse(getemailData) : [];
+      setEmailData(parseemailData)
+    }
   }, []);
 
   if (emailData) {
@@ -137,110 +146,38 @@ export default function EmailClient({ data }) {
     );
   };
   return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <p
-          className="cursor-pointer text-[#fafafa] target:text-[#02a9ff] hover:text-[#02a9ff]" >
-          <Mail className="" />
-        </p>
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
+    <>
+      {data && (
+        <Dialog.Root>
+          <Dialog.Trigger asChild>
+            <p
+              className="cursor-pointer text-[#fafafa] target:text-[#02a9ff] hover:text-[#02a9ff]" >
+              <Mail className="" />
+            </p>
+          </Dialog.Trigger>
+          <Dialog.Portal>
+            <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
 
-        <Dialog.Content className=" w-[95%] md:w-[950px]   fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#09090b] border border-[#27272a] text-[#fafafa] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none ">
-          <DialogDescription>
-            <Tabs defaultValue="account" className="w-auto">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="account">Email</TabsTrigger>
-                <TabsTrigger value="password">Prev Interactions</TabsTrigger>
-                <TabsTrigger value="notes">Notes</TabsTrigger>
-              </TabsList>
-              <TabsContent value="account">
-                <div className="parent-container h-auto" >
-                  <MyIFrameComponent />
-                </div>
-              </TabsContent>
-              <TabsContent value="password">
-                <Card className="overflow-hidden text-[#f1f1f1] w-[600px] mx-auto" x-chunk="dashboard-05-chunk-4 "  >
-                  <CardHeader className="flex flex-row items-start bg-[#18181a]">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Customer Interactions
-                      </CardTitle>
+            <Dialog.Content className=" w-[95%] md:w-[950px]   fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#09090b] border border-[#27272a] text-[#fafafa] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none ">
+              <DialogDescription>
+                <Tabs defaultValue="account" className="w-auto">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="account">Email</TabsTrigger>
+                    <TabsTrigger value="password">Prev Interactions</TabsTrigger>
+                    <TabsTrigger value="notes">Notes</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="account">
+                    <div className="parent-container h-auto" >
+                      <MyIFrameComponent />
                     </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
-                    <div className="grid gap-3 max-h-[70vh] h-auto">
-                      <Card>
-                        <CardContent>
-                          <div className="space-y-4 mt-5">
-                            {conversationsList.map((message, index) => (
-                              <div
-                                key={index}
-                                className={cn(
-                                  "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                  message.userEmail === user.email
-                                    ? "ml-auto bg-[#dc2626] text-[#fafafa]"
-                                    : "bg-[#262626]"
-                                )}
-                              >
-                                <div className='grid grid-cols-1'>
-                                  {message.userEmail !== user.email && (
-                                    <p className='text-[#8c8c8c]'>
-                                      {message.userEmail}
-                                    </p>
-                                  )}
-                                  {message.body}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
-
-                    <Button
-                      value="saveFinanceNote"
-                      type="submit"
-                      name="intent"
-                      size="sm"
-                      onClick={() => {
-                        toast.success(`Note saved`)
-                      }}
-                      disabled={inputLength === 0}
-                      className='bg-[#dc2626] '>
-                      <PlusIcon className="h-4 w-4" />
-
-                      <span className="sr-only">Add</span>
-                    </Button>
-
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              <TabsContent value="notes" className="">
-                <div className='max-h-[900px] '>
-                  <>
+                  </TabsContent>
+                  <TabsContent value="password">
                     <Card className="overflow-hidden text-[#f1f1f1] w-[600px] mx-auto" x-chunk="dashboard-05-chunk-4 "  >
                       <CardHeader className="flex flex-row items-start bg-[#18181a]">
                         <div className="grid gap-0.5">
                           <CardTitle className="group flex items-center gap-2 text-lg">
-                            Notes
+                            Customer Interactions
                           </CardTitle>
-                        </div>
-                        <div className="ml-auto flex items-center gap-1">
-                          <TooltipProvider delayDuration={0}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button size="icon" variant="outline" className="ml-auto rounded-full" onClick={() => setOpen(true)}  >
-                                  <PlusIcon className="h-4 w-4" />
-                                  <span className="sr-only">CC Employee</span>
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent sideOffset={10} className='bg-[#dc2626]'>CC Employee</TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
                         </div>
                       </CardHeader>
                       <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
@@ -248,23 +185,23 @@ export default function EmailClient({ data }) {
                           <Card>
                             <CardContent>
                               <div className="space-y-4 mt-5">
-                                {financeNotesList.map((message, index) => (
+                                {conversationsList.map((message, index) => (
                                   <div
                                     key={index}
                                     className={cn(
                                       "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                      message.author === user.email
+                                      message.userEmail === user.email
                                         ? "ml-auto bg-[#dc2626] text-[#fafafa]"
                                         : "bg-[#262626]"
                                     )}
                                   >
                                     <div className='grid grid-cols-1'>
-                                      {message.author !== user.email && (
+                                      {message.userEmail !== user.email && (
                                         <p className='text-[#8c8c8c]'>
-                                          {message.author}
+                                          {message.userEmail}
                                         </p>
                                       )}
-                                      {message.customContent}
+                                      {message.body}
                                     </div>
                                   </div>
                                 ))}
@@ -274,44 +211,120 @@ export default function EmailClient({ data }) {
                         </div>
                       </CardContent>
                       <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
-                        <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
-                          <Input type="hidden" defaultValue={user.email} name="author" />
-                          <Input type="hidden" defaultValue={data.clientFileId} name="customerId" />
-                          <input type="hidden" defaultValue={data.id} name="financeId" />
-                          <Input type="hidden" defaultValue={data.name} name="name" />
-                          <Input
-                            id="message"
-                            placeholder="Type your message..."
-                            className="flex-1 bg-[#18181a] border-[#27272a]"
-                            autoComplete="off"
-                            value={input}
-                            onChange={(event) => setInput(event.target.value)}
-                            name="customContent"
-                          />
-                          <Button
-                            value="saveFinanceNote"
-                            type="submit"
-                            name="intent"
-                            size="icon"
-                            onClick={() => {
-                              toast.success(`Note saved`)
-                            }}
-                            disabled={inputLength === 0}
-                            className='bg-[#dc2626] '>
-                            <PaperPlaneIcon className="h-4 w-4" />
-                            <span className="sr-only">Send</span>
-                          </Button>
-                        </fetcher.Form>
+
+                        <Button
+                          value="saveFinanceNote"
+                          type="submit"
+                          name="intent"
+                          size="sm"
+                          onClick={() => {
+                            toast.success(`Note saved`)
+                          }}
+                          disabled={inputLength === 0}
+                          className='bg-[#dc2626] '>
+                          <PlusIcon className="h-4 w-4" />
+
+                          <span className="sr-only">Add</span>
+                        </Button>
+
                       </CardFooter>
                     </Card>
-                  </>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </DialogDescription>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+                  </TabsContent>
+                  <TabsContent value="notes" className="">
+                    <div className='max-h-[900px] '>
+                      <>
+                        <Card className="overflow-hidden text-[#f1f1f1] w-[600px] mx-auto" x-chunk="dashboard-05-chunk-4 "  >
+                          <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                            <div className="grid gap-0.5">
+                              <CardTitle className="group flex items-center gap-2 text-lg">
+                                Notes
+                              </CardTitle>
+                            </div>
+                            <div className="ml-auto flex items-center gap-1">
+                              <TooltipProvider delayDuration={0}>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button size="icon" variant="outline" className="ml-auto rounded-full" onClick={() => setOpen(true)}  >
+                                      <PlusIcon className="h-4 w-4" />
+                                      <span className="sr-only">CC Employee</span>
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent sideOffset={10} className='bg-[#dc2626]'>CC Employee</TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                            <div className="grid gap-3 max-h-[70vh] h-auto">
+                              <Card>
+                                <CardContent>
+                                  <div className="space-y-4 mt-5">
+                                    {financeNotesList.map((message, index) => (
+                                      <div
+                                        key={index}
+                                        className={cn(
+                                          "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                                          message.author === user.email
+                                            ? "ml-auto bg-[#dc2626] text-[#fafafa]"
+                                            : "bg-[#262626]"
+                                        )}
+                                      >
+                                        <div className='grid grid-cols-1'>
+                                          {message.author !== user.email && (
+                                            <p className='text-[#8c8c8c]'>
+                                              {message.author}
+                                            </p>
+                                          )}
+                                          {message.customContent}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </div>
+                          </CardContent>
+                          <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                            <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
+                              <Input type="hidden" defaultValue={user.email} name="author" />
+                              <Input type="hidden" defaultValue={data.clientFileId} name="customerId" />
+                              <input type="hidden" defaultValue={data.id} name="financeId" />
+                              <Input type="hidden" defaultValue={data.name} name="name" />
+                              <Input
+                                id="message"
+                                placeholder="Type your message..."
+                                className="flex-1 bg-[#18181a] border-[#27272a]"
+                                autoComplete="off"
+                                value={input}
+                                onChange={(event) => setInput(event.target.value)}
+                                name="customContent"
+                              />
+                              <Button
+                                value="saveFinanceNote"
+                                type="submit"
+                                name="intent"
+                                size="icon"
+                                onClick={() => {
+                                  toast.success(`Note saved`)
+                                }}
+                                disabled={inputLength === 0}
+                                className='bg-[#dc2626] '>
+                                <PaperPlaneIcon className="h-4 w-4" />
+                                <span className="sr-only">Send</span>
+                              </Button>
+                            </fetcher.Form>
+                          </CardFooter>
+                        </Card>
+                      </>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </DialogDescription>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+      )}
+    </>
   );
 }
 

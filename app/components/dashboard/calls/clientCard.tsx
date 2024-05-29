@@ -171,10 +171,10 @@ export default function ClientCard({ data }) {
                                         </div>
                                     </div>
                                 ))}
-                            <div className="relative mt-3">
+                            <div className="relative mt-5">
                                 <Select name='timeToContact'                                                >
                                     <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
-                                        <SelectValue defaultValue={finance.timeToContact} />
+                                        <SelectValue defaultValue={data.timeToContact} />
                                     </SelectTrigger>
                                     <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
                                         <SelectGroup>
@@ -188,11 +188,11 @@ export default function ClientCard({ data }) {
                                 </Select>
                                 <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Time To Be Contacted</label>
                             </div>
-                            <div className="relative mt-3">
+                            <div className="relative mt-5">
 
                                 <Select name='typeOfContact'                                                >
                                     <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
-                                        <SelectValue defaultValue={finance.typeOfContact} />
+                                        <SelectValue defaultValue={data.typeOfContact} />
                                     </SelectTrigger>
                                     <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
                                         <SelectGroup>

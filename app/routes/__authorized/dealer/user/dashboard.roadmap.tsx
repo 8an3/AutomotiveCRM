@@ -24,7 +24,7 @@ export const metadata = {
   description: "Example dashboard app built using the components.",
 }
 
-const todoRoadmap = [
+export const todoRoadmap = [
   // ----------------------------------------------------------DONE NEEDS TESTING---------------------------------------
   { type: "done needs testing", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
   { type: "done needs testing", desc: "API file upload will be released once google approves gmail as its still in the process right now - done needs testing" },
