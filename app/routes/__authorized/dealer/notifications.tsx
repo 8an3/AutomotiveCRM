@@ -71,7 +71,8 @@ let url2 = 'http://localhost:3000/dealer/notifications/updates'
 let url1 = 'http://localhost:3000/dealer/notifications/messages'
 
 export default function NotificationSystem(interruptionsData,) {
-  const { loadNewLead: newLoadNewLead } = useLoaderData()
+  const { messages } = useLoaderData()
+  console.log(messages, 'messages')
   const { loadNewLead } = interruptionsData;
   const location = useLocation();
   const pathname = location.pathname
@@ -225,11 +226,71 @@ export async function loader({ request, params }: LoaderFunction) {
   const interruptions = await prisma.interruptions.findMany({ where: { userEmail: email, read: 'false' } })
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
-  const loadNewLead = await prisma.notificationsUser.findMany({
-    where: { type: 'New Lead', read: 'false', }
-  })
+  const getLeads = await prisma.notificationsUser.findMany({
+    where: {
+      reads: {
+        some: {
+          userEmail: email,
+        },
+      },
+      type: 'New Lead',
+    },
+    include: {
+      reads: {
+        where: {
+          userEmail: email,
+        },
+        select: {
+          read: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc', // Optional: Order by creation date
+    },
+  });
+  const getloadNewLead = () => {
+    return getLeads.map(notification => ({
+      ...notification,
+      read: notification.reads[0]?.read || false, // Extract read status
+    }));
+  }
+  const loadNewLead = getloadNewLead()
+  const notiMessages = await prisma.notificationsUser.findMany({
+    where: {
+      reads: {
+        some: {
+          userEmail: email,
+        },
+      },
+      type: 'messages',
+    },
+    include: {
+      reads: {
+        where: {
+          userEmail: email,
+        },
+        select: {
+          read: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc', // Optional: Order by creation date
+    },
+  });
+  const getMessages = () => {
+    return notiMessages.map(notification => ({
+      ...notification,
+      read: notification.reads[0]?.read || false, // Extract read status
+    }));
+  }
+
+
+  const messages = getMessages()
+
   const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
-  return json({ user, notifications, interruptions, loadNewLead });
+  return json({ user, notifications, interruptions, loadNewLead, messages });
 }
 
 export async function action({ request }: LoaderArgs) {

@@ -4477,8 +4477,9 @@ export default function Dashboard() {
                     <Form method='post'>
                       <DialogHeader className="px-4 pb-4 pt-5">
                         <DialogTitle>Add Appointment</DialogTitle>
+                        <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+
                       </DialogHeader>
-                      <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
                       <div className="grid gap-3 mx-3 mb-3">
                         <div className="relative mt-3">
                           <Input
@@ -6175,7 +6176,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
     finance = await prisma.finance.findUnique({ where: { id: financeId, }, });
   }
   const dashboardIdCookie = await prisma.finance.findUnique({ where: { id: financeId } })
-  const SetClient66Cookie = await SetClient66(userId, clientId, financeId, dashboardIdCookie.dashboardId, request)
+  const SetClient66Cookie = await SetClient66(userId, clientId, financeId, request)
 
   const brand = finance?.brand
   const financeNotes = await getAllFinanceNotes(financeId)

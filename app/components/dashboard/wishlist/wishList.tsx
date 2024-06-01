@@ -1,4 +1,4 @@
-import { Filter, DebouncedInput, invariant, type Payment, type TableMeta, defaultColumn, fuzzyFilter, fuzzySort } from '~/routes/__authorized/dealer/leads/sales'
+import { Filter, DebouncedInput, invariant, type Payment, type TableMeta, defaultColumn, fuzzyFilter, fuzzySort } from '~/routes/__authorized/dealer/leads/sales.$tab'
 import React, { HTMLAttributes, HTMLProps, useState, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Form, Link, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'

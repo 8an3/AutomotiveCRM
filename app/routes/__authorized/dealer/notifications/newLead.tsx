@@ -3,12 +3,28 @@ import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
 
 
 export async function loader({ request, params }: LoaderFunction) {
-  const notificationsNewLead = await prisma.notificationsUser.findMany({
+  const getLeads = await prisma.notificationsUser.findMany({
     where: {
       type: 'New Lead',
-      read: 'false',
-    }
-  })
+    },
+    include: {
+      reads: {
+        select: {
+          read: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc', // Optional: Order by creation date
+    },
+  });
+  const getloadNewLead = () => {
+    return getLeads.map(notification => ({
+      ...notification,
+      read: notification.reads[0]?.read || false, // Extract read status
+    }));
+  }
+  const loadNewLead = getloadNewLead()
 
-  return notificationsNewLead
+  return loadNewLead
 }

@@ -185,7 +185,7 @@ export let action: ActionFunction = async ({ request }) => {
   await prisma.notificationsUser.create({
     data: {
       title: `New Lead: ${finance.firstName} ${finance.lastName}`,
-      read: 'false',
+      read: false,
       type: 'New Lead',
       userEmail: 'newelead@newlead.com',
       content: `${finance.year} ${finance.brand} ${finance.model}`,

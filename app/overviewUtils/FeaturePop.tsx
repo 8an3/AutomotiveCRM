@@ -49,7 +49,7 @@ const FeaturePop = ({ finance, user }) => {
                 <PrintSpec />
               </div>
               <ModelPage />
-              <a className="w-full mx-auto" href="/dealer/leads/sales" target="_blank"  >
+              <a className="w-full mx-auto" href="/dealer/leads/sale/dashboard" target="_blank"  >
                 <Button className="w-full border border-[#09090b] text-black cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
                   Dashboard
                 </Button>

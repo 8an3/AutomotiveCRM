@@ -21,9 +21,36 @@ export async function loader({ request }: LoaderFunction) {
   const email = session.get("email")
   let user = await GetUser(email)
   const interruptionsData = await prisma.interruptions.findMany({ where: { userEmail: email, read: 'false' } });
-  const loadNewLead = await prisma.notificationsUser.findMany({
-    where: { type: 'New Lead', read: 'false', }
-  })
+  const getLeads = await prisma.notificationsUser.findMany({
+    where: {
+      reads: {
+        some: {
+          userEmail: email,
+        },
+      },
+      type: 'New Lead',
+    },
+    include: {
+      reads: {
+        where: {
+          userEmail: email,
+        },
+        select: {
+          read: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc', // Optional: Order by creation date
+    },
+  });
+  const getloadNewLead = () => {
+    return getLeads.map(notification => ({
+      ...notification,
+      read: notification.reads[0]?.read || false, // Extract read status
+    }));
+  }
+  const loadNewLead = getloadNewLead()
   return json({ user, email, interruptionsData, loadNewLead });
 }
 
@@ -110,8 +137,8 @@ export async function action({ request, params }: ActionFunction) {
           read: 'true'
         }
       });
-      const finance = await prisma
-      const location = formData.pathname
+      //const finance = await prisma
+      const location = formData.pathname //'/dealer/leads/sales'
       return redirect(String(location));
     } catch (error) {
       console.error('Error updating interruption:', error);
@@ -126,7 +153,7 @@ export async function action({ request, params }: ActionFunction) {
         read: 'true'
       }
     });
-    const location = `/dealer/leads/sales`
+    const location = `/dealer/leads/sales/newLeads`
     return redirect(location);
   }
 

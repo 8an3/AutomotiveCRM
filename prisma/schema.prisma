@@ -64,12 +64,12 @@ model User {
   familyName       String?
   identityProvider String?
 
-  role          UserRole           @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
-  profile       UserProfile        @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  role          UserRole            @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
+  profile       UserProfile         @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   // password      UserPassword?      @relation("UserPassword")
-  images        Image[]            @relation("Images")
-  notifications UserNotification[] @relation("UserNotifications")
-  notes         Note[]             @relation("UserNotes")
+  images        Image[]             @relation("Images")
+  notifications NotificationsUser[] @relation("NotificationsUser")
+  notes         Note[]              @relation("UserNotes")
   //UserPassword  UserPassword?
   timeEntries   TimeEntry[]
   workorders    Workorder[]
@@ -244,38 +244,38 @@ model UserCoverImage {
 }
 
 model NotificationsUser {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   title        String?
-  content      String? @db.Text
-  read         String?
-  userEmail    String?
-  dimiss       String?
+  content      String?  @db.Text
+  dismiss      String?
   type         String?
   financeId    String?
   clientfileId String?
   to           String?
   from         String?
+
+  // Relations
+  reads     NotificationRead[]
+  userEmail String
+
+  user User @relation("NotificationsUser", fields: [userEmail], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@index([userEmail])
 }
 
-model UserNotification {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model NotificationRead {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  notificationId String
+  userEmail      String
+  read           Boolean  @default(false)
 
-  title        String
-  content      String? @db.Text
-  read         String?
-  userId       String
-  type         String?
-  financeId    String?
-  clientfileId String?
+  // Relations
+  notificationsUser NotificationsUser @relation(fields: [notificationId], references: [id])
 
-  user User @relation("UserNotifications", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-
-  @@index([userId])
+  @@unique([notificationId, userEmail])
 }
 
 model Note {

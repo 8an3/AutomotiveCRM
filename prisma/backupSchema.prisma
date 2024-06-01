@@ -186,3 +186,22 @@ model Dashboard {
 
   @@index([financeId])
 }
+
+model UserNotification {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title        String
+  content      String? @db.Text
+  read         String?
+  type         String?
+  financeId    String?
+  clientfileId String?
+
+  userId String
+
+  user User @relation("UserNotifications", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@index([userId])
+}

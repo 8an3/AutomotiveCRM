@@ -72,13 +72,12 @@ export const token_66 = createCookieSessionStorage({
 export const { getSession, commitSession, destroySession } = token_66;
  */
 
-export async function SetClient66(userId, clientfileId, financeId, dashbaordId, request) {
+export async function SetClient66(userId, clientfileId, financeId, request) {
   const session = await getSession(request.headers.get("Cookie"));
   session.set('userId', userId)
   session.set('clientfileId', clientfileId)
   session.set('financeId', financeId)
-  session.set('dashbaordId', dashbaordId)
-  console.log(userId, clientfileId, financeId, dashbaordId, 'ids')
+  console.log(userId, clientfileId, financeId, 'ids')
 
   return json({ ok: true }, {
     headers: {

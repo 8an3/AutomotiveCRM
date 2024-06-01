@@ -617,6 +617,7 @@ export async function quoteLoader({ request, params }: LoaderFunction) {
   const userId = user?.id
   const urlSegments = new URL(request.url).pathname.split('/');
   const financeId = urlSegments[urlSegments.length - 1];
+  updateReadStatus();
   if (financeId.length > 2) {
     const finance = await findQuoteById(financeId);
     return json({ ok: true, finance, sliderWidth, financeId, userId, email, user })
@@ -627,3 +628,31 @@ export async function quoteLoader({ request, params }: LoaderFunction) {
 }
 
 
+async function updateReadStatus() {
+  try {
+    // Find listings where read is true and userEmail is 'newelead@newlead.com'
+    const listingsToUpdate = await prisma.notificationsUser.findMany({
+      where: {
+        read: true,
+        userEmail: 'newelead@newlead.com',
+      },
+    });
+
+    // Update the found listings
+    const updatePromises = listingsToUpdate.map(listing =>
+      prisma.notificationsUser.update({
+        where: { id: listing.id },
+        data: { read: false },
+      })
+    );
+
+    // Wait for all updates to complete
+    await Promise.all(updatePromises);
+
+    console.log('Successfully updated listings.');
+  } catch (error) {
+    console.error('Error updating listings:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}

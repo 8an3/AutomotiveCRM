@@ -17,8 +17,10 @@ import {
   useParams,
   useNavigate,
   useLocation,
+  useTransition,
+  useNavigationType
 } from "@remix-run/react";
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useEffect, useRef, useState, } from "react";
 import {
   type DataFunctionArgs,
   type ActionFunction,
@@ -140,18 +142,23 @@ export default function StaffChat() {
     setFilteredConversations(filteredConversations);
   }, []);
 
-
   const [input, setInput] = useState("");
   const inputLength = input.trim().length;
   const fetcher = useFetcher();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-  let formRef = useRef();
   const timerRef = useRef(0);
 
   const dataFetcher = (url) => fetch(url).then(res => res.json());
   const { data: userMessages, error, isLoading, isValidating } = useSWR('http://localhost:3000/dealer/staff/getConvos', dataFetcher, { refreshInterval: 15000 })
 
+  let formRef = useRef();
+
+  useEffect(() => {
+    if (!isSubmitting) {
+      formRef.current?.reset()
+    }
+  }, [isSubmitting]);
 
   useEffect(() => {
     if (Array.isArray(userMessages)) {
@@ -254,8 +261,7 @@ export default function StaffChat() {
         </div>
       </CardContent>
       <CardFooter className="flex flex-row items-center border-t rounded-lg border-[#27272a] bg-[#18181a] px-6 py-3">
-        <fetcher.Form
-          ref={formRef}
+        <fetcher.Form replace ref={formRef}
           method="post"
           className="flex w-full items-center space-x-2"
         >
@@ -302,17 +308,29 @@ export async function loader({ request, params }) {
   const user = await GetUser(email);
   const conversationsList = await prisma.staffChat.findMany();
   console.log(user);
-  const interruptionsData = await prisma.interruptions.findMany();
+  // const interruptionsData = await prisma.interruptions.findMany();
 
-  return json({ user, conversationsList, interruptionsData });
+  return json({ user, conversationsList });
 }
+
 
 export async function action({ request }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData());
   const formData = financeFormSchema.parse(formPayload);
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email");
+  if (formData.intent === 'sendMessage') {
+    const saveMessage = await prisma.staffChat.create({
+      data: {
+        body: formData.body,
+        userEmail: formData.userEmail,
+        username: formData.username,
+        dept: formData.dept,
+      },
+    })
+    return saveMessage;
 
+  }
+  return null
 
-  return saveMessage;
 }

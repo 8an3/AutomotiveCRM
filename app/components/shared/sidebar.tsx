@@ -558,7 +558,7 @@ export const salesNavSidebarNav = [
   },
   {
     title: "Dashboard",
-    to: "/dealer/leads/sales",
+    to: "/dealer/leads/sales/dashboard",
   },
   {
     title: "Calendar",

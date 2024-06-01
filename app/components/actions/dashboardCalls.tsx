@@ -43,7 +43,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
   //const customerId = finance?.id;
   const financeNotes = await prisma.financeNote.findMany({ orderBy: { createdAt: "desc" }, });
-  //const searchData = prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
+  const searchData = prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
   const webLeadData = await prisma.finance.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: user?.email } });
   // const financeData2 = await prisma.finance.findMany({ where: { id: dashData2.financeId }, });
   const conversations = await prisma.previousComms.findMany({ orderBy: { createdAt: "desc" }, });

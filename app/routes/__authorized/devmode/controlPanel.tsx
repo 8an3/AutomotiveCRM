@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { Target } from 'lucide-react';
 import { todoRoadmap } from '../dealer/user/dashboard.roadmap';
+import { useState } from 'react';
 
 
 // NEED PRO VERCEL ACCOPUNT FOR THIS TO WORK NOT TESTED YET BUT DOCS SUGGEST YOU CANNOT USE UR PERSONAL HOBBY ACCOUNT
@@ -386,6 +387,8 @@ export default function DashboardPage() {
   const fetcher = useFetcher()
   const isSubmitting = navigation.state === "submitting";
   const organizedTasks = {};
+  const [selectedDealer, setSelectedDealer] = useState()
+
   todoRoadmap.forEach((item) => {
     if (!organizedTasks[item.type]) {
       organizedTasks[item.type] = [];
@@ -396,6 +399,7 @@ export default function DashboardPage() {
   const devRoadMap = [
     { type: "Dev", desc: "cant do till we have access to a phone - SMS needs to be retested, need access to twilio account which needes 2fa that is tied to your phone" },
     { type: "Dev", desc: "Notification system needs to show email and sms notifications" },
+    { type: "Dev", desc: "in quote loader there is updateReadStatus() instead of it being triggered here this should be converted to an automation" },
     { type: "Dev", desc: "Docs" },
     { type: "Dev", desc: "automation" },
     { type: "Dev", desc: "Dealer Onboarding" },
@@ -417,6 +421,26 @@ export default function DashboardPage() {
   });
 
 
+  const dealerList = [
+    {
+      id: "1",
+      dealerName: "Motorcycle World",
+      dealerAddress: "1234 st",
+      dealerCity: "motocity",
+      dealerProv: "ON",
+      dealerPostal: "k1k1k1",
+      dealerPhone: "6136136134",
+      dealerContact: "Mr moto",
+      dealerEmail: "moto@moto.com",
+      adminContact: "mr Admin",
+      dealerEmailAdmin: "admin@moto.com",
+      vercel: "verceladdress.com",
+      github: "githubaddress.com",
+      database: 'databaseurl',
+      sentWelcomeEmail: "no",
+    }
+  ]
+
   return (
     <>
       <div className="hidden flex-col md:flex text-[#fafafa]">
@@ -427,9 +451,8 @@ export default function DashboardPage() {
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="new">new</TabsTrigger>
               <TabsTrigger value="tests">Tests</TabsTrigger>
-              <TabsTrigger value="analytics" disabled>
+              <TabsTrigger value="Dealers"  >
                 Dealers
               </TabsTrigger>
               <TabsTrigger value="reports" disabled>
@@ -715,6 +738,361 @@ export default function DashboardPage() {
                 </Card>
               </div>
             </TabsContent>
+            <TabsContent value="Dealers" className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card className='border border-[#27272a] text-[#fafafa]'>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Github Setup?
+                    </CardTitle>
+
+                  </CardHeader>
+                  <CardContent>
+
+                    <p className="text-xs text-muted-foreground">
+                      {selectedDealer && (
+                        <p>
+                          {selectedDealer.github}
+                        </p>
+                      )}
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className='border border-[#27272a] text-[#fafafa]'>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Vercel Setup?
+                    </CardTitle>
+
+                  </CardHeader>
+                  <CardContent>
+
+                    <p className="text-xs text-muted-foreground">
+                      {selectedDealer && (
+                        <p>
+                          {selectedDealer.vercel}
+                        </p>
+                      )}
+                    </p>
+
+                  </CardContent>
+                </Card>
+                <Card className='border border-[#27272a] text-[#fafafa]'>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Database Setup?
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+
+                    <p className="text-xs text-muted-foreground">
+                      {selectedDealer && (
+                        <p>
+                          {selectedDealer.database}
+                        </p>
+                      )}
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className='border border-[#27272a] text-[#fafafa]'>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Initial email sent to dealer principal?
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+
+                    <p className="text-xs text-muted-foreground">
+                      {selectedDealer && selectedDealer.sentWelcomeEmail === 'no' ? (
+                        <Form method='post' className="space-y-4">
+                          <ButtonLoading
+                            size="sm"
+                            value='sendInitialEmail'
+                            className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-[#fafafa] border border-[#27272a]"
+                            name="intent"
+                            type="submit"
+                            isSubmitting={isSubmitting}
+                            onClick={() => toast.success(`Dealer saved!`)}
+                            loadingText="Saved dealer details..."
+                          >
+                            Save
+                          </ButtonLoading>
+                        </Form>
+                      ) : (
+                        <img
+                          loading="lazy"
+                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
+                          className=" w-4 "
+                          alt="Logo"
+                        />
+                      )}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                <Card className="col-span-2 border border-[#27272a] ">
+                  <CardHeader>
+                    <CardTitle className='text-[#fafafa]'>Dealers</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pl-2">
+                    <div className=' h-auto max-h-[60vh] overflow-y-scroll'>
+
+                      {dealerList.map((dealer) => (
+                        <Button type='submit' variant='ghost' className='text-left mb-4'
+                          onClick={() => {
+                            setSelectedDealer(dealer)
+                          }}>
+                          <input type='hidden' name='id' value={dealer.id} />
+                          <div className="cursor-pointer hover:bg-[#232324] rounded-md">
+                            <ul className="grid gap-3 text-sm mt-2">
+                              <li className="grid grid-cols-1 items-center">
+                                <span>{dealer.dealerName}</span>
+                                <span className="text-[#909098] text-xs">{dealer.dealerPhone}</span>
+                                <span className="text-[#909098] text-xs">
+                                  {dealer.dealerEmail}
+                                </span>
+                              </li>
+                            </ul>
+                          </div>
+                        </Button>
+                      ))}
+                    </div>
+
+                  </CardContent>
+                </Card>
+                <Card className="col-span-2 border border-[#27272a] text-[#fafafa]">
+                  <CardHeader>
+                    <CardTitle>Dealer Details</CardTitle>
+                    <CardDescription>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {selectedDealer && (
+                      <div className="space-y-6">
+                        <Separator />
+                        <div className="mx-auto">
+                          <Form method='post' className="space-y-4">
+                            <div className="grid gap-3 mx-3 mb-3">
+                              <div className="relative ">
+                                <Input
+                                  name='dealerName'
+                                  defaultValue={selectedDealer.dealerName}
+
+                                  type="text"
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='dealerPhone'
+                                  defaultValue={selectedDealer.dealerPhone}
+
+                                  type="text"
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='dealerAddress'
+                                  type="text"
+                                  defaultValue={selectedDealer.dealerAddress}
+
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='dealerCity'
+                                  type="text"
+                                  defaultValue={selectedDealer.dealerCity}
+
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='dealerProvince'
+                                  defaultValue={selectedDealer.dealerProv}
+
+                                  type="text"
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='dealerPostal'
+                                  type="text"
+                                  defaultValue={selectedDealer.dealerPostal}
+
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='dealerContact'
+                                  type="text"
+                                  defaultValue={selectedDealer.dealerContact}
+
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='dealerEmail'
+                                  type="text"
+                                  defaultValue={selectedDealer.dealerEmail}
+
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Email</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='adminContact'
+                                  type="text"
+                                  defaultValue={selectedDealer.adminContact}
+
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Contact</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='dealerEmailAdmin'
+                                  type="text"
+                                  defaultValue={selectedDealer.dealerEmailAdmin}
+
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
+                              </div>
+
+                              <div className="relative mt-3">
+                                <Input
+                                  name='vercel'
+                                  defaultValue={selectedDealer.vercel}
+
+                                  type="text"
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Vercel Domain</label>
+                              </div>
+
+                              <div className="relative mt-3">
+                                <Input
+                                  name='github'
+                                  defaultValue={selectedDealer.github}
+                                  type="text"
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Github Domain</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='github'
+                                  defaultValue={selectedDealer.database}
+                                  type="text"
+                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Database URL</label>
+                              </div>
+                            </div>
+                            <div className='grid grid-cols-2 justify-between' >
+                              <div></div>
+                              <ButtonLoading
+                                size="sm"
+                                value='createDealer'
+                                className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-[#fafafa] border border-[#27272a]"
+                                name="intent"
+                                type="submit"
+                                isSubmitting={isSubmitting}
+                                onClick={() => toast.success(`Dealer saved!`)}
+                                loadingText="Saved dealer details..."
+                              >
+                                Save
+                              </ButtonLoading>
+                            </div>
+
+                          </Form>
+                        </div>
+                      </div>
+                    )}
+
+                  </CardContent>
+                </Card>
+                <Card className="col-span-3 border border-[#27272a] text-[#fafafa]">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium flex">
+                      Running proccesses
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="grid gap-3 text-sm mt-2">
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#909098]">
+                          Vercel running?
+                        </span>
+                        <span>
+                          <img
+                            loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
+                            className=" w-4 "
+                            alt="Logo"
+                          />
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#909098]">
+                          Github issues?
+                        </span>
+                        <span>
+                          <img
+                            loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
+                            className=" w-4 "
+                            alt="Logo"
+                          />
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#909098]">
+                          Database issues?
+                        </span>
+                        <span>
+                          <img
+                            loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
+                            className=" w-4 "
+                            alt="Logo"
+                          />
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#909098]">
+                          Payments up to date?
+                        </span>
+                        <span>
+                          <img
+                            loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
+                            className=" w-4 "
+                            alt="Logo"
+                          />
+                        </span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
             <TabsContent value="tests" className="space-y-4">
               <Card className="w-[350px]">
                 <CardHeader>
@@ -750,9 +1128,9 @@ export default function DashboardPage() {
 
               </Card>
             </TabsContent>
-          </Tabs>
-        </div>
-      </div>
+          </Tabs >
+        </div >
+      </div >
     </>
   )
 }
