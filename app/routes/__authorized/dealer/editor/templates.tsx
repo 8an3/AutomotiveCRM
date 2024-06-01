@@ -27,7 +27,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/ui/accordion";
-import { Textarea } from "~/other/textarea";
+import { TextArea } from "~/components/ui/textarea";
 import { ClientOnly } from "remix-utils";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import {

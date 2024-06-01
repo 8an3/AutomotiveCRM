@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Form, Link, useActionData, useFetcher, useLoaderData, useSubmit, useTransition, useParams, useLocation } from "@remix-run/react";
 import { RemixNavLink, Input, Separator, Button, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, TextArea, Label, } from "~/components";
 import * as Toolbar from "@radix-ui/react-toolbar";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/other/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { getAllFinanceApts, getAllFinanceApts2, getFinanceAppts } from '~/utils/financeAppts/get.server';

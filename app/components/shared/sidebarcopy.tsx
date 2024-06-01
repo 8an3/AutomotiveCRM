@@ -5,11 +5,11 @@ import { Form, Link, useLoaderData, useLocation, useFetcher } from '@remix-run/r
 import { RemixNavLink, Input, Separator, Button, buttonVariants, Tabs, TabsContent, TabsList, TabsTrigger } from "~/components"
 import { TextArea, } from "~/components/ui"
 import { rootAction, useUserLoader } from './actions';
-import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "~/other/sheet"
+import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "~/components/ui/sheet"
 import { getUserIsAllowed } from "~/helpers";
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Tabs from '@radix-ui/react-tabs';
-import { Textarea } from '~/other/textarea';
+import { Textarea } from '~/components/ui/textarea';
 import { toast } from 'sonner';
 import { Menu } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';

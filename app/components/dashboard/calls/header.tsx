@@ -8,7 +8,7 @@ import { type Column } from "@tanstack/react-table"
 import Filter from "./Filter";
 import { Flex, Text, TextArea, TextField, Heading } from '@radix-ui/themes';
 
-import { cn } from "~/other/utils"
+import { cn } from "~/components/ui/utils"
 import { Button } from "~/components/ui/button"
 import {
   DropdownMenu,

@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "~/components/ui/select"
 
-import { ScrollArea } from "~/other/scrollarea"
+import { ScrollArea } from "~/components/ui/scroll-area"
 import React, { useState } from "react";
 import { Form, useLoaderData, useSubmit } from '@remix-run/react'
 import MesasageContent from "./messageContent";
@@ -51,7 +51,7 @@ const CompleteCall = ({ data, contactMethod }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className='mx-auto'>
+        <div className='mx-auto cursor-pointer'>
           <ClipboardCheck className='mx-auto  text-[#fafafa] items-center justify-center hover:text-[#02a9ff] target:text-[#02a9ff]' />
         </div>
       </DialogTrigger>

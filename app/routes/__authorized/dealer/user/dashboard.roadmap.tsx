@@ -27,21 +27,22 @@ export const metadata = {
 export const todoRoadmap = [
   // ----------------------------------------------------------DONE NEEDS TESTING---------------------------------------
   { type: "done needs testing", desc: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
-  { type: "done needs testing", desc: "API file upload will be released once google approves gmail as its still in the process right now - done needs testing" },
   { type: "done needs testing", desc: "webhook for incoming emails, save notifiation and messeages" },
   { type: "done needs testing", desc: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
   // -----------------------------------------------------------WIP-----------------------------------------------------
   { type: "WIP", desc: "have your own csi reporting for the dealer that can be sent to customers" },
   { type: "WIP", desc: "finish automation dash - wip" },
   { type: "WIP", desc: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
+  { type: "WIP", desc: "Finance Dashboard" },
   { type: "WIP", desc: "mass email/sms - wip" },
+  { type: "WIP", desc: "manager Dashboard" },
+  { type: "WIP", desc: "Dept Leaderboards" },
   { type: "WIP", desc: "sales manager dash" },
   { type: "WIP", desc: "dev control panel needs to send email to new dealers with sign in info" },
   { type: "WIP", desc: "https://developers.klaviyo.com/en/reference/get_campaigns" },
   // ---------------------------------------------------------ISSUE-----------------------------------------------------
-  { type: "issue", desc: "notifications" },
   { type: "issue", desc: "overview emails" },
-  { type: "issue", desc: "export in managers section" },
+  { type: "issue", desc: "export in managers section - export csv files of customers, inventory etc" },
   // -----------------------------------------------------OWNER---------------------------------------------------------
   { type: "owner", desc: "Owners dashboard" },
   { type: "owner", desc: "Owner Section" },
@@ -50,12 +51,9 @@ export const todoRoadmap = [
   { type: "docs", desc: "Videos for docs" },
   // -----------------------------------------------------DOCS----------------------------------------------------------
   // -----------------------------------------------------DEALER--------------------------------------------------------
-  { type: "dealer", desc: "Dept Leaderboards" },
   // -----------------------------------------------------DEALER--------------------------------------------------------
   // -----------------------------------------------------------SALES---------------------------------------------------
-  { type: "sales", desc: "Demo Day Dashboard" },
   { type: "sales", desc: "Call center Section" },
-  { type: "sales", desc: "Finance Dashboard" },
   { type: "sales", desc: "Trade in pricing from the kelley blue book integrated right into our quoting system." },
   { type: "sales", desc: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
   { type: "sales", desc: "sales bot 2 - customer onboarding" },
@@ -73,7 +71,7 @@ export const todoRoadmap = [
   { type: "service", desc: "tech dash" },
   // ---------------------------------------------------------------SERVICE---------------------------------------------
   // --------------------------------------------------------------QUOTE------------------------------------------------
-  { type: "quote", desc: "set up parts pages - started - Manitou done - switch started" },
+  { type: "quote", desc: "set up more parts pages - started - Manitou done - switch started" },
   // ---------------------------------------------------------------QUOTE-----------------------------------------------
   // -------------------------------------------------------------PARTS-------------------------------------------------
   { type: "parts", desc: "parts dash" },
@@ -85,12 +83,9 @@ export const todoRoadmap = [
   // ----------------------------------------------------------accessories----------------------------------------------
   // -----------------------------------------------------------MANAGER-------------------------------------------------
   { type: "manager", desc: "cross platform ad manager, post it once here and push it to different providors" },
-  { type: "manager", desc: "manager Dashboard" },
   // ----------------------------------------------------------MANAGER--------------------------------------------------
   // ---------------------------------------------------------ADMIN-----------------------------------------------------
-  { type: "admin", desc: "export customers" },
-  { type: "admin", desc: "export parts" },
-  { type: "admin", desc: "export acc" },
+
   { type: "admin", desc: "employee onboarding" },
   { type: "admin", desc: "have it populate api keys so managers can hand them out" },
   // ----------------------------------------------------------ADMIN----------------------------------------------------
@@ -121,6 +116,10 @@ export const todoRoadmap = [
   { type: 'paid feature - ai', desc: 'vercel has a nice write up on this to do in their platform - ai - wip - https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts' },
   { type: "paid feature - ai", desc: "Ai assistant to book apointments, complete and etc like gowrench or just a work flow to customers to guide themselves" },
   // ----------------------------------PAID FEATURE---------------------------------------------------------------------
+  // ----------------------------------IDEAS---------------------------------------------------------------------
+  { type: "ideas", desc: "saveform to local storage, never loose data for a internet hiccup or outage" },
+
+  // ----------------------------------IDEAS---------------------------------------------------------------------
 
 
 ];
@@ -128,13 +127,15 @@ export const todoRoadmap = [
 const DoneRoadMap = [
   { type: "issue", desc: "add ping system for notes - COMPLETED BUT NEEDS TESTING" },
   { type: "issue", desc: "need to change how to load overview,   by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
-  { type: "google", desc: "utilize other services from google, notes, to-do, sms, voice chat, call recording, video calling, teaam chat?, tasks and plans,  " },
+  { type: "google", desc: "utilize other services from google, notes, to-do, sms, voice chat, call recording, video calling, teaam chat?, tasks and plans,  " }, { type: "done needs testing", desc: "API file upload will be released once google approves gmail as its still in the process right now - done needs testing" },
   { type: 'google', desc: 'has a push notiications for new incoming emails' },
   { type: "dealer onboarding", desc: "initial data can be put into seed file filed out by dealer" },
   { type: "done needs testing", desc: "roles based access - done needs testing" },
-  { type: "NTBC", desc: "API Docs" },
+  { type: "NTBC", desc: "API Docs" }, { type: "issue", desc: "notifications" },
+  { type: "sales", desc: "Demo Day Dashboard" },
   { type: "quote", desc: "Save form to LOCAL STORASGE(CHECK REMIX SITE FOR SOLUTIONp) incase something happens to connection or if they srep awway from their computer that way whenever you come back the form is filled out the way you left it" }, { type: "admin", desc: "import customers" },
-  { type: "admin", desc: "import parts" },
+  { type: "admin", desc: "import parts" }, { type: "admin", desc: "export parts" },
+  { type: "admin", desc: "export acc" },
   { type: "dealer onboarding", desc: "new sales page with upgrades" },
   { type: "admin", desc: "import acc" },
   { type: "dealer onboarding", desc: "docs videos" },

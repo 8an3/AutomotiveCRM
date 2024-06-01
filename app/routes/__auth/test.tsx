@@ -16,14 +16,7 @@ import {
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { useEffect } from "react";
 import { prisma } from "~/libs";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-} from 'recoil';
-import { currentSession } from "~/components/shared/atoms";
+
 import { authenticator } from "~/services";
 
 

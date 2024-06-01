@@ -11,7 +11,7 @@ import ContactInfoDisplay from '~/overviewUtils/contactInfoDisplay'
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Input, Button, Checkbox } from "~/components/ui/index"
 import * as Toast from '@radix-ui/react-toast';
-import { Badge } from '~/other/badge'
+import { Badge } from '~/components/ui/badge'
 import { type DataFunctionArgs, type V2_MetaFunction, type ActionFunction, json, redirect, type ActionArgs } from '@remix-run/node'
 import { commitSession, getSession, commitSession as commitPref, getSession as getPref } from '~/utils/pref.server'
   ;

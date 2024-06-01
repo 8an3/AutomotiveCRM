@@ -392,13 +392,37 @@ export default function DashboardPage() {
     }
     organizedTasks[item.type].push(item);
   });
+
+  const devRoadMap = [
+    { type: "Dev", desc: "cant do till we have access to a phone - SMS needs to be retested, need access to twilio account which needes 2fa that is tied to your phone" },
+    { type: "Dev", desc: "Notification system needs to show email and sms notifications" },
+    { type: "Dev", desc: "Docs" },
+    { type: "Dev", desc: "automation" },
+    { type: "Dev", desc: "Dealer Onboarding" },
+    { type: "Dev", desc: "file upload in customer file - done " },
+    { type: "Dev", desc: "emails in overview" },
+    { type: "Dev", desc: "employee onboarding" },
+    { type: "Dev", desc: "new hooks when upgrading platform" },
+    { type: "Dev", desc: "sales manager dash" },
+    { type: "Dev", desc: "need a way for when a new employee uses the dashboard they acquire a new number from twilio" },
+    { type: "Dev", desc: "some sort of email webhook whether we use swr or a microsoft api so create notifications of new emails" },
+  ];
+
+  const devTasks = {};
+  devRoadMap.forEach((item) => {
+    if (!devTasks[item.type]) {
+      devTasks[item.type] = [];
+    }
+    devTasks[item.type].push(item);
+  });
+
+
   return (
     <>
       <div className="hidden flex-col md:flex text-[#fafafa]">
         <div className="flex-1 space-y-4 p-8 pt-6mt-3 ">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-
           </div>
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
@@ -642,13 +666,25 @@ export default function DashboardPage() {
                 </Card>
                 <Card className="col-span-2 border border-[#27272a] text-[#fafafa]">
                   <CardHeader>
-                    <CardTitle>Recent Sales</CardTitle>
+                    <CardTitle>Dev Eyes Only To-do List</CardTitle>
                     <CardDescription>
-                      You made 265 sales this month.
+                      What needs to get dont in order for this to be useable
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p>RecentSales </p>
+                    <div className=' h-auto max-h-[60vh] overflow-y-scroll'>
+                      {Object.entries(devTasks).map(([type, tasks]) => (
+                        <div key={type}>
+                          {tasks.map((task) => (
+                            <div key={task.desc} className="ml-3 p-3 mr-3 flex items-center  mt-3 shadow-md border border-[#27272a] text-[#fafafa]  rounded ">
+                              <p color="my-3  ">
+                                {task.desc}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="col-span-3 border border-[#27272a] text-[#fafafa]">
@@ -660,13 +696,13 @@ export default function DashboardPage() {
 
                   </CardHeader>
                   <CardContent>
-                    <div className=' h-auto max-h-[55vh] overflow-y-scroll'>
+                    <div className=' h-auto max-h-[65vh] overflow-y-scroll'>
                       {Object.entries(organizedTasks).map(([type, tasks]) => (
                         <div key={type}>
                           <h4 className='mt-3 ml-3 text-picton-blue-50'>{type}</h4>
                           <Separator />
                           {tasks.map((task) => (
-                            <div key={task.desc} className="ml-3 p-3 flex items-center  mt-3 shadow-md  bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff]  text-md uppercase  rounded  hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                            <div key={task.desc} className="ml-3 p-3 mr-3 flex items-center  mt-3 shadow-md border border-[#27272a] text-[#fafafa]  rounded ">
                               <p color="my-3  ">
                                 {task.desc}
                               </p>

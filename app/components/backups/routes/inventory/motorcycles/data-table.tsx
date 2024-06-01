@@ -2,11 +2,11 @@
 import { Button, Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, } from "~/components/ui/index";
 import React, { useMemo, useEffect, useState, useRef } from "react";
 
-import { ScrollArea } from "~/other/scrollarea";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, type SortingState, getSortedRowModel, sortingFns, SortingFn, FilterFns, FilterFn, type VisibilityState, getFilteredRowModel, type ColumnFiltersState, } from "@tanstack/react-table";
 import { DataTablePagination } from "./dashboard/calls/pagination";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/other/table";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/other/dropdown-menu";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu";
 import { Form, Link, useFetcher, useLoaderData, useTransition, } from "@remix-run/react";
 import AddCustomer from "./dashboard/calls/addCustomer";
 import Filter from "./dashboard/calls/Filter";

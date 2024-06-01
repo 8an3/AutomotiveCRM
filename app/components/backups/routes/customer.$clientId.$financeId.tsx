@@ -9,7 +9,7 @@ import { getDataKawasaki, getFinanceWithDashboard, getLatestBMWOptions, getLates
 import { getAllFinanceNotes } from '~/utils/financeNote/get.server';
 import { getAllFinanceApts, getAllFinanceApts2 } from "~/utils/financeAppts/get.server";
 import { getDocsbyUserId } from "~/utils/docTemplates/get.server";
-import { Badge } from "~/other/badge";
+import { Badge } from "~/components/ui/badge";
 import { getAppointmentsForFinance } from "~/utils/client/getClientAptsForFile.server";
 import { Topsection } from "~/components/dashboardCustId/topSection";
 import { ClientTab } from "~/components/dashboardCustId/clientTab";

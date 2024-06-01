@@ -4,7 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Link, Form, useLoadercurrentEvent, useSubmit, useFetcher, useActionData } from '@remix-run/react'
 import { Flex, Text, Heading, Container, Box, Grid } from '@radix-ui/themes';
 import Calendar from 'react-calendar';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "~/other/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "~/components/ui/select"
 import { ClipboardCheck, MenuScale, Mail, MessageText, User, ArrowDown, Calendar as CalendarIcon, WebWindowClose } from "iconoir-react";
 import { Input, Button, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, TextArea, Label } from '~/components/ui/index'
 import React, { type SetStateAction, type MouseEvent, type Dispatch, useState, useRef, useEffect } from "react"

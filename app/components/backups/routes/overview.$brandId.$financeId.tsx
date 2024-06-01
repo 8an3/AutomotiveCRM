@@ -3,7 +3,7 @@
 import { useFetcher, useLoaderData, useParams, } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { Overview } from './_authorized.overview.$brandId'
-import AccordionDemo from '~/other/AccordionDemo';
+import AccordionDemo from '~/components/ui/AccordionDemo';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "../other/accordion"
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 

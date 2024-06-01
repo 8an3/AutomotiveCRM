@@ -126,7 +126,7 @@ export async function action({ request, params }: ActionFunction) {
         read: 'true'
       }
     });
-    const location = `/dealer/customer/${formData.clientfileId}/${formData.financeId}`
+    const location = `/dealer/leads/sales`
     return redirect(location);
   }
 

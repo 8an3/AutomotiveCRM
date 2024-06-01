@@ -8,7 +8,6 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "sass:build": "sass app/styles/sass/sass",
     "build": "remix build",
     "dev": "remix dev",
     "typecheck": "tsc",
@@ -35,7 +34,7 @@
     "fix:prisma": "prisma format && prisma validate",
     "debug:eslint": "DEBUG=eslint:cli-engine nr check:lint",
     "reveal": "remix reveal",
-    "clean": "rm -rf build public/build",
+    "clean": "rm -rf build public/build && rm -rf .cache && rm -rf api",
     "build:ci": "prisma db push && remix build",
     "prebuild": "prisma generate",
     "postinstall": "prisma generate"

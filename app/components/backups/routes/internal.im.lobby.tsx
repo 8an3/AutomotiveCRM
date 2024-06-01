@@ -8,7 +8,7 @@ import { getSession } from '~/sessions/auth-session.server'
 import { model } from "../models";
 import { prisma } from "~/libs";
 import { XCircle } from "lucide-react";
-import { Textarea } from "~/other/textarea";
+import { Textarea } from "~/components/ui/textarea";
 import { Input } from "~/components/ui/input";
 import EventEmitter from "events";
 import useSWR from 'swr';

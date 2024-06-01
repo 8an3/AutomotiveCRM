@@ -5,8 +5,8 @@ import { Form, Link, useLoaderData, } from '@remix-run/react';
 import { RemixNavLink, Input, Separator, Button } from "~/components"
 import { rootAction, useUserLoader } from './actions';
 import { formatRelativeTime } from '~/utils';
-import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "~/other/sheet"
-import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/other/tabs"
+import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "~/components/ui/sheet"
+import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/components/ui/tabs"
 import { DashboardSpeed, LogOut, Dashboard, Settings, User, AddDatabaseScript, MailIn, InputField, MoneySquare, Map } from "iconoir-react";
 import { Components, Keyboard, Users } from "~/icons";
 import { getUserIsAllowed } from "~/helpers";

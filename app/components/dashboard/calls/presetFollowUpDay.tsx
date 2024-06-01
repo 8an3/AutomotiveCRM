@@ -1,6 +1,6 @@
 import { Input, Button, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuItem, } from '~/components/ui/index'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, } from "~/other/sheet"
-import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/other/tabs"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, } from "~/components/ui/sheet"
+import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/components/ui/tabs"
 import { PhoneOutcome, MenuScale, MailOut, MessageText, User, ArrowDown } from "iconoir-react";
 import { Form, useFetcher, useSubmit } from '@remix-run/react';
 import PropTypes from 'prop-types'

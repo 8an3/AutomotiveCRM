@@ -17,7 +17,7 @@ import { Dialog as Dialog1, DialogContent, DialogDescription, DialogFooter, Dial
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
 import { MessageAlert, SendMail, Mail, Message, User, BinHalf, Calendar as CalendarIcon, Telegram, Trash, MessageText } from "iconoir-react";
 import OpenAI from "openai";
-import { Textarea } from "~/other/textarea";
+import { Textarea } from "~/components/ui/textarea";
 import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
 import { google } from 'googleapis';
 import Sidebar from "~/components/shared/sidebar";

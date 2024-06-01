@@ -1,6 +1,6 @@
 /* eslint-disable tailwindcss/classnames-order */
 import { Form, Outlet, useFetcher, useLoaderData, useParams, useSubmit, Link, useNavigate, } from "@remix-run/react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/other/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card";
 import { type LoaderFunction, type DataFunctionArgs, redirect, type V2_MetaFunction, type ActionFunction, json, LinksFunction, } from '@remix-run/node'
 import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { getAllFinanceNotes } from '~/utils/financeNote/get.server';

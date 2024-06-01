@@ -1,9 +1,7 @@
 import React, { HTMLAttributes, HTMLProps, useState, useEffect, Suspense, } from 'react'
-import ReactDOM from 'react-dom/client'
 import { Await, Form, Link, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
 import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, } from "~/components/ui/index";
 import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
-
 import { getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns } from "@tanstack/react-table";
 import type {
     Table, Column, SortingFn, ColumnDef, ColumnFiltersState, SortingState, VisibilityState, FilterFn, ExpandedState, FilterFns,
@@ -924,11 +922,9 @@ export function WebleadsTable() {
         console.log(selectedRowData, selectedRowId, row, 'row')
     };
     const userEmail = user?.email;
-    const [brandId, setBrandId] = useState('');
+    //    const [brandId, setBrandId] = useState('');
 
-    const handleBrand = (e) => {
-        setBrandId(e.target.value);
-    };
+    // const handleBrand = (e) => {        setBrandId(e.target.value);    };
 
     const [brandId, setBrandId] = useState('');
     const [modelList, setModelList] = useState();
@@ -1047,12 +1043,12 @@ export function WebleadsTable() {
                     </div>
                 </>
             ) : (
-                <Card className="w-[350px] border-[#27272a] text-[#fafafa]">
+                <Card className="w-[450px] mx-auto border-[#27272a] text-[#fafafa] bg-[#09090b]">
                     <Form method="post" >
 
                         <CardHeader>
-                            <CardTitle>Create project</CardTitle>
-                            <CardDescription>Deploy your new project in one-click.</CardDescription>
+                            <CardTitle>New lead</CardTitle>
+                            <CardDescription> </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-3 mx-3 mb-3">
@@ -1105,7 +1101,6 @@ export function WebleadsTable() {
                                     <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Client Notes</label>
                                 </div>
                                 <div className="relative mt-5">
-
                                     <Select name='typeOfContact'                                                >
                                         <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
                                             <SelectValue defaultValue={data.typeOfContact} />
@@ -1124,9 +1119,7 @@ export function WebleadsTable() {
                                 </div>
                                 <div className="relative mt-3">
                                     <Input
-                                        className={`input border-[#27272a] bg-[#09090b]
-
-                     `}
+                                        className={`input border-[#27272a] bg-[#09090b]  `}
                                         onChange={(e) => handleChange('firstName', e.target.value)}
                                         type="text"
                                         list="ListOptions1"
@@ -1176,26 +1169,26 @@ export function WebleadsTable() {
                                 defaultValue={user?.email}
                                 name="userEmail"
                             />
-                            <h1 className=' text-black mt-3' >
+                            <h1 className='   mt-3' >
                                 Contact Customer
                             </h1>
-                            <hr className=' max-w-sm  text-black' />
-                            <div className='gap-3 my-2 grid grid-cols-3 max-w-sm '>
+                            <hr className=' max-w-sm   ' />
+                            <div className='gap-3 my-2 grid grid-cols-3 max-w-sm mx-auto justify-center '>
                                 <LogCall data={data} />
-                                {/* <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
-                            <Logtext data={data} />*/}
+                                <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
+                                <Logtext data={data} />
                             </div>
-                            <h1 className=' text-black mt-3' >
+                            <h1 className='   mt-3' >
                                 Quick Follow-up
                             </h1>
-                            <hr className=' max-w-sm  text-black' />
+                            <hr className=' max-w-sm   ' />
                             <div className='mr-auto mt-3'>
                                 <TwoDaysFromNow data={data} isSubmitting={isSubmitting} />
                             </div>
-                            <h1 className=' text-black mt-3' >
+                            <h1 className='   mt-3' >
                                 In-depth Follow-up
                             </h1>
-                            <hr className=' max-w-sm  text-black' />
+                            <hr className=' max-w-sm   ' />
                             <div className='mr-auto mt-3'>
                                 <CompleteCall data={data} contactMethod={contactMethod} />
                             </div>

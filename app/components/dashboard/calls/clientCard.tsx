@@ -3,11 +3,11 @@ import { Input, Separator, Button, Select, SelectValue, SelectTrigger, SelectCon
 import Calendar from 'react-calendar';
 import React, { useState, useEffect } from "react";
 import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigation } from '@remix-run/react'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "~/other/accordion"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
 import { toast } from "sonner"
 import { ClientDetailsFunction } from "~/components/lists/clientDetails";
 import { ClientResultFunction, ClientStateFunction } from '~/components/lists/clientResultList';
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "~/other/sheet"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "~/components/ui/sheet"
 import MesasageContent from "./messageContent";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { testLeademail, testLeadPhone } from '~/routes/__authorized/dealer/api/activix';

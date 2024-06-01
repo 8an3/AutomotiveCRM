@@ -4,7 +4,7 @@ import FinanceNotes from "~/components/dashboard/customer/financeNotes";
 import * as Tabs from '@radix-ui/react-tabs'
 import { RemixNavLink, Input, Separator, Button, TextArea, Label, } from "~/components";
 import * as Toolbar from "@radix-ui/react-toolbar";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/other/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card";
 import { commitSession as commitPref, getSession as getPref } from '~/utils/pref.server';
 import ClientComs from "~/components/dashboard/customer/clientComs";
 import { getMergedFinanceOnFinance } from "~/utils/dashloader/dashloader.server";

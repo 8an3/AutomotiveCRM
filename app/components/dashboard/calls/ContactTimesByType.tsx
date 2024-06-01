@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PrismaClient } from "@prisma/client";
 import { PhoneOutcome, MenuScale, MailOut, MessageText, User, ArrowDown } from "iconoir-react";
-import { Badge } from '~/other/badge';
+import { Badge } from '~/components/ui/badge';
 
 
 const ContactTimesByType = ({ data }) => {

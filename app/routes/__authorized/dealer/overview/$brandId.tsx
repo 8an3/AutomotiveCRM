@@ -15,7 +15,7 @@ import ContactInfoDisplay from '~/overviewUtils/contactInfoDisplay'
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Input, Button, Checkbox, ButtonLoading } from "~/components/ui/index"
 import { quotebrandIdActionLoader } from '~/components/actions/quote$brandIdAL'
-import { Badge } from '~/other/badge'
+import { Badge } from '~/components/ui/badge'
 import { Theme, ThemePanel } from '@radix-ui/themes';
 import { toast } from "sonner"
 

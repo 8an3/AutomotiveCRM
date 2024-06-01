@@ -9,10 +9,10 @@ import {
   AccordionTrigger,
 } from "~/components"
 import { TextArea, } from "~/components/ui"
-import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "~/other/sheet"
+import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "~/components/ui/sheet"
 import { getUserIsAllowed } from "~/helpers";
 import * as Dialog from '@radix-ui/react-dialog';
-import { Textarea } from '~/other/textarea';
+import { Textarea } from '~/components/ui/textarea';
 import { toast } from 'sonner';
 import { Menu } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';

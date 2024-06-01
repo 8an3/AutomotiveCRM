@@ -6,9 +6,9 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import * as Toast from '@radix-ui/react-toast';
 import { RemixNavLink, Input, Separator, Button, TextArea, Label, } from "~/components";
 
-import { DropdownMenu as DownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/other/dropdown-menu";
+import { DropdownMenu as DownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu";
 
-import { Badge } from "~/other/badge";
+import { Badge } from "~/components/ui/badge";
 import { ClientServiceFunction } from "../lists/clientServiceList";
 import { Calendar } from "react-calendar";
 

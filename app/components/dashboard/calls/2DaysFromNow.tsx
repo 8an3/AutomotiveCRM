@@ -57,16 +57,12 @@ export default function TwoDaysFromNow({ data }) {
     return (
         <div className="justify-center  items-center mx-auto my-auto ">
             <Form method='post'>
-                <div className="flex ">
-
-
-
-
+                <div className="flex justify-between">
                     <Select name='followUpDay1' onValueChange={handleDropdownChange}>
-                        <SelectTrigger className="w-auto focus:border-[#60b9fd] text-[#fafafa] border border-slate1 font-bold uppercase">
+                        <SelectTrigger className="w-auto border-[#27272a] text-[#fafafa] bg-[#09090b] font-bold uppercase">
                             <SelectValue placeholder="Days" />
                         </SelectTrigger>
-                        <SelectContent className='bg-slate1'>
+                        <SelectContent className='border-[#27272a] text-[#fafafa] bg-[#09090b]'>
                             <SelectItem value="1">1 Day</SelectItem>
                             <SelectItem value="2">2 Days</SelectItem>
                             <SelectItem value="3">3 Days</SelectItem>

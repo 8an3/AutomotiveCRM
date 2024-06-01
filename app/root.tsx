@@ -9,7 +9,7 @@ import { cn, createCacheHeaders, createMetaData, getEnv } from "~/utils";
 import type { HeadersFunction, LinksFunction, LoaderArgs, V2_MetaDescriptor, V2_MetaFunction, } from "@remix-run/node";
 import { type RootLoaderData } from "~/hooks";
 import { Theme } from "@radix-ui/themes";
-//import FinanceIdContext from "~/other/financeIdContext";
+//import FinanceIdContext from "~/components/ui/financeIdContext";
 import slider from "~/styles/slider.css";
 import { Toaster } from "sonner";
 import { getSession, commitSession } from "./sessions/auth-session.server";

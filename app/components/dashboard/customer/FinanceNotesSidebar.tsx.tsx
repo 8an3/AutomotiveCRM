@@ -29,7 +29,7 @@ import { useRootLoaderData } from "~/hooks";
 import { formatRelativeTime } from "~/utils";
 import { ArrowRight } from "iconoir-react";
 import ConversationsApp from "shared/api.sms.msgr";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/other/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import * as Toolbar from "@radix-ui/react-toolbar";
 import {
   Card,
@@ -38,7 +38,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "~/other/card";
+} from "~/components/ui/card";
 import * as Toast from "@radix-ui/react-toast";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
@@ -49,7 +49,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetContent,
-} from "~/other/sheet";
+} from "~/components/ui/sheet";
 
 export default function FinanceNotesSidebar() {
   const { finance, user, financeNotes, dashData } = useLoaderData();

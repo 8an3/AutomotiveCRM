@@ -35,8 +35,8 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "~/other/dropdown-menu";
-import { ScrollArea } from "~/other/scrollarea";
+} from "~/components/ui/dropdown-menu";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { ItemText } from "@radix-ui/react-select";
 import { useEffect, useState } from "react";
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";

@@ -27,7 +27,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "~/other/sheet";
+} from "~/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import UnitPicker from '../unitPicker/unitPicker'
@@ -742,8 +742,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "~/other/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/other/tabs";
+} from "~/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import UnitPicker from '../unitPicker'
 import {

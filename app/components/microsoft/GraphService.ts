@@ -559,28 +559,85 @@ export async function ComposeEmailTwo(
   return email;
 }
 
-export async function UploadItem(
-  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
-  document: any,
-  filename: any,
-) {
-  try {
-    ensureClient(authProvider);
-    const stream = document;
-    const upload = await graphClient!.api(`/me/drive/items/root:/${filename}:/content`).put(stream);
-    return upload;
-  } catch (error) {
-    console.error("Error uploading item:", error);
-    return null; // Returning null in case of an error
+
+
+// this one works
+export async function UploadFile(authProvider, fileName, fileContent) {
+  await ensureClient(authProvider);
+
+  const uploadSession = await graphClient!.api(`/me/drive/root:/${fileName}:/createUploadSession`)
+    .post({
+      item: {
+        "@microsoft.graph.conflictBehavior": "rename",
+        name: fileName,
+      },
+    });
+
+  const uploadUrl = uploadSession.uploadUrl;
+  const fileSize = fileContent.size;
+  const chunkSize = 320 * 1024; // 320 KB
+  let start = 0;
+  let end = chunkSize;
+  let response = null;
+
+  while (start < fileSize) {
+    const chunk = fileContent.slice(start, end);
+    response = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Range': `bytes ${start}-${end - 1}/${fileSize}`,
+      },
+      body: chunk,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to upload chunk: ${response.statusText}`);
+    }
+
+    start = end;
+    end = Math.min(end + chunkSize, fileSize);
   }
+
+  return await response?.json();
 }
 
-export async function DownloadItem(
-  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
-  itemId: any,
-) {
-  ensureClient(authProvider);
-  let stream = await client.api(`/me/drive/items/${itemId}/content`)
-	.get();
-  return stream;
+export async function listFilesByFinanceId(authProvider, financeId) {
+  await ensureClient(authProvider);
+
+  const query = `${financeId}-`;
+  const response = await graphClient!.api('/me/drive/root/search(q=\'' + query + '\')')
+    .get();
+
+  return response.value;
+}
+
+export async function downloadFile(authProvider, fileId) {
+  await ensureClient(authProvider);
+
+  const response = await graphClient!.api(`/me/drive/items/${fileId}/content`)
+    .get();
+
+  // Create a blob from the response
+  const blob = new Blob([response], { type: response.type });
+
+  // Create a link element, set its href to the blob URL, and trigger the download
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = response.headers.get('Content-Disposition').split('filename=')[1];
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+export async function deleteFile(authProvider, fileId) {
+  await ensureClient(authProvider);
+
+  try {
+    await graphClient!.api(`/me/drive/items/${fileId}`)
+      .delete();
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    return { success: false, error: error.message };
+  }
 }

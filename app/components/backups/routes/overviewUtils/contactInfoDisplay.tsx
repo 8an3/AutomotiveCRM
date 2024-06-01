@@ -10,8 +10,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "~/other/select"
-import { ScrollArea } from "~/other/scrollarea"
+} from "~/components/ui/select"
+import { ScrollArea } from "~/components/ui/scroll-area"
 import { useState } from "react";
 import UcdaInputs from "~/components/formToPrint/ucdaInputs";
 import UnitPicker from '~/components/dashboard/unitPicker/unitPicker'

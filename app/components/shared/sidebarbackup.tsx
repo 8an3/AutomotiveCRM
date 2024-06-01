@@ -20,7 +20,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "~/other/sheet"
+} from "~/components/ui/sheet"
 
 
 export function getUserImgSrc(imageId?: string | null) {

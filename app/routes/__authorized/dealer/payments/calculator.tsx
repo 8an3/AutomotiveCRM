@@ -29,7 +29,7 @@ import {
 import * as Toast from "@radix-ui/react-toast";
 import { quotebrandIdActionLoader } from "~/components/actions/quote$brandIdAL";
 import { Slider } from "~/components/ui/slider";
-import { Badge } from "~/other/badge";
+import { Badge } from "~/components/ui/badge";
 import ClientProfile from "~/components/dashboard/calls/actions/clientProfile";
 import { Theme, ThemePanel } from "@radix-ui/themes";
 import { model } from "~/models";

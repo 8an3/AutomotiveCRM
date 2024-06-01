@@ -7,7 +7,7 @@ import { response } from "express";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import React, { useEffect, useRef, useState } from 'react';
 import * as Toast from "@radix-ui/react-toast";
-import { Badge } from "~/other/badge";
+import { Badge } from "~/components/ui/badge";
 
 export default function UcdaInputs() {
   const fetcher = useFetcher();

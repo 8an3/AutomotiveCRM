@@ -9,7 +9,7 @@ import {
   RemoveUser,
   Car,
 } from "iconoir-react";
-import { Popover, PopoverContent, PopoverTrigger } from "~/other/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import { Button } from "../ui";
 import { Form } from "@remix-run/react";
 import React, { useState } from "react";

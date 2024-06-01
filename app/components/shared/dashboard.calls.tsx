@@ -3,12 +3,12 @@ import { prisma } from "~/libs";
 import { z } from 'zod'
 import { zfd } from 'zod-form-data'
 import { type DataFunctionArgs, type V2_MetaFunction, type ActionFunction, json } from '@remix-run/node'
-import { Progress } from "~/other/progresss"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/other/table"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, } from "~/other/sheet"
+import { Progress } from "~/components/ui/progresss"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, } from "~/components/ui/sheet"
 //import { HiPhone, HiOutlineMail, HiAnnotation, HiPlus, HiUser } from "react-icons/hi";
 //import { CaretSortIcon, CheckIcon, DotsHorizontalIcon, CalendarIcon, ChevronDownIcon } from "@radix-ui/react-icons"
-import { DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenu, DropdownMenuTrigger } from '~/other/dropdown-menu'
+import { DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenu, DropdownMenuTrigger } from '~/components/ui/dropdown-menu'
 import { PhoneOutcome, MenuScale, MailOut, MessageText, User, ArrowDown } from "iconoir-react";
 
 import type { ColumnDef, ColumnFiltersState, SortingState, VisibilityState } from "@tanstack/react-table"
@@ -42,8 +42,8 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "~/other/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/other/tabs"
+} from "~/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/components/ui/tabs"
 
 
 

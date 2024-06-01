@@ -1,6 +1,6 @@
 /* eslint-disable tailwindcss/classnames-order */
 import { Form, Link, Outlet, useFetcher, useLoaderData, useParams, useSubmit } from "@remix-run/react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/other/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card";
 import { type LoaderFunction, type DataFunctionArgs, redirect, type V2_MetaFunction, type ActionFunction, json, } from '@remix-run/node'
 import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { getAllFinanceNotes } from '~/utils/financeNote/get.server';
@@ -8,7 +8,7 @@ import { getClientListMerged, getMergedFinanceOnFinance } from "~/utils/dashload
 import React from "react";
 import { prisma } from "~/libs";
 import { Flex, Text, Box, TextArea, TextField, Heading, Select, Theme, ThemePanel, Inset, Grid, Avatar } from '@radix-ui/themes';
-import { Badge } from "~/other/badge";
+import { Badge } from "~/components/ui/badge";
 import { getSession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'

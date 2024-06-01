@@ -7,7 +7,7 @@
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "~/other/sheet"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "~/components/ui/sheet"
 import { MailIn, } from "iconoir-react";
 import { json, type ActionFunction, type DataFunctionArgs } from "@remix-run/node";
 import { model } from "~/models"
@@ -148,7 +148,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "~/other/sheet"
+} from "~/components/ui/sheet"
 import { MailIn, } from "iconoir-react";
 import { json, type ActionFunction, type DataFunctionArgs } from "@remix-run/node";
 import { model } from "~/models"

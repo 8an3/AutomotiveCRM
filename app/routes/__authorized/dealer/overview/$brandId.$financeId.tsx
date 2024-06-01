@@ -3,8 +3,8 @@
 import { useFetcher, useLoaderData, useParams, } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { Overview } from '~/routes/__authorized/dealer/overview/$brandId'
-import AccordionDemo from '~/other/AccordionDemo';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "~/other/accordion"
+import AccordionDemo from '~/components/ui/AccordionDemo';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 
 export function OverviewFinanceId({ outletSize }) {
