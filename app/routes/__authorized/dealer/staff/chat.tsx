@@ -145,20 +145,12 @@ export default function StaffChat() {
   const [input, setInput] = useState("");
   const inputLength = input.trim().length;
   const fetcher = useFetcher();
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+
   const timerRef = useRef(0);
 
   const dataFetcher = (url) => fetch(url).then(res => res.json());
   const { data: userMessages, error, isLoading, isValidating } = useSWR('http://localhost:3000/dealer/staff/getConvos', dataFetcher, { refreshInterval: 15000 })
 
-  let formRef = useRef();
-
-  useEffect(() => {
-    if (!isSubmitting) {
-      formRef.current?.reset()
-    }
-  }, [isSubmitting]);
 
   useEffect(() => {
     if (Array.isArray(userMessages)) {
@@ -197,6 +189,16 @@ export default function StaffChat() {
   useEffect(() => {
     console.log("Conversations:", conversations); // Check if the component rerenders after state update
   }, [conversations]);
+
+
+  let formRef = useRef(null);
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+  useEffect(() => {
+    if (!isSubmitting) {
+      formRef.current?.reset();
+    }
+  }, [isSubmitting]);
 
   return (
     <Card
@@ -261,7 +263,9 @@ export default function StaffChat() {
         </div>
       </CardContent>
       <CardFooter className="flex flex-row items-center border-t rounded-lg border-[#27272a] bg-[#18181a] px-6 py-3">
-        <fetcher.Form replace ref={formRef}
+        <fetcher.Form
+          replace
+          ref={formRef}
           method="post"
           className="flex w-full items-center space-x-2"
         >
