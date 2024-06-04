@@ -84,15 +84,18 @@ model Dealer {
   updatedAt DateTime @updatedAt
 
   // dealer info
-  dealerName    String?
-  dealerAddress String?
-  dealerCity    String?
-  dealerProv    String?
-  dealerPostal  String?
-  dealerPhone   String?
-  dealerEmail   String?
-  vercel        String?
-  github        String?
+  dealerName         String?
+  dealerAddress      String?
+  dealerCity         String?
+  dealerProv         String?
+  dealerPostal       String?
+  dealerPhone        String?
+  dealerEmail        String?
+  dealerContact      String?
+  dealerAdminContact String?
+  dealerEmailAdmin   String?
+  vercel             String?
+  github             String?
 
   // store hours
   //  day   String?   @unique
@@ -101,6 +104,7 @@ model Dealer {
 
   // dealer fees
   userLoanProt      Int?
+  destinationCharge Int?
   userTireandRim    String?
   userGap           Int?
   userExtWarr       String?
@@ -108,24 +112,25 @@ model Dealer {
   vinE              Int?
   lifeDisability    Int?
   rustProofing      Int?
-  userLicensing     Int?
-  userFinance       String?
-  userDemo          String?
-  userGasOnDel      String?
-  userOMVIC         String?
-  userOther         Int?
-  userTax           String?
-  userAirTax        String?
-  userTireTax       String?
-  userGovern        String?
-  userPDI           String?
-  userLabour        String?
-  userMarketAdj     String?
-  userCommodity     String?
-  destinationCharge Int?
-  userFreight       String?
-  userAdmin         String?
-  userEmail         String? @unique
+
+  userLicensing Int?
+  userFinance   String?
+  userDemo      String?
+  userGasOnDel  String?
+  userOMVIC     String?
+  userOther     Int?
+  userTax       String?
+  userAirTax    String?
+  userTireTax   String?
+  userGovern    String?
+  userPDI       String?
+  userLabour    String?
+  userMarketAdj String?
+  userCommodity String?
+  userFreight   String?
+  userAdmin     String?
+
+  userEmail String? @unique
 }
 
 model DealerMyCustomer {
@@ -1021,12 +1026,12 @@ model LockFinanceTerminals {
   financeId String?
 }
 
+// dashboardId         String? @unique
+//  financeId           String? @unique
 model Finance {
   id String @id @default(cuid())
 
   clientfileId        String?
-  // dashboardId         String? @unique
-  //  financeId           String? @unique
   activixId           String? @unique
   theRealActId        String?
   financeManager      String?
@@ -1119,73 +1124,67 @@ model Finance {
   lien                String?
   dob                 String?
   othTax              String?
-
-  // finance 2
-  // leadOrigin   String?
-  optionsTotal String?
-  lienPayout   String?
-  // lienReg      String?
-
-  // dashboard
-  referral           String?
-  visited            String?
-  bookedApt          String?
-  aptShowed          String?
-  aptNoShowed        String?
-  testDrive          String?
-  metService         String?
-  metManager         String?
-  metParts           String?
-  sold               String?
-  depositMade        String?
-  refund             String?
-  turnOver           String?
-  financeApp         String?
-  approved           String?
-  signed             String?
-  pickUpSet          String?
-  demoed             String?
-  delivered          String?
-  lastContact        String?
-  status             String?
-  customerState      String?
-  result             String?
-  timesContacted     String?
-  nextAppointment    String?
-  followUpDay        String?
-  deliveredDate      String?
-  notes              String?
-  visits             String?
-  progress           String?
-  metSalesperson     String?
-  metFinance         String?
-  financeApplication String?
-  pickUpDate         String?
-  pickUpTime         String?
-  depositTakenDate   String?
-  docsSigned         String?
-  tradeRepairs       String?
-  seenTrade          String?
-  lastNote           String?
-  applicationDone    String?
-  licensingSent      String?
-  liceningDone       String?
-  refunded           String?
-  cancelled          String?
-  lost               String?
-  dLCopy             String?
-  insCopy            String?
-  testDrForm         String?
-  voidChq            String?
-  loanOther          String?
-  signBill           String?
-  ucda               String?
-  tradeInsp          String?
-  customerWS         String?
-  otherDocs          String?
-  urgentFinanceNote  String?
-  funded             String?
-  leadSource         String?
+  optionsTotal        String?
+  lienPayout          String?
+  referral            String?
+  visited             String?
+  bookedApt           String?
+  aptShowed           String?
+  aptNoShowed         String?
+  testDrive           String?
+  metService          String?
+  metManager          String?
+  metParts            String?
+  sold                String?
+  depositMade         String?
+  refund              String?
+  turnOver            String?
+  financeApp          String?
+  approved            String?
+  signed              String?
+  pickUpSet           String?
+  demoed              String?
+  delivered           String?
+  lastContact         String?
+  status              String?
+  customerState       String?
+  result              String?
+  timesContacted      String?
+  nextAppointment     String?
+  followUpDay         String?
+  deliveredDate       String?
+  notes               String?
+  visits              String?
+  progress            String?
+  metSalesperson      String?
+  metFinance          String?
+  financeApplication  String?
+  pickUpDate          String?
+  pickUpTime          String?
+  depositTakenDate    String?
+  docsSigned          String?
+  tradeRepairs        String?
+  seenTrade           String?
+  lastNote            String?
+  applicationDone     String?
+  licensingSent       String?
+  liceningDone        String?
+  refunded            String?
+  cancelled           String?
+  lost                String?
+  dLCopy              String?
+  insCopy             String?
+  testDrForm          String?
+  voidChq             String?
+  loanOther           String?
+  signBill            String?
+  ucda                String?
+  tradeInsp           String?
+  customerWS          String?
+  otherDocs           String?
+  urgentFinanceNote   String?
+  funded              String?
+  leadSource          String?
 
   // coms
   InPerson Int?

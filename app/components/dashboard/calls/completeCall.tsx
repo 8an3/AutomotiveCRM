@@ -88,7 +88,7 @@ const CompleteCall = ({ data, contactMethod }) => {
       <DialogContent className="w-full md:w-[50%]  bg-[#09090b] text-[#fafafa] border-[#262626] h-auto">
         <DialogHeader>
           <DialogTitle>
-            <p className="mt-4">Schedule Follow-up</p>
+            <p className="mt-4 text-[#fafafa] ">Schedule Follow-up</p>
             <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
           </DialogTitle>
         </DialogHeader>
@@ -96,8 +96,8 @@ const CompleteCall = ({ data, contactMethod }) => {
           <div className='grid grid-cols-1 mx-auto w-[90%] '>
             <div className="relative mt-3">
 
-              <Select name='resultOfcall' >
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3 ">
+              <Select name='resultOfcall' defaultValue="Left Message" >
+                <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className='bg-[#09090b] text-[#fafafa] '>
@@ -105,7 +105,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                     <SelectLabel>Result of call</SelectLabel>
                     <SelectItem value="Reached">Reached</SelectItem>
                     <SelectItem value="Attempted">N/A</SelectItem>
-                    <SelectItem value="Attempted">Left Message</SelectItem>
+                    <SelectItem value="Left Message">Left Message</SelectItem>
                     <SelectItem value="Completed">Completed</SelectItem>
                     <SelectItem value="Rescheduled">Rescheduled</SelectItem>
                   </SelectGroup>
@@ -113,8 +113,8 @@ const CompleteCall = ({ data, contactMethod }) => {
               </Select>
               <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Updating Completed Appointment</label>
             </div>
-            <p className='text-[#fafafa] mt-5'>Creating New Appointment</p>
-            <hr className="solid text-[#fafafa]  " />
+            <p className=' text-[#fafafa] mt-5'>Creating New Appointment</p>
+            <hr className="solid  text-[#27272a] " />
             <div className="relative mt-3">
               <Input
                 type="text"
@@ -126,7 +126,7 @@ const CompleteCall = ({ data, contactMethod }) => {
             </div>
             <div className="relative mt-3">
               <Select name='note' defaultValue="No Answer / Left Message">
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
+                <SelectTrigger className="w-full bg-[#09090b] text-[#fafafa] border border-[#27272a]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className='bg-[#09090b] text-[#fafafa] '>
@@ -166,7 +166,7 @@ const CompleteCall = ({ data, contactMethod }) => {
             </div>
             <div className="relative mt-3">
               <Select name='contactMethod' defaultValue="SMS">
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
+                <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]  ">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className='bg-[#09090b] text-[#fafafa] '>
@@ -183,7 +183,7 @@ const CompleteCall = ({ data, contactMethod }) => {
             </div>
             <div className="relative mt-3">
               <Select name='resourceId' defaultValue="1">
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
+                <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a] ">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className='bg-[#09090b] text-[#fafafa] '>
@@ -235,7 +235,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                   <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <Select name='pickHour'  >
-                        <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]" >
+                        <SelectTrigger className="m-3 w-auto mx-auto bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
                           <SelectValue defaultValue='09' />
                         </SelectTrigger>
                         <SelectContent className='bg-white text-black' >
@@ -255,7 +255,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                         </SelectContent>
                       </Select>
                       <Select name='pickMin'   >
-                        <SelectTrigger className="m-3 w-auto" >
+                        <SelectTrigger className="m-3 w-full bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
                           <SelectValue defaultValue='10' />
                         </SelectTrigger>
                         <SelectContent className='bg-white text-black'  >

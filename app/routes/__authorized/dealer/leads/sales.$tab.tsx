@@ -42,6 +42,7 @@ import {
     CardHeader,
     CardTitle,
 } from "~/components/ui/card"
+import SearchLeads from '~/components/dashboard/demoDay/searchLeads';
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
     { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
@@ -115,7 +116,7 @@ export default function Mainboard() {
                 )}
                 {selectedTab === "search" && (
                     <TabsContent className="w-[98%]" value="search">
-                        <SearchTable />
+                        <SearchLeads />
                     </TabsContent>
                 )}
                 {selectedTab === "wishList" && (
@@ -281,7 +282,7 @@ export function invariant(
 }
 // search table
 export function SearchTable() {
-    const { searchData } = useLoaderData();
+    const { } = useLoaderData();
     const data = searchData
     type Payment = {
         id: string
@@ -1200,7 +1201,7 @@ export function WebleadsTable() {
                             <h1 className='   mt-3' >
                                 Contact Customer
                             </h1>
-                            <hr className=' max-w-sm   ' />
+                            <hr className=' max-w-sm  text-[#27272a] ' />
                             <div className='gap-3 my-2 grid grid-cols-3 max-w-sm mx-auto justify-center '>
                                 <LogCall data={data} />
                                 <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
@@ -1209,14 +1210,14 @@ export function WebleadsTable() {
                             <h1 className='   mt-3' >
                                 Quick Follow-up
                             </h1>
-                            <hr className=' max-w-sm   ' />
+                            <hr className=' max-w-sm  text-[#27272a]  ' />
                             <div className='mr-auto mt-3'>
                                 <TwoDaysFromNow data={data} isSubmitting={isSubmitting} />
                             </div>
                             <h1 className='   mt-3' >
                                 In-depth Follow-up
                             </h1>
-                            <hr className=' max-w-sm   ' />
+                            <hr className=' max-w-sm  text-[#27272a]  ' />
                             <div className='mr-auto mt-3'>
                                 <CompleteCall data={data} contactMethod={contactMethod} />
                             </div>

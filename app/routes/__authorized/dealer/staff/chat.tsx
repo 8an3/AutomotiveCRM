@@ -123,7 +123,7 @@ const sortConversationsByDept = (conversations, labels) => {
     return 0;
   });
 };
-export default function StaffChat() {
+export default function StaffChat({ content }) {
   function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
   const { user, conversationsList, } = useLoaderData();
@@ -149,8 +149,7 @@ export default function StaffChat() {
   const timerRef = useRef(0);
 
   const dataFetcher = (url) => fetch(url).then(res => res.json());
-  const { data: userMessages, error, isLoading, isValidating } = useSWR('http://localhost:3000/dealer/staff/getConvos', dataFetcher, { refreshInterval: 15000 })
-
+  let { data: userMessages, error, isLoading, isValidating } = useSWR('http://localhost:3000/dealer/staff/getConvos', dataFetcher, { refreshInterval: 15000 })
 
   useEffect(() => {
     if (Array.isArray(userMessages)) {
@@ -190,19 +189,57 @@ export default function StaffChat() {
     console.log("Conversations:", conversations); // Check if the component rerenders after state update
   }, [conversations]);
 
-
-  let formRef = useRef(null);
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputRef = useRef();
+  const submit = useSubmit()
+  let formRef = useRef<HTMLFormElement>(null);
+  let taskInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (!isSubmitting) {
       formRef.current?.reset();
     }
   }, [isSubmitting]);
 
+  const reset = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("userEmail", user.email);
+      formData.append("username", user.name);
+      formData.append("dept", roomLabel);
+      formData.append("intent", 'sendMessage');
+      formData.append("body", input);
+      submit(formData, { method: "post" });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('Failed to send message.');
+    } finally {
+      setIsSubmitting(true);
+      setInput('');
+      inputRef.current.value = '';
+      formRef.current?.reset();
+      taskInputRef.current?.reset();
+      toast.success('Message Sent!');
+      setIsSubmitting(false);
+
+      userMessages = useSWR('http://localhost:3000/dealer/staff/getConvos', dataFetcher)
+      const getMessage = userMessages()
+      console.log(getMessage)
+      setConversations(getMessage)
+      const room = roomLabel
+      handleRoomButtonClick(room)
+    }
+  };
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom whenever conversations change
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [filtererdConversations]);
   return (
     <Card
-      className=" z-50 w-[800px] text-[#f1f1f1] max-h-[80vh]"
+      className=" z-50 w-[800px] text-[#f1f1f1] max-h-[60vh]"
       x-chunk="dashboard-05-chunk-4"
     >
       <CardHeader className="flex flex-row items-start bg-[#18181a] rouned-lg">
@@ -214,8 +251,8 @@ export default function StaffChat() {
       </CardHeader>
       <CardContent className=" bg-[#09090b] p-6 text-sm">
         <div className="grid grid-cols-8 gap-3 ">
-          <Card className="col-span-2">
-            <CardContent className="flex-col">
+          <Card className="col-span-2 max-h-[500px] h-[500px]">
+            <CardContent className="flex-col overflow-y-auto">
               {labels.map((room, index) => (
                 <Button
                   key={index}
@@ -234,9 +271,9 @@ export default function StaffChat() {
               ))}
             </CardContent>
           </Card>
-          <Card className="col-span-6">
-            <CardContent className="flex-grow  overflow-x-clip overflow-y-scroll rouned-b-md">
-              <div className="mt-5 h-auto  max-h-[800px] space-y-4">
+          <Card className="col-span-6 max-h-[500px] h-[500px]" >
+            <CardContent className="flex-grow  overflow-x-clip overflow-y-scroll rouned-b-md" ref={containerRef}>
+              <div className="mt-5 h-auto  max-h-[450px] space-y-4">
                 {filtererdConversations.map((conversation) => (
                   <div
                     key={conversation.id}
@@ -261,41 +298,39 @@ export default function StaffChat() {
             </CardContent>
           </Card>
         </div>
+
       </CardContent>
-      <CardFooter className="flex flex-row items-center border-t rounded-lg border-[#27272a] bg-[#18181a] px-6 py-3">
-        <fetcher.Form
-          replace
-          ref={formRef}
-          method="post"
-          className="flex w-full items-center space-x-2"
-        >
-          <Input type="hidden" defaultValue={user.email} name="userEmail" />
-          <Input type="hidden" defaultValue={user.username || user.name} name="username" />
-          <Input type="hidden" defaultValue={roomLabel} name="dept" />
+      <CardFooter className=" border-t rounded-lg border-[#27272a] bg-[#18181a] ">
+        <Input type="hidden" defaultValue={user.email} name="userEmail" />
+        <Input type="hidden" defaultValue={user.username || user.name} name="username" />
+        <Input type="hidden" defaultValue={roomLabel} name="dept" />
+        <fetcher.Form className="flex flex-row items-center w-full px-6 py-3">
+
           <Input
             id="message"
             placeholder="Type your message..."
-            className="flex-1 border-[#27272a] bg-[#18181a]  "
+            className="flex-1 border-[#27272a] bg-[#18181a] mr-3  "
             autoComplete="off"
             value={input}
             onChange={(event) => setInput(event.target.value)}
             name="body"
+
           />
+
           <Button
             value="sendMessage"
-            type="submit"
             name="intent"
             size="icon"
             onClick={() => {
+              reset()
               toast.success(`Message Sent!`);
             }}
-            disabled={inputLength === 0}
+            //   disabled={inputLength === 0}
             className="bg-[#dc2626] "
           >
             <PaperPlaneIcon className="h-4 w-4" />
             <span className="sr-only">Send</span>
           </Button>
-
         </fetcher.Form>
       </CardFooter>
     </Card>
@@ -322,6 +357,7 @@ export async function action({ request }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData());
   const formData = financeFormSchema.parse(formPayload);
   const session2 = await getSession(request.headers.get("Cookie"));
+  console.log('hitaction')
   const email = session2.get("email");
   if (formData.intent === 'sendMessage') {
     const saveMessage = await prisma.staffChat.create({

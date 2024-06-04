@@ -163,49 +163,52 @@ export const loader = async ({ request, params }) => {
   ];
   let deFees
   try {
-    deFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
-  } catch (error) {
     deFees = await prisma.dealer.findFirst();
-  }
-  if (!deFees) {
-    deFees = await prisma.dealer.create({
-      data: {
-        dealer: 'Dealer Name',
-        dealerAddress: '1234 Example St',
-        dealerProv: 'Ottawa, ON K1A 0B1',
-        dealerPhone: '8198198194',
-        omvicNumber: '1234567',
-        userLoanProt: 0,
-        userTireandRim: '0',
-        userGap: 0,
-        userExtWarr: '0',
-        userServicespkg: 0,
-        vinE: 0,
-        lifeDisability: 0,
-        rustProofing: 0,
-        userLicensing: 60,
-        userFinance: '0',
-        userDemo: '0',
-        userGasOnDel: '0',
-        userOMVIC: '60',
-        userOther: 0,
-        userTax: '13',
-        userAirTax: '0',
-        userTireTax: '0',
-        userGovern: '0',
-        userPDI: '0',
-        userLabour: '118',
-        userMarketAdj: '0',
-        userCommodity: '0',
-        email: 'email@example.com',
-        destinationCharge: 0,
-        userFreight: '0',
-        userAdmin: '0',
-        userEmail: user?.email,
-      },
-    });
+  } catch (error) {
+    if (!deFees) {
+      deFees = await prisma.dealer.create({
+        data: {
+          dealerName: 'Dealer Name',
+          dealerAddress: '1234 Example St',
+          dealerProv: 'Ottawa, ON K1A 0B1',
+          dealerPhone: '8198198194',
+
+          userLoanProt: 0,
+          userTireandRim: '0',
+          userGap: 0,
+          userExtWarr: '0',
+          userServicespkg: 0,
+          vinE: 0,
+          lifeDisability: 0,
+          rustProofing: 0,
+          userLicensing: 60,
+          userFinance: '0',
+          userDemo: '0',
+          userGasOnDel: '0',
+          userOMVIC: '60',
+          userOther: 0,
+          userTax: '13',
+          userAirTax: '0',
+          userTireTax: '0',
+          userGovern: '0',
+          userPDI: '0',
+          userLabour: '118',
+          userMarketAdj: '0',
+          userCommodity: '0',
+          destinationCharge: 0,
+          userFreight: '0',
+          userAdmin: '0',
+          userEmail: user?.email,
+        },
+      });
+    }
+    return json({ request, user, deFees, Dealerfees, FinanceOptions });
+
   }
   return json({ request, user, deFees, Dealerfees, FinanceOptions });
+
+
+
 
 }
 

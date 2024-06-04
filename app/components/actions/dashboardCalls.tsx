@@ -43,11 +43,12 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
   //const customerId = finance?.id;
   const financeNotes = await prisma.financeNote.findMany({ orderBy: { createdAt: "desc" }, });
-  const searchData = prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
+  const searchData = await prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
   const webLeadData = await prisma.finance.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: user?.email } });
   // const financeData2 = await prisma.finance.findMany({ where: { id: dashData2.financeId }, });
   const conversations = await prisma.previousComms.findMany({ orderBy: { createdAt: "desc" }, });
   const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
+  console.log('in component,', searchData)
 
   // const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
 
@@ -318,7 +319,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         dashBoardCustURL,
         getTemplates,
         latestNotes,
-        //  searchData,
+        searchData,
         conversations,
         getWishList,
         // notifications,
@@ -343,7 +344,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       latestNotes,
       getTemplates,
       conversations,
-      //  searchData,
+      searchData,
       getWishList,
       // notifications,
       webLeadData,
@@ -1395,6 +1396,13 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       }
     })
     return isRead
+  }
+  if (intent === 'navToFinanceFile') {
+    const clientfileId = formData.clientfileId
+    const getFile = await prisma.finance.findFirst({
+      where: { clientfileId: clientfileId }
+    })
+    return redirect(`/dealer/customer/${clientfileId}/${getFile?.id}`)
   }
   const template = formPayload.template;
   const today = new Date();

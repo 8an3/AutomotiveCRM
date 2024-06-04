@@ -8,6 +8,8 @@ import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { Target } from 'lucide-react';
 import { todoRoadmap } from '../dealer/user/dashboard.roadmap';
 import { useState } from 'react';
+import { DealerOnboarding } from './emails/dealerOnboarding';
+import { Resend } from "resend";
 
 
 // NEED PRO VERCEL ACCOPUNT FOR THIS TO WORK NOT TESTED YET BUT DOCS SUGGEST YOU CANNOT USE UR PERSONAL HOBBY ACCOUNT
@@ -18,6 +20,7 @@ import { useState } from 'react';
 export async function action({ request, }: ActionFunctionArgs) {
   const formPayload = Object.fromEntries(await request.formData())
   let formData = financeFormSchema.parse(formPayload)
+  const resend = new Resend(process.env.resend_API_KEY);
 
   const intent = formPayload.intent
   const dealerName = formPayload.dealerName
@@ -163,9 +166,8 @@ export async function action({ request, }: ActionFunctionArgs) {
     // const createSecondSecond = await createSecondVercel(dealerName)
     /// console.log(createSecondSecond)
     // console.log(dealerName)
-    const create = await prisma.dealerMyCustomer.create({
+    const dealer = await prisma.dealerMyCustomer.create({
       data: {
-
         dealerName: formData.dealerName,
         dealerAddress: formData.dealerAddress,
         dealerCity: formData.dealerCity,
@@ -174,11 +176,19 @@ export async function action({ request, }: ActionFunctionArgs) {
         dealerPhone: formData.dealerPhone,
         dealerEmail: formData.dealerEmail,
         dealerContact: formData.dealerContact,
+        dealerAdminContact: formData.dealerAdminContact,
+        dealerEmailAdmin: formData.dealerEmailAdmin,
         vercel: formData.vercel,
         github: formData.github,
       }
     })
-    return json({ create })
+    const email = await resend.emails.send({
+      from: 'skylerzanth@gmail.com',
+      to: [dealer.dealerContact, dealer.dealerEmailAdmin],
+      subject: `Welcome to the DSA team, ${dealer.dealerName}.`,
+      react: <DealerOnboarding dealer={dealer} />
+    });
+    return json({ dealer, email })
   }
   if (intent === 'createLead') {
     const data = {
@@ -402,14 +412,17 @@ export default function DashboardPage() {
     { type: "Dev", desc: "in quote loader there is updateReadStatus() instead of it being triggered here this should be converted to an automation" },
     { type: "Dev", desc: "Docs" },
     { type: "Dev", desc: "automation" },
-    { type: "Dev", desc: "Dealer Onboarding" },
-    { type: "Dev", desc: "file upload in customer file - done " },
-    { type: "Dev", desc: "emails in overview" },
-    { type: "Dev", desc: "employee onboarding" },
     { type: "Dev", desc: "new hooks when upgrading platform" },
     { type: "Dev", desc: "sales manager dash" },
     { type: "Dev", desc: "need a way for when a new employee uses the dashboard they acquire a new number from twilio" },
     { type: "Dev", desc: "some sort of email webhook whether we use swr or a microsoft api so create notifications of new emails" },
+
+    { type: "Dev", desc: "-------------------DONE-------------------" },
+    { type: "Dev", desc: "Dealer Onboarding - done" },
+    { type: "Dev", desc: "file upload in customer file - done " },
+    { type: "Dev", desc: "emails in overview - done" },
+    { type: "Dev", desc: "employee onboarding - done - be need to redo admin dashbaoard that deals with usrs" },
+    { type: "Dev", desc: "Dealer Onboarding - done - automate creation of vercel and github need to get the url and save it in our database" },
   ];
 
   const devTasks = {};
@@ -570,6 +583,7 @@ export default function DashboardPage() {
                 <Card className="col-span-2 border border-[#27272a] ">
                   <CardHeader>
                     <CardTitle className='text-[#fafafa]'>Add New Dealer</CardTitle>
+                    <p>First need to create the github and vercel pages for the dealer in order to put them in and be sent in the email.</p>
                   </CardHeader>
                   <CardContent className="pl-2">
                     <div className="space-y-6">
@@ -627,11 +641,27 @@ export default function DashboardPage() {
                             </div>
                             <div className="relative mt-3">
                               <Input
+                                name='dealerContact'
+                                type="text"
+                                className="w-full bg-[#09090b] border-[#27272a] "
+                              />
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
                                 name='dealerEmail'
                                 type="text"
                                 className="w-full bg-[#09090b] border-[#27272a] "
                               />
                               <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Email</label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                name='dealerAdminContact'
+                                type="text"
+                                className="w-full bg-[#09090b] border-[#27272a] "
+                              />
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Contact</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
@@ -641,14 +671,7 @@ export default function DashboardPage() {
                               />
                               <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
                             </div>
-                            <div className="relative mt-3">
-                              <Input
-                                name='dealerContact'
-                                type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
-                              />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
-                            </div>
+
                             <div className="relative mt-3">
                               <Input
                                 name='vercel'

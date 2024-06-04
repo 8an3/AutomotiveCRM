@@ -39,6 +39,7 @@ import { configDev } from "~/configs";
 import { forbidden } from "remix-utils";
 import { requireUserRole, requireUserSession } from "~/helpers";
 import { parse } from "@conform-to/react";
+import { Resend } from "resend";
 
 import { Plus, Trash } from "~/icons";
 import { prisma } from "~/libs";
@@ -46,6 +47,8 @@ import { useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
+import { GetUser } from "~/utils/loader.server";
+import { EmployEmail } from "./employeeOnboarding";
 
 export const handle = createSitemap();
 
@@ -61,6 +64,7 @@ export async function loader({ request, params }: LoaderArgs) {
 export async function action({ request }: ActionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
+  const resend = new Resend(process.env.resend_API_KEY);
 
 
   const user = await GetUser(email)
@@ -73,7 +77,7 @@ export async function action({ request }: ActionArgs) {
   const formPayload = Object.fromEntries(await request.formData())
 
   const formData = financeFormSchema.parse(formPayload);
-
+  const dealer = await prisma.dealer.findUnique({ where: { id: 1 } })
   //const submission = parse(formData, {});
 
   if (formData.intent === "delete-all-users") {
@@ -94,6 +98,15 @@ export async function action({ request }: ActionArgs) {
         phone: formData.phone,
         position: formData.position,
         password: hashed,
+        roleId: formData.roleId,
+        omvicNumber: formData.omvicNumber,
+        dealer: formData.dealer,
+        dept: formData.dept,
+        activixActivated: formData.activixActivated,
+        activixEmail: formData.activixEmail,
+        activisUserId: formData.activisUserId,
+        activixId: formData.activixId,
+        dealerAccountId: formData.dealerAccountId,
         role: { connect: { id: defaultUserRole.id } },
         profile: {
           create: {
@@ -103,7 +116,13 @@ export async function action({ request }: ActionArgs) {
         },
       }
     })
-    return json(userAdd);
+    const email = await resend.emails.send({
+      from: user?.email,
+      to: [`${userAdd.email}`],
+      subject: `Welcome to the ${dealer?.dealerName} team, ${userAdd.name}.`,
+      react: <EmployEmail dealer={dealer} userAdd={userAdd} />
+    });
+    return json({ userAdd, email });
   }
 
   if (formData.intent === "delete-all-user-roles") {
@@ -141,6 +160,10 @@ export default function Route() {
   const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
+  const [activixEmail, setActivixEmail] = useState('')
+  const [dept, setDept] = useState('')
+  const [position, setPosition] = useState('')
+  const [dealer, setDealer] = useState('')
   const [role, setRole] = useState('')
   const [omvicNumber, setOmvic] = useState('')
   const handleRowClick = (user) => {
@@ -151,6 +174,10 @@ export default function Route() {
     setEmail(user.email)
     setRole(user.role.name)
     setOmvic(user.omvic)
+    setDealer(user.dealer)
+    setActivixEmail(user.activixEmail)
+    setPosition(user.position)
+    setDept(user.dept)
 
   };
   if (users.length <= 0) {
@@ -208,6 +235,14 @@ export default function Route() {
                                         <div className='flex items-center justify-between'>
                                           <p className="text-sm text-muted-foreground mr-2">{user.email}</p>
                                           <p className="text-sm text-muted-foreground ml-2">{user.phone}</p>
+                                        </div>
+                                        <div className='flex items-center justify-between'>
+                                          <p className="text-sm text-muted-foreground mr-2">{user.position}</p>
+                                          <p className="text-sm text-muted-foreground ml-2">{user.dealer}</p>
+                                        </div>
+                                        <div className='flex items-center justify-between'>
+                                          <p className="text-sm text-muted-foreground mr-2">{user.omvicNumber}</p>
+                                          <p className="text-sm text-muted-foreground ml-2">{user.dept}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -271,7 +306,7 @@ export default function Route() {
                         <Label className='text-lg'>
                           Full Name
                         </Label>
-                        <Input name='name' defaultValue={name} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md  focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" autoComplete="name"
+                        <Input name='name' defaultValue={name} className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="name"
                           autoFocus
                           required />
                       </div>
@@ -279,8 +314,7 @@ export default function Route() {
                         <Label className='text-lg'>
                           Username
                         </Label>
-                        <Input name='username' defaultValue={username} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]"  autoComplete="username"
+                        <Input name='username' defaultValue={username} className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="username"
                           autoFocus
                           required />
                       </div>
@@ -288,8 +322,7 @@ export default function Route() {
                         <Label className='text-lg'>
                           Phone
                         </Label>
-                        <Input name='phone' defaultValue={phone} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" autoComplete="phone"
+                        <Input name='phone' defaultValue={phone} className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="phone"
                           autoFocus
                           required />
                       </div>
@@ -297,17 +330,48 @@ export default function Route() {
                         <Label className='text-lg'>
                           Email
                         </Label>
-                        <Input name='email' defaultValue={email} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" autoComplete="email"
+                        <Input name='email' defaultValue={email} className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
                           autoFocus
                           required />
                       </div>
                       <div className='mt-5'>
                         <Label className='text-lg'>
+                          Dealer
+                        </Label>
+                        <Input name='dealer' defaultValue={dealer} className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
+                          autoFocus
+                          required />
+                      </div>
+                      <div className='mt-5'>
+                        <Label className='text-lg'>
+                          Position
+                        </Label>
+                        <Input name='position' defaultValue={position} className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
+                          autoFocus
+                          required />
+                      </div>
+                      <div className='mt-5'>
+                        <Label className='text-lg'>
+                          Dept
+                        </Label>
+                        <Input name='dept' defaultValue={dept} className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
+                          autoFocus
+                          required />
+                      </div>
+                      <div className='mt-5'>
+                        <Label className='text-lg'>
+                          Activix Email
+                        </Label>
+                        <Input name='activixEmail' defaultValue={activixEmail} className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
+                          autoFocus
+                          required />
+                      </div>
+
+                      <div className='mt-5'>
+                        <Label className='text-lg'>
                           OMVIC #
                         </Label>
-                        <Input name='omvicNumber' defaultValue={omvicNumber} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                        <Input name='omvicNumber' defaultValue={omvicNumber} className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
                       </div>
                       <div>
                         <Label className='text-lg mt-5'>
@@ -347,32 +411,32 @@ export default function Route() {
             <div className="mt-2  grid  grid-cols-1 gap-2">
               <Form method='post' className='space-y-3 max-w-sm '>
                 <div className="relative mt-3"  >
-                  <Input name='name' placeholder="Justin Doe" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <Input name='name' className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
                   <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Name</label>
                 </div>
                 <div className="relative mt-3"  >
-                  <Input name='username' placeholder="Justin" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <Input name='username' className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
                   <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Username</label>
                 </div>
                 <div className="relative mt-3"  >
-                  <Input name='email' placeholder="justindoe@mail.com" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <Input name='email' className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
                   <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Email</label>
                 </div>
                 <div className="relative mt-3"  >
-                  <Input name='phone' placeholder="6136136134" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <Input name='phone' className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
                   <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">S Phone</label>
                 </div>
                 <div className="relative mt-3"  >
-                  <Input name='phone' placeholder="6136136134" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <Input name='phone' className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
                   <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Position</label>
                 </div>
                 <div className="relative mt-3"  >
-                  <Input name='omvicNumber' placeholder="654165" className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
+                  <Input name='omvicNumber' className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
                   <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  OMVIC #</label>
                 </div>
                 <div className="relative mt-3"  >
                   <Select name='userRole'>
-                    <SelectTrigger className='mr-3 bg-[#09090b] text-[#fafafa] border-[#27272a]'>
+                    <SelectTrigger className='mr-3 bg-[#09090b] w-[95%] text-[#fafafa] border-[#27272a]'>
                     </SelectTrigger>
                     <SelectContent align="end" className='bg-[#09090b] text-[#fafafa] border-[#8c8c91]'>
                       {userRole.map((role) => (

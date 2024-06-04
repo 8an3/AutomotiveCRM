@@ -9,6 +9,7 @@ import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { commitSession as commitPref, getSession as getPref } from "~/utils/pref.server";
 import { getSession } from '~/sessions/auth-session.server';
+import { getSession as custSession, commitSession as custCommit } from '~/sessions/customer-session.server';
 import { model } from "~/models";
 import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '~/routes/_authorized/dealer/api.server'
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
@@ -25,6 +26,7 @@ export function invariant(
 }
 
 export async function quoteAction({ params, request }: ActionArgs) {
+
   const urlSegments = new URL(request.url).pathname.split('/');
   //const { financeId } = params;
   const brandId = params.brandId
@@ -34,7 +36,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
   const status = 'Active'
   formPayload = { ...formPayload, name, status }
   const formData = financeFormSchema.parse(formPayload)
-
+  console.log(formData, '2354234532')
   let financeId
   if (formData.activixId && (formData.financeId.length > 20)) {
     financeId = formData.financeId
@@ -253,9 +255,10 @@ export async function quoteAction({ params, request }: ActionArgs) {
       };
 
       if (clientfileUpdate) {
-        await prisma.finance.create({
+        console.log('has clientfile')
+        const finance = await prisma.finance.create({
           data: {
-            clientfileId: clientfile.id,
+            clientfileId: clientfileUpdate.id,
 
             lastContact: today.toLocaleDateString('en-US', options),
             nextAppointment: 'TBD',
@@ -304,13 +307,21 @@ export async function quoteAction({ params, request }: ActionArgs) {
             followUpDay: 'TBD',
             deliveredDate: 'TBD',
             pickUpDate: 'TBD',
+            email: formData.email,
+            firstName: formData.firstName,
             mileage: formData.mileage,
-
+            lastName: formData.lastName,
+            phone: formData.phone,
+            name: formData.name,
+            address: formData.address,
+            city: formData.city,
+            postal: formData.postal,
+            province: formData.province,
             dl: formData.dl,
             typeOfContact: formData.typeOfContact,
             timeToContact: formData.timeToContact,
-            userEmail: user.email,
-
+            iRate: formData.iRate,
+            months: formData.months,
             discount: formData.discount,
             total: formData.total,
             onTax: formData.onTax,
@@ -323,7 +334,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
             weeklyqc: formData.weeklyqc,
             biweeklyqc: formData.biweeklyqc,
             qc60: formData.qc60,
-
+            deposit: formData.deposit,
             biweeklNatWOptions: formData.biweeklNatWOptions,
             weeklylNatWOptions: formData.weeklylNatWOptions,
             nat60WOptions: formData.nat60WOptions,
@@ -357,10 +368,17 @@ export async function quoteAction({ params, request }: ActionArgs) {
             licensing: formData.licensing,
             stockNum: formData.stockNum,
             options: formData.options,
-
+            accessories: formData.accessories,
+            labour: formData.labour,
+            year: formData.year,
+            brand: formData.brand,
+            model: formData.model,
+            model1: formData.model1,
+            color: formData.color,
             modelCode: formData.modelCode,
             msrp: formData.msrp,
-
+            userEmail: formData.userEmail,
+            tradeValue: formData.tradeValue,
             tradeDesc: formData.tradeDesc,
             tradeColor: formData.tradeColor,
             tradeYear: formData.tradeYear,
@@ -380,41 +398,44 @@ export async function quoteAction({ params, request }: ActionArgs) {
             othTax: formData.othTax,
             optionsTotal: formData.optionsTotal,
             lienPayout: formData.lienPayout,
-
             customerState: formData.customerState,
-
+            result: formData.result,
             timesContacted: formData.timesContacted,
-
             visits: formData.visits,
             progress: formData.progress,
-
             applicationDone: formData.applicationDone,
             licensingSent: formData.licensingSent,
             liceningDone: formData.liceningDone,
             refunded: formData.refunded,
             cancelled: formData.cancelled,
             lost: formData.lost,
-
             leadSource: formData.leadSource,
           },
         });
+        const customerSession = await custSession(request.headers.get("Cookie"));
+        customerSession.set("userEmail", email);
+        customerSession.set("financeId", finance.id);
+        await commitPref(customerSession);
+        const headers = { "Set-Cookie": await custCommit(customerSession) };
 
         switch (formData.brand) {
           case "Used":
-            return redirect(`/dealer/overview/Used`);
+            return json({ finance }), redirect(`/dealer/overview/Used`, { headers });
           case "Switch":
             await createFinanceManitou(formData);
-            return redirect(`/dealer/options/${formData.brand}`);
+            return json({ finance }), redirect(`/dealer/options/${formData.brand}`, { headers });
           case "Manitou":
             await createFinanceManitou(formData);
-            return redirect(`/dealer/options/${formData.brand}`);
+            return json({ finance }), redirect(`/dealer/options/${formData.brand}`, { headers });
           case "BMW-Motorrad":
             await createBMWOptions(formData);
-            return redirect(`/dealer/options/${formData.brand}`);
+            return json({ finance }), redirect(`/dealer/options/${formData.brand}`, { headers });
           default:
-            return redirect(`/dealer/overview/${formData.brand}`);
+            return json({ finance }), redirect(`/dealer/overview/${formData.brand}`, { headers });
         }
       } else {
+        console.log('does not has clientfile')
+
         const clientfile = await prisma.clientfile.create({
           data: {
             userId: formData.userId,
@@ -481,12 +502,21 @@ export async function quoteAction({ params, request }: ActionArgs) {
             followUpDay: 'TBD',
             deliveredDate: 'TBD',
             pickUpDate: 'TBD',
+            email: formData.email,
+            firstName: formData.firstName,
             mileage: formData.mileage,
-
+            lastName: formData.lastName,
+            phone: formData.phone,
+            name: formData.name,
+            address: formData.address,
+            city: formData.city,
+            postal: formData.postal,
+            province: formData.province,
             dl: formData.dl,
             typeOfContact: formData.typeOfContact,
             timeToContact: formData.timeToContact,
-
+            iRate: formData.iRate,
+            months: formData.months,
             discount: formData.discount,
             total: formData.total,
             onTax: formData.onTax,
@@ -499,7 +529,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
             weeklyqc: formData.weeklyqc,
             biweeklyqc: formData.biweeklyqc,
             qc60: formData.qc60,
-
+            deposit: formData.deposit,
             biweeklNatWOptions: formData.biweeklNatWOptions,
             weeklylNatWOptions: formData.weeklylNatWOptions,
             nat60WOptions: formData.nat60WOptions,
@@ -533,10 +563,17 @@ export async function quoteAction({ params, request }: ActionArgs) {
             licensing: formData.licensing,
             stockNum: formData.stockNum,
             options: formData.options,
-
+            accessories: formData.accessories,
+            labour: formData.labour,
+            year: formData.year,
+            brand: formData.brand,
+            model: formData.model,
+            model1: formData.model1,
+            color: formData.color,
             modelCode: formData.modelCode,
             msrp: formData.msrp,
-
+            userEmail: formData.userEmail,
+            tradeValue: formData.tradeValue,
             tradeDesc: formData.tradeDesc,
             tradeColor: formData.tradeColor,
             tradeYear: formData.tradeYear,
@@ -556,40 +593,41 @@ export async function quoteAction({ params, request }: ActionArgs) {
             othTax: formData.othTax,
             optionsTotal: formData.optionsTotal,
             lienPayout: formData.lienPayout,
-
             customerState: formData.customerState,
-
+            result: formData.result,
             timesContacted: formData.timesContacted,
-
             visits: formData.visits,
             progress: formData.progress,
-
             applicationDone: formData.applicationDone,
             licensingSent: formData.licensingSent,
             liceningDone: formData.liceningDone,
             refunded: formData.refunded,
             cancelled: formData.cancelled,
             lost: formData.lost,
-
             leadSource: formData.leadSource,
 
           },
         });
+        const customerSession = await custSession(request.headers.get("Cookie"));
+        customerSession.set("userEmail", email);
+        customerSession.set("financeId", finance.id);
+        await commitPref(customerSession);
+        const headers = { "Set-Cookie": await custCommit(customerSession) };
 
         switch (formData.brand) {
           case "Used":
-            return json({ finance }), redirect(`/dealer/overview/Used`);
+            return json({ finance }), redirect(`/dealer/overview/Used`, { headers });
           case "Switch":
             await createFinanceManitou(formData);
-            return redirect(`/dealer/options/${formData.brand}`);
+            return json({ finance }), redirect(`/dealer/options/${formData.brand}`, { headers });
           case "Manitou":
             await createFinanceManitou(formData);
-            return redirect(`/dealer/options/${formData.brand}`);
+            return json({ finance }), redirect(`/dealer/options/${formData.brand}`, { headers });
           case "BMW-Motorrad":
             await createBMWOptions(formData);
-            return redirect(`/dealer/options/${formData.brand}`);
+            return json({ finance }), redirect(`/dealer/options/${formData.brand}`, { headers });
           default:
-            return redirect(`/dealer/overview/${formData.brand}`);
+            return json({ finance }), redirect(`/dealer/overview/${formData.brand}`, { headers });
         }
       }
     } catch (error) {

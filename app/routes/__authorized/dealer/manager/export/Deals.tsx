@@ -18,12 +18,7 @@ export const loader = async () => {
 
   // Define the CSV headers
   const headers = [
-    "clientfileId",
-    "dashboardId",
-    "financeId",
-    "activixId",
-    "theRealActId",
-    "financeManager",
+    "id",
     "email",
     "firstName",
     "mileage",
@@ -113,6 +108,8 @@ export const loader = async () => {
     "lien",
     "dob",
     "othTax",
+    "optionsTotal",
+    "lienPayout",
     "referral",
     "visited",
     "bookedApt",
@@ -176,12 +173,7 @@ export const loader = async () => {
 
   // Map the data into an array of strings, each representing a row in the CSV
   const rows = data.map(entry => [
-    entry.clientfileId,
-    entry.dashboardId,
-    entry.financeId,
-    entry.activixId,
-    entry.theRealActId,
-    entry.financeManager,
+    entry.id,
     entry.email,
     entry.firstName,
     entry.mileage,
@@ -271,6 +263,8 @@ export const loader = async () => {
     entry.lien,
     entry.dob,
     entry.othTax,
+    entry.optionsTotal,
+    entry.lienPayout,
     entry.referral,
     entry.visited,
     entry.bookedApt,

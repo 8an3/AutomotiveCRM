@@ -38,16 +38,15 @@ export async function loader({ request, params }: LoaderArgs) {
     redirect('/login')
   }
   const metrics = await model.admin.query.getMetrics();
-  const dealerInfo = await prisma.dealer.findUnique({
+  const dealer = await prisma.dealer.findUnique({
     where: { id: 1 }
   })
   const userEmail = user?.email
-  const deFees = dealerInfo
   const dataPDF = await getDailyPDF(userEmail)
   const statsData = await getMergedFinance(userEmail)
   const comsRecords = await prisma.previousComms.findMany({ where: { userEmail: user.email, }, });
   return json(
-    { user, metrics, dealerInfo, deFees, dataPDF, statsData, comsRecords },
+    { user, metrics, dealer, dataPDF, statsData, comsRecords },
     { headers: createCacheHeaders(request) }
   );
 }
@@ -59,17 +58,41 @@ export async function action({ request }: ActionArgs) {
   const intent = formPayload.intent
 
   if (intent === 'updateDealerFeesAdmin') {
-    await prisma.dealer.update({
+
+    const update = await prisma.dealer.update({
       where: {
         id: 1
       },
       data: {
-        ...formData
+        userLoanProt: formData.userLoanProt,
+        userTireandRim: formData.userTireandRim,
+        userGap: formData.userGap,
+        userExtWarr: formData.userExtWarr,
+        userServicespkg: formData.userServicespkg,
+        vinE: formData.vinE,
+        lifeDisability: formData.lifeDisability,
+        rustProofing: formData.rustProofing,
+        userLicensing: formData.userLicensing,
+        userFinance: formData.userFinance,
+        userDemo: formData.userDemo,
+        userGasOnDel: formData.userGasOnDel,
+        userOMVIC: formData.userOMVIC,
+        userOther: formData.userOther,
+        userTax: formData.userTax,
+        userAirTax: formData.userAirTax,
+        userTireTax: formData.userTireTax,
+        userGovern: formData.userGovern,
+        userPDI: formData.userPDI,
+        userLabour: formData.userLabour,
+        userMarketAdj: formData.userMarketAdj,
+        userCommodity: formData.userCommodity,
+        destinationCharge: formData.destinationCharge,
+        userFreight: formData.userFreight,
+        userAdmin: formData.userAdmin,
       }
     })
-    return null;
+    return update;
   }
-
   if (intent === 'updateUser') {
     delete Input.intent;
 
@@ -86,34 +109,48 @@ export async function action({ request }: ActionArgs) {
     return ({ savedaily, delete2 })
 
   }
-  const dealer = await prisma.dealer.update({
-    data: {
-      dealerName: formData.dealer,
-      dealerAddress: formData.dealerAddress,
-      dealerCity: formData.dealerCity,
-      dealerProv: formData.dealerProv,
-      dealerPostal: formData.dealerPostal,
-      dealerPhone: formData.dealerPhone
-    },
-    where: {
-      id: 1
-    }
-  })
-  return dealer
+  if (intent === 'updateDealerInfo') {
+    const dealer = await prisma.dealer.update({
+      data: {
+        dealerName: formData.dealerName,
+        dealerAddress: formData.dealerAddress,
+        dealerCity: formData.dealerCity,
+        dealerProv: formData.dealerProv,
+        dealerPostal: formData.dealerPostal,
+        dealerPhone: formData.dealerPhone,
+        dealerEmail: formData.dealerEmail,
+        dealerContact: formData.dealerContact,
+        dealerAdminContact: formData.dealerAdminContact,
+        dealerEmailAdmin: formData.dealerEmailAdmin,
+        vercel: formData.vercel,
+        github: formData.github,
+      },
+      where: {
+        id: 1
+      }
+    })
+    return dealer
+  }
+  return null
 }
 
 
 export default function Route() {
   const rootLoaderData = useRootLoaderData();
   const loaderData = useLoaderData<typeof loader>();
-  const { user, deFees, dataPDF, statsData, comsRecords, dealerInfo, metrics } = useLoaderData()
-  let dealerName = dealerInfo.dealerName
-  let dealerAddress = dealerInfo.dealerAddress
-  let dealerCity = dealerInfo.dealerCity
-  let dealerProv = dealerInfo.dealerProv
-  let dealerPostal = dealerInfo.dealerPostal
-  let dealerPhone = dealerInfo.dealerPhone
-  let omvicNumber = user.omvicNumber
+  const { user, dealer, dataPDF, statsData, comsRecords, metrics } = useLoaderData()
+  let dealerName = dealer.dealerName
+  let dealerAddress = dealer.dealerAddress
+  let dealerCity = dealer.dealerCity
+  let dealerProv = dealer.dealerProv
+  let dealerPostal = dealer.dealerPostal
+  let dealerPhone = dealer.dealerPhone
+  let dealerEmail = dealer.dealerEmail
+  let dealerContact = dealer.dealerContact
+  let dealerAdminContact = dealer.dealerAdminContact
+  let dealerEmailAdmin = dealer.dealerEmailAdmin
+  let vercel = dealer.vercel
+  let github = dealer.github
   let finance = ''
   let data = ''
   const fetcher = useFetcher()
@@ -121,67 +158,55 @@ export default function Route() {
   const phone = user.phone
   // console.log('user', user)
 
-  if (deFees && deFees.dealerPhone) {
-    dealerPhone = deFees.dealerPhone || ''
+  if (dealer && dealer.dealerPhone) {
+    dealerPhone = dealer.dealerPhone || ''
   } else {
     console.error('The object or dealerPhone property is undefined.');
   }
-  if (deFees && deFees.omvicNumber) {
-    omvicNumber = deFees.omvicNumber || ''
-  } else {
-    console.error('The object or omvicNumber property is undefined.');
-  }
-  if (deFees && deFees.dealerAddress) {
-    dealerAddress = deFees.dealerAddress || ''
+  if (dealer && dealer.dealerAddress) {
+    dealerAddress = dealer.dealerAddress || ''
   } else {
     console.error('The object or dealerAddress property is undefined.');
   }
-
-  if (deFees && deFees.dealerProv) {
-    dealerProv = deFees.dealerProv || ''
+  if (dealer && dealer.dealerProv) {
+    dealerProv = dealer.dealerProv || ''
   } else {
     console.error('The object or dealerProv property is undefined.');
   }
-
-  const [open, setOpen] = useState(false);
-  const eventDateRef = useRef(new Date());
   const timerRef = useRef(0);
-
   useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, []);
-
   const Dealerfees = [
-    { name: "userAdmin", value: deFees.userAdmin, placeholder: "Admin" },
-    { name: "userFreight", value: deFees.userFreight, placeholder: "Freight" },
-    { name: "userCommodity", value: deFees.userCommodity, placeholder: "Commodity" },
-    { name: "userPDI", value: deFees.userPDI, placeholder: "PDI" },
-    { name: "userAirTax", value: deFees.userAirTax, placeholder: "Air Tax" },
-    { name: "userTireTax", value: deFees.userTireTax, placeholder: "Tire Tax" },
-    { name: "userGovern", value: deFees.userGovern, placeholder: "Government Fees" },
-    { name: "userFinance", value: deFees.userFinance, placeholder: "Finance Fees" },
-    { name: "destinationCharge", value: deFees.destinationCharge, placeholder: "Destination Charge" },
-    { name: "userGasOnDel", value: deFees.userGasOnDel, placeholder: "Gas On Delivery" },
-    { name: "userMarketAdj", value: deFees.userMarketAdj, placeholder: "Market Adjustment" },
-    { name: "userDemo", value: deFees.userDemo, placeholder: "Demonstratration Fee" },
-    { name: "userOMVIC", value: deFees.userOMVIC, placeholder: "OMVIC or Other" },
+    { name: "userAdmin", value: dealer.userAdmin, placeholder: "Admin" },
+    { name: "userFreight", value: dealer.userFreight, placeholder: "Freight" },
+    { name: "userCommodity", value: dealer.userCommodity, placeholder: "Commodity" },
+    { name: "userPDI", value: dealer.userPDI, placeholder: "PDI" },
+    { name: "userAirTax", value: dealer.userAirTax, placeholder: "Air Tax" },
+    { name: "userTireTax", value: dealer.userTireTax, placeholder: "Tire Tax" },
+    { name: "userGovern", value: dealer.userGovern, placeholder: "Government Fees" },
+    { name: "userFinance", value: dealer.userFinance, placeholder: "Finance Fees" },
+    { name: "destinationCharge", value: dealer.destinationCharge, placeholder: "Destination Charge" },
+    { name: "userGasOnDel", value: dealer.userGasOnDel, placeholder: "Gas On Delivery" },
+    { name: "userMarketAdj", value: dealer.userMarketAdj, placeholder: "Market Adjustment" },
+    { name: "userDemo", value: dealer.userDemo, placeholder: "Demonstratration Fee" },
+    { name: "userOMVIC", value: dealer.userOMVIC, placeholder: "OMVIC or Other" },
+    { name: "userLicensing", value: dealer.userLicensing, placeholder: "Licensing" },
+    { name: "userTax", value: dealer.userTax, placeholder: "Tax Rate" },
   ];
-
-
   const FinanceOptions = [
-    { name: "userExtWarr", value: deFees.userExtWarr, placeholder: 'Extended Warranty' },
-    { name: "userLoanProt", value: deFees.userLoanProt, placeholder: 'Loan Protection' },
-    { name: "userGap", value: deFees.userGap, placeholder: 'Gap Protection' },
-    { name: "userTireandRim", deFees: deFees.userTireandRim, placeholder: 'Tire and Rim' },
-    { name: "vinE", value: deFees.vinE, placeholder: 'Vin Etching' },
-    { name: "rustProofing", value: deFees.rustProofing, placeholder: 'Under Coating' },
-    { name: "userServicespkg", value: deFees.userServicespkg, placeholder: 'Service Package' },
-    { name: "lifeDisability", value: deFees.lifeDisability, placeholder: 'Life and Disability' },
-    { name: "userOther", value: deFees.userOther, placeholder: 'Other data Package' },
+    { name: "userExtWarr", value: dealer.userExtWarr, placeholder: 'Extended Warranty' },
+    { name: "userLoanProt", value: dealer.userLoanProt, placeholder: 'Loan Protection' },
+    { name: "userGap", value: dealer.userGap, placeholder: 'Gap Protection' },
+    { name: "userTireandRim", dealer: dealer.userTireandRim, placeholder: 'Tire and Rim' },
+    { name: "vinE", value: dealer.vinE, placeholder: 'Vin Etching' },
+    { name: "rustProofing", value: dealer.rustProofing, placeholder: 'Under Coating' },
+    { name: "userServicespkg", value: dealer.userServicespkg, placeholder: 'Service Package' },
+    { name: "lifeDisability", value: dealer.lifeDisability, placeholder: 'Life and Disability' },
+    { name: "userOther", value: dealer.userOther, placeholder: 'Other data Package' },
   ];
   //      <video loop autoPlay width='750' height='750' src='https://youtu.be/u1MLfrFzCBo' className='mx-auto z-49' frameBorder="0" allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
   const errors = useActionData() as Record<string, string | null>;
-
   return (
     <>
       <Tabs defaultValue="dealerFees" className="w-auto mx-auto " >
@@ -189,26 +214,9 @@ export default function Route() {
           <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
           <TabsTrigger className='rounded-md' value="account">Account Variables</TabsTrigger>
           <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>
-
         </TabsList>
-        <TabsContent value="stats" className='rounded-md bg-[#09090b] text-[#fafafa]'>
-          <Card className='rounded-md text-[#fafafa]'>
-            <CardHeader className='bg-myColor-900'>
-              <CardTitle className='text-[#fafafa]'>
-                <h3 className="text-2xl font-thin uppercase text-slate4">
-                  Statistics
-                </h3>
-              </CardTitle>
-              <CardDescription>
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2 bg-slate11 text-[#fafafa]">
-              <StatsTable statsData={statsData} comsRecords={comsRecords} />
-            </CardContent>
-          </Card>
-        </TabsContent>
         <TabsContent value="dealerFees" className='rounded-md'>
-          <Card>
+          <Card className='rounded-lg'>
             <CardContent className="space-y-2 bg-[#09090b] text-[#fafafa] border-[#27272a] rounded-md">
               <Form method="post" className="">
 
@@ -233,7 +241,6 @@ export default function Route() {
                           <Input
                             name={fee.name}
                             defaultValue={fee.value}
-
                             className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                           />
                           <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
@@ -241,7 +248,7 @@ export default function Route() {
                       ))}
                       <div className="relative mt-3"  >
                         <Input
-                          defaultValue={deFees.userLicensing}
+                          defaultValue={dealer.userLicensing}
                           name="userLicensing"
                           className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
@@ -252,7 +259,7 @@ export default function Route() {
                       </div>
                       <div className="relative mt-3"  >
                         <Input
-                          defaultValue={deFees.userTax}
+                          defaultValue={dealer.userTax}
                           name="userTax"
                           className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
@@ -263,7 +270,7 @@ export default function Route() {
                       </div>
                       <div className="relative mt-3"  >
                         <Input
-                          defaultValue={deFees.userLabour}
+                          defaultValue={dealer.userLabour}
                           name="userLabour"
                           className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
@@ -318,17 +325,24 @@ export default function Route() {
           </Card>
         </TabsContent>
         <TabsContent value="account">
-          <Card>
+          <Card className='rounded-lg'>
             <CardContent className="space-y-2 bg-[#09090b] text-[#fafafa] border-[#27272a] rounded-md">
               <Form method="post" className="">
-                <h1 className='text-[#fafafa]'>Dealer Info</h1>
-                <hr className="text-[#fafafa]" />
+                <div className=" mt-5">
+                  <h2 className="text-2xl font-thin">
+                    Dealer Info
+                  </h2>
+                  <p className="text-sm text-[#fafafa]">
+                    Edit your dealer information, this is used all over the application. If anything changes be sure to come back here and update the information.
+                  </p>
+                  <Separator className="my-4" />
+
+                </div>
                 <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
 
                   <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerName}
-                      placeholder="Dealer Name"
                       name="dealer"
                       className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
@@ -336,7 +350,6 @@ export default function Route() {
                   </div>
                   <div className="relative mt-3"  >
                     <Input
-                      placeholder="123 Dealer Street"
                       name="dealerAddress"
                       defaultValue={dealerAddress}
                       className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
@@ -346,7 +359,6 @@ export default function Route() {
                   <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerCity}
-                      placeholder="Toronto"
                       name="dealerCity"
                       className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
@@ -355,7 +367,6 @@ export default function Route() {
                   <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerProv}
-                      placeholder="ON"
                       name="dealerProv"
                       className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
@@ -364,7 +375,6 @@ export default function Route() {
                   <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerPostal}
-                      placeholder="K1K K1K"
                       name="dealerPostal"
                       className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
@@ -372,7 +382,6 @@ export default function Route() {
                   </div>
                   <div className="relative mt-3"  >
                     <Input
-                      placeholder="6136136134"
                       type="phone"
                       name="dealerPhone"
                       className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
@@ -380,10 +389,58 @@ export default function Route() {
                     />
                     <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone Number</label>
                   </div>
+                  <div className="relative mt-3"  >
+                    <Input
+                      name="dealerContact"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      defaultValue={dealerContact}
+                    />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
+                  </div>
+                  <div className="relative mt-3"  >
+                    <Input
+                      name="dealerEmail"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      defaultValue={dealerEmail}
+                    />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Email</label>
+                  </div>
+                  <div className="relative mt-3"  >
+                    <Input
+                      name="dealerAdminContact"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      defaultValue={dealerAdminContact}
+                    />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
+                  </div>
+                  <div className="relative mt-3"  >
+                    <Input
+                      name="dealerEmailAdmin"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      defaultValue={dealerEmailAdmin}
+                    />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
+                  </div>
+                  <div className="relative mt-3"  >
+                    <Input
+                      name="github"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      defaultValue={github}
+                    />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Github</label>
+                  </div>
+                  <div className="relative mt-3"  >
+                    <Input
+                      name="vercel"
+                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      defaultValue={vercel}
+                    />
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Vercel</label>
+                  </div>
                   <Button
                     type='submit'
                     name='intent'
-                    value='updateDealer'
+                    value='updateDealerInfo'
                     size='sm'
                     className='ml-3 mr-2 bg-[#dc2626]'
                   >
@@ -429,6 +486,22 @@ export default function Route() {
             </section>
           </div>
         </TabsContent>
+        <TabsContent value="stats" className='rounded-md bg-[#09090b] text-[#fafafa]'>
+          <Card className='rounded-md text-[#fafafa]'>
+            <CardHeader className='bg-myColor-900'>
+              <CardTitle className='text-[#fafafa]'>
+                <h3 className="text-2xl font-thin uppercase text-slate4">
+                  Statistics
+                </h3>
+              </CardTitle>
+              <CardDescription>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2 bg-slate11 text-[#fafafa]">
+              <StatsTable statsData={statsData} comsRecords={comsRecords} />
+            </CardContent>
+          </Card>
+        </TabsContent>
         <TabsContent value="Parts">
           <Card>
             <CardContent className="space-y-2 bg-slate11 text-[#fafafa] rounded-md">
@@ -443,7 +516,6 @@ export default function Route() {
           </Card>
         </TabsContent>
       </Tabs>
-
     </>
   );
 }

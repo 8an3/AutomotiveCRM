@@ -18,7 +18,6 @@ import { Form, useFetcher, useSubmit } from '@remix-run/react';
 import { DownloadIcon, PaperPlaneIcon, UploadIcon } from '@radix-ui/react-icons';
 import { toast } from "sonner"
 import { useState, useRef, useEffect } from 'react';
-import Papa from 'papaparse';
 
 
 export const loader: LoaderFunction = async ({ req, request, params }) => {
@@ -172,11 +171,11 @@ export default function ImportExport() {
                       <SelectContent className='bg-[#09090b] border-[#27272a] text-[#f1f1f1]'>
                         <SelectGroup>
                           <SelectLabel>Export</SelectLabel>
-                          <SelectItem value="Customers">Customers</SelectItem>
-                          <SelectItem value="UnitInventory">Unit Inventory</SelectItem>
-                          <SelectItem value="Deals">Deals</SelectItem>
-                          <SelectItem value="Parts">Parts</SelectItem>
-                          <SelectItem value="Accessories">Accessories</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Customers">Customers</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="UnitInventory">Unit Inventory</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Deals">Deals</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Parts">Parts</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Accessories">Accessories</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -218,10 +217,7 @@ export default function ImportExport() {
 
             </ul>
           </fetcher.Form>
-          <p>Test from other site</p>
-          <div style={{ textAlign: 'center' }}>
-            <MyIFrameComponent />
-          </div>
+
           <fetcher.Form  >
             <div>
               <label htmlFor="contact-file">
@@ -245,11 +241,11 @@ export default function ImportExport() {
                     <SelectContent className='bg-[#09090b] border-[#27272a] text-[#f1f1f1]'>
                       <SelectGroup>
                         <SelectLabel>Export</SelectLabel>
-                        <SelectItem value="Customers">Customers</SelectItem>
-                        <SelectItem value="UnitInventory">Unit Inventory</SelectItem>
-                        <SelectItem value="Deals">Deals</SelectItem>
-                        <SelectItem value="Parts">Parts</SelectItem>
-                        <SelectItem value="Accessories">Accessories</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Customers">Customers</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="UnitInventory">Unit Inventory</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Deals">Deals</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Parts">Parts</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Accessories">Accessories</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

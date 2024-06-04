@@ -14,7 +14,6 @@ export async function SetCookie(userId, clientfileId, financeId, dashboardId, re
     const session = await getSession(request.headers.get("Cookie"))
     session.set("userId", userId)
     session.set("clientfileId", clientfileId)
-    session.set("dashboardId", dashboardId)
     session.set("financeId", financeId)
     await commitSession(session)
     console.log(session, 'set cookie')

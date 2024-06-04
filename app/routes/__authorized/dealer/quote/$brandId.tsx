@@ -414,10 +414,10 @@ export default function Quote() {
                                 <Input type="hidden" name="deposit" defaultValue={0} />
                                 <Input type="hidden" name="months" defaultValue={60} />
                                 <Input type="hidden" name="accessories" defaultValue={0} />
-                                <Input type="hidden" name="userId" defaultValue={userId} />
+                                <Input type="hidden" name="userId" defaultValue={user.id} />
                                 <Input type="hidden" name="brand" defaultValue={brandId} />
-                                <Input type="hidden" name="userEmail" defaultValue={email} />
-                                <Input type="hidden" name="userName" defaultValue={name} />
+                                <Input type="hidden" name="userEmail" defaultValue={user.email} />
+                                <Input type="hidden" name="userName" defaultValue={user.name} />
                                 <ButtonLoading
                                     size="sm"
                                     type="submit"

@@ -18,6 +18,8 @@ const financeFormSchema = z.object({
   vercel: zfd.text(z.string().optional()),
   github: zfd.text(z.string().optional()),
   idToken: zfd.text(z.string().optional()),
+  dealerAdminContact: zfd.text(z.string().optional()),
+  dealerEmailAdmin: zfd.text(z.string().optional()),
   newLook: zfd.text(z.string().optional()),
   timeOfDay: zfd.text(z.string().optional()),
   isPublished: zfd.text(z.string().optional()),
