@@ -10,9 +10,6 @@ import { prisma } from "~/libs";
 import { commitSession as commitPref, getSession as getPref } from "~/utils/pref.server";
 import { getSession } from '~/sessions/auth-session.server';
 import { getSession as custSession, commitSession as custCommit } from '~/sessions/customer-session.server';
-import { model } from "~/models";
-import { CreateCommunications, CompleteTask, QuoteCreateLead, CreateTask, } from '~/routes/_authorized/dealer/api.server'
-import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 import { UpdateLead, CreateVehicle } from '~/routes/__authorized/dealer/api/activix';
 import { getSession as sixSession, commitSession as sixCommit, destroySession } from '~/utils/misc.user.server'
 

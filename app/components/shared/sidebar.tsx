@@ -585,10 +585,6 @@ export const adminSidebarNav = [
     to: "/dealer/admin/users",
   },
   {
-    title: "Import / Export",
-    to: "/dealer/admin/importExport",
-  },
-  {
     title: "Search Leads",
     to: "/dealer/admin/leads",
   },

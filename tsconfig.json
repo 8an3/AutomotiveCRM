@@ -33,7 +33,7 @@
     "app/routes/faq.tsx.bk",
     "app/routes/roadmap.tsx.bk",
     "app/routes/_auth.microStrat.js"
-, "app/components/microsoft/secrets.js", "app/routes/__auth/demo", "app/components/barcodeReader/Scanner.jsx"  ],
+, "app/components/microsoft/secrets.js", "app/routes/__auth/demo", "app/components/barcodeReader/Scanner.jsx", "app/routes/__customerLandingPages/questionnaire"  ],
   "ts-node": {
     "swc": true
   }

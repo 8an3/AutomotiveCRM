@@ -148,9 +148,14 @@ export async function loader({ request, params }: LoaderFunction) {
   });
   const financeId = finance?.id;
   //  const { finance, dashboard, clientfile, } = await getClientFinanceAndDashData(financeId)
-  const deFees = await prisma.dealer.findUnique({
+  let deFees = await prisma.dealer.findUnique({
     where: { userEmail: email },
   });
+  if (!deFees) {
+    deFees = await prisma.dealer.findUnique({
+      where: { id: 1 },
+    });
+  }
   const modelData = await getDataByModel(finance);
   const sliderWidth = "50%";
   return json({

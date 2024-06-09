@@ -88,6 +88,7 @@ import {
 import { CheckIcon, PaperPlaneIcon, PlusIcon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import useSWR, { SWRConfig, mutate } from "swr";
+import CheckingDealerPlan from "~/routes/__customerLandingPages/welcome/dealer";
 
 const fetchData = async (url) => {
   const response = await fetch(url);
@@ -348,7 +349,7 @@ export async function loader({ request, params }) {
   const conversationsList = await prisma.staffChat.findMany();
   console.log(user);
   // const interruptionsData = await prisma.interruptions.findMany();
-
+  const getThing = await CheckingDealerPlan()
   return json({ user, conversationsList });
 }
 

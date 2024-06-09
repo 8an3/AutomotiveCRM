@@ -15,6 +15,26 @@ model DealerCustomer {
   github         String?
 }
 
+model DealerMyCustomer {
+  id        Int      @id @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // dealer info
+  dealerName       String?
+  dealerAddress    String?
+  dealerCity       String?
+  dealerProv       String?
+  dealerPostal     String?
+  dealerPhone      String?
+  dealerContact    String?
+  dealerEmail      String?
+  dealerEmailAdmin String?
+  vercel           String?
+  github           String?
+  sentWelcomeEmail String?
+}
+
 // got this one in dealer
 model DealerFees {
   id                String   @id @default(cuid())

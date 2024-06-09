@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, Await, } from 'react';
+import React, { useEffect, useState, } from 'react';
 import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui";
 import { Form, Link, useActionData, useLoaderData, useNavigation, } from "@remix-run/react";
 import {
@@ -67,7 +67,7 @@ export const action: ActionFunction = async ({ request }) => {
 }
 export default function Shight() {
   const { user, scripts } = useLoaderData();
-
+  console.log(user, scripts, 'scritps')
   const copyText = (text) => {
     navigator.clipboard.writeText(text)
       .then(() => {
@@ -138,37 +138,33 @@ export default function Shight() {
           <CardHeader onClick={handleCategoryClick} className='cursor-pointer'>
             <CardTitle>Category</CardTitle>
           </CardHeader>
-          <Suspense fallback={<Loading />}>
-            <Await resolve={scripts}>
-              {selectedCategorySize && (
-                <>
-                  <CardContent className="space-y-2 ">
-                    <div className="h-auto max-h-[700px] space-y-1 overflow-y-auto  ">
-                      {scripts.reduce((unique, mail) => {
-                        if (!unique.some(item => item.category === mail.category)) {
-                          unique.push(mail);
-                        }
-                        return unique;
-                      }, []).map((mail, index) => (
-                        <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => {
-                          handleSubcategoryClick();
-                          handleEmailClick(mail.category)
-                        }}>
-                          <div className="m-2 flex items-center justify-between">
-                            <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
-                          </div>
-                        </div>
-                      ))}
-
+          {selectedCategorySize && (
+            <>
+              <CardContent className="space-y-2 ">
+                <div className="h-auto max-h-[700px] space-y-1 overflow-y-auto  ">
+                  {scripts.reduce((unique, mail) => {
+                    if (!unique.some(item => item.category === mail.category)) {
+                      unique.push(mail);
+                    }
+                    return unique;
+                  }, []).map((mail, index) => (
+                    <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => {
+                      handleSubcategoryClick();
+                      handleEmailClick(mail.category)
+                    }}>
+                      <div className="m-2 flex items-center justify-between">
+                        <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
+                      </div>
                     </div>
-                  </CardContent>
-                  <CardFooter>
-                    <p>Your ability to close increases with the amount of tools at your disposal. A mechanic without a tire iron wouldnt be able to change a tire. So why dont more sales people take better care of their scripts, closes, and such?</p>
-                  </CardFooter>
-                </>
-              )}
-            </Await>
-          </Suspense>
+                  ))}
+
+                </div>
+              </CardContent>
+              <CardFooter>
+                <p>Your ability to close increases with the amount of tools at your disposal. A mechanic without a tire iron wouldnt be able to change a tire. So why dont more sales people take better care of their scripts, closes, and such?</p>
+              </CardFooter>
+            </>
+          )}
         </Card>
 
         <Card

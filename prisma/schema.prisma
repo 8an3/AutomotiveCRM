@@ -84,19 +84,21 @@ model Dealer {
   updatedAt DateTime @updatedAt
 
   // dealer info
-  dealerName         String?
-  dealerAddress      String?
-  dealerCity         String?
-  dealerProv         String?
-  dealerPostal       String?
-  dealerPhone        String?
-  dealerEmail        String?
-  dealerContact      String?
-  dealerAdminContact String?
-  dealerEmailAdmin   String?
-  vercel             String?
-  github             String?
+  dealerName           String?
+  dealerAddress        String?
+  dealerCity           String?
+  dealerProv           String?
+  dealerPostal         String?
+  dealerPhone          String?
+  dealerEmail          String?
+  dealerContact        String?
+  dealerAdminContact   String?
+  dealerEmailAdmin     String?
+  dealerEtransferEmail String?
+  vercel               String?
+  github               String?
 
+  sentWelcomeEmail String?
   // store hours
   //  day   String?   @unique
   //  start DateTime?
@@ -131,26 +133,6 @@ model Dealer {
   userAdmin     String?
 
   userEmail String? @unique
-}
-
-model DealerMyCustomer {
-  id        Int      @id @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // dealer info
-  dealerName       String?
-  dealerAddress    String?
-  dealerCity       String?
-  dealerProv       String?
-  dealerPostal     String?
-  dealerPhone      String?
-  dealerContact    String?
-  dealerEmail      String?
-  dealerEmailAdmin String?
-  vercel           String?
-  github           String?
-  sentWelcomeEmail String?
 }
 
 model Interruptions {
@@ -1204,6 +1186,41 @@ model Finance {
 
   previousComms PreviousComms[] @relation("finance")
   FinCanOptions FinCanOptions[] @relation("finance")
+}
+
+model FinanceApplication {
+  id                 String  @id @default(cuid())
+  financeId          String?
+  clientfileId       String?
+  fullName           String?
+  dob                String?
+  sin                String?
+  phone              String?
+  email              String?
+  streetAddress      String?
+  city               String?
+  province           String?
+  postalCode         String?
+  addressDuration    String?
+  employer           String?
+  job                String?
+  employmentStatus   String?
+  employerAddress    String?
+  employerCity       String?
+  employerProvince   String?
+  employerPostal     String?
+  employerPhone      String?
+  employmentDuration String?
+  monthlyGrossIncome String?
+  bankName           String?
+  branchAddress      String?
+  mortgagePayment    String?
+  utilities          String?
+  propertyTaxes      String?
+  loanType           String?
+  loanMonthlyPayment String?
+  remainingBalance   String?
+  notes              String?
 }
 
 model FinManOptions {
