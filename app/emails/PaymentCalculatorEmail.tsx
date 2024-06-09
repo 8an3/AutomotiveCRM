@@ -1,7 +1,7 @@
 import { Html, Head, Preview, Body, Container, Row, Column, Text, Section, Hr, Tailwind, Button } from "@react-email/components";
 import React, { useEffect, useState } from "react";
 
-const PaymentCalculatorEmail = ({ finance, clientInfo, user, modelData, deFees, formData, }) => {
+const PaymentCalculatorEmail = ({ finance, user, modelData, formData }) => {
   const { total, onTax, qcTax, native, otherTax, totalWithOptions, otherTaxWithOptions, on60, biweekly, weekly, months, iRate, deposit, tradeValue, perDiscountGiven, beforeDiscount, userLabour, accessories, labour, lien, msrp, financeId, userDemo, userGovern, userGasOnDel, userAirTax, userFinance, destinationCharge, userMarketAdj, userOther, userExtWarr, userServicespkg, vinE, rustProofing, userGap, userLoanProt, userTireandRim, lifeDisability, deliveryCharge, brand, paintPrem, modelCode, model, color, stockNum, trade, freight, licensing, licensingFinance, commodity, pdi, admin, biweeklNatWOptions, nat60WOptions, weeklylNatWOptions, userTireTax, nat60, userOMVIC, discount, discountPer, biweeklyqc, weeklyqc, biweeklNat, weeklylNat, biweekOth, weeklyOth, othTax, qc60, oth60, oth60WOptions, biweekOthWOptions, weeklyOthWOptions, firstName, lastName, panAmAdpRide, panAmTubelessLacedWheels, hdWarrAmount,
     clientfileId,
     activixId,
@@ -99,8 +99,7 @@ const PaymentCalculatorEmail = ({ finance, clientInfo, user, modelData, deFees, 
     funded,
     leadSource,
 
-  } = clientInfo;
-  const { userLicensing, userTax, userPDI, userCommodity, userFreight, userAdmin, } = deFees
+  } = finance;
 
   const priceSection = () => {
     return (
@@ -595,9 +594,9 @@ const PaymentCalculatorEmail = ({ finance, clientInfo, user, modelData, deFees, 
 
 
               <Hr style={hr} />
-              <Text style={headingTwo}>Standard Terms - {finance.desiredPayments}</Text>
+              <Text style={headingTwo}>Standard Terms</Text>
+              <Text style={headingTwo}>{finance.desiredPayments}</Text>
               <ul style={list}>
-
                 {finance.desiredPayments === 'Standard Payment' ?
                   <>
                     <li className='flex items-center content-center justify-between' style={listItems}>
@@ -778,41 +777,49 @@ const PaymentCalculatorEmail = ({ finance, clientInfo, user, modelData, deFees, 
               <Text style={headingTwo}>Claim This Model Now</Text>
               <ul style={list}>
                 <li className='flex items-center content-center justify-between' style={listItems}>
-                  <Button
-                    href={`http://localhost:3000/startYourFinanceApplication?financeId=${finance.id}`}
+                  <Container style={leftColumn}>
+                    <Button
+                      href={`http://localhost:3000/startYourFinanceApplication?financeId=${finance.id}`}
 
-                    style={{
-                      borderRadius: "3px",
-                      backgroundColor: "#1c69d4",
-                      padding: "10px 10px",
-                      color: '#fff',
-                      fontSize: '14px',
-                      width: '100%',
-                      height: '52px',
-                      textAlign: 'center',
-                    }}
-                    className="  rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3"
-                  >
-                    Finance Application
-                  </Button>
-                  <Button
-                    href={`http://localhost:3000/claimNowWithDeposit?financeId=${finance.id}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: "3px",
-                      backgroundColor: "#ff0000",
-                      padding: "10px",
-                      color: '#fff',
-                      fontSize: '14px',
-                      width: '100%',
-                      height: '52px',
-                      textAlign: 'center',
-                      textDecoration: 'none' // Ensure the link looks like a button
-                    }}  >
-                    Submit Deposit
-                  </Button>
+                      style={{
+                        width: 'auto',
+                        borderRadius: "6px",
+                        backgroundColor: "#1c69d4",
+                        padding: "10px",
+                        color: '#fff',
+                        fontSize: '12px',
+                        height: '32',
+                        paddingLeft: '16px',
+                        paddingRight: '16px',
+                        textAlign: 'center',
+                        textDecoration: 'none'
+                      }}
+                      className=" px-4 text-white font-semibold no-underline text-center py-3 my-auto"
+                    >
+                      <p className='my-auto text-xs '>Finance Application</p>
+                    </Button>
+                  </Container>
+                  <Container style={rightColumn}>
+                    <Button
+                      href={`http://localhost:3000/claimNowWithDeposit?financeId=${finance.id}`}
+                      style={{
+                        width: 'auto',
+                        borderRadius: "6px",
+                        backgroundColor: "#ff0000",
+                        padding: "10px",
+                        color: '#fff',
+                        fontSize: '12px',
+                        height: '32',
+                        paddingLeft: '16px',
+                        paddingRight: '16px',
+                        textAlign: 'center',
+                        textDecoration: 'none'
+                      }}
+                      className=" px-4 text-white font-semibold no-underline text-center py-3 my-auto"
+                    >
+                      <p className='my-auto text-center'> Submit Deposit</p>
+                    </Button>
+                  </Container>
                 </li>
               </ul>
             </Column>

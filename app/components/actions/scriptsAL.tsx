@@ -16,7 +16,6 @@ import { Suspense, } from 'react'
 export async function scriptsLoader({ request, params }) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email");
-
   const user = await GetUser(email);
   if (!user) {
     return redirect('/login');
@@ -1510,14 +1509,7 @@ export async function scriptsLoader({ request, params }) {
       subCat: 'Client - 24 hour delivery reminder',
     },
   ]
-  const deferredData = {
-    scripts, deFees: getDealerFeesbyEmail(user?.email),
-  };
-  return defer({ data: deferredData },
-    json({ ok: true, email, user, }
-    ));
-
-
+  return json({ ok: true, email, user, scripts });
 }
 /** closes: getCloses(),
     scripts: getScriptsListItems(),

@@ -31,7 +31,7 @@ import {
   DrawerTrigger,
 } from "~/components/ui/drawer"
 import { cn } from "~/components/ui/utils"
-import { Button, buttonVariants } from "~/components"
+import { Button, buttonVariants } from "~/components/ui/button"
 
 export const mainNav = [
 

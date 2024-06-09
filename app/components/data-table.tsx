@@ -1,17 +1,14 @@
 "use client";
 import { Button, Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, } from "~/components/ui/index";
 import React, { useMemo, useEffect, useState, useRef, Suspense } from "react";
-import { ClientOnly } from "remix-utils";
-
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, type SortingState, getSortedRowModel, sortingFns, SortingFn, FilterFns, FilterFn, type VisibilityState, getFilteredRowModel, type ColumnFiltersState, } from "@tanstack/react-table";
-import { DataTablePagination } from "./dashboard/calls/pagination";
+import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu";
 import { Form, Link, useFetcher, useLoaderData, useTransition, Await } from "@remix-run/react";
-import AddCustomer from "./dashboard/calls/addCustomer";
-import Filter from "./dashboard/calls/Filter";
-import { Flex, Text, TextArea, TextField, Heading } from '@radix-ui/themes';
+import AddCustomer from "~/components/dashboard/calls/addCustomer";
+import Filter from "~/components/dashboard/calls/Filter";
 import { CalendarCheck, Search, MailWarning } from "lucide-react";
 import {
   Select,
@@ -20,8 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select"
-import { env } from 'process';
-import axios from 'axios';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

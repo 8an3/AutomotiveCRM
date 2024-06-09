@@ -189,9 +189,10 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
         }
     }
     if (formPayload.intent === 'email') {
+        console.log('hitemail')
         const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
         const deFees = await prisma.dealer.findUnique({ where: { id: 1 } })
-        const clientInfo = { ...finance, }
+
         const model = finance?.model || '';
         const modelData = formData.modelData
         const data = await resend.emails.send({
@@ -199,7 +200,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
             reply_to: user?.email,
             to: [`${finance?.email}`],
             subject: `${finance?.brand} ${model} model information.`,
-            react: <PaymentCalculatorEmail clientInfo={clientInfo} user={user} deFees={deFees} finance={finance} modelData={modelData} formData={formData} />
+            react: <PaymentCalculatorEmail user={user} finance={finance} modelData={modelData} formData={formData} />
         });
         return json({ data, })
     }

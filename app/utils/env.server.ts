@@ -32,6 +32,16 @@ export function getEnvPrivate(): z.infer<typeof schemaEnvPrivate> {
     REMIX_SESSION_SECRET: getEnvServer("REMIX_SESSION_SECRET"),
     REMIX_APP_NAME: getEnvServer("REMIX_APP_NAME"),
     REMIX_APP_EMAIL: getEnvServer("REMIX_APP_EMAIL"),
+    APP_URL: getEnvServer("APP_URL"),
+    STRIPE_SECRET_KEY: getEnvServer("STRIPE_SECRET_KEY"),
+    RESEND_API_KEY: getEnvServer("RESEND_API_KEY"),
+    API_ACTIVIX: getEnvServer("API_ACTIVIX"),
+    MICRO_APP_ID: getEnvServer("MICRO_APP_ID"),
+    MICRO_TENANT_ID: getEnvServer("MICRO_TENANT_ID"),
+    MICRO_CLIENT_SECRET: getEnvServer("MICRO_CLIENT_SECRET"),
+    TWILIO_ACCOUNTSID: getEnvServer("TWILIO_ACCOUNTSID"),
+    TWILIO_AUTHTOKEN: getEnvServer("TWILIO_AUTHTOKEN"),
+    REDIRECT_URI: getEnvServer("REDIRECT_URI"),
   };
 }
 

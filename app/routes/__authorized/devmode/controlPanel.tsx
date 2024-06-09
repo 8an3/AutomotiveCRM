@@ -157,7 +157,20 @@ export async function action({ request, }: ActionFunctionArgs) {
     return ({ project })
 
   };
-
+  if (intent === 'sendInitialEmail') {
+    const email = await resend.emails.send({
+      from: "Admin <admin@resend.dev>",//`${user?.name} <${user?.email}>`,
+      reply_to: 'skylerzanth@gmail.com',
+      to: [dealer.dealerContact, dealer.dealerEmailAdmin],
+      subject: `Welcome to the DSA team, ${dealer.dealerName}.`,
+      react: <DealerOnboarding dealer={dealer} />
+    });
+    const dealer = await prisma.dealer.create({
+      where: { id: formData.dealerId },
+      data: { sentWelcomeEmail: 'true', }
+    })
+    return json({ email })
+  }
 
   if (intent === 'createDealer') {
     //const createFirstFirst = await createFirstVercel(dealerName)
@@ -166,7 +179,7 @@ export async function action({ request, }: ActionFunctionArgs) {
     // const createSecondSecond = await createSecondVercel(dealerName)
     /// console.log(createSecondSecond)
     // console.log(dealerName)
-    const dealer = await prisma.dealerMyCustomer.create({
+    const dealer = await prisma.dealer.create({
       data: {
         dealerName: formData.dealerName,
         dealerAddress: formData.dealerAddress,
@@ -178,12 +191,15 @@ export async function action({ request, }: ActionFunctionArgs) {
         dealerContact: formData.dealerContact,
         dealerAdminContact: formData.dealerAdminContact,
         dealerEmailAdmin: formData.dealerEmailAdmin,
+        dealerEtransferEmail: formData.dealerEtransferEmail,
         vercel: formData.vercel,
         github: formData.github,
+        sentWelcomeEmail: 'true',
       }
     })
     const email = await resend.emails.send({
-      from: 'skylerzanth@gmail.com',
+      from: "Admin <admin@resend.dev>",//`${user?.name} <${user?.email}>`,
+      reply_to: 'skylerzanth@gmail.com',
       to: [dealer.dealerContact, dealer.dealerEmailAdmin],
       subject: `Welcome to the DSA team, ${dealer.dealerName}.`,
       react: <DealerOnboarding dealer={dealer} />
@@ -411,18 +427,20 @@ export default function DashboardPage() {
     { type: "Dev", desc: "Notification system needs to show email and sms notifications" },
     { type: "Dev", desc: "in quote loader there is updateReadStatus() instead of it being triggered here this should be converted to an automation" },
     { type: "Dev", desc: "Docs" },
-    { type: "Dev", desc: "automation" },
+    { type: "Dev", desc: "automation - instead of doing it like activxi... that no one can use anyways - just have options of different automation tasks like follow up after pick up, or reminders before appts, you can always offer customized automations but theres no point having a system no one uses but the person choose the time frames" },
     { type: "Dev", desc: "new hooks when upgrading platform" },
     { type: "Dev", desc: "sales manager dash" },
     { type: "Dev", desc: "need a way for when a new employee uses the dashboard they acquire a new number from twilio" },
     { type: "Dev", desc: "some sort of email webhook whether we use swr or a microsoft api so create notifications of new emails" },
 
-    { type: "Dev", desc: "-------------------DONE-------------------" },
+    { type: "Dev", desc: "----------------------DONE----------------------" },
     { type: "Dev", desc: "Dealer Onboarding - done" },
+    { type: "Dev", desc: "welcome email for sales people" },
+    { type: "Dev", desc: "once dealer signs up, send welcome email bringing them to the page they need to fill out for the informatoin to build their site" },
     { type: "Dev", desc: "file upload in customer file - done " },
     { type: "Dev", desc: "emails in overview - done" },
     { type: "Dev", desc: "employee onboarding - done - be need to redo admin dashbaoard that deals with usrs" },
-    { type: "Dev", desc: "Dealer Onboarding - done - automate creation of vercel and github need to get the url and save it in our database" },
+    { type: "Dev", desc: "Dealer Onboarding - done - automate creation of vercel need to get the url and save it in our database, just use the one repo once you sync it upgrades evrvyones vercel sites" },
   ];
 
   const devTasks = {};
@@ -671,6 +689,14 @@ export default function DashboardPage() {
                               />
                               <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
                             </div>
+                            <div className="relative mt-3">
+                              <Input
+                                name='dealerEtransferEmail'
+                                type="text"
+                                className="w-full bg-[#09090b] border-[#27272a] "
+                              />
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Etransfer Email</label>
+                            </div>
 
                             <div className="relative mt-3">
                               <Input
@@ -826,21 +852,25 @@ export default function DashboardPage() {
                   <CardContent>
 
                     <p className="text-xs text-muted-foreground">
-                      {selectedDealer && selectedDealer.sentWelcomeEmail === 'no' ? (
-                        <Form method='post' className="space-y-4">
-                          <ButtonLoading
-                            size="sm"
-                            value='sendInitialEmail'
-                            className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-[#fafafa] border border-[#27272a]"
-                            name="intent"
-                            type="submit"
-                            isSubmitting={isSubmitting}
-                            onClick={() => toast.success(`Dealer saved!`)}
-                            loadingText="Saved dealer details..."
-                          >
-                            Save
-                          </ButtonLoading>
-                        </Form>
+                      {selectedDealer && selectedDealer.sentWelcomeEmail !== 'true' ? (
+                        <>
+                          <Form method='post' className="space-y-4">
+                            <input type='hidden' name='dealerId' defaultValue={selectedDealer.id} />
+                            <ButtonLoading
+                              size="sm"
+                              value='sendInitialEmail'
+                              className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-[#fafafa] border border-[#27272a]"
+                              name="intent"
+                              type="submit"
+                              isSubmitting={isSubmitting}
+                              onClick={() => toast.success(`Dealer sent initial email!`)}
+                              loadingText="Dealer sent initial email!"
+                            >
+                              Save
+                            </ButtonLoading>
+                          </Form>
+                        </>
+
                       ) : (
                         <img
                           loading="lazy"

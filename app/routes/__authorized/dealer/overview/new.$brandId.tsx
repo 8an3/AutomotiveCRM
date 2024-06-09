@@ -352,7 +352,6 @@ export function Overview({ outletSize }) {
   let bmwTotal = 0;
   let totalSum = 0;
 
-  console.log(deFees, "deFees");
   const initial = {
     userLabour: parseInt(deFees.userLabour) || 0,
     accessories: finance.accessories ? parseFloat(finance.accessories) : 0,
@@ -1672,6 +1671,34 @@ export function Overview({ outletSize }) {
       template: "FullBreakdownWOptions",
       financeId: finance.id,
     },
+    {
+      value: "Custom Templated Emails",
+      label: "Custom Templated Emails",
+      template: "Custom-Templated-Emails",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+    {
+      value: "Send Payments Custom",
+      label: "Send Payments Custom",
+      template: "justPaymentsCustom",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+    {
+      value: "Full Breakdown Custom",
+      label: "Full Breakdown Custom",
+      template: "fullBreakdownCustom",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+    {
+      value: "Full Breakdown W/ Options Custom",
+      label: "Full Breakdown W/ Options Custom",
+      template: "FullBreakdownWOptionsCustom",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
   ];
   const customEmails = [
     {
@@ -1697,21 +1724,21 @@ export function Overview({ outletSize }) {
     },
   ];
   const [openEmail, setOpenEmail] = useState(false);
-  const [emailLabel, setEmailLabel] = useState();
-  const [emailDesiredPayments, setEmailDesiredPayments] = useState();
-  const [emailFinanceId, setEmailFinanceId] = useState();
-  const [emailTemplate, setEmailTemplate] = useState();
-  const [emailValue, setEmailValue] = useState();
-  const [body, setBody] = useState(formData.body);
+  const [emailLabel, setEmailLabel] = useState('');
+  const [emailDesiredPayments, setEmailDesiredPayments] = useState('');
+  const [emailFinanceId, setEmailFinanceId] = useState('');
+  const [emailTemplate, setEmailTemplate] = useState('');
+  const [emailValue, setEmailValue] = useState('');
+  const [body, setBody] = useState('');
 
   const [emailFormData, setEmailFormData] = useState({
-    //formData: { ...formData },
-    modelData: { ...modelData },
-    deFees: { ...deFees },
+    modelData: modelData,
+    deFees: deFees,
     body: body,
-    finance: { ...finance },
-
+    finance: finance,
+    user: user,
   });
+
 
   const [valueCal, onChange] = useState<Value>(new Date());
   const [dateCal, setDate] = React.useState<Date>("");
@@ -1728,29 +1755,39 @@ export function Overview({ outletSize }) {
 
   const [saved, setSaved] = useState(false);
 
-
   function SubmitTheForm(newValue, template, financeId) {
-    const formData = new FormData();
-    formData.append("value", newValue);
-    formData.append("modelData", modelData);
-    formData.append("template", template);
-    formData.append("financeId", financeId);
-    formData.append("intent", 'email');
-    submit(formData, { method: "post" });
-  }
+    if (template === "justPayments" || template === "fullBreakdown" || template === "FullBreakdownWOptions") {
+      console.log(newValue, template, 'reg emails')
+      const formData = new FormData();
+      formData.append("value", newValue);
+      formData.append("modelData", modelData);
+      formData.append("template", template);
+      formData.append("financeId", financeId);
+      formData.append("intent", 'email');
+      submit(formData, { method: "post" });
+    }
+    if (template === "justPaymentsCustom" || template === "fullBreakdownCustom" || template === "FullBreakdownWOptionsCustom") {
+      console.log(newValue, template, 'custom emails')
 
-  const [openTemplate, setOpenTemplate] = useState(false)
+      setOpenEmail(true);
+    }
+    if (template === 'Custom-Templated-Emails') {
+      return null
+    }
+  }
+  const newBody = formData.body
+
+  const [openTemplate, setOpenTemplate] = useState(false);
 
   function SubmitTheSecondForm() {
     const formData = new FormData();
-    formData.append("value", String(emailValue));
-    formData.append("modelData", modelData);
-    formData.append("template", String(emailTemplate));
-    formData.append("financeId", String(emailFinanceId));
-    formData.append("body", String(body));
-
+    formData.append("value", emailValue);
+    // formData.append("modelData", modelData);
+    formData.append("template", emailTemplate);
+    formData.append("financeId", finance.id);
+    formData.append("body", newBody);
     formData.append("intent", 'email');
-    submit(formData, { method: "post", });
+    submit(formData, { method: "post" });
   }
 
   return (
@@ -1769,23 +1806,28 @@ export function Overview({ outletSize }) {
                 onValueChange={(value) => {
                   setOpen(false);
                   console.log("click");
+                  //const customEmail = customEmails.find((email) => email.value === value);
                   const selectedFramework = email.find((framework) => framework.value === value);
-                  if (selectedFramework) {
-                    const newValue = selectedFramework.value
-                    const template = selectedFramework.template
-                    const financeId = finance.id
-                    console.log(newValue, selectedFramework, template, financeId, 'valuie')
+
+                  const newValue = value
+                  const financeId = finance.id
+                  const template = selectedFramework.template
+                  setEmailValue(value);
+                  setEmailDesiredPayments(finance.desiredPayments);
+                  setEmailTemplate(selectedFramework.template);
+                  setEmailFinanceId(finance.financeId);
+                  setEmailLabel(selectedFramework.label);
+
+                  if (selectedFramework.template === "justPayments" || selectedFramework.template === "fullBreakdown" || selectedFramework.template === "justPaymentsCustom") {
+                    console.log(selectedFramework, 'selectedFramework')
                     SubmitTheForm(newValue, template, financeId);
+
                   }
-                  const customEmail = customEmails.find((email) => email.value === value);
-                  if (customEmail) {
-                    setEmailLabel(email.label);
-                    setEmailFinanceId(email.financeId);
-                    setEmailTemplate(email.template);
-                    setEmailDesiredPayments(email.desiredPayments);
-                    setEmailValue(email.value);
+                  if (selectedFramework.template === "justPaymentsCustom" || selectedFramework.template === "fullBreakdownCustom" || selectedFramework.template === "FullBreakdownWOptionsCustom") {
+                    console.log(selectedFramework, 'customEmail')
                     setOpenEmail(true);
                   }
+
                 }}
               >
                 <SelectTrigger className="w-[180px]">
@@ -1793,23 +1835,14 @@ export function Overview({ outletSize }) {
                 </SelectTrigger>
                 <SelectContent className='bg-[#18181a] text-[#fafafa] border-[#262626]'>
                   <SelectGroup>
-                    <SelectLabel>Full Template Emails</SelectLabel>
+                    <SelectLabel>Emails</SelectLabel>
                     {email.map((framework) => (
                       <SelectItem className="cursor-pointer   rounded-md  hover:bg-[#232324]" key={framework.value} value={framework.value}>
                         {framework.label}
                       </SelectItem>
                     ))}
-                    <SelectLabel>Custom Templated Emails</SelectLabel>
-                    {customEmails.map((framework) => (
-                      <SelectItem
-                        key={framework.value}
-                        value={framework.value}
-                        className="w-[90%] cursor-pointer rounded-md  text-[#fafafa] hover:bg-[#232324]"
-                      >
-                        {framework.label}
-                      </SelectItem>
-                    ))}
                   </SelectGroup>
+
                 </SelectContent>
               </Select>
               <DropdownMenu>
@@ -3220,8 +3253,8 @@ export function Overview({ outletSize }) {
                   {mainButton === "customTax" && (
                     <div className="">
                       {subButton === "withoutOptions" && (
-                        <div className="mt-3 flex justify-between">
-                          <ul className="grid gap-3">
+                        <div className=" ">
+                          <ul className="mt-3 grid gap-3">
                             <li className="flex items-center justify-between">
                               <span className="text-[#8a8a93]">Monthly</span>
                               <span> ${oth60}</span>
@@ -3267,7 +3300,7 @@ export function Overview({ outletSize }) {
                   <ul className="mt-3 grid gap-3">
                     <li className="flex items-center justify-between">
                       <span className="text-[#8a8a93]">Term</span>
-                      <span>{months}</span>
+                      <span>{months} / months</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-[#8a8a93]">Rate</span>
@@ -3364,7 +3397,7 @@ export function Overview({ outletSize }) {
                               <span className="text-[#8a8a93]">With taxes</span>
                               <span> ${native}</span>
                             </li>
-                            <li className="flex items-center justify-between">
+                            <li className="flex mt-3 items-center justify-between">
                               <span className="text-[#8a8a93]">
                                 After Deposit
                               </span>
@@ -3553,9 +3586,9 @@ export function Overview({ outletSize }) {
             </Pagination>
           </CardFooter>
         </Card>
-        <div className="">
+        <div className="flex justify-center">
           <Dialog open={openEmail} onOpenChange={setOpenEmail}>
-            <DialogContent className=" emailDialog gap-0 border-[#27272a] p-0 text-[#fafafa] outline-none ">
+            <DialogContent className=" max-w-[700px] w-[650px]  gap-0 border-[#27272a] p-0 text-[#fafafa] outline-none mx-auto">
 
               <DialogHeader className="px-4 pb-4 pt-5">
                 <DialogTitle>
@@ -3566,20 +3599,22 @@ export function Overview({ outletSize }) {
               <hr className="mx-auto my-3 w-[98%] text-[#27272a]" />
               <div className="mx-3 mb-3 grid gap-3">
                 <div className="relative mt-3">
+
                   <TextArea
                     name="body"
-                    defaultValue={body}
+                    defaultValue={formData.body}
                     className="w-full border-[#27272a] bg-[#09090b] "
                     onChange={handleChange}
                   />
                   <label className=" absolute -top-3 left-3  rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">
                     Email Message
                   </label>
+
                 </div>
               </div>
               <div>
                 <div className="relative mt-4">
-                  <EmailPreview {...emailFormData} />
+                  <EmailPreview modelData={modelData} finance={finance} user={user} formData={formData} />
                   <label className=" absolute -top-3 left-3  rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">
                     Email Preview
                   </label>
@@ -3589,9 +3624,7 @@ export function Overview({ outletSize }) {
                 <div className="flex justify-center">
                   <Button
                     size="icon"
-                    value="sendEmail"
                     type="submit"
-                    name="intent"
                     onClick={() => {
                       toast.success(`Email sent!`);
                       SubmitTheSecondForm();

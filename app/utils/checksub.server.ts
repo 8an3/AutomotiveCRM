@@ -2,6 +2,7 @@ import stripe from 'stripe';
 import { updateUser } from '~/utils/user.server'
 import { redirect } from "@remix-run/node";
 import { prisma } from '~/libs';
+import CheckingDealerPlan from '~/routes/__customerLandingPages/welcome/dealer';
 
 async function UpdateUser(email, subscriptionId, customerId, subscriptions) {
     const update = await prisma.user.update({
@@ -15,38 +16,57 @@ async function UpdateUser(email, subscriptionId, customerId, subscriptions) {
     })
     return update
 }
+
+
+
+
 export async function CheckSub(user) {
     const email = user.email
     const apikey = process.env.STRIPE_SECRET_KEY;
     const customer = await stripe(apikey).customers.list({ email: email, limit: 1 });
     console.log('customer', customer)
+
     if (customer && customer.data && customer.data[0] && customer.data[0].id) {
         const customerId = customer.data[0].id;
         console.log('1')
         const subscriptions = await stripe(apikey).subscriptions.list({ status: "trialing" || "active", customer: customerId });
+
+        if (subscriptions.data[0].plan.product === 'prod_OY8EMf7RNoJXhXGET') {
+            const checking = await CheckingDealerPlan(user)
+            return checking
+        }
+
         console.log('subscriptions', subscriptions, subscriptions.data[0].plan)
+
         if (subscriptions && subscriptions.data && subscriptions.data[0] && subscriptions.data[0].status) {
             const subscriptionId = subscriptions.data[0].status;
             console.log('2')
+
             if (subscriptionId === "trialing") {
                 console.log('3', email)
                 console.log("subscriptionId", subscriptionId)
                 const update = await UpdateUser(email, subscriptionId, customerId, subscriptions)
                 return update
             }
+
             else if (subscriptionId === "active") {
                 //console.log("subscriptionId", subscriptionId)
                 console.log('4')
                 const update = await UpdateUser(email, subscriptionId, customerId, subscriptions)
                 return update
             }
-        }
-    } else {
-        return redirect('/subscribe')
-    }
 
+        } else {
+
+            return redirect('/subscribe')
+
+        }
+    }
 }
 
+/**
+
+*/
 
 
 /*Store the last subscription check timestamp in your user database along with other user information.

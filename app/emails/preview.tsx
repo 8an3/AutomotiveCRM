@@ -3,8 +3,8 @@ import PaymentCalculatorEmail from './PaymentCalculatorEmail';
 import { Html, Head, Preview, Body, Container, Row, Column, Text, Section, Hr, Tailwind, Button } from "@react-email/components";
 import React, { useEffect, useState } from "react";
 
-const EmailPreview = (props) => {
-  const emailHtml = renderToStaticMarkup(<PaymentCalculatorEmail {...props} />);
+const EmailPreview = ({ modelData, finance, user, formData }) => {
+  const emailHtml = renderToStaticMarkup(<PaymentCalculatorEmail modelData={modelData} finance={finance} user={user} formData={formData} />);
   const fullHtml = `<!DOCTYPE html>
   <html>
     ${emailHtml}
@@ -12,8 +12,9 @@ const EmailPreview = (props) => {
   return (
     <div>
       <iframe
+        className='mx-auto'
         srcDoc={fullHtml}
-        style={{ width: '100%', height: '500px', border: '1px solid #27272a' }}
+        style={{ width: '650px', height: '700px', border: '1px solid #27272a', background: '#ffffff' }}
         title="Email Preview"
       />
     </div>

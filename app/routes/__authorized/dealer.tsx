@@ -1,17 +1,10 @@
-import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react'
 import { json, redirect, type LoaderFunction, type ActionFunction } from '@remix-run/node';
 import { Outlet, useLoaderData, useLocation } from '@remix-run/react';
 import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 import { prisma } from '~/libs';
-
 import Sidebar, { managerSidebarNav, adminSidebarNav, devSidebarNav, } from '~/components/shared/sidebar'
-import { Code, Banknote, Laptop, X } from 'lucide-react';
-import { getUserIsAllowed } from "~/helpers";
-import { useEffect, useState, } from 'react';
-import { Sheet, SheetClose, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "~/components/ui/userSideBarSheet"
-import { Button } from '~/components';
 import UserSideBar from '~/components/shared/userSideBar';
 import Interruptions from '~/components/shared/interruptions';
 import financeFormSchema from '~/overviewUtils/financeFormSchema';

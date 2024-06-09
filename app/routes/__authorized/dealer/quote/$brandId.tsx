@@ -9,12 +9,7 @@ import { quoteAction, quoteLoader } from '~/components/actions/quote$brandIdAL'
 import React, { useRef, useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner'
 import { findQuoteById } from '~/utils/finance/get.server';
-import { model } from '~/models';
 import { getSession } from '~/sessions/auth-session.server';
-import Sidebar from "~/components/shared/sidebar";
-import { requireAuthCookie } from '~/utils/misc.user.server';
-import { useRootLoaderData } from '~/hooks/use-root-loader-data';
-import { TextInput, FormControl, Octicon } from '@primer/react'
 import { CheckCircleFillIcon, AlertFillIcon } from '@primer/octicons-react'
 
 export const loader: LoaderFunction = async ({ request, params }) => {
