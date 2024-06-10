@@ -911,6 +911,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
                   </span>
                 </li>
               </ul>
+              <Input type='hidden' defaultValue={user.email} name="userEmail" />
               <ButtonLoading
                 size="sm"
                 className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
@@ -1082,6 +1083,16 @@ export const action: ActionFunction = async ({ request }) => {
       console.error('Error occurred while fetching account data:', error);
       // Handle error here
     }
+  }
+  if (intent === 'automations') {
+    const automations = await prisma.automations.update({
+      where: { userEmail: formData.userEmail },
+      data: {
+        pickUp24before: formData.pickUp24before,
+        appt24before: formData.appt24before,
+      }
+    })
+    return automations
   }
 }
 export const meta: MetaFunction = () => {
