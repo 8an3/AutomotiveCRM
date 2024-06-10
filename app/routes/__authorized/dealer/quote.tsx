@@ -11,8 +11,11 @@ import { getSession } from "~/sessions/auth-session.server";
 import slider from "~/styles/slider.css";
 import { GetUser } from "~/utils/loader.server";
 import { useState } from "react";
+import customer from '~/styles/customer.css'
 
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: slider }];
+export const links: LinksFunction = () => [
+    { rel: "stylesheet", href: slider },
+    { rel: "stylesheet", href: customer },];
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
     const session = await getSession(request.headers.get("Cookie"));
@@ -38,7 +41,7 @@ export default function Quote() {
     const { newLook } = useLoaderData()
     return (
         <>
-            <div className={`flex h-[100vh]  px-4 sm:px-6 lg:px-8 ${newLook === true ? 'bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-black'}`}>
+            <div className={`flex h-[100vh] max-h-screen mix-h-screen px-4 sm:px-6 lg:px-8 ${newLook === true ? 'bg-background text-foreground' : 'bg-slate1 text-black'}`}>
                 <div className="w-full overflow-hidden rounded-lg ">
                     <div className="mx-auto my-auto md:flex">
                         <div className="mx-auto my-auto" >

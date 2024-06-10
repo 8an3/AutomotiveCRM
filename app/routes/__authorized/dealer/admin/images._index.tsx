@@ -19,8 +19,8 @@ export default function Route() {
   const imagesCount = images.length;
 
   return (
-    <div className='max-w-xl stack  mx-auto justify-center text-[#fafafa]'>
-      <section className='text-[#fafafa]'>
+    <div className='max-w-xl stack  mx-auto justify-center text-foreground'>
+      <section className='text-foreground'>
         {imagesCount <= 0 && <span>No images yet.</span>}
         {imagesCount > 0 && (
           <ul className="queue-center">

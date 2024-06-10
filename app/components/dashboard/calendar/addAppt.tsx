@@ -627,8 +627,8 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
 
         </Dialog.Trigger>
         <Dialog.Portal>
-          <Dialog.Overlay className="z-50 bg-[#09090b]/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
-          <Dialog.Content className="border-[#27272a] bg-[#09090b] text-[#fafafa] z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y-  md:w-[50%] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px]  p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none  ">
+          <Dialog.Overlay className="z-50 bg-background/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
+          <Dialog.Content className="border-border bg-background text-foreground z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y-  md:w-[50%] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px]  p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none  ">
             <Dialog.Title className="  m-0 text-[17px] font-medium">
               Add Appointment for Current Client
             </Dialog.Title>
@@ -638,7 +638,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                 <div className="flex items-center py-4">
                   <DebouncedInput
                     value={globalFilter ?? ''}
-                    onChange={value => { setGlobalFilter([value]) }} className="p-2 font-lg shadow bg-[#09090b] border border-[#27272a] text-[#fafafa]"
+                    onChange={value => { setGlobalFilter([value]) }} className="p-2 font-lg shadow bg-background border border-border text-foreground"
                     placeholder="Search all columns..."
                   />
                   <Input
@@ -649,17 +649,17 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                     onChange={(event) =>
                       table.getColumn('phone')?.setFilterValue(event.target.value)
                     }
-                    className="p-2 font-lg ml-2 shadow bg-[#09090b] border border-[#27272a] text-[#fafafa] h-[44px]"
+                    className="p-2 font-lg ml-2 shadow bg-background border border-border text-foreground h-[44px]"
                   />
 
-                  <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="bg-[#09090b] h-[44px]  cursor-pointer  mx-1 text-[#fafafa] border border-[#27272a]  font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150  px-3 py-2"
+                  <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="bg-background h-[44px]  cursor-pointer  mx-1 text-foreground border border-border  font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150  px-3 py-2"
                   >
                     Clear
                   </Button>
 
                 </div>
                 <div className="rounded-md border">
-                  <Table className='w-full text-[#fafafa] border-[#27272a]  bg-[#09090b]  overflow-x-auto'>
+                  <Table className='w-full text-foreground border-border  bg-background  overflow-x-auto'>
                     <TableHeader>
                       {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
@@ -692,7 +692,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                               handleRowClick(row);
                               ;
                             }}
-                            className='p-4 text-[#fafafa] border-[#27272a] bg-[#09090b]  capitalize cursor-pointer hover:text-[#02a9ff]'
+                            className='p-4 text-foreground border-border bg-background  capitalize cursor-pointer hover:text-primary'
                             data-state={row.getIsSelected() && "selected"}
                           >
                             {row.getVisibleCells().map((cell) => (
@@ -709,7 +709,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                         <TableRow>
                           <TableCell
                             colSpan={columns.length}
-                            className="h-24 text-center text-[#fafafa] bg-[#09090b] border-[#27272a]  capitalize cursor-pointer hover:text-[#02a9ff]"
+                            className="h-24 text-center text-foreground bg-background border-border  capitalize cursor-pointer hover:text-primary"
                           >
                             No results.
                           </TableCell>
@@ -729,7 +729,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                       size="sm"
                       onClick={() => table.previousPage()}
                       disabled={!table.getCanPreviousPage()}
-                      className='text-[#fafafa] bg-[#09090b] border-[#27272a]'
+                      className='text-foreground bg-background border-border'
                     >
                       Previous
                     </Button>
@@ -738,7 +738,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                       size="sm"
                       onClick={() => table.nextPage()}
                       disabled={!table.getCanNextPage()}
-                      className='text-[#fafafa] bg-[#09090b] border-[#27272a]'
+                      className='text-foreground bg-background border-border'
                     >
                       Next
                     </Button>
@@ -759,7 +759,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
 
                   <div className='mt-3'></div>
                   <Input
-                    className=" mt-1 bg-[#09090b] text-[#fafafa] border border-[#27272a]"
+                    className=" mt-1 bg-background text-foreground border border-border"
                     placeholder="Brand (required)"
                     type="text"
                     list="ListOptions1"
@@ -783,20 +783,20 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                     <option value="Spyder" />
                     <option value="Yamaha" />
                   </datalist>
-                  <Input className=" mt-3 bg-[#09090b] text-[#fafafa] border border-[#27272a] " placeholder="Model" type="text" list="ListOptions" name="model" />
+                  <Input className=" mt-3 bg-background text-foreground border border-border " placeholder="Model" type="text" list="ListOptions" name="model" />
                   <ListSelection2 brandId={brandId} />
                   <Input
                     type="text"
                     name="title"
                     defaultValue={`F/U on the ${selectedRowData.unit}`}
-                    className='focus:border-[#60b9fd] bg-[#09090b] text-[#fafafa] mt-3'
+                    className='focus:border-[#60b9fd] bg-background text-foreground mt-3'
                   />
                   <Select name='note' defaultValue="none">
                     <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
                       <SelectValue placeholder="Time of day" />
 
                     </SelectTrigger>
-                    <SelectContent className='bg-[#09090b] text-[#fafafa]'>
+                    <SelectContent className='bg-background text-foreground'>
                       <SelectItem value="">-- Moving Forward --</SelectItem>
                       <SelectItem value="wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
                       <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>
@@ -817,17 +817,17 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                       <SelectItem value=""></SelectItem>
                     </SelectContent>
                   </Select>
-                  <p className='text-[#fafafa]'> - OR - </p>
+                  <p className='text-foreground'> - OR - </p>
                   <Input
                     name="note"
                     placeholder="or write a custom note"
-                    className='focus:border-[#60b9fd] mt-3 bg-[#09090b] text-[#fafafa]'
+                    className='focus:border-[#60b9fd] mt-3 bg-background text-foreground'
                   />
                   <Select name='contactMethod'>
                     <SelectTrigger className="w-auto focus:border-[#60b9fd] mt-3">
                       <SelectValue placeholder="Contact Method" />
                     </SelectTrigger>
-                    <SelectContent className='bg-[#09090b]'>
+                    <SelectContent className='bg-background'>
                       <SelectItem value="Phone">Phone</SelectItem>
                       <SelectItem value="InPerson">In-Person</SelectItem>
                       <SelectItem value="SMS">SMS</SelectItem>
@@ -855,7 +855,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                         selected={date}
                         onSelect={setDate}
                         initialFocus
-                        className=' bg-[#09090b]'
+                        className=' bg-background'
                       />
                     </PopoverContent>
                   </Popover>
@@ -893,7 +893,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                     <SelectTrigger className="w-auto focus:border-[#60b9fd]">
                       <SelectValue placeholder="Type of Appointment" />
                     </SelectTrigger>
-                    <SelectContent className='bg-[#09090b]'>
+                    <SelectContent className='bg-background'>
                       <SelectItem value="1">Sales Calls</SelectItem>
                       <SelectItem value="2">Sales Appointments</SelectItem>
                       <SelectItem value="3">Deliveries</SelectItem>
@@ -922,7 +922,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                         onCompleteEvent(false);
                       }}
                       name='intent' value='addNewApt' type='submit'
-                      className={` cursor-pointer ml-2 mr-2 p-3 hover:text-[#02a9ff] text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                      className={` cursor-pointer ml-2 mr-2 p-3 hover:text-primary text-foreground font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
                     >
                       Complete
                     </Button>
@@ -1127,12 +1127,12 @@ function DebouncedInput({
 /**               <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button name='intent' variant='outline' value='2DaysFromNow' type='submit'
-                      className="bg-[#09090b]   cursor-pointer  mx-1 text-[#fafafa] active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 px-3 py-2 h-7"
+                      className="bg-background   cursor-pointer  mx-1 text-foreground active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 px-3 py-2 h-7"
                     >
                       Global Filter
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-[#09090b]   capitalize cursor-pointer  text-[#fafafa] hover:underline hover:text-[#02a9ff]">
+                  <DropdownMenuContent align="end" className="bg-background   capitalize cursor-pointer  text-foreground hover:underline hover:text-primary">
                     <ScrollArea className="h-[300px] w-[200px] rounded-md  p-4">
                       {table
                         .getAllColumns()
@@ -1142,7 +1142,7 @@ function DebouncedInput({
                             <DropdownMenuCheckboxItem
                               key={column.id}
                               name="filterBy"
-                              className="bg-[#09090b]  capitalize cursor-pointer  text-[#fafafa] hover:underline hover:text-[#02a9ff]"
+                              className="bg-background  capitalize cursor-pointer  text-foreground hover:underline hover:text-primary"
                               checked={column.id === filterBy}
                               onCheckedChange={(value) =>
                                 handleInputChange(column.id)
@@ -1195,7 +1195,7 @@ function DebouncedInput({
                   </DropdownMenuContent>
                 </DropdownMenu>
                    <Button variant='outline'
-                  className="bg-[#09090b]   cursor-pointer  mx-1 text-[#fafafa] active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150  px-3 py-2 h-7"
+                  className="bg-background   cursor-pointer  mx-1 text-foreground active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150  px-3 py-2 h-7"
 
                   onClick={toggleFilter}>
                   Toggle Col

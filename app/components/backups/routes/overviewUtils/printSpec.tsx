@@ -26,14 +26,14 @@ export function PrintSpec() {
   }
   else if (finance.brand === 'Can-Am-SXS') {
     return (
-      <Button disabled className="cursor-pointer w-auto border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" content="update">
+      <Button disabled className="cursor-pointer w-auto border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border" type="submit" content="update">
         Print Spec - Unavailable
       </Button>
     )
   }
   else if (finance.brand === 'Kawasaki') {
     return (
-      <Button disabled className="cursor-pointer w-auto border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" content="update">
+      <Button disabled className="cursor-pointer w-auto border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border" type="submit" content="update">
         Print Spec - Unavailable
       </Button>
     )
@@ -46,7 +46,7 @@ export function PrintSpec() {
   }
   else if (finance.brand === 'Triumph') {
     return (
-      <Button disabled className="cursor-pointer w-auto border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" content="update">
+      <Button disabled className="cursor-pointer w-auto border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border" type="submit" content="update">
         Print Spec - Unavailable
       </Button>
     )
@@ -59,14 +59,14 @@ export function PrintSpec() {
   }
   else if (finance.brand === 'Suzuki') {
     return (
-      <Button disabled className="cursor-pointer w-auto border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" content="update">
+      <Button disabled className="cursor-pointer w-auto border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border" type="submit" content="update">
         Print Spec - Unavailable
       </Button>
     )
   }
   else if (finance.brand === 'Harley-Davidson') {
     return (
-      <Button disabled className="cursor-pointer w-auto border border-slate12   hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border " type="submit" content="update">
+      <Button disabled className="cursor-pointer w-auto border border-slate12   hover:text-primary p-5 hover:border-primary hover:border " type="submit" content="update">
         Print Spec - Unavailable
       </Button>
     )

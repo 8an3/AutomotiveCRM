@@ -153,12 +153,12 @@ export default function EmailClient() {
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <p
-          className="cursor-pointer text-[#EEEEEE] hover:text-[#02a9ff] target:text-[#02a9ff]" >
+          className="cursor-pointer text-[#EEEEEE] hover:text-primary target:text-primary" >
           <Mail className="" />
         </p>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className=" bg-[#09090b]/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
+        <Dialog.Overlay className=" bg-background/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
         <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] md:w-[750px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
           <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
             Email
@@ -208,12 +208,12 @@ export default function EmailClient() {
               <div className="ml-auto flex px-2  ">
                 <p
                   onClick={() => setCc(!cc)}
-                  className="hover:text-[#02a9ff]  cursor-pointer px-2 text-right text-[12px]">
+                  className="hover:text-primary  cursor-pointer px-2 text-right text-[12px]">
                   cc
                 </p>
                 <p
                   onClick={() => setBcc(!bcc)}
-                  className="hover:text-[#02a9ff]  cursor-pointer px-2 text-right text-[12px] ">
+                  className="hover:text-primary  cursor-pointer px-2 text-right text-[12px] ">
                   bcc
                 </p>
               </div>
@@ -255,7 +255,7 @@ export default function EmailClient() {
                   setIsButtonPressed(true);
                 }}
                 name='template' value='createEmailTemplate' type='submit'
-                className={`w-[75px] ml-2 mr-2 text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                className={`w-[75px] ml-2 mr-2 text-foreground font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
               >
                 Save Template
               </Button>
@@ -264,7 +264,7 @@ export default function EmailClient() {
                   setIsButtonPressed(true);
                 }}
                 name='emailType' value='fullCustom' type='submit'
-                className={`w-[75px] ml-2 mr-2 text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                className={`w-[75px] ml-2 mr-2 text-foreground font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
               >
                 Send
               </Button>

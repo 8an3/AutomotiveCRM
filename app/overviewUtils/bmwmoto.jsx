@@ -103,13 +103,8 @@ export const PrintSpecBMWMoto = () => {
     window.open(url, "_blank");
   };
   return (
-    <Button
-      onClick={Click1}
-      className=" w-2/3  border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border"
-      type="submit"
-      content="update"
-    >
+    <p onClick={Click1} type="submit" content="update">
       Print Spec
-    </Button>
+    </p>
   );
 };

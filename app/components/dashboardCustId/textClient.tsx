@@ -117,7 +117,7 @@ export default function LogText() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <p className="cursor-pointer text-[#EEEEEE] hover:text-[#02a9ff] target:text-[#02a9ff]" >
+        <p className="cursor-pointer text-[#EEEEEE] hover:text-primary target:text-primary" >
           <MessageText />
         </p>
       </DialogTrigger>
@@ -225,7 +225,7 @@ export default function LogText() {
                   <Button
 
                     name='intent' value='textQuickFU' type='submit'
-                    className={`w-[75px] cursor-pointer ml-2 mr-2 text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                    className={`w-[75px] cursor-pointer ml-2 mr-2 text-foreground font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
                   >
                     Log
                   </Button>
@@ -289,7 +289,7 @@ export default function LogText() {
                         <Button
 
                           name='intent' value='logCallDesc' type='submit'
-                          className={`w-[75px] cursor-pointer ml-2 mr-2 text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                          className={`w-[75px] cursor-pointer ml-2 mr-2 text-foreground font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
                         >
                           Log
                         </Button>

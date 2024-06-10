@@ -47,18 +47,18 @@ function ChannelsList({ channels, selectedChannel, onChannelClick, messages }) {
               conversations.submit(event?.target.form)
               fetch.get(`/resource/get-conversation/${item.conversationSid}`)
             }}
-              className={`channel-item m-2 mx-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}>
+              className={`channel-item m-2 mx-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary${activeChannel ? ' channel-item--active' : ''}`}>
               <conversations.Form method='get' action='/get-conversation' >
 
                 <div className="m-2 flex items-center justify-between">
-                  <span className="text-lg font-bold text-[#fafafa]">
+                  <span className="text-lg font-bold text-foreground">
                     <strong>{item.friendlyName || item.sid}</strong>
                   </span>
-                  <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
+                  <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-foreground' : ''}`}>
                     {formattedDate}
                   </p>
                 </div>
-                <p className={`text-sm m-2 text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
+                <p className={`text-sm m-2 text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-foreground' : ''}`}>
                   {messages[0].body ? messages[0].body.split(' ').slice(0, 12).join(' ') + '...' : ''}
                 </p>
               </conversations.Form>

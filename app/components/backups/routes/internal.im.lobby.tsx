@@ -119,7 +119,7 @@ export default function IMLobby() {
       <div className="border-1 mx-auto flex w-[95%] h-[90vh] border border-[#262626]">
 
         <div className="email flex h-full w-[100%]  flex-col">
-          <div className="flex border-b border-[#262626] text-[#fafafa] p-2 justify-between">
+          <div className="flex border-b border-[#262626] text-foreground p-2 justify-between">
             <p> Staff Chat</p> <Link to='/dealer/im/chatMenu'>
               <button><XCircle /></button>
             </Link>
@@ -128,7 +128,7 @@ export default function IMLobby() {
           <div className="grow  p-3 w-[90%] mx-auto items-end">
             <ul>
               {messages.map((message) => (
-                <li className='text-[#fafafa]' key={message}>{message}</li>
+                <li className='text-foreground' key={message}>{message}</li>
               ))}
             </ul>
           </div>

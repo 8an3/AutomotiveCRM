@@ -47,7 +47,7 @@ export const links: LinksFunction = () => [
 export default function Index() {
   return (
     <>
-      <div className='bg-[#09090b]'>
+      <div className='bg-background'>
         <NavigationMenuSales />
         <AlertBox />
         <NewHeader />
@@ -59,15 +59,15 @@ export default function Index() {
 }
 function AlertBox() {
   return (
-    <div className='ite mx-auto mt-3 flex justify-center bg-[#09090b]'>
+    <div className='ite mx-auto mt-3 flex justify-center bg-background'>
       <div className='w-[75%] rounded-md border border-white'>
         <div className='m-3 flex items-center justify-center p-3'>
           <AlertCircle color="#ffffff" />
           <div className='ml-3'>
-            <p className='text-[#fafafa]'>
+            <p className='text-foreground'>
               Heads up!
             </p>
-            <p className='text-[#fafafa]'>
+            <p className='text-foreground'>
               Beta version of our new CRM is now available! Be some of the first to take advantage of our discounted pricing, limited spots for our beta program.
             </p>
           </div>
@@ -78,31 +78,31 @@ function AlertBox() {
 }
 function NewHeader() {
   return (
-    <div className='bg-[#09090b] mt-[60px]' >
+    <div className='bg-background mt-[60px]' >
       <div className="mx-auto max-w-2xl py-[55px] ">
 
         <div className="text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-[#fafafa] sm:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
             Generate vehicle pricing in less than 60 seconds or saving your sales people 125+ mins a day, individually
           </h1>
-          <p className="mt-6 text-lg leading-8 text-[#fafafa]">
+          <p className="mt-6 text-lg leading-8 text-foreground">
             Experience crystal-clear and effortlessly legible displays of weekly, bi-weekly, and monthly payment options, all while receiving a detailed breakdown of every dollar involved in the deal.
           </p>
-          <p className="mt-6 text-lg leading-8 text-[#fafafa]">
+          <p className="mt-6 text-lg leading-8 text-foreground">
             Along with numerous other processes to save you or your sales people time during the sales process. Check out our breakdown here.
           </p>
           <div className='flex justify-center'>
             <Link to='/demo/dashboard' >
-              <Button size='sm' className='mx-auto bg-[#dc2626] text-[#fafafa]  mt-3'>
+              <Button size='sm' className='mx-auto bg-[#dc2626] text-foreground  mt-3'>
                 Continue
               </Button>
             </Link>
           </div>
 
           {/** <Form method="post" action="/emails/send/contact" className='mt-5 flex items-center  justify-center'>
-            <Input name="email" placeholder="example@gmail.com" className='mr-2 w-[300px] border border-white bg-black text-[#fafafa] focus:border-[#02a9ff]' />
+            <Input name="email" placeholder="example@gmail.com" className='mr-2 w-[300px] border border-white bg-black text-foreground focus:border-primary' />
 
-            <Button name='intent' value='demoInquiry' type='submit' className=" ml-2 mr-2 w-[75px]  rounded bg-[#02a9ff]  text-center text-xs font-bold   uppercase  text-[#fafafa] shadow outline-none transition-all duration-150  ease-linear hover:shadow-md focus:outline-none active:bg-[#09090b]"
+            <Button name='intent' value='demoInquiry' type='submit' className=" ml-2 mr-2 w-[75px]  rounded bg-primary  text-center text-xs font-bold   uppercase  text-foreground shadow outline-none transition-all duration-150  ease-linear hover:shadow-md focus:outline-none active:bg-background"
             >
               Email
             </Button>
@@ -217,9 +217,9 @@ export function Feature1() {
                   <CardContent className="flex  justify-center rounded-md  bg-myColor-900 p-6">
                     <div className='grid grid-cols-2 items-center justify-between'>
                       <div className='justify-center'>
-                        <h2 className="top-[50%] my-auto text-center text-2xl font-semibold text-[#fafafa]">{item.title}</h2>
+                        <h2 className="top-[50%] my-auto text-center text-2xl font-semibold text-foreground">{item.title}</h2>
                         {item.paragraphs.map((paragraph, i) => (
-                          <p className='text-center text-[#fafafa]' key={i}>{paragraph}</p>
+                          <p className='text-center text-foreground' key={i}>{paragraph}</p>
                         ))}
                       </div>
                       <img alt="logo" width='450' height='450' src={item.image} className='ml-[50px]' />
@@ -230,8 +230,8 @@ export function Feature1() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className='text-[#fafafa]' />
-        <CarouselNext className='text-[#fafafa]' />
+        <CarouselPrevious className='text-foreground' />
+        <CarouselNext className='text-foreground' />
       </Carousel>
     </>
   )
@@ -342,7 +342,7 @@ export function DealerPrice() {
         rel="noopener noreferrer"
         className="mt-2 lg:ml-2 lg:mt-0"
       >
-        <fieldset className="mx-auto grid h-[1550px] w-[90%] cursor-pointer rounded-lg border border-white p-4 hover:border-[#02a9ff] lg:w-[90%]">
+        <fieldset className="mx-auto grid h-[1550px] w-[90%] cursor-pointer rounded-lg border border-white p-4 hover:border-primary lg:w-[90%]">
           <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
             Dealer
           </legend>
@@ -356,7 +356,7 @@ export function DealerPrice() {
                 >
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="cursor-pointer text-left text-[#fafafa]">
+                      <span className="cursor-pointer text-left text-foreground">
                         {feature.name}
                       </span>
                     </TooltipTrigger>
@@ -375,14 +375,14 @@ export function DealerPrice() {
             </ul>
           </div>
           <div className="items-end">
-            <hr className="w-[90%] text-center text-[#fafafa] mt-5" />
-            <h4 className="text-[#fafafa] mt-5">
+            <hr className="w-[90%] text-center text-foreground mt-5" />
+            <h4 className="text-foreground mt-5">
               Subscribe Now for Just $449.95 Per Month.
             </h4>
             <div className="flex justify-center">
               <Button
                 size="sm"
-                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-[#fafafa]"
+                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-foreground"
               >
                 Continue
               </Button>
@@ -402,7 +402,7 @@ export function SalespersonPrice() {
         rel="noopener noreferrer"
         className="lg:mr-2"
       >
-        <fieldset className="mx-auto grid h-[900px] w-[90%] cursor-pointer rounded-lg border border-white p-4 hover:border-[#02a9ff] lg:w-[90%]">
+        <fieldset className="mx-auto grid h-[900px] w-[90%] cursor-pointer rounded-lg border border-white p-4 hover:border-primary lg:w-[90%]">
           <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
             Sales People
           </legend>
@@ -412,7 +412,7 @@ export function SalespersonPrice() {
                 <li key={index} className="flex items-center justify-between">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="text-[#fafafa] text-left cursor-pointer">
+                      <span className="text-foreground text-left cursor-pointer">
                         {feature.name}
                       </span>
                     </TooltipTrigger>
@@ -431,14 +431,14 @@ export function SalespersonPrice() {
             </ul>
           </div>
           <div className="items-end">
-            <hr className="mt-5 w-[90%] text-center text-[#fafafa]" />
-            <h4 className="mt-5 text-[#fafafa]">
+            <hr className="mt-5 w-[90%] text-center text-foreground" />
+            <h4 className="mt-5 text-foreground">
               Subscribe Now for Just $49.95 Per Month.
             </h4>
             <div className="flex justify-center">
               <Button
                 size="sm"
-                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-[#fafafa]"
+                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-foreground"
               >
                 Continue
               </Button>
@@ -453,7 +453,7 @@ export function Mission() {
   return (
     <>
       <div className="text-myColor-200  md:w-1/2 mt-[25px] mx-auto">
-        <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-[#27272a] cursor-pointer " >
+        <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-border cursor-pointer " >
           <legend className="-ml-1 px-1 text-lg font-medium">Mission Statement</legend>
           <p className='px-[8px] pt-[5px] text-center text-sm  text-myColor-200 '>
             Our mission is clear: We aim to empower salespeople everywhere with tools and resources that transcend the traditional approach of relying solely on salesmanship training. Whether it's your first day or your tenth year in sales, our goal is to provide universally accessible solutions that lead to improved sales performance.
@@ -566,7 +566,7 @@ export function Brands() {
   return (
     <div className='mx-5'>
       <div className="text-myColor-200  md:w-1/2 mt-[25px] mx-auto">
-        <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-[#27272a] cursor-pointer " >
+        <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-border cursor-pointer " >
           <legend className="-ml-1 px-1 text-lg font-medium">Brands</legend>
           <div className='flex flex-wrap justify-center gap-8  py-4'>
 
@@ -599,48 +599,48 @@ export function FAQ() {
   return (
     <div className=' '>
       <div className="text-myColor-200  w-[90%] mt-[25px] mx-auto">
-        <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-[#27272a]   " >
+        <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-border   " >
           <legend className="-ml-1 px-1 text-lg font-medium">FAQ</legend>
           <div className="font-semibold">How much set-up am I required to do?</div>
           <p className='px-[8px] pt-[5px] text-center text-sm  text-myColor-200 '>
             Virtually none. The server and database will be hosted off site that we will set up for you. Once up and running all you will have to do is set up accounts for your employees and that's it. If you would like your line-up included for the quoting capabilities, we just require your dealer binder, if it's a brand we already do not have. If your not technically savvy or do not have a tech dept of some kind, we can set everything up for you, even your employee accounts.
           </p>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <div className="font-semibold">How secure will it be / how fast will it be?</div>
           <p className='px-[8px] pt-[5px] text-center text-sm  text-myColor-200 '>
             Each dealer will have their own database and server. That way if one dealer is compromised, none of the other dealers would have to suffer due to their security event. This also helps the overall speed of each dealers server because they are not hosted all on the same server. During peak times, say for example at 9 am when every dealer opens, dealers won't effect eachother and slow down the service instead each will have fast loading times in comparison to other crms.
           </p>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <div className="font-semibold">Can you actually quote a price in 60 seconds?</div>
           <p className='px-[8px]   text-center text-sm   text-myColor-200 '>
             No, it's even quicker than that. While setting the time frame any lower might seem unattainable to many, our application is designed to provide pricing information in a matter of seconds. In today's fast-paced world, some automotive brands require salespeople to sift through a massive book with over 500 pages just to discuss vehicle options, which can consume an entire hour. Our application eliminates this time-consuming process by putting almost everything you need right at your fingertips. It doesn't just provide speedy quotes; it also offers additional features that accelerate your workflow, allowing you to serve more customers efficiently. It's not solely about increasing sales but also about aiding more people in a timely manner. I've witnessed customers leaving dealerships because they couldn't find assistance. While it's unfortunate for the dealer, no salesperson should spend three hours with a customer unnecessarily. They claim to be selling, but, in reality, they aren't. Some customers even have to wait weeks to receive a price quote, and that's a situation we aim to change.
           </p>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <div className="font-semibold">Q: Is it easy to use? Some of my sales guys are too old for technology.</div>
           <p className='px-[8px]    text-center  text-sm  text-myColor-200 '>
             A: Absolutely, ease of use is one of our top priorities. Our application is designed to be user-friendly, making it accessible to sales professionals of all ages, including those who may not be as tech-savvy. It's much simpler than the processes they are currently accustomed to. They no longer need to search for pricing information because it's readily available. Even for brands with complex lists of options, our application presents the information in a clear and easy-to-read format, benefiting both salespeople and customers. This reduces the need for extensive training on individual units and their options. To illustrate, brands like Manitou and BMW, which are known for their intricate offerings, become straightforward with our application. You simply select a unit, navigate through the list of options and accessories tailored to that unit, and our application generates a quote. It provides payment plans, including weekly, bi-weekly, and monthly options, factoring in local taxes or offering tax-exempt calculations for those who prefer it. Additionally, there's a field for out-of-towners with different tax rates. Furthermore, we include pre-loaded dealer options such as warranties and VIN etching, so if a customer insists on knowing the price with specific add-ons before making a decision, you already have that information at your fingertips.  Our system also allows you to customize finance packages instantly by adjusting up to 11 fields for dealer options. This empowers you to provide a tailored and hassle-free financing solution in real-time, often more efficiently than the finance department.   For those challenging phone inquiries where customers provide incomplete information, our application solves the problem. It's common for customers not to disclose their location or tax status, leading to rework and wasted time. With our application, much of this work is already completed, significantly reducing the time it takes to provide a quote. In some cases, it can take dealers 45-60 minutes or even longer to deliver a price; our application streamlines this process for immediate results.
           </p>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <div className="font-semibold">Q: Does it just produce prices?</div>
           <p className='px-[8px]    text-center text-sm   text-myColor-200 '>
             A: No, our application goes far beyond simply generating prices. It enhances your entire sales process up to the point where it seamlessly integrates with your CRM. Here's how it improves your workflow:   Clear and Comprehensive Explanation: Our application excels at explaining vehicle options, prices, and associated fees in a way that's easy to understand. This clarity benefits all customers, including those who might find complex information confusing. You can confidently present pricing without interruptions or hesitation from customers, leading to a smoother sales experience.  Control and Professionalism: Having a tool that provides such control over the sales process elevates your sales game. You won't experience interruptions due to customers struggling to grasp the information. You can maintain a professional and uninterrupted dialogue, making your interactions more efficient and productive.  Streamlined Access to Information: Our application offers features that simplify the process even further. Need to access a spec sheet from the manufacturer's site? Instead of navigating multiple pages, it's just one click away. If a customer is interested in a color that's not in stock, you can quickly show them the model page on the manufacturer's site.   Efficient Communication: In cases where a customer has left without making a purchase, our application provides pre-made templates that can be customized or used as-is. These templates include a variety of email breakdowns tailored to different types of customers. Whether they need payment details or a comprehensive list of options, you can send the information with a single click, saving you valuable time.  In essence, our application is designed to optimize your entire sales process, making it more efficient, professional, and customer-friendly from start to finish.
           </p>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <div className="font-semibold">Q: Will it really help my sales out?</div>
           <p className='px-[8px]   text-center text-sm   text-myColor-200 '>
             A: Absolutely, we guarantee it will make a significant difference in your sales process. In the automotive industry, it's surprising how few products genuinely assist salespeople beyond enhancing their skills and salesmanship. Most tech solutions either extend the sales process or add more complexity. However, our application is a game-changer because it complements your existing sales process and skills, simplifying the entire journey.   Here's how it can truly benefit you and your team:  Streamlined Process: By simplifying your workflow, it allows you to focus 100% of your mental energy on closing the sale. You can engage with customers with confidence, fewer headaches, and access to crucial information. For example, if a customer wants to compare the prices of different options, you can provide this information instantly, eliminating unnecessary stress.  Increased Confidence: Confidence is key in sales, and our application empowers you to navigate your interactions with customers more confidently. You'll have the tools at your disposal to provide information quickly and accurately, which builds trust and credibility with potential buyers.  Information Accessibility: In a world where information is readily available online, it's essential to equip salespeople with the tools they need to meet customer expectations. Our application gives you instant access to the information customers seek, eliminating the need for customers to search elsewhere for the details they want.  Customer-Centric Approach: By arming yourself with a tool that provides information efficiently and effectively, you can take a more customer-centric approach to sales. It's about giving customers what they need when they need it, which can lead to higher customer satisfaction and conversion rates.  In summary, our application is designed to make your job easier and more productive by simplifying your sales process and giving you the tools to provide customers with the information they desire. It's a win-win situation that benefits both sales professionals and customers, ultimately driving more sales and increasing overall satisfaction.
           </p>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <div className="font-semibold">I don't think my gm would let me use this.</div>
           <p className='px-[8px]   text-center text-sm   text-myColor-200 '>
             It's understandable to have concerns about introducing new tools or changes in your dealership, especially if it involves management approval. Here are some points you can consider when discussing the implementation of this app with your GM:  Increased Sales Efficiency: Emphasize how the application can significantly improve sales efficiency. It streamlines the sales process, allowing salespeople to provide better and more detailed information to customers quickly. This efficiency can lead to more sales and a better customer experience.  Enhanced Finance Management: Highlight that the app also benefits finance managers by simplifying the process of adjusting financing rates and options. This means faster turnaround times and less time spent on administrative tasks.  Reduced Interruptions: Explain that the application can reduce interruptions for both salespeople and management. With quicker access to pricing information, there's less need for constant back-and-forth between sales and management to finalize deals. This, in turn, can lead to more productive workdays for everyone.  Improved Customer Satisfaction: Mention that by using the app, you can provide customers with more accurate and timely information. This can enhance overall customer satisfaction and make the dealership more competitive in a digital age where customers expect fast responses.  Trial Period: Suggest a trial period where the GM and the team can test the application's effectiveness firsthand. This will allow them to see the benefits in action and make an informed decision.  Training and Support: Offer to provide training and support for the entire team to ensure a smooth transition to using the application. Show that you're committed to making the implementation process as easy as possible.  Competitive Advantage: Emphasize how this tool can give your dealership a competitive advantage in the market. In a highly competitive industry, having a tool that streamlines the sales process and improves customer service can be a game-changer.  Ultimately, it's important to present the application as a solution that benefits the dealership as a whole, from sales and finance to management and customer satisfaction. Showing the potential advantages and offering a trial period can help address any initial concerns and make a strong case for its adoption.
           </p>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <div className="font-semibold">How come the customer sheets arent avaiable?</div>
           <p className='px-[8px]   text-center text-sm   text-myColor-200 '>
             The same as perviously.
           </p>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <div className="font-semibold">How come the dealer sheets arent avaiable?</div>
           <p className='px-[8px]  ]  text-center text-sm   text-myColor-200 '>
             The challenge of providing a universal dealer sheet that works for all brands and dealers is indeed complex. It requires a standardized layout that accommodates the diverse needs and preferences of various dealerships, while also ensuring that it's user-friendly and informative for both salespeople and other members of the staff. Here are a few reasons why creating such a universal layout can be challenging:  Brand-Specific Information: Different brands may have unique details and specifications that need to be highlighted. What works for one brand may not be suitable for another.  Dealer Preferences: Dealerships often have specific preferences for how they present information to staff. Some may prefer a more detailed breakdown, while others opt for a simpler approach.  Staff Expectations: Staff preferences can vary widely. Some may want a comprehensive breakdown, while others prefer a more streamlined presentation.  To address these challenges and provide a solution that works for all, it's essential to collaborate closely with dealerships and brands to gather feedback and refine the layout continually. Flexibility and customization options within the layout can also be key to accommodating different needs.  Ultimately, the goal should be to create a standardized dealer sheet that serves as a baseline while allowing for customization to meet specific brand and dealer requirements. This approach can help ensure that the solution benefits a wide range of stakeholders in the automotive industry.
@@ -662,7 +662,7 @@ function NewSection() {
       {sales === false && dealer === false && (
         <div className='mx-auto grid lg:grid-cols-2 justify-center mb-[40px]  mt-[75px]'>
 
-          <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-white cursor-pointer hover:border-[#02a9ff]" onClick={() => {
+          <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-white cursor-pointer hover:border-primary" onClick={() => {
             setSales(true)
           }}>
             <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">Sales People</legend>
@@ -682,13 +682,13 @@ function NewSection() {
               However, adopting our CRM will significantly elevate your sales game, surpassing the impact of the last five sales training sessions. Guaranteed to be the most significant change in your career, whether you're a newcomer, a sales superstar, or a seasoned salesperson who isn't tech-savvy. You'll undoubtedly see a remarkable increase—Just read the upcoming story about wasting time with mass emails.
             </p>
             <div className='flex justify-center'>
-              <Button size='sm' className='mx-auto bg-[#dc2626] text-[#fafafa]  mt-3'>
+              <Button size='sm' className='mx-auto bg-[#dc2626] text-foreground  mt-3'>
                 Continue
               </Button>
             </div>
           </fieldset>
 
-          <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-white cursor-pointer hover:border-[#02a9ff]" onClick={() => {
+          <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-white cursor-pointer hover:border-primary" onClick={() => {
             setSales(true)
           }}>
             <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">Dealers</legend>
@@ -710,7 +710,7 @@ function NewSection() {
               </p>
             </div>
             <div className='flex justify-center'>
-              <Button size='sm' className='mx-auto bg-[#dc2626] text-[#fafafa]  mt-3'>
+              <Button size='sm' className='mx-auto bg-[#dc2626] text-foreground  mt-3'>
                 Continue
               </Button>
             </div>
@@ -730,7 +730,7 @@ function NewSection() {
             </TabsList>
             <TabsContent value="account">
               <div className="text-myColor-200  md:w-1/2 mt-[25px] mx-auto">
-                <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-[#27272a] cursor-pointer " >
+                <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-border cursor-pointer " >
                   <legend className="-ml-1 px-1 text-lg font-medium"> It was never my intention on taking it this so far...</legend>
                   <div className='flex flex-wrap justify-center gap-8  py-4'>
                     <p className='px-[8px] pt-[5px] text-center text-sm  text-myColor-200 '>
@@ -760,13 +760,13 @@ function NewSection() {
             </TabsContent>
             <TabsContent value="Action">
               <Card>
-                <CardHeader className="text-lg leading-8 text-[#fafafa] bg-[#18181a] border-b border-[#27272a]">
+                <CardHeader className="text-lg leading-8 text-foreground bg-muted-background border-b border-border">
                   <CardTitle>Password</CardTitle>
                   <CardDescription>
                     Change your password here. After saving, you'll be logged out.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2 bg-[#09090b]">
+                <CardContent className="space-y-2 bg-background">
                   <div className=' mt-3'>
                     <Feature1 />
                   </div>
@@ -801,7 +801,7 @@ function NewSection() {
             </TabsList>
             <TabsContent value="account">
               <div className="text-myColor-200  md:w-1/2 mt-[25px] mx-auto">
-                <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-[#27272a] cursor-pointer " >
+                <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-border cursor-pointer " >
                   <legend className="-ml-1 px-1 text-lg font-medium"> It was never my intention on taking it this so far...</legend>
                   <div className='flex flex-wrap justify-center gap-8  py-4'>
                     <p className='px-[8px] pt-[5px] text-center text-sm  text-myColor-200 '>
@@ -831,13 +831,13 @@ function NewSection() {
             </TabsContent>
             <TabsContent value="Action">
               <Card>
-                <CardHeader className="text-lg leading-8 text-[#fafafa] bg-[#18181a] border-b border-[#27272a]">
+                <CardHeader className="text-lg leading-8 text-foreground bg-muted-background border-b border-border">
                   <CardTitle>Password</CardTitle>
                   <CardDescription>
                     Change your password here. After saving, you'll be logged out.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2 bg-[#09090b]  ">
+                <CardContent className="space-y-2 bg-background  ">
                   <div className=' mt-3'>
 
                   </div>
@@ -865,8 +865,8 @@ function NewSection() {
 function Footer() {
   return (
     <>
-      <div className="mt-[35px] mb-[25px] border-t border-[#27272a] ">
-        <div className='bg-[#09090b] text-[#fafafa]  '>
+      <div className="mt-[35px] mb-[25px] border-t border-border ">
+        <div className='bg-background text-foreground  '>
           <div className=' mt-[15px] w-[80%] mx-auto space-y-3'>
             <p>Dealer Sales Assistant</p>
           </div>
@@ -894,16 +894,16 @@ function SidebarNav({ className, items, ...props }: SidebarNavProps) {
           <Button
             variant='ghost'
             className={cn(
-              'justify-start text-left  text-lg hover:border-[#02a9ff]',
+              'justify-start text-left  text-lg hover:border-primary',
               buttonVariants({ variant: 'ghost' }),
               pathname === item.to
-                ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                : "hover:bg-[#232324]  w-[90%]  ",
+                ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                : "hover:bg-muted/50  w-[90%]  ",
               "justify-start w-[90%]"
             )} >
             {item.title}
           </Button>
-          <p className="text-[#909098] ml-4 text-sm ">
+          <p className="text-muted-foreground ml-4 text-sm ">
             {item.description}
           </p>
         </Link>

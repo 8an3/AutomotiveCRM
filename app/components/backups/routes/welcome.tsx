@@ -27,7 +27,7 @@ export default function Quote() {
 	return (
 		<>
 			<Sidebar />
-			<div className="flex min-h-screen px-4 sm:px-6 lg:px-8 bg-[#09090b] text-slate3">
+			<div className="flex min-h-screen px-4 sm:px-6 lg:px-8 bg-background text-slate3">
 				<div className="w-full overflow-hidden rounded-lg ">
 					<div className="md:flex my-auto mx-auto">
 						<div className="sm:w-2/3 w-full my-auto mx-auto ">

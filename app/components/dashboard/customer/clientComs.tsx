@@ -18,7 +18,7 @@ export default function ClientComs({ Coms }) {
         <ul>
           {Coms.map((message) => (
             <li key={message.id} className="flex-cols-2 flex "  >
-              <Card className="mr-1 mt-1 w-full rounded mb-3 bg-[#09090b]"  >
+              <Card className="mr-1 mt-1 w-full rounded mb-3 bg-background"  >
                 <CardContent className="flex flex-col"  >
                   <div className="mt-1 flex justify-between">
                     <p className="text-thin text-[14px] text-gray-300">

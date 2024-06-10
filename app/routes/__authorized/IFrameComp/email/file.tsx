@@ -184,24 +184,24 @@ export default function Root() {
   };
 
   return (
-    <div className="mx-auto mt-3 text-[#fafafa]">
+    <div className="mx-auto mt-3 text-foreground">
       <Form method='post' encType="multipart/form-data" className='grid grid-cols-1 items-center' onSubmit={handleSubmit}>
         <div className="relative grid grid-cols-2 justify-center   ">
 
           <div className='mr-2'>
-            <Input name='fileName' onChange={(e) => setFileName(e.target.value)} className="w-full bg-[#09090b] border-[#27272a] " />
-            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">File Name</label>
+            <Input name='fileName' onChange={(e) => setFileName(e.target.value)} className="w-full bg-background border-border " />
+            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">File Name</label>
           </div>
 
           <div className="relative ml-2">
             <Input id="file" type="file" className='hidden' name='file' onChange={handleFileChange} />
-            <label htmlFor="file" className={`h-[37px] cursor-pointer border border-[#27272a] rounded-md text-[#fafafa] bg-[#09090b] px-4 py-2 inline-block w-full
+            <label htmlFor="file" className={`h-[37px] cursor-pointer border border-border rounded-md text-foreground bg-background px-4 py-2 inline-block w-full
                     ${isFile === false ? 'border-[#dc2626]' : 'border-[#3dff3d]'}`}  >
               <span className="mr-4">
                 {isFile === false ? <p>Choose File</p> : <p>File Selected</p>}
               </span>
             </label>
-            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">
+            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
               File Upload - Scanned Image
             </label>
             {actionData?.error && <div style={{ color: 'red' }}>{actionData.error}</div>}
@@ -226,7 +226,7 @@ export default function Root() {
         </div>
 
       </Form>
-      <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+      <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
       <div className="font-semibold">Download Docs {downloadFileId}</div>
       <Form className='flex items-center'>
 
@@ -240,7 +240,7 @@ export default function Root() {
                   <input type='hidden' name='itemId' value={file.id} />
                   <div className='grid grid-cols-1'>
                     <span className="  text-left">{result}</span>
-                    <span className="text-[#909098] text-left">Uploaded by: {file.createdBy.user.displayName}</span>
+                    <span className="text-muted-foreground text-left">Uploaded by: {file.createdBy.user.displayName}</span>
                   </div>
                   <div className='flex justify-end'>
                     <Button onClick={() => {
@@ -262,7 +262,7 @@ export default function Root() {
               )
             })
           ) : (
-            <span className="text-[#909098]  text-sm ">No client files uploaded yet.</span>
+            <span className="text-muted-foreground  text-sm ">No client files uploaded yet.</span>
 
           )}
         </ul>

@@ -314,7 +314,7 @@ export function StoreHoursCalendar() {
 
 export default function SettingsAccountPage() {
   return (
-    <div className="space-y-6 text-[#fafafa]">
+    <div className="space-y-6 text-foreground">
       <div>
         <h3 className="text-lg font-medium">Store Hours</h3>
         <p className="text-sm text-muted-foreground">

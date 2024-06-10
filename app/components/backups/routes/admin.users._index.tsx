@@ -165,10 +165,10 @@ export default function Route() {
       </TabsList>
       <TabsContent value="Users">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-myColor-900  text-[#fafafa] border-black">
+          <CardContent className="space-y-2 rounded-md bg-myColor-900  text-foreground border-black">
             <Form method="post" className="">
 
-              <div className=' text-[#fafafa]'>
+              <div className=' text-foreground'>
                 <PageAdminHeader size="xs">
 
                   <div className="queue">
@@ -211,7 +211,7 @@ export default function Route() {
                     )}
                   </div>
                 </PageAdminHeader>
-                <div className='max-w-xl   text-[#fafafa]'>
+                <div className='max-w-xl   text-foreground'>
                   <header>
                     <span>{formatPluralItems("user", usersCount)}</span>
                   </header>
@@ -278,7 +278,7 @@ export default function Route() {
                         <Label className='text-lg'>
                           Full Name
                         </Label>
-                        <Input name='name' defaultValue={name} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md  focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" autoComplete="name"
+                        <Input name='name' defaultValue={name} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md  focus:text-primary focus:outline-none    active:bg-primary" autoComplete="name"
                           autoFocus
                           required />
                       </div>
@@ -286,8 +286,8 @@ export default function Route() {
                         <Label className='text-lg'>
                           Username
                         </Label>
-                        <Input name='username' defaultValue={username} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]"  autoComplete="username"
+                        <Input name='username' defaultValue={username} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary"  autoComplete="username"
                           autoFocus
                           required />
                       </div>
@@ -295,8 +295,8 @@ export default function Route() {
                         <Label className='text-lg'>
                           Phone
                         </Label>
-                        <Input name='phone' defaultValue={phone} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" autoComplete="phone"
+                        <Input name='phone' defaultValue={phone} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" autoComplete="phone"
                           autoFocus
                           required />
                       </div>
@@ -304,8 +304,8 @@ export default function Route() {
                         <Label className='text-lg'>
                           Email
                         </Label>
-                        <Input name='email' defaultValue={email} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" autoComplete="email"
+                        <Input name='email' defaultValue={email} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" autoComplete="email"
                           autoFocus
                           required />
                       </div>
@@ -313,8 +313,8 @@ export default function Route() {
                         <Label className='text-lg'>
                           OMVIC #
                         </Label>
-                        <Input name='omvicNumber' defaultValue={omvicNumber} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                        <Input name='omvicNumber' defaultValue={omvicNumber} className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                       </div>
                       <div>
                         <Label className='text-lg mt-5'>
@@ -322,12 +322,12 @@ export default function Route() {
                         </Label>
 
                         <Select name='userRole'>
-                          <SelectTrigger className='mr-3 w-auto border-[#02a9ff]  text-[#02a9ff]'>
+                          <SelectTrigger className='mr-3 w-auto border-primary  text-primary'>
                             Role
                           </SelectTrigger>
-                          <SelectContent align="end" className='bg-slate1 text-[#fafafa] ' required>
+                          <SelectContent align="end" className='bg-slate1 text-foreground ' required>
                             {userRole.map((role) => (
-                              <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-[#02a9ff] hover:underline">
+                              <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-primary hover:underline">
                                 {role.symbol}
                               </SelectItem>
                             ))}
@@ -350,7 +350,7 @@ export default function Route() {
 
       <TabsContent value="Add">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-slate11 text-[#fafafa]">
+          <CardContent className="space-y-2 rounded-md bg-slate11 text-foreground">
             <Form method="post" className="">
 
               <div className="mt-2  grid  grid-cols-1 gap-2">
@@ -359,43 +359,43 @@ export default function Route() {
                     <Label className='text-lg'>
                       Name
                     </Label>
-                    <Input name='name' placeholder="Justin Doe" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                    <Input name='name' placeholder="Justin Doe" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                   </div>
                   <div>
                     <Label className='text-lg'>
                       Username
                     </Label>
-                    <Input name='username' placeholder="Justin" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                    <Input name='username' placeholder="Justin" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                   </div>
                   <div>
                     <Label className='text-lg'>
                       Email
                     </Label>
-                    <Input name='email' placeholder="justindoe@mail.com" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                    <Input name='email' placeholder="justindoe@mail.com" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                   </div>
                   <div>
                     <Label className='text-lg'>
                       Phone
                     </Label>
-                    <Input name='phone' placeholder="6136136134" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                    <Input name='phone' placeholder="6136136134" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                   </div>
                   <div>
                     <Label className='text-lg'>
                       Position
                     </Label>
-                    <Input name='phone' placeholder="6136136134" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                    <Input name='phone' placeholder="6136136134" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                   </div>
                   <div>
                     <Label className='text-lg'>
                       OMVIC #
                     </Label>
-                    <Input name='omvicNumber' placeholder="654165" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                    <Input name='omvicNumber' placeholder="654165" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                   </div>
                   <div>
                     <Label className='text-lg'>
@@ -403,12 +403,12 @@ export default function Route() {
                     </Label>
 
                     <Select name='userRole'>
-                      <SelectTrigger className='mr-3 w-auto border-[#02a9ff]  text-[#02a9ff]'>
+                      <SelectTrigger className='mr-3 w-auto border-primary  text-primary'>
                         Role
                       </SelectTrigger>
-                      <SelectContent align="end" className='bg-slate1 text-[#fafafa] '>
+                      <SelectContent align="end" className='bg-slate1 text-foreground '>
                         {userRole.map((role) => (
-                          <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-[#02a9ff] hover:underline">
+                          <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-primary hover:underline">
                             {role.symbol}
                           </SelectItem>
                         ))}
@@ -419,8 +419,8 @@ export default function Route() {
                     <Label className='text-lg'>
                       Password
                     </Label>
-                    <Input name='password' className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                    <Input name='password' className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                   </div>
                   <Button variant='outline' type='submit' name='intent' value='addUser' className='mt-5'>
                     Add User
@@ -434,7 +434,7 @@ export default function Route() {
 
       <TabsContent value="UserRoles">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-slate11 text-[#fafafa]  mt-5">
+          <CardContent className="space-y-2 rounded-md bg-slate11 text-foreground  mt-5">
             <div className='flex justify-between'>
               <Button variant='outline' onClick={() => { setAddUserRole(true) }}>
                 Add User Role
@@ -452,15 +452,15 @@ export default function Route() {
                   <Label className='text-lg'>
                     Name
                   </Label>
-                  <Input name='name' placeholder="Sales" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                  <Input name='name' placeholder="Sales" className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                 </div>
                 <div className='mt-5'>
                   <Label className='text-lg'>
                     Description
                   </Label>
-                  <Input name='description' placeholder="Vehichle sales staff member." className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md
-                 focus:text-[#02a9ff] focus:outline-none    active:bg-[#02a9ff]" />
+                  <Input name='description' placeholder="Vehichle sales staff member." className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                 focus:text-primary focus:outline-none    active:bg-primary" />
                 </div>
                 <Button variant='outline' type='submit' name='intent' value='addUserRole' className="mt-5 ml-auto">
                   Add

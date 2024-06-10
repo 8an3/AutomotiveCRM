@@ -40,17 +40,27 @@ export async function loader({ request, params }: LoaderFunction) {
 
       const dataPDF = await getDailyPDF(email)
       const statsData = await prisma.finance.findMany({
-        where: {
-          userEmail: {
-            equals: email,
-          },
-        },
+        where: { userEmail: { equals: email, }, },
       });
+      let automations
+      automations = await prisma.automations.findMany({
+        where: { userEmail: { equals: email, }, },
+      });
+      if (!automations) {
+        automations = await prisma.automations.create({
+          data: {
+            userEmail: user.email,
+            pickUp24before: 'no',
+            appt24before: 'no',
+          }
+        })
+      }
+
       const comsRecords = await prisma.previousComms.findMany({ where: { userEmail: email }, });
       const session2 = await getAppearance(request.headers.get("Cookie"));
       const getNewLook = user.newLook
       console.log(getNewLook, 'checking appearance')
-      return ({ user, deFees, dataPDF, statsData, comsRecords, getNewLook })
+      return ({ user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations })
     } else {
       return redirect('/subscribe');
     }
@@ -251,10 +261,10 @@ export function StatsTable({ statsData, comsRecords }) {
     // More objects for other time periods...
   ];
   return (
-    <Table className='bg-[#09090b] text-[#fafafa]'>
+    <Table className='bg-background text-foreground'>
       <TableCaption>List of Stats</TableCaption>
       <TableHeader>
-        <TableRow className="bg-accent border-[#27272a]">
+        <TableRow className="bg-accent border-border">
           <TableHead >Period</TableHead>
           <TableHead >Quotes</TableHead>
           <TableHead >Deposits</TableHead>
@@ -275,7 +285,7 @@ export function StatsTable({ statsData, comsRecords }) {
       </TableHeader>
       <TableBody>
         {stats.map((stat) => (
-          <TableRow key={stat.period} className="bg-accent border-[#27272a]">
+          <TableRow key={stat.period} className="bg-accent border-border">
             <TableCell >{stat.period}</TableCell>
             <TableCell >{stat.quotes}</TableCell>
             <TableCell >{stat.deposits}</TableCell>
@@ -300,7 +310,7 @@ export function StatsTable({ statsData, comsRecords }) {
 }
 
 
-function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook }) {
+function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations }) {
   let finance = ''
   let data = ''
   const fetcher = useFetcher()
@@ -382,33 +392,47 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
   };
 
   const [newLook, setNewLook] = useState(getNewLook);
+
+  const initial = {
+    pickUp24before: automations.pickUp24before,
+    appt24before: automations.appt24before,
+
+  }
+  const [formData, setFormData] = useState(initial);
+
+  const handleChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  };
+
   return (
     <Tabs defaultValue="dealerFees" className="w-[75%] ml-5 mr-auto" >
-      <TabsList className="grid grid-cols-3 rounded-md bg-[#3e3e3f]">
+      <TabsList className="grid grid-cols-4 rounded-md ">
         <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
         <TabsTrigger className='rounded-md' value="account">Account</TabsTrigger>
         <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>
+        <TabsTrigger className='rounded-md' value="Automations">Automations</TabsTrigger>
       </TabsList>
       <TabsContent value="stats" className='rounded-md'>
-        <Card className='rounded-md text-[#fafafa] border-[#3e3e3f] border'>
+        <Card className='rounded-md text-foreground border-border border'>
           <CardHeader className=''>
-            <CardTitle className='text-[#fafafa]'>
-              <h3 className="text-2xl font-thin uppercase text-[#fafafa]">
+            <CardTitle className='text-foreground'>
+              <h3 className="text-2xl font-thin uppercase text-foreground">
                 Statistics
               </h3>
             </CardTitle>
             <CardDescription>
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2  text-[#fafafa]">
+          <CardContent className="space-y-2  text-foreground">
             <StatsTable statsData={statsData} comsRecords={comsRecords} />
           </CardContent>
         </Card>
       </TabsContent>
       <TabsContent value="dealerFees" className='rounded-md'>
-        <Card className='text-[#fafafa] bg-[#09090b]'>
+        <Card className='text-foreground bg-background'>
           <Form method="post" className="">
-            <CardHeader className=" grid grid-cols-1 bg-[#18181a] rounded-md">
+            <CardHeader className=" grid grid-cols-1 bg-muted-background rounded-md">
               <CardTitle className="group flex items-center text-sm">
                 DEALER FEES
               </CardTitle>
@@ -428,46 +452,46 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
                         <Input
                           name={fee.name}
                           defaultValue={fee.value}
-                          className="border-[#27272a] bg-[#09090b] "
+                          className="border-border bg-background "
                         />
-                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
+                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
                       </div>
                     ))}
                     <div className="relative mt-4  mx-3">
                       <Input
                         defaultValue={deFees.userLicensing}
                         name="userLicensing"
-                        className="border-[#27272a] bg-[#09090b] "
+                        className="border-border bg-background "
                       />
                       {errors?.userLicensing ? (
                         <em className="text-[#ff0202]">{errors.userLicensing}</em>
                       ) : null}
-                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
                     </div>
                     <div className="relative mt-4  mx-3">
                       <Input
                         defaultValue={deFees.userTax}
                         name="userTax"
-                        className="border-[#27272a] bg-[#09090b] "
+                        className="border-border bg-background "
                       />
                       {errors?.userTax ? (
                         <em className="text-[#ff0202]">{errors.userTax}</em>
                       ) : null}
-                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax</label>
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax</label>
                     </div>
                     <div className="relative mt-4  mx-3">
                       <Input
                         defaultValue={deFees.userLabour}
                         name="userLabour"
-                        className="border-[#27272a] bg-[#09090b] "
+                        className="border-border bg-background "
                       />
                       {errors?.userLabour ? (
                         <em className="text-[#ff0202]">{errors.userLabour}</em>
                       ) : null}
-                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour</label>
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour</label>
                     </div>
                   </div>
-                  <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                  <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                   <div className="font-semibold ml-[50px]">Options</div>
                   <div className="my-4 grid grid-cols-5 gap-2 w-[90%] mx-auto">
                     {FinanceOptions.map((option, index) => (
@@ -475,9 +499,9 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
                         <Input
                           name={option.name}
                           defaultValue={option.value}
-                          className="border-[#27272a] bg-[#09090b] "
+                          className="border-border bg-background "
                         />
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{option.placeholder}</label>
+                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{option.placeholder}</label>
                       </div>
                     ))}
                     <Input type='hidden' defaultValue={user.email} name="userEmail" />
@@ -485,7 +509,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
                 </>
               )}
             </CardContent>
-            <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+            <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
               {user.plan === 'prod_OY8EMf7RNoJXhX' ? (
                 null
               ) : (
@@ -508,9 +532,9 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
 
       </TabsContent>
       <TabsContent value="account" className='rounded-md  grid grid-cols-2'>
-        <Card className='text-[#fafafa] bg-[#09090b] mr-2 mb-4'>
+        <Card className='text-foreground bg-background mr-2 mb-4'>
           <Form method="post" className="">
-            <CardHeader className="   bg-[#18181a] rounded-md">
+            <CardHeader className="   bg-muted-background rounded-md">
               <CardTitle className="group flex items-center text-sm">
                 EDIT ACCOUNT
               </CardTitle>
@@ -525,133 +549,133 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
                   <Input
                     defaultValue={name}
                     name="name"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLicensing ? (
                     <em className="text-[#ff0202]">{errors.userLicensing}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
                 </div>
                 <div className="relative mt-4">
                   <Input
                     defaultValue={phone}
                     name="phone"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLicensing ? (
                     <em className="text-[#ff0202]">{errors.userLicensing}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
                 </div>
                 <div className="relative mt-4">
                   <Input
                     defaultValue={user.email}
                     name="userEmail"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userTax ? (
                     <em className="text-[#ff0202]">{errors.userTax}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
                 </div>
                 <div className="relative mt-4">
                   <Input
                     defaultValue={user.username}
                     name="username"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLabour ? (
                     <em className="text-[#ff0202]">{errors.userLabour}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Full Name</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Full Name</label>
                 </div>
               </div>
-              <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+              <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
               <div className="font-semibold"> Dealer Information - This will only be for contracts.</div>
               <div className="grid grid-cols-1 gap-2">
                 <div className="relative mt-4">
                   <Input
                     defaultValue={deFees?.dealer}
                     name="dealer"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLabour ? (
                     <em className="text-[#ff0202]">{errors.userLabour}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
                 </div>
                 <div className="relative mt-4">
                   <Input
                     defaultValue={dealerAddress}
                     name="dealerAddress"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLabour ? (
                     <em className="text-[#ff0202]">{errors.userLabour}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
                 </div>
                 <div className="relative mt-4">
                   <Input
                     defaultValue={dealerCity}
                     name="dealerCity"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLabour ? (
                     <em className="text-[#ff0202]">{errors.userLabour}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
                 </div>
                 <div className="relative mt-4">
                   <Input
                     defaultValue={dealerProvince}
                     name="dealerProv"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLabour ? (
                     <em className="text-[#ff0202]">{errors.userLabour}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
                 </div>
                 <div className="relative mt-4">
                   <Input
                     defaultValue={dealerPostal}
                     name="dealerPostal"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLabour ? (
                     <em className="text-[#ff0202]">{errors.userLabour}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
                 </div>
                 <div className="relative mt-4">
                   <Input
                     defaultValue={dealerPhone}
                     name="dealerPhone"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLabour ? (
                     <em className="text-[#ff0202]">{errors.userLabour}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
                 </div>
                 <div className="relative mt-4">
                   <Input
                     defaultValue={omvicNumber}
                     name="omvicNumber"
-                    className="border-[#27272a] bg-[#09090b] "
+                    className="border-border bg-background "
                   />
                   {errors?.userLabour ? (
                     <em className="text-[#ff0202]">{errors.userLabour}</em>
                   ) : null}
-                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">OMVIC / GOV Lic</label>
+                  <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">OMVIC / GOV Lic</label>
                 </div>
                 <Input type='hidden' defaultValue={user.email} name="userEmail" />
                 <Input type='hidden' defaultValue={user.email} name="email" />
               </div>
 
             </CardContent>
-            <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+            <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
               <ButtonLoading
                 size="sm"
                 className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
@@ -668,9 +692,9 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
           </Form>
         </Card>
         <div className='grid grid-cols-1'>
-          <Card className='text-[#fafafa] bg-[#09090b] ml-2 mb-4'>
+          <Card className='text-foreground bg-background ml-2 mb-4'>
             <Form method="post" className="">
-              <CardHeader className=" grid grid-cols-1 bg-[#18181a] rounded-md">
+              <CardHeader className=" grid grid-cols-1 bg-muted-background rounded-md">
                 <CardTitle className="group flex items-center text-sm">
                   Integration Settings
                 </CardTitle>
@@ -681,7 +705,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
               <CardContent className=' '>
                 <ul className="grid gap-3 text-sm mt-3">
                   <li className="flex items-center justify-between">
-                    <span className="text-[#909098]">
+                    <span className="text-muted-foreground">
                       Activix
                     </span>
                     <span>
@@ -700,32 +724,32 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
 
                 {user.activixActivated === 'yes' && (
                   <div className="flex flex-col ">
-                    <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                    <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                     <div className="font-semibold ml-[50px]">Activx</div>
                     <div className="relative mt-3">
                       <Input
-                        className="border-[#27272a] bg-[#09090b]  "
+                        className="border-border bg-background  "
                         type="email"
                         name="activixEmail"
                         defaultValue={user.activixEmail}
                       />
-                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Activix Email</label>
+                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Activix Email</label>
                     </div>
                     <div className="relative mt-3">
                       <Input
-                        className="border-[#27272a] bg-[#09090b]  "
+                        className="border-border bg-background  "
                         type="email"
                         name="activixEmail"
                         defaultValue={user.activixEmail}
                       />
-                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Account Id</label>
+                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Account Id</label>
                     </div>
                   </div>
                 )}
                 <Input type='hidden' name="email" defaultValue={user.email} />
                 <Input type='hidden' name="userEmail" defaultValue={user.email} />
               </CardContent>
-              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
                 <ButtonLoading
                   size="sm"
                   className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
@@ -741,9 +765,9 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
               </CardFooter>
             </Form>
           </Card>
-          <Card className='text-[#fafafa] bg-[#09090b] ml-2 mb-4 mt-4'>
+          <Card className='text-foreground bg-background ml-2 mb-4 mt-4'>
             <Form method="post" className="">
-              <CardHeader className=" grid grid-cols-1 bg-[#18181a] rounded-md">
+              <CardHeader className=" grid grid-cols-1 bg-muted-background rounded-md">
                 <CardTitle className="group flex items-center text-sm">
                   New Quote and Overview Appearance {newLook}
                 </CardTitle>
@@ -756,7 +780,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
 
                 <ul className="grid gap-3 text-sm mt-3">
                   <li className="flex items-center justify-between">
-                    <span className="text-[#909098]">
+                    <span className="text-muted-foreground">
                       Change looks?
                     </span>
                     <span>
@@ -777,7 +801,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
                   </li>
                 </ul>
               </CardContent>
-              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
                 <ButtonLoading
                   size="sm"
                   className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
@@ -797,6 +821,110 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
           </Card>
         </div>
       </TabsContent>
+      <TabsContent value="Automations" className='rounded-md  grid grid-cols-2'>
+        <Card className='rounded-md text-foreground border-border border bg-muted-background'>
+          <CardHeader className=''>
+            <CardTitle className='text-foreground'>
+              <h3 className="text-2xl font-thin uppercase text-foreground">
+                Automations
+              </h3>
+            </CardTitle>
+            <CardDescription>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2  text-foreground">
+            <Form method='post' >
+              <ul className="grid gap-3 text-sm mt-2">
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">
+                    Appointment reminder / 24 hours
+                  </span>
+                  <span>
+                    <div className="inline-flex items-center">
+                      <label className="relative flex items-center  rounded-full cursor-pointer" htmlFor="blue">
+                        <input type="checkbox"
+                          id="blue"
+                          name="appt24before"
+                          checked={formData.appt24before !== 'no'}
+                          onChange={(e) => {
+                            const { name, checked } = e.target;
+                            const newValue = checked
+                              ? 'yes'
+                              : 'no'; // Use the correct variable name here
+                            setFormData((prevFormData) => ({
+                              ...prevFormData,
+                              [name]: newValue,
+                            }));
+                          }}
+                          className=' border-[#c72323] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10'
+                        />
+                        <span
+                          className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+                            stroke="currentColor" strokeWidth="1">
+                            <path fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"></path>
+                          </svg>
+                        </span>
+                      </label>
+                    </div>
+                  </span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">
+                    Pick-Up reminder / 24 hours
+                  </span>
+                  <span>
+                    <div className="inline-flex items-center">
+                      <label className="relative flex items-center  rounded-full cursor-pointer" htmlFor="blue">
+                        <input type="checkbox"
+                          id="blue"
+                          name="pickUp24before"
+                          checked={formData.pickUp24before !== 'no'}
+                          onChange={(e) => {
+                            const { name, checked } = e.target;
+                            const newValue = checked
+                              ? 'yes'
+                              : 'no'; // Use the correct variable name here
+                            setFormData((prevFormData) => ({
+                              ...prevFormData,
+                              [name]: newValue,
+                            }));
+                          }}
+                          className='border-[#c72323]  peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10'
+                        />
+                        <span
+                          className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+                            stroke="currentColor" strokeWidth="1">
+                            <path fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"></path>
+                          </svg>
+                        </span>
+                      </label>
+                    </div>
+                  </span>
+                </li>
+              </ul>
+              <ButtonLoading
+                size="sm"
+                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                type="submit"
+                name='intent'
+                value='automations'
+                isSubmitting={isSubmitting}
+                onClick={() => toast.success(`Update complete.`)}
+                loadingText="Updating information..."
+              >
+                Update
+              </ButtonLoading>
+            </Form>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
     </Tabs>
   )
 }
@@ -966,7 +1094,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Mainbody() {
-  const { user, deFees, dataPDF, statsData, comsRecords, getNewLook } = useLoaderData()
+  const { user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations } = useLoaderData()
   const userIsAllowed = getUserIsAllowed(user, ["ADMIN"]);
   console.log(userIsAllowed, user, user.role); // Expected output: true
   return (
@@ -974,7 +1102,7 @@ export default function Mainbody() {
       <div className="flex h-[100%] w-[98vw] left-0">
 
         <div className='w-[98%]'>
-          <ProfileForm user={user} deFees={deFees} dataPDF={dataPDF} statsData={statsData} comsRecords={comsRecords} getNewLook={getNewLook} />
+          <ProfileForm user={user} deFees={deFees} dataPDF={dataPDF} statsData={statsData} comsRecords={comsRecords} getNewLook={getNewLook} automations={automations} />
         </div>
       </div>
     </>

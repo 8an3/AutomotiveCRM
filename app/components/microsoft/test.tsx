@@ -59,7 +59,7 @@ export default function ProfileContent() {
                         setEmail(emailBody);
                         getEmailById(app.authProvider!, message.id);
                       }}
-                      className='my-2 p-3 parent gap-2 items-center rounded cursor-pointer  text hover:text-[#02a9ff] bg-[#0d0f10] emailLine hover:shadow-sm hover:shadow-[#02a9ff]'>
+                      className='my-2 p-3 parent gap-2 items-center rounded cursor-pointer  text hover:text-primary bg-[#0d0f10] emailLine hover:shadow-sm hover:shadow-primary'>
                       <p className='cursor-pointer div1 my-auto text-left px-1 lg:p-1 text-[12px]'>
                         {message.from?.emailAddress?.name}
                       </p>
@@ -84,11 +84,11 @@ export default function ProfileContent() {
                                   handleClicktestInbox()
 
                                   handleLineClick(index)
-                                }} className="cursor-pointer p-2 hover:text-[#02a9ff]">
+                                }} className="cursor-pointer p-2 hover:text-primary">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x-circle"><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg>
                                 </div>
 
-                                <p onClick={() => setDetails(!details)} className="text-[13px] flex items-center my-auto cursor-pointer hover:text-[#02a9ff]">
+                                <p onClick={() => setDetails(!details)} className="text-[13px] flex items-center my-auto cursor-pointer hover:text-primary">
                                   Details
                                 </p>
                               </div>
@@ -99,24 +99,24 @@ export default function ProfileContent() {
 
 
 
-                                  <div onClick={() => { handleClicktestInbox() }} className="cursor-pointer p-2 hover:text-[#02a9ff]">
+                                  <div onClick={() => { handleClicktestInbox() }} className="cursor-pointer p-2 hover:text-primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-check"><path d="M18 6 7 17l-5-5" /><path d="m22 10-7.5 7.5L13 16" /></svg>
                                   </div>
-                                  <div className="cursor-pointer p-2 hover:text-[#02a9ff]"
+                                  <div className="cursor-pointer p-2 hover:text-primary"
                                     onClick={() => {
                                       messageUnRead(app.authProvider!, message.id);
 
                                     }}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-clock-10"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 8 10" /></svg>
                                   </div>
-                                  <div className="cursor-pointer p-2 hover:text-[#02a9ff]"
+                                  <div className="cursor-pointer p-2 hover:text-primary"
                                     onClick={() => {
                                       GetEmailsFromFolder('inbox');
                                       deleteMessage(app.authProvider!, message.id);
                                     }}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pin"><line x1="12" x2="12" y1="17" y2="22" /><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" /></svg>
                                   </div>
-                                  <div className="cursor-pointer p-2 hover:text-[#02a9ff]"
+                                  <div className="cursor-pointer p-2 hover:text-primary"
                                     onClick={() => {
                                       GetEmailsFromFolder('inbox');
                                       deleteMessage(app.authProvider!, message.id);
@@ -147,7 +147,7 @@ export default function ProfileContent() {
 
                             <div className={`border-[#edf5e1]  replyContent text-colors-myColor-200 border-t-gray-950 bg-[#379683] border-t w-full items-center overflow-x-hidden shadow-sm transition-all duration-500 ${isOpen ? 'h-[37%]' : 'h-14 '}`}>
                               <div className="grid grid-cols-2 items-center justify-between">
-                                <button onClick={handleClick} className="bg-transparent text-[#5cdb95] p-2 text-left cursor-pointer hover:text-[#02a9ff]">
+                                <button onClick={handleClick} className="bg-transparent text-[#5cdb95] p-2 text-left cursor-pointer hover:text-primary">
                                   Reply
                                 </button>
                                 <div className="ml-auto flex p-2  ">
@@ -157,7 +157,7 @@ export default function ProfileContent() {
                                       let intentValue = 'reply';
                                       setIntent(intentValue);
                                     }}
-                                    className="cursor-pointer p-2 hover:text-[#02a9ff]">
+                                    className="cursor-pointer p-2 hover:text-primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-reply"><polyline points="9 17 4 12 9 7" /><path d="M20 18v-2a4 4 0 0 0-4-4H4" /></svg>
                                   </button>
                                   <button
@@ -166,7 +166,7 @@ export default function ProfileContent() {
                                       setIntent(intentValue);
                                     }}
                                     type="submit"
-                                    className="cursor-pointer p-2 hover:text-[#02a9ff]">
+                                    className="cursor-pointer p-2 hover:text-primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-reply-all"><polyline points="7 17 2 12 7 7" /><polyline points="12 17 7 12 12 7" /><path d="M22 18v-2a4 4 0 0 0-4-4H7" /></svg>
                                   </button>
                                   <button
@@ -175,21 +175,21 @@ export default function ProfileContent() {
                                       setIntent(intentValue);
                                     }}
                                     type="submit"
-                                    className="cursor-pointer p-2 hover:text-[#02a9ff]">
+                                    className="cursor-pointer p-2 hover:text-primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-forward"><polyline points="15 17 20 12 15 7" /><path d="M4 18v-2a4 4 0 0 1 4-4h12" /></svg>
                                   </button>
                                   <button onClick={() => {
                                     let intentValue = 'draft';
                                     setIntent(intentValue);
                                   }} type="submit"
-                                    className="cursor-pointer p-2 hover:text-[#02a9ff]">
+                                    className="cursor-pointer p-2 hover:text-primary">
                                     <p>RiDraftLine </p>
                                   </button>
                                   <button
                                     onClick={() => {
                                       let intentValue = 'template';
                                       setIntent(intentValue);
-                                    }} type="submit" className="cursor-pointer p-2 hover:text-[#02a9ff]">
+                                    }} type="submit" className="cursor-pointer p-2 hover:text-primary">
                                     <p>HiOutlineTemplate </p>
                                   </button>
                                 </div>

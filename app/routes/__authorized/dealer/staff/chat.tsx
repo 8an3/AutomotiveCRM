@@ -240,17 +240,17 @@ export default function StaffChat({ content }) {
   }, [filtererdConversations]);
   return (
     <Card
-      className=" z-50 w-[800px] text-[#f1f1f1] max-h-[60vh]"
+      className=" z-50 w-[800px] text-foreground max-h-[60vh]"
       x-chunk="dashboard-05-chunk-4"
     >
-      <CardHeader className="flex flex-row items-start bg-[#18181a] rouned-lg">
+      <CardHeader className="flex flex-row items-start bg-muted-background rouned-lg">
         <div className="grid gap-0.5">
           <CardTitle className="group flex items-center gap-2 text-lg">
             Staff Chat
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className=" bg-[#09090b] p-6 text-sm">
+      <CardContent className=" bg-background p-6 text-sm">
         <div className="grid grid-cols-8 gap-3 ">
           <Card className="col-span-2 max-h-[500px] h-[500px]">
             <CardContent className="flex-col overflow-y-auto">
@@ -262,8 +262,8 @@ export default function StaffChat({ content }) {
                   className={cn(
                     buttonVariants({ variant: "ghost" }),
                     roomLabel === room.dept
-                      ? "w-[90%] bg-[#232324] hover:bg-[#232324]"
-                      : "w-[90%] hover:bg-[#232324]",
+                      ? "w-[90%] bg-[#232324] hover:bg-muted/50"
+                      : "w-[90%] hover:bg-muted/50",
                     "w-[90%] justify-start"
                   )}
                 >
@@ -281,7 +281,7 @@ export default function StaffChat({ content }) {
                     className={cn(
                       "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                       conversation.userEmail === user.email
-                        ? "ml-auto bg-[#dc2626] text-[#fafafa]"
+                        ? "ml-auto bg-[#dc2626] text-foreground"
                         : "bg-[#262626]"
                     )}
                   >
@@ -301,7 +301,7 @@ export default function StaffChat({ content }) {
         </div>
 
       </CardContent>
-      <CardFooter className=" border-t rounded-lg border-[#27272a] bg-[#18181a] ">
+      <CardFooter className=" border-t rounded-lg border-border bg-muted-background ">
         <Input type="hidden" defaultValue={user.email} name="userEmail" />
         <Input type="hidden" defaultValue={user.username || user.name} name="username" />
         <Input type="hidden" defaultValue={roomLabel} name="dept" />
@@ -310,7 +310,7 @@ export default function StaffChat({ content }) {
           <Input
             id="message"
             placeholder="Type your message..."
-            className="flex-1 border-[#27272a] bg-[#18181a] mr-3  "
+            className="flex-1 border-border bg-muted-background mr-3  "
             autoComplete="off"
             value={input}
             onChange={(event) => setInput(event.target.value)}

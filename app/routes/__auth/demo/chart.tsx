@@ -97,9 +97,9 @@ export default function Component() {
           <TabsTrigger value="password">Tally</TabsTrigger>
         </TabsList>
         <TabsContent value="account">
-          < div className='bg-[#09090b] text-[#fafafa] grid grid-cols-2 '>
+          < div className='bg-background text-foreground grid grid-cols-2 '>
             <Card className='w-[98%] h-auto max-h-[500px] mx-auto mr-2'>
-              <CardHeader className="px-7 bg-[#18181a]">
+              <CardHeader className="px-7 bg-muted-background">
                 <CardTitle>Time Wasted / Day</CardTitle>
                 <CardDescription></CardDescription>
               </CardHeader>
@@ -125,9 +125,9 @@ export default function Component() {
 
             </Card>
             <Card
-              className="w-auto overflow-hidden text-[#f1f1f1] ml-2" x-chunk="dashboard-05-chunk-4"
+              className="w-auto overflow-hidden text-foreground ml-2" x-chunk="dashboard-05-chunk-4"
             >
-              <CardHeader className="flex flex-row items-start bg-[#18181a]">
+              <CardHeader className="flex flex-row items-start bg-muted-background">
                 <div className="grid gap-0.5">
                   <CardTitle className="group flex items-center gap-2 text-lg">
                     Adjust Variables
@@ -142,9 +142,9 @@ export default function Component() {
                 </div>
 
               </CardHeader>
-              <CardContent className="flex-grow  overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+              <CardContent className="flex-grow  overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
                 <div className="grid gap-3 max-h-[30vh] h-auto">
-                  <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                  <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                   <div className="grid gap-3 mx-3 mb-3">
                     <ul className="grid gap-3">
                       <li className="flex items-center justify-between font-semibold">
@@ -156,7 +156,7 @@ export default function Component() {
                             onChange={handleChange}
 
                             defaultValue={formData.timeWastedInSeconds}
-                            className="w-[50px] bg-[#09090b] border-[#27272a] "
+                            className="w-[50px] bg-background border-border "
                           />
                         </span>
                       </li>
@@ -169,7 +169,7 @@ export default function Component() {
                             onChange={handleChange}
 
                             defaultValue={formData.callIntervals}
-                            className="  w-[50px]  bg-[#09090b] border-[#27272a] "
+                            className="  w-[50px]  bg-background border-border "
                           />
                         </span>
                       </li>
@@ -181,7 +181,7 @@ export default function Component() {
                           onChange={handleChange}
 
                           defaultValue={formData.maxCalls}
-                          className="w-[50px]  bg-[#09090b] border-[#27272a] "
+                          className="w-[50px]  bg-background border-border "
                         />
                         </span>
                       </li>
@@ -193,12 +193,12 @@ export default function Component() {
                             defaultValue={wasteMultiplier}
                             onChange={handleChange}
 
-                            className="w-[50px]  bg-[#09090b] border-[#27272a] "
+                            className="w-[50px]  bg-background border-border "
                           />
                         </span>
                       </li>
                     </ul>
-                    <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                    <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                     <p className='text-lg'>At 100 calls / day</p>
                     <ul className="grid gap-3">
                       <li className="flex items-center justify-between">
@@ -226,7 +226,7 @@ export default function Component() {
                         <span>{Number(formData.timeWastedInSeconds) * 100 * 20 * 12 / 352} / Days</span>
                       </li>
                     </ul>
-                    <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                    <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                     <p className='text-lg'>What if your an employer?</p>
                     <ul className="grid gap-3">
                       <li className="flex items-center justify-between">
@@ -237,7 +237,7 @@ export default function Component() {
                             defaultValue={formData.employees}
                             onChange={handleChange}
 
-                            className="w-[50px]  bg-[#09090b] border-[#27272a] "
+                            className="w-[50px]  bg-background border-border "
                           />
                         </span>
                       </li>
@@ -253,8 +253,8 @@ export default function Component() {
           </ div >
         </TabsContent>
         <TabsContent value="password">
-          <Card className='text-[#fafafa]'>
-            <CardHeader className="flex flex-row items-start bg-[#18181a]">
+          <Card className='text-foreground'>
+            <CardHeader className="flex flex-row items-start bg-muted-background">
               <div className="grid gap-0.5">
                 <CardTitle className="group flex items-center gap-2 text-lg">
                   Full Example
@@ -271,9 +271,9 @@ export default function Component() {
 
               </div>
             </CardHeader>
-            <CardContent className="flex-grow  overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+            <CardContent className="flex-grow  overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
               <div className="grid gap-3 max-h-[30vh] h-auto">
-                <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                 <div className="grid gap-3 mx-3 mb-3">
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between font-semibold">
@@ -283,7 +283,7 @@ export default function Component() {
                           name="szwastedMin"
                           onChange={handleChange}
                           defaultValue={formData.szwastedMin}
-                          className="w-[75px] bg-[#09090b] border-[#27272a] "
+                          className="w-[75px] bg-background border-border "
                         />
                       </span>
                     </li>
@@ -295,7 +295,7 @@ export default function Component() {
                           type="text"
                           onChange={handleChange}
                           defaultValue={formData.zscalls}
-                          className="  w-[75px]  bg-[#09090b] border-[#27272a] "
+                          className="  w-[75px]  bg-background border-border "
                         />
                       </span>
                     </li>
@@ -306,7 +306,7 @@ export default function Component() {
                         type="text"
                         onChange={handleChange}
                         defaultValue={formData.szlicensing}
-                        className="w-[75px]  bg-[#09090b] border-[#27272a] "
+                        className="w-[75px]  bg-background border-border "
                       />
                       </span>
                     </li>
@@ -317,7 +317,7 @@ export default function Component() {
                           name="szpaperwork"
                           onChange={handleChange}
                           defaultValue={formData.szpaperwork}
-                          className="w-[75px]  bg-[#09090b] border-[#27272a] "
+                          className="w-[75px]  bg-background border-border "
                         />
                       </span>
                     </li>
@@ -328,7 +328,7 @@ export default function Component() {
                           name="partsRelated"
                           onChange={handleChange}
                           defaultValue={formData.partsRelated}
-                          className="w-[75px]  bg-[#09090b] border-[#27272a] "
+                          className="w-[75px]  bg-background border-border "
                         />
                       </span>
                     </li>
@@ -339,7 +339,7 @@ export default function Component() {
                           name="serviceRelated"
                           onChange={handleChange}
                           defaultValue={formData.serviceRelated}
-                          className="w-[75px]  bg-[#09090b] border-[#27272a] "
+                          className="w-[75px]  bg-background border-border "
                         />
                       </span>
                     </li>
@@ -350,12 +350,12 @@ export default function Component() {
                           name="szsales"
                           onChange={handleChange}
                           defaultValue={formData.szsales}
-                          className="w-[75px]  bg-[#09090b] border-[#27272a] "
+                          className="w-[75px]  bg-background border-border "
                         />
                       </span>
                     </li>
                   </ul>
-                  <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                  <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                   <p className='text-lg'>At 100 calls / day</p>
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
@@ -431,7 +431,7 @@ export default function Component() {
       </Tabs>
       {first === true ? (
         <>
-          <fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9] border-[#27272a] max-w-[50%]">
+          <fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9] border-border max-w-[50%]">
             <legend className="-ml-1 px-1 text-sm font-medium flex">
               <RocketIcon className="h-4 w-4 mr-2" />
               I know...
@@ -466,7 +466,7 @@ export default function Component() {
         </>
       ) : second === true ? (
         <>
-          <fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9] border-[#27272a]">
+          <fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9] border-border">
             <legend className="-ml-1 px-1 text-sm font-medium flex">
               <RocketIcon className="h-4 w-4 mr-2" />
               What if...
@@ -512,7 +512,7 @@ export default function Component() {
         </>
       ) : (
         <>
-          <fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9] border-[#27272a]">
+          <fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9] border-border">
             <legend className="-ml-1 px-1 text-sm font-medium flex">
               <RocketIcon className="h-4 w-4 mr-2" />
               How...

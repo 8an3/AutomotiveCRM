@@ -102,7 +102,7 @@ function ChatChannel(props, messages) {
     [key],
   );
   return (
-    <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }} className='text-[#fafafa]'>
+    <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }} className='text-foreground'>
       <div >
         <div style={{ flexBasis: "100%", flexGrow: 2, flexShrink: 1 }}>
           <ChatMessages identity={user.username} messages={messages} />
@@ -116,7 +116,7 @@ function ChatChannel(props, messages) {
                 placeholder="Message..."
                 name="message"
                 autoComplete="off"
-                className='bg-myColor-900 text-[#fafafa] rounded-d p-3 m-2 align-bottom mt-auto'
+                className='bg-myColor-900 text-foreground rounded-d p-3 m-2 align-bottom mt-auto'
                 onChange={onMessageChanged}
                 value={state.newMessage}
                 ref={textareaRef}

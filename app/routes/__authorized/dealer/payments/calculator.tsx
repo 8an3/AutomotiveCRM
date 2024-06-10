@@ -953,7 +953,7 @@ export function PaymentCalc({ outletSize }) {
 
       return (
         <>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <ul className="grid gap-3">
             {manSwitchAccArray.some((option) => manOptions[option] > 0) && (
               <>
@@ -1386,7 +1386,7 @@ export function PaymentCalc({ outletSize }) {
 
       <div className="mx-auto mt-10 mb-10">
         <Card className=" w-[550px] rounded-md">
-          <CardHeader className="bg-[#18181a] flex flex-row items-start t-rounded-md">
+          <CardHeader className="bg-muted-background flex flex-row items-start t-rounded-md">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
                 Payment Calculator
@@ -1396,7 +1396,7 @@ export function PaymentCalc({ outletSize }) {
           </CardHeader>
           {firstPage && (
             <>
-              <CardContent className="p-6 text-sm bg-[#09090b]">
+              <CardContent className="p-6 text-sm bg-background">
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment Details</div>
 
@@ -1446,7 +1446,7 @@ export function PaymentCalc({ outletSize }) {
                         <Input
                           name="msrp"
                           id="msrp"
-                          className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                          className="h-8 w-20 text-right bg-background border-border "
                           autoComplete="msrp"
                           defaultValue={formData.msrp}
                           onChange={handleChange}
@@ -1458,7 +1458,7 @@ export function PaymentCalc({ outletSize }) {
                         <span className="text-[#8a8a93]">Freight</span>
                         <span>
                           <Input
-                            className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                            className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
                             defaultValue={formData.freight}
                             placeholder="freight"
                             type="text"
@@ -1474,7 +1474,7 @@ export function PaymentCalc({ outletSize }) {
                         <span className="text-[#8a8a93]">PDI</span>
                         <span>
                           <Input
-                            className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                            className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
                             defaultValue={formData.pdi}
                             placeholder="pdi"
                             type="text"
@@ -1489,7 +1489,7 @@ export function PaymentCalc({ outletSize }) {
                         <span className="text-[#8a8a93]">Admin</span>
                         <span>
                           <Input
-                            className="mt-2 h-8 w-20 items-end justify-end  text-right  bg-[#09090b] border-[#27272a]  "
+                            className="mt-2 h-8 w-20 items-end justify-end  text-right  bg-background border-border  "
                             defaultValue={formData.admin}
                             placeholder="admin"
                             type="text"
@@ -1504,7 +1504,7 @@ export function PaymentCalc({ outletSize }) {
                         <span className="text-[#8a8a93]">Commodity</span>
                         <span>
                           <Input
-                            className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                            className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
                             defaultValue={formData.commodity}
                             placeholder="commodity"
                             type="text"
@@ -1518,7 +1518,7 @@ export function PaymentCalc({ outletSize }) {
                       <span className="text-[#8a8a93]">Accessories</span>
                       <span>
                         <Input
-                          className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                          className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
                           defaultValue={formData.accessories}
                           placeholder="commodity"
                           type="text"
@@ -1533,7 +1533,7 @@ export function PaymentCalc({ outletSize }) {
                       </span>
                       <span>
                         <Input
-                          className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                          className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
                           defaultValue={formData.labour}
                           placeholder="commodity"
                           type="text"
@@ -1546,7 +1546,7 @@ export function PaymentCalc({ outletSize }) {
                       <span className="text-[#8a8a93]">Licensing</span>
                       <span>
                         <Input
-                          className="ml-auto mt-2 h-8 w-20  justify-end text-right  bg-[#09090b] border-[#27272a] "
+                          className="ml-auto mt-2 h-8 w-20  justify-end text-right  bg-background border-border "
                           defaultValue={licensing}
                           placeholder="licensing"
                           type="text"
@@ -1571,15 +1571,15 @@ export function PaymentCalc({ outletSize }) {
                  */}
                   </ul>
                 </div>
-                <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                 <div className="font-semibold">Standard Terms</div>
                 <div className="my-4">
                   <div className="main-button-group flex justify-between ">
                     <Badge
                       id="myButton"
-                      className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${mainButton === "payments"
-                        ? "active bg-[#c72323] text-[#fafafa]"
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                        ? "active bg-[#c72323] text-foreground"
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleMainButtonClick("payments")}
                     >
@@ -1588,9 +1588,9 @@ export function PaymentCalc({ outletSize }) {
 
                     <Badge
                       id="myButton1"
-                      className={`button  transform cursor-pointer bg-[#02a9ff] shadow   hover:text-[#fafafa] ${mainButton === "noTax"
-                        ? "active bg-[#0a0a0a]2 text-[#fafafa] "
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                        ? "active bg-[#0a0a0a]2 text-foreground "
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleMainButtonClick("noTax")}
                     >
@@ -1599,9 +1599,9 @@ export function PaymentCalc({ outletSize }) {
 
                     <Badge
                       id="myButton2"
-                      className={`button  transform cursor-pointer bg-[#02a9ff]   shadow hover:text-[#fafafa] ${mainButton === "customTax"
-                        ? "active bg-[#c72323] text-[#fafafa]"
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                        ? "active bg-[#c72323] text-foreground"
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleMainButtonClick("customTax")}
                     >
@@ -1611,9 +1611,9 @@ export function PaymentCalc({ outletSize }) {
                   <div className="sub-button-group mt-2 flex justify-between">
                     <Badge
                       id="myButton3"
-                      className={`button  transform cursor-pointer bg-[#02a9ff] shadow hover:text-[#fafafa] ${subButton === "withoutOptions"
-                        ? "active bg-[#c72323] text-[#fafafa]"
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                        ? "active bg-[#c72323] text-foreground"
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleSubButtonClick("withoutOptions")}
                     >
@@ -1622,9 +1622,9 @@ export function PaymentCalc({ outletSize }) {
 
                     <Badge
                       id="myButton5"
-                      className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${subButton === "withOptions"
-                        ? "active bg-[#c72323] text-[#fafafa]"
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                        ? "active bg-[#c72323] text-foreground"
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleSubButtonClick("withOptions")}
                     >
@@ -1747,7 +1747,7 @@ export function PaymentCalc({ outletSize }) {
                           <Input
                             name="othTax"
                             id="othTax"
-                            className="h-8 w-20 text-right bg-[#09090b] border-[#27272a]"
+                            className="h-8 w-20 text-right bg-background border-border"
                             autoComplete="othTax"
                             defaultValue={formData.othTax}
                             onChange={handleChange}
@@ -1808,14 +1808,14 @@ export function PaymentCalc({ outletSize }) {
                   </div>
                 )}
 
-                <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                 <div className="font-semibold">Contract Variables</div>
                 <div className="grid grid-cols-2 ">
                   <div className=" mt-2 ">
                     <div className="grid w-full max-w-sm items-center gap-1.5">
                       <label htmlFor="Term">Term</label>
                       <Input
-                        className="h-8 w-20 bg-[#09090b] border-[#27272a]"
+                        className="h-8 w-20 bg-background border-border"
                         name="months"
                         id="months"
                         autoComplete="months"
@@ -1831,7 +1831,7 @@ export function PaymentCalc({ outletSize }) {
                         Rate
                       </label>
                       <Input
-                        className="h-8 w-20 items-end justify-end text-right  bg-[#09090b] border-[#27272a]  "
+                        className="h-8 w-20 items-end justify-end text-right  bg-background border-border  "
                         name="iRate"
                         id="iRate"
                         autoComplete="iRate"
@@ -1844,7 +1844,7 @@ export function PaymentCalc({ outletSize }) {
                     <div className="grid w-full max-w-sm items-center gap-1.5">
                       <label htmlFor="deposit">Deposit</label>
                       <Input
-                        className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                        className="h-8 w-20 bg-background border-border "
                         name="deposit"
                         id="deposit"
                         autoComplete="deposit"
@@ -1858,7 +1858,7 @@ export function PaymentCalc({ outletSize }) {
                     <div className="grid w-full max-w-sm items-center gap-1.5 ">
                       <label htmlFor="tradeValue">Trade Value</label>
                       <Input
-                        className="ml-auto h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                        className="ml-auto h-8 w-20 text-right bg-background border-border "
                         name="tradeValue"
                         id="tradeValue"
                         autoComplete="tradeValue"
@@ -1871,7 +1871,7 @@ export function PaymentCalc({ outletSize }) {
                     <div className="grid w-full max-w-sm items-center gap-1.5">
                       <label htmlFor="deposit">Lien</label>
                       <Input
-                        className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                        className="h-8 w-20 bg-background border-border "
                         name="lien"
                         id="lien"
                         autoComplete="lien"
@@ -1883,10 +1883,10 @@ export function PaymentCalc({ outletSize }) {
                   </div>
                 </div>
 
-                <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                 <Drawer>
                   <DrawerTrigger>Other Inputs</DrawerTrigger>
-                  <DrawerContent className='bg-[#09090b] w-1/2 mb-5'>
+                  <DrawerContent className='bg-background w-1/2 mb-5'>
                     <DrawerHeader>
                       <DrawerTitle>Changes to discounts and such</DrawerTitle>
                     </DrawerHeader>
@@ -1895,7 +1895,7 @@ export function PaymentCalc({ outletSize }) {
                         <div className="grid  max-w-sm items-center gap-1.5">
                           <label htmlFor="discount">Discount $ </label>
                           <Input
-                            className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                            className="h-8 w-20 bg-background border-border "
                             name="discount"
                             id="discount"
                             autoComplete="discount"
@@ -1911,7 +1911,7 @@ export function PaymentCalc({ outletSize }) {
                             Discount (1.1-15)%
                           </label>
                           <Input
-                            className="ml-auto h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                            className="ml-auto h-8 w-20 text-right bg-background border-border "
                             name="discountPer"
                             id="discountPer"
                             autoComplete="discountPer"
@@ -1924,7 +1924,7 @@ export function PaymentCalc({ outletSize }) {
                         <div className="grid  max-w-sm items-center gap-1.5">
                           <label htmlFor="discountPer">Delivery Charge</label>
                           <Input
-                            className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                            className="h-8 w-20 bg-background border-border "
                             name="deliveryCharge"
                             id="deliveryCharge"
                             autoComplete="deliveryCharge"
@@ -1945,7 +1945,7 @@ export function PaymentCalc({ outletSize }) {
                   </DrawerContent>
                 </Drawer>
 
-                <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                 <div className="font-semibold">Total</div>
                 <ul className="grid gap-3">
                   {perDiscountGiven > 0 && (
@@ -2106,7 +2106,7 @@ export function PaymentCalc({ outletSize }) {
           )}
           {secPage && (
             <>
-              <CardContent className="p-6 text-sm  bg-[#09090b]">
+              <CardContent className="p-6 text-sm  bg-background">
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment Details</div>
                   <ul className="grid gap-3">
@@ -2147,7 +2147,7 @@ export function PaymentCalc({ outletSize }) {
                 )}
                     */}
                   </ul>
-                  <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                  <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                   <div className="font-semibold">Price</div>
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
@@ -2208,7 +2208,7 @@ export function PaymentCalc({ outletSize }) {
                 )}
                  */}
                   </ul>
-                  <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                  <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                   <div className="font-semibold">Fees</div>
                   <ul className="grid gap-3">
                     {deFees.userAirTax > 0 && (
@@ -2281,15 +2281,15 @@ export function PaymentCalc({ outletSize }) {
                     )}
                   </ul>
                 </div>
-                <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                 <div className="font-semibold">Standard Terms</div>
                 <div className="mt-3">
                   <div className="main-button-group flex justify-between ">
                     <Badge
                       id="myButton"
-                      className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${mainButton === "payments"
-                        ? "active bg-[#c72323] text-[#fafafa]"
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                        ? "active bg-[#c72323] text-foreground"
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleMainButtonClick("payments")}
                     >
@@ -2298,9 +2298,9 @@ export function PaymentCalc({ outletSize }) {
 
                     <Badge
                       id="myButton1"
-                      className={`button  transform cursor-pointer bg-[#02a9ff] shadow   hover:text-[#fafafa] ${mainButton === "noTax"
-                        ? "active bg-[#0a0a0a]2 text-[#fafafa] "
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                        ? "active bg-[#0a0a0a]2 text-foreground "
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleMainButtonClick("noTax")}
                     >
@@ -2309,9 +2309,9 @@ export function PaymentCalc({ outletSize }) {
 
                     <Badge
                       id="myButton2"
-                      className={`button  transform cursor-pointer bg-[#02a9ff]   shadow hover:text-[#fafafa] ${mainButton === "customTax"
-                        ? "active bg-[#c72323] text-[#fafafa]"
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                        ? "active bg-[#c72323] text-foreground"
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleMainButtonClick("customTax")}
                     >
@@ -2321,9 +2321,9 @@ export function PaymentCalc({ outletSize }) {
                   <div className="sub-button-group mt-2 flex justify-between">
                     <Badge
                       id="myButton3"
-                      className={`button  transform cursor-pointer bg-[#02a9ff] shadow hover:text-[#fafafa] ${subButton === "withoutOptions"
-                        ? "active bg-[#c72323] text-[#fafafa]"
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                        ? "active bg-[#c72323] text-foreground"
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleSubButtonClick("withoutOptions")}
                     >
@@ -2332,9 +2332,9 @@ export function PaymentCalc({ outletSize }) {
 
                     <Badge
                       id="myButton5"
-                      className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${subButton === "withOptions"
-                        ? "active bg-[#c72323] text-[#fafafa]"
-                        : "bg-[#0a0a0a] text-[#fafafa]"
+                      className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                        ? "active bg-[#c72323] text-foreground"
+                        : "bg-[#0a0a0a] text-foreground"
                         }`}
                       onClick={() => handleSubButtonClick("withOptions")}
                     >
@@ -2499,7 +2499,7 @@ export function PaymentCalc({ outletSize }) {
                   </div>
                 )}
 
-                <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                 <div className="font-semibold">Contract Variables</div>
                 <ul className="grid gap-3">
                   <li className="flex items-center justify-between">
@@ -2535,7 +2535,7 @@ export function PaymentCalc({ outletSize }) {
                 </ul>
 
 
-                <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                 <div className="font-semibold">Total</div>
                 <ul className="grid gap-3">
                   {perDiscountGiven > 0 && (
@@ -2695,7 +2695,7 @@ export function PaymentCalc({ outletSize }) {
             </>
           )}
 
-          <CardFooter className="bg-[#18181a]  flex flex-row items-center border-t px-6 py-3  b-rounded-md">
+          <CardFooter className="bg-muted-background  flex flex-row items-center border-t px-6 py-3  b-rounded-md">
             <div className="text-[#8a8a93] text-xs">
               Updated <time dateTime="2023-11-23">November 23, 2023</time>
             </div>
@@ -2750,7 +2750,7 @@ export default function PaymentsCalc() {
         <link rel="icon" href="/public/calculator.svg" />
       </head>
       <body>
-        <div className='bg-[#09090b]  w-screen'>
+        <div className='bg-background  w-screen'>
           <div className="flex px-4 sm:px-6 lg:px-8 text-[#f4f4f4]">
             <div className="w-full rounded-lg">
               <div className="mx-auto my-auto md:flex">

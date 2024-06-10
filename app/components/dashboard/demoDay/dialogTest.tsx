@@ -46,7 +46,7 @@ export default function DialogTest(user, data, firstName, lastName, email, phone
             <Menu color="#ededed" className='mx-auto' />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[250px] p-0 border-[#262626] bg-[#09090b] text-[#fafafa]">
+        <PopoverContent className="w-[250px] p-0 border-[#262626] bg-background text-foreground">
           <Command>
             <CommandEmpty>Edit Demo Day Customer.</CommandEmpty>
             <CommandGroup>
@@ -63,7 +63,7 @@ export default function DialogTest(user, data, firstName, lastName, email, phone
                     <input type='hidden' name='leadNote' defaultValue={leadNote} />
                     <input type='hidden' name='name' defaultValue={firstName + ' ' + lastName} />
                     <input type='hidden' name='intent' defaultValue='demoDayEdit' />
-                    <CommandItem onClick={() => submit} className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md' >
+                    <CommandItem onClick={() => submit} className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md' >
                       <Save color="#ededed" className="mr-2" />
                       Save
                     </CommandItem>
@@ -79,7 +79,7 @@ export default function DialogTest(user, data, firstName, lastName, email, phone
                     <input type='hidden' name='brand' defaultValue={data.brand} />
                     <input type='hidden' name='model' defaultValue={data.model} />
                     <input type='hidden' name='intent' defaultValue='demoDayConvert' />
-                    <CommandItem onClick={() => submit} className='hover:bg-[#232324] w-[90%] cursor-pointer  rounded-md' >
+                    <CommandItem onClick={() => submit} className='hover:bg-muted/50 w-[90%] cursor-pointer  rounded-md' >
                       <FilePlus color="#ededed" className="mr-2" />
                       Convert To Customer
                     </CommandItem>
@@ -89,7 +89,7 @@ export default function DialogTest(user, data, firstName, lastName, email, phone
                     <input type='hidden' name='userEmail' defaultValue={user.email} />
                     <input type='hidden' name='id' defaultValue={data.id} />
                     <input type='hidden' name='intent' defaultValue='demoDayDelete' />
-                    <CommandItem onClick={() => submit} className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md' >
+                    <CommandItem onClick={() => submit} className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md' >
                       <Trash2 color="#ededed" className="mr-2" /> Delete
                     </CommandItem>
                   </Form>

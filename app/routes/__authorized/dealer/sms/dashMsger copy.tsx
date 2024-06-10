@@ -262,7 +262,7 @@ export default function DashMsger() {
               name='intent'
               value='textQuickFU'
               type='submit'
-              className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+              className={` cursor-pointer mr-2 p-3 hover:text-primary hover:border-primary text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'} `}
             >
               {buttonText}
             </Button>
@@ -294,7 +294,7 @@ export default function DashMsger() {
               toast.message('Helping you become the hulk of sales...')
             }}
             loadingText="Loading..."
-            className="w-auto cursor-pointer  mt-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border-black"
+            className="w-auto cursor-pointer  mt-3 hover:text-primary hover:border-primary text-black border-black"
           >
             Save As Template
           </ButtonLoading>

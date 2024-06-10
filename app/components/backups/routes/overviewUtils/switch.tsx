@@ -27,7 +27,7 @@ export function ModelPageSwitch() {
 		window.open(modelUrl, '_blank')
 	}
 	return (
-		<Button onClick={Click} className="h-5 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" content="update">
+		<Button onClick={Click} className="h-5 border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border" type="submit" content="update">
 			Model Page
 		</Button>
 	)
@@ -61,8 +61,8 @@ export function PrintSpecSwitch() {
 		document.body.removeChild(link)
 	}
 	return (
-		<Button onClick={Click1} className="h-5 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" content="update">
+		<p onClick={Click1} type="submit" content="update">
 			Print Spec
-		</Button>
+		</p>
 	)
 }

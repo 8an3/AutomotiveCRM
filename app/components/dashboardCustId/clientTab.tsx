@@ -19,9 +19,9 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
   return (
     <div className="mb-8 mt-3">
       <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0"  >
-        <div className="rounded-t bg-[#09090b] mb-0 px-6 py-6 border-t border-white border-x">
+        <div className="rounded-t bg-background mb-0 px-6 py-6 border-t border-white border-x">
           <div className="text-center flex justify-between">
-            <h6 className="text-[#fafafa] text-xl font-bold uppercase">
+            <h6 className="text-foreground text-xl font-bold uppercase">
               Client Details
             </h6>
           </div>
@@ -40,14 +40,14 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2 mt-2"
+                      className="block uppercase text-foreground text-xs font-bold mb-2 mt-2"
                       htmlFor="grid-password"
                     >
                       First Name
                     </label>
                     <Input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       defaultValue={clientFile.firstName}
                       name='firstName'
                     />
@@ -56,14 +56,14 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2 mt-2"
+                      className="block uppercase text-foreground text-xs font-bold mb-2 mt-2"
                       htmlFor="grid-password"
                     >
                       Last Name
                     </label>
                     <Input
 
-                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       defaultValue={clientFile.lastName}
                       name='lastName'
                     />
@@ -72,14 +72,14 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                      className="block uppercase text-foreground text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Phone
                     </label>
                     <Input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       defaultValue={clientFile.phone}
                       name='phone'
                     />
@@ -88,14 +88,14 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                      className="block uppercase text-foreground text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Email
                     </label>
                     <Input
                       type="email"
-                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       defaultValue={clientFile.email}
                       name='email'
                     />
@@ -103,7 +103,7 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 </div>
               </div>
 
-              <hr className="mt-6 border-b-1 text-[#fafafa]" />
+              <hr className="mt-6 border-b-1 text-foreground" />
 
               <h6
                 className="text-gray-400 text-sm mt-3 mb-6 font-bold uppercase"
@@ -113,14 +113,14 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-12/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                      className="block uppercase text-foreground text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Address
                     </label>
                     <Input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       defaultValue={clientFile.address}
                       name='address'
                     />
@@ -129,14 +129,14 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-4/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                      className="block uppercase text-foreground text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       City
                     </label>
                     <Input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       defaultValue={clientFile.city}
                       name='city'
                     />
@@ -145,14 +145,14 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-4/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                      className="block uppercase text-foreground text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       province
                     </label>
                     <Input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       defaultValue={clientFile.province}
                       name='province'
                     />
@@ -161,14 +161,14 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-4/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                      className="block uppercase text-foreground text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Postal Code
                     </label>
                     <Input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       defaultValue={clientFile.postal}
                       name='postal'
                     />
@@ -177,14 +177,14 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <div className="w-full lg:w-12/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                      className="block uppercase text-foreground text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
                       Drivers License
                     </label>
                     <Input
                       type="text"
-                      className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                      className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       defaultValue={clientFile.dl}
                       name='dl'
                     />
@@ -193,9 +193,9 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
 
               </div>
 
-              <hr className="mt-6 border-b-1 text-[#fafafa]" />
+              <hr className="mt-6 border-b-1 text-foreground" />
 
-              <h6 className="text-[#fafafa] text-sm mt-3 mb-6 font-bold uppercase"  >
+              <h6 className="text-foreground text-sm mt-3 mb-6 font-bold uppercase"  >
                 Prefered Contact
               </h6>
 
@@ -204,7 +204,7 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                   defaultValue={clientFile.typeOfContact}
                   name='typeOfContact'
                   placeholder=""
-                  className=" max-w-sm mx-2 rounded border-0 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"              >
+                  className=" max-w-sm mx-2 rounded border-0 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"              >
                   <option value="">Best Form To Contact</option>
                   <option value="Phone">Phone</option>
                   <option value="Text">Text</option>
@@ -214,7 +214,7 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <select
                   defaultValue={clientFile.timeToContact}
                   name='timeToContact'
-                  className="  max-w-sm mx-2 rounded border-0 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                  className="  max-w-sm mx-2 rounded border-0 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
                 >
                   <option value="">Best Time To Contact</option>
                   <option value="Morning">Morning</option>
@@ -224,7 +224,7 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 </select>
               </div>
 
-              <hr className="mt-6 border-b-1 text-[#fafafa]" />
+              <hr className="mt-6 border-b-1 text-foreground" />
 
 
             </div>
@@ -239,12 +239,12 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                     }, 100);
                   }}
                   type="submit" name='intent' value='updateClientInfoFinance'
-                  className="bg-[#2ebb98]  cursor-pointer  mt-3 ml-auto text-[#fafafa] active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                  className="bg-[#2ebb98]  cursor-pointer  mt-3 ml-auto text-foreground active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                 >
                   Update
                 </button>
                 <Toast.Root open={open} onOpenChange={setOpen} className="bg-white rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut">
-                  <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-[#fafafa] text-[15px]">
+                  <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-foreground text-[15px]">
                     {clientFile.firstName}'s File Updated.
                   </Toast.Title>
                   <Toast.Description asChild>

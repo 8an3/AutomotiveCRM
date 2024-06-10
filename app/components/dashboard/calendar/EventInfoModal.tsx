@@ -133,11 +133,11 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
 
         <Dialog.Portal>
           <Form method='post'>
-            <Dialog.Overlay className="z-25 bg-[#09090b]/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
-            <Dialog.Content className="z-25  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-[95%] overflow-y-auto  md:w-[50%] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate1 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none text-[#fafafa]">
+            <Dialog.Overlay className="z-25 bg-background/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
+            <Dialog.Content className="z-25  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-[95%] overflow-y-auto  md:w-[50%] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate1 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none text-foreground">
               <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
                 <div className='flex items-center cursor-pointer'>
-                  <Link to={`/customer/${currentEvent?.getClientFileById}/${currentEvent?.financeId}`} className='cursor-pointer hover:underline text-[#fafafa]'>
+                  <Link to={`/customer/${currentEvent?.getClientFileById}/${currentEvent?.financeId}`} className='cursor-pointer hover:underline text-foreground'>
                     {currentEvent?.completed === 'yes' && (
                       <img
                         loading="lazy"
@@ -148,7 +148,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
                   </Link>
                 </div>
               </Dialog.Title>
-              <Dialog.Description className="text-[#fafafa] mt-[10px] mb-5 text-[15px] leading-normal">
+              <Dialog.Description className="text-foreground mt-[10px] mb-5 text-[15px] leading-normal">
                 {currentEvent?.title}
               </Dialog.Description>
               <Tabs.Root className="flex flex-col w-[98%] shadow-[0_2px_10px] shadow-blackA2 rounded-md" defaultValue="Appointment"  >
@@ -247,7 +247,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
 
                       </Grid>
                       <div className="mt-[25px] flex justify-end">
-                        <Button name='intent' value='updateFinanceAppt' type='submit' className='bg-[#02a9ff] text-[#fafafa] hover:text-[#fafafa]' >
+                        <Button name='intent' value='updateFinanceAppt' type='submit' className='bg-primary text-foreground hover:text-foreground' >
                           Update
                         </Button>
                       </div>
@@ -271,7 +271,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
                             <input type="hidden" defaultValue={userEmail} name="userEmail" />
                             <input type="hidden" defaultValue={vin} name="vin" />
                             <input type="hidden" defaultValue={stockNum} name="stockNum" />
-                            <hr className="solid dark:text-[#fafafa]" />
+                            <hr className="solid dark:text-foreground" />
                             <div className="grid grid-cols-1 justify-center items-center">
                               <input type='hidden' name='intent' value='compeleteApptOnly' />
                               <div className='grid grid-cols-2 mt-3 items-center justify-between'>
@@ -328,7 +328,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
 
 
                             <div className="mt-[25px] flex justify-end">
-                              <Button name='intent' value='compeleteApptOnly' type='submit' className='bg-[#02a9ff] text-[#fafafa] hover:text-[#fafafa]' >
+                              <Button name='intent' value='compeleteApptOnly' type='submit' className='bg-primary text-foreground hover:text-foreground' >
                                 Complete
                               </Button>
                             </div>
@@ -343,7 +343,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
                           {/* 2 days */}
                           <Form method='post'>
 
-                            <hr className="solid dark:text-[#fafafa]" />
+                            <hr className="solid dark:text-foreground" />
                             <input type='hidden' value='2DaysFromNow' name='intent' />
                             <input type="hidden" defaultValue='No' name="completed" />
                             <input type="hidden" defaultValue='Sales' name="apptType" />
@@ -383,7 +383,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
 
                             </div>
                             <div className="mt-[25px] flex justify-end">
-                              <Button name='intent' value='2DaysFromNow' type='submit' className='bg-[#02a9ff] text-[#fafafa] hover:text-[#fafafa]' >
+                              <Button name='intent' value='2DaysFromNow' type='submit' className='bg-primary text-foreground hover:text-foreground' >
                                 Complete
                               </Button>
                             </div>
@@ -550,7 +550,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
                           <div className="mt-[25px] flex justify-end">
                             <Button
                               name='intent' value='scheduleFUp' type='submit'
-                              className={` cursor-pointer ml-2 mr-2 p-3 hover:text-[#02a9ff] text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                              className={` cursor-pointer ml-2 mr-2 p-3 hover:text-primary text-foreground font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
                             >
                               Complete
                             </Button>
@@ -579,7 +579,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
 /**               <TabsContent value="Quick Follow-up" className='rounded-md'>
                   <Form method='post'>
                     <Heading>Quick Appointment</Heading>
-                    <hr className="solid dark:text-[#fafafa]" />
+                    <hr className="solid dark:text-foreground" />
 
                     <div className="grid grid-cols-2 justify-center items-center">
                       <select defaultValue={fUpDays} name='followUpDay1' className="mx-auto mb-3 rounded border-1  mz-1 px-2 border border-slate1 bg-[#fff] text-[#000] h-9 text-bold uppercase  placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
@@ -614,7 +614,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
                       <input type="hidden" defaultValue={financeId} name="financeId" />
                       <Button variant='outline'
                         name='intent' value='2DaysFromNow' type='submit'
-                        className={`p-3 cursor-pointer ml-2 mr-2 bg-[#fff] text-[#000] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                        className={`p-3 cursor-pointer ml-2 mr-2 bg-[#fff] text-[#000] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
                       >
                         {buttonText}
                       </Button>
@@ -658,7 +658,7 @@ export default function EventInfoModal({ user, open, handleClose, onDeleteEvent,
                             setIsButtonPressed(true);
                           }}
                           name='intent' value='compeleteAppt' type='submit'
-                          className={` cursor-pointer ml-2 mr-2 p-3 hover:text-[#02a9ff] bg-[#fff] text-[#000] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                          className={` cursor-pointer ml-2 mr-2 p-3 hover:text-primary bg-[#fff] text-[#000] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
                         >
                           Complete
                         </Button>

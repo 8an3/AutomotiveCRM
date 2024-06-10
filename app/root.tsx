@@ -1,5 +1,5 @@
 import { json, redirect, createCookie } from "@remix-run/node";
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useLoaderData, useRouteError, } from "@remix-run/react";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useLoaderData, useNavigation, useRouteError, } from "@remix-run/react";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
 import { IconoirProvider } from "iconoir-react";
 import React, { useEffect, useState } from "react";
@@ -16,8 +16,6 @@ import { getSession, commitSession } from "./sessions/auth-session.server";
 import { GlobalLoading } from "./components/ui/globalLoading";
 import nProgressStyles from "~/styles/loader.css";
 import rbc from "~/styles/rbc.css";
-import { Provider } from "react-redux";
-import store from "./store";
 import { type IPublicClientApplication } from "@azure/msal-browser";
 import { GetUser } from "~/utils/loader.server";
 import GetUserFromRequest from "~/utils/auth/getUser";
@@ -30,6 +28,14 @@ import secondary from "~/styles/secondary.css";
 import { Copy } from "lucide-react";
 import { FaCheck } from "react-icons/fa";
 import Spinner from "./components/shared/spinner";
+import { themeSessionResolver } from "~/sessions";
+
+import {
+  PreventFlashOnWrongTheme,
+  Theme as remixTheme,
+  ThemeProvider as RemixThemeProvider,
+  useTheme as remixUseTheme,
+} from "remix-themes";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwind },
@@ -58,8 +64,20 @@ export async function loader({ request }: LoaderArgs) {
   const referrer = request.headers.get('referer');
   const user = await model.user.query.getForSession({ email: email });
 
+  // Get theme function and data from cookie via remix-themes
+  const { getTheme } = await themeSessionResolver(request);
+  const theme = getTheme();
+
+  if (!userSession) {
+    return json({
+      ENV,
+      theme,
+    });
+  }
+
   const loaderData = {
     ENV,
+    theme,
     userSession,
     user,
   } satisfies RootLoaderData;
@@ -67,57 +85,57 @@ export async function loader({ request }: LoaderArgs) {
   return json({ loaderData });
 }
 
-export default function App({ pca }: AppProps) {
-  const [financeId, setFinanceId] = useState(null);
-  const data = useLoaderData<typeof loader>();
-
-  // <Provider store={store}>
-  //         </Provider>
-  // </FinanceIdContext.Provider>
-  // <FinanceIdContext.Provider value={financeId}>
-  //
+export default function Route() {
+  const data = useLoaderData();
   return (
-    <html lang="en" suppressHydrationWarning>
+    <RemixThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
+      <App />
+    </RemixThemeProvider>
+  );
+}
+function App() {
+  const data = useLoaderData<typeof loader>();
+  const [theme] = remixUseTheme();
+  const defaultTheme = theme ? theme : "dark";
+
+  return (
+    <html lang="en" data-theme={defaultTheme}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
       </head>
-      <body id="__remix">
-        <ThemeProvider>
-          <BaseStyles>
-
-            <TooltipProvider>
-              <IconoirProvider
-                iconProps={{
-                  strokeWidth: 2,
-                  width: "1.5em",
-                  height: "1.5em",
-                }}
-              >
-                <Outlet />
-                <script
-                  dangerouslySetInnerHTML={{
-                    __html: `window.ENV = ${JSON.stringify(
-                      data.ENV
-                    )}`,
-                  }}
-                />
-                <Toaster richColors />
-                {configDev.isDevelopment &&
-                  configDev.features.debugScreens && (
-                    <TailwindIndicator />
-                  )}
-              </IconoirProvider>
-            </TooltipProvider>
-            <VercelAnalytics />
-            <ScrollRestoration />
-            <Scripts />
-            <LiveReload />
-            <Spinner />
-          </BaseStyles>
-        </ThemeProvider>
+      <body id="__remix" className={cn(defaultTheme)}>
+        <TooltipProvider>
+          <IconoirProvider
+            iconProps={{
+              strokeWidth: 2,
+              width: "1.5em",
+              height: "1.5em",
+            }}
+          >
+            <Outlet />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.ENV = ${JSON.stringify(
+                  data.ENV
+                )}`,
+              }}
+            />
+            <Toaster richColors />
+            {configDev.isDevelopment &&
+              configDev.features.debugScreens && (
+                <TailwindIndicator />
+              )}
+          </IconoirProvider>
+        </TooltipProvider>
+        <VercelAnalytics />
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+        <Spinner />
       </body>
     </html>
   );
@@ -179,10 +197,10 @@ export function ErrorBoundary() {
     const [copiedText, setCopiedText] = useState('');
 
     return (
-      <RootDocumentBoundary className='bg-[#09090b]'>
+      <RootDocumentBoundary className='bg-background'>
         <Layout isSpaced>
-          <fieldset className="mx-auto grid max-h-[900px] h-auto w-[90%] lg:w-[60%] cursor-pointer rounded-lg border text-[#f1f1f1] border-[#27272a] p-4    mt-10 ">
-            <legend className="-ml-1 px-1 text-lg font-medium text-[#f1f1f1]">
+          <fieldset className="mx-auto grid max-h-[900px] h-auto w-[90%] lg:w-[60%] cursor-pointer rounded-lg border text-foreground border-border p-4    mt-10 ">
+            <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
               <h1>Error {error.status}</h1>
             </legend>
             <br className="my-1" />
@@ -191,7 +209,7 @@ export function ErrorBoundary() {
               <li className="text-left">
                 <span className="text-[#8a8a93]">{message}</span>
               </li>
-              <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+              <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
               <li className="text-left">
                 <span className="text-[#8a8a93]">{error.data}</span>
               </li>
@@ -216,10 +234,11 @@ export function ErrorBoundary() {
     return (
       <RootDocumentBoundary  >
         <Layout isSpaced>
-          <fieldset className="mx-auto grid max-h-[900px] h-auto w-[90%] lg:w-[60%]   rounded-lg border text-[#f1f1f1] border-[#27272a] p-4    mt-[50px] ">
-            <legend className="-ml-1 px-1 text-lg font-medium text-[#f1f1f1]">
+          <fieldset className="mx-auto grid max-h-[900px] h-auto w-[90%] lg:w-[60%]   rounded-lg border text-foreground border-border p-4    mt-[50px] ">
+            <legend className="-ml-1 px-1 text-lg font-medium ">
               <div className='flex'>
-                Sorry, unexpected error occured.
+                <h3 className='text-foreground'>  Sorry, unexpected error occured.  </h3>
+
                 <Button size="icon" variant="outline" onClick={() => copyText(error.message + ' || ' + String(error) + ' || ' + error.stack)} className="h-6 w-6     ml-2" >
                   <Copy className="h-3 w-3" />
                   <span className="sr-only">Copy</span>
@@ -229,7 +248,7 @@ export function ErrorBoundary() {
             </legend>
             <span className="text-[#8a8a93]">If the error doesn't go away after reloading the page please send us a copy of the error by clicking the copy button above.</span>
 
-            <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
 
             <br className="my-1" />
 
@@ -256,7 +275,7 @@ export function ErrorBoundary() {
             <ul>
               <li className="text-left  group">
                 <span className="text-[#8a8a93]">
-                  <Debug name="error" isAlwaysShow isCollapsibleOpen className='text-[#f1f1f1] bg-[#09090b] border-[#27272a]'>
+                  <Debug name="error" isAlwaysShow isCollapsibleOpen className='text-foreground bg-background border-border'>
                     {error}
                   </Debug>
                 </span>
@@ -268,7 +287,7 @@ export function ErrorBoundary() {
               </li>
             </ul>
 
-            <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
 
             <div className='group'>
               <div className="font-semibold flex ">

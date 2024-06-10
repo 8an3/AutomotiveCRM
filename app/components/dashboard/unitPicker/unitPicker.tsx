@@ -912,12 +912,12 @@ export function UnitPickerTable({ finance, }) {
         <Input
           value={globalFilter ?? ''}
           onChange={event => setGlobalFilter(event.target.value)}
-          className="font-lg border-block w-[400px] border text-[#fafafa] bg-[#09090b] border-[#27272a] shadow"
+          className="font-lg border-block w-[400px] border text-foreground bg-background border-border shadow"
           placeholder="Search all columns..."
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="ml-3 text-[#fafafa] border-[#f2f2f2]">
+            <Button variant="outline" size="sm" className="ml-3 text-foreground border-[#f2f2f2]">
               {todayfilterBy || "Default Filters"} <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -937,13 +937,13 @@ export function UnitPickerTable({ finance, }) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button size="sm" onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="text-[#fafafa] bg-[#09090b] border-[#f2f2f2] mx-2 my-auto h-7  cursor-pointer rounded   px-3 py-2  text-center text-xs  font-bold uppercase  shadow outline-none  transition-all duration-150 ease-linear  hover:shadow-md focus:outline-none"
+        <Button size="sm" onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="text-foreground bg-background border-[#f2f2f2] mx-2 my-auto h-7  cursor-pointer rounded   px-3 py-2  text-center text-xs  font-bold uppercase  shadow outline-none  transition-all duration-150 ease-linear  hover:shadow-md focus:outline-none"
         >
           Clear
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="ml-auto text-[#fafafa] border-[#f2f2f2]">
+            <Button variant="outline" size="sm" className="ml-auto text-foreground border-[#f2f2f2]">
               Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -968,13 +968,13 @@ export function UnitPickerTable({ finance, }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border text-[#fafafa] bg-[#09090b] border-[#27272a]">
-        <Table className='w-full overflow-x-auto text-[#fafafa] bg-[#09090b] border-[#27272a]'>
+      <div className="rounded-md border text-foreground bg-background border-border">
+        <Table className='w-full overflow-x-auto text-foreground bg-background border-border'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className=' text-[#fafafa] bg-[#09090b] border-[#27272a]'
+                className=' text-foreground bg-background border-border'
               >
                 {headerGroup.headers.map((header) => {
                   return (
@@ -998,7 +998,7 @@ export function UnitPickerTable({ finance, }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className='cursor-pointer text-[#fafafa] bg-[#09090b] border-[#27272a]'
+                  className='cursor-pointer text-foreground bg-background border-border'
                   onClick={() => {
                     handleRowClick(row)
                     console.log(row, 'row')
@@ -1020,7 +1020,7 @@ export function UnitPickerTable({ finance, }) {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 cursor-pointer  text-center capitalize text-[#fafafa] bg-[#09090b] border-[#27272a]"
+                  className="h-24 cursor-pointer  text-center capitalize text-foreground bg-background border-border"
 
                 >
                   No results.
@@ -1033,7 +1033,7 @@ export function UnitPickerTable({ finance, }) {
       <Button
         variant="outline"
         size="sm"
-        className="border rounded p-2 mb-2 mt-2 border-[#f2f2f2] text-[#fafafa]"
+        className="border rounded p-2 mb-2 mt-2 border-[#f2f2f2] text-foreground"
         onClick={() =>
           console.info(
             'table.getSelectedRowModel().flatRows',
@@ -1082,7 +1082,7 @@ export function UnitPickerTable({ finance, }) {
         </button>
       </Form>
       < div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-[#fafafa] bg-[#09090b]  ">
+        <div className="flex-1 text-sm text-foreground bg-background  ">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
@@ -1090,7 +1090,7 @@ export function UnitPickerTable({ finance, }) {
           <Button
             variant="outline"
             size="sm"
-            className="  text-[#fafafa] bg-[#09090b] border-[#f2f2f2]"
+            className="  text-foreground bg-background border-[#f2f2f2]"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -1099,7 +1099,7 @@ export function UnitPickerTable({ finance, }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-[#fafafa] bg-[#09090b] border-[#f2f2f2]"
+            className="text-foreground bg-background border-[#f2f2f2]"
 
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
@@ -1228,7 +1228,7 @@ export default function UnitPicker({ data }) {
     <Dialog.Root  >
 
       <Dialog.Trigger>
-        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3 border-[#f2f2f2] bg-[#09090b] text-[#f2f2f2]"  >
+        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3 border-[#f2f2f2] bg-background text-[#f2f2f2]"  >
           <Truck className="h-3.5 w-3.5" />
           <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
             Assign Stock Unit
@@ -1237,7 +1237,7 @@ export default function UnitPicker({ data }) {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="z-50 bg-white/80 backdrop-blur-md currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
-        <Dialog.Content className="text-[#fafafa] bg-[#09090b] border-[#fafafab0] z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y  md:w-[95%] max-w-[80%] translate-x-[-50%] translate-y-[-50%] rounded-[6px]   p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none  ">
+        <Dialog.Content className="text-foreground bg-background border-[#fafafab0] z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y  md:w-[95%] max-w-[80%] translate-x-[-50%] translate-y-[-50%] rounded-[6px]   p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none  ">
           <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
             Confirm Unit for Current Client
             <TooltipProvider>
@@ -1248,7 +1248,7 @@ export default function UnitPicker({ data }) {
                     <HelpCircle strokeWidth={1.5} />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side='bottom' data-state="closed" className='text-[#fafafa] bg-[#09090b] border-[#27272a]'>
+                <TooltipContent side='bottom' data-state="closed" className='text-foreground bg-background border-border'>
                   <><p>Select unit the customer has picked.</p>
                     <p>Press select unit.</p>
                     <p>Then save with save selection.</p></>

@@ -378,30 +378,6 @@ model Reactions {
   @@index([staffChatId])
 }
 
-model Automation {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userEmail         String? // skyleranth@gmail.com
-  title             String? // Client - 24 hour delivery reminder - skyler
-  when              String? // when lead is updated but 24 hours for now because of vercel
-  trigger           String? // delivery date
-  executionDate     String? // 24 hours from now
-  parameters        String?
-  actions           String? // task, sms, email
-  associate         String? //  associate, bdc, service advisor, servbice agent, fandi,management,
-  template          String? // what to send if sms or email
-  firstAssociate    String? // send this on behalf of this user
-  secAssociate      String? // if user doesnt belond in db send this user instead
-  compeleted        String? // yes / no
-  recurrence        String? // yes/ no
-  timeType          String? // no delay, hours, mins, months, years
-  timeValue         String? // 22, 10
-  executeWhen       String? // when all criteria is met, lead creation, consent expiration
-  executionSchedule String? // always send, dont send it closed, send during business hours only, only on chosen days
-}
-
 model InventoryMotorcycle {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -794,7 +770,7 @@ model FinanceNote {
 model ClientApts {
   id            String   @id @default(cuid())
   finance       Finance? @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  financeId     String?
+  financeId     String
   title         String?
   start         String?
   end           String?
@@ -810,6 +786,7 @@ model ClientApts {
   email         String?
   phone         String?
   address       String?
+  userEmail     String
   userId        String
   description   String?
   userName      String?
@@ -825,6 +802,13 @@ model ClientApts {
   isPublished DateTime? @default(now())
 
   @@index([financeId])
+}
+
+model Automations {
+  id             String  @id @default(cuid())
+  userEmail      String
+  pickUp24before String?
+  appt24before   String?
 }
 
 model CheckLatestEmail {
@@ -1221,6 +1205,8 @@ model FinanceApplication {
   loanMonthlyPayment String?
   remainingBalance   String?
   notes              String?
+  finMgrEmail        String?
+  userEmail          String?
 }
 
 model FinManOptions {

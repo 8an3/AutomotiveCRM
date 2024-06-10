@@ -186,7 +186,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
     <Dialog>
       <DialogTrigger asChild>
         <p
-          className="cursor-pointer text-black target:text-[#02a9ff] hover:text-[#02a9ff]" >
+          className="cursor-pointer text-black target:text-primary hover:text-primary" >
           <Mail className="" />
         </p>
       </DialogTrigger>
@@ -235,12 +235,12 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                 <div className="ml-auto flex px-2  ">
                   <p
                     onClick={() => setCc(!cc)}
-                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff]">
+                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-primary">
                     cc
                   </p>
                   <p
                     onClick={() => setBcc(!bcc)}
-                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff] ">
+                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-primary ">
                     bcc
                   </p>
                 </div>
@@ -291,7 +291,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                     toast.success(`Sent email to ${data.firstName}.`)
                   }}
                   name='emailType' value='fullCustom' type='submit'
-                  className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+                  className={` cursor-pointer mr-2 p-3 hover:text-primary hover:border-primary text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'} `}
                 >
                   {buttonText}
                 </Button>
@@ -325,7 +325,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                   toast.message('Helping you become the hulk of sales...')
                 }}
                 loadingText="Loading..."
-                className="w-auto cursor-pointer mt-2  hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border-black"
+                className="w-auto cursor-pointer mt-2  hover:text-primary hover:border-primary text-black border-black"
               >
                 Save As Template
               </ButtonLoading>
@@ -336,7 +336,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
             <div className='max-h-[900px] overflow-y-scroll' >
 
               {convos && convos.filter(convo => convo.financeId === data.financeId).map((convo, index) => (
-                <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border-1 border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
+                <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border-1 border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary">
                   <p className="my-2 ml-2 text-sm text-black">
                     Sent by: {convo.userName}
                   </p>
@@ -367,7 +367,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
 
         <DialogClose asChild>
           <button
-            className="text-black  hover:text-[#02a9ff] focus:shadow-violet7 absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+            className="text-black  hover:text-primary focus:shadow-violet7 absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
             aria-label="Close"
           >
             <Cross2Icon />

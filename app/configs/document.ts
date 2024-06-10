@@ -27,18 +27,18 @@ export const faviconLinks = [
     rel: "icon",
     type: "image/svg",
     sizes: "32x32",
-    href: "/money24.svg",
+    href: "/favicons/money.svg",
   },
   {
     rel: "icon",
     type: "image/svg",
     sizes: "16x16",
-    href: "/money16.svg",
+    href: "/favicons/money.svg",
   },
   {
     rel: "apple-touch-icon",
     sizes: "180x180",
-    href: "/money180.svg",
+    href: "/favicons/money.svg",
   },
 ];
 
@@ -56,7 +56,7 @@ const manifestLinks = [
 
 export const configDocumentLinks = [
   ...fontLinks,
-  ...stylesheetLinks,
+  //  ...stylesheetLinks,
   ...faviconLinks,
   ...manifestLinks,
 ];

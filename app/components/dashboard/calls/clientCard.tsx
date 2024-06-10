@@ -142,16 +142,16 @@ export default function ClientCard({ data }) {
                 <SheetTrigger asChild>
                     <p>{data.firstName} </p>
                 </SheetTrigger>
-                <SheetContent side='left' className='bg-[#09090b] text-[#fafafa] w-full md:w-[50%] overflow-y-auto border  border-[#27272a] ' >
+                <SheetContent side='left' className='bg-background text-foreground w-full md:w-[50%] overflow-y-auto border  border-border ' >
                     <Form method="post" >
                         <SheetHeader>
                             <SheetTitle>
-                                <div className='flex justify-between text-[#fafafa]'>
+                                <div className='flex justify-between text-foreground'>
                                     Edit Client Profile
 
                                 </div>
                             </SheetTitle>
-                            <SheetDescription className='text-[#fafafa]'>
+                            <SheetDescription className='text-foreground'>
                                 Make changes to the profile here. Click save when you're done.
                             </SheetDescription>
                         </SheetHeader>
@@ -165,18 +165,18 @@ export default function ClientCard({ data }) {
                                             <Input
                                                 name={fee.name}
                                                 defaultValue={fee.value}
-                                                className='mt-2 h-8 text-[#fafafa] bg-[#09090b] border-[#27272a]'
+                                                className='mt-2 h-8 text-foreground bg-background border-border'
                                             />
-                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeHolder}</label>
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeHolder}</label>
                                         </div>
                                     </div>
                                 ))}
                             <div className="relative mt-5">
                                 <Select name='timeToContact'                                                >
-                                    <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                                    <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
                                         <SelectValue defaultValue={data.timeToContact} />
                                     </SelectTrigger>
-                                    <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
+                                    <SelectContent className=' bg-background text-foreground border border-border' >
                                         <SelectGroup>
                                             <SelectLabel>Best Time To Contact</SelectLabel>
                                             <SelectItem value="Morning">Morning</SelectItem>
@@ -186,15 +186,15 @@ export default function ClientCard({ data }) {
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Time To Be Contacted</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Time To Be Contacted</label>
                             </div>
                             <div className="relative mt-5">
 
                                 <Select name='typeOfContact'                                                >
-                                    <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                                    <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
                                         <SelectValue defaultValue={data.typeOfContact} />
                                     </SelectTrigger>
-                                    <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
+                                    <SelectContent className=' bg-background text-foreground border border-border' >
                                         <SelectGroup>
                                             <SelectLabel>Contact Method</SelectLabel>
                                             <SelectItem value="Phone">Phone</SelectItem>
@@ -204,7 +204,7 @@ export default function ClientCard({ data }) {
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Type To Be Contacted</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Type To Be Contacted</label>
                             </div>
 
 
@@ -251,7 +251,7 @@ export default function ClientCard({ data }) {
                                     <select defaultValue={data.pickUpTime}
                                         name='pickUpTime'
                                         placeholder='Time of day'
-                                        className="mx-auto rounded border-0 ml-2 mr-2 bg-[#09090b] border-[#27272a]  px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                                        className="mx-auto rounded border-0 ml-2 mr-2 bg-background border-border  px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                                         <option>Time of day</option>
                                         <option value="9:00">9:00</option>
                                         <option value="9:30">9:30</option>
@@ -293,7 +293,7 @@ export default function ClientCard({ data }) {
                         <ButtonLoading
                             size="sm"
                             value='updateFinanceTwo'
-                            className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
+                            className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
                             name="intent" type="submit"
                             isSubmitting={isSubmitting}
                             onClick={() => toast.success(`Quote updated for ${data.firstName}`)}
@@ -309,7 +309,7 @@ export default function ClientCard({ data }) {
                         <input type='hidden' name='financeId' value={data.id} />
                         <ButtonLoading
                             size="sm"
-                            className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
+                            className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
                             type="submit"
                             isSubmitting={isSubmitting}
                             onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
@@ -325,7 +325,7 @@ export default function ClientCard({ data }) {
                             <ButtonLoading
                                 size="sm"
                                 type="submit"
-                                className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
+                                className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
                                 name="intent"
                                 value="clientProfile"
                                 isSubmitting={isSubmitting}
@@ -339,7 +339,7 @@ export default function ClientCard({ data }) {
                                 <ButtonLoading
                                     size="sm"
                                     type="submit"
-                                    className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
+                                    className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
                                     name="intent"
                                     value="clientProfile"
                                     isSubmitting={isSubmitting}
@@ -363,7 +363,7 @@ export default function ClientCard({ data }) {
                                     name='intent'
                                     value='returnToQuote'
                                     type='submit'
-                                    className="w-auto cursor-pointer ml-auto mt-3 hover:text-[#02a9ff] border-[#27272a]"
+                                    className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
                                 >
                                     Quote
                                 </ButtonLoading>
@@ -376,7 +376,7 @@ export default function ClientCard({ data }) {
                             <input type='hidden' name='id' value={data.id} />
                             <input type='hidden' name='clientId' value={data.id} />
                             {!data.model && (
-                                <Button size='sm' name='intent' value='createQuote' type='submit' className="bg-[#02a9ff] cursor-pointer p-3 text-[#fafafa] active:bg-black font-bold uppercase   border border-[#27272a] text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+                                <Button size='sm' name='intent' value='createQuote' type='submit' className="bg-primary cursor-pointer p-3 text-foreground active:bg-black font-bold uppercase   border border-border text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
                                     Create Quote
                                 </Button>
                             )}

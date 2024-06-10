@@ -1093,13 +1093,13 @@ export default function DnDResource() {
 
         </span>
         <span className="ml-auto justify-end">
-          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-[#02a9ff] justify-center items-center ' onClick={() => onNavigate(navigate.PREVIOUS)}>
+          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(navigate.PREVIOUS)}>
             <ChevronsLeft size={20} strokeWidth={1.5} />
           </button>
-          <button className='rounded-none  p-2 cursor-pointer hover:text-[#02a9ff] justify-center items-center ' onClick={() => onNavigate(navigate.TODAY)}>
+          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(navigate.TODAY)}>
             <ChevronsRightLeft size={20} strokeWidth={1.5} />
           </button>
-          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-[#02a9ff] justify-center items-center mr-3' onClick={() => onNavigate(navigate.NEXT)}
+          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3' onClick={() => onNavigate(navigate.NEXT)}
           >
             <ChevronsRight size={20} strokeWidth={1.5} />
           </button>
@@ -1136,7 +1136,7 @@ export default function DnDResource() {
   const [calendarLabel, setCalendarLabel] = useState('Sales')
   return (
     <>
-      <div className="h-[75px]  w-auto  border-b border-[#262626] bg-[#09090b] text-[#fafafa]">
+      <div className="h-[75px]  w-auto  border-b border-[#262626] bg-background text-foreground">
         <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
         <p className="text-muted-foreground   ml-[105px]  ">
           {calendarLabel}
@@ -1170,13 +1170,13 @@ export default function DnDResource() {
           />
           <div className='h-screen w-[310px] border-r border-[#262626]'>
             <div className=' mt-5 flex-col mx-auto justify-center'>
-              <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
                 <div className='  my-3 flex justify-center   '>
                   <CalendarIcon className="mr-2 size-8 " />
                   {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
                 </div>
                 <SmallCalendar
-                  className='mx-auto w-auto   bg-[#09090b] text-[#fafafa]'
+                  className='mx-auto w-auto   bg-background text-foreground'
                   mode="single"
                   selected={date}
                   onSelect={setDate}
@@ -1190,11 +1190,11 @@ export default function DnDResource() {
               <Button
                 variant={"ghost"}
                 className={cn(
-                  "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff]  hover:border-transparent",
-                  !date && " text-[#fafafa]"
+                  "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary  hover:border-transparent",
+                  !date && " text-foreground"
                 )}
               >
-                <div className=' text-[#fafafa]  mx-auto flex justify-center my-auto '>
+                <div className=' text-foreground  mx-auto flex justify-center my-auto '>
                   <ClockIcon className="mr-2 size-8 " />
                   {currentTime ? (time) : <span>Pick a Time</span>}
                   <p className='my-auto'></p>
@@ -1203,7 +1203,7 @@ export default function DnDResource() {
 
               <div className='mt-5 grow justify-center'>
                 <div className=' grid grid-cols-1 ' >
-                  <Accordion type="single" collapsible className="w-[240px] text-[#fafafa] mx-auto">
+                  <Accordion type="single" collapsible className="w-[240px] text-foreground mx-auto">
                     <AccordionItem value="item-1">
                       <AccordionTrigger>Calendars</AccordionTrigger>
                       <AccordionContent>
@@ -1214,8 +1214,8 @@ export default function DnDResource() {
                           className={cn(
                             buttonVariants({ variant: "ghost" }),
                             calendarLabel === 'Sales'
-                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                              : "hover:bg-[#232324]  w-[90%]  ",
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
                             "justify-start w-[90%] "
                           )} >
                           Sales
@@ -1227,8 +1227,8 @@ export default function DnDResource() {
                           className={cn(
                             buttonVariants({ variant: "ghost" }),
                             calendarLabel === 'Finance'
-                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                              : "hover:bg-[#232324]  w-[90%]  ",
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
                             "justify-start w-[90%] "
                           )} >
                           Finance
@@ -1240,8 +1240,8 @@ export default function DnDResource() {
                           className={cn(
                             buttonVariants({ variant: "ghost" }),
                             calendarLabel === 'Drivers Schedule'
-                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                              : "hover:bg-[#232324]  w-[90%]  ",
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
                             "justify-start w-[90%] "
                           )} >
                           Drivers Schedule
@@ -1253,8 +1253,8 @@ export default function DnDResource() {
                           className={cn(
                             buttonVariants({ variant: "ghost" }),
                             calendarLabel === 'Service'
-                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                              : "hover:bg-[#232324]  w-[90%]  ",
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
                             "justify-start w-[90%] "
                           )} >
                           Service
@@ -1266,8 +1266,8 @@ export default function DnDResource() {
                           className={cn(
                             buttonVariants({ variant: "ghost" }),
                             calendarLabel === 'Accessories'
-                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                              : "hover:bg-[#232324]  w-[90%]  ",
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
                             "justify-start w-[90%] "
                           )} >
                           Accessories
@@ -1279,8 +1279,8 @@ export default function DnDResource() {
                           className={cn(
                             buttonVariants({ variant: "ghost" }),
                             calendarLabel === 'Parts'
-                              ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                              : "hover:bg-[#232324]  w-[90%]  ",
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
                             "justify-start w-[90%] "
                           )} >
                           Parts
@@ -1290,7 +1290,7 @@ export default function DnDResource() {
                   </Accordion>
                   <Button
                     variant='outline'
-                    className=' px-4 mx-auto mt-3 text-[#fafafa] cursor-pointer hover:text-[#02a9ff] justify-center items-center border-[#fff] hover:border-[#02a9ff]  bg-transparent hover:bg-transparent w-[240px] '
+                    className=' px-4 mx-auto mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center border-[#fff] hover:border-primary  bg-transparent hover:bg-transparent w-[240px] '
                     onClick={() => setAddCustomerModal(true)}>
                     <>
                       <UserPlus size={20} strokeWidth={1.5} />
@@ -1305,7 +1305,7 @@ export default function DnDResource() {
                     onClick={() => (
                       navigate('/dealer/leads/sales')
                     )}
-                    className=' w-[240px] mt-3 text-[#fafafa] cursor-pointer hover:text-[#02a9ff] justify-center items-center  mx-auto  border-[#fff] hover:border-[#02a9ff] bg-transparent hover:bg-transparent   '  >
+                    className=' w-[240px] mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center  mx-auto  border-[#fff] hover:border-primary bg-transparent hover:bg-transparent   '  >
                     <>
                       <Gauge size={20} strokeWidth={1.5} />
                       <p className='ml-2'>
@@ -1316,7 +1316,7 @@ export default function DnDResource() {
 
                   <Button
                     variant='outline'
-                    className=' px-4 mt-3 mx-auto text-[#fafafa] cursor-pointer hover:text-[#02a9ff] justify-center items-center   border-[#fff] hover:border-[#02a9ff] bg-transparent hover:bg-transparent w-[240px]'
+                    className=' px-4 mt-3 mx-auto text-foreground cursor-pointer hover:text-primary justify-center items-center   border-[#fff] hover:border-primary bg-transparent hover:bg-transparent w-[240px]'
                     onClick={() => setAddApptModal(true)}>
                     <>
                       <CalendarPlus size={20} strokeWidth={1.5} />

@@ -253,7 +253,7 @@ export default function ChatApp() {
 
   if (loggedIn) {
     return (
-      <div className="chat-window-wrapper text-[#fafafa]">
+      <div className="chat-window-wrapper text-foreground">
         <div className="chat-window-container">
           <div style={{ display: "flex", alignItems: "center", padding: 0 }}>
             <div

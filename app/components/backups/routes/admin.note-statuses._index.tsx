@@ -17,7 +17,7 @@ export default function Route() {
   const { noteStatuses } = useLoaderData<typeof loader>();
 
   return (
-    <div className='max-w-xl  stack mx-auto justify-center text-[#fafafa]'>
+    <div className='max-w-xl  stack mx-auto justify-center text-foreground'>
 
       <Alert variant="warning">Under development</Alert>
 

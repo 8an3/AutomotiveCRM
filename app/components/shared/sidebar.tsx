@@ -70,8 +70,8 @@ export default function Sidebar(user, email) {
                   'justify-start text-left',
                   buttonVariants({ variant: 'ghost' }),
                   pathname === item.to
-                    ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                    : "hover:bg-[#232324] text-[#a1a1aa]  w-[90%]  ",
+                    ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                    : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
                   "justify-start w-[90%]"
                 )} >
                 {item.title}
@@ -202,7 +202,7 @@ export default function Sidebar(user, email) {
             <Menu size={32} color="#fff" strokeWidth={1.5} />
           </div>
         </SheetTrigger>
-        <SheetContent side='right' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto text-[#f9f9f9]' >
+        <SheetContent side='right' className='bg-background w-full md:w-[50%] overflow-y-auto text-[#f9f9f9]' >
           <Tabs defaultValue="User" className="w-full mx-auto justify-center">
             <TabsList className='mx-auto w-full'>
               <TabsTrigger value="User">User</TabsTrigger>
@@ -218,17 +218,17 @@ export default function Sidebar(user, email) {
                       Menu
                     </AccordionTrigger>
                     <AccordionContent>
-                      <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                      <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                       <div className="font-semibold">Sales</div>
                       <div className="my-4">
                         <SidebarNav items={salesNavSidebarNav} />
                       </div>
-                      <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                      <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                       <div className="font-semibold">Document</div>
                       <div className="my-4">
                         <SidebarNav items={documentNavSidebarNav} />
                       </div>
-                      <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                      <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                       <div className="font-semibold">User</div>
                       <div className="my-4">
                         <SidebarNav items={userNavSidebarNav} />
@@ -240,8 +240,8 @@ export default function Sidebar(user, email) {
                             className={cn(
                               buttonVariants({ variant: "ghost" }),
                               pathname === '/dealer/leads/finance'
-                                ? "bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]"
-                                : "hover:bg-[#232324]",
+                                ? "bg-[#232324] hover:bg-muted/50 w-[90%] border-l-[#0969da]"
+                                : "hover:bg-muted/50",
                               "justify-start"
                             )}
                           >
@@ -259,8 +259,8 @@ export default function Sidebar(user, email) {
                             className={cn(
                               buttonVariants({ variant: "ghost" }),
                               pathname === '/dealer/leads/activix'
-                                ? "bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]"
-                                : "hover:bg-[#232324]",
+                                ? "bg-[#232324] hover:bg-muted/50 w-[90%] border-l-[#0969da]"
+                                : "hover:bg-muted/50",
                               "justify-start"
                             )}
                           >
@@ -278,12 +278,12 @@ export default function Sidebar(user, email) {
                         Admin Menu
                       </AccordionTrigger>
                       <AccordionContent>
-                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                         <div className="font-semibold">Admin</div>
                         <div className="my-4">
                           <SidebarNav items={adminSidebarNav} />
                         </div>
-                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                         <div className="font-semibold">User</div>
                         <div className="my-4">
                           <SidebarNav items={userNavSidebarNav} />
@@ -297,12 +297,12 @@ export default function Sidebar(user, email) {
                         Dev Menu
                       </AccordionTrigger>
                       <AccordionContent>
-                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                         <div className="font-semibold">Dev</div>
                         <div className="my-4">
                           <SidebarNav items={devSidebarNav} />
                         </div>
-                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                         <div className="font-semibold">User</div>
                         <div className="my-4">
                           <SidebarNav items={userNavSidebarNav} />
@@ -316,12 +316,12 @@ export default function Sidebar(user, email) {
                         Manager Menu
                       </AccordionTrigger>
                       <AccordionContent>
-                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                         <div className="font-semibold">Manager</div>
                         <div className="my-4">
                           <SidebarNav items={managerSidebarNav} />
                         </div>
-                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                         <div className="font-semibold">User</div>
                         <div className="my-4">
                           <SidebarNav items={userNavSidebarNav} />
@@ -335,12 +335,12 @@ export default function Sidebar(user, email) {
                         Service Menu
                       </AccordionTrigger>
                       <AccordionContent>
-                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                         <div className="font-semibold">Service</div>
                         <div className="my-4">
                           <SidebarNav items={serviceNavSidebarNav} />
                         </div>
-                        <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                        <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                         <div className="font-semibold">User</div>
                         <div className="my-4">
                           <SidebarNav items={userNavSidebarNav} />
@@ -393,8 +393,8 @@ export default function Sidebar(user, email) {
                     className={cn(
                       buttonVariants({ variant: "ghost" }),
                       pathname === '/dealer/quote/used'
-                        ? "bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]"
-                        : "hover:bg-[#232324] w-[90%]",
+                        ? "bg-[#232324] hover:bg-muted/50 w-[90%] border-l-[#0969da]"
+                        : "hover:bg-muted/50 w-[90%]",
                       "justify-start"
                     )}
                   >
@@ -446,8 +446,8 @@ export default function Sidebar(user, email) {
                   className={cn(
                     buttonVariants({ variant: "ghost" }),
                     pathname === '/dealer/quote/used'
-                      ? "bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]"
-                      : "hover:bg-[#232324] w-[90%]",
+                      ? "bg-[#232324] hover:bg-muted/50 w-[90%] border-l-[#0969da]"
+                      : "hover:bg-muted/50 w-[90%]",
                     "justify-start"
                   )}
                 >
@@ -460,13 +460,13 @@ export default function Sidebar(user, email) {
             </TabsContent>
             <TabsContent value="Contact">
               <>
-                <div className="border-none p-0 text-[#fafafa]">
+                <div className="border-none p-0 text-foreground">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                      <h2 className="text-2xl font-thin text-[#fafafa]">
+                      <h2 className="text-2xl font-thin text-foreground">
                         Contact
                       </h2>
-                      <p className="text-sm dark:text-black text-[#fafafa]">
+                      <p className="text-sm dark:text-black text-foreground">
                         If a feature could help you sell more, but we dont have it? Let us
                         know, we can implement it. Or would like to submit a script or maybe you found a bug, let us know!
                       </p>
@@ -478,19 +478,19 @@ export default function Sidebar(user, email) {
                       <TextArea
                         placeholder="Type your message here."
                         name="customContent"
-                        className="h-[200px]     w-[95%] border-[#27272a] bg-[#09090b]"
+                        className="h-[200px]     w-[95%] border-border bg-background"
                       />
-                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Message Body</label>
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Message Body</label>
                     </div>
                     <div className="relative mt-5">
-                      <Input name="userFname" className="w-[95%] border-[#27272a] bg-[#09090b]" />
-                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Name</label>
+                      <Input name="userFname" className="w-[95%] border-border bg-background" />
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Name</label>
                     </div>
                     <div className="relative mt-5">
-                      <Input name="userEmail" className="w-[95%] border-[#27272a] bg-[#09090b]" />
-                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                      <Input name="userEmail" className="w-[95%] border-border bg-background" />
+                      <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
                     </div>
-                    <Button name='intent' value='contactForm' type='submit' className="bg-[#ff0000] mt-3 w-[75px] ml-2  mr-2 text-[#fafafa]    font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+                    <Button name='intent' value='contactForm' type='submit' className="bg-[#ff0000] mt-3 w-[75px] ml-2  mr-2 text-foreground    font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
                       onClick={() => {
                         toast.success('Event has been created')
                       }}
@@ -650,35 +650,35 @@ export const managerSidebarNav = [
 /**
  *
  *
- *  <h3 className='text-[#fafafa]'>
+ *  <h3 className='text-foreground'>
                 WATERCRAFT
               </h3>
-              <hr className="solid text-[#fafafa]" />
+              <hr className="solid text-foreground" />
               <div className='p-3'>
               </div>
-              <h3 className='text-[#fafafa]'>
+              <h3 className='text-foreground'>
                 MOTORCYCLE
               </h3>
-              <hr className="solid text-[#fafafa]" />
+              <hr className="solid text-foreground" />
               <div className='p-3'>
               </div>
-              <h3 className='text-[#fafafa]'>
+              <h3 className='text-foreground'>
                 OFF-ROAD
               </h3>
-              <hr className="solid text-[#fafafa]" />
+              <hr className="solid text-foreground" />
 
 
-              <h3 className='text-[#fafafa] '>
+              <h3 className='text-foreground '>
                 WATERCRAFT
               </h3>
               <hr className="solid" />
               <div className='p-3'>
               </div>
-              <h3 className='text-[#fafafa] ' >
+              <h3 className='text-foreground ' >
                 OFF-ROAD
               </h3>
-              <hr className="solid text-[#fafafa] " />
-              <div className='p-3 text-[#fafafa] '>
+              <hr className="solid text-foreground " />
+              <div className='p-3 text-foreground '>
               </div>
               <h3  >
                 MOTORCYCLE
@@ -693,7 +693,7 @@ export const managerSidebarNav = [
               <div className='p-3'>
                 <RemixNavLink to='/dealer/quote/used'>
                   <SheetClose asChild>
-                    <Button variant="link" className="w-full justify-start hover:text-[#02a9ff] text-[#fafafa]  cursor-pointer"  >
+                    <Button variant="link" className="w-full justify-start hover:text-primary text-foreground  cursor-pointer"  >
                       Used
                     </Button>
 

@@ -94,7 +94,7 @@ export default function AddCustomer() {
           <UserPlus size={20} strokeWidth={1.5} color="#cbd0d4" />
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] border-[#27272a] bg-[#09090b] text-[#fafafa] ">
+      <DialogContent className="sm:max-w-[425px] border-border bg-background text-foreground ">
         <DialogHeader>
           <DialogTitle>
             Add Client
@@ -109,52 +109,52 @@ export default function AddCustomer() {
                 type="text"
                 name="firstName"
                 onChange={handleChange}
-                className='border-[#27272a] bg-[#09090b]'
+                className='border-border bg-background'
               />
-              <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+              <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
             </div>
             <div className="relative mt-3">
               <Input
                 type="text"
                 name="lastName"
                 onChange={handleChange}
-                className='border-[#27272a] bg-[#09090b] '
+                className='border-border bg-background '
               />
-              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
+              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
             </div>
             <div className="relative mt-3">
               <Input
-                className="border-[#27272a] bg-[#09090b]   "
+                className="border-border bg-background   "
                 type="number"
                 name="phone"
               />
-              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
             </div>
             <div className="relative mt-3">
               <Input
-                className="border-[#27272a] bg-[#09090b]  "
+                className="border-border bg-background  "
                 type="email"
                 name="email"
               />
-              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
             </div>
             <div className="relative mt-3">
               <Input
-                className="border-[#27272a] bg-[#09090b]   "
+                className="border-border bg-background   "
                 type="text"
                 name="address"
               />
-              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
+              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
             </div>
             <div className="relative mt-3">
               <Input
-                className="border-[#27272a] bg-[#09090b]   "
+                className="border-border bg-background   "
                 type="text"
                 list="ListOptions2"
                 name="brand"
                 onChange={handleBrand}
               />
-              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
+              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
             </div>
             <datalist id="ListOptions">
               <option value="BMW-Motorrad" />
@@ -180,7 +180,7 @@ export default function AddCustomer() {
                     className="  "
                     type="text" list="ListOptions2" name="model"
                   />
-                  <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
+                  <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
                 </div>
                 <datalist id="ListOptions2">
                   {modelList.models.map((item, index) => (

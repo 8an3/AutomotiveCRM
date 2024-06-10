@@ -1068,7 +1068,7 @@ async function ActivixImport(user) {
   const { activixData } = useLoaderData();
   if (!activixData || !activixData.data || !Array.isArray(activixData.data)) { return <p>No data available</p>; }
   return (
-    <div className='text-[#fafafa] bg-black'>
+    <div className='text-foreground bg-black'>
       <h1>Activix Data</h1>
       <div className='w-[90%] mt-[25px]'>
         <ul>

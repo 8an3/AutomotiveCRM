@@ -250,12 +250,12 @@ export default function CustomerGen() {
     return (
         <div className="mx-auto justify-center mt-10">
             <h1>PDF Generator</h1>
-            <hr className="text-[#27272a]" />
+            <hr className="text-muted-foreground" />
             {templateList.map((template: any, index) => (
                 template && 'fileName' in template ? (
                     <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
                         {template.fileName && (
-                            <p className="text-[#909098]">{template.fileName}</p>
+                            <p className="text-muted-foreground">{template.fileName}</p>
                         )}
                         <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => Yellow(inputs, template)}>
                             <File className="h-3.5 w-3.5" />
@@ -267,7 +267,7 @@ export default function CustomerGen() {
                 ) : null
             ))}
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#909098]" > Work Order </p>
+                <p className="text-muted-foreground" > Work Order </p>
                 <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setworkOrder('workOrder')}>
                     <File className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -276,7 +276,7 @@ export default function CustomerGen() {
                 </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#909098]" >UCDA</p>
+                <p className="text-muted-foreground" >UCDA</p>
                 <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setucda('ucda')}>
                     <File className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -285,7 +285,7 @@ export default function CustomerGen() {
                 </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#909098]" >Yellow Jacket</p>
+                <p className="text-muted-foreground" >Yellow Jacket</p>
                 <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setfileFront('fileFront')}>
                     <File className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -294,7 +294,7 @@ export default function CustomerGen() {
                 </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#909098]" >LV6</p>
+                <p className="text-muted-foreground" >LV6</p>
                 <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setlvsix('lvsix')}>
                     <File className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -303,7 +303,7 @@ export default function CustomerGen() {
                 </Button>
             </div>
             <div className='mt-5 align-center ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#909098]" >LV6 - 2</p>
+                <p className="text-muted-foreground" >LV6 - 2</p>
                 <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setlvsixBack('lvsixBack')}>
                     <File className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -312,7 +312,7 @@ export default function CustomerGen() {
                 </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#909098]" >Quebec - Power of Attourney</p>
+                <p className="text-muted-foreground" >Quebec - Power of Attourney</p>
                 <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setQUEBECATTOURNEY('QUEBECATTOURNEY')}>
                     <File className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -321,7 +321,7 @@ export default function CustomerGen() {
                 </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#909098]" >Sticky Back - Into Customers Name</p>
+                <p className="text-muted-foreground" >Sticky Back - Into Customers Name</p>
                 <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setstickyBack('stickyBack')}>
                     <File className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -330,7 +330,7 @@ export default function CustomerGen() {
                 </Button>
             </div>
             <div className='mt-5 ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="text-[#909098]" >BOS</p>
+                <p className="text-muted-foreground" >BOS</p>
                 <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => setbos('bos')}>
                     <File className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">

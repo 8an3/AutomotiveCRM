@@ -45,7 +45,7 @@ export default function UcdaInputs() {
     <Dialog.Root>
       <Dialog.Trigger asChild >
         <p className="cursor-pointer" >
-          <Badge className='button  shadow bg-[#02a9ff] transform -translate-y-[1px]'  >
+          <Badge className='button  shadow bg-primary transform -translate-y-[1px]'  >
             UCDA
           </Badge>
         </p>

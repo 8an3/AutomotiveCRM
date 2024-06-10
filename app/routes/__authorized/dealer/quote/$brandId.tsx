@@ -11,7 +11,11 @@ import { Toaster, toast } from 'sonner'
 import { findQuoteById } from '~/utils/finance/get.server';
 import { getSession } from '~/sessions/auth-session.server';
 import { CheckCircleFillIcon, AlertFillIcon } from '@primer/octicons-react'
+import customer from '~/styles/customer.css'
 
+export const links: LinksFunction = () => [
+    { rel: "stylesheet", href: customer },
+];
 export const loader: LoaderFunction = async ({ request, params }) => {
     const session = await getSession(request.headers.get("Cookie"));
     const email = session.get("email")
@@ -216,9 +220,9 @@ export default function Quote() {
                                     type="text"
                                     name="firstName"
                                     value={formData.firstName}
-                                    className={`input
-                                             ${validity.firstName === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
-                                             ${validity.firstName === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                                    className={`input bg-[#ffffff]
+                                             ${validity.firstName === true ? 'border-green11 bg-green11 text-foreground' : ' '}
+                                             ${validity.firstName === false ? 'border-red11 bg-red11 text-foreground' : ''}
                                               `}
                                     onChange={(e) => handleChange('firstName', e.target.value)}
                                 />
@@ -240,9 +244,9 @@ export default function Quote() {
                                     type="text"
                                     name="lastName"
                                     value={formData.lastName}
-                                    className={`input
-                                            ${validity.lastName === true ? 'border-green11 bg-green11 text-[#fafafa]' : ''}
-                                            ${validity.lastName === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                                    className={`input bg-[#ffffff]
+                                            ${validity.lastName === true ? 'border-green11 bg-green11 text-foreground' : ''}
+                                            ${validity.lastName === false ? 'border-red11 bg-red11 text-foreground' : ''}
                                             `}
                                     onChange={(e) => handleChange('lastName', e.target.value)}
                                 />
@@ -260,9 +264,9 @@ export default function Quote() {
                             </div>
                             <div className="grid w-full max-w-md items-center gap-1.5">
                                 <Label htmlFor="email">Phone Number</Label>
-                                <div className={`border border-bg-[#09090b] items-center flex rounded-md w-full
-                                            ${validity.phone === true ? 'border-green11 bg-green11 text-[#fafafa]' : ''}
-                                            ${validity.phone === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                                <div className={`border border-bg-background items-center flex rounded-md w-full bg-[#ffffff]
+                                            ${validity.phone === true ? 'border-green11 bg-green11 text-foreground' : ''}
+                                            ${validity.phone === false ? 'border-red11 bg-red11 text-foreground' : ''}
                                              `}>
                                     <Button variant='ghost' disabled  >
                                         +1
@@ -271,7 +275,7 @@ export default function Quote() {
                                         type="phone"
                                         name="phone"
                                         value={formData.phone}
-                                        className='bg-transparent border-none'
+                                        className='bg-[#ffffff]   border-none'
                                         onChange={(e) => handleChange('phone', e.target.value)}
                                     />
                                 </div>
@@ -294,9 +298,9 @@ export default function Quote() {
                                     type="email"
                                     name="email"
                                     value={formData.email}
-                                    className={`input
-                                            ${validity.email === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
-                                            ${validity.email === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                                    className={`input bg-[#ffffff]
+                                            ${validity.email === true ? 'border-green11 bg-green11 text-foreground' : ' '}
+                                            ${validity.email === false ? 'border-red11 bg-red11 text-foreground' : ''}
                                              `}
                                     onChange={(e) => handleChange('email', e.target.value)}
                                 />
@@ -319,7 +323,7 @@ export default function Quote() {
                                         placeholder=""
                                         type="string"
                                         name="address"
-                                        className={`input    `}
+                                        className={`input bg-[#ffffff]     `}
                                     />
                                 </div>
                             </div>
@@ -340,9 +344,9 @@ export default function Quote() {
                                     className={` w-full placeholder:text-blue-300  mx-auto bg-white text-black hover:bg-transparent h-9 cursor-pointer rounded-md border  px-3 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none  focus:border-[#60b9fd]
                                     ${modelError === false && validity.model === false ? 'border-black bg-white text-black' : ' '}
 
-                                    ${modelError === true ? 'border-red11 bg-red11 text-[#fafafa]' : ' '}
-                                     ${validity.model === true && modelError === false ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
-                                     ${validity.model === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                                    ${modelError === true ? 'border-red11 bg-red11 text-foreground' : ' '}
+                                     ${validity.model === true && modelError === false ? 'border-green11 bg-green11 text-foreground' : ' '}
+                                     ${validity.model === false ? 'border-red11 bg-red11 text-foreground' : ''}
                                      `}
                                     onChange={(e) => {
                                         SetModelError(false);
@@ -378,9 +382,9 @@ export default function Quote() {
                                         type="number"
                                         name="year"
                                         value={formData.year}
-                                        className={`input
-                                             ${validity.year === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
-                                             ${validity.year === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                                        className={`input bg-[#ffffff]
+                                             ${validity.year === true ? 'border-green11 bg-green11 text-foreground' : ' '}
+                                             ${validity.year === false ? 'border-red11 bg-red11 text-foreground' : ''}
                                               `}
                                         onChange={(e) => handleChange('year', e.target.value)}
                                     />
@@ -397,7 +401,7 @@ export default function Quote() {
                                         placeholder=""
                                         type="string"
                                         name="stockNum"
-                                        className={`input   `}
+                                        className={`input bg-[#ffffff]     `}
                                     />
                                 </div>
                                 <div></div>
@@ -450,7 +454,7 @@ export default function Quote() {
     )
 }
 
-export const meta: MetaFunction = () => {
+export const meta = () => {
     return [
         { title: "Quote - Dealer Sales Assistant" },
         {

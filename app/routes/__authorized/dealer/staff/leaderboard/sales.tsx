@@ -115,7 +115,7 @@ function SecondCustom({ dateRange, salesData }) {
 export default function Dashboard(dateRange, dateRangeSec, salesData, setCustomView, setDateRange, setDateRangeSec) {
   return (
     <>
-      <Card className="col-span-4 mr- text-[#fafafa] text-slate4 font-bold uppercase rounded shadow hover:shadow-md outline-none ease-linear transition-all duration-150">
+      <Card className="col-span-4 mr- text-foreground text-slate4 font-bold uppercase rounded shadow hover:shadow-md outline-none ease-linear transition-all duration-150">
         <CardHeader>
           <CardTitle>
             <div className='justify-between'>
@@ -123,7 +123,7 @@ export default function Dashboard(dateRange, dateRangeSec, salesData, setCustomV
               <Button
                 variant='ghost'
                 onClick={() => setCustomView(false)}
-                className='text-[#fafafa] bg-transparent hover:bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff]'>
+                className='text-foreground bg-transparent hover:bg-transparent hover:border-primary hover:text-primary'>
                 <ImCross />
               </Button>
             </div>
@@ -133,7 +133,7 @@ export default function Dashboard(dateRange, dateRangeSec, salesData, setCustomV
           <SecondCustom dateRange={dateRange} salesData={salesData} />
         </CardContent>
       </Card>
-      <Card className="col-span-4 mr-3 text-[#fafafa] text-slate4 font-bold uppercase rounded shadow hover:shadow-md outline-none ease-linear transition-all duration-150">
+      <Card className="col-span-4 mr-3 text-foreground text-slate4 font-bold uppercase rounded shadow hover:shadow-md outline-none ease-linear transition-all duration-150">
         <CardHeader>
           <CardTitle>Second date range</CardTitle>
         </CardHeader>
@@ -141,7 +141,7 @@ export default function Dashboard(dateRange, dateRangeSec, salesData, setCustomV
           <SecondCustom dateRange={dateRangeSec} salesData={salesData} />
         </CardContent>
       </Card>
-      <Card className="text-[#fafafa] h-[225px] text-slate4 font-bold uppercase rounded shadow hover:shadow-md outline-none ease-linear transition-all duration-150">
+      <Card className="text-foreground h-[225px] text-slate4 font-bold uppercase rounded shadow hover:shadow-md outline-none ease-linear transition-all duration-150">
         <CardContent>
           <h3 className="text-2xl font-thin mb-2">Custom Date View</h3>
           <div className="grid grid-cols-1">
@@ -149,7 +149,7 @@ export default function Dashboard(dateRange, dateRangeSec, salesData, setCustomV
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
-                  className={`w-[240px] justify-start text-left font-normal mr-3 hover:bg-transparent bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff] ${!dateRange && 'text-muted-foreground'}`}
+                  className={`w-[240px] justify-start text-left font-normal mr-3 hover:bg-transparent bg-transparent hover:border-primary hover:text-primary ${!dateRange && 'text-muted-foreground'}`}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {dateRange?.from ? (
@@ -182,7 +182,7 @@ export default function Dashboard(dateRange, dateRangeSec, salesData, setCustomV
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
-                  className={`w-[240px] justify-start text-left font-normal mr-3 mt-2 hover:bg-transparent bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff] ${!dateRangeSec && 'text-muted-foreground'}`}
+                  className={`w-[240px] justify-start text-left font-normal mr-3 mt-2 hover:bg-transparent bg-transparent hover:border-primary hover:text-primary ${!dateRangeSec && 'text-muted-foreground'}`}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {dateRangeSec?.from ? (
@@ -214,7 +214,7 @@ export default function Dashboard(dateRange, dateRangeSec, salesData, setCustomV
             <Button
               variant='outline'
               onClick={() => setCustomView(true)}
-              className='text-[#fafafa] mt-2 bg-transparent hover:bg-transparent hover:border-[#02a9ff] hover:text-[#02a9ff]'>
+              className='text-foreground mt-2 bg-transparent hover:bg-transparent hover:border-primary hover:text-primary'>
               Set Custom View
             </Button>
           </div>

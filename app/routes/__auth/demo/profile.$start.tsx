@@ -116,13 +116,13 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
 
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-[#151518] text-[#fafafa]">
+    <div className="flex min-h-screen w-full flex-col bg-muted/40 text-foreground">
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
               <Card
-                className="sm:col-span-2 bg-[#09090b]" x-chunk="dashboard-05-chunk-0"
+                className="sm:col-span-2 bg-background" x-chunk="dashboard-05-chunk-0"
               >
                 <CardHeader className="pb-3 text-xl">
                   <CardTitle>Customer Profile</CardTitle>
@@ -131,7 +131,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                 <CardContent>
                   <ul className="grid gap-3 text-sm mt-2">
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Name
                       </span>
                       <span>{data[0].name}</span>
@@ -139,7 +139,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
 
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Phone
                         </span>
                         <Button
@@ -155,7 +155,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Email
                         </span>
                         <Button
@@ -171,7 +171,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Address
                         </span>
                         <Button
@@ -186,13 +186,13 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                       <span>1234 Buyers St  </span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         City
                       </span>
                       <span>Buyerstown</span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Postal
                       </span>
                       <span>7B7 U7Y</span>
@@ -202,7 +202,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                 <CardFooter>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2 " className='sm:col-span-2 bg-[#09090b]'>
+              <Card x-chunk="dashboard-05-chunk-2 " className='sm:col-span-2 bg-background'>
                 <CardHeader className="pb-2 text-xl grid grid-cols-2 justify-between">
                   <CardDescription>Upcoming Appointments</CardDescription>
                   <TooltipProvider delayDuration={0}>
@@ -241,7 +241,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
 
                     <Table className='  overflow-x-scroll w-[850px]'>
                       <TableHeader>
-                        <TableRow className="bg-accent border-[#27272a]">
+                        <TableRow className="bg-accent border-border">
                           <TableHead>
                             Title
                           </TableHead>
@@ -278,7 +278,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                           return (
                             <TableRow
                               key={message.id}
-                              className="bg-accent border-[#27272a]">
+                              className="bg-accent border-border">
                               <TableCell>
                                 {message.title}
                               </TableCell>
@@ -323,7 +323,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                                       <span className="sr-only">Menu</span>
                                     </Button>
                                   </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end" className='bg-[#18181a] text-white'>
+                                  <DropdownMenuContent align="end" className='bg-muted-background text-white'>
                                     <DropdownMenuItem disabled>
                                       <button type='submit'
                                         name='intent'
@@ -399,7 +399,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                   <Card
                     className="overflow-hidden  flex flex-col h-full" x-chunk="dashboard-05-chunk-4 mx-2"
                   >
-                    <CardHeader className="flex flex-row items-start bg-[#09090b]">
+                    <CardHeader className="flex flex-row items-start bg-background">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
                           Wanted Vehichle
@@ -415,12 +415,12 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                       </div>
 
                     </CardHeader>
-                    <CardContent className="flex-grow !grow  p-6 text-sm bg-[#09090b]">
+                    <CardContent className="flex-grow !grow  p-6 text-sm bg-background">
 
                       <ul className="grid gap-3">
                         {WantedData.map((item, index) => (
                           <li key={index} className="flex items-center justify-between">
-                            <span className="text-[#909098]">
+                            <span className="text-muted-foreground">
                               {item.placeholder}
                             </span>
                             <span>{item.value}</span>
@@ -428,7 +428,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                         ))}
                       </ul>
                     </CardContent>
-                    <CardFooter className="flex justify-self-end flex-row items-center border-t border-[#09090b] bg-[#09090b] px-6 py-3">
+                    <CardFooter className="flex justify-self-end flex-row items-center border-t border-[#09090b] bg-background px-6 py-3">
                       <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" >
                         <Truck className="h-3.5 w-3.5" />
                         <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -496,7 +496,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                   <Card
                     className="overflow-hidden mx-2  flex flex-col h-full" x-chunk="dashboard-05-chunk-4"
                   >
-                    <CardHeader className="flex flex-row items-start bg-[#09090b]">
+                    <CardHeader className="flex flex-row items-start bg-background">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
                           Trade Vehichle
@@ -512,12 +512,12 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                       </div>
 
                     </CardHeader>
-                    <CardContent className="flex-grow !grow  p-6 text-sm bg-[#09090b]">
+                    <CardContent className="flex-grow !grow  p-6 text-sm bg-background">
 
                       <ul className="grid gap-3">
                         {TradeData.map((item, index) => (
                           <li key={index} className="flex items-center justify-between">
-                            <span className="text-[#909098]">
+                            <span className="text-muted-foreground">
                               {item.placeholder}
                             </span>
                             <span>{item.value}</span>
@@ -527,7 +527,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                       </ul>
 
                     </CardContent>
-                    <CardFooter className=" items-end justify-end  flex flex-row  border-t border-[#09090b] bg-[#09090b] px-6 py-3">
+                    <CardFooter className=" items-end justify-end  flex flex-row  border-t border-[#09090b] bg-background px-6 py-3">
                       <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" >
                         <Truck className="h-3.5 w-3.5" />
                         <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -544,7 +544,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
             <Card
               className="overflow-hidden" x-chunk="dashboard-05-chunk-4"
             >
-              <CardHeader className="flex flex-row items-start bg-[#18181a]">
+              <CardHeader className="flex flex-row items-start bg-muted-background">
                 <div className="grid gap-0.5">
                   <CardTitle className="group flex items-center gap-2 text-lg">
                     Order Oe31b70H
@@ -582,7 +582,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                   </DropdownMenu>
                 </div>
               </CardHeader>
-              <CardContent className="p-6 text-sm bg-[#09090b]">
+              <CardContent className="p-6 text-sm bg-background">
                 <div className="grid gap-3">
                   <div className="font-semibold">Order Details</div>
                   <ul className="grid gap-3">
@@ -651,7 +651,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                   </dl>
                 </div>
               </CardContent>
-              <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
+              <CardFooter className="flex flex-row items-center border-t bg-muted-background px-6 py-3">
                 <div className="text-xs text-[#8d8d95]">
                   Updated <time dateTime="2023-11-23">November 23, 2023</time>
                 </div>
@@ -675,7 +675,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
             </Card>
 
 
-            < fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9]   border-[#27272a] " >
+            < fieldset className="mt-10 mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-auto text-[#f9f9f9]   border-border " >
               <legend className="-ml-1 px-1 text-sm font-medium flex">
                 <RocketIcon className="h-4 w-4 mr-2" />
                 Demo
@@ -1031,12 +1031,12 @@ export default function MainForm() {
   return (
     <>
       <Dialog open={openAppt} onOpenChange={setOpenAppt}>
-        <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+        <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
 
           <DialogHeader className="px-4 pb-4 pt-5">
             <DialogTitle>Add Appointment</DialogTitle>
           </DialogHeader>
-          <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+          <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
           <div className="grid gap-3 mx-3 mb-3">
             <div className="grid gap-3">
 
@@ -1044,7 +1044,7 @@ export default function MainForm() {
               <Input
                 name="title"
                 type="text"
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
@@ -1052,7 +1052,7 @@ export default function MainForm() {
               <Input
                 name="note"
                 type="text"
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
 
             </div>
@@ -1061,7 +1061,7 @@ export default function MainForm() {
               <Input
                 name="method"
                 type="text"
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
@@ -1069,7 +1069,7 @@ export default function MainForm() {
               <Input
                 name="apptType"
                 type="text"
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
@@ -1077,7 +1077,7 @@ export default function MainForm() {
               <Input
                 name="brand"
                 type="text"
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
@@ -1085,16 +1085,16 @@ export default function MainForm() {
               <Input
                 name="model"
                 type="text"
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
               <Label htmlFor="name">Result</Label>
               <Select name='resultOfcall'  >
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-background border-border">
                   <SelectValue placeholder="Result of call" />
                 </SelectTrigger>
-                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                <SelectContent className='bg-background text-foreground bg-background'>
                   <SelectGroup>
                     <SelectLabel>Result of call</SelectLabel>
                     <SelectItem value="Reached">Reached</SelectItem>
@@ -1109,10 +1109,10 @@ export default function MainForm() {
             <div className="grid gap-3">
               <Label htmlFor="name">Direction</Label>
               <Select name='direction' >
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-background border-border">
                   <SelectValue placeholder="Direction of call" />
                 </SelectTrigger>
-                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                <SelectContent className='bg-background text-foreground bg-background'>
                   <SelectGroup>
                     <SelectLabel>Direction of call</SelectLabel>
                     <SelectItem value="Incoming">Incoming</SelectItem>
@@ -1122,26 +1122,26 @@ export default function MainForm() {
               </Select>
             </div>
             <div className=' flex-col mx-auto justify-center'>
-              <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]",
-                        !date && " text-[#fafafa]"
+                        "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                        !date && " text-foreground"
                       )}
                     >
-                      <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                      <div className=' text-foreground  mx-auto flex justify-center  '>
                         <CalendarIcon className="mr-2 size-8 " />
                         {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
+                  <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <SmallCalendar
-                        className='mx-auto w-auto   bg-[#09090b] text-[#fafafa]'
+                        className='mx-auto w-auto   bg-background text-foreground'
                         mode="single"
                         selected={date}
                         onSelect={setDate}
@@ -1153,7 +1153,7 @@ export default function MainForm() {
               </div>
             </div>
             <div className=' flex-col mx-auto justify-center' >
-              <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
 
                 <input type='hidden' value={String(date)} name='value' />
                 <Popover>
@@ -1161,20 +1161,20 @@ export default function MainForm() {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]",
-                        !date && " text-[#fafafa]"
+                        "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                        !date && " text-foreground"
                       )}
                     >
-                      <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                      <div className=' text-foreground  mx-auto flex justify-center  '>
                         <ClockIcon className="mr-2 size-8 " />
                         {currentTime ? (currentTime) : <span>Pick a Time</span>}
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
+                  <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <Select name='pickHour'  >
-                        <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]" >
+                        <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-primary border-border" >
                           <SelectValue defaultValue='09' />
                         </SelectTrigger>
                         <SelectContent className='bg-white text-black' >
@@ -1215,7 +1215,7 @@ export default function MainForm() {
             </div>
           </div>
           <input type='hidden' name='apptType' defaultValue='sales' />
-          <DialogFooter className=" border-t border-[#27272a] p-4  ">
+          <DialogFooter className=" border-t border-border p-4  ">
             <div className='flex justify-center' >
               <Button
                 value="addAppt"
@@ -1237,11 +1237,11 @@ export default function MainForm() {
         </DialogContent>
       </Dialog>
       <Dialog open={completeAppt} onOpenChange={setCompleteAppt}>
-        <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+        <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
           <DialogHeader className="px-4 pb-4 pt-5">
             <DialogTitle>Add Appointment</DialogTitle>
           </DialogHeader>
-          <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+          <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
           <div className="grid gap-3 mx-3 mb-3">
             <div className="grid gap-3">
 
@@ -1250,7 +1250,7 @@ export default function MainForm() {
                 name="title"
                 type="text"
                 defaultValue={aptFinance3[0].title}
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
@@ -1260,7 +1260,7 @@ export default function MainForm() {
                 type="text"
                 defaultValue={aptFinance3[0].note}
 
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
 
             </div>
@@ -1271,7 +1271,7 @@ export default function MainForm() {
                 type="text"
                 defaultValue={aptFinance3[0].contactMethod}
 
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
@@ -1281,7 +1281,7 @@ export default function MainForm() {
                 type="text"
                 defaultValue={aptFinance3[0].apptType}
 
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
@@ -1291,7 +1291,7 @@ export default function MainForm() {
                 type="text"
                 defaultValue={aptFinance3[0].brand}
 
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
@@ -1301,16 +1301,16 @@ export default function MainForm() {
                 defaultValue={aptFinance3[0].unit}
 
                 type="text"
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
             </div>
             <div className="grid gap-3">
               <Label htmlFor="name">Result</Label>
               <Select name='resultOfcall'  >
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-background border-border">
                   <SelectValue placeholder="Result of call" />
                 </SelectTrigger>
-                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                <SelectContent className='bg-background text-foreground bg-background'>
                   <SelectGroup>
                     <SelectLabel>Result of call</SelectLabel>
                     <SelectItem disabled value="Reached">Reached</SelectItem>
@@ -1325,10 +1325,10 @@ export default function MainForm() {
             <div className="grid gap-3">
               <Label htmlFor="name">Direction</Label>
               <Select name='direction' >
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-background border-border">
                   <SelectValue placeholder="Direction of call" />
                 </SelectTrigger>
-                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                <SelectContent className='bg-background text-foreground bg-background'>
                   <SelectGroup>
                     <SelectLabel>Direction of call</SelectLabel>
                     <SelectItem value="Incoming">Incoming</SelectItem>
@@ -1338,26 +1338,26 @@ export default function MainForm() {
               </Select>
             </div>
             <div className=' flex-col mx-auto justify-center'>
-              <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]",
-                        !date && " text-[#fafafa]"
+                        "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                        !date && " text-foreground"
                       )}
                     >
-                      <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                      <div className=' text-foreground  mx-auto flex justify-center  '>
                         <CalendarIcon className="mr-2 size-8 " />
                         {aptFinance3[0].start}
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
+                  <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <SmallCalendar
-                        className='mx-auto w-auto   bg-[#09090b] text-[#fafafa]'
+                        className='mx-auto w-auto   bg-background text-foreground'
                         mode="single"
                         selected={new Date(aptFinance3[0].start)}
                         onSelect={setDate}
@@ -1369,7 +1369,7 @@ export default function MainForm() {
               </div>
             </div>
             <div className=' flex-col mx-auto justify-center' >
-              <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
 
                 <input type='hidden' value={String(date)} name='value' />
                 <Popover>
@@ -1377,20 +1377,20 @@ export default function MainForm() {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]",
-                        !date && " text-[#fafafa]"
+                        "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                        !date && " text-foreground"
                       )}
                     >
-                      <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                      <div className=' text-foreground  mx-auto flex justify-center  '>
                         <ClockIcon className="mr-2 size-8 " />
                         {currentTime ? (currentTime) : <span>Pick a Time</span>}
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
+                  <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <Select name='pickHour'  >
-                        <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]" >
+                        <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-primary border-border" >
                           <SelectValue defaultValue='09' />
                         </SelectTrigger>
                         <SelectContent className='bg-white text-black' >
@@ -1466,7 +1466,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
 /**<Dialog  >
               <DialogTrigger asChild>
               </DialogTrigger>
-              <DialogContent className="gap-0 p-0 outline-none bg-[#18181a] text-[#f9f9f9] ">
+              <DialogContent className="gap-0 p-0 outline-none bg-muted-background text-[#f9f9f9] ">
                 <DialogHeader className="px-4 pb-4 pt-5">
                   <DialogTitle>Sending an email to {data.name}...</DialogTitle>
                   <DialogDescription>

@@ -1291,7 +1291,7 @@ export function Overview({ outletSize }) {
                         <h3 className="text-2xl ">Price</h3>
                     </div>
 
-                    <hr className="solid dark:text-[#fafafa]" />
+                    <hr className="solid dark:text-foreground" />
                     <div className="flex flex-wrap justify-between  ">
                         <p className="basis-2/4  mt-2 ">MSRP</p>
                         <p className="flex basis-2/4 items-end justify-end  mt-2">
@@ -1430,20 +1430,20 @@ export function Overview({ outletSize }) {
                         <div className='mt-3'>
                             <div className="flex main-button-group justify-between ">
                                 <Badge id='myButton'
-                                    className={`button  shadow hover:text-[#fafafa] bg-[#02a9ff]  transform cursor-pointer  ${mainButton === 'payments' ? 'active bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow hover:text-foreground bg-primary  transform cursor-pointer  ${mainButton === 'payments' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
                                     onClick={() => handleMainButtonClick('payments')}>
                                     Payments
                                 </Badge>
 
                                 <Badge id='myButton1'
-                                    className={`button  shadow bg-[#02a9ff] transform hover:text-[#fafafa]   cursor-pointer ${mainButton === 'noTax' ? 'active bg-[#09090b] text-[#fafafa] ' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow bg-primary transform hover:text-foreground   cursor-pointer ${mainButton === 'noTax' ? 'active bg-background text-foreground ' : 'bg-slate1 text-foreground'}`}
                                     onClick={() => handleMainButtonClick('noTax')}
                                 >
                                     No Tax
                                 </Badge>
 
                                 <Badge id='myButton2'
-                                    className={`button  shadow bg-[#02a9ff] transform   hover:text-[#fafafa] cursor-pointer ${mainButton === 'customTax' ? 'active bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow bg-primary transform   hover:text-foreground cursor-pointer ${mainButton === 'customTax' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
                                     onClick={() => handleMainButtonClick('customTax')}
                                 >
                                     Custom Tax
@@ -1452,7 +1452,7 @@ export function Overview({ outletSize }) {
                             <div className="flex sub-button-group justify-between mt-2">
 
                                 <Badge id='myButton3'
-                                    className={`button  shadow bg-[#02a9ff] transform hover:text-[#fafafa] cursor-pointer ${subButton === 'withoutOptions' ? 'active bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow bg-primary transform hover:text-foreground cursor-pointer ${subButton === 'withoutOptions' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
                                     onClick={() => handleSubButtonClick('withoutOptions')}
                                 >
                                     W/O Options
@@ -1460,7 +1460,7 @@ export function Overview({ outletSize }) {
 
 
                                 <Badge id='myButton5'
-                                    className={`button  shadow bg-[#02a9ff] transform  cursor-pointer hover:text-[#fafafa]  ${subButton === 'withOptions' ? 'active bg-[#09090b]  text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                                    className={`button  shadow bg-primary transform  cursor-pointer hover:text-foreground  ${subButton === 'withOptions' ? 'active bg-background  text-foreground' : 'bg-slate1 text-foreground'}`}
                                     onClick={() => handleSubButtonClick('withOptions')}
                                 >
                                     W/ Options

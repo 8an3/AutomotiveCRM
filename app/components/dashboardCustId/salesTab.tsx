@@ -149,31 +149,31 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
     <>
       <Tabs.Root className="flex flex-col w-full mt-3 "
         defaultValue="Purchasing"  >
-        <Tabs.List className="shrink-0 flex border-b border-white justify-between bg-myColor-900 text-[#fafafa]" aria-label="Manage your account">
+        <Tabs.List className="shrink-0 flex border-b border-white justify-between bg-myColor-900 text-foreground" aria-label="Manage your account">
           <Tabs.Trigger
-            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
-    focus:text-[#02a9ff]    mx-1"
+            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+    focus:text-primary    mx-1"
             value="Purchasing"
           >
-            <p className="text-[#fafafa] ">
+            <p className="text-foreground ">
               Purchasing
             </p>
 
           </Tabs.Trigger>
           <Tabs.Trigger
-            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
-              focus:outline-none  focus:text-[#02a9ff]   mx-1"
+            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+              focus:outline-none  focus:text-primary   mx-1"
             value="Trade"
           >
-            <p className="text-[#fafafa] ">
+            <p className="text-foreground ">
               Trade
             </p>
           </Tabs.Trigger>
           <Tabs.Trigger
-            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer  focus:outline-none focus:text-[#02a9ff]  mx-1"
+            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer  focus:outline-none focus:text-primary  mx-1"
             value="Finance"
           >
-            <p className="text-[#fafafa] ">
+            <p className="text-foreground ">
               Finance
             </p>
 
@@ -182,11 +182,11 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
 
 
           <Tabs.Trigger
-            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
-              focus:outline-none  focus:text-[#02a9ff]  mx-1"
+            className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+              focus:outline-none  focus:text-primary  mx-1"
             value="Print"
           >
-            <p className="text-[#fafafa] ">
+            <p className="text-foreground ">
               Docs
             </p>
           </Tabs.Trigger>
@@ -194,13 +194,13 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
         </Tabs.List>
         {/* purchasing  */}
         <Tabs.Content
-          className="grow p-5 rounded-tl-md bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black"
+          className="grow p-5 rounded-tl-md bg-myColor-900 text-foreground rounded-b-md outline-none  focus:shadow-black"
           value="Purchasing"  >
           <div className="mb-8">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0"  >
-              <div className="rounded-t bg-[#09090b] mb-0 px-6 py-6">
+              <div className="rounded-t bg-background mb-0 px-6 py-6">
                 <div className="text-center flex justify-between">
-                  <h6 className="text-[#fafafa] text-xl font-bold uppercase">
+                  <h6 className="text-foreground text-xl font-bold uppercase">
                     Purchasing
                   </h6>
                 </div>
@@ -213,14 +213,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase mt-2 text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase mt-2 text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           Brand
                         </label>
                         <input
                           type="text"
-                          className="w-full  rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                          className="w-full  rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
                           defaultValue={finance[0].brand}
                           name='brand'
                         />
@@ -229,13 +229,13 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase mt-2 text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase mt-2 text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           Model
                         </label>
                         <input
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].model}
                           name='model'
                         />
@@ -245,14 +245,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Year
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             defaultValue={clientUnit.year}
                             name='year'
                           />
@@ -262,14 +262,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Year
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
 
                             name='year'
                           />
@@ -280,14 +280,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Trim
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             defaultValue={clientUnit.submodel}
                             name='trim'
                           />
@@ -297,14 +297,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Trim
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             name='trim'
                           />
                         </div>
@@ -314,14 +314,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           Stock Number
                         </label>
                         <input
                           type="text"
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].stockNum}
                           name='stockNum'
                         />
@@ -331,14 +331,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Model Code
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             defaultValue={clientUnit.model}
                             name='modelCode'
                           />
@@ -348,14 +348,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Model Code
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             name='modelCode'
                           />
                         </div>
@@ -365,14 +365,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Color
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             defaultValue={clientUnit.exteriorColor}
                             name='color'
                           />
@@ -382,14 +382,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Color
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             name='color'
                           />
                         </div>
@@ -399,14 +399,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Mileage
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             defaultValue={clientUnit.mileage}
                             name='color'
                           />
@@ -416,14 +416,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Mileage
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             name='color'
                           />
                         </div>
@@ -433,14 +433,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Location
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             defaultValue={clientUnit.location}
                             name='color'
                           />
@@ -450,14 +450,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       <div className="w-full lg:w-6/12 px-4">
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             Location
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             name='color'
                           />
                         </div>
@@ -469,14 +469,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
 
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             vin
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             defaultValue={clientUnit.vin}
                             name='vin'
                           />
@@ -487,14 +487,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
 
                         <div className="relative w-full mb-3">
                           <label
-                            className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                            className="block uppercase text-foreground text-xs font-bold mb-2"
                             htmlFor="grid-password"
                           >
                             vin
                           </label>
                           <input
                             type="text"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             name='vin'
                           />
                         </div>
@@ -513,12 +513,12 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                           }, 100);
                         }}
                         type="submit" name='intent' value='updateWantedUnit'
-                        className="bg-[#2ebb98] cursor-pointer  mt-3 ml-auto text-[#fafafa] active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                        className="bg-[#2ebb98] cursor-pointer  mt-3 ml-auto text-foreground active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                       >
                         Update
                       </button>
                       <Toast.Root open={open} onOpenChange={setOpen} className="bg-white rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut">
-                        <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-[#fafafa] text-[15px]">
+                        <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-foreground text-[15px]">
                           {finance[0].firstName}'s File Updated.
                         </Toast.Title>
                         <Toast.Description asChild>
@@ -565,10 +565,10 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       className="space-x-2 "
                     >
                       <Select name='userEmail' defaultValue={finance[0].userEmail}>
-                        <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                        <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                           <SelectValue>Assigned Sales Person</SelectValue>
                         </SelectTrigger>
-                        <SelectContent className='bg-slate1 text-[#fafafa]'>
+                        <SelectContent className='bg-slate1 text-foreground'>
                           {userList.map((user, index) => (
                             <SelectItem key={index} value={user.email}>{user.name}</SelectItem>
                           ))}
@@ -582,10 +582,10 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       className="space-x-2 "
                     >
                       <Select name='financeManager' defaultValue={finance[0].financeManager}>
-                        <SelectTrigger className="max-w-sm  rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                        <SelectTrigger className="max-w-sm  rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                           <SelectValue>Assigned F & I</SelectValue>
                         </SelectTrigger>
-                        <SelectContent className='bg-slate1 text-[#fafafa]'>
+                        <SelectContent className='bg-slate1 text-foreground'>
                           {userList.map((user, index) => (
                             <SelectItem key={index} value={user.id}>{user.name}</SelectItem>
                           ))}
@@ -608,9 +608,9 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
             <div
               className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0"
             >
-              <div className="rounded-t bg-[#09090b] mb-0 px-6 py-6">
+              <div className="rounded-t bg-background mb-0 px-6 py-6">
                 <div className="text-center flex justify-between">
-                  <h6 className="text-[#fafafa] text-xl font-bold uppercase">
+                  <h6 className="text-foreground text-xl font-bold uppercase">
                     Trade-In
                   </h6>
                 </div>
@@ -623,14 +623,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase mt-2  text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase mt-2  text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           Brand
                         </label>
                         <input
                           type="text"
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].tradeMake}
                           name='tradeMake'
                         />
@@ -639,13 +639,13 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase  mt-2 text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase  mt-2 text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           model
                         </label>
                         <input
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].tradeDesc}
                           name='tradeDesc'
                         />
@@ -654,14 +654,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           year
                         </label>
                         <input
                           type="text"
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].tradeYear}
                           name='tradeYear'
                         />
@@ -670,14 +670,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           trim
                         </label>
                         <input
                           type="text"
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].tradeTrim}
                           name='tradeTrim'
                         />
@@ -686,14 +686,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           Color
                         </label>
                         <input
                           type="text"
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].tradeColor}
                           name='tradeColor'
                         />
@@ -702,14 +702,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           Mileage
                         </label>
                         <input
                           type="text"
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].tradeMileage}
                           name='tradeMileage'
                         />
@@ -721,14 +721,14 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
 
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase text-[#fafafa] text-xs font-bold mb-2"
+                          className="block uppercase text-foreground text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
                           VIN
                         </label>
                         <input
                           type="text"
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].tradeVin}
                           name='tradeVin'
                         />
@@ -744,7 +744,7 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                           }, 100);
                         }}
                         type="submit" name='intent' value='updateTrade'
-                        className="bg-[#2ebb98] cursor-pointer  mt-3 ml-auto text-[#fafafa] active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                        className="bg-[#2ebb98] cursor-pointer  mt-3 ml-auto text-foreground active:bg-[#1b6e59] font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                       >
                         Update
                       </button>
@@ -754,7 +754,7 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                    backdrop-filter: blur(5px);
                    height: 80%; width: 80%;
                    margin:auto!important;">
-                        <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-[#fafafa] text-[15px]">
+                        <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-foreground text-[15px]">
                           {finance[0].firstName}'s File Updated.
                         </Toast.Title>
                         <Toast.Description asChild>
@@ -774,9 +774,9 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
           value="Finance"  >
           <div className="mb-8">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0" >
-              <div className="rounded-t bg-[#09090b] mb-0 px-6 py-6">
+              <div className="rounded-t bg-background mb-0 px-6 py-6">
                 <div className="text-center flex justify-between">
-                  <h6 className="text-[#fafafa] text-xl font-bold uppercase">
+                  <h6 className="text-foreground text-xl font-bold uppercase">
                     Finance
                   </h6>
                 </div>
@@ -807,7 +807,7 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
         </Tabs.Content>
         {/* docs and print  */}
         <Tabs.Content
-          className="grow p-5 bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black"
+          className="grow p-5 bg-myColor-900 text-foreground rounded-b-md outline-none  focus:shadow-black"
           value="Print"  >
           <PrintAndDocs finance={finance} />
         </Tabs.Content>

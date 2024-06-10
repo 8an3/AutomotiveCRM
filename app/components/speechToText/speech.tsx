@@ -74,7 +74,7 @@ const SpeechToText: React.FC = () => {
         />
 
         <button
-          className={`mx-2 px-4 py-2 rounded-lg text-[#fafafa] h-12 ${isListening
+          className={`mx-2 px-4 py-2 rounded-lg text-foreground h-12 ${isListening
             ? 'bg-red-500 hover:bg-red-700'
             : 'bg-blue-500 hover:bg-blue-700'
             } focus:outline-none focus:shadow-outline`}
@@ -88,7 +88,7 @@ const SpeechToText: React.FC = () => {
       */}
           <input type="hidden" name="getAnswerFromGptInput" value={transcript} />
           <button type='submit'
-            className='mx-2 px-4 py-2 rounded-lg text-[#fafafa] h-12 bg-green-500'
+            className='mx-2 px-4 py-2 rounded-lg text-foreground h-12 bg-green-500'
           >Get Answer</button>
         </Form>
       </div>

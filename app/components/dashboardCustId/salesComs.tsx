@@ -35,46 +35,46 @@ export function SalesComms({
     <Tabs.Root className="flex flex-col w-full mt-3  bg-blak mx-auto"
       defaultValue="notes"
     >
-      <Tabs.List className="shrink-0 flex border-b border-white bg-myColor-900 text-[#fafafa]" aria-label="Manage your account">
+      <Tabs.List className="shrink-0 flex border-b border-white bg-myColor-900 text-foreground" aria-label="Manage your account">
         <Tabs.Trigger
-          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
+          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
           value="notes" >
-          <p className="text-[#fafafa] ">
+          <p className="text-foreground ">
             Notes
 
           </p>
         </Tabs.Trigger>
         <Tabs.Trigger
-          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
+          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
           value="aptHist" >
-          <p className="text-[#fafafa] ">
+          <p className="text-foreground ">
             Apt history
           </p>
         </Tabs.Trigger>
         <Tabs.Trigger
-          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
+          className="bg-myColor-900 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150 cursor-pointer"
           value="coms" >
-          <p className="text-[#fafafa] ">
+          <p className="text-foreground ">
             Client Interactions
 
           </p>
         </Tabs.Trigger>
         <Tabs.Trigger
-          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
-              focus:outline-none  focus:text-[#02a9ff]  mx-1"
+          className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+              focus:outline-none  focus:text-primary  mx-1"
           value="Upload"
         >
-          <p className="text-[#fafafa] ">
+          <p className="text-foreground ">
             Upload
           </p>
         </Tabs.Trigger>
       </Tabs.List>
-      <Tabs.Content className="grow  bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black" value="notes"  >
-        <div className="mb-4 p-5 h-full   text-[#fafafa]">
+      <Tabs.Content className="grow  bg-myColor-900 text-foreground rounded-b-md outline-none  focus:shadow-black" value="notes"  >
+        <div className="mb-4 p-5 h-full   text-foreground">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-slate11" >
-            <div className="rounded-t bg-[#09090b] mb-4 p-4 ">
+            <div className="rounded-t bg-background mb-4 p-4 ">
               <div className="text-center flex justify-between">
-                <h6 className="text-[#fafafa] text-xl font-bold uppercase px-3 py-2">
+                <h6 className="text-foreground text-xl font-bold uppercase px-3 py-2">
                   notes
                 </h6>
               </div>
@@ -85,12 +85,12 @@ export function SalesComms({
           </div>
         </div>
       </Tabs.Content>
-      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black" value="aptHist" >
-        <div className="mb-4 w-full  text-[#fafafa]">
+      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-foreground rounded-b-md outline-none  focus:shadow-black" value="aptHist" >
+        <div className="mb-4 w-full  text-foreground">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-slate11" >
-            <div className="rounded-t bg-[#09090b] mb-0 p-4 ">
+            <div className="rounded-t bg-background mb-0 p-4 ">
               <div className="text-center flex justify-between">
-                <h6 className="text-[#fafafa] text-xl font-bold uppercase px-3 py-2">
+                <h6 className="text-foreground text-xl font-bold uppercase px-3 py-2">
                   Appointments
                 </h6>
               </div>
@@ -107,7 +107,7 @@ export function SalesComms({
                     className="flex-cols-2 flex mb-4"
                   >
                     <Card
-                      className={`w-full rounded  bg-[#09090b] text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff]
+                      className={`w-full rounded  bg-background text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary
 ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
                           isPast(new Date(message.start)) ? 'border-red-500 border:w-[3px] bg-red-600' :
                             message.appStatus === 'completed' ? 'border-gray-500 border:w-[5px] bg-gray-600' :
@@ -166,7 +166,7 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
                             name="intent"
                             type="submit"
                             value="updateFinanceAppt"
-                            className="cursor-pointer hover:text-[#02a9ff]"
+                            className="cursor-pointer hover:text-primary"
                             onClick={() => { setEditItemId(null); }}  >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -200,7 +200,7 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
                           <Toolbar.ToggleItem
 
                             value="updateFinanceAppt"
-                            className="cursor-pointer mt-1 hover:text-[#02a9ff]"
+                            className="cursor-pointer mt-1 hover:text-primary"
                             onClick={() => {
                               handleEditClick(message.id)
                             }}
@@ -232,7 +232,7 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
                           <Input type="hidden" defaultValue={message.id} name="messageId" />
                           <Input type="hidden" defaultValue={finance[0].customerState} name="customerState" />
                           <input type='hidden' value='completeApt' name='intent' />
-                          <Toolbar.ToggleItem type="submit" value='completeApt' className="cursor-pointer mt-1 hover:text-[#02a9ff]"   >
+                          <Toolbar.ToggleItem type="submit" value='completeApt' className="cursor-pointer mt-1 hover:text-primary"   >
                             <svg width="20px" height="20px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
                           </Toolbar.ToggleItem>
                         </fetcher.Form>
@@ -246,7 +246,7 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
                             <Input type="hidden" defaultValue={finance[0].customerState} name="customerState" />
                             <Input type="hidden" defaultValue='yes' name="completed" />
                             <input type='hidden' value='deleteApt' name='intent' />
-                            <Toolbar.ToggleItem type="submit" value='deleteApt' className="cursor-pointer mt-1 hover:text-[#02a9ff]"   >
+                            <Toolbar.ToggleItem type="submit" value='deleteApt' className="cursor-pointer mt-1 hover:text-primary"   >
                               <svg width="20px" height="20px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 1C5.22386 1 5 1.22386 5 1.5C5 1.77614 5.22386 2 5.5 2H9.5C9.77614 2 10 1.77614 10 1.5C10 1.22386 9.77614 1 9.5 1H5.5ZM3 3.5C3 3.22386 3.22386 3 3.5 3H5H10H11.5C11.7761 3 12 3.22386 12 3.5C12 3.77614 11.7761 4 11.5 4H11V12C11 12.5523 10.5523 13 10 13H5C4.44772 13 4 12.5523 4 12V4L3.5 4C3.22386 4 3 3.77614 3 3.5ZM5 4H10V12H5V4Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>                                          </Toolbar.ToggleItem>
                           </fetcher.Form>
                         )}
@@ -264,12 +264,12 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
 
 
       </Tabs.Content>
-      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black" value="coms" >
-        <div className="mb-4 h-full  text-[#fafafa]">
+      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-foreground rounded-b-md outline-none  focus:shadow-black" value="coms" >
+        <div className="mb-4 h-full  text-foreground">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-slate11" >
-            <div className="rounded-t bg-[#09090b] mb-0 p-4 ">
+            <div className="rounded-t bg-background mb-0 p-4 ">
               <div className="text-center flex justify-between">
-                <h6 className="text-[#fafafa] text-xl font-bold uppercase px-3 py-2">
+                <h6 className="text-foreground text-xl font-bold uppercase px-3 py-2">
                   Client Communications
                 </h6>
               </div>
@@ -281,7 +281,7 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
         </div>
 
       </Tabs.Content>
-      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black" value="Upload"  >
+      <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-foreground rounded-b-md outline-none  focus:shadow-black" value="Upload"  >
         <Print finance={finance} />
       </Tabs.Content>
     </Tabs.Root>

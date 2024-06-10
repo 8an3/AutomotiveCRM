@@ -93,21 +93,21 @@ export default function Component() {
 
 
         <div className="emailList w-[100%] border-r border-[#262626]">
-          <div className="flex border-b border-[#262626] text-[#fafafa] p-2 justify-between">
+          <div className="flex border-b border-[#262626] text-foreground p-2 justify-between">
             <p>Staff Chat</p>    <Link to="/dealer/im/lobby" ><XCircle /></Link>
           </div>
           <Link to="/dealer/im/lobby">
 
-            <div className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]   `}  >
-              <p className="text-[#fafafa] p-3">Lobby</p>
+            <div className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary   `}  >
+              <p className="text-foreground p-3">Lobby</p>
             </div>
           </Link>
           {staffMembers && staffMembers.length > 0 && staffMembers.map((staffMember, index) => {
             return (
               <div key={index}>
                 <Link to={`/dealer/im/${user.email}/${staffMember.email}`} >
-                  <div className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]   `}  >
-                    <p className="text-[#fafafa] p-3">{staffMember.name}</p>
+                  <div className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary   `}  >
+                    <p className="text-foreground p-3">{staffMember.name}</p>
                   </div>
                 </Link>
 

@@ -207,8 +207,8 @@ export default function Quote() {
 
     return (
         <>
-            <div className="mx-auto my-auto text-[#fafafa] mt-[50px] bg-[#09090b] flex justify-center">
-                <Card className="w-[95%] lg:w-[450px] border-[#27272a] text-[#fafafa] bg-[#09090b] rounded-md">
+            <div className="mx-auto my-auto text-foreground mt-[50px] bg-background flex justify-center">
+                <Card className="w-[95%] lg:w-[450px] border-border text-foreground bg-background rounded-md">
                     <Form method='post' className="">
                         <CardHeader>
                             <CardTitle>
@@ -226,13 +226,13 @@ export default function Quote() {
                                         <Input
                                             name="firstName"
                                             value={formData.firstName}
-                                            className={`col-span-3 bg-[#09090b] border-[#27272a]
-                                                ${validity.firstName === true ? 'border-[#42ff31]   text-[#fafafa]' : ' '}
-                                                ${validity.firstName === false ? 'border-red11   text-[#fafafa]' : ''}
+                                            className={`col-span-3 bg-background border-border
+                                                ${validity.firstName === true ? 'border-[#42ff31]   text-foreground' : ' '}
+                                                ${validity.firstName === false ? 'border-red11   text-foreground' : ''}
                                                 `}
                                             onChange={(e) => handleChange('firstName', e.target.value)}
                                         />
-                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">First Name</label>
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">First Name</label>
                                         {String(validity.firstName).length > 3 && validity.firstName === false && (
                                             <div className="text-[#ff0202] flex items-center">
                                                 <AlertFillIcon size={12} />
@@ -250,12 +250,12 @@ export default function Quote() {
                                             name="lastName"
                                             value={formData.lastName}
                                             onChange={(e) => handleChange('lastName', e.target.value)}
-                                            className={`col-span-3 bg-[#09090b] border-[#27272a]
-                                                ${validity.lastName === true ? 'border-[#42ff31]   text-[#fafafa]' : ''}
-                                                ${validity.lastName === false ? 'border-red11   text-[#fafafa]' : ''}
+                                            className={`col-span-3 bg-background border-border
+                                                ${validity.lastName === true ? 'border-[#42ff31]   text-foreground' : ''}
+                                                ${validity.lastName === false ? 'border-red11   text-foreground' : ''}
                                                 `}
                                         />
-                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Last Name</label>
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Last Name</label>
                                         {String(validity.lastName).length > 3 && validity.lastName == false && (
                                             <div className="text-[#ff0202] flex items-center">
                                                 <AlertFillIcon size={12} />
@@ -273,12 +273,12 @@ export default function Quote() {
                                             name="email"
                                             value={formData.email}
                                             onChange={(e) => handleChange('email', e.target.value)}
-                                            className={`col-span-3 bg-[#09090b] border-[#27272a]
-                                        ${validity.email === true ? 'border-[#42ff31]   text-[#fafafa]' : ' '}
-                                        ${validity.email === false ? 'border-red11   text-[#fafafa]' : ''}
+                                            className={`col-span-3 bg-background border-border
+                                        ${validity.email === true ? 'border-[#42ff31]   text-foreground' : ' '}
+                                        ${validity.email === false ? 'border-red11   text-foreground' : ''}
                                         `}
                                         />
-                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Email</label>
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Email</label>
                                         {String(validity.email).length > 3 && validity.email === false && (
                                             <div className="text-[#ff0202] flex items-center">
                                                 <AlertFillIcon size={12} />
@@ -296,12 +296,12 @@ export default function Quote() {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={(e) => handleChange('phone', e.target.value)}
-                                            className={`col-span-3 bg-[#09090b] border-[#27272a]
-                                            ${validity.phone === true ? 'border-[#42ff31]   text-[#fafafa]' : ''}
-                                            ${validity.phone === false ? 'border-red11   text-[#fafafa]' : ''}
+                                            className={`col-span-3 bg-background border-border
+                                            ${validity.phone === true ? 'border-[#42ff31]   text-foreground' : ''}
+                                            ${validity.phone === false ? 'border-red11   text-foreground' : ''}
                                              `}
                                         />
-                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Phone</label>
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Phone</label>
                                         {String(validity.phone).length > 3 && validity.phone === false && (
                                             <div className="text-[#ff0202] flex items-center">
                                                 <AlertFillIcon size={12} />
@@ -317,9 +317,9 @@ export default function Quote() {
                                     <div className="relative mt-1">
                                         <Input
                                             name="address"
-                                            className={`col-span-3 bg-[#09090b] border-[#27272a] `}
+                                            className={`col-span-3 bg-background border-border `}
                                         />
-                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Address</label>
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Address</label>
                                     </div>
 
                                     <div className="relative mt-1">
@@ -327,18 +327,18 @@ export default function Quote() {
                                             type="text"
                                             list="ListOptions2"
                                             name="model"
-                                            className={`  col-span-3 bg-[#09090b] border-[#27272a]
-                                                  ${modelError === false && validity.model === false ? 'border-[#27272a] bg-[#09090b] text-[#fafafa]' : ' '}
-                                                  ${modelError === true ? 'border-red11   text-[#fafafa]' : ' '}
-                                                   ${validity.model === true && modelError === false ? 'border-[#42ff31]   text-[#fafafa]' : ' '}
-                                                   ${validity.model === false ? 'border-red11   text-[#fafafa]' : ''}
+                                            className={`  col-span-3 bg-background border-border
+                                                  ${modelError === false && validity.model === false ? 'border-border bg-background text-foreground' : ' '}
+                                                  ${modelError === true ? 'border-red11   text-foreground' : ' '}
+                                                   ${validity.model === true && modelError === false ? 'border-[#42ff31]   text-foreground' : ' '}
+                                                   ${validity.model === false ? 'border-red11   text-foreground' : ''}
                                                    `}
                                             onChange={(e) => {
                                                 SetModelError(false);
                                                 handleChange('model', e.target.value); // Pass the selected value to handleChange
                                             }}
                                         />
-                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Model</label>
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Model</label>
                                         {modelError === true && (
                                             <div className="text-[#ff0202] flex items-center">
                                                 <AlertFillIcon size={12} />
@@ -364,13 +364,13 @@ export default function Quote() {
                                                 name="year"
                                                 type="number"
                                                 value={formData.year}
-                                                className={` bg-[#09090b] border-[#27272a] mr-2 w-full
-                                                ${validity.year === true ? 'border-[#42ff3194]   text-[#fafafa]' : ' '}
-                                                ${validity.year === false ? 'border-red11   text-[#fafafa]' : ''}
+                                                className={` bg-background border-border mr-2 w-full
+                                                ${validity.year === true ? 'border-[#42ff3194]   text-foreground' : ' '}
+                                                ${validity.year === false ? 'border-red11   text-foreground' : ''}
                                                 `}
                                                 onChange={(e) => handleChange('year', e.target.value)}
                                             />
-                                            <label className="col-span-3 text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Year</label>
+                                            <label className="col-span-3 text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Year</label>
                                             {String(validity.year).length > 3 && validity.year === false && (
                                                 <p className="text-[#ff0202] flex items-center">
                                                     <AlertFillIcon size={12} /> Year is not valid...
@@ -380,9 +380,9 @@ export default function Quote() {
                                         <div className="relative mt-1  w-[47%]">
                                             <Input
                                                 name="stockNum"
-                                                className={` bg-[#09090b] border-[#27272a] ml-3 w-full `}
+                                                className={` bg-background border-border ml-3 w-full `}
                                             />
-                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Stock Number</label>
+                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Stock Number</label>
                                         </div>
                                     </div>
                                 </div>
@@ -424,10 +424,10 @@ export default function Quote() {
 /**      <div className="mt-1">
                                     <h3 className="text-2xl font-thin">CLIENT INFORMATION</h3>
                                 </div>
-                                <hr className='text-[#27272a] w-[90%]' />
+                                <hr className='text-muted-foreground w-[90%]' />
                                 <div className="mt-1">
                                         <h3 className="text-2xl font-thin">MODEL INFORMATION</h3>
-                                        <hr className='text-[#27272a] w-[90%]' />
+                                        <hr className='text-muted-foreground w-[90%]' />
 
                                     </div> */
 export const meta: MetaFunction = () => {

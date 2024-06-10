@@ -25,9 +25,9 @@ export default function Route() {
 
   return (
     <div
-      className="relative flex-col items-start gap-8 md:flex pl-3 pr-3 md:w-[30%] text-[#fafafa] mx-auto"
+      className="relative flex-col items-start gap-8 md:flex pl-3 pr-3 md:w-[30%] text-foreground mx-auto"
     >
-      <fieldset className="grid gap-6 rounded-lg border p-4 border-[#27272a]  bg-[#09090b]">
+      <fieldset className="grid gap-6 rounded-lg border p-4 border-border  bg-background">
         <legend className="-ml-1 px-1 text-sm font-medium">About</legend>
         <p>
           Having been in the industry since I was 17 years old, I have seen both great and horrible sales people. Starting I was horrible at sales, but over the years i learned from those better than me and continued to grow. At this point there's not a lot to learn anymore, I wont go into what the industry needs to do to improve but I'll go over the self reflection I've done and really tried to pin point what else can I improve in order to sell more.

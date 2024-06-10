@@ -533,13 +533,13 @@ export function SearchTable() {
                 />
 
 
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
             </div>
             <div className="rounded-md border border-[#262626] ">
-                <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
+                <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -568,7 +568,7 @@ export function SearchTable() {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                                    className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-foreground hover:text-primary'
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
@@ -585,7 +585,7 @@ export function SearchTable() {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-slate8 text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                                    className="h-24 cursor-pointer bg-slate8 text-center capitalize text-foreground hover:text-primary"
                                 >
                                     No results.
                                 </TableCell>
@@ -602,7 +602,7 @@ export function SearchTable() {
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="border-slate1 text-[#fafafa]"
+                        className="border-slate1 text-foreground"
                     >
                         Previous
                     </Button>
@@ -610,7 +610,7 @@ export function SearchTable() {
                         variant="outline"
                         size="sm"
                         onClick={() => table.nextPage()}
-                        className="border-slate1 text-[#fafafa]"
+                        className="border-slate1 text-foreground"
 
                         disabled={!table.getCanNextPage()}
                     >
@@ -944,7 +944,7 @@ export function WebleadsTable() {
             {!isRowSelected ? (
                 <>
                     <div className="rounded-md border border-[#262626] ">
-                        <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa] '>
+                        <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground '>
                             <TableHeader>
                                 {table.getHeaderGroups().map((headerGroup) => (
                                     <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -973,7 +973,7 @@ export function WebleadsTable() {
                                     table.getRowModel().rows.map((row) => (
                                         <TableRow
                                             key={row.id}
-                                            className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                                            className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-foreground hover:text-primary'
                                             data-state={row.getIsSelected() && "selected"}
                                             onClick={() => {
                                                 handleRowClick(row);
@@ -994,7 +994,7 @@ export function WebleadsTable() {
                                     <TableRow>
                                         <TableCell
                                             colSpan={columns.length}
-                                            className="h-24 cursor-pointer bg-slate8 text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                                            className="h-24 cursor-pointer bg-slate8 text-center capitalize text-foreground hover:text-primary"
                                         >
                                             No results.
                                         </TableCell>
@@ -1011,7 +1011,7 @@ export function WebleadsTable() {
                                 size="sm"
                                 onClick={() => table.previousPage()}
                                 disabled={!table.getCanPreviousPage()}
-                                className="border-slate1 text-[#fafafa]"
+                                className="border-slate1 text-foreground"
                             >
                                 Previous
                             </Button>
@@ -1019,7 +1019,7 @@ export function WebleadsTable() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => table.nextPage()}
-                                className="border-slate1 text-[#fafafa]"
+                                className="border-slate1 text-foreground"
 
                                 disabled={!table.getCanNextPage()}
                             >
@@ -1177,13 +1177,13 @@ export function WebleadsTable() {
                                     setIsComplete(true);
                                 }}
                                 name='intent' value='newLead' type='submit'
-                                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                                className={` cursor-pointer mr-2 p-3 hover:text-primary hover:border-primary text-foreground border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                             >
                                 Complete
                             </Button>
                             <Button
                                 disabled={isComplete === false}
-                                className={` cursor-pointer ml-auto p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                                className={` cursor-pointer ml-auto p-3 hover:text-primary hover:border-primary text-foreground border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                             >
                                 <Link to={`/overview/${brandId}/${clientFinanceId}`}>
 
@@ -1279,7 +1279,7 @@ export function MainDashbaord() {
             cell: ({ row }) => {
                 const data = row.original
                 //
-                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none">
+                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
                     <ClientCard data={data} row={row} />
                 </div>
             },
@@ -1293,7 +1293,7 @@ export function MainDashbaord() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff] ">
+                return <div className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-primary hover:text-primary focus:text-primary  focus:outline-none  active:bg-primary ">
                     {(row.getValue("lastName"))}
                 </div>
             },
@@ -1309,7 +1309,7 @@ export function MainDashbaord() {
             },
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none  active:bg-[#02a9ff]">
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
                     <ClientStatusCard data={data} />
                 </div>
             },
@@ -1334,7 +1334,7 @@ export function MainDashbaord() {
 
                 const formattedDate = data.nextAppointment && data.nextAppointment !== '1969-12-31 19:00' ? formatDate(data.nextAppointment) : 'TBD';
 
-                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff]  ">
+                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
                     {data.nextAppointment === 'TBD' ? <p>TBD</p> : formattedDate}
                 </div>
             },
@@ -1349,7 +1349,7 @@ export function MainDashbaord() {
                 //  const id = data.id ? data.id.toString() : '';
 
 
-                return <div className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff]">
+                return <div className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none active:bg-primary">
 
                     {data.customerState === 'Pending' ? (<AttemptedOrReached data={data} />
                     ) : data.customerState === 'Attempted' ? (<AttemptedOrReached data={data} />
@@ -1410,7 +1410,7 @@ export function MainDashbaord() {
                 <DataTableColumnHeader column={column} title="Trade" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("tradeDesc"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
             },
 
         },
@@ -1420,7 +1420,7 @@ export function MainDashbaord() {
                 <DataTableColumnHeader column={column} title="Last Note" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("lastNote"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("lastNote"))}</div>
             },
 
         },
@@ -1514,14 +1514,14 @@ export function MainDashbaord() {
         {
             accessorKey: "pickUpDate",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff] " />
+                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
             ),
             cell: ({ row }) => {
                 const data = row.original
                 if (data.pickUpDate) {
                     const pickupDate = data.pickUpDate
                     return (
-                        <div className="bg-transparent :text-[#02a9ff] text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
+                        <div className="bg-transparent :text-primary text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
                         </div>
                     );
@@ -1532,7 +1532,7 @@ export function MainDashbaord() {
         {
             accessorKey: "lastContact",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]" />
+                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
             ),
             cell: ({ row }) => {
                 const data = row.original
@@ -1552,7 +1552,7 @@ export function MainDashbaord() {
                 if (formattedDate) {
                     const lastContact1 = data.lastContact
                     return (
-                        <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
+                        <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {formattedDate === '1969-12-31 19:00' || formattedDate === null ? 'TBD' : formattedDate}
                         </div>
                     );
@@ -1597,7 +1597,7 @@ export function MainDashbaord() {
                             <input type='hidden' name='financeId' value={data.id} />
                             <ButtonLoading
                                 size="lg"
-                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
                                 type="submit"
                                 isSubmitting={isSubmitting}
                                 onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
@@ -1630,7 +1630,7 @@ export function MainDashbaord() {
                 <p className="text-center">email</p>
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("email"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
             },
 
         },
@@ -1639,7 +1639,7 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <p className="text-center">phone</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("phone"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
             },
 
         },
@@ -1648,7 +1648,7 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <p className="text-center">address</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("address"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
             },
 
         },
@@ -1657,12 +1657,12 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <p className="text-center">postal</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("postal"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("postal"))}</div>
             },
 
         },
@@ -1671,12 +1671,12 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="city" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("city"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("city"))}</div>
             },
 
         },
@@ -1685,12 +1685,12 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="province" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("province"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("province"))}</div>
             },
 
         },
@@ -1709,12 +1709,12 @@ export function MainDashbaord() {
                 <DataTableColumnHeader column={column} title="userEmail" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("userEmail"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("userEmail"))}</div>
             },
 
         },
@@ -1724,7 +1724,7 @@ export function MainDashbaord() {
                 <DataTableColumnHeader column={column} title="Pick Up Time" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff] ">
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
                     {(row.getValue("pickUpTime"))}
                 </div>
             },
@@ -2469,7 +2469,7 @@ export const meta: MetaFunction = () => {
                         <Form method='post'>
                             <input type='hidden' name='rowId' value={data.id} />
 
-                            <Button variant='outline' name='intent' value='deleteWishList' className="active:bg-black mx-auto my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                            <Button variant='outline' name='intent' value='deleteWishList' className="active:bg-black mx-auto my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
                             >
                                 Delete
                             </Button>
@@ -2576,13 +2576,13 @@ export const meta: MetaFunction = () => {
                         </option>
                     ))}
                 </select>
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                        <Button variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
                         >
                             Add
                         </Button>
@@ -2667,7 +2667,7 @@ export const meta: MetaFunction = () => {
                                 />
                             </div>
                             <Button onClick={() => toast.success(`Added to wish list!`)}
-                                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-black w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-black w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-slate8 px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
                             >
                                 Save
                             </Button>
@@ -2678,7 +2678,7 @@ export const meta: MetaFunction = () => {
 
             </div>
             <div className="rounded-md border border-[#262626] ">
-                <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
+                <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -2707,7 +2707,7 @@ export const meta: MetaFunction = () => {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                                    className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-foreground hover:text-primary'
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
@@ -2724,7 +2724,7 @@ export const meta: MetaFunction = () => {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-slate8 text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                                    className="h-24 cursor-pointer bg-slate8 text-center capitalize text-foreground hover:text-primary"
                                 >
                                     No results.
                                 </TableCell>
@@ -2741,7 +2741,7 @@ export const meta: MetaFunction = () => {
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="border-slate1 text-[#fafafa]"
+                        className="border-slate1 text-foreground"
                     >
                         Previous
                     </Button>
@@ -2749,7 +2749,7 @@ export const meta: MetaFunction = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => table.nextPage()}
-                        className="border-slate1 text-[#fafafa]"
+                        className="border-slate1 text-foreground"
 
                         disabled={!table.getCanNextPage()}
                     >

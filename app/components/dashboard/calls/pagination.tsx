@@ -25,23 +25,23 @@ export function DataTablePagination<TData>({
 }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-[#fafafa]">
+      <div className="flex-1 text-sm text-foreground">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium text-[#fafafa]">Rows per page</p>
+          <p className="text-sm font-medium text-foreground">Rows per page</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
               table.setPageSize(Number(value))
             }}
           >
-            <SelectTrigger className="h-8 w-[70px] cursor-pointer border border-slate1 text-[#fafafa]">
+            <SelectTrigger className="h-8 w-[70px] cursor-pointer border border-slate1 text-foreground">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
-            <SelectContent side="top" className="bg-[#09090b] text-[#fafafa]">
+            <SelectContent side="top" className="bg-background text-foreground">
               {[10, 20, 30, 40, 50].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
@@ -50,14 +50,14 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center text-sm hover:text-[#02a9ff] text-[#fafafa] bg-[#09090b] capitalize cursor-pointer  font-medium">
+        <div className="flex w-[100px] items-center justify-center text-sm hover:text-primary text-foreground bg-background capitalize cursor-pointer  font-medium">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
           <Button
 
-            className="h-7 p-0  cursor-pointer hover:text-[#02a9ff] text-[#fafafa] bg-transparent hover:bg-transparent "
+            className="h-7 p-0  cursor-pointer hover:text-primary text-foreground bg-transparent hover:bg-transparent "
 
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
@@ -66,7 +66,7 @@ export function DataTablePagination<TData>({
           </Button>
           <Button
 
-            className="h-7 p-0  cursor-pointer hover:text-[#02a9ff] text-[#fafafa] text-[#fafafa] bg-transparent hover:bg-transparent "
+            className="h-7 p-0  cursor-pointer hover:text-primary text-foreground text-foreground bg-transparent hover:bg-transparent "
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -74,7 +74,7 @@ export function DataTablePagination<TData>({
           </Button>
           <Button
 
-            className="h-8 w-15 p-0  cursor-pointer hover:text-[#02a9ff] text-[#fafafa] text-[#fafafa] bg-transparent hover:bg-transparent"
+            className="h-8 w-15 p-0  cursor-pointer hover:text-primary text-foreground text-foreground bg-transparent hover:bg-transparent"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
@@ -82,7 +82,7 @@ export function DataTablePagination<TData>({
           </Button>
           <Button
 
-            className=" h-8 w-15 p-0 lg:flex  cursor-pointer hover:text-[#02a9ff] text-[#fafafa] text-[#fafafa] bg-transparent hover:bg-transparent"
+            className=" h-8 w-15 p-0 lg:flex  cursor-pointer hover:text-primary text-foreground text-foreground bg-transparent hover:bg-transparent"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >

@@ -136,15 +136,15 @@ export default function ImportExport() {
   };
   // action={`/dealer/manager/import/${link}`}
   return (
-    <Card className="overflow-hidden text-[#f1f1f1] w-[600px] mt-[50px] mx-auto" x-chunk="dashboard-05-chunk-4" >
-      <CardHeader className="flex flex-row items-start bg-[#18181a]">
+    <Card className="overflow-hidden text-foreground w-[600px] mt-[50px] mx-auto" x-chunk="dashboard-05-chunk-4" >
+      <CardHeader className="flex flex-row items-start bg-muted-background">
         <div className="grid gap-0.5">
           <CardTitle className="group flex items-center gap-2 text-lg">
             Import / Export
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="flex-grow !grow   overflow-x-clip p-6 text-sm bg-[#09090b]">
+      <CardContent className="flex-grow !grow   overflow-x-clip p-6 text-sm bg-background">
         <div>
           <div className="font-semibold">Import Data</div>
           <fetcher.Form
@@ -162,36 +162,36 @@ export default function ImportExport() {
             method='post' encType="multipart/form-data">
             <ul className="grid gap-3 mt-4">
               <li className="flex items-center justify-between">
-                <span className="text-[#f1f1f1] ">
+                <span className="text-foreground ">
                   <div className="relative mt-3">
                     <Select name='intent' onValueChange={ImportChange}>
-                      <SelectTrigger className="w-[180px] bg-[#09090b] border-[#27272a]">
+                      <SelectTrigger className="w-[180px] bg-background border-border">
                         <SelectValue placeholder="Select an option" />
                       </SelectTrigger>
-                      <SelectContent className='bg-[#09090b] border-[#27272a] text-[#f1f1f1]'>
+                      <SelectContent className='bg-background border-border text-foreground'>
                         <SelectGroup>
                           <SelectLabel>Export</SelectLabel>
-                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Customers">Customers</SelectItem>
-                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="UnitInventory">Unit Inventory</SelectItem>
-                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Deals">Deals</SelectItem>
-                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Parts">Parts</SelectItem>
-                          <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Accessories">Accessories</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Customers">Customers</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="UnitInventory">Unit Inventory</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Deals">Deals</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Parts">Parts</SelectItem>
+                          <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Accessories">Accessories</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Data Type</label>
+                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Data Type</label>
                   </div>
                 </span>
                 <span>
                   <div className="relative mt-3">
                     <Input id="file" type="file" className='hidden' name='csv' onChange={handleFileChange} />
-                    <label htmlFor="file" className={`h-[37px] cursor-pointer border border-[#27272a] rounded-md text-[#fafafa] bg-[#09090b] px-4 py-2 inline-block w-[225px]
+                    <label htmlFor="file" className={`h-[37px] cursor-pointer border border-border rounded-md text-foreground bg-background px-4 py-2 inline-block w-[225px]
                     ${isFile === false ? 'border-[#dc2626]' : 'border-[#3dff3d]'}`}  >
                       <span className="mr-4">
                         {isFile === false ? <p>Choose File - No File Chosen</p> : <p>File Selected</p>}
                       </span>
                     </label>
-                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">
+                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
                       CSV File
                     </label>
                   </div>
@@ -228,28 +228,28 @@ export default function ImportExport() {
             </div>
             <p>  CSV up to 5MB</p>
           </fetcher.Form>
-          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
           <div className="font-semibold">Export Data</div>
           <ul className="grid gap-3 mt-4">
             <li className="flex items-center justify-between">
-              <span className="text-[#f1f1f1] ">
+              <span className="text-foreground ">
                 <div className="relative mt-3">
                   <Select name='intent' onValueChange={ExportChange}>
-                    <SelectTrigger className="w-[180px] bg-[#09090b] border-[#27272a]">
+                    <SelectTrigger className="w-[180px] bg-background border-border">
                       <SelectValue placeholder="Select an option" />
                     </SelectTrigger>
-                    <SelectContent className='bg-[#09090b] border-[#27272a] text-[#f1f1f1]'>
+                    <SelectContent className='bg-background border-border text-foreground'>
                       <SelectGroup>
                         <SelectLabel>Export</SelectLabel>
-                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Customers">Customers</SelectItem>
-                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="UnitInventory">Unit Inventory</SelectItem>
-                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Deals">Deals</SelectItem>
-                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Parts">Parts</SelectItem>
-                        <SelectItem className="cursor-pointer  hover:bg-[#232324] w-[95%] rounded-md" value="Accessories">Accessories</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Customers">Customers</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="UnitInventory">Unit Inventory</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Deals">Deals</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Parts">Parts</SelectItem>
+                        <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Accessories">Accessories</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
-                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Data Type</label>
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Data Type</label>
                 </div>
               </span>
               <span>
@@ -271,7 +271,7 @@ export default function ImportExport() {
           </ul>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+      <CardFooter className="flex flex-row items-center border-t border-border bg-muted-background px-6 py-3">
         <Input type='hidden' />
       </CardFooter>
     </Card >

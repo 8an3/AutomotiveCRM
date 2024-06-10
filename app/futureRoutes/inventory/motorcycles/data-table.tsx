@@ -480,7 +480,7 @@ export function DataTable<TData, TValue>({
    *
 
         <Select
-          className='text-[#02a9ff] border-[#02a9ff]'
+          className='text-primary border-primary'
           onValueChange={(value) => {
             const column = table.getAllColumns().find(column => column.id === value);
             if (column) {
@@ -488,10 +488,10 @@ export function DataTable<TData, TValue>({
             }
           }}
         >
-          <SelectTrigger className="w-auto text-[#02a9ff] border-[#02a9ff] mr-3">
+          <SelectTrigger className="w-auto text-primary border-primary mr-3">
             <SelectValue>Columns</SelectValue>
           </SelectTrigger>
-          <SelectContent className='bg-slate1 text-[#fafafa]'>
+          <SelectContent className='bg-slate1 text-foreground'>
             {table.getAllColumns().filter(column => column.getCanHide()).map(column => (
               <SelectItem value={column.id}>{column.id}</SelectItem>
             ))}
@@ -502,17 +502,17 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
             <DropdownMenuTrigger >
 
-              <Button name='intent' value='2DaysFromNow' type='submit' className="bg-[#02a9ff] cursor-pointer text-[#fafafa] mr-1 text-[#fafafa] active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+              <Button name='intent' value='2DaysFromNow' type='submit' className="bg-primary cursor-pointer text-foreground mr-1 text-foreground active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
                 Default Filters
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-[#09090b]">
-              <DropdownMenuLabel className="text-[#fafafa] bg-[#09090b]">Calls</DropdownMenuLabel>
+            <DropdownMenuContent align="end" className="bg-background">
+              <DropdownMenuLabel className="text-foreground bg-background">Calls</DropdownMenuLabel>
               {CallsList.map((item) => (
                 <DropdownMenuCheckboxItem
                   key={item.key}
                   name={item.name}
-                  className="bg-[#09090b] capitalize cursor-pointer text-[#fafafa] hover:underline hover:text-[#02a9ff] hover:text-[#02a9ff] "
+                  className="bg-background capitalize cursor-pointer text-foreground hover:underline hover:text-primary hover:text-primary "
                   checked={item.name === todayfilterBy}
                   onCheckedChange={() => {
                     handleFilterChange(item.key);
@@ -521,12 +521,12 @@ export function DataTable<TData, TValue>({
                   {item.name}
                 </DropdownMenuCheckboxItem>
               ))}
-              <DropdownMenuLabel className="text-[#fafafa]">Deliveries</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-foreground">Deliveries</DropdownMenuLabel>
               {DeliveriesList.map((item) => (
                 <DropdownMenuCheckboxItem
                   key={item.key}
                   name={item.name}
-                  className="bg-[#09090b] capitalize cursor-pointer  text-[#fafafa] hover:underline hover:text-[#02a9ff]"
+                  className="bg-background capitalize cursor-pointer  text-foreground hover:underline hover:text-primary"
                   checked={item.name === todayfilterBy}
                   onCheckedChange={() => {
                     handleFilterChange(item.key);
@@ -535,12 +535,12 @@ export function DataTable<TData, TValue>({
                   {item.name}
                 </DropdownMenuCheckboxItem>
               ))}
-              <DropdownMenuLabel className="text-[#fafafa]">Deposit Taken</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-foreground">Deposit Taken</DropdownMenuLabel>
               {DepositsTakenList.map((item) => (
                 <DropdownMenuCheckboxItem
                   key={item.key}
                   name={item.name}
-                  className="bg-[#09090b] capitalize cursor-pointer  text-[#fafafa] hover:underline hover:text-[#02a9ff]"
+                  className="bg-background capitalize cursor-pointer  text-foreground hover:underline hover:text-primary"
                   checked={item.name === todayfilterBy}
                   onCheckedChange={() => {
                     handleFilterChange(item.key);
@@ -556,12 +556,12 @@ export function DataTable<TData, TValue>({
              <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button name='intent' value='2DaysFromNow' type='submit'
-                className="bg-[#02a9ff]  cursor-pointer  mx-1 text-[#fafafa] active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+                className="bg-primary  cursor-pointer  mx-1 text-foreground active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
               >
                 Global Filter
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-[#09090b] bg-[#09090b] capitalize cursor-pointer  text-[#fafafa] hover:underline hover:text-[#02a9ff]">
+            <DropdownMenuContent align="end" className="bg-background bg-background capitalize cursor-pointer  text-foreground hover:underline hover:text-primary">
               <ScrollArea className="h-[500px] w-[200px] rounded-md  p-4">
                 {table
                   .getAllColumns()
@@ -571,7 +571,7 @@ export function DataTable<TData, TValue>({
                       <DropdownMenuCheckboxItem
                         key={column.id}
                         name="filterBy"
-                        className="bg-[#09090b] capitalize cursor-pointer  text-[#fafafa] hover:underline hover:text-[#02a9ff]"
+                        className="bg-background capitalize cursor-pointer  text-foreground hover:underline hover:text-primary"
                         checked={column.id === filterBy}
                         onCheckedChange={(value) =>
                           handleInputChange(column.id)
@@ -595,17 +595,17 @@ export function DataTable<TData, TValue>({
     <div className="mb-[20px]  even:bg-myColor-900  rounded overflow-x-hidden   justify-center">
       <div className="flex items-center">
 
-        <Select className='text-[#02a9ff] border-[#02a9ff]' onValueChange={(value) => {
+        <Select className='text-primary border-primary' onValueChange={(value) => {
           const item = CallsList.find(i => i.key === value) || DeliveriesList.find(i => i.key === value) || DepositsTakenList.find(i => i.key === value);
           if (item) {
             handleFilterChange(item.key);
             setTodayfilterBy(item.name);
           }
         }}>
-          <SelectTrigger className="w-auto text-[#02a9ff] border-[#02a9ff]  mr-3 ">
+          <SelectTrigger className="w-auto text-primary border-primary  mr-3 ">
             <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
           </SelectTrigger>
-          <SelectContent className='bg-slate1 text-[#fafafa]'>
+          <SelectContent className='bg-slate1 text-foreground'>
             {CallsList.map((item) => (
               <SelectItem value={item.key}>{item.name}</SelectItem>
             ))}
@@ -619,12 +619,12 @@ export function DataTable<TData, TValue>({
         </Select>
 
         <Select onValueChange={(value) => handleInputChange(value)} >
-          <SelectTrigger className='text-[#02a9ff] border-[#02a9ff] w-auto  mr-3'>
+          <SelectTrigger className='text-primary border-primary w-auto  mr-3'>
             Global Filter
           </SelectTrigger>
-          <SelectContent align="end" className='bg-slate1 text-[#fafafa] '>
+          <SelectContent align="end" className='bg-slate1 text-foreground '>
             {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => (
-              <SelectItem key={column.id} value={column.id} className="bg-[#fff] text-[#000] capitalize cursor-pointer  hover:underline hover:text-[#02a9ff]">
+              <SelectItem key={column.id} value={column.id} className="bg-[#fff] text-[#000] capitalize cursor-pointer  hover:underline hover:text-primary">
                 {column.id}
               </SelectItem>
             ))}
@@ -645,11 +645,11 @@ export function DataTable<TData, TValue>({
           />
         )}
 
-        <Button onClick={() => setAllFilters([])} className='bg-[#02a9ff] text-[#fafafa] hover:text-[#fafafa] mr-3' >
+        <Button onClick={() => setAllFilters([])} className='bg-primary text-foreground hover:text-foreground mr-3' >
           Clear
         </Button>
 
-        <Button onClick={toggleFilter} className='bg-[#02a9ff] text-[#fafafa] hover:text-[#fafafa] mr-3' >
+        <Button onClick={toggleFilter} className='bg-primary text-foreground hover:text-foreground mr-3' >
           Toggle Col
         </Button>
         <div className="mx-2">
@@ -658,11 +658,11 @@ export function DataTable<TData, TValue>({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <p className="cursor-pointer my-auto  text-[#fafafa] hover:text-[#02a9ff]  ">
+            <p className="cursor-pointer my-auto  text-foreground hover:text-primary  ">
               <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.14998 14V1H0.849976V14H2.14998ZM6.14998 14V1H4.84998V14H6.14998ZM10.15 1V14H8.84998V1H10.15ZM14.15 14V1H12.85V14H14.15Z" fill="bg-slat12" fillRule="evenodd" clipRule="evenodd"></path></svg>
             </p>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-[#09090b] capitalize cursor-pointer  text-[#fafafa] hover:underline hover:text-[#02a9ff]">
+          <DropdownMenuContent align="end" className="bg-background capitalize cursor-pointer  text-foreground hover:underline hover:text-primary">
             <ScrollArea className="h-[500px] w-[200px] rounded-md  p-4">
               {table
                 .getAllColumns()
@@ -671,7 +671,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      className="bg-[#09090b] capitalize cursor-pointer hover:text-[#02a9ff] text-[#fafafa] hover:underline "
+                      className="bg-background capitalize cursor-pointer hover:text-primary text-foreground hover:underline "
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) =>
                         column.toggleVisibility(!!value)
@@ -687,7 +687,7 @@ export function DataTable<TData, TValue>({
         <div className="flex" >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <p className="cursor-pointer my-auto mr-5 hover:text-[#02a9ff] ">
+              <p className="cursor-pointer my-auto mr-5 hover:text-primary ">
                 <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.14998 14V1H0.849976V14H2.14998ZM6.14998 14V1H4.84998V14H6.14998ZM10.15 1V14H8.84998V1H10.15ZM14.15 14V1H12.85V14H14.15Z" fill="#02a9ff" fillRule="evenodd" clipRule="evenodd"></path></svg>
               </p>
             </DropdownMenuTrigger>
@@ -721,7 +721,7 @@ export function DataTable<TData, TValue>({
           </Link>
         </div>
       </div >
-      <div className="mt-[20px] rounded-md  border border-[#60646c] text-[#fafafa]">
+      <div className="mt-[20px] rounded-md  border border-[#60646c] text-foreground">
         <Table className="rounded-md overflow-x-auto border-[#60646c]">
           <TableHeader>
 
@@ -757,7 +757,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`p-4 text-[#fafafa] bg-[#09090b] border-[#60646c] capitalize cursor-pointer  ${index % 2 === 0 ? 'bg-[#09090b]' : 'bg-[#2c3238]'}`}
+                  className={`p-4 text-foreground bg-background border-[#60646c] capitalize cursor-pointer  ${index % 2 === 0 ? 'bg-background' : 'bg-[#2c3238]'}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -773,7 +773,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-[#fafafa] bg-[#09090b] capitalize cursor-pointer hover:text-[#02a9ff]"
+                  className="h-24 text-center text-foreground bg-background capitalize cursor-pointer hover:text-primary"
                 >
                   No results.
                 </TableCell>

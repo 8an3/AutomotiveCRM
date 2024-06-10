@@ -40,7 +40,7 @@ export default function LogCall() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <p className="cursor-pointer text-[#EEEEEE] hover:text-[#02a9ff] target:text-[#02a9ff]" >
+        <p className="cursor-pointer text-[#EEEEEE] hover:text-primary target:text-primary" >
           <PhoneOutcome />
         </p>
       </DialogTrigger>

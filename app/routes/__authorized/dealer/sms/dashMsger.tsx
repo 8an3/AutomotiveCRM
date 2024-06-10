@@ -235,15 +235,15 @@ export default function ChatAppDashboardClient() {
   }
 
   return (
-    <Card className=" z-50 text-[#f1f1f1]" x-chunk="dashboard-05-chunk-4" >
-      <CardHeader className="flex flex-row items-start bg-[#18181a]">
+    <Card className=" z-50 text-foreground" x-chunk="dashboard-05-chunk-4" >
+      <CardHeader className="flex flex-row items-start bg-muted-background">
         <div className="grid gap-0.5">
           <CardTitle className="group flex items-center gap-2 text-lg">
             Notes
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className=" p-6 text-sm bg-[#09090b]">
+      <CardContent className=" p-6 text-sm bg-background">
         <div className="grid gap-3 ">
           <Card>
             <CardContent className='flex-grow  overflow-y-scroll overflow-x-clip'>
@@ -255,7 +255,7 @@ export default function ChatAppDashboardClient() {
                     className={cn(
                       "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                       message.userEmail === user.email
-                        ? "ml-auto bg-[#dc2626] text-[#fafafa]"
+                        ? "ml-auto bg-[#dc2626] text-foreground"
                         : "bg-[#262626]"
                     )}
                   >
@@ -275,7 +275,7 @@ export default function ChatAppDashboardClient() {
                     className={cn(
                       "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                       message.userEmail === user.email
-                        ? "ml-auto bg-[#dc2626] text-[#fafafa]"
+                        ? "ml-auto bg-[#dc2626] text-foreground"
                         : "bg-[#262626]"
                     )}
                   >
@@ -294,10 +294,10 @@ export default function ChatAppDashboardClient() {
           </Card>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+      <CardFooter className="flex flex-row items-center border-t border-border bg-muted-background px-6 py-3">
         <div className='grid grid-cols-1' >
           <select
-            className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start w-[475px] mb-2 my-2 h-9   cursor-pointer rounded border  bg-[#18181a] border-[#27272a]  text-xs uppercase   shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+            className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start w-[475px] mb-2 my-2 h-9   cursor-pointer rounded border  bg-muted-background border-border  text-xs uppercase   shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
             onChange={handleChange}>
             <option value="">Select a Template</option>
             {templates.map((template, index) => (
@@ -310,7 +310,7 @@ export default function ChatAppDashboardClient() {
             <TextArea
               id="message"
               placeholder="Type your message..."
-              className="flex-1 bg-[#18181a] border-[#27272a] h-9"
+              className="flex-1 bg-muted-background border-border h-9"
               autoComplete="off"
               value={input}
               onChange={(event) => setInput(event.target.value)}

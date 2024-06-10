@@ -1139,11 +1139,11 @@ export function FinanceModal(data) {
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
           <Dialog.Content
-            className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] max-h-[90vh] w-[90vw] max-w-[450px] translate-x-[-50%]  translate-y-[-50%] overflow-y-scroll rounded-[6px] bg-myColor-900 text-[#fafafa] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none sm:max-w-[1025px]">
-            <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium bg-myColor-900 text-[#fafafa]">
+            className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] max-h-[90vh] w-[90vw] max-w-[450px] translate-x-[-50%]  translate-y-[-50%] overflow-y-scroll rounded-[6px] bg-myColor-900 text-foreground p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none sm:max-w-[1025px]">
+            <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium bg-myColor-900 text-foreground">
               Deal Info
             </Dialog.Title>
-            <Dialog.Description className="text-mauve11 mb-5 mt-[10px] text-[15px] leading-normal  text-[#fafafa]">
+            <Dialog.Description className="text-mauve11 mb-5 mt-[10px] text-[15px] leading-normal  text-foreground">
               Make changes to customers deal, save when your done.
             </Dialog.Description>
 
@@ -1169,7 +1169,7 @@ export function FinanceModal(data) {
                                 name={fee.name}
                                 defaultValue={fee.value}
 
-                                className='mt-2 h-8 border-black bg-white text-black focus:border-[#02a9ff]'
+                                className='mt-2 h-8 border-black bg-white text-black focus:border-primary'
                               />
                             </div>
                           ))}
@@ -1195,7 +1195,7 @@ export function FinanceModal(data) {
                     </div>
 
                   )}
-                  <div onClick={toggleColumns} className='mt-4 px-3 cursor-pointer py-2 border border-black bg-myColor-950 w-[100px] rounded-md ml-3 mx-auto text-[#fafafa]'>
+                  <div onClick={toggleColumns} className='mt-4 px-3 cursor-pointer py-2 border border-black bg-myColor-950 w-[100px] rounded-md ml-3 mx-auto text-foreground'>
                     <p>Edit</p>
                   </div>
 
@@ -1212,14 +1212,14 @@ export function FinanceModal(data) {
                               <div className="w-full lg:w-6/12 px-4">
                                 <div className="relative w-full mb-3">
                                   <label
-                                    className="block uppercase mt-2 text-[#fafafa] text-xs font-bold mb-2"
+                                    className="block uppercase mt-2 text-foreground text-xs font-bold mb-2"
                                     htmlFor="grid-password"
                                   >
                                     {fee.placeHolder}
                                   </label>
                                   <input
                                     type="text"
-                                    className="w-full  rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                                    className="w-full  rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
                                     name={fee.name}
                                     defaultValue={fee.value}
                                   />
@@ -1247,7 +1247,7 @@ export function FinanceModal(data) {
                       ))}
                     </div>
                   )}
-                  <div onClick={toggleColumns} className='mt-4 px-3 cursor-pointer py-2 border border-black bg-myColor-950 w-[100px] rounded-md ml-3 mx-auto text-[#fafafa]'>
+                  <div onClick={toggleColumns} className='mt-4 px-3 cursor-pointer py-2 border border-black bg-myColor-950 w-[100px] rounded-md ml-3 mx-auto text-foreground'>
                     <p>Edit</p>
                   </div>
 
@@ -1261,7 +1261,7 @@ export function FinanceModal(data) {
                         <h3 className="text-2xl ">Price</h3>
                       </div>
 
-                      <hr className="solid dark:text-[#fafafa]" />
+                      <hr className="solid dark:text-foreground" />
                       <div className="flex flex-wrap justify-between  ">
                         <p className="mt-2  basis-2/4 ">MSRP</p>
                         <p className="mt-2 flex basis-2/4 items-end  justify-end">
@@ -1401,20 +1401,20 @@ export function FinanceModal(data) {
                         <div className='mt-3'>
                           <div className="main-button-group flex justify-between ">
                             <Badge id='myButton'
-                              className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${mainButton === 'payments' ? 'active bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                              className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === 'payments' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
                               onClick={() => handleMainButtonClick('payments')}>
                               Payments
                             </Badge>
 
                             <Badge id='myButton1'
-                              className={`button  transform cursor-pointer bg-[#02a9ff] shadow   hover:text-[#fafafa] ${mainButton === 'noTax' ? 'active bg-[#09090b] text-[#fafafa] ' : 'bg-slate1 text-[#fafafa]'}`}
+                              className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === 'noTax' ? 'active bg-background text-foreground ' : 'bg-slate1 text-foreground'}`}
                               onClick={() => handleMainButtonClick('noTax')}
                             >
                               No Tax
                             </Badge>
 
                             <Badge id='myButton2'
-                              className={`button  transform cursor-pointer bg-[#02a9ff]   shadow hover:text-[#fafafa] ${mainButton === 'customTax' ? 'active bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                              className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === 'customTax' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
                               onClick={() => handleMainButtonClick('customTax')}
                             >
                               Custom Tax
@@ -1423,13 +1423,13 @@ export function FinanceModal(data) {
                           <div className="sub-button-group mt-2 flex justify-between">
 
                             <Badge id='myButton3'
-                              className={`button  transform cursor-pointer bg-[#02a9ff] shadow hover:text-[#fafafa] ${subButton === 'withoutOptions' ? 'active bg-[#09090b] text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                              className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === 'withoutOptions' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
                               onClick={() => handleSubButtonClick('withoutOptions')}
                             >
                               W/O Options
                             </Badge>
                             <Badge id='myButton5'
-                              className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${subButton === 'withOptions' ? 'active bg-[#09090b]  text-[#fafafa]' : 'bg-slate1 text-[#fafafa]'}`}
+                              className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === 'withOptions' ? 'active bg-background  text-foreground' : 'bg-slate1 text-foreground'}`}
                               onClick={() => handleSubButtonClick('withOptions')}
                             >
                               W/ Options
@@ -1860,7 +1860,7 @@ export function FinanceModal(data) {
                             <Input
                               name={fee.name}
                               defaultValue={fee.value}
-                              className='mt-2 h-8 border-black bg-white text-black focus:border-[#02a9ff]'
+                              className='mt-2 h-8 border-black bg-white text-black focus:border-primary'
                             />
                           </div>
                         ))}
@@ -1884,7 +1884,7 @@ export function FinanceModal(data) {
                       ))}
                     </div>
                   )}
-                  <div onClick={toggleColumns} className='mt-4 px-3 cursor-pointer py-2 border border-black bg-myColor-950 w-[100px] rounded-md ml-3 mx-auto text-[#fafafa]'>
+                  <div onClick={toggleColumns} className='mt-4 px-3 cursor-pointer py-2 border border-black bg-myColor-950 w-[100px] rounded-md ml-3 mx-auto text-foreground'>
                     <p>Edit</p>
                   </div>
                 </TabsContent>

@@ -45,14 +45,14 @@ export default function DialogTest(user, data) {
             <Menu color="#ededed" className='mx-auto' />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[250px] p-0 border-[#262626] bg-[#09090b] text-[#fafafa]">
+        <PopoverContent className="w-[250px] p-0 border-[#262626] bg-background text-foreground">
           <Command>
             <CommandEmpty>Edit Demo Day Customer.</CommandEmpty>
             <CommandGroup>
               <Command>
                 <CommandEmpty>Edit Customer</CommandEmpty>
                 <CommandGroup>
-                  <CommandItem onClick={() => setOpenDialog(true)} className='hover:bg-[#232324] w-[90%] cursor-pointer' >
+                  <CommandItem onClick={() => setOpenDialog(true)} className='hover:bg-muted/50 w-[90%] cursor-pointer' >
                     <Pencil color="#ededed" className="mr-2" />
 
                     Edit
@@ -67,7 +67,7 @@ export default function DialogTest(user, data) {
                     <input type='hidden' name='brand' defaultValue={data.brand} />
                     <input type='hidden' name='model' defaultValue={data.model} />
                     <input type='hidden' name='intent' defaultValue='wishListConvert' />
-                    <CommandItem onClick={() => submit} className='hover:bg-[#232324] w-[90%] cursor-pointer' >
+                    <CommandItem onClick={() => submit} className='hover:bg-muted/50 w-[90%] cursor-pointer' >
                       <FilePlus color="#ededed" className="mr-2" />
                       Convert To Customer
                     </CommandItem>
@@ -77,7 +77,7 @@ export default function DialogTest(user, data) {
                     <input type='hidden' name='userEmail' defaultValue={user.email} />
                     <input type='hidden' name='id' defaultValue={data.id} />
                     <input type='hidden' name='intent' defaultValue='deleteWishList' />
-                    <CommandItem onClick={() => submit} className='hover:bg-[#232324] w-[90%] cursor-pointer' >
+                    <CommandItem onClick={() => submit} className='hover:bg-muted/50 w-[90%] cursor-pointer' >
                       <Trash2 color="#ededed" className="mr-2" /> Delete
                     </CommandItem>
                   </Form>
@@ -88,68 +88,68 @@ export default function DialogTest(user, data) {
         </PopoverContent>
       </Popover>
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+        <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
           <Form method='post'>
             <DialogHeader className="px-4 pb-4 pt-5">
               <DialogTitle>Edit Customer Profile Info</DialogTitle>
             </DialogHeader>
-            <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+            <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
             <div className="grid gap-3 mx-3 mb-3">
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.firstName} name='firstName'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.lastName} name='lastName'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.phone} name='phone'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.email} name='email'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.model} name='address'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.model2} name='city'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model 2</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model 2</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.leadNote} name='postal'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
               </div>
               <input type='hidden' name='userId' defaultValue={user.id} />
               <input type='hidden' name='userEmail' defaultValue={user.email} />

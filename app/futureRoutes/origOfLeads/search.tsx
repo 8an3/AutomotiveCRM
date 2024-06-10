@@ -549,13 +549,13 @@ export default function SearchTable() {
         />
 
 
-        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="bg-[#09090b]  hover:text-[#02a9ff] hover:border-[#02a9ff] cursor-pointer  mx-1 text-[#fafafa] active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150  px-3 py-2 h-7"
+        <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="bg-background  hover:text-primary hover:border-primary cursor-pointer  mx-1 text-foreground active:bg-black font-bold uppercase  my-auto text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150  px-3 py-2 h-7"
         >
           Clear
         </Button>
       </div>
       <div className="rounded-md border border-[#262626] ">
-        <Table className='w-full text-[#fafafa] border-[#262626] overflow-x-auto'>
+        <Table className='w-full text-foreground border-[#262626] overflow-x-auto'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -584,7 +584,7 @@ export default function SearchTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className='p-4 text-[#fafafa] bg-[#09090b] capitalize cursor-pointer hover:text-[#02a9ff] border-[#262626]'
+                  className='p-4 text-foreground bg-background capitalize cursor-pointer hover:text-primary border-[#262626]'
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -601,7 +601,7 @@ export default function SearchTable() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-[#fafafa] bg-[#09090b] capitalize cursor-pointer hover:text-[#02a9ff]"
+                  className="h-24 text-center text-foreground bg-background capitalize cursor-pointer hover:text-primary"
                 >
                   No results.
                 </TableCell>
@@ -611,7 +611,7 @@ export default function SearchTable() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-[#fafafa]">
+        <div className="flex-1 text-sm text-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
@@ -621,7 +621,7 @@ export default function SearchTable() {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="text-[#fafafa] border-slate1"
+            className="text-foreground border-slate1"
           >
             Previous
           </Button>
@@ -629,7 +629,7 @@ export default function SearchTable() {
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            className="text-[#fafafa] border-slate1"
+            className="text-foreground border-slate1"
 
             disabled={!table.getCanNextPage()}
           >

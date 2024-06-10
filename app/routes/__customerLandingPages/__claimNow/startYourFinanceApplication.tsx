@@ -5,7 +5,6 @@ import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { prisma } from "~/libs";
 import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 import React from "react";
-import customer from '~/styles/customer.css'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,11 +16,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
+import customer from '~/styles/customer.css'
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: customer },
 ];
 export default function DealerCompleted() {
-  const { dealer, finance } = useLoaderData()
+  const { dealer, finance, salesRep } = useLoaderData()
   const [searchParams] = useSearchParams();
   const financeId = searchParams.get("financeId");
   const phone = finance.phone || ''
@@ -40,7 +41,6 @@ export default function DealerCompleted() {
           </h1>
           <p className='my-[15px] mx-[10px] font-[24px] font-[#262626]'>Personal Information</p>
           <hr className='text-center w-[90%] mb-[16px] mx-auto border-t-[#e6e6e6]' />
-          <input type='hidden' name='financeId' defaultValue={finance.id} />
           <div className="relative mt-[25px]">
             <Input
               type="text"
@@ -294,6 +294,13 @@ export default function DealerCompleted() {
             />
             <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Notes</label>
           </div>
+          <input type='hidden' name='financeId' value={financeId} />
+          <input type='hidden' name='userEmail' value={salesRep.email} />
+          <input type='hidden' name='name' value={finance.name} />
+          <input type='hidden' name='model' value={finance.model} />
+          <input type='hidden' name='brand' value={finance.brand} />
+          <input type='hidden' name='year' value={finance.year} />
+          <input type='hidden' name='email' value={finance.email} />
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button size='sm' className='bg-[#1c69d4] text-white mt-5' variant="outline">Submit Application</Button>
@@ -335,32 +342,66 @@ export async function loader({ request, params }) {
   const financeId = url.searchParams.get("financeId");
   const dealer = await prisma.dealer.findUnique({ where: { id: 1 } })
   const finance = await prisma.finance.findUnique({ where: { id: financeId } })
-  return json({ dealer, finance })
+  const salesRep = await prisma.user.findUnique({ where: { email: finance?.userEmail } })
+
+  return json({ dealer, finance, salesRep })
 }
 
-export async function action({ request, params }: ActionFunction) {
+export async function action({ request, }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData())
   let formData = financeFormSchema.parse(formPayload)
   const intent = formPayload.intent
-  if (intent === 'createDealer') {
-    const dealer = await prisma.dealer.create({
-      data: {
-        dealerName: formData.dealerName,
-        dealerAddress: formData.dealerAddress,
-        dealerCity: formData.dealerCity,
-        dealerProv: formData.dealerProv,
-        dealerPostal: formData.dealerPostal,
-        dealerPhone: formData.dealerPhone,
-        dealerEmail: formData.dealerEmail,
-        dealerContact: formData.dealerContact,
-        dealerAdminContact: formData.dealerAdminContact,
-        dealerEmailAdmin: formData.dealerEmailAdmin,
-        dealerEtransferEmail: formData.dealerEtransferEmail,
-      }
-    })
-    return json({ dealer })
-  }
+  const clientfile = await prisma.clientfile.findUnique({ where: { email: formData.email } })
+  const notifications = await prisma.notificationsUser.create({
+    data: {
+      userEmail: String(formData.userEmail),
+      title: 'New Finance App!',
+      content: `${formData.name} completed an app on ${formData.year} ${formData.brand} ${formData.model}`,
+      type: "updates",
+      financeId: String(formData.financeId),
+      clientfileId: String(clientfile.id),
+    }
+  })
 
-  return null
+  const financeApp = await prisma.financeApplication.create({
+    data: {
+      financeId: formData.financeId,
+      clientfileId: formData.clientfileId,
+      fullName: formData.fullName,
+      dob: formData.dob,
+      sin: formData.sin,
+      phone: formData.phone,
+      email: formData.email,
+      streetAddress: formData.streetAddress,
+      city: formData.city,
+      province: formData.province,
+      postalCode: formData.postalCode,
+      addressDuration: formData.addressDuration,
+      employer: formData.employer,
+      job: formData.job,
+      employmentStatus: formData.employmentStatus,
+      employerAddress: formData.employerAddress,
+      employerCity: formData.employerCity,
+      employerProvince: formData.employerProvince,
+      employerPostal: formData.employerPostal,
+      employerPhone: formData.employerPhone,
+      employmentDuration: formData.employmentDuration,
+      monthlyGrossIncome: formData.monthlyGrossIncome,
+      bankName: formData.bankName,
+      branchAddress: formData.branchAddress,
+      mortgagePayment: formData.mortgagePayment,
+      utilities: formData.utilities,
+      propertyTaxes: formData.propertyTaxes,
+      loanType: formData.loanType,
+      loanMonthlyPayment: formData.loanMonthlyPayment,
+      remainingBalance: formData.remainingBalance,
+      userEmail: formData.userEmail,
+      finMgrEmail: formData.finMgrEmail,
+      notes: formData.notes,
+    }
+  })
+  console.log(notifications, clientfile, financeApp, 'financeapp')
+
+  return json({ notifications, clientfile, financeApp })
 }
 

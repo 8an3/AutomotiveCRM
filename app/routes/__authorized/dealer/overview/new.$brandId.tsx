@@ -1793,8 +1793,8 @@ export function Overview({ outletSize }) {
   return (
     <div className="">
       <div className="mx-auto mb-10 mt-10">
-        <Card className=" mx-auto w-[550px] rounded-md text-[#fafafa]">
-          <CardHeader className="t-rounded-md flex flex-row items-start bg-[#18181a]">
+        <Card className=" mx-auto w-[550px] rounded-md text-foreground">
+          <CardHeader className="t-rounded-md flex flex-row items-start bg-muted/50 ">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
                 Payment Calculator
@@ -1833,11 +1833,11 @@ export function Overview({ outletSize }) {
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select email..." />
                 </SelectTrigger>
-                <SelectContent className='bg-[#18181a] text-[#fafafa] border-[#262626]'>
+                <SelectContent className='bg-background text-foreground border-[#262626]'>
                   <SelectGroup>
                     <SelectLabel>Emails</SelectLabel>
                     {email.map((framework) => (
-                      <SelectItem className="cursor-pointer   rounded-md  hover:bg-[#232324]" key={framework.value} value={framework.value}>
+                      <SelectItem className="cursor-pointer   rounded-md  hover:bg-muted/50" key={framework.value} value={framework.value}>
                         {framework.label}
                       </SelectItem>
                     ))}
@@ -1852,34 +1852,32 @@ export function Overview({ outletSize }) {
                     <span className="sr-only">More</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="   w-[90%] rounded-md bg-[#232324] text-[#fafafa] border-[#262626]"                >
-                  <Button onClick={() => setOpenTemplate(true)} variant='ghost' >
-                    <DropdownMenuItem className=" w-[90%] cursor-pointer rounded-md  text-[#fafafa] hover:bg-[#232324]">
-                      Inspect Templated Emails
-                    </DropdownMenuItem>
-                  </Button>
+                <DropdownMenuContent align="end" className="   w-[200px] rounded-md bg-background text-foreground border-border"                >
+                  <DropdownMenuItem onClick={() => setOpenTemplate(true)} className=" w-[100%] cursor-pointer rounded-md  text-foreground hover:bg-muted/50">
+                    Inspect Templated Emails
+                  </DropdownMenuItem>
                   <a
-                    className="mx-auto w-[90%]"
+                    className="mx-auto w-[100%]"
                     href="/dealer/leads/sales/dashboard"
                     target="_blank"
                   >
-                    <DropdownMenuItem className=" w-[90%] cursor-pointer rounded-md border-[#27272a] bg-[#18181a] text-[#fafafa] hover:bg-[#232324]">
+                    <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
                       Dashboard
                     </DropdownMenuItem>
                   </a>
                   <a
-                    className="mx-auto w-[90%]"
+                    className="mx-auto w-[100%]"
                     href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
                     target="_blank"
                   >
-                    <DropdownMenuItem className=" w-[90%] cursor-pointer rounded-md border-[#27272a] bg-[#18181a] text-[#fafafa] hover:bg-[#232324]">
+                    <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
                       Client File
                     </DropdownMenuItem>
                   </a>
                   <DropdownMenuSeparator />
                   <Form method="post">
                     <DropdownMenuItem
-                      className=" w-[90%] cursor-pointer rounded-md border-[#27272a] bg-[#18181a] text-[#fafafa] hover:bg-[#232324]"
+                      className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50"
                       onClick={() => {
                         toast.success(
                           `Informing finance managers of requested turnover...`
@@ -1901,10 +1899,10 @@ export function Overview({ outletSize }) {
                       Finance Turnover
                     </DropdownMenuItem>
                   </Form>
-                  <DropdownMenuItem className=" cursor-pointer border-[#27272a] bg-[#18181a] text-[#fafafa] hover:bg-[#232324]">
+                  <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
                     <PrintSpec />
                   </DropdownMenuItem>
-                  <DropdownMenuItem className=" cursor-pointer border-[#27272a] bg-[#18181a] text-[#fafafa] hover:bg-[#232324]">
+                  <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
                     <ModelPage />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -1914,7 +1912,7 @@ export function Overview({ outletSize }) {
           <Form method="post">
             {secPage && (
               <>
-                <CardContent className="bg-[#09090b] p-6 text-sm">
+                <CardContent className="bg-background p-6 text-sm">
                   <div className="grid gap-3">
                     <div className="font-semibold">Payment Details</div>
                     <li className="flex items-center justify-between">
@@ -1959,7 +1957,7 @@ export function Overview({ outletSize }) {
                           <Input
                             name="msrp"
                             id="msrp"
-                            className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                            className="h-8 w-20 border-border bg-background text-right "
                             autoComplete="msrp"
                             defaultValue={formData.msrp}
                             onChange={handleChange}
@@ -1971,7 +1969,7 @@ export function Overview({ outletSize }) {
                           <span className="text-[#8a8a93]">Freight</span>
                           <span>
                             <Input
-                              className="mt-2 h-8 w-20 items-end justify-end  border-[#27272a] bg-[#09090b] text-right "
+                              className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
                               defaultValue={formData.freight}
                               placeholder="freight"
                               type="text"
@@ -1987,7 +1985,7 @@ export function Overview({ outletSize }) {
                           <span className="text-[#8a8a93]">PDI</span>
                           <span>
                             <Input
-                              className="mt-2 h-8 w-20 items-end justify-end  border-[#27272a] bg-[#09090b] text-right "
+                              className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
                               defaultValue={formData.pdi}
                               placeholder="pdi"
                               type="text"
@@ -2002,7 +2000,7 @@ export function Overview({ outletSize }) {
                           <span className="text-[#8a8a93]">Admin</span>
                           <span>
                             <Input
-                              className="mt-2 h-8 w-20 items-end justify-end  border-[#27272a]  bg-[#09090b] text-right "
+                              className="mt-2 h-8 w-20 items-end justify-end  border-border  bg-background text-right "
                               defaultValue={formData.admin}
                               placeholder="admin"
                               type="text"
@@ -2017,7 +2015,7 @@ export function Overview({ outletSize }) {
                           <span className="text-[#8a8a93]">Commodity</span>
                           <span>
                             <Input
-                              className="mt-2 h-8 w-20 items-end justify-end  border-[#27272a] bg-[#09090b] text-right "
+                              className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
                               defaultValue={formData.commodity}
                               placeholder="commodity"
                               type="text"
@@ -2034,7 +2032,7 @@ export function Overview({ outletSize }) {
                           <Input
                             name="accessories"
                             id="msrp"
-                            className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                            className="h-8 w-20 border-border bg-background text-right "
                             autoComplete="msrp"
                             defaultValue={formData.accessories}
                             onChange={handleChange}
@@ -2047,7 +2045,7 @@ export function Overview({ outletSize }) {
                           <Input
                             name="labour"
                             id="msrp"
-                            className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                            className="h-8 w-20 border-border bg-background text-right "
                             autoComplete="msrp"
                             defaultValue={formData.labour}
                             onChange={handleChange}
@@ -2058,7 +2056,7 @@ export function Overview({ outletSize }) {
                         <span className="text-[#8a8a93]">Licensing</span>
                         <span>
                           <Input
-                            className="ml-auto mt-2 h-8 w-20  justify-end border-[#27272a] bg-[#09090b] text-right "
+                            className="ml-auto mt-2 h-8 w-20  justify-end border-border bg-background text-right "
                             defaultValue={licensing}
                             placeholder="licensing"
                             type="text"
@@ -2082,15 +2080,15 @@ export function Overview({ outletSize }) {
                       )}
                     </ul>
                   </div>
-                  <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Standard Terms</div>
                   <div className="my-4">
                     <div className="main-button-group flex justify-between ">
                       <Badge
                         id="myButton"
-                        className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${mainButton === "payments"
-                          ? "active bg-[#c72323] text-[#fafafa]"
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                          ? "active bg-[#c72323] text-foreground"
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleMainButtonClick("payments")}
                       >
@@ -2099,9 +2097,9 @@ export function Overview({ outletSize }) {
 
                       <Badge
                         id="myButton1"
-                        className={`button  transform cursor-pointer bg-[#02a9ff] shadow   hover:text-[#fafafa] ${mainButton === "noTax"
-                          ? "active bg-[#c72323] text-[#fafafa] "
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                          ? "active bg-[#c72323] text-foreground "
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleMainButtonClick("noTax")}
                       >
@@ -2110,9 +2108,9 @@ export function Overview({ outletSize }) {
 
                       <Badge
                         id="myButton2"
-                        className={`button  transform cursor-pointer bg-[#02a9ff]   shadow hover:text-[#fafafa] ${mainButton === "customTax"
-                          ? "active bg-[#c72323] text-[#fafafa]"
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                          ? "active bg-[#c72323] text-foreground"
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleMainButtonClick("customTax")}
                       >
@@ -2122,9 +2120,9 @@ export function Overview({ outletSize }) {
                     <div className="sub-button-group mt-2 flex justify-between">
                       <Badge
                         id="myButton3"
-                        className={`button  transform cursor-pointer bg-[#02a9ff] shadow hover:text-[#fafafa] ${subButton === "withoutOptions"
-                          ? "active bg-[#c72323] text-[#fafafa]"
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                          ? "active bg-[#c72323] text-foreground"
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleSubButtonClick("withoutOptions")}
                       >
@@ -2133,9 +2131,9 @@ export function Overview({ outletSize }) {
 
                       <Badge
                         id="myButton5"
-                        className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${subButton === "withOptions"
-                          ? "active bg-[#c72323] text-[#fafafa]"
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                          ? "active bg-[#c72323] text-foreground"
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleSubButtonClick("withOptions")}
                       >
@@ -2236,7 +2234,7 @@ export function Overview({ outletSize }) {
                             <Input
                               name="othTax"
                               id="othTax"
-                              className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                              className="h-8 w-20 border-border bg-background text-right "
                               autoComplete="othTax"
                               defaultValue={formData.othTax}
                               onChange={handleChange}
@@ -2285,14 +2283,14 @@ export function Overview({ outletSize }) {
                     </div>
                   )}
 
-                  <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Contract Variables</div>
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
                       <span className="text-[#8a8a93]">Term</span>
                       <span>
                         <Input
-                          className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                          className="h-8 w-20 border-border bg-background text-right "
                           name="months"
                           id="months"
                           autoComplete="months"
@@ -2306,7 +2304,7 @@ export function Overview({ outletSize }) {
                       <span className="text-[#8a8a93]">Rate</span>
                       <span>
                         <Input
-                          className="h-8 w-20 items-end justify-end border-[#27272a] bg-[#09090b] text-right  "
+                          className="h-8 w-20 items-end justify-end border-border bg-background text-right  "
                           name="iRate"
                           id="iRate"
                           autoComplete="iRate"
@@ -2319,7 +2317,7 @@ export function Overview({ outletSize }) {
                       <span className="text-[#8a8a93]">Deposit</span>
                       <span>
                         <Input
-                          className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                          className="h-8 w-20 border-border bg-background text-right "
                           name="deposit"
                           id="deposit"
                           autoComplete="deposit"
@@ -2333,7 +2331,7 @@ export function Overview({ outletSize }) {
                       <span className="text-[#8a8a93]">Trade Value</span>
                       <span>
                         <Input
-                          className="ml-auto h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                          className="ml-auto h-8 w-20 border-border bg-background text-right "
                           name="tradeValue"
                           id="tradeValue"
                           autoComplete="tradeValue"
@@ -2346,7 +2344,7 @@ export function Overview({ outletSize }) {
                       <span className="text-[#8a8a93]">Lien</span>
                       <span>
                         <Input
-                          className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                          className="h-8 w-20 border-border bg-background text-right "
                           name="lien"
                           id="lien"
                           autoComplete="lien"
@@ -2358,7 +2356,7 @@ export function Overview({ outletSize }) {
                     </li>
                   </ul>
 
-                  <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">
                     Customer Detail Confirmation
                   </div>
@@ -2368,9 +2366,9 @@ export function Overview({ outletSize }) {
                         defaultValue={formData.firstName}
                         name="firstName"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         First Name
                       </label>
                     </div>
@@ -2379,9 +2377,9 @@ export function Overview({ outletSize }) {
                         defaultValue={formData.lastName}
                         name="lastName"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Last Name
                       </label>
                     </div>
@@ -2390,9 +2388,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.phone}
                         name="phone"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Phone
                       </label>
                     </div>
@@ -2401,9 +2399,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.email}
                         name="email"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Email
                       </label>
                     </div>
@@ -2412,9 +2410,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.address}
                         name="address"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Address
                       </label>
                     </div>
@@ -2423,9 +2421,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.city}
                         name="city"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         City
                       </label>
                     </div>
@@ -2434,9 +2432,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.province}
                         name="province"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Province
                       </label>
                     </div>
@@ -2445,9 +2443,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.postal}
                         name="postal"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Postal Code
                       </label>
                     </div>
@@ -2456,9 +2454,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.dl}
                         name="dl"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Drivers Lic.
                       </label>
                     </div>
@@ -2466,10 +2464,10 @@ export function Overview({ outletSize }) {
                   <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
                     <div className="relative mt-3">
                       <Select name="timeToContact">
-                        <SelectTrigger className="w-full  border border-[#27272a] bg-[#09090b] text-[#fafafa]">
+                        <SelectTrigger className="w-full  border border-border bg-background text-foreground">
                           <SelectValue defaultValue={finance.timeToContact} />
                         </SelectTrigger>
-                        <SelectContent className=" border border-[#27272a] bg-[#09090b] text-[#fafafa]">
+                        <SelectContent className=" border border-border bg-background text-foreground">
                           <SelectGroup>
                             <SelectLabel>Best Time To Contact</SelectLabel>
                             <SelectItem value="Morning">Morning</SelectItem>
@@ -2481,16 +2479,16 @@ export function Overview({ outletSize }) {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Prefered Time To Be Contacted
                       </label>
                     </div>
                     <div className="relative mt-3">
                       <Select name="typeOfContact">
-                        <SelectTrigger className="w-full  border border-[#27272a] bg-[#09090b] text-[#fafafa]">
+                        <SelectTrigger className="w-full  border border-border bg-background text-foreground">
                           <SelectValue defaultValue={finance.typeOfContact} />
                         </SelectTrigger>
-                        <SelectContent className=" border border-[#27272a] bg-[#09090b] text-[#fafafa]">
+                        <SelectContent className=" border border-border bg-background text-foreground">
                           <SelectGroup>
                             <SelectLabel>Contact Method</SelectLabel>
                             <SelectItem value="Phone">Phone</SelectItem>
@@ -2500,7 +2498,7 @@ export function Overview({ outletSize }) {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Prefered Type To Be Contacted
                       </label>
                     </div>
@@ -2522,7 +2520,7 @@ export function Overview({ outletSize }) {
                               <span>Pick a date</span>
                             )}
                           </Button>
-                          <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                             Pick A Date
                           </label>
                         </div>
@@ -2559,7 +2557,7 @@ export function Overview({ outletSize }) {
                             <ClockIcon className="mr-2 h-4 w-4 " />
                             {currentTime ? time : <span>Pick a Time</span>}
                           </Button>
-                          <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                             Pick A Time
                           </label>
                         </div>
@@ -2619,7 +2617,7 @@ export function Overview({ outletSize }) {
                     </Popover>
                   </div>
 
-                  <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Trade Information</div>
                   <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
                     <div className="relative mt-5">
@@ -2627,9 +2625,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.tradeYear}
                         name="tradeYear"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Year
                       </label>
                     </div>
@@ -2638,9 +2636,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.tradeMake}
                         name="tradeMake"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Make
                       </label>
                     </div>
@@ -2649,9 +2647,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.tradeDesc}
                         name="tradeDesc"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Model
                       </label>
                     </div>
@@ -2660,9 +2658,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.tradeColor}
                         name="tradeColor"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Color
                       </label>
                     </div>
@@ -2671,9 +2669,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.tradeVin}
                         name="tradeVin"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         VIN
                       </label>
                     </div>
@@ -2682,9 +2680,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.tradeMileage}
                         name="tradeMileage"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Mileage
                       </label>
                     </div>
@@ -2693,9 +2691,9 @@ export function Overview({ outletSize }) {
                         defaultValue={finance.tradeLocation}
                         name="tradeLocation"
                         type="text"
-                        className="w-full border-[#27272a] bg-[#09090b] "
+                        className="w-full border-border bg-background "
                       />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
                         Trade Location
                       </label>
                     </div>
@@ -2706,7 +2704,7 @@ export function Overview({ outletSize }) {
                         Other Inputs
                       </Button>
                     </DrawerTrigger>
-                    <DrawerContent className="bg-[#09090b] text-[#fafafa]">
+                    <DrawerContent className="bg-background text-foreground">
                       <div className="mx-auto h-full w-full max-w-sm lg:w-[700px]">
                         <DrawerHeader>
                           <DrawerTitle>Other Inputs</DrawerTitle>
@@ -2720,7 +2718,7 @@ export function Overview({ outletSize }) {
                             <span>
                               <Input
                                 name="discount"
-                                className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                                className="h-8 w-20 border-border bg-background text-right "
                                 defaultValue={discount}
                                 onChange={handleChange}
                               />
@@ -2733,7 +2731,7 @@ export function Overview({ outletSize }) {
                             <span>
                               <Input
                                 name="discountPer"
-                                className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                                className="h-8 w-20 border-border bg-background text-right "
                                 defaultValue={0}
                                 onChange={handleChange}
                               />
@@ -2747,7 +2745,7 @@ export function Overview({ outletSize }) {
                               <Input
                                 name="deliveryCharge"
                                 id="msrp"
-                                className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                                className="h-8 w-20 border-border bg-background text-right "
                                 autoComplete="msrp"
                                 defaultValue={deliveryCharge}
                                 onChange={handleChange}
@@ -2762,7 +2760,7 @@ export function Overview({ outletSize }) {
                             <span className="text-[#8a8a93]">Lien</span>
                             <span>
                               <Input
-                                className="h-8 w-20 border-[#27272a] bg-[#09090b] text-right "
+                                className="h-8 w-20 border-border bg-background text-right "
                                 name="lien"
                                 id="lien"
                                 autoComplete="lien"
@@ -2781,7 +2779,7 @@ export function Overview({ outletSize }) {
                       </div>
                     </DrawerContent>
                   </Drawer>
-                  <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Total</div>
                   <ul className="grid gap-3">
                     {perDiscountGiven > 0 && (
@@ -2930,7 +2928,7 @@ export function Overview({ outletSize }) {
             )}
             {firstPage && (
               <>
-                <CardContent className="bg-[#09090b] p-6  text-sm">
+                <CardContent className="bg-background p-6  text-sm">
                   <div className="grid gap-3">
                     <div className="font-semibold">Payment Details</div>
                     <ul className="grid gap-3">
@@ -2969,7 +2967,7 @@ export function Overview({ outletSize }) {
                         </li>
                       )}
                     </ul>
-                    <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                    <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                     <div className="font-semibold">Price</div>
                     <ul className="grid gap-3">
                       <li className="flex items-center justify-between">
@@ -3030,7 +3028,7 @@ export function Overview({ outletSize }) {
                           </li>
                         )}
                     </ul>
-                    <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                    <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                     <div className="font-semibold">Fees</div>
                     <ul className="grid gap-3">
                       {deFees.userAirTax > 0 && (
@@ -3101,15 +3099,15 @@ export function Overview({ outletSize }) {
                       )}
                     </ul>
                   </div>
-                  <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Standard Terms</div>
                   <div className="mt-3">
                     <div className="main-button-group flex justify-between ">
                       <Badge
                         id="myButton"
-                        className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${mainButton === "payments"
-                          ? "active bg-[#c72323] text-[#fafafa]"
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                          ? "active bg-[#c72323] text-foreground"
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleMainButtonClick("payments")}
                       >
@@ -3118,9 +3116,9 @@ export function Overview({ outletSize }) {
 
                       <Badge
                         id="myButton1"
-                        className={`button  transform cursor-pointer bg-[#02a9ff] shadow   hover:text-[#fafafa] ${mainButton === "noTax"
-                          ? "active bg-[#c72323] text-[#fafafa] "
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                          ? "active bg-[#c72323] text-foreground "
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleMainButtonClick("noTax")}
                       >
@@ -3129,9 +3127,9 @@ export function Overview({ outletSize }) {
 
                       <Badge
                         id="myButton2"
-                        className={`button  transform cursor-pointer bg-[#02a9ff]   shadow hover:text-[#fafafa] ${mainButton === "customTax"
-                          ? "active bg-[#c72323] text-[#fafafa]"
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                          ? "active bg-[#c72323] text-foreground"
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleMainButtonClick("customTax")}
                       >
@@ -3141,9 +3139,9 @@ export function Overview({ outletSize }) {
                     <div className="sub-button-group mt-2 flex justify-between">
                       <Badge
                         id="myButton3"
-                        className={`button  transform cursor-pointer bg-[#02a9ff] shadow hover:text-[#fafafa] ${subButton === "withoutOptions"
-                          ? "active bg-[#c72323] text-[#fafafa]"
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                          ? "active bg-[#c72323] text-foreground"
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleSubButtonClick("withoutOptions")}
                       >
@@ -3152,9 +3150,9 @@ export function Overview({ outletSize }) {
 
                       <Badge
                         id="myButton5"
-                        className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${subButton === "withOptions"
-                          ? "active bg-[#c72323] text-[#fafafa]"
-                          : "bg-[#0a0a0a] text-[#fafafa]"
+                        className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                          ? "active bg-[#c72323] text-foreground"
+                          : "bg-[#0a0a0a] text-foreground"
                           }`}
                         onClick={() => handleSubButtonClick("withOptions")}
                       >
@@ -3295,7 +3293,7 @@ export function Overview({ outletSize }) {
                     </div>
                   )}
 
-                  <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Contract Variables</div>
                   <ul className="mt-3 grid gap-3">
                     <li className="flex items-center justify-between">
@@ -3322,7 +3320,7 @@ export function Overview({ outletSize }) {
                     </li>
                   </ul>
 
-                  <hr className="mx-auto my-4 w-[95%] text-[#27272a]" />
+                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Total</div>
                   <ul className="grid gap-3">
                     {perDiscountGiven > 0 && (
@@ -3554,8 +3552,8 @@ export function Overview({ outletSize }) {
               </div>
             )}
           </Form>
-          <CardFooter className="b-rounded-md  flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6  py-3">
-            <div className="text-xs text-[#18181a]">
+          <CardFooter className="b-rounded-md  flex flex-row items-center border-t border-border  bg-muted/50  px-6  py-3">
+            <div className="text-xs text-muted-foreground">
               Updated <time dateTime="2023-11-23">November 23, 2023</time>
             </div>
             <Pagination className="ml-auto mr-0 w-auto">
@@ -3588,7 +3586,7 @@ export function Overview({ outletSize }) {
         </Card>
         <div className="flex justify-center">
           <Dialog open={openEmail} onOpenChange={setOpenEmail}>
-            <DialogContent className=" max-w-[700px] w-[650px]  gap-0 border-[#27272a] p-0 text-[#fafafa] outline-none mx-auto">
+            <DialogContent className=" max-w-[700px] w-[650px]  gap-0 border-border p-0 text-foreground outline-none mx-auto">
 
               <DialogHeader className="px-4 pb-4 pt-5">
                 <DialogTitle>
@@ -3596,17 +3594,17 @@ export function Overview({ outletSize }) {
                   {emailDesiredPayments && emailDesiredPayments}
                 </DialogTitle>
               </DialogHeader>
-              <hr className="mx-auto my-3 w-[98%] text-[#27272a]" />
+              <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
               <div className="mx-3 mb-3 grid gap-3">
                 <div className="relative mt-3">
 
                   <TextArea
                     name="body"
                     defaultValue={formData.body}
-                    className="w-full border-[#27272a] bg-[#09090b] "
+                    className="w-full border-border bg-background "
                     onChange={handleChange}
                   />
-                  <label className=" absolute -top-3 left-3  rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">
+                  <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
                     Email Message
                   </label>
 
@@ -3615,12 +3613,12 @@ export function Overview({ outletSize }) {
               <div>
                 <div className="relative mt-4">
                   <EmailPreview modelData={modelData} finance={finance} user={user} formData={formData} />
-                  <label className=" absolute -top-3 left-3  rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">
+                  <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
                     Email Preview
                   </label>
                 </div>
               </div>
-              <DialogFooter className=" border-t border-[#27272a] p-4  ">
+              <DialogFooter className=" border-t border-border p-4  ">
                 <div className="flex justify-center">
                   <Button
                     size="icon"
@@ -3641,41 +3639,41 @@ export function Overview({ outletSize }) {
             </DialogContent>
           </Dialog>
           <Dialog open={openTemplate} onOpenChange={setOpenTemplate}>
-            <DialogContent className=" emailDialog gap-0 border-[#27272a] p-0 text-[#fafafa] outline-none ">
+            <DialogContent className=" emailDialog gap-0 border-border p-0 text-foreground outline-none ">
               <DialogHeader className="px-4 pb-4 pt-5">
                 <DialogTitle>
                   Preview Email Templates
                 </DialogTitle>
               </DialogHeader>
-              <hr className="mx-auto my-3 w-[98%] text-[#27272a]" />
+              <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
               <div>
                 <div className="relative mt-4">
                   <TemplatePreview finance={finance} modelData={modelData} deFees={deFees} user={user} formData={formData} />
-                  <label className=" absolute -top-3 left-3  rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">
+                  <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
                     Email Preview
                   </label>
                 </div>
               </div>
-              <hr className="mx-auto my-3 w-[98%] text-[#27272a]" />
+              <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
               <div>
                 <div className="relative mt-4">
                   <TemplatePreviewTwo finance={finance} modelData={modelData} deFees={deFees} user={user} />
-                  <label className=" absolute -top-3 left-3  rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">
+                  <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
                     Email Preview
                   </label>
                 </div>
               </div>
-              <hr className="mx-auto my-3 w-[98%] text-[#27272a]" />
+              <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
               <div>
                 <div className="relative mt-4"> finance,
 
                   <TemplatePreviewThree finance={finance} modelData={modelData} deFees={deFees} user={user} />
-                  <label className=" absolute -top-3 left-3  rounded-full bg-[#09090b] px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">
+                  <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
                     Email Preview
                   </label>
                 </div>
               </div>
-              <DialogFooter className=" border-t border-[#27272a] p-4  ">
+              <DialogFooter className=" border-t border-border p-4  ">
                 <DialogClose className="flex justify-center">
                   <Button size="icon" className="ml-auto bg-[#dc2626] "  >
                     <X className="ml-2 h-4 w-4" />
@@ -3703,7 +3701,7 @@ export default function Quote() {
     <>
       <div
         className={`mb-10 mt-[50px] flex  h-[100vh] min-h-screen px-4 sm:px-6 lg:px-8 ${newLook === true
-          ? "bg-[#09090b] text-[#fafafa]"
+          ? "bg-background text-foreground"
           : "bg-slate1 text-black"
           }`}
       >

@@ -81,13 +81,13 @@ export const action = async ({ request }: { request: Request }) => {
 
 export default function SettingsAccountPage() {
   return (
-    <div className="space-y-6 space-x-6 mx-10 ml-[100px] text-[#fafafa]">
+    <div className="space-y-6 space-x-6 mx-10 ml-[100px] text-foreground">
       <div>
         <h3 className="text-lg font-medium">CSI</h3>
-        <p className="text-sm text-[#fafafa]">
+        <p className="text-sm text-foreground">
           Create your own CSI to see where your dealer needs to improve.
         </p>
-        <hr className="solid text-[#27272a]" />
+        <hr className="solid text-muted-foreground" />
       </div>
       <Tabs defaultValue="account" className="w-[50%]">
         <TabsList className="grid w-full grid-cols-2">
@@ -170,7 +170,7 @@ export function CSI() {
       <Input
         name='title'
         onChange={(e) => setTitle(e.target.value)}
-        className='w-auto bg-[#09090b] border-[#27272a] text-[#fafafa] '
+        className='w-auto bg-background border-border text-foreground '
       />
       {departments.map((department, departmentIndex) => (
         <div key={departmentIndex}>
@@ -184,13 +184,13 @@ export function CSI() {
                   defaultValue={input.question}
                   onChange={(e) => handleInputChange(departmentIndex, inputIndex, 'question', e.target.value)}
                   placeholder="Question"
-                  className="  bg-[#09090b] border-[#27272a] text-[#fafafa]  mr-3 w-auto"
+                  className="  bg-background border-border text-foreground  mr-3 w-auto"
 
                 />
                 <select
                   defaultValue={input.answerFormat}
                   onChange={(e) => handleInputChange(departmentIndex, inputIndex, 'answerFormat', e.target.value)}
-                  className="bg-[#09090b] border-[#27272a] text-[#fafafa] mr-3 p-1 rounded-md"
+                  className="bg-background border-border text-foreground mr-3 p-1 rounded-md"
 
                 >
                   <option value="">Select answer format</option>
@@ -208,7 +208,7 @@ export function CSI() {
                   <Input
                     type="text"
                     defaultValue={choice}
-                    className="bg-[#09090b] border-[#27272a] text-[#fafafa]  w-auto ml-[200px]"
+                    className="bg-background border-border text-foreground  w-auto ml-[200px]"
 
                     onChange={(e) => {
                       const updatedChoices = [...input.customMultipleChoiceAnswers];
@@ -243,7 +243,7 @@ export function CSI() {
           variant='outline'
           size='sm'
           type='submit'
-          className='text-[#fafafa] bg-transparent hover:bg-transparent bg-[#dc2626] '
+          className='text-foreground bg-transparent hover:bg-transparent bg-[#dc2626] '
         >
           Save
         </Button>
@@ -278,7 +278,7 @@ export function CSI() {
       {departments.map((department, departmentIndex) => (
         <div key={departmentIndex} className=' '>
           <h2>{department}</h2>
-          <hr className='text-[#fafafa] mb-2 mt-1 w-[50%]' />
+          <hr className='text-foreground mb-2 mt-1 w-[50%]' />
           {inputs[departmentIndex].map((input, inputIndex) => (
             <div key={inputIndex} className='flex space-y-4 items-center align-middle content-center'>
               <Input
@@ -444,7 +444,7 @@ const ReviewTable = ({ inputs, departments }) => {
                     <Button
                       type="button"
                       onClick={() => handleAddInput(departmentIndex)}
-                      className="text-[#fafafa] px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
+                      className="text-foreground px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
                     >
                       +
                     </Button>
@@ -454,7 +454,7 @@ const ReviewTable = ({ inputs, departments }) => {
             </div>
           </div>
         ))}
-        <Button type="submit" className="text-[#fafafa] px-3 py-2 mt-4 rounded bg-green-500 hover:bg-green-600">
+        <Button type="submit" className="text-foreground px-3 py-2 mt-4 rounded bg-green-500 hover:bg-green-600">
           Submit
         </Button>
       </Form>
@@ -497,7 +497,7 @@ const ReviewTable = ({ inputs, departments }) => {
                     />
                     <Button
                       onClick={() => handleAddCustomChoice(departmentIndex, inputIndex, input.customMultipleChoiceAnswer)}
-                      className="text-[#fafafa] px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
+                      className="text-foreground px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"
                     >
                       Add Choice
                     </Button>

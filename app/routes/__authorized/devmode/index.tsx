@@ -48,26 +48,26 @@ import React from 'react'
 export default function FunFunction() {
   return (
     <>
-      <div className='bg-[#09090b] mt-5'>
+      <div className='bg-background mt-5'>
         <NavigationMenuSales />
 
-        <div className='bg-[#09090b] mt-[60px]' >
+        <div className='bg-background mt-[60px]' >
           <div className="mx-auto max-w-2xl py-[55px] ">
 
             <div className="text-center">
-              <h1 className="text-4xl font-bold tracking-tight text-[#fafafa] sm:text-6xl">
+              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
                 Generate vehicle pricing in less than 60 seconds or saving your sales people 125+ mins a day, individually
               </h1>
-              <p className="mt-6 text-lg leading-8 text-[#fafafa]">
+              <p className="mt-6 text-lg leading-8 text-foreground">
                 Experience crystal-clear and effortlessly legible displays of weekly, bi-weekly, and monthly payment options, all while receiving a detailed breakdown of every dollar involved in the deal.
               </p>
-              <p className="mt-6 text-lg leading-8 text-[#fafafa]">
+              <p className="mt-6 text-lg leading-8 text-foreground">
                 Inquire about a free demo of our new CRM! Garaunteed better results than any other crm on the market. Developed and tested by a team of sales professionals, instead of programmers and developers who never sold a car in their life.
               </p>
               <Form method="post" action="/emails/send/contact" className='mt-5 flex items-center  justify-center'>
-                <Input name="email" placeholder="example@gmail.com" className='mr-2 w-[300px] border border-white bg-black text-[#fafafa] focus:border-[#02a9ff]' />
+                <Input name="email" placeholder="example@gmail.com" className='mr-2 w-[300px] border border-white bg-black text-foreground focus:border-primary' />
 
-                <Button name='intent' value='demoInquiry' type='submit' className=" ml-2 mr-2 w-[75px]  rounded bg-[#02a9ff]  text-center text-xs font-bold   uppercase  text-[#fafafa] shadow outline-none transition-all duration-150  ease-linear hover:shadow-md focus:outline-none active:bg-[#09090b]"
+                <Button name='intent' value='demoInquiry' type='submit' className=" ml-2 mr-2 w-[75px]  rounded bg-primary  text-center text-xs font-bold   uppercase  text-foreground shadow outline-none transition-all duration-150  ease-linear hover:shadow-md focus:outline-none active:bg-background"
                 >
                   Email
                 </Button>
@@ -79,7 +79,7 @@ export default function FunFunction() {
 
         <p>NewSection</p>
         <div className="mt-[100px] ">
-          <div className='bg-[#09090b] text-[#fafafa] border-[#27272a]'>
+          <div className='bg-background text-foreground border-border'>
             <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
               <p>Dealer Sales Assistant</p>
             </div>

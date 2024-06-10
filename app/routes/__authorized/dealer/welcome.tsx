@@ -30,7 +30,7 @@ export const meta = () => {
 export default function Quote() {
 	return (
 		<>
-			<div className="flex h-screen w-screen  bg-[#09090b] text-slate3">
+			<div className="flex h-screen w-screen  bg-background text-slate3 overflow-y-scroll">
 				<div className="w-full overflow-hidden rounded-lg ">
 					<div className="md:flex my-auto mx-auto">
 						<div className="sm:w-2/3 w-full my-auto mx-auto ">

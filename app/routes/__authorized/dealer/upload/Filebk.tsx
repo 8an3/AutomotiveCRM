@@ -201,7 +201,7 @@ export default function UploadFile() {
           </div>
           <Button
             type="submit"
-            className={` cursor-pointer  p-3 mt-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+            className={` cursor-pointer  p-3 mt-3 hover:text-primary hover:border-primary text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
           >
             Upload
           </Button>
@@ -222,7 +222,7 @@ export default function UploadFile() {
           {UploadedDocs && UploadedDocs.map((document) => (
             <div key={document.id} className="flex ">
               <p>{document.category} {document.fileName}:</p>
-              <a className='hover:text-[#02a9ff] hover:underline cursor-pointer ml-2' href={`http://localhost:3000/api/client/uploads/${document.fileName}`} download> Download</a>
+              <a className='hover:text-primary hover:underline cursor-pointer ml-2' href={`http://localhost:3000/api/client/uploads/${document.fileName}`} download> Download</a>
             </div>
           ))}
         </div>
@@ -286,7 +286,7 @@ export default function UploadFile() {
           <Button
 
             type="submit"
-            className={` cursor-pointer  p-3 mt-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+            className={` cursor-pointer  p-3 mt-3 hover:text-primary hover:border-primary text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
           >
             Upload
           </Button>
@@ -312,7 +312,7 @@ export default function UploadFile() {
           {UploadedDocs && UploadedDocs.map((document) => (
             <div key={document.id} className="flex ">
               <p>{document.category} {document.fileName}:</p>
-              <a className='hover:text-[#02a9ff] hover:underline cursor-pointer ml-2' href={`http://localhost:3000/api/client/uploads/${document.fileName}`} download> Download</a>
+              <a className='hover:text-primary hover:underline cursor-pointer ml-2' href={`http://localhost:3000/api/client/uploads/${document.fileName}`} download> Download</a>
             </div>
           ))}
         </div>

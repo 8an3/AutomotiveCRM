@@ -220,7 +220,7 @@ export default function MainForm() {
   return (
     <>
       <Dialog open={email} onOpenChange={setEmail} >
-        <DialogContent className="gap-0 p-0 outline-none bg-[#18181a] text-[#f9f9f9] ">
+        <DialogContent className="gap-0 p-0 outline-none bg-muted-background text-[#f9f9f9] ">
           <DialogHeader className="px-4 pb-4 pt-5">
             <DialogTitle>Sending an email to {data[0].name}...</DialogTitle>
             <DialogDescription>
@@ -255,7 +255,7 @@ export default function MainForm() {
         </DialogContent>
       </Dialog >
       {conditionalComponent()}
-      < fieldset className="mt-auto mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-[600px] text-[#f9f9f9]   border-[#27272a] b-[75px]" >
+      < fieldset className="mt-auto mb-10 grid gap-6 rounded-lg border p-4 mx-auto w-[600px] text-[#f9f9f9]   border-border b-[75px]" >
 
         <legend className="-ml-1 px-1 text-sm font-medium flex">
           <RocketIcon className="h-4 w-4 mr-2" />
@@ -492,11 +492,11 @@ export function Dashboard({ data, formData, setFormData, handleSubmit, setEmail,
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm text-[#f9f9f9] border-[#27272a] bg-[#09090b]"
+          className="max-w-sm text-[#f9f9f9] border-border bg-background"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto text-[#f9f9f9]  border-[#27272a]">
+            <Button variant="outline" className="ml-auto text-[#f9f9f9]  border-border">
               Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -522,10 +522,10 @@ export function Dashboard({ data, formData, setFormData, handleSubmit, setEmail,
         </DropdownMenu>
       </div>
       <div className="">
-        <Table className="rounded-md border bg-[#09090b] text-[#fafafa] border-[#27272a]">
-          <TableHeader className="  border bg-[#09090b] text-[#fafafa] border-[#27272a]">
+        <Table className="rounded-md border bg-background text-foreground border-border">
+          <TableHeader className="  border bg-background text-foreground border-border">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="  border bg-[#09090b] text-[#fafafa] border-[#27272a]" key={headerGroup.id}>
+              <TableRow className="  border bg-background text-foreground border-border" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -541,11 +541,11 @@ export function Dashboard({ data, formData, setFormData, handleSubmit, setEmail,
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className=" border bg-[#09090b] text-[#fafafa] border-[#27272a] ">
+          <TableBody className=" border bg-background text-foreground border-border ">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className=" border bg-[#09090b] text-[#fafafa] border-[#27272a] "
+                  className=" border bg-background text-foreground border-border "
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
@@ -573,7 +573,7 @@ export function Dashboard({ data, formData, setFormData, handleSubmit, setEmail,
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm  text-[#fafafa]">
+        <div className="flex-1 text-sm  text-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
@@ -581,7 +581,7 @@ export function Dashboard({ data, formData, setFormData, handleSubmit, setEmail,
           <Button
             variant="outline"
             size="sm"
-            className='border-[#27272a] text-[#f9f9f9]'
+            className='border-border text-[#f9f9f9]'
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -590,7 +590,7 @@ export function Dashboard({ data, formData, setFormData, handleSubmit, setEmail,
           <Button
             variant="outline"
             size="sm"
-            className='border-[#27272a] text-[#f9f9f9]'
+            className='border-border text-[#f9f9f9]'
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
@@ -609,7 +609,7 @@ export function Dashboard({ data, formData, setFormData, handleSubmit, setEmail,
 /**<Dialog  >
               <DialogTrigger asChild>
               </DialogTrigger>
-              <DialogContent className="gap-0 p-0 outline-none bg-[#18181a] text-[#f9f9f9] ">
+              <DialogContent className="gap-0 p-0 outline-none bg-muted-background text-[#f9f9f9] ">
                 <DialogHeader className="px-4 pb-4 pt-5">
                   <DialogTitle>Sending an email to {data.name}...</DialogTitle>
                   <DialogDescription>

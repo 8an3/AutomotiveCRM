@@ -474,7 +474,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="hidden flex-col md:flex text-[#fafafa]">
+      <div className="hidden flex-col md:flex text-foreground">
         <div className="flex-1 space-y-4 p-8 pt-6mt-3 ">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -495,7 +495,7 @@ export default function DashboardPage() {
             </TabsList>
             <TabsContent value="overview" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card className='border border-[#27272a] text-[#fafafa]'>
+                <Card className='border border-border text-foreground'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Total Dealers
@@ -520,7 +520,7 @@ export default function DashboardPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className='border border-[#27272a] text-[#fafafa]'>
+                <Card className='border border-border text-foreground'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Monthly Revenue
@@ -547,7 +547,7 @@ export default function DashboardPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className='border border-[#27272a] text-[#fafafa]'>
+                <Card className='border border-border text-foreground'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Sales</CardTitle>
                     <svg
@@ -571,7 +571,7 @@ export default function DashboardPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className='border border-[#27272a] text-[#fafafa]'>
+                <Card className='border border-border text-foreground'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Active Now
@@ -598,121 +598,121 @@ export default function DashboardPage() {
                 </Card>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-2 border border-[#27272a] ">
+                <Card className="col-span-2 border border-border ">
                   <CardHeader>
-                    <CardTitle className='text-[#fafafa]'>Add New Dealer</CardTitle>
+                    <CardTitle className='text-foreground'>Add New Dealer</CardTitle>
                     <p>First need to create the github and vercel pages for the dealer in order to put them in and be sent in the email.</p>
                   </CardHeader>
                   <CardContent className="pl-2">
                     <div className="space-y-6">
                       <Separator />
-                      <div className="ml-5">
+                      <div className="ml-5  h-auto max-h-[60vh] overflow-y-scroll">
                         <Form method='post' className="space-y-4">
                           <div className="grid gap-3 mx-3 mb-3">
                             <div className="relative mt-3">
                               <Input
                                 name='dealerName'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerPhone'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerAddress'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerCity'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerProvince'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerPostal'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerContact'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerEmail'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Email</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Email</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerAdminContact'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Contact</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Contact</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerEmailAdmin'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='dealerEtransferEmail'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Etransfer Email</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Etransfer Email</label>
                             </div>
 
                             <div className="relative mt-3">
                               <Input
                                 name='vercel'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Vercel Domain</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Vercel Domain</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 name='github'
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Github Domain</label>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Github Domain</label>
                             </div>
                           </div>
                           <div className='grid grid-cols-2 justify-between' >
@@ -720,7 +720,7 @@ export default function DashboardPage() {
                             <ButtonLoading
                               size="sm"
                               value='createDealer'
-                              className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-[#fafafa] border border-[#27272a]"
+                              className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-foreground border border-border"
                               name="intent"
                               type="submit"
                               isSubmitting={isSubmitting}
@@ -736,7 +736,7 @@ export default function DashboardPage() {
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="col-span-2 border border-[#27272a] text-[#fafafa]">
+                <Card className="col-span-2 border border-border text-foreground">
                   <CardHeader>
                     <CardTitle>Dev Eyes Only To-do List</CardTitle>
                     <CardDescription>
@@ -748,7 +748,7 @@ export default function DashboardPage() {
                       {Object.entries(devTasks).map(([type, tasks]) => (
                         <div key={type}>
                           {tasks.map((task) => (
-                            <div key={task.desc} className="ml-3 p-3 mr-3 flex items-center  mt-3 shadow-md border border-[#27272a] text-[#fafafa]  rounded ">
+                            <div key={task.desc} className="ml-3 p-3 mr-3 flex items-center  mt-3 shadow-md border border-border text-foreground  rounded ">
                               <p color="my-3  ">
                                 {task.desc}
                               </p>
@@ -759,7 +759,7 @@ export default function DashboardPage() {
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="col-span-3 border border-[#27272a] text-[#fafafa]">
+                <Card className="col-span-3 border border-border text-foreground">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium flex">
                       To-do
@@ -774,7 +774,7 @@ export default function DashboardPage() {
                           <h4 className='mt-3 ml-3 text-picton-blue-50'>{type}</h4>
                           <Separator />
                           {tasks.map((task) => (
-                            <div key={task.desc} className="ml-3 p-3 mr-3 flex items-center  mt-3 shadow-md border border-[#27272a] text-[#fafafa]  rounded ">
+                            <div key={task.desc} className="ml-3 p-3 mr-3 flex items-center  mt-3 shadow-md border border-border text-foreground  rounded ">
                               <p color="my-3  ">
                                 {task.desc}
                               </p>
@@ -789,7 +789,7 @@ export default function DashboardPage() {
             </TabsContent>
             <TabsContent value="Dealers" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card className='border border-[#27272a] text-[#fafafa]'>
+                <Card className='border border-border text-foreground'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Github Setup?
@@ -807,7 +807,7 @@ export default function DashboardPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className='border border-[#27272a] text-[#fafafa]'>
+                <Card className='border border-border text-foreground'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Vercel Setup?
@@ -826,7 +826,7 @@ export default function DashboardPage() {
 
                   </CardContent>
                 </Card>
-                <Card className='border border-[#27272a] text-[#fafafa]'>
+                <Card className='border border-border text-foreground'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Database Setup?
@@ -843,7 +843,7 @@ export default function DashboardPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className='border border-[#27272a] text-[#fafafa]'>
+                <Card className='border border-border text-foreground'>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Initial email sent to dealer principal?
@@ -859,7 +859,7 @@ export default function DashboardPage() {
                             <ButtonLoading
                               size="sm"
                               value='sendInitialEmail'
-                              className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-[#fafafa] border border-[#27272a]"
+                              className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-foreground border border-border"
                               name="intent"
                               type="submit"
                               isSubmitting={isSubmitting}
@@ -884,9 +884,9 @@ export default function DashboardPage() {
                 </Card>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-2 border border-[#27272a] ">
+                <Card className="col-span-2 border border-border ">
                   <CardHeader>
-                    <CardTitle className='text-[#fafafa]'>Dealers</CardTitle>
+                    <CardTitle className='text-foreground'>Dealers</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
                     <div className=' h-auto max-h-[60vh] overflow-y-scroll'>
@@ -897,12 +897,12 @@ export default function DashboardPage() {
                             setSelectedDealer(dealer)
                           }}>
                           <input type='hidden' name='id' value={dealer.id} />
-                          <div className="cursor-pointer hover:bg-[#232324] rounded-md">
+                          <div className="cursor-pointer hover:bg-muted/50 rounded-md">
                             <ul className="grid gap-3 text-sm mt-2">
                               <li className="grid grid-cols-1 items-center">
                                 <span>{dealer.dealerName}</span>
-                                <span className="text-[#909098] text-xs">{dealer.dealerPhone}</span>
-                                <span className="text-[#909098] text-xs">
+                                <span className="text-muted-foreground text-xs">{dealer.dealerPhone}</span>
+                                <span className="text-muted-foreground text-xs">
                                   {dealer.dealerEmail}
                                 </span>
                               </li>
@@ -914,7 +914,7 @@ export default function DashboardPage() {
 
                   </CardContent>
                 </Card>
-                <Card className="col-span-2 border border-[#27272a] text-[#fafafa]">
+                <Card className="col-span-2 border border-border text-foreground">
                   <CardHeader>
                     <CardTitle>Dealer Details</CardTitle>
                     <CardDescription>
@@ -933,9 +933,9 @@ export default function DashboardPage() {
                                   defaultValue={selectedDealer.dealerName}
 
                                   type="text"
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -943,9 +943,9 @@ export default function DashboardPage() {
                                   defaultValue={selectedDealer.dealerPhone}
 
                                   type="text"
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -953,9 +953,9 @@ export default function DashboardPage() {
                                   type="text"
                                   defaultValue={selectedDealer.dealerAddress}
 
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -963,9 +963,9 @@ export default function DashboardPage() {
                                   type="text"
                                   defaultValue={selectedDealer.dealerCity}
 
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -973,9 +973,9 @@ export default function DashboardPage() {
                                   defaultValue={selectedDealer.dealerProv}
 
                                   type="text"
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -983,9 +983,9 @@ export default function DashboardPage() {
                                   type="text"
                                   defaultValue={selectedDealer.dealerPostal}
 
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -993,9 +993,9 @@ export default function DashboardPage() {
                                   type="text"
                                   defaultValue={selectedDealer.dealerContact}
 
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -1003,9 +1003,9 @@ export default function DashboardPage() {
                                   type="text"
                                   defaultValue={selectedDealer.dealerEmail}
 
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Email</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Email</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -1013,9 +1013,9 @@ export default function DashboardPage() {
                                   type="text"
                                   defaultValue={selectedDealer.adminContact}
 
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Contact</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Contact</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -1023,9 +1023,9 @@ export default function DashboardPage() {
                                   type="text"
                                   defaultValue={selectedDealer.dealerEmailAdmin}
 
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
                               </div>
 
                               <div className="relative mt-3">
@@ -1034,9 +1034,9 @@ export default function DashboardPage() {
                                   defaultValue={selectedDealer.vercel}
 
                                   type="text"
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Vercel Domain</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Vercel Domain</label>
                               </div>
 
                               <div className="relative mt-3">
@@ -1044,18 +1044,18 @@ export default function DashboardPage() {
                                   name='github'
                                   defaultValue={selectedDealer.github}
                                   type="text"
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Github Domain</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Github Domain</label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
                                   name='github'
                                   defaultValue={selectedDealer.database}
                                   type="text"
-                                  className="w-full bg-[#09090b] border-[#27272a] "
+                                  className="w-full bg-background border-border "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Database URL</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Database URL</label>
                               </div>
                             </div>
                             <div className='grid grid-cols-2 justify-between' >
@@ -1063,7 +1063,7 @@ export default function DashboardPage() {
                               <ButtonLoading
                                 size="sm"
                                 value='createDealer'
-                                className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-[#fafafa] border border-[#27272a]"
+                                className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-foreground border border-border"
                                 name="intent"
                                 type="submit"
                                 isSubmitting={isSubmitting}
@@ -1081,7 +1081,7 @@ export default function DashboardPage() {
 
                   </CardContent>
                 </Card>
-                <Card className="col-span-3 border border-[#27272a] text-[#fafafa]">
+                <Card className="col-span-3 border border-border text-foreground">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium flex">
                       Running proccesses
@@ -1090,7 +1090,7 @@ export default function DashboardPage() {
                   <CardContent>
                     <ul className="grid gap-3 text-sm mt-2">
                       <li className="flex items-center justify-between">
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Vercel running?
                         </span>
                         <span>
@@ -1103,7 +1103,7 @@ export default function DashboardPage() {
                         </span>
                       </li>
                       <li className="flex items-center justify-between">
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Github issues?
                         </span>
                         <span>
@@ -1116,7 +1116,7 @@ export default function DashboardPage() {
                         </span>
                       </li>
                       <li className="flex items-center justify-between">
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Database issues?
                         </span>
                         <span>
@@ -1129,7 +1129,7 @@ export default function DashboardPage() {
                         </span>
                       </li>
                       <li className="flex items-center justify-between">
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Payments up to date?
                         </span>
                         <span>
@@ -1157,7 +1157,7 @@ export default function DashboardPage() {
                   <ul className="grid gap-3 text-sm mt-2">
                     <fetcher.Form method='post' >
                       <li className="flex items-center justify-between">
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Create lead - API
                         </span>
                         <span>

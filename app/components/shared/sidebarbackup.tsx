@@ -61,7 +61,7 @@ export default function Sidebar(user) {
           <Dialog.Content className='data-[state=open]:animate-contentShow fixed w-[300px]
           h-screen left-0 top-0 bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,
           _hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none transition-transform duration-500 transform
-          dark:bg-black dark:text-[#fafafa] dark:shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,'
+          dark:bg-black dark:text-foreground dark:shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,'
           >
             <Dialog.Title >
               <h3 className="text-2xl font-thin">Brands</h3>

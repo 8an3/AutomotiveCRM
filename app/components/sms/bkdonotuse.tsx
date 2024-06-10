@@ -233,7 +233,7 @@ const ChatApp = () => {
   };
   if (selectedChannelSid) {
     channelContent = (
-      <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }} className='text-[#fafafa]'>
+      <div onClick={() => { }} id="OpenChannel" style={{ position: "relative", top: 0 }} className='text-foreground'>
         <div >
           <div style={{ flexBasis: "100%", flexGrow: 2, flexShrink: 1, overflowY: "scroll" }}>
             <ChatMessages identity={user.username} messages={messages} />
@@ -247,7 +247,7 @@ const ChatApp = () => {
                   placeholder="Message..."
                   name="message"
                   autoComplete="off"
-                  className='bg-myColor-900 text-[#fafafa] rounded-d p-3 m-2 align-bottom content-end'
+                  className='bg-myColor-900 text-foreground rounded-d p-3 m-2 align-bottom content-end'
                   onChange={onMessageChanged}
                   value={state.newMessage}
                   ref={textareaRef}
@@ -367,16 +367,16 @@ const ChatApp = () => {
                       submit(formData, { method: "post" });
                       console.log('step1', formData)
                     }}
-                      className={`channel-item m-2 mx-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]${activeChannel ? ' channel-item--active' : ''}`}>
+                      className={`channel-item m-2 mx-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary${activeChannel ? ' channel-item--active' : ''}`}>
                       <div className="m-2 flex items-center justify-between">
-                        <span className="text-lg font-bold text-[#fafafa]">
+                        <span className="text-lg font-bold text-foreground">
                           <strong>{item.friendlyName || item.sid}</strong>
                         </span>
-                        <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
+                        <p className={`text-sm text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-foreground' : ''}`}>
                           {formattedDate}
                         </p>
                       </div>
-                      <p className={`text-sm m-2 text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-[#fafafa]' : ''}`}>
+                      <p className={`text-sm m-2 text-[#ffffff7c] ${activeChannel ? ' channel-item--active text-foreground' : ''}`}>
                         {messages && messages.length > 0 && messages[0].body
                           ? messages[0].body.split(' ').slice(0, 12).join(' ') + '...'
                           : ''}

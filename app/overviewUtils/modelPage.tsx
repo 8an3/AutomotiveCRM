@@ -57,23 +57,23 @@ export function ModelPage() {
     }
     if (finance.brand === 'Indian') {
         return (
-            <Button disabled className="h-5 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" content="update">
+            <p disabled className="h-5    cursor-pointer hover:text-primary p-5 " type="submit" content="update">
                 Under Construction
-            </Button>
+            </p>
         )
     }
     if (finance.brand === 'Yamaha') {
         return (
-            <Button disabled className="h-5 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" content="update">
+            <p disabled className="h-5    cursor-pointer hover:text-primary p-5 " type="submit" content="update">
                 Under Construction
-            </Button>
+            </p>
         )
     }
     if (finance.brand === 'KTM') {
         return (
-            <Button disabled className="h-5 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" content="update">
+            <p disabled className="h-5    cursor-pointer hover:text-primary p-5 " type="submit" content="update">
                 Under Construction
-            </Button>
+            </p>
         )
     }
 }

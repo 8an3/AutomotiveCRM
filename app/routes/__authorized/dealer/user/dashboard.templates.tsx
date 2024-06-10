@@ -1748,7 +1748,7 @@ export default function Shight() {
     },
   })
   const buttonActive = 'bg-white text-black rounded-md p-1 ';
-  const buttonInactive = 'bg-[#09090b] text-[#fafafa] hover:text-[#02a9ff] hover:bg-transparent';
+  const buttonInactive = 'bg-background text-foreground hover:text-primary hover:bg-transparent';
 
 
   const handleSetLink = useCallback(() => {
@@ -2276,8 +2276,8 @@ export default function Shight() {
             className={cn(
               buttonVariants({ variant: 'ghost' }),
               attribute === item.title
-                ? 'bg-[#232324] hover:bg-[#232324] w-[90%] border-l-[#0969da]'
-                : 'hover:bg-[#232324] w-[90%]',
+                ? 'bg-[#232324] hover:bg-muted/50 w-[90%] border-l-[#0969da]'
+                : 'hover:bg-muted/50 w-[90%]',
               'justify-start w-[90%]'
             )}
             value={item.attribute}
@@ -2294,7 +2294,7 @@ export default function Shight() {
 
   return (
     <>
-      <div className=" mx-auto flex h-[80vh] text-[#fafafa]  ">
+      <div className=" mx-auto flex h-[80vh] text-foreground  ">
         <Card className={` mx-2 transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'grow' : 'w-[15%]'} `}        >
           <CardHeader onClick={handleCategoryClick} className='cursor-pointer'>
             <CardTitle>Category</CardTitle>
@@ -2309,7 +2309,7 @@ export default function Shight() {
                     }
                     return unique;
                   }, []).map((mail, index) => (
-                    <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => {
+                    <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => {
                       handleSubcategoryClick();
                       handleEmailClick(mail.category)
                     }}>
@@ -2340,7 +2340,7 @@ export default function Shight() {
                   {subcategories.map((subCat, index) => (
                     <div
                       key={index}
-                      className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff] hover:text-[#02a9ff] active:border-[#02a9ff]"
+                      className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary"
                       onClick={() => {
                         handleSubCatLisstClick(scripts.find((mail) => mail.subCat === subCat));
                         handleScriptClick();
@@ -2368,12 +2368,12 @@ export default function Shight() {
               <div className="h-auto max-h-[70vh] overflow-y-auto">
                 {selectedRecord && (
                   <div className="">
-                    <div className="m-2 mx-auto w-[95%]   hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
-                      <div className="flex m-2  items-center justify-between p-2 text-[#fafafa]">
+                    <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
+                      <div className="flex m-2  items-center justify-between p-2 text-foreground">
                         <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
-                        <Button variant='outline' className="cursor-pointer bg-transparent text-[#fafafa]  hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]" onClick={() => copyText(selectedRecord.content)} >
-                          {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
-                          {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-[#02a9ff]" />}
+                        <Button variant='outline' className="cursor-pointer bg-transparent text-foreground  hover:border-primary hover:bg-transparent hover:text-primary" onClick={() => copyText(selectedRecord.content)} >
+                          {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-primary" />}
+                          {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-primary" />}
                         </Button>
                       </div>
                     </div>
@@ -2479,7 +2479,7 @@ export default function Shight() {
                       <div
                         className={cn(
                           "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-                          "bg-[#09090b] text-[#fafafa] transition-all justify-center",
+                          "bg-background text-foreground transition-all justify-center",
                           // "sm:sticky sm:top-[80px]",
                         )}
                       >
@@ -2487,19 +2487,19 @@ export default function Shight() {
                           onClick={() => editor.chain().focus().toggleBold().run()}
                           className={editor.isActive("bold") ? buttonActive : buttonInactive}
                         >
-                          <FaBold className="text-xl hover:text-[#02a9ff]" />
+                          <FaBold className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().toggleItalic().run()}
                           className={editor.isActive("italic") ? buttonActive : buttonInactive}
                         >
-                          <FaItalic className="text-xl hover:text-[#02a9ff]" />
+                          <FaItalic className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().toggleStrike().run()}
                           className={editor.isActive("strike") ? buttonActive : buttonInactive}
                         >
-                          <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
+                          <FaStrikethrough className="text-xl hover:text-primary" />
                         </button>
 
                         <Minus color="#09090b" strokeWidth={1.5} />
@@ -2507,98 +2507,98 @@ export default function Shight() {
                           onClick={handleSetLink}
                           className={editor.isActive("link") ? buttonActive : buttonInactive}
                         >
-                          <FaLink className="text-xl hover:text-[#02a9ff]" />
+                          <FaLink className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().unsetLink().run()}
                           disabled={!editor.isActive("link")}
                           className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
                         >
-                          <FaUnlink className="text-xl hover:text-[#02a9ff]" />
+                          <FaUnlink className="text-xl hover:text-primary" />
                         </button>
                         <Minus color="#000" strokeWidth={1.5} />
                         <button
                           onClick={() => editor.chain().focus().toggleBlockquote().run()}
                           className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
                         >
-                          <FaQuoteLeft className="text-xl hover:text-[#02a9ff]" />
+                          <FaQuoteLeft className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().toggleCode().run()}
                           className={editor.isActive('code') ? buttonActive : buttonInactive}
                           disabled={!editor.can().chain().focus().toggleCode().run()}
                         >
-                          <FaFileCode className="text-xl hover:text-[#02a9ff]" />
+                          <FaFileCode className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                           className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
                         >
-                          <BiCodeBlock className="text-xl hover:text-[#02a9ff]" />
+                          <BiCodeBlock className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().toggleBulletList().run()}
                           className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
                         >
-                          <FaList className="text-xl hover:text-[#02a9ff]" />
+                          <FaList className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().toggleOrderedList().run()}
                           className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
                         >
-                          <FaListOl className="text-xl hover:text-[#02a9ff]" />
+                          <FaListOl className="text-xl hover:text-primary" />
                         </button>
 
                         <Minus color="#000" strokeWidth={1.5} />
                         <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                          <MdHorizontalRule className="text-xl hover:text-[#02a9ff]" />
+                          <MdHorizontalRule className="text-xl hover:text-primary" />
                         </button>
                         <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-                          <IoMdReturnLeft className="text-xl hover:text-[#02a9ff]" />
+                          <IoMdReturnLeft className="text-xl hover:text-primary" />
                         </button>
                         <Minus color="#000" strokeWidth={1.5} />
                         <button
                           onClick={() => editor.chain().focus().undo().run()}
                           disabled={!editor.can().chain().focus().undo().run()}
                         >
-                          <FaUndo className="text-xl hover:text-[#02a9ff]" />
+                          <FaUndo className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().redo().run()}
                           disabled={!editor.can().chain().focus().redo().run()}
                         >
-                          <FaRedo className="text-xl hover:text-[#02a9ff]" />
+                          <FaRedo className="text-xl hover:text-primary" />
                         </button>
                         <Minus color="#000" strokeWidth={1.5} />
                         <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
                           className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
                         >
-                          <FaAlignLeft className="text-xl hover:text-[#02a9ff]" />
+                          <FaAlignLeft className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().setTextAlign('center').run()}
                           className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
                         >
-                          <FaAlignCenter className="text-xl hover:text-[#02a9ff]" />
+                          <FaAlignCenter className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().setTextAlign('right').run()}
                           className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
                         >
-                          <FaAlignRight className="text-xl hover:text-[#02a9ff]" />
+                          <FaAlignRight className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().setTextAlign('justify').run()}
                           className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
                         >
-                          <FaAlignJustify className="text-xl hover:text-[#02a9ff]" />
+                          <FaAlignJustify className="text-xl hover:text-primary" />
                         </button>
                         <Minus color="#000" strokeWidth={1.5} />
                         <button
                           onClick={() => editor.chain().focus().toggleHighlight().run()}
                           className={editor.isActive('highlight') ? buttonActive : buttonInactive}
                         >
-                          <FaHighlighter className="text-xl hover:text-[#02a9ff]" />
+                          <FaHighlighter className="text-xl hover:text-primary" />
                         </button>
                         <input
                           type="color"
@@ -2610,28 +2610,28 @@ export default function Shight() {
                           onClick={() => editor.chain().focus().unsetColor().run()}
                           className={editor.isActive('highlight') ? buttonActive : buttonInactive}
                         >
-                          <FaEraser className="text-xl hover:text-[#02a9ff]" />
+                          <FaEraser className="text-xl hover:text-primary" />
                         </button>
                         <Minus color="#000" strokeWidth={1.5} />
                         <button
                           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                           className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
                         >
-                          <Heading1 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                          <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
                           className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
 
                         >
-                          <Heading2 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                          <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
                         </button>
                         <button
                           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
                           className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
 
                         >
-                          <Heading3 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                          <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
                         </button>
                       </div>
                       <EditorContent editor={editor} className=" p-3 mb-2 mt-auto cursor-text   bg-white mx-auto w-[95%] rounded-md text-black place-self-end self-end" />
@@ -2651,7 +2651,7 @@ export default function Shight() {
                             toast.message('Helping you become the hulk of sales...')
                           }}
                           loadingText="Loading..."
-                          className="w-auto cursor-pointer border-white bg-transparent text-[#fafafa] hover:border-[#02a9ff] hover:bg-transparent hover:text-[#02a9ff]"
+                          className="w-auto cursor-pointer border-white bg-transparent text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
                         >
                           Save As Template
                         </ButtonLoading>

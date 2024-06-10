@@ -41,7 +41,7 @@ export default function SalesButtonCard({
       label: <DownMenu>
         <DropdownMenuTrigger asChild>
           <Button name='intent' value='2DaysFromNow'
-            className="bg-[#02a9ff] items-left justify-start items-start cursor-pointer w-[140px] mx-1 text-[#fafafa] active:bg-black font-bold uppercase h-auto  text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+            className="bg-primary items-left justify-start items-start cursor-pointer w-[140px] mx-1 text-foreground active:bg-black font-bold uppercase h-auto  text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
           >
             Service Status
           </Button>

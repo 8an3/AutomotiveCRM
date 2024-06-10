@@ -1602,7 +1602,7 @@ export default function Shight() {
                 }
                 return unique;
               }, []).map((mail, index) => (
-                <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(mail.category)}>
+                <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => handleEmailClick(mail.category)}>
                   <div className="m-2 flex items-center justify-between">
                     <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
                   </div>
@@ -1610,7 +1610,7 @@ export default function Shight() {
               ))}
 
             </div>
-            <p className="text-sm text-[#fafafa] p-2">
+            <p className="text-sm text-foreground p-2">
               Your ability to close increases with the amount of tools at your
               disposal. A mechanic without a tire iron wouldnt be able to change
               a tire. So why dont more sales people take better care of their
@@ -1626,7 +1626,7 @@ export default function Shight() {
           </div>
           <div className="h-auto max-h-[950px] overflow-y-auto">
             {subcategories.map((subCat, index) => (
-              <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleSubCatLisstClick(scripts.find(mail => mail.subCat === subCat))}>
+              <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => handleSubCatLisstClick(scripts.find(mail => mail.subCat === subCat))}>
                 <div className="m-2 flex items-center justify-between">
                   <p className="text-lg font-bold text-[#fff]">{subCat}</p>
                 </div>
@@ -1643,8 +1643,8 @@ export default function Shight() {
           <div className="flex justify-between  border-[#262626]">
             {selectedRecord && (
               <div className="h-auto max-h-[950px] overflow-y-auto">
-                <div className="m-2 mx-auto w-[95%]   hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
-                  <div className="m-2  items-center justify-between p-2 text-[#fafafa]">
+                <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
+                  <div className="m-2  items-center justify-between p-2 text-foreground">
                     {/* Display the properties of the selected record */}
                     {/* This depends on the structure of your mail objects */}
                     <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
@@ -1656,7 +1656,7 @@ export default function Shight() {
                     <p className='mt-5'>{selectedRecord.content}</p>
                     <div className='flex justify-between  text-[#fff] mt-5 items-center'>
                       <div className='flex' >
-                        <button className="cursor-pointer text-[#fafafa]" onClick={() => copyText(selectedRecord.content)} >
+                        <button className="cursor-pointer text-foreground" onClick={() => copyText(selectedRecord.content)} >
                           <Copy strokeWidth={1.5} />
                         </button>
                         {copiedText === selectedRecord.content && <div>Copied!</div>}
@@ -1680,7 +1680,7 @@ export default function Shight() {
                             toast.message('Helping you become the hulk of sales...')
                           }}
                           loadingText="Loading..."
-                          className="w-auto cursor-pointer  hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border-white"
+                          className="w-auto cursor-pointer  hover:text-primary hover:border-primary text-foreground border-white"
                         >
                           Save As Template
                         </ButtonLoading>
@@ -1851,7 +1851,7 @@ export default function Shight() {
     return (
       <div className="h-auto max-h-[970px] overflow-y-auto">
         {scripts.map((mail) => (
-          <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(mail)}>
+          <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => handleEmailClick(mail)}>
             <div className="m-2 flex items-center justify-between">
               <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
             </div>
@@ -1864,7 +1864,7 @@ export default function Shight() {
     return (
       <div className="h-auto max-h-[970px] overflow-y-auto">
         {scripts.map((mail) => (
-          <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(mail)}>
+          <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => handleEmailClick(mail)}>
             <div className="m-2 flex items-center justify-between">
               <p className="text-lg font-bold text-[#fff]">{mail.subCat}</p>
             </div>
@@ -1887,7 +1887,7 @@ export default function Shight() {
     return (
       <div className="h-auto max-h-[970px] overflow-y-auto">
         {scripts.map((mail) => (
-          <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]" onClick={() => handleEmailClick(mail)}>
+          <div key={mail.id} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => handleEmailClick(mail)}>
 
 
             <div className="m-2 flex items-center justify-between">
@@ -1925,7 +1925,7 @@ export default function Shight() {
         <div className="emailList w-[25%] border-r border-[#262626]">
           <div className=" ">
             <div>
-              <Input name="search" placeholder="Search" className='m-2 mx-auto w-[95%] border border-[#ffffff4d] bg-[#000] text-[#fff] focus:border-[#02a9ff]' />
+              <Input name="search" placeholder="Search" className='m-2 mx-auto w-[95%] border border-[#ffffff4d] bg-[#000] text-[#fff] focus:border-primary' />
             </div>
             <SubCatLisst scripts={scripts} />
           </div>

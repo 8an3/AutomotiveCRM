@@ -367,7 +367,7 @@ export default function Roadmap() {
 								<h4 className='mt-3 ml-3 text-picton-blue-50'>{type}</h4>
 								<Separator />
 								{tasks.map((task) => (
-									<div key={task.desc} className="ml-3 p-3 flex items-center  mt-3 shadow-md  bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff]  uppercase  rounded  hover:shadow-md outline-none  ease-linear transition-all duration-150">
+									<div key={task.desc} className="ml-3 p-3 flex items-center  mt-3 shadow-md  bg-myColor-900 target:text-primary hover:text-primary text-slate4 active:bg-primary  uppercase  rounded  hover:shadow-md outline-none  ease-linear transition-all duration-150">
 										<p color="my-3 py-3 ">
 											{task.desc}
 										</p>
@@ -386,7 +386,7 @@ export default function Roadmap() {
 								<h4 className='mt-3 ml-3 text-picton-blue-50'>{type}</h4>
 								<Separator />
 								{tasks.map((task) => (
-									<div key={task.desc} className="ml-3 mr-3 p-3 flex items-center  mt-3 shadow-md  bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff]  uppercase  rounded  hover:shadow-md outline-none  ease-linear transition-all duration-150">
+									<div key={task.desc} className="ml-3 mr-3 p-3 flex items-center  mt-3 shadow-md  bg-myColor-900 target:text-primary hover:text-primary text-slate4 active:bg-primary  uppercase  rounded  hover:shadow-md outline-none  ease-linear transition-all duration-150">
 										<img
 											loading="lazy"
 											src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"

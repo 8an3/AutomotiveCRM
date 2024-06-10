@@ -90,7 +90,7 @@ export default function DailySheet({ dataPDF }) {
   }
   return (
     <>
-      <Button onClick={Click} className="bg-[#02a9ff] w-[75px] mx-1 text-[#fafafa] active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+      <Button onClick={Click} className="bg-primary w-[75px] mx-1 text-foreground active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
         Print PDF
       </Button>
     </>
@@ -151,7 +151,7 @@ const DailySheet = () => {
   }
   return (
     <>
-      <Button onClick={Click} className="bg-[#02a9ff] w-[75px] ml-2  mr-2 text-[#fafafa] active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+      <Button onClick={Click} className="bg-primary w-[75px] ml-2  mr-2 text-foreground active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
         Print PDF
       </Button>
     </>

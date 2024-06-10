@@ -74,7 +74,7 @@ export function ComboboxExample() {
                   <Combobox.Option
                     key={item.id}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pe-4 ps-10 ${active ? "bg-teal-600 text-[#fafafa]" : "text-gray-900"
+                      `relative cursor-default select-none py-2 pe-4 ps-10 ${active ? "bg-teal-600 text-foreground" : "text-gray-900"
                       }`
                     }
                     value={item}
@@ -91,7 +91,7 @@ export function ComboboxExample() {
                         </span>
                         {selected && (
                           <span
-                            className={`absolute inset-y-0 left-0 flex items-center ps-3 ${active ? "text-[#fafafa]" : "text-teal-600"
+                            className={`absolute inset-y-0 left-0 flex items-center ps-3 ${active ? "text-foreground" : "text-teal-600"
                               }`}
                           >
                             <Check className="h-5 w-5" aria-hidden="true" />

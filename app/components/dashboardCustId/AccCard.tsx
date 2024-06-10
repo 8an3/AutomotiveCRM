@@ -26,8 +26,8 @@ export default function AccCard({
               <div className=" py-1 lg:pt-1 pt-1 items-center">
 
                 <div className=" flex items-center justify-between">
-                  <label className="text-sm text-left text-[#fafafa]" htmlFor='partsonorder'>Accessories On Order</label>
-                  <p className="text-sm text-right text-[#fafafa]"></p>
+                  <label className="text-sm text-left text-foreground" htmlFor='partsonorder'>Accessories On Order</label>
+                  <p className="text-sm text-right text-foreground"></p>
                 </div>
                 <hr className="mt-1 mb-1 border-b-1 border-gray-600" />
               </div>

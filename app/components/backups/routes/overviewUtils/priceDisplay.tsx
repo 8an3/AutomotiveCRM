@@ -9,7 +9,7 @@ export default function PriceDisplay({ formData, finance, handleChange, modelDat
         <h3 className="text-2xl font-thin">Price</h3>
       </div>
 
-      <hr className="solid dark:text-[#fafafa]" />
+      <hr className="solid dark:text-foreground" />
       <div className="flex flex-wrap justify-between  ">
         <p className="basis-2/4 font-thin mt-2 ">MSRP</p>
         <p className="flex basis-2/4 items-end justify-end font-thin mt-2">

@@ -120,7 +120,7 @@ export default function LogText({ data }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Text className="cursor-pointer text-black hover:text-[#02a9ff] target:text-[#02a9ff]" >
+        <Text className="cursor-pointer text-black hover:text-primary target:text-primary" >
           <MessageText />
         </Text>
       </DialogTrigger>
@@ -240,7 +240,7 @@ export default function LogText({ data }) {
 
                   <Button
                     name='intent' value='textQuickFU' type='submit'
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-primary hover:border-primary text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
 
                     content="update"
                     variant="outline"
@@ -277,7 +277,7 @@ export default function LogText({ data }) {
                     toast.message('Helping you become the hulk of sales...')
                   }}
                   loadingText="Loading..."
-                  className="w-auto cursor-pointer  hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border-black"
+                  className="w-auto cursor-pointer  hover:text-primary hover:border-primary text-black border-black"
                 >
                   Save As Template
                 </ButtonLoading>
@@ -287,7 +287,7 @@ export default function LogText({ data }) {
           <TabsContent value="password">
             <div className='max-h-[900px] overflow-y-scroll' >
               {convos && convos.filter(convo => convo.financeId === data.financeId).map((convo, index) => (
-                <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border-1 border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
+                <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border-1 border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary">
                   <p className="my-2 ml-2 text-sm text-black">
                     Sent by: {convo.userName}
                   </p>

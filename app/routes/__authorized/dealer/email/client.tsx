@@ -477,21 +477,21 @@ export default function ClientEmail() {
                 HandleGewtLabel(label);
               }}
               value="Unread"
-              className={`ml-2 mt-3 flex cursor-pointer items-start text-left text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === "Unread" ? "text-[#02a9ff]  " : ""
+              className={`ml-2 mt-3 flex cursor-pointer items-start text-left text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none ${label === "Unread" ? "text-primary  " : ""
                 }`}
             >
               {unreadItemCount === 0 && (
-                <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+                <IoIosMailUnread className="text-2xl hover:text-primary" />
               )}
               {unreadItemCount > 1 && (
                 <div className=" h-t relative w-7">
                   <div className="pointer-events-none absolute -right-4 -top-0.5 flex size-full">
                     <span className="relative flex size-3">
-                      <span className="absolute inline-flex  size-full animate-ping rounded-full bg-[#02a9ff] opacity-75"></span>
+                      <span className="absolute inline-flex  size-full animate-ping rounded-full bg-primary opacity-75"></span>
                       <span className="relative inline-flex size-3 rounded-full bg-[#0078b4]"></span>
                     </span>
                   </div>
-                  <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+                  <IoIosMailUnread className="text-2xl hover:text-primary" />
                 </div>
               )}
               <p className="mx-2">Unread </p>
@@ -510,84 +510,84 @@ export default function ClientEmail() {
                           HandleGewtLabel(folder.displayName);
                           setLabel(folder.displayName);
                         }}
-                        className={`mx-autro mt-3 flex cursor-pointer text-left text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === folder.displayName ? "text-[#02a9ff]" : ""
+                        className={`mx-autro mt-3 flex cursor-pointer text-left text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none ${label === folder.displayName ? "text-primary" : ""
                           }`}
                       >
                         {(() => {
                           switch (folder.displayName) {
                             case "Trash":
                               return (
-                                <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                                <FaTrash className="text-2xl hover:text-primary" />
                               );
                             case "Sent Items":
                               return (
-                                <IoSend className="text-2xl hover:text-[#02a9ff]" />
+                                <IoSend className="text-2xl hover:text-primary" />
                               );
                             case "Archive":
                               return (
-                                <FaArchive className="text-2xl hover:text-[#02a9ff]" />
+                                <FaArchive className="text-2xl hover:text-primary" />
                               );
                             case "Conversation History":
                               return (
-                                <FaHistory className="text-2xl hover:text-[#02a9ff]" />
+                                <FaHistory className="text-2xl hover:text-primary" />
                               );
                             case "Chat":
                               return (
-                                <MdSms className="text-2xl hover:text-[#02a9ff]" />
+                                <MdSms className="text-2xl hover:text-primary" />
                               );
                             case "Important":
                               return (
-                                <IoMdAlert className="text-2xl hover:text-[#02a9ff]" />
+                                <IoMdAlert className="text-2xl hover:text-primary" />
                               );
                             case "Outbox":
                               return (
-                                <IoSend className="text-2xl hover:text-[#02a9ff]" />
+                                <IoSend className="text-2xl hover:text-primary" />
                               );
                             case "Inbox":
                               return (
-                                <IoIosMail className="text-2xl hover:text-[#02a9ff]" />
+                                <IoIosMail className="text-2xl hover:text-primary" />
                               );
                             case "Drafts":
                               return (
-                                <MdDrafts className="text-2xl hover:text-[#02a9ff]" />
+                                <MdDrafts className="text-2xl hover:text-primary" />
                               );
                             case "Junk Email":
                               return (
-                                <RiSpam3Fill className="text-2xl hover:text-[#02a9ff]" />
+                                <RiSpam3Fill className="text-2xl hover:text-primary" />
                               );
                             case "Starred":
                               return (
-                                <FaStar className="text-2xl hover:text-[#02a9ff]" />
+                                <FaStar className="text-2xl hover:text-primary" />
                               );
                             case "Unread":
                               return (
-                                <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+                                <IoIosMailUnread className="text-2xl hover:text-primary" />
                               );
                             case "Forums":
                               return (
-                                <MdForum className="text-2xl hover:text-[#02a9ff]" />
+                                <MdForum className="text-2xl hover:text-primary" />
                               );
                             case "Updates":
                               return (
-                                <MdSecurityUpdateGood className="text-2xl hover:text-[#02a9ff]" />
+                                <MdSecurityUpdateGood className="text-2xl hover:text-primary" />
                               );
                             case "Personal":
                               return (
-                                <User className="text-2xl hover:text-[#02a9ff]" />
+                                <User className="text-2xl hover:text-primary" />
                               );
                             case "Promotions":
                               return (
-                                <FaCommentDollar className="text-2xl hover:text-[#02a9ff]" />
+                                <FaCommentDollar className="text-2xl hover:text-primary" />
                               );
                             case "Social":
                               return (
-                                <MdOutlineSocialDistance className="text-2xl hover:text-[#02a9ff]" />
+                                <MdOutlineSocialDistance className="text-2xl hover:text-primary" />
                               );
                             case "Deleted Items":
                               return (
                                 <FaTrash
                                   strokeWidth={1.5}
-                                  className="text-2xl hover:text-[#02a9ff]"
+                                  className="text-2xl hover:text-primary"
                                 />
                               );
                             default:
@@ -613,7 +613,7 @@ export default function ClientEmail() {
                           }
                         })()}
 
-                        <p className="ml-2 text-[#fafafa]">{folder.displayName} </p>
+                        <p className="ml-2 text-foreground">{folder.displayName} </p>
                       </button>
                     </ContextMenuTrigger>
                     {/* ContextMenuContent and other items */}
@@ -654,21 +654,21 @@ export default function ClientEmail() {
                       HandleGewtLabel(label);
                     }}
                     value="Unread"
-                    className={`mx-auto ml-2 mt-3 flex cursor-pointer   text-[#fafafa] outline-none transition-all   hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === "Unread" ? "text-[#02a9ff]  " : ""
+                    className={`mx-auto ml-2 mt-3 flex cursor-pointer   text-foreground outline-none transition-all   hover:bg-transparent hover:text-primary focus:outline-none ${label === "Unread" ? "text-primary  " : ""
                       }`}
                   >
                     {unreadItemCount === 0 && (
-                      <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+                      <IoIosMailUnread className="text-2xl hover:text-primary" />
                     )}
                     {unreadItemCount > 1 && (
                       <div className=" h-t relative w-7">
                         <div className="pointer-events-none absolute -right-4 -top-0.5 flex size-full">
                           <span className="relative flex size-3">
-                            <span className="absolute inline-flex  size-full animate-ping rounded-full bg-[#02a9ff] opacity-75"></span>
+                            <span className="absolute inline-flex  size-full animate-ping rounded-full bg-primary opacity-75"></span>
                             <span className="relative inline-flex size-3 rounded-full bg-[#0078b4]"></span>
                           </span>
                         </div>
-                        <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+                        <IoIosMailUnread className="text-2xl hover:text-primary" />
                       </div>
                     )}
                   </button>
@@ -695,8 +695,8 @@ export default function ClientEmail() {
                                 HandleGewtLabel(folder.displayName);
                                 setLabel(folder.displayName);
                               }}
-                              className={`mt-3 flex cursor-pointer items-start text-left text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none ${label === folder.displayName
-                                ? "text-[#02a9ff]"
+                              className={`mt-3 flex cursor-pointer items-start text-left text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none ${label === folder.displayName
+                                ? "text-primary"
                                 : ""
                                 }`}
                             >
@@ -704,77 +704,77 @@ export default function ClientEmail() {
                                 switch (folder.displayName) {
                                   case "Trash":
                                     return (
-                                      <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                                      <FaTrash className="text-2xl hover:text-primary" />
                                     );
                                   case "Sent Items":
                                     return (
-                                      <IoSend className="text-2xl hover:text-[#02a9ff]" />
+                                      <IoSend className="text-2xl hover:text-primary" />
                                     );
                                   case "Archive":
                                     return (
-                                      <FaArchive className="text-2xl hover:text-[#02a9ff]" />
+                                      <FaArchive className="text-2xl hover:text-primary" />
                                     );
                                   case "Conversation History":
                                     return (
-                                      <FaHistory className="text-2xl hover:text-[#02a9ff]" />
+                                      <FaHistory className="text-2xl hover:text-primary" />
                                     );
                                   case "Chat":
                                     return (
-                                      <MdSms className="text-2xl hover:text-[#02a9ff]" />
+                                      <MdSms className="text-2xl hover:text-primary" />
                                     );
                                   case "Important":
                                     return (
-                                      <IoMdAlert className="text-2xl hover:text-[#02a9ff]" />
+                                      <IoMdAlert className="text-2xl hover:text-primary" />
                                     );
                                   case "Outbox":
                                     return (
-                                      <IoSend className="text-2xl hover:text-[#02a9ff]" />
+                                      <IoSend className="text-2xl hover:text-primary" />
                                     );
                                   case "Inbox":
                                     return (
-                                      <IoIosMail className="text-2xl hover:text-[#02a9ff]" />
+                                      <IoIosMail className="text-2xl hover:text-primary" />
                                     );
                                   case "Drafts":
                                     return (
-                                      <MdDrafts className="text-2xl hover:text-[#02a9ff]" />
+                                      <MdDrafts className="text-2xl hover:text-primary" />
                                     );
                                   case "Junk Email":
                                     return (
-                                      <RiSpam3Fill className="text-2xl hover:text-[#02a9ff]" />
+                                      <RiSpam3Fill className="text-2xl hover:text-primary" />
                                     );
                                   case "Starred":
                                     return (
-                                      <FaStar className="text-2xl hover:text-[#02a9ff]" />
+                                      <FaStar className="text-2xl hover:text-primary" />
                                     );
                                   case "Unread":
                                     return (
-                                      <IoIosMailUnread className="text-2xl hover:text-[#02a9ff]" />
+                                      <IoIosMailUnread className="text-2xl hover:text-primary" />
                                     );
                                   case "Forums":
                                     return (
-                                      <MdForum className="text-2xl hover:text-[#02a9ff]" />
+                                      <MdForum className="text-2xl hover:text-primary" />
                                     );
                                   case "Updates":
                                     return (
-                                      <MdSecurityUpdateGood className="text-2xl hover:text-[#02a9ff]" />
+                                      <MdSecurityUpdateGood className="text-2xl hover:text-primary" />
                                     );
                                   case "Personal":
                                     return (
-                                      <User className="text-2xl hover:text-[#02a9ff]" />
+                                      <User className="text-2xl hover:text-primary" />
                                     );
                                   case "Promotions":
                                     return (
-                                      <FaCommentDollar className="text-2xl hover:text-[#02a9ff]" />
+                                      <FaCommentDollar className="text-2xl hover:text-primary" />
                                     );
                                   case "Social":
                                     return (
-                                      <MdOutlineSocialDistance className="text-2xl hover:text-[#02a9ff]" />
+                                      <MdOutlineSocialDistance className="text-2xl hover:text-primary" />
                                     );
                                   case "Deleted Items":
                                     return (
                                       <FaTrash
                                         strokeWidth={1.5}
-                                        className="text-2xl hover:text-[#02a9ff]"
+                                        className="text-2xl hover:text-primary"
                                       />
                                     );
                                   default:
@@ -823,7 +823,7 @@ export default function ClientEmail() {
       <div className=" ">
         {emails?.length === 0 ? (
           <div className="m-auto flex">
-            <p className="mr-3 text-[#fafafa]">No emails available.</p>
+            <p className="mr-3 text-foreground">No emails available.</p>
             <svg
               width="20px"
               height="20px"
@@ -847,7 +847,7 @@ export default function ClientEmail() {
               emails.map((message: any, index: number) => (
                 <div
                   key={index}
-                  className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#27272a] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]"
+                  className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-border hover:border-primary  hover:text-primary active:border-primary"
                   onClick={() => {
                     handleEmailClick(message);
                     handleScriptClick();
@@ -856,7 +856,7 @@ export default function ClientEmail() {
                 >
                   <div>
                     <div className="m-2 flex items-center justify-between">
-                      <p className="text-lg font-bold text-[#fafafa]">
+                      <p className="text-lg font-bold text-foreground">
                         {message.from?.emailAddress?.name}
                       </p>
                       <p className="text-sm text-[#ffffff7c] ">
@@ -880,9 +880,9 @@ export default function ClientEmail() {
                               handleReply(selectedEmail);
                             }, 5);
                           }}
-                          className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
-                          <FaReply className="text-2xl hover:text-[#02a9ff]" />
+                          <FaReply className="text-2xl hover:text-primary" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -892,9 +892,9 @@ export default function ClientEmail() {
                               handleReplyAll(selectedEmail);
                             }, 5);
                           }}
-                          className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
-                          <FaReplyAll className="text-2xl hover:text-[#02a9ff]" />
+                          <FaReplyAll className="text-2xl hover:text-primary" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -904,9 +904,9 @@ export default function ClientEmail() {
                               handleForward(selectedEmail);
                             }, 5);
                           }}
-                          className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
-                          <FaForward className="text-2xl hover:text-[#02a9ff]" />
+                          <FaForward className="text-2xl hover:text-primary" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -924,9 +924,9 @@ export default function ClientEmail() {
                               setReply(false);
                             }, 10);
                           }}
-                          className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
-                          <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                          <FaTrash className="text-2xl hover:text-primary" />
                         </Button>
                       </div>
                     </div>
@@ -945,7 +945,7 @@ export default function ClientEmail() {
       <div className=" w-full">
         {emails?.length === 0 ? (
           <div className="m-auto flex">
-            <p className=" mx-auto -rotate-90 text-[#fafafa]">
+            <p className=" mx-auto -rotate-90 text-foreground">
               No emails available.
             </p>
           </div>
@@ -955,7 +955,7 @@ export default function ClientEmail() {
               emails.map((message: any, index: number) => (
                 <div
                   key={index}
-                  className="mx-auto  w-[99%] cursor-pointer   hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]"
+                  className="mx-auto  w-[99%] cursor-pointer   hover:border-primary  hover:text-primary active:border-primary"
                   onClick={() => {
                     handleEmailClick(message);
                     handleScriptClick();
@@ -966,8 +966,8 @@ export default function ClientEmail() {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button className="mx-auto border-none bg-transparent text-[#fafafa] hover:bg-transparent">
-                            <IoIosMail className="text-2xl hover:text-[#02a9ff]" />
+                          <button className="mx-auto border-none bg-transparent text-foreground hover:bg-transparent">
+                            <IoIosMail className="text-2xl hover:text-primary" />
                           </button>
                         </TooltipTrigger>
                         <TooltipContent className="bg-white text-black ">
@@ -1002,9 +1002,9 @@ export default function ClientEmail() {
                                       handleReply(selectedEmail);
                                     }, 5);
                                   }}
-                                  className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                                  className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                                 >
-                                  <FaReply className="text-2xl hover:text-[#02a9ff]" />
+                                  <FaReply className="text-2xl hover:text-primary" />
                                 </Button>
                                 <Button
                                   variant="ghost"
@@ -1014,9 +1014,9 @@ export default function ClientEmail() {
                                       handleReplyAll(selectedEmail);
                                     }, 5);
                                   }}
-                                  className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                                  className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                                 >
-                                  <FaReplyAll className="text-2xl hover:text-[#02a9ff]" />
+                                  <FaReplyAll className="text-2xl hover:text-primary" />
                                 </Button>
                                 <Button
                                   variant="ghost"
@@ -1026,9 +1026,9 @@ export default function ClientEmail() {
                                       handleForward(selectedEmail);
                                     }, 5);
                                   }}
-                                  className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase  shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                                  className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase  shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                                 >
-                                  <FaForward className="text-2xl hover:text-[#02a9ff]" />
+                                  <FaForward className="text-2xl hover:text-primary" />
                                 </Button>
                                 <Button
                                   variant="ghost"
@@ -1046,9 +1046,9 @@ export default function ClientEmail() {
                                       setReply(false);
                                     }, 10);
                                   }}
-                                  className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase  shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                                  className={`cursor-pointer rounded  p-2 text-center text-xs font-bold uppercase  shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                                 >
-                                  <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                                  <FaTrash className="text-2xl hover:text-primary" />
                                 </Button>
                               </div>
                             </div>
@@ -1113,9 +1113,9 @@ export default function ClientEmail() {
   };
   return (
     <>
-      <div className=" !mx-auto mt-[60px] flex !h-[90vh] !w-[95%]  !bg-[#09090b]">
+      <div className=" !mx-auto mt-[60px] flex !h-[90vh] !w-[95%]  !bg-background">
         <Card
-          className={`mx-2 justify-between border-[#27272a] transition delay-300 duration-1000 ease-in-out ${selectedCategorySize ? "w-[15%]" : "w-[7%]"
+          className={`mx-2 justify-between border-border transition delay-300 duration-1000 ease-in-out ${selectedCategorySize ? "w-[15%]" : "w-[7%]"
             }`}
         >
           <CardHeader className="flex justify-center ">
@@ -1134,7 +1134,7 @@ export default function ClientEmail() {
                     setSelectShrink(true);
                     setSelectedScript(true);
                   }}
-                  className={` m-2 mx-auto w-[90%] cursor-pointer justify-center rounded !border border-[#27272a] p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                  className={` m-2 mx-auto w-[90%] cursor-pointer justify-center rounded !border border-border p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                 >
 
                   <p className="mx-2">Compose</p>
@@ -1148,9 +1148,9 @@ export default function ClientEmail() {
                     setSelectedEmail(null);
                     setOpenReply(false);
                   }}
-                  className={` mx-auto w-[98%] cursor-pointer    text-[#fafafa] shadow outline-none   hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                  className={` mx-auto w-[98%] cursor-pointer    text-foreground shadow outline-none   hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                 >
-                  <FaPencil className="text-2xl hover:text-[#02a9ff]" />
+                  <FaPencil className="text-2xl hover:text-primary" />
                 </button>
               )}
             </CardTitle>
@@ -1162,26 +1162,26 @@ export default function ClientEmail() {
           <CardFooter className=" flex  justify-center">
             {selectedCategorySize && (
               <Button
-                className="mx-auto  bg-transparent text-[#fafafa] duration-200  hover:bg-transparent    "
+                className="mx-auto  bg-transparent text-foreground duration-200  hover:bg-transparent    "
                 onClick={handleCategoryClickClose}
               >
-                <MdOutlineKeyboardDoubleArrowLeft className="   text-xl hover:text-[#02a9ff]" />
+                <MdOutlineKeyboardDoubleArrowLeft className="   text-xl hover:text-primary" />
               </Button>
             )}
             {!selectedCategorySize && (
               <Button
                 variant="ghost"
-                className="  mx-auto bg-transparent text-[#fafafa]  hover:bg-transparent  "
+                className="  mx-auto bg-transparent text-foreground  hover:bg-transparent  "
                 onClick={handleCategoryClick}
               >
-                <MdOutlineKeyboardDoubleArrowRight className=" text-2xl hover:text-[#02a9ff]" />
+                <MdOutlineKeyboardDoubleArrowRight className=" text-2xl hover:text-primary" />
               </Button>
             )}
           </CardFooter>
         </Card>
 
         <Card
-          className={`mx-2 border-[#27272a] transition delay-300 duration-1000 ease-in-out
+          className={`mx-2 border-border transition delay-300 duration-1000 ease-in-out
             ${selectedSubcategory ? "grow" : "w-[30%]"}
             ${selectShrink ? "w-[7%]" : ""}  `}
         >
@@ -1193,9 +1193,9 @@ export default function ClientEmail() {
                     size='sm'
                     variant="ghost"
                     onClick={handleSubcategoryClick}
-                    className="m-2 border-[#27272a] cursor-pointer justify-center rounded !border !border-transparent p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                    className="m-2 border-border cursor-pointer justify-center rounded !border !border-transparent p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none"
                   >
-                    <p className="my-3 ml-3 text-[#fafafa]">{label}</p>
+                    <p className="my-3 ml-3 text-foreground">{label}</p>
                     <p className="my-3 ml-3 text-[#868686]">
                       {(() => {
                         switch (label) {
@@ -1223,7 +1223,7 @@ export default function ClientEmail() {
                   <Button
                     size='sm'
                     variant="ghost"
-                    className="mx-auto mt-auto -rotate-90 bg-transparent text-[#fafafa] hover:bg-transparent border-[#27272a]"
+                    className="mx-auto mt-auto -rotate-90 bg-transparent text-foreground hover:bg-transparent border-border"
                     onClick={handleSubcategoryClick}
                   >
                     {label}
@@ -1235,12 +1235,12 @@ export default function ClientEmail() {
               <div>
                 {selectedSubcategory && (
                   <Button
-                    className=" relative bg-transparent  text-[#fafafa] duration-200 hover:bg-transparent    "
+                    className=" relative bg-transparent  text-foreground duration-200 hover:bg-transparent    "
                     onClick={() => {
                       handleCategoryClickselectShrink();
                     }}
                   >
-                    <MdOutlineKeyboardDoubleArrowLeft className="   text-2xl hover:text-[#02a9ff]" />
+                    <MdOutlineKeyboardDoubleArrowLeft className="   text-2xl hover:text-primary" />
                   </Button>
                 )}
               </div>
@@ -1249,7 +1249,7 @@ export default function ClientEmail() {
               <Input
                 name="search"
                 placeholder="Search"
-                className="m-2 mx-auto w-[95%] border border-[#27272a] bg-[#09090b] text-[#fafafa] focus:border-[#02a9ff]"
+                className="m-2 mx-auto w-[95%] border border-border bg-background text-foreground focus:border-primary"
               />
             )}
           </CardHeader>
@@ -1267,7 +1267,7 @@ export default function ClientEmail() {
         </Card>
 
         <Card
-          className={`mx-2 border-[#27272a] transition delay-300 duration-1000 ease-in-out
+          className={`mx-2 border-border transition delay-300 duration-1000 ease-in-out
             ${selectedScript ? "w-[50%]" : "w-[15%]"}  ${selectGrow ? "w-full" : " "
             }  ${composeEmail ? "w-full" : " "
             } `}
@@ -1277,7 +1277,7 @@ export default function ClientEmail() {
               <div className=" h-auto max-h-[80vh]  ">
                 {openReply === true && (
                   <div className="email flex   flex-col  ">
-                    <div className="flex justify-between !border-b !border-[#27272a]">
+                    <div className="flex justify-between !border-b !border-border">
                       <div className="!my-2 !flex">
                         <Button
                           variant="ghost"
@@ -1288,9 +1288,9 @@ export default function ClientEmail() {
                             HandleGewtLabel(label);
                             GetNextEmail(emails);
                           }}
-                          className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
-                          <ImCross className="text-2xl hover:text-[#02a9ff]" />
+                          <ImCross className="text-2xl hover:text-primary" />
                         </Button>
 
                         <Button
@@ -1301,9 +1301,9 @@ export default function ClientEmail() {
                             GetNextEmail(emails);
                             toast.success(`Email deleted!`);
                           }}
-                          className={`cursor-pointer text-center text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}
+                          className={`cursor-pointer text-center text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none `}
                         >
-                          <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                          <FaTrash className="text-2xl hover:text-primary" />
                         </Button>
                         {label !== "Trash" && (
                           <Button
@@ -1312,9 +1312,9 @@ export default function ClientEmail() {
                               GetNextEmail(emails);
                             }}
                             variant="outline"
-                            className="border-transparent text-[#fafafa] hover:bg-transparent hover:text-[#02a9ff]"
+                            className="border-transparent text-foreground hover:bg-transparent hover:text-primary"
                           >
-                            <MdMarkunreadMailbox className="text-2xl hover:text-[#02a9ff]" />
+                            <MdMarkunreadMailbox className="text-2xl hover:text-primary" />
                           </Button>
                         )}
                         {label === "Trash" && (
@@ -1324,7 +1324,7 @@ export default function ClientEmail() {
                               handleDeleteClick(label, selectedEmail.id);
                               GetNextEmail(emails);
                             }}
-                            className={`cursor-pointer text-center text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}
+                            className={`cursor-pointer text-center text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none `}
                           >
                             Send To Inbox
                           </Button>
@@ -1335,9 +1335,9 @@ export default function ClientEmail() {
                             onClick={() => {
                               handleCloseReplyClick();
                             }}
-                            className={`cursor-pointer text-center text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}
+                            className={`cursor-pointer text-center text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none `}
                           >
-                            <RiContractLeftRightLine className="text-2xl hover:text-[#02a9ff]" />
+                            <RiContractLeftRightLine className="text-2xl hover:text-primary" />
                           </Button>
                         )}
                         {!selectGrow && (
@@ -1346,9 +1346,9 @@ export default function ClientEmail() {
                             onClick={() => {
                               handleReplyClick();
                             }}
-                            className={`cursor-pointer text-center text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}
+                            className={`cursor-pointer text-center text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none `}
                           >
-                            <BsArrowsExpandVertical className="text-2xl hover:text-[#02a9ff]" />
+                            <BsArrowsExpandVertical className="text-2xl hover:text-primary" />
                           </Button>
                         )}
                       </div>
@@ -1360,9 +1360,9 @@ export default function ClientEmail() {
                               handleReply(selectedEmail);
                             }, 5);
                           }}
-                          className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
-                          <FaReply className="text-2xl hover:text-[#02a9ff]" />
+                          <FaReply className="text-2xl hover:text-primary" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -1371,9 +1371,9 @@ export default function ClientEmail() {
                               handleReplyAll(selectedEmail);
                             }, 5);
                           }}
-                          className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
-                          <FaReplyAll className="text-2xl hover:text-[#02a9ff]" />
+                          <FaReplyAll className="text-2xl hover:text-primary" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -1382,9 +1382,9 @@ export default function ClientEmail() {
                               handleForward(selectedEmail);
                             }, 5);
                           }}
-                          className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
-                          <FaForward className="text-2xl hover:text-[#02a9ff]" />
+                          <FaForward className="text-2xl hover:text-primary" />
                         </Button>
 
                         <DropdownMenu>
@@ -1392,13 +1392,13 @@ export default function ClientEmail() {
                             asChild
                             className="m-auto mr-4 cursor-pointer"
                           >
-                            <BsThreeDotsVertical className="text-2xl text-[#fafafa] hover:text-[#02a9ff]" />
+                            <BsThreeDotsVertical className="text-2xl text-foreground hover:text-primary" />
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent className="w-56 bg-[#09090b]">
+                          <DropdownMenuContent className="w-56 bg-background">
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
                               <DropdownMenuItem
-                                className="cursor-pointer hover:text-[#02a9ff]"
+                                className="cursor-pointer hover:text-primary"
                                 onClick={() => {
                                   handleReply(selectedEmail);
                                 }}
@@ -1406,7 +1406,7 @@ export default function ClientEmail() {
                                 Reply
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                className="cursor-pointer hover:text-[#02a9ff]"
+                                className="cursor-pointer hover:text-primary"
                                 onClick={() => {
                                   handleReplyAll(selectedEmail);
                                 }}
@@ -1414,7 +1414,7 @@ export default function ClientEmail() {
                                 Reply All
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                className="cursor-pointer hover:text-[#02a9ff]"
+                                className="cursor-pointer hover:text-primary"
                                 onClick={() => {
                                   handleForward(selectedEmail);
                                 }}
@@ -1422,7 +1422,7 @@ export default function ClientEmail() {
                                 Forward
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                className="cursor-pointer hover:text-[#02a9ff]"
+                                className="cursor-pointer hover:text-primary"
                                 onClick={() => {
                                   handleDeleteClick(label, selectedEmail?.id);
                                   HandleGewtLabel(label);
@@ -1433,7 +1433,7 @@ export default function ClientEmail() {
                                 Delete
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                className="cursor-pointer hover:text-[#02a9ff]"
+                                className="cursor-pointer hover:text-primary"
                                 onClick={() => {
                                   messageUnRead(
                                     app.authProvider!,
@@ -1448,7 +1448,7 @@ export default function ClientEmail() {
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
                               <DropdownMenuSub>
-                                <DropdownMenuSubTrigger className="cursor-pointer hover:text-[#02a9ff]">
+                                <DropdownMenuSubTrigger className="cursor-pointer hover:text-primary">
                                   Move
                                 </DropdownMenuSubTrigger>
                                 <DropdownMenuPortal>
@@ -1456,7 +1456,7 @@ export default function ClientEmail() {
                                     {folders.map((item, index) => {
                                       return (
                                         <DropdownMenuItem
-                                          className="cursor-pointer hover:text-[#02a9ff]"
+                                          className="cursor-pointer hover:text-primary"
                                           key={index}
                                           onClick={() => {
                                             MoveEmail(selectedEmail, labelName);
@@ -1484,38 +1484,38 @@ export default function ClientEmail() {
                       </div>
                     </div>
                     {!reply && (
-                      <div className="my-2 rounded-md border border-[#27272a]">
+                      <div className="my-2 rounded-md border border-border">
                         <div className="m-2 flex items-center justify-between">
-                          <p className="text-bold  text-lg text-[#fafafa]">
+                          <p className="text-bold  text-lg text-foreground">
                             {selectedEmail?.sender.emailAddress.name}
                           </p>
-                          <p className="text-bold text-sm text-[#fafafa]">
+                          <p className="text-bold text-sm text-foreground">
                             {new Date(
                               selectedEmail?.receivedDateTime
                             ).toLocaleString()}
                           </p>
                         </div>
-                        <p className="text-bold ml-2 text-sm text-[#fafafa]">
+                        <p className="text-bold ml-2 text-sm text-foreground">
                           {selectedEmail?.sender.emailAddress.address}
                         </p>
                       </div>
                     )}
                     {reply && (
-                      <div className=" justify-center border-b border-[#27272a]">
+                      <div className=" justify-center border-b border-border">
                         <Input
                           defaultValue={to}
                           name="to"
-                          className="m-2 mx-auto w-[98%] bg-[#09090b] text-[#fafafa]"
+                          className="m-2 mx-auto w-[98%] bg-background text-foreground"
                         />
                         <Input
                           defaultValue={subject}
                           name="subject"
-                          className="m-2 mx-auto w-[98%] bg-[#09090b] text-[#fafafa]"
+                          className="m-2 mx-auto w-[98%] bg-background text-foreground"
                         />
                       </div>
                     )}
                     {selectedEmail?.body && (
-                      <div className="!grow  !border-t border-[#27272a] bg-white">
+                      <div className="!grow  !border-t border-border bg-white">
                         <p className="  !text-sm  ">
                           <div className="parent-container">
                             <MyIFrameComponent />
@@ -1524,7 +1524,7 @@ export default function ClientEmail() {
                       </div>
                     )}
                     {reply && (
-                      <div className="mb-2 items-end justify-end rounded-md border-l border-t border-[#27272a]">
+                      <div className="mb-2 items-end justify-end rounded-md border-l border-t border-border">
                         <EditorTiptapHook content={null} user={user} />
 
                         <input type="hidden" defaultValue={text} name="body" />
@@ -1535,7 +1535,7 @@ export default function ClientEmail() {
                               toast.success(`Email saved!`);
                               SaveDraft();
                             }}
-                            className={` ml-2 cursor-pointer rounded border border-[#fff] bg-transparent p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                            className={` ml-2 cursor-pointer rounded border border-[#fff] bg-transparent p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                           >
                             Save Draft
                           </Button>
@@ -1549,7 +1549,7 @@ export default function ClientEmail() {
                                 setReply(false);
                               }, 5);
                             }}
-                            className={` mr-2 cursor-pointer rounded border border-[#fff] bg-transparent p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                            className={` mr-2 cursor-pointer rounded border border-[#fff] bg-transparent p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                           >
                             Send
                           </Button>
@@ -1563,7 +1563,7 @@ export default function ClientEmail() {
             <div className=" h-auto  max-h-[90vh]  ">
               {composeEmail === true && (
                 <div className="email flex h-full w-auto  flex-col">
-                  <div className="flex justify-between border-b border-[#27272a]">
+                  <div className="flex justify-between border-b border-border">
                     <div className="my-2 ml-auto flex">
                       <Button
                         variant="ghost"
@@ -1571,13 +1571,13 @@ export default function ClientEmail() {
                           setComposeEmail(false);
                           HandleGewtLabel(label);
                         }}
-                        className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                        className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                       >
-                        <ImCross className="text-2xl hover:text-[#02a9ff]" />
+                        <ImCross className="text-2xl hover:text-primary" />
                       </Button>
                     </div>
                   </div>
-                  <div className=" justify-center border-b border-[#27272a]">
+                  <div className=" justify-center border-b border-border">
                     <Input
                       type="text"
                       onChange={(e) => {
@@ -1585,7 +1585,7 @@ export default function ClientEmail() {
                       }}
                       placeholder="To"
                       name="to"
-                      className="m-2 mx-auto w-[98%] bg-[#09090b] text-[#fafafa]"
+                      className="m-2 mx-auto w-[98%] bg-background text-foreground"
                     />
                     <Input
                       onChange={(e) => {
@@ -1593,7 +1593,7 @@ export default function ClientEmail() {
                       }}
                       placeholder="Subject"
                       name="subject"
-                      className="m-2 mx-auto w-[98%] bg-[#09090b] text-[#fafafa]"
+                      className="m-2 mx-auto w-[98%] bg-background text-foreground"
                     />
                     <div className="mx-auto mt-2 flex w-[98%]">
                       <Input
@@ -1602,7 +1602,7 @@ export default function ClientEmail() {
                         }}
                         name="cc"
                         placeholder="cc"
-                        className="mx-auto mb-2 mr-1 bg-[#09090b]  text-[#fafafa]"
+                        className="mx-auto mb-2 mr-1 bg-background  text-foreground"
                       />
                       <Input
                         onChange={(e) => {
@@ -1610,12 +1610,12 @@ export default function ClientEmail() {
                         }}
                         name="bcc"
                         placeholder="bcc"
-                        className="mx-auto ml-1 bg-[#09090b] text-right  text-[#fafafa]"
+                        className="mx-auto ml-1 bg-background text-right  text-foreground"
                       />
                     </div>
                   </div>
 
-                  <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#27272a]">
+                  <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-border">
                     <EditorTiptapHookCompose
                       content={null}
                       user={user}
@@ -1638,7 +1638,7 @@ export default function ClientEmail() {
             <div className=" h-auto max-h-[80vh] ">
               {selectGrow === true && (
                 <div className="email flex   flex-col  ">
-                  <div className="flex justify-between !border-b !border-[#27272a]">
+                  <div className="flex justify-between !border-b !border-border">
                     <div className="!my-2 !flex">
                       <Button
                         variant="ghost"
@@ -1649,9 +1649,9 @@ export default function ClientEmail() {
                           HandleGewtLabel(label);
                           GetNextEmail(emails);
                         }}
-                        className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                        className={`  cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                       >
-                        <ImCross className="text-2xl hover:text-[#02a9ff]" />
+                        <ImCross className="text-2xl hover:text-primary" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -1661,9 +1661,9 @@ export default function ClientEmail() {
                           GetNextEmail(emails);
                           toast.success(`Email deleted!`);
                         }}
-                        className={`cursor-pointer text-center text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}
+                        className={`cursor-pointer text-center text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none `}
                       >
-                        <FaTrash className="text-2xl hover:text-[#02a9ff]" />
+                        <FaTrash className="text-2xl hover:text-primary" />
                       </Button>
                       {label !== "Trash" && (
                         <Button
@@ -1672,9 +1672,9 @@ export default function ClientEmail() {
                             GetNextEmail(emails);
                           }}
                           variant="outline"
-                          className="border-transparent text-[#fafafa] hover:bg-transparent hover:text-[#02a9ff]"
+                          className="border-transparent text-foreground hover:bg-transparent hover:text-primary"
                         >
-                          <MdMarkunreadMailbox className="text-2xl hover:text-[#02a9ff]" />
+                          <MdMarkunreadMailbox className="text-2xl hover:text-primary" />
                         </Button>
                       )}
                       {label === "Trash" && (
@@ -1684,7 +1684,7 @@ export default function ClientEmail() {
                             handleDeleteClick(label, selectedEmail.id);
                             GetNextEmail(emails);
                           }}
-                          className={`cursor-pointer text-center text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}
+                          className={`cursor-pointer text-center text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none `}
                         >
                           Send To Inbox
                         </Button>
@@ -1695,9 +1695,9 @@ export default function ClientEmail() {
                           onClick={() => {
                             handleCloseReplyClick();
                           }}
-                          className={`cursor-pointer text-center text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}
+                          className={`cursor-pointer text-center text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none `}
                         >
-                          <RiContractLeftRightLine className="text-2xl hover:text-[#02a9ff]" />
+                          <RiContractLeftRightLine className="text-2xl hover:text-primary" />
                         </Button>
                       )}
                       {!selectGrow && (
@@ -1706,9 +1706,9 @@ export default function ClientEmail() {
                           onClick={() => {
                             handleReplyClick();
                           }}
-                          className={`cursor-pointer text-center text-[#fafafa] outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] focus:outline-none `}
+                          className={`cursor-pointer text-center text-foreground outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary focus:outline-none `}
                         >
-                          <BsArrowsExpandVertical className="text-2xl hover:text-[#02a9ff]" />
+                          <BsArrowsExpandVertical className="text-2xl hover:text-primary" />
                         </Button>
                       )}
                     </div>
@@ -1720,9 +1720,9 @@ export default function ClientEmail() {
                             handleReply(selectedEmail);
                           }, 5);
                         }}
-                        className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                        className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                       >
-                        <FaReply className="text-2xl hover:text-[#02a9ff]" />
+                        <FaReply className="text-2xl hover:text-primary" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -1731,9 +1731,9 @@ export default function ClientEmail() {
                             handleReplyAll(selectedEmail);
                           }, 5);
                         }}
-                        className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                        className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                       >
-                        <FaReplyAll className="text-2xl hover:text-[#02a9ff]" />
+                        <FaReplyAll className="text-2xl hover:text-primary" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -1742,22 +1742,22 @@ export default function ClientEmail() {
                             handleForward(selectedEmail);
                           }, 5);
                         }}
-                        className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                        className={`cursor-pointer rounded  p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                       >
-                        <FaForward className="text-2xl hover:text-[#02a9ff]" />
+                        <FaForward className="text-2xl hover:text-primary" />
                       </Button>
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           asChild
                           className="m-auto mr-4 cursor-pointer"
                         >
-                          <BsThreeDotsVertical className="text-2xl text-[#fafafa] hover:text-[#02a9ff]" />
+                          <BsThreeDotsVertical className="text-2xl text-foreground hover:text-primary" />
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56 bg-[#09090b]">
+                        <DropdownMenuContent className="w-56 bg-background">
                           <DropdownMenuSeparator />
                           <DropdownMenuGroup>
                             <DropdownMenuItem
-                              className="cursor-pointer hover:text-[#02a9ff]"
+                              className="cursor-pointer hover:text-primary"
                               onClick={() => {
                                 handleReply(selectedEmail);
                               }}
@@ -1765,7 +1765,7 @@ export default function ClientEmail() {
                               Reply
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              className="cursor-pointer hover:text-[#02a9ff]"
+                              className="cursor-pointer hover:text-primary"
                               onClick={() => {
                                 handleReplyAll(selectedEmail);
                               }}
@@ -1773,7 +1773,7 @@ export default function ClientEmail() {
                               Reply All
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              className="cursor-pointer hover:text-[#02a9ff]"
+                              className="cursor-pointer hover:text-primary"
                               onClick={() => {
                                 handleForward(selectedEmail);
                               }}
@@ -1781,7 +1781,7 @@ export default function ClientEmail() {
                               Forward
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              className="cursor-pointer hover:text-[#02a9ff]"
+                              className="cursor-pointer hover:text-primary"
                               onClick={() => {
                                 handleDeleteClick(label, selectedEmail?.id);
                                 HandleGewtLabel(label);
@@ -1792,7 +1792,7 @@ export default function ClientEmail() {
                               Delete
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              className="cursor-pointer hover:text-[#02a9ff]"
+                              className="cursor-pointer hover:text-primary"
                               onClick={() => {
                                 messageUnRead(
                                   app.authProvider!,
@@ -1807,7 +1807,7 @@ export default function ClientEmail() {
                           <DropdownMenuSeparator />
                           <DropdownMenuGroup>
                             <DropdownMenuSub>
-                              <DropdownMenuSubTrigger className="cursor-pointer hover:text-[#02a9ff]">
+                              <DropdownMenuSubTrigger className="cursor-pointer hover:text-primary">
                                 Move
                               </DropdownMenuSubTrigger>
                               <DropdownMenuPortal>
@@ -1815,7 +1815,7 @@ export default function ClientEmail() {
                                   {folders.map((item, index) => {
                                     return (
                                       <DropdownMenuItem
-                                        className="cursor-pointer hover:text-[#02a9ff]"
+                                        className="cursor-pointer hover:text-primary"
                                         key={index}
                                         onClick={() => {
                                           MoveEmail(selectedEmail, labelName);
@@ -1842,21 +1842,21 @@ export default function ClientEmail() {
                       </DropdownMenu>
                     </div>
                   </div>
-                  <div className="flex justify-center border-b border-[#27272a]">
+                  <div className="flex justify-center border-b border-border">
                     <Input
                       defaultValue={to}
                       name="to"
-                      className="m-2 mx-auto mr-2 w-[98%] bg-[#09090b] text-[#fafafa]"
+                      className="m-2 mx-auto mr-2 w-[98%] bg-background text-foreground"
                     />
                     <Input
                       defaultValue={subject}
                       name="subject"
-                      className="m-2 mx-auto ml-2 w-[98%] bg-[#09090b] text-[#fafafa]"
+                      className="m-2 mx-auto ml-2 w-[98%] bg-background text-foreground"
                     />
                   </div>
 
                   <div className=" grid grid-cols-2">
-                    <div className="!grow  !border-t border-[#27272a] bg-white">
+                    <div className="!grow  !border-t border-border bg-white">
                       <p className="  !text-sm  ">
                         <div className="parent-container  ">
                           <MyIFrameComponent />
@@ -1864,7 +1864,7 @@ export default function ClientEmail() {
                       </p>
                     </div>
 
-                    <div className="w-full mx-auto mb-2 mt-auto rounded-md border-l border-t border-[#27272a]">
+                    <div className="w-full mx-auto mb-2 mt-auto rounded-md border-l border-t border-border">
                       <EditorTiptapHook content={null} user={user} />
 
                       <input type="hidden" defaultValue={text} name="body" />
@@ -1875,7 +1875,7 @@ export default function ClientEmail() {
                             toast.success(`Email saved!`);
                             SaveDraft();
                           }}
-                          className={` ml-2 cursor-pointer rounded border border-[#fff] bg-transparent p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={` ml-2 cursor-pointer rounded border border-[#fff] bg-transparent p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
                           Save Draft
                         </Button>
@@ -1889,7 +1889,7 @@ export default function ClientEmail() {
                               setReply(false);
                             }, 5);
                           }}
-                          className={` mr-2 cursor-pointer rounded border border-[#fff] bg-transparent p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                          className={` mr-2 cursor-pointer rounded border border-[#fff] bg-transparent p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                         >
                           Send
                         </Button>
@@ -1909,10 +1909,10 @@ export default function ClientEmail() {
 
 /***           <div className='mx-auto mt-2 flex w-[98%]' >
                           {cc & cc.length > 1 && (
-                            <Input defaultValue={cc} name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-[#09090b]  text-[#fafafa]' />
+                            <Input defaultValue={cc} name='cc' placeholder='cc' className='mx-auto mb-2 mr-1 bg-background  text-foreground' />
                           )}
                           {bcc & bcc.length > 1 && (
-                            <Input defaultValue={bcc} name='bcc' placeholder='bcc' className='mx-auto ml-1 bg-[#09090b] text-right  text-[#fafafa]' />
+                            <Input defaultValue={bcc} name='bcc' placeholder='bcc' className='mx-auto ml-1 bg-background text-right  text-foreground' />
                           )}
                         </div> */
 /**
@@ -1922,11 +1922,11 @@ export default function ClientEmail() {
  *
  *
  *   <Form method='post'>
-          <div className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#27272a] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]"
+          <div className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-border hover:border-primary  hover:text-primary active:border-primary"
             onClick={() => {
               HandleGewtLabel(label)
             }}>
-            <p className='text-center mx-auto   text-[#fafafa] my-3' >
+            <p className='text-center mx-auto   text-foreground my-3' >
               More
 
             </p>
@@ -1949,7 +1949,7 @@ export default function ClientEmail() {
                       setReply(false)
                     }, 5);
                   }}
-                  className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fafafa] shadow outline-none transition-all duration-150 ease-linear hover:bg-[#95959f] bg-transparent hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                  className={` mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-foreground shadow outline-none transition-all duration-150 ease-linear hover:bg-[#95959f] bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}
                 >
                   Send
                 </Button>

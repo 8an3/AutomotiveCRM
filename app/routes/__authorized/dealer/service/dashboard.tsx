@@ -181,7 +181,7 @@ import { GrUserWorker } from "react-icons/gr";
 export default function Dashboard() {
   const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList } = useLoaderData();
   return (
-    <div className="flex min-h-screen w-full flex-col bg-[#151518]">
+    <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-0 hidden w-14 flex-col border-r bg-transparent sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
           <Link
@@ -363,8 +363,8 @@ export default function Dashboard() {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-6">
-              <Card className="sm:col-span-2 bg-[#09090b] text-[#fafafa]" x-chunk="dashboard-05-chunk-0"  >
-                <CardHeader className="flex flex-row items-start bg-[#18181a] rounded-md">
+              <Card className="sm:col-span-2 bg-background text-foreground" x-chunk="dashboard-05-chunk-0"  >
+                <CardHeader className="flex flex-row items-start bg-muted-background rounded-md">
                   <div className="grid">
                     <CardTitle className="group flex items-center text-sm">
                       Customer Info
@@ -374,20 +374,20 @@ export default function Dashboard() {
                 <CardContent>
                   <ul className="grid gap-3 text-sm mt-2">
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         First Name
                       </span>
                       <span>{finance[0].firstName}</span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Last Name
                       </span>
                       <span> {finance[0].lastName}</span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Phone
                         </span>
                         <Button
@@ -399,13 +399,13 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].phone && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance[0].phone && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance[0].phone}  </span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Email
                         </span>
                         <Button
@@ -417,13 +417,13 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].email && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance[0].email && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance[0].email}  </span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Address
                         </span>
                         <Button
@@ -435,25 +435,25 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].address && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance[0].address && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance[0].address}  </span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         City
                       </span>
                       <span>{finance[0].city}</span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Postal
                       </span>
                       <span>{finance[0].postal}</span>
                     </li>
                   </ul>
                 </CardContent>
-                <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
                   <div>
                     <Badge >{finance[0].customerState}</Badge>
                   </div>
@@ -466,19 +466,19 @@ export default function Dashboard() {
                         </span>
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                    <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                       <Form method='post'>
                         <DialogHeader className="px-4 pb-4 pt-5">
                           <DialogTitle>Edit Customer Profile Info</DialogTitle>
                         </DialogHeader>
-                        <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                        <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                         <div className="grid gap-3 mx-3 mb-3">
                           <div className="grid gap-3">
                             <Label htmlFor="name"> First Name</Label>
                             <Input
                               defaultValue={clientFile.firstName} name='firstName'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
                           </div>
                           <div className="grid gap-3">
@@ -486,7 +486,7 @@ export default function Dashboard() {
                             <Input
                               defaultValue={clientFile.lastName} name='lastName'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
                           </div>
                           <div className="grid gap-3">
@@ -494,7 +494,7 @@ export default function Dashboard() {
                             <Input
                               defaultValue={clientFile.phone} name='phone'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
                           </div>
                           <div className="grid gap-3">
@@ -502,7 +502,7 @@ export default function Dashboard() {
                             <Input
                               defaultValue={clientFile.email} name='email'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
                           </div>
                           <div className="grid gap-3">
@@ -510,7 +510,7 @@ export default function Dashboard() {
                             <Input
                               defaultValue={clientFile.address} name='address'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
                           </div>
                           <div className="grid gap-3">
@@ -518,7 +518,7 @@ export default function Dashboard() {
                             <Input
                               defaultValue={clientFile.city} name='city'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
                           </div>
                           <div className="grid gap-3">
@@ -526,7 +526,7 @@ export default function Dashboard() {
                             <Input
                               defaultValue={clientFile.postal} name='postal'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
                           </div>
                           <div className="grid gap-3">
@@ -534,7 +534,7 @@ export default function Dashboard() {
                             <Input
                               defaultValue={clientFile.dl} name='dl'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
                           </div>
 
@@ -555,7 +555,7 @@ export default function Dashboard() {
                         <input type='hidden' name="clientId" defaultValue={finance[0].id} />
                         <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
 
-                        <DialogFooter className=" border-t border-[#27272a] p-4  ">
+                        <DialogFooter className=" border-t border-border p-4  ">
                           <div className='flex justify-center' >
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
@@ -566,7 +566,7 @@ export default function Dashboard() {
                                   Save changes
                                 </Button>
                               </AlertDialogTrigger>
-                              <AlertDialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                              <AlertDialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                                 <AlertDialogHeader>
                                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                   <AlertDialogDescription>
@@ -603,8 +603,8 @@ export default function Dashboard() {
                   </Dialog>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-1 " className="bg-[#09090b] text-[#fafafa] sm:col-span-2">
-                <CardHeader className="flex flex-row items-start bg-[#18181a] rounded-md">
+              <Card x-chunk="dashboard-05-chunk-1 " className="bg-background text-foreground sm:col-span-2">
+                <CardHeader className="flex flex-row items-start bg-muted-background rounded-md">
                   <div className="grid ">
                     <CardTitle className="group flex items-center text-sm">
                       Current Vehichle
@@ -621,20 +621,20 @@ export default function Dashboard() {
                 <CardContent className='text-sm'>
                   <ul className="grid gap-3 mt-3">
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Year
                       </span>
                       <span>{finance[0].year}</span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Brand
                       </span>
                       <span>{finance[0].brand}</span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Model
                         </span>
                         <Button
@@ -646,20 +646,20 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance[0].model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance[0].model}  </span>
                     </li>
 
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Color
                       </span>
                       <span>{finance[0].color}</span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           VIN
                         </span>
                         <Button
@@ -671,19 +671,19 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance[0].vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance[0].vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance[0].vin}  </span>
                     </li>
 
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Current Mileage
                       </span>
                       <span>{finance[0].mileage}</span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Location
                       </span>
                       <span>{finance[0].location}</span>
@@ -694,8 +694,8 @@ export default function Dashboard() {
                 <CardFooter>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2" className="bg-[#09090b] text-[#fafafa] sm:col-span-2 rounded-md flex flex-col h-full">
-                <CardHeader className="flex flex-row items-start bg-[#18181a]">
+              <Card x-chunk="dashboard-05-chunk-2" className="bg-background text-foreground sm:col-span-2 rounded-md flex flex-col h-full">
+                <CardHeader className="flex flex-row items-start bg-muted-background">
                   <div className="grid">
                     <CardTitle className="group flex items-center text-sm">
                       Work Orders
@@ -770,7 +770,7 @@ export default function Dashboard() {
                     )}
                   </div>
                 </CardContent>
-                <CardFooter className="flex justify-self-end flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                <CardFooter className="flex justify-self-end flex-row items-center border-t border-border bg-muted-background px-6 py-3">
                   <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => handleProgressUnits()}>
                     <Truck className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -860,7 +860,7 @@ export default function Dashboard() {
                       <div className="relative hidden flex-col items-start gap-8 md:flex">
                         <fieldset className="grid gap-6 rounded-lg border p-4">
                           <legend className="-ml-1 px-1 text-sm font-medium">Job Cods</legend>
-                          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                           <div className="font-semibold flex-grow !grow overflow-y-scroll overflow-x-clip">Fees</div>
                           <ul className="grid gap-3  max-h-[20vh] h-auto">
                             <li className="flex items-center justify-between">
@@ -974,7 +974,7 @@ export default function Dashboard() {
                       <div className="relative hidden flex-col items-start gap-8 md:flex">
                         <fieldset className="grid gap-6 rounded-lg border p-4">
                           <legend className="-ml-1 px-1 text-sm font-medium">Job Cods</legend>
-                          <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                           <div className="font-semibold flex-grow !grow overflow-y-scroll overflow-x-clip">Fees</div>
                           <ul className="grid gap-3  max-h-[20vh] h-auto">
                             <li className="flex items-center justify-between">

@@ -81,13 +81,13 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="hidden space-y-6 p-10 pb-16 md:block bg-[#09090b] text-[#fafafa]">
+      <div className="hidden space-y-6 p-10 pb-16 md:block bg-background text-foreground">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight">Admin</h2>
           <p className="text-muted-foreground">
             Manage your site.
           </p>
-          <hr className="my-3 text-[#27272a]" />
+          <hr className="my-3 text-muted-foreground" />
 
         </div>
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
@@ -126,13 +126,13 @@ export function ErrorBoundary() {
       <RootDocumentBoundary title={message}>
         <AdminLayout>
           <PageAdminHeader size="sm">
-            <h1 className='text-[#fafafa]'>Error {error.status}</h1>
+            <h1 className='text-foreground'>Error {error.status}</h1>
             {error.statusText && <h2>{error.statusText}</h2>}
-            <p className='text-[#fafafa]'>{message}</p>
+            <p className='text-foreground'>{message}</p>
           </PageAdminHeader>
           <section className="px-layout space-y-2">
-            <p className='text-[#fafafa]'>Here's the error information that can be informed to Rewinds.</p>
-            <Debug className='text-[#fafafa]' name="error.data" isAlwaysShow isCollapsibleOpen>
+            <p className='text-foreground'>Here's the error information that can be informed to Rewinds.</p>
+            <Debug className='text-foreground' name="error.data" isAlwaysShow isCollapsibleOpen>
               {error.data}
             </Debug>
           </section>
@@ -144,18 +144,18 @@ export function ErrorBoundary() {
       <RootDocumentBoundary title="Sorry, unexpected error occured.">
         <AdminLayout>
           <PageAdminHeader size="sm">
-            <h1 className='text-[#fafafa]'>Error from {configSite.name}</h1>
+            <h1 className='text-foreground'>Error from {configSite.name}</h1>
           </PageAdminHeader>
           <section className="px-layout space-y-2">
-            <p className='text-[#fafafa]'>Here's the error information that can be informed to Rewinds.</p>
+            <p className='text-foreground'>Here's the error information that can be informed to Rewinds.</p>
 
-            <pre className='text-[#fafafa]'>{error.message}</pre>
+            <pre className='text-foreground'>{error.message}</pre>
             <Debug name="error" isAlwaysShow isCollapsibleOpen>
               {error}
             </Debug>
 
-            <p className='text-[#fafafa]'>The stack trace is:</p>
-            <Debug className='text-[#fafafa]' name="error.stack" isAlwaysShow isCollapsibleOpen>
+            <p className='text-foreground'>The stack trace is:</p>
+            <Debug className='text-foreground' name="error.stack" isAlwaysShow isCollapsibleOpen>
               {error.stack}
             </Debug>
           </section>
@@ -165,7 +165,7 @@ export function ErrorBoundary() {
   } else {
     return (
       <AdminLayout>
-        <h1 className='text-[#fafafa]'>Unknown Error</h1>
+        <h1 className='text-foreground'>Unknown Error</h1>
       </AdminLayout>
     );
   }

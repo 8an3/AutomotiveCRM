@@ -91,7 +91,7 @@ export default function LogCall({ data }) {
         type='submit'
 
       >
-        <p className="cursor-pointer text-[#fafafa] hover:text-[#02a9ff] target:text-[#02a9ff]" >
+        <p className="cursor-pointer text-foreground hover:text-primary target:text-primary" >
           <PhoneOutcome />
         </p>
       </button>
@@ -137,13 +137,13 @@ export default function LogCall({ data }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <p className="cursor-pointer text-[#fafafa] hover:text-[#02a9ff] target:text-[#02a9ff]" >
+        <p className="cursor-pointer text-foreground hover:text-primary target:text-primary" >
           <PhoneOutcome />
         </p>
       </DialogTrigger>
       <DialogContent className="w-full md:w-3/4 bg-white border border-black">
         <DialogHeader>
-          <DialogTitle className=" text-black hover:text-[#02a9ff] target:text-[#02a9ff]">
+          <DialogTitle className=" text-black hover:text-primary target:text-primary">
             Log Call
           </DialogTitle>
           <DialogDescription>

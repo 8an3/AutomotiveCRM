@@ -453,12 +453,12 @@ export default function SearchLeads() {
 
   })
   return (
-    <div className="mx-auto mt-[10px] w-[95%] justify-center text-[#fafafa]">
+    <div className="mx-auto mt-[10px] w-[95%] justify-center text-foreground">
       <div className="flex items-center py-4 justify-between">
         <div className='flex'>
           <Input
             value={globalFilter ?? ''}
-            onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-[#262626] w-[400px] border border-[#262626] bg-[#09090b] p-2 text-[#fafafa] shadow"
+            onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-[#262626] w-[400px] border border-[#262626] bg-background p-2 text-foreground shadow"
             placeholder="Search all columns..."
           />
           <Input
@@ -469,10 +469,10 @@ export default function SearchLeads() {
             onChange={(event) =>
               table.getColumn('phone')?.setFilterValue(event.target.value)
             }
-            className="ml-2 max-w-sm border-[#262626] bg-[#09090b] p-2 text-[#fafafa]"
+            className="ml-2 max-w-sm border-[#262626] bg-background p-2 text-foreground"
           />
           <select value={filterBy} onChange={handleDropdownChange}
-            className={`border-[#262626] bg-[#09090b] p-2 text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+            className={`border-[#262626] bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
           >
             <option value='' >Search By Model</option>
             {models.map((model, index) => (
@@ -482,7 +482,7 @@ export default function SearchLeads() {
             ))}
           </select>
 
-          <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-[#262626] bg-[#09090b] p-2 text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+          <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-[#262626] bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
           >
             Clear
           </Button>
@@ -490,10 +490,10 @@ export default function SearchLeads() {
 
       </div>
       <div className="rounded-md border border-[#262626]">
-        <Table className=" border-[#262626] text-[#fafafa]">
-          <TableHeader className=" border-[#262626] text-[#fafafa]">
+        <Table className=" border-[#262626] text-foreground">
+          <TableHeader className=" border-[#262626] text-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className=" border-[#262626] text-[#fafafa]">
+              <TableRow key={headerGroup.id} className=" border-[#262626] text-foreground">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -509,14 +509,14 @@ export default function SearchLeads() {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className=" border-[#262626] text-[#fafafa]">
+          <TableBody className=" border-[#262626] text-foreground">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
 
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className=" border-[#262626] text-[#fafafa] hover:bg-[#232324] rounded-md w-[97%] cursor-pointer"
+                  className=" border-[#262626] text-foreground hover:bg-muted/50 rounded-md w-[97%] cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -530,7 +530,7 @@ export default function SearchLeads() {
 
               ))
             ) : (
-              <TableRow className=" border-[#262626] text-[#fafafa]">
+              <TableRow className=" border-[#262626] text-foreground">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"
@@ -553,7 +553,7 @@ export default function SearchLeads() {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="border-[#27272a] text-[#fafafa]"
+            className="border-border text-foreground"
           >
             Previous
           </Button>
@@ -562,7 +562,7 @@ export default function SearchLeads() {
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="border-[#27272a] text-[#fafafa]"
+            className="border-border text-foreground"
           >
             Next
           </Button>
@@ -570,85 +570,85 @@ export default function SearchLeads() {
       </div>
 
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+        <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
           <Form method='post'>
             <DialogHeader className="px-4 pb-4 pt-5">
               <DialogTitle>Edit Customer Profile Info</DialogTitle>
             </DialogHeader>
-            <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+            <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
             <div className="grid gap-3 mx-3 mb-3">
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.firstName} name='firstName'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.lastName} name='lastName'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.phone} name='phone'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.email} name='email'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.brand} name='brand'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.model} name='model'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-foc
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-foc
                 us:text-blue-500">Model</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.brand2} name='brand2'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand 2</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand 2</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.model2} name='model2'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model 2</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model 2</label>
               </div>
               <div className="relative mt-3">
                 <Input
                   defaultValue={data.leadNote} name='leadNote'
                   type="text"
-                  className="w-full bg-[#09090b] border-[#27272a] "
+                  className="w-full bg-background border-border "
                 />
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
               </div>
               <input type='hidden' name='id' defaultValue={data.id} />
               <input type='hidden' name='userEmail' defaultValue={user.email} />

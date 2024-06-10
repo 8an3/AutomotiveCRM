@@ -391,7 +391,7 @@ export default function Dashboard() {
                 variant={"outline"}
                 className={cn(
                   "w-[240px] justify-start text-left font-normal",
-                  !date && "text-[#909098]"
+                  !date && "text-muted-foreground"
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -412,11 +412,11 @@ export default function Dashboard() {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff]",
-                  !date && " text-[#fafafa]"
+                  "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary hover:border-primary",
+                  !date && " text-foreground"
                 )}
               >
-                <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                <div className=' text-foreground  mx-auto flex justify-center  '>
                   <ClockIcon className="mr-2 size-8 " />
                   {currentTime ? (time) : <span>Pick a Time</span>}
                 </div>
@@ -425,7 +425,7 @@ export default function Dashboard() {
             <PopoverContent className="w-[240px] bg-white p-0 text-black" align="start">
               <div className='align-center my-3 flex justify-center   '>
                 <Select name='pickHour' value={hour} onValueChange={setHour}>
-                  <SelectTrigger className="m-3 w-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] hover:border-[#02a9ff]" >
+                  <SelectTrigger className="m-3 w-auto bg-transparent hover:bg-transparent hover:text-primary hover:border-primary" >
                     <SelectValue placeholder={hour} defaultValue={hour} />
                   </SelectTrigger>
                   <SelectContent className='bg-white text-black' >
@@ -1948,14 +1948,14 @@ export default function Dashboard() {
   //------------------------------------------------------------------------------//
   //------------------------------------------------------------------------------//
   //------------------------------------------------------------------------------//
-  /**  <Select className='bg-[#09090b] text-[#fafafa] border-[#262626] hover:text-[#02a9ff]  hover:border-[#02a9ff]'
+  /**  <Select className='bg-background text-foreground border-[#262626] hover:text-primary  hover:border-primary'
                       onValueChange={(value) => {
 
                       }}>
-                      <SelectTrigger className="w-auto bg-[#09090b] text-[#fafafa] border-[#262626] hover:border-[#02a9ff] hover:text-[#02a9ff] mr-3 ">
+                      <SelectTrigger className="w-auto bg-background text-foreground border-[#262626] hover:border-primary hover:text-primary mr-3 ">
                         <SelectValue>Customer Progress</SelectValue>
                       </SelectTrigger>
-                      <SelectContent className='bg-[#151518] text-[#fafafa]'>
+                      <SelectContent className='bg-muted/40 text-foreground'>
                         {ClientResultFunction({ formData }).map((item) => (
                           <SelectItem
                             checked={item.value === 'on' || (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'))}
@@ -1973,14 +1973,14 @@ export default function Dashboard() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="h-7 gap-1 text-sm text-[#fafafa] border-[#f2f2f2]"
+                          className="h-7 gap-1 text-sm text-foreground border-[#f2f2f2]"
                         >
                           Customer Progress
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <Form method='post' >
-                          <ScrollArea className="h-[500px] w-[200px] rounded-md p-4 bg-[#151518] text-[#fafafa]">
+                          <ScrollArea className="h-[500px] w-[200px] rounded-md p-4 bg-muted/40 text-foreground">
                             {items.map((item) => {
                               const isChecked =
                                 item.value === 'on' ||
@@ -2008,13 +2008,13 @@ export default function Dashboard() {
 
                     */
   return (
-    <div className="flex min-h-screen w-full flex-col bg-[#151518]">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-[#09090b] sm:flex">
+    <div className="flex min-h-screen w-full flex-col bg-muted/40">
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <SidebarNav mergedFinanceList={mergedFinanceList} finance={finance} />
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <header className=" w-[50%] sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-transparent px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <Breadcrumb className="hidden md:flex  text-[#fafafa]">
+          <Breadcrumb className="hidden md:flex  text-foreground">
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
@@ -2049,8 +2049,8 @@ export default function Dashboard() {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-6">
-              <Card className="sm:col-span-2 bg-[#09090b] text-[#fafafa]" x-chunk="dashboard-05-chunk-0"  >
-                <CardHeader className="flex flex-row items-start bg-[#18181a] rounded-md">
+              <Card className="sm:col-span-2 bg-background text-foreground rounded-lg" x-chunk="dashboard-05-chunk-0"  >
+                <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
                   <div className="grid">
                     <CardTitle className="group flex items-center text-sm">
                       Customer Info
@@ -2060,20 +2060,20 @@ export default function Dashboard() {
                 <CardContent>
                   <ul className="grid gap-3 text-sm mt-2">
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         First Name
                       </span>
                       <span>{finance.firstName}</span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Last Name
                       </span>
                       <span> {finance.lastName}</span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Phone
                         </span>
                         <Button
@@ -2085,13 +2085,13 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance.phone && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.phone && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance.phone}  </span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Email
                         </span>
                         <Button
@@ -2103,13 +2103,13 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance.email && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.email && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance.email}  </span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Address
                         </span>
                         <Button
@@ -2121,25 +2121,25 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance.address && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.address && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance.address}  </span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         City
                       </span>
                       <span>{finance.city}</span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Postal
                       </span>
                       <span>{finance.postal}</span>
                     </li>
                   </ul>
                 </CardContent>
-                <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted/50 px-6 py-3">
                   <div>
                     <Badge >{finance.customerState}</Badge>
                   </div>
@@ -2152,76 +2152,76 @@ export default function Dashboard() {
                         </span>
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                    <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                       <Form method='post'>
                         <DialogHeader className="px-4 pb-4 pt-5">
                           <DialogTitle>Edit Customer Profile Info</DialogTitle>
                         </DialogHeader>
-                        <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                        <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                         <div className="grid gap-3 mx-3 mb-3">
                           <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.firstName} name='firstName'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
                           </div>
                           <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.lastName} name='lastName'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
                           </div>
                           <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.phone} name='phone'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
                           </div>
                           <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.email} name='email'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
                           </div>
                           <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.address} name='address'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
                           </div>
                           <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.city} name='city'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">City</label>
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">City</label>
                           </div>
                           <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.postal} name='postal'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Postal Code</label>
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Postal Code</label>
                           </div>
                           <div className="relative mt-3">
                             <Input
                               defaultValue={clientFile.dl} name='dl'
                               type="text"
-                              className="w-full bg-[#09090b] border-[#27272a] "
+                              className="w-full bg-background border-border "
                             />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Drivers Lic.</label>
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Drivers Lic.</label>
                           </div>
 
                         </div>
@@ -2241,7 +2241,7 @@ export default function Dashboard() {
                         <input type='hidden' name="clientId" defaultValue={finance.id} />
                         <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
 
-                        <DialogFooter className=" border-t border-[#27272a] p-4  ">
+                        <DialogFooter className=" border-t border-border p-4  ">
                           <div className='flex justify-center' >
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
@@ -2252,7 +2252,7 @@ export default function Dashboard() {
                                   Save changes
                                 </Button>
                               </AlertDialogTrigger>
-                              <AlertDialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                              <AlertDialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                                 <AlertDialogHeader>
                                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                   <AlertDialogDescription>
@@ -2289,8 +2289,8 @@ export default function Dashboard() {
                   </Dialog>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-1 " className="bg-[#09090b] text-[#fafafa] sm:col-span-2">
-                <CardHeader className="flex flex-row items-start bg-[#18181a] rounded-md">
+              <Card x-chunk="dashboard-05-chunk-1 " className="bg-background text-foreground rounded-lg sm:col-span-2">
+                <CardHeader className="flex flex-row items-start  bg-muted/50  rounded-md">
                   <div className="grid ">
                     <CardTitle className="group flex items-center text-sm">
                       Current Vehichle
@@ -2307,20 +2307,20 @@ export default function Dashboard() {
                 <CardContent className='text-sm'>
                   <ul className="grid gap-3 mt-3">
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Year
                       </span>
                       <span>{finance.year}</span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Brand
                       </span>
                       <span>{finance.brand}</span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           Model
                         </span>
                         <Button
@@ -2332,20 +2332,20 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance.model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance.model}  </span>
                     </li>
 
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Color
                       </span>
                       <span>{finance.color}</span>
                     </li>
                     <li className=" group flex items-center justify-between">
                       <div className='flex'>
-                        <span className="text-[#909098]">
+                        <span className="text-muted-foreground">
                           VIN
                         </span>
                         <Button
@@ -2357,19 +2357,19 @@ export default function Dashboard() {
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance.vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-[#02a9ff]" />}
+                        {copiedText === finance.vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
                       <span>{finance.vin}  </span>
                     </li>
 
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Current Mileage
                       </span>
                       <span>{finance.mileage}</span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span className="text-[#909098]">
+                      <span className="text-muted-foreground">
                         Location
                       </span>
                       <span>{finance.location}</span>
@@ -2380,8 +2380,8 @@ export default function Dashboard() {
                 <CardFooter>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2" className="bg-[#09090b] text-[#fafafa] sm:col-span-2 rounded-md flex flex-col h-full">
-                <CardHeader className="flex flex-row items-start bg-[#18181a]">
+              <Card x-chunk="dashboard-05-chunk-2" className="bg-background text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
+                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                   <div className="grid">
                     <CardTitle className="group flex items-center text-sm">
                       Customer Progress
@@ -2457,7 +2457,7 @@ export default function Dashboard() {
                     )}
                   </div>
                 </CardContent>
-                <CardFooter className="flex justify-self-end flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
                   <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => handleProgressUnits()}>
                     <Truck className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -2479,12 +2479,12 @@ export default function Dashboard() {
                 </TabsList>
 
               </div>
-              <TabsContent value="Sales" className="  text-[#fafafa] rounded-lg">
+              <TabsContent value="Sales" className="  text-foreground rounded-lg">
                 <div className='grid grid-cols-2' >
                   <Card
-                    className="overflow-hidden  flex flex-col h-full" x-chunk="dashboard-05-chunk-4 mx-2"
+                    className="overflow-hidden  flex flex-col h-full rounded-lg" x-chunk="dashboard-05-chunk-4 mx-2"
                   >
-                    <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                    <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
                           Wanted Vehichle
@@ -2500,13 +2500,13 @@ export default function Dashboard() {
                       </div>
 
                     </CardHeader>
-                    <CardContent className="flex-grow !grow  p-6 text-sm bg-[#09090b]">
+                    <CardContent className="flex-grow !grow  p-6 text-sm bg-background">
 
                       {editUnits === false && (
                         <ul className="grid gap-3">
                           {WantedData.map((item, index) => (
                             <li key={index} className="flex items-center justify-between">
-                              <span className="text-[#909098]">
+                              <span className="text-muted-foreground">
                                 {item.placeholder}
                               </span>
                               <span>{item.value}</span>
@@ -2519,10 +2519,10 @@ export default function Dashboard() {
                           <ul className="grid gap-3">
                             {WantedData.map((item, index) => (
                               <li key={index} className="flex items-center justify-between">
-                                <span className="text-[#909098]">
+                                <span className="text-muted-foreground">
                                   {item.placeholder}
                                 </span>
-                                <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-[#09090b] border-[#27272a]' />
+                                <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-background border-border' />
 
                               </li>
                             ))}
@@ -2544,7 +2544,7 @@ export default function Dashboard() {
                         </fetcher.Form>
                       )}
                     </CardContent>
-                    <CardFooter className="flex justify-self-end flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                    <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
                       <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditUnits())}>
                         <Truck className="h-3.5 w-3.5" />
                         <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -2558,13 +2558,13 @@ export default function Dashboard() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-7 gap-1 text-sm text-[#fafafa] border-[#f2f2f2]"
+                            className="h-7 gap-1 text-sm text-foreground border-[#f2f2f2]"
                           >
                             <ListFilter className="h-3.5 w-3.5" />
                             <span className="sr-only sm:not-sr-only"> Sales Person</span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="text-[#fafafa] bg-[#09090b] border-[#27272a]">
+                        <DropdownMenuContent align="end" className="text-foreground bg-background border-border">
                           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuCheckboxItem checked>
@@ -2581,9 +2581,9 @@ export default function Dashboard() {
                     </CardFooter>
                   </Card>
                   <Card
-                    className="overflow-hidden mx-2  flex flex-col h-full" x-chunk="dashboard-05-chunk-4"
+                    className="overflow-hidden mx-2  flex flex-col h-full rounded-lg" x-chunk="dashboard-05-chunk-4"
                   >
-                    <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                    <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
                           Trade Vehichle
@@ -2599,13 +2599,13 @@ export default function Dashboard() {
                       </div>
 
                     </CardHeader>
-                    <CardContent className="flex-grow !grow  p-6 text-sm bg-[#09090b]">
+                    <CardContent className="flex-grow !grow  p-6 text-sm bg-background">
 
                       {editTradeUnits === false && (
                         <ul className="grid gap-3">
                           {TradeData.map((item, index) => (
                             <li key={index} className="flex items-center justify-between">
-                              <span className="text-[#909098]">
+                              <span className="text-muted-foreground">
                                 {item.placeholder}
                               </span>
                               <span>{item.value}</span>
@@ -2620,10 +2620,10 @@ export default function Dashboard() {
                           <ul className="grid gap-3">
                             {TradeData.map((item, index) => (
                               <li key={index} className="flex items-center justify-between">
-                                <span className="text-[#909098]">
+                                <span className="text-muted-foreground">
                                   {item.placeholder}
                                 </span>
-                                <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-[#09090b] border-[#27272a]' />
+                                <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-background border-border' />
                               </li>
                             ))}
                           </ul>
@@ -2644,7 +2644,7 @@ export default function Dashboard() {
                         </fetcher.Form>
                       )}
                     </CardContent>
-                    <CardFooter className=" items-end justify-end  flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                    <CardFooter className=" items-end justify-end  flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
                       <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditTradeUnits())}>
                         <Truck className="h-3.5 w-3.5" />
                         <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -2658,8 +2658,8 @@ export default function Dashboard() {
               <TabsContent value="Finance">
                 <div className="">
                   <div className="mx-auto mt-10 mb-10">
-                    <Card className=" w-[550px] rounded-md text-[#fafafa] mx-auto">
-                      <CardHeader className="bg-[#18181a] flex flex-row items-start t-rounded-md">
+                    <Card className=" w-[550px] rounded-lg text-foreground mx-auto">
+                      <CardHeader className=" bg-muted/50  flex flex-row items-start t-rounded-lg">
                         <div className="grid gap-0.5">
                           <CardTitle className="group flex items-center gap-2 text-lg">
                             Payment Calculator
@@ -2715,7 +2715,7 @@ export default function Dashboard() {
                                   />
                                   <ButtonLoading
                                     size="lg"
-                                    className="ml-auto w-full cursor-pointer p-5 hover:text-[#02a9ff]"
+                                    className="ml-auto w-full cursor-pointer p-5 hover:text-primary"
                                     type="submit"
                                     isSubmitting={isSubmitting}
                                     onClick={() =>
@@ -2735,7 +2735,7 @@ export default function Dashboard() {
                       </CardHeader>
                       {secPage && (
                         <>
-                          <CardContent className="p-6 text-sm bg-[#09090b]">
+                          <CardContent className="p-6 text-sm bg-background">
                             <div className="grid gap-3">
                               <div className="font-semibold">Payment Details</div>
                               <li className="flex items-center justify-between">
@@ -2780,7 +2780,7 @@ export default function Dashboard() {
                                     <Input
                                       name="msrp"
                                       id="msrp"
-                                      className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                      className="h-8 w-20 text-right bg-background border-border "
                                       autoComplete="msrp"
                                       defaultValue={formData.msrp}
                                       onChange={handleChange}
@@ -2792,7 +2792,7 @@ export default function Dashboard() {
                                     <span className="text-[#8a8a93]">Freight</span>
                                     <span>
                                       <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
                                         defaultValue={formData.freight}
                                         placeholder="freight"
                                         type="text"
@@ -2808,7 +2808,7 @@ export default function Dashboard() {
                                     <span className="text-[#8a8a93]">PDI</span>
                                     <span>
                                       <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
                                         defaultValue={formData.pdi}
                                         placeholder="pdi"
                                         type="text"
@@ -2823,7 +2823,7 @@ export default function Dashboard() {
                                     <span className="text-[#8a8a93]">Admin</span>
                                     <span>
                                       <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right  bg-[#09090b] border-[#27272a] "
+                                        className="mt-2 h-8 w-20 items-end justify-end  text-right  bg-background border-border "
                                         defaultValue={formData.admin}
                                         placeholder="admin"
                                         type="text"
@@ -2838,7 +2838,7 @@ export default function Dashboard() {
                                     <span className="text-[#8a8a93]">Commodity</span>
                                     <span>
                                       <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-[#09090b] border-[#27272a] "
+                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
                                         defaultValue={formData.commodity}
                                         placeholder="commodity"
                                         type="text"
@@ -2855,7 +2855,7 @@ export default function Dashboard() {
                                     <Input
                                       name="accessories"
                                       id="msrp"
-                                      className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                      className="h-8 w-20 text-right bg-background border-border "
                                       autoComplete="msrp"
                                       defaultValue={formData.accessories}
                                       onChange={handleChange}
@@ -2868,7 +2868,7 @@ export default function Dashboard() {
                                     <Input
                                       name="labour"
                                       id="msrp"
-                                      className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                      className="h-8 w-20 text-right bg-background border-border "
                                       autoComplete="msrp"
                                       defaultValue={formData.labour}
                                       onChange={handleChange}
@@ -2879,7 +2879,7 @@ export default function Dashboard() {
                                   <span className="text-[#8a8a93]">Licensing</span>
                                   <span>
                                     <Input
-                                      className="ml-auto mt-2 h-8 w-20  justify-end text-right bg-[#09090b] border-[#27272a] "
+                                      className="ml-auto mt-2 h-8 w-20  justify-end text-right bg-background border-border "
                                       defaultValue={licensing}
                                       placeholder="licensing"
                                       type="text"
@@ -2904,15 +2904,15 @@ export default function Dashboard() {
                             */}
                               </ul>
                             </div>
-                            <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                             <div className="font-semibold">Standard Terms</div>
                             <div className="my-4">
                               <div className="main-button-group flex justify-between ">
                                 <Badge
                                   id="myButton"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${mainButton === "payments"
-                                    ? "active bg-[#c72323] text-[#fafafa]"
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                                    ? "active bg-[#c72323] text-foreground"
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleMainButtonClick("payments")}
                                 >
@@ -2921,9 +2921,9 @@ export default function Dashboard() {
 
                                 <Badge
                                   id="myButton1"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff] shadow   hover:text-[#fafafa] ${mainButton === "noTax"
-                                    ? "active bg-[#0a0a0a]2 text-[#fafafa] "
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                                    ? "active bg-[#0a0a0a]2 text-foreground "
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleMainButtonClick("noTax")}
                                 >
@@ -2932,9 +2932,9 @@ export default function Dashboard() {
 
                                 <Badge
                                   id="myButton2"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff]   shadow hover:text-[#fafafa] ${mainButton === "customTax"
-                                    ? "active bg-[#c72323] text-[#fafafa]"
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                                    ? "active bg-[#c72323] text-foreground"
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleMainButtonClick("customTax")}
                                 >
@@ -2944,9 +2944,9 @@ export default function Dashboard() {
                               <div className="sub-button-group mt-2 flex justify-between">
                                 <Badge
                                   id="myButton3"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff] shadow hover:text-[#fafafa] ${subButton === "withoutOptions"
-                                    ? "active bg-[#c72323] text-[#fafafa]"
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                                    ? "active bg-[#c72323] text-foreground"
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleSubButtonClick("withoutOptions")}
                                 >
@@ -2955,9 +2955,9 @@ export default function Dashboard() {
 
                                 <Badge
                                   id="myButton5"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${subButton === "withOptions"
-                                    ? "active bg-[#c72323] text-[#fafafa]"
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                                    ? "active bg-[#c72323] text-foreground"
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleSubButtonClick("withOptions")}
                                 >
@@ -3080,7 +3080,7 @@ export default function Dashboard() {
                                       <Input
                                         name="othTax"
                                         id="othTax"
-                                        className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                        className="h-8 w-20 text-right bg-background border-border "
                                         autoComplete="othTax"
                                         defaultValue={formData.othTax}
                                         onChange={handleChange}
@@ -3141,14 +3141,14 @@ export default function Dashboard() {
                               </div>
                             )}
 
-                            <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                             <div className="font-semibold">Contract Variables</div>
                             <div className="grid grid-cols-2 ">
                               <div className=" mt-2 ">
                                 <div className="grid w-full max-w-sm items-center gap-1.5">
                                   <label htmlFor="Term">Term</label>
                                   <Input
-                                    className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                                    className="h-8 w-20 bg-background border-border "
                                     name="months"
                                     id="months"
                                     autoComplete="months"
@@ -3164,7 +3164,7 @@ export default function Dashboard() {
                                     Rate
                                   </label>
                                   <Input
-                                    className="h-8 w-20 items-end justify-end text-right bg-[#09090b] border-[#27272a]  "
+                                    className="h-8 w-20 items-end justify-end text-right bg-background border-border  "
                                     name="iRate"
                                     id="iRate"
                                     autoComplete="iRate"
@@ -3177,7 +3177,7 @@ export default function Dashboard() {
                                 <div className="grid w-full max-w-sm items-center gap-1.5">
                                   <label htmlFor="deposit">Deposit</label>
                                   <Input
-                                    className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                                    className="h-8 w-20 bg-background border-border "
                                     name="deposit"
                                     id="deposit"
                                     autoComplete="deposit"
@@ -3191,7 +3191,7 @@ export default function Dashboard() {
                                 <div className="grid w-full max-w-sm items-center gap-1.5 ">
                                   <label htmlFor="tradeValue">Trade Value</label>
                                   <Input
-                                    className="ml-auto h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                    className="ml-auto h-8 w-20 text-right bg-background border-border "
                                     name="tradeValue"
                                     id="tradeValue"
                                     autoComplete="tradeValue"
@@ -3204,7 +3204,7 @@ export default function Dashboard() {
                                 <div className="grid w-full max-w-sm items-center gap-1.5">
                                   <label htmlFor="deposit">Lien</label>
                                   <Input
-                                    className="h-8 w-20 bg-[#09090b] border-[#27272a] "
+                                    className="h-8 w-20 bg-background border-border "
                                     name="lien"
                                     id="lien"
                                     autoComplete="lien"
@@ -3216,12 +3216,12 @@ export default function Dashboard() {
                               </div>
                             </div>
 
-                            <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                             <Drawer>
                               <DrawerTrigger asChild>
                                 <Button variant="outline">Other Inputs</Button>
                               </DrawerTrigger>
-                              <DrawerContent className='bg-[#09090b] text-[#fafafa]'>
+                              <DrawerContent className='bg-background text-foreground'>
                                 <div className="mx-auto w-full max-w-sm">
                                   <DrawerHeader>
                                     <DrawerTitle>Other Inputs</DrawerTitle>
@@ -3236,7 +3236,7 @@ export default function Dashboard() {
                                             <Input
                                               name="discount"
                                               id="msrp"
-                                              className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                              className="h-8 w-20 text-right bg-background border-border "
                                               autoComplete="msrp"
                                               defaultValue={discount}
                                               onChange={handleChange}
@@ -3249,7 +3249,7 @@ export default function Dashboard() {
                                             <Input
                                               name="discountPer"
                                               id="msrp"
-                                              className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                              className="h-8 w-20 text-right bg-background border-border "
                                               autoComplete="msrp"
                                               defaultValue={0}
                                               onChange={handleChange}
@@ -3262,7 +3262,7 @@ export default function Dashboard() {
                                             <Input
                                               name="deliveryCharge"
                                               id="msrp"
-                                              className="h-8 w-20 text-right bg-[#09090b] border-[#27272a] "
+                                              className="h-8 w-20 text-right bg-background border-border "
                                               autoComplete="msrp"
                                               defaultValue={deliveryCharge}
                                               onChange={handleChange}
@@ -3288,7 +3288,7 @@ export default function Dashboard() {
                             </Drawer>
 
 
-                            <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                             <div className="font-semibold">Total</div>
                             <ul className="grid gap-3">
                               {perDiscountGiven > 0 && (
@@ -3449,7 +3449,7 @@ export default function Dashboard() {
                       )}
                       {firstPage && (
                         <>
-                          <CardContent className="p-6 text-sm  bg-[#09090b]">
+                          <CardContent className="p-6 text-sm  bg-background">
                             <div className="grid gap-3">
                               <div className="font-semibold">Payment Details</div>
                               <ul className="grid gap-3">
@@ -3490,7 +3490,7 @@ export default function Dashboard() {
                                 )}
 
                               </ul>
-                              <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                              <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                               <div className="font-semibold">Price</div>
                               <ul className="grid gap-3">
                                 <li className="flex items-center justify-between">
@@ -3551,7 +3551,7 @@ export default function Dashboard() {
                                 )}
 
                               </ul>
-                              <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                              <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                               <div className="font-semibold">Fees</div>
                               <ul className="grid gap-3">
                                 {deFees.userAirTax > 0 && (
@@ -3624,15 +3624,15 @@ export default function Dashboard() {
                                 )}
                               </ul>
                             </div>
-                            <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                             <div className="font-semibold">Standard Terms</div>
                             <div className="mt-3">
                               <div className="main-button-group flex justify-between ">
                                 <Badge
                                   id="myButton"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${mainButton === "payments"
-                                    ? "active bg-[#c72323] text-[#fafafa]"
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                                    ? "active bg-[#c72323] text-foreground"
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleMainButtonClick("payments")}
                                 >
@@ -3641,9 +3641,9 @@ export default function Dashboard() {
 
                                 <Badge
                                   id="myButton1"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff] shadow   hover:text-[#fafafa] ${mainButton === "noTax"
-                                    ? "active bg-[#0a0a0a]2 text-[#fafafa] "
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                                    ? "active bg-[#0a0a0a]2 text-foreground "
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleMainButtonClick("noTax")}
                                 >
@@ -3652,9 +3652,9 @@ export default function Dashboard() {
 
                                 <Badge
                                   id="myButton2"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff]   shadow hover:text-[#fafafa] ${mainButton === "customTax"
-                                    ? "active bg-[#c72323] text-[#fafafa]"
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                                    ? "active bg-[#c72323] text-foreground"
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleMainButtonClick("customTax")}
                                 >
@@ -3664,9 +3664,9 @@ export default function Dashboard() {
                               <div className="sub-button-group mt-2 flex justify-between">
                                 <Badge
                                   id="myButton3"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff] shadow hover:text-[#fafafa] ${subButton === "withoutOptions"
-                                    ? "active bg-[#c72323] text-[#fafafa]"
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                                    ? "active bg-[#c72323] text-foreground"
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleSubButtonClick("withoutOptions")}
                                 >
@@ -3675,9 +3675,9 @@ export default function Dashboard() {
 
                                 <Badge
                                   id="myButton5"
-                                  className={`button  transform cursor-pointer bg-[#02a9ff]  shadow hover:text-[#fafafa]  ${subButton === "withOptions"
-                                    ? "active bg-[#c72323] text-[#fafafa]"
-                                    : "bg-[#0a0a0a] text-[#fafafa]"
+                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                                    ? "active bg-[#c72323] text-foreground"
+                                    : "bg-[#0a0a0a] text-foreground"
                                     }`}
                                   onClick={() => handleSubButtonClick("withOptions")}
                                 >
@@ -3844,7 +3844,7 @@ export default function Dashboard() {
                               </div>
                             )}
 
-                            <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                             <div className="font-semibold">Contract Variables</div>
                             <ul className="grid gap-3 mt-3">
                               <li className="flex items-center justify-between">
@@ -3872,7 +3872,7 @@ export default function Dashboard() {
                             </ul>
 
 
-                            <hr className="my-4 text-[#27272a] w-[95%] mx-auto" />
+                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
                             <div className="font-semibold">Total</div>
                             <ul className="grid gap-3">
                               {perDiscountGiven > 0 && (
@@ -4032,7 +4032,7 @@ export default function Dashboard() {
                         </>
                       )}
 
-                      <CardFooter className="bg-[#18181a]  flex flex-row items-center border-t px-6 py-3  b-rounded-md">
+                      <CardFooter className=" bg-muted/50   flex flex-row items-center border-t px-6 py-3  b-rounded-md">
                         <div className="text-[#8a8a93] text-xs">
                           Updated <time dateTime="2023-11-23">November 23, 2023</time>
                         </div>
@@ -4083,9 +4083,9 @@ export default function Dashboard() {
               </TabsList>
               <TabsContent value="Actions">
                 <Card
-                  className="overflow-hidden text-[#fafafa]" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"
                 >
-                  <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
                         Actions
@@ -4102,18 +4102,18 @@ export default function Dashboard() {
                     </div>
 
                   </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
                     <div className="grid gap-3 max-h-[20vh] h-auto">
                       <div className="font-semibold">Customer Interactions</div>
                       <ul className="grid gap-3">
                         <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">
+                          <span className="text-muted-foreground">
                             Glimmer Lamps x <span>2</span>
                           </span>
                           <span>$250.00</span>
                         </li>
                         <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">
+                          <span className="text-muted-foreground">
                             Aqua Filters x <span>1</span>
                           </span>
                           <span>$49.00</span>
@@ -4122,27 +4122,27 @@ export default function Dashboard() {
                       <Separator className="my-2" />
                       <ul className="grid gap-3">
                         <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">Subtotal</span>
+                          <span className="text-muted-foreground">Subtotal</span>
                           <span>$299.00</span>
                         </li>
                         <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">Shipping</span>
+                          <span className="text-muted-foreground">Shipping</span>
                           <span>$5.00</span>
                         </li>
                         <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">Tax</span>
+                          <span className="text-muted-foreground">Tax</span>
                           <span>$25.00</span>
                         </li>
                         <li className="flex items-center justify-between font-semibold">
-                          <span className="text-[#909098]">Total</span>
+                          <span className="text-muted-foreground">Total</span>
                           <span>$329.00</span>
                         </li>
                       </ul>
                     </div>
 
                   </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-[#27272a]  bg-[#18181a] px-6 py-3">
-                    <div className="text-xs text-[#18181a]">
+                  <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+                    <div className="text-xs text-muted-foreground">
                       Updated <time dateTime="2023-11-23">November 23, 2023</time>
                     </div>
 
@@ -4151,9 +4151,9 @@ export default function Dashboard() {
               </TabsContent>
               <TabsContent value="Notes">
                 <Card
-                  className="overflow-hidden text-[#f1f1f1]" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"
                 >
-                  <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
                         Notes
@@ -4186,7 +4186,7 @@ export default function Dashboard() {
                       </TooltipProvider>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
                     <div className="grid gap-3 max-h-[70vh] h-auto">
                       <Card>
                         <CardContent>
@@ -4198,7 +4198,7 @@ export default function Dashboard() {
                                 className={cn(
                                   "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                                   message.author === user.email
-                                    ? "ml-auto bg-[#dc2626] text-[#fafafa]"
+                                    ? "ml-auto bg-[#dc2626] text-foreground"
                                     : "bg-[#262626]"
                                 )}
                               >
@@ -4217,15 +4217,15 @@ export default function Dashboard() {
 
                       </Card>
                       <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                        <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                           <DialogHeader className="px-4 pb-4 pt-5">
                             <DialogTitle>CC Employee</DialogTitle>
                             <DialogDescription>
                               Invite a user to this thread.
                             </DialogDescription>
                           </DialogHeader>
-                          <Command className="overflow-hidden rounded-t-none border-t border-[#27272a] bg-transparent">
-                            <CommandInput placeholder="Search user..." className='bg-[#18181a] text-[#fafafa]' />
+                          <Command className="overflow-hidden rounded-t-none border-t border-border bg-transparent">
+                            <CommandInput placeholder="Search user..." className=' bg-muted/50  text-foreground' />
                             <CommandList>
                               <CommandEmpty>No users found.</CommandEmpty>
                               <CommandGroup className="p-2">
@@ -4257,7 +4257,7 @@ export default function Dashboard() {
                                       <p className="text-sm font-medium leading-none">
                                         {user.name}
                                       </p>
-                                      <p className="text-sm text-[#909098]">
+                                      <p className="text-sm text-muted-foreground">
                                         {user.email}
                                       </p>
                                     </div>
@@ -4269,13 +4269,13 @@ export default function Dashboard() {
                               </CommandGroup>
                             </CommandList>
                           </Command>
-                          <DialogFooter className="flex items-center border-t border-[#27272a] p-4 sm:justify-between">
+                          <DialogFooter className="flex items-center border-t border-border p-4 sm:justify-between">
                             {selectedUsers.length > 0 ? (
                               <div className="flex -space-x-2 overflow-hidden">
                                 {selectedUsers.map((user) => (
                                   <Avatar
                                     key={user.email}
-                                    className="inline-block border-2 border-background border-[#27272a]"
+                                    className="inline-block border-2 border-background border-border"
                                   >
                                     <AvatarImage src={user.avatar} />
                                     <AvatarFallback>{user.name[0]}</AvatarFallback>
@@ -4283,7 +4283,7 @@ export default function Dashboard() {
                                 ))}
                               </div>
                             ) : (
-                              <p className="text-sm text-[#909098]">
+                              <p className="text-sm text-muted-foreground">
                                 Select users to add to this thread.
                               </p>
                             )}
@@ -4300,13 +4300,13 @@ export default function Dashboard() {
                       </Dialog>
                     </div>
                   </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                  <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
 
                     <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
                       <Input
                         id="message"
                         placeholder="Type your message..."
-                        className="flex-1 bg-[#18181a] border-[#27272a]"
+                        className="flex-1  bg-muted/50  border-border"
                         autoComplete="off"
                         value={input}
                         onChange={(event) => setInput(event.target.value)}
@@ -4348,9 +4348,9 @@ export default function Dashboard() {
               </TabsContent>
               <TabsContent value="Apt History">
                 <Card
-                  className="overflow-hidden text-[#f1f1f1]" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"
                 >
-                  <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
                         Appointments
@@ -4383,11 +4383,11 @@ export default function Dashboard() {
                       </TooltipProvider>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
                     <div className="grid gap-3 max-h-[20vh] h-auto">
                       <Table className='w-auto overflow-x-scroll w-[650px]'>
                         <TableHeader>
-                          <TableRow className="bg-accent border-[#27272a]">
+                          <TableRow className="bg-accent border-border">
                             <TableHead>
                               Title
                             </TableHead>
@@ -4413,7 +4413,7 @@ export default function Dashboard() {
                             return (
                               <TableRow
                                 key={message.id}
-                                className="bg-accent border-[#27272a]">
+                                className="bg-accent border-border">
                                 <TableCell>
                                   {message.title}
                                 </TableCell>
@@ -4442,7 +4442,7 @@ export default function Dashboard() {
                                         <span className="sr-only">Menu</span>
                                       </Button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className='bg-[#18181a] text-white'>
+                                    <DropdownMenuContent align="end" className=' bg-muted/50  text-white'>
                                       <Form method='post'>
                                         <DropdownMenuItem>
                                           <button type='submit'
@@ -4466,18 +4466,18 @@ export default function Dashboard() {
                       </Table>
                     </div>
                   </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
-                    <div className="text-xs text-[#18181a]">
+                  <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                    <div className="text-xs text-muted-foreground">
                       Updated <time dateTime="2023-11-23">November 23, 2023</time>
                     </div>
                   </CardFooter>
                 </Card>
                 <Dialog open={openAppt} onOpenChange={setOpenAppt}>
-                  <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                  <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                     <Form method='post'>
                       <DialogHeader className="px-4 pb-4 pt-5">
                         <DialogTitle>Add Appointment</DialogTitle>
-                        <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                        <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
 
                       </DialogHeader>
                       <div className="grid gap-3 mx-3 mb-3">
@@ -4485,16 +4485,16 @@ export default function Dashboard() {
                           <Input
                             name="title"
                             type="text"
-                            className="w-full bg-[#09090b] border-[#27272a] "
+                            className="w-full bg-background border-border "
                           />
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Title</label>
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Title</label>
                         </div>
                         <div className="relative mt-3">
                           <Select name='note' defaultValue="No Answer / Left Message">
-                            <SelectTrigger className="w-full  border-[#27272a]  ">
+                            <SelectTrigger className="w-full  border-border  ">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                            <SelectContent className='bg-background text-foreground bg-background'>
                               <SelectGroup>
                                 <SelectLabel>Message examples</SelectLabel>
                                 <SelectItem value="">-- Moving Forward --</SelectItem>
@@ -4519,21 +4519,21 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
                         </div>
                         <div className="relative mt-3">
                           <Input
                             type="text"
-                            className="w-full bg-[#09090b] border-[#27272a]"
+                            className="w-full bg-background border-border"
                           />
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
                         </div>
                         <div className="relative mt-3">
                           <Select name='contactMethod' defaultValue="SMS">
-                            <SelectTrigger className="w-full    bg-[#09090b] border-[#27272a]">
+                            <SelectTrigger className="w-full    bg-background border-border">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                            <SelectContent className='bg-background text-foreground bg-background'>
                               <SelectGroup>
                                 <SelectLabel>Contact Method</SelectLabel>
                                 <SelectItem value="Phone">Phone</SelectItem>
@@ -4543,14 +4543,14 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
                         </div>
                         <div className="relative mt-3">
                           <Select name='resourceId' defaultValue="1">
-                            <SelectTrigger className="w-full    bg-[#09090b] border-[#27272a]">
+                            <SelectTrigger className="w-full    bg-background border-border">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                            <SelectContent className='bg-background text-foreground bg-background'>
                               <SelectGroup>
                                 <SelectLabel>Type of Appointment</SelectLabel>
                                 <SelectItem value="1">Sales Calls</SelectItem>
@@ -4560,14 +4560,14 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Type of Appointment</label>
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Type of Appointment</label>
                         </div>
                         <div className="relative mt-3">
                           <Select name='resultOfcall' defaultValue="Attempted">
-                            <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                            <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-background border-border">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                            <SelectContent className='bg-background text-foreground bg-background'>
                               <SelectGroup>
                                 <SelectLabel>Result of call</SelectLabel>
                                 <SelectItem value="Reached">Reached</SelectItem>
@@ -4578,14 +4578,14 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
                         </div>
                         <div className="relative mt-3">
                           <Select name='direction' defaultValue="Outgoing">
-                            <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                            <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-background border-border">
                               <SelectValue placeholder="" />
                             </SelectTrigger>
-                            <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                            <SelectContent className='bg-background text-foreground bg-background'>
                               <SelectGroup>
                                 <SelectLabel>Direction of call</SelectLabel>
                                 <SelectItem value="Incoming">Incoming</SelectItem>
@@ -4593,29 +4593,29 @@ export default function Dashboard() {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
-                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
                         </div>
                         <div className=' flex-col mx-auto justify-center'>
-                          <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+                          <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button
                                   variant={"outline"}
                                   className={cn(
-                                    "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]",
-                                    !date && " text-[#fafafa]"
+                                    "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                                    !date && " text-foreground"
                                   )}
                                 >
-                                  <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                                  <div className=' text-foreground  mx-auto flex justify-center  '>
                                     <CalendarIcon className="mr-2 size-8 " />
                                     {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
                                   </div>
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
+                              <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
                                 <div className='align-center my-3 flex justify-center   '>
                                   <SmallCalendar
-                                    className='mx-auto w-auto   bg-[#09090b] text-[#fafafa]'
+                                    className='mx-auto w-auto   bg-background text-foreground'
                                     mode="single"
                                     selected={date}
                                     onSelect={setDate}
@@ -4627,7 +4627,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div className=' flex-col mx-auto justify-center' >
-                          <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+                          <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
 
                             <input type='hidden' value={String(date)} name='value' />
                             <Popover>
@@ -4635,20 +4635,20 @@ export default function Dashboard() {
                                 <Button
                                   variant={"outline"}
                                   className={cn(
-                                    "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]",
-                                    !date && " text-[#fafafa]"
+                                    "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                                    !date && " text-foreground"
                                   )}
                                 >
-                                  <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                                  <div className=' text-foreground  mx-auto flex justify-center  '>
                                     <ClockIcon className="mr-2 size-8 " />
                                     {currentTime ? (time) : <span>Pick a Time</span>}
                                   </div>
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
+                              <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
                                 <div className='align-center my-3 flex justify-center   '>
                                   <Select name='pickHour'  >
-                                    <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]" >
+                                    <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-primary border-border" >
                                       <SelectValue defaultValue='09' />
                                     </SelectTrigger>
                                     <SelectContent className='bg-white text-black' >
@@ -4700,7 +4700,7 @@ export default function Dashboard() {
                       <input type='hidden' name='apptType' defaultValue='sales' />
                       <input type='hidden' name='min' defaultValue={minForm} />
                       <input type='hidden' name='hour' defaultValue={hourForm} />
-                      <DialogFooter className=" border-t border-[#27272a] p-4  ">
+                      <DialogFooter className=" border-t border-border p-4  ">
                         <div className='flex justify-center' >
                           <Button
                             size='sm'
@@ -4723,9 +4723,9 @@ export default function Dashboard() {
               </TabsContent>
               <TabsContent value="Communications">
                 <Card
-                  className=" text-[#fafafa]" x-chunk="dashboard-05-chunk-4"
+                  className=" text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"
                 >
-                  <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
                         Communications
@@ -4757,11 +4757,11 @@ export default function Dashboard() {
                       </TooltipProvider>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
                     <div className="grid gap-3 max-h-[20vh] h-auto">
                       <Table className='w-auto overflow-x-scroll w-[650px]'>
                         <TableHeader>
-                          <TableRow className="bg-accent border-[#27272a]">
+                          <TableRow className="bg-accent border-border">
                             <TableHead className="hidden sm:table-cell">
                               Direction
                             </TableHead>
@@ -4789,7 +4789,7 @@ export default function Dashboard() {
                             return (
                               <TableRow
                                 key={message.id}
-                                className="bg-accent border-[#27272a]">
+                                className="bg-accent border-border">
                                 <TableCell>
                                   {message.direction}
                                 </TableCell>
@@ -4815,27 +4815,27 @@ export default function Dashboard() {
                       </Table>
                     </div>
                     <Dialog open={openComms} onOpenChange={setOpenComms}>
-                      <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                      <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                         <Form method='post'>
                           <DialogHeader className="px-4 pb-4 pt-5">
                             <DialogTitle>Add Communication</DialogTitle>
                           </DialogHeader>
-                          <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                          <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                           <div className="grid gap-3 mx-3 mb-3">
                             <div className="relative mt-3">
                               <Input
                                 id="title"
                                 type="text"
-                                className="w-full bg-[#09090b] border-[#27272a] "
+                                className="w-full bg-background border-border "
                               />
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Title</label>
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Title</label>
                             </div>
                             <div className="relative mt-3">
                               <Select name='note' defaultValue="Gave pricing, need to follow up">
-                                <SelectTrigger className="w-full  border-[#27272a]  ">
+                                <SelectTrigger className="w-full  border-border  ">
                                   <SelectValue placeholder="Message examples" />
                                 </SelectTrigger>
-                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                <SelectContent className='bg-background text-foreground bg-background'>
                                   <SelectGroup>
                                     <SelectLabel>Message examples</SelectLabel>
                                     <SelectItem value="">-- Moving Forward --</SelectItem>
@@ -4860,23 +4860,23 @@ export default function Dashboard() {
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
                             </div>
                             <div className="relative mt-3">
                               <Input
                                 id="name"
                                 type="text"
 
-                                className="w-full bg-[#09090b] border-[#27272a]  "
+                                className="w-full bg-background border-border  "
                               />
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
                             </div>
                             <div className="relative mt-3">
                               <Select name='contactMethod' defaultValue="Phone">
-                                <SelectTrigger className="w-full    bg-[#09090b] border-[#27272a]">
+                                <SelectTrigger className="w-full    bg-background border-border">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                <SelectContent className='bg-background text-foreground bg-background'>
                                   <SelectGroup>
                                     <SelectLabel>Contact Method</SelectLabel>
                                     <SelectItem value="Phone">Phone</SelectItem>
@@ -4886,14 +4886,14 @@ export default function Dashboard() {
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
                             </div>
                             <div className="relative mt-3">
                               <Select name='resultOfcall' defaultValue="Reached">
-                                <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                                <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-background border-border">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                <SelectContent className='bg-background text-foreground bg-background'>
                                   <SelectGroup>
                                     <SelectLabel>Result of call</SelectLabel>
                                     <SelectItem value="Reached">Reached</SelectItem>
@@ -4904,14 +4904,14 @@ export default function Dashboard() {
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
                             </div>
                             <div className="relative mt-3">
                               <Select name='direction' defaultValue="Incoming">
-                                <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-[#09090b] border-[#27272a]">
+                                <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-background border-border">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className='bg-[#09090b] text-[#fafafa] bg-[#09090b]'>
+                                <SelectContent className='bg-background text-foreground bg-background'>
                                   <SelectGroup>
                                     <SelectLabel>Direction of call</SelectLabel>
                                     <SelectItem value="Incoming">Incoming</SelectItem>
@@ -4919,11 +4919,11 @@ export default function Dashboard() {
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
-                              <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
+                              <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
                             </div>
 
                           </div>
-                          <DialogFooter className="flex items-center border-t border-[#27272a] p-4 sm:justify-between">
+                          <DialogFooter className="flex items-center border-t border-border p-4 sm:justify-between">
                             <input type='hidden' name='financeId' defaultValue={finance.id} />
                             <input type='hidden' name='userId' defaultValue={user.id} />
 
@@ -4943,8 +4943,8 @@ export default function Dashboard() {
                       </DialogContent>
                     </Dialog>
                   </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
-                    <div className="text-xs text-[#18181a]">
+                  <CardFooter className="flex flex-row items-center border-t  bg-muted/50  px-6 py-3">
+                    <div className="text-xs text-muted-foreground">
                       Updated <time dateTime="2023-11-23">November 23, 2023</time>
                     </div>
 
@@ -4953,9 +4953,9 @@ export default function Dashboard() {
               </TabsContent>
               <TabsContent value="Upload">
                 <Card
-                  className="overflow-hidden text-[#f1f1f1]" x-chunk="dashboard-05-chunk-4"
+                  className="overflow-hidden text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"
                 >
-                  <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
                         Docs
@@ -4979,15 +4979,15 @@ export default function Dashboard() {
 
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
                     <div className="parent-container">
                       <MyIFrameComponent />
                     </div>
                     <div className="grid gap-3 max-h-[20vh] h-auto">
                       {/*<Form method='post' className='flex items-center'>
                         <div className="relative mt-5">
-                          <Input id="file" type="file" className='border-[#27272a] button:border-[#27272a] rounded-md text-[#fafafa] bg-[#09090b] button:text-[#fafafa]  button:bg-[#09090b] px-2 ' name='document' />
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">File Upload</label>
+                          <Input id="file" type="file" className='border-border button:border-border rounded-md text-foreground bg-background button:text-foreground  button:bg-background px-2 ' name='document' />
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">File Upload</label>
                         </div>
                         <input type='hidden' name='intent' value='' />
                         <Button
@@ -5004,11 +5004,11 @@ export default function Dashboard() {
                           <span className="sr-only">Upload</span>
                         </Button>
                         </Form>
-                      <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+                      <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                       <div className="font-semibold">Download Docs</div>
                       <ul className="grid gap-3">
                         <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">Drivers Lic</span>
+                          <span className="text-muted-foreground">Drivers Lic</span>
                           <Button size="sm" variant="outline" className="h-8 gap-1 mr-3"  >
                             <File className="h-3.5 w-3.5" />
                             <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -5017,7 +5017,7 @@ export default function Dashboard() {
                           </Button>
                         </li>
                         <li className="flex items-center justify-between">
-                          <span className="text-[#909098]">Test Drive Form</span>
+                          <span className="text-muted-foreground">Test Drive Form</span>
                           <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" >
                             <File className="h-3.5 w-3.5" />
                             <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -5028,11 +5028,11 @@ export default function Dashboard() {
                       </ul>
                       */}
                     </div>
-                    <hr className=' text-[#27272a] w-98 mx-auto] my-5' />
+                    <hr className=' text-muted-foreground w-98 mx-auto] my-5' />
                     <CustomerGen />
                   </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t bg-[#18181a] px-6 py-3">
-                    <div className="text-xs text-[#909098]">
+                  <CardFooter className="flex flex-row items-center border-t  bg-muted/50  px-6 py-3">
+                    <div className="text-xs text-muted-foreground">
                       Updated <time dateTime="2023-11-23">November 23, 2023</time>
                     </div>
                     <Pagination className="ml-auto mr-0 w-auto">
@@ -5253,17 +5253,17 @@ function SidebarNav({ mergedFinanceList, finance }) {
             <TooltipTrigger asChild>
               <Link
                 to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-[#909098] transition-colors hover:text-foreground md:h-8 md:w-8 bg-transparent hover:bg-transparent"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 bg-transparent hover:bg-transparent"
               >
                 <Button variant="ghost" className="bg-transparente  hover:bg-transparent hover:underline">
                   <div className="h-5 w-5 flex justify-center">
-                    <FaMotorcycle className='text-[#fafafa] text-3xl mx-auto' />
+                    <FaMotorcycle className='text-foreground text-3xl mx-auto' />
 
                   </div>
                 </Button>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right" className='bg-[#09090b] text-[#fafafa]  z-35 '>
+            <TooltipContent side="right" className='bg-background text-foreground  z-35 '>
               <div>
                 <p>{item.year} {item.brand}</p>
                 <p>{item.model.toString().slice(0, 28)}</p>

@@ -144,8 +144,8 @@ export default function Salestracker() {
 
             <div className='grid grid-cols-3 p-3' >
                 <div className='mr-3'>
-                    <Card className="bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
-                        <CardContent className="bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                    <Card className="bg-myColor-900 target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                        <CardContent className="bg-myColor-900 target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                             <div className='grid grid-cols-1' >
                                 <h3 className="text-2xl font-thin">
                                     Sales
@@ -179,15 +179,15 @@ export default function Salestracker() {
 
                             <Input type='hidden' defaultValue={user.email} name='email' />
                         </CardContent>
-                        <CardFooter className="bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
-                            <Button name="intent" value='updateSales' type="submit" className=' text-[#fafafa]'>
+                        <CardFooter className="bg-myColor-900 target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                            <Button name="intent" value='updateSales' type="submit" className=' text-foreground'>
                                 Update Sales
                             </Button>
                         </CardFooter>
                     </Card>
                 </div>
                 <div className='mr-3 ml-3 '>
-                    <Card className="bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                    <Card className="bg-myColor-900 target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                         <CardContent>
                             <h3 className="text-2xl font-thin mb-2">
                                 Current Sales
@@ -199,7 +199,7 @@ export default function Salestracker() {
                     </Card>
                 </div>
                 <div className='mr-3 ml-3'>
-                    <Card className="bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                    <Card className="bg-myColor-900 target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                         <CardContent>
                             <h3 className="text-2xl font-thin mb-2">
                                 For the year
@@ -216,7 +216,7 @@ export default function Salestracker() {
 
 
 
-                <Card className="col-span-4 mr- bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                <Card className="col-span-4 mr- bg-myColor-900 target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                     <CardHeader>
                         <CardTitle> Breakdown of sales over the current year.</CardTitle>
                     </CardHeader>
@@ -224,7 +224,7 @@ export default function Salestracker() {
                         <Overview />
                     </CardContent>
                 </Card>
-                <Card className="col-span-3 mr-3 bg-myColor-900 target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
+                <Card className="col-span-3 mr-3 bg-myColor-900 target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150">
                     <CardHeader>
                         <CardTitle>Breakdown of sales from last year.</CardTitle>
                     </CardHeader>

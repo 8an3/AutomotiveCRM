@@ -18,7 +18,7 @@ export default function Route() {
   const { userRoles } = useLoaderData<typeof loader>();
 
   return (
-    <div className='max-w-xl  stack mx-auto justify-center text-[#fafafa]'>
+    <div className='max-w-xl  stack mx-auto justify-center text-foreground'>
 
       <header>
         <span>All User Roles</span>

@@ -48,7 +48,7 @@ export default function StaffChat() {
     const pathname = location.pathname
     console.log(pathname)
     return (
-      <nav className={cn("flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1  text-[#f1f1f1]", className)} {...props} >
+      <nav className={cn("flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1  text-foreground", className)} {...props} >
         {items.map((item) => (
           <Button
             key={item.url}
@@ -58,11 +58,11 @@ export default function StaffChat() {
               setVideoUrl(item.url)
             }}
             className={cn(
-              'justify-start text-left text-[#f1f1f1]',
+              'justify-start text-left text-foreground',
               buttonVariants({ variant: 'ghost' }),
               video === item.name
-                ? "bg-[#232324] hover:bg-[#232324] w-[90%] text-[#f1f1f1]  "
-                : "hover:bg-[#232324] text-[#a1a1aa] w-[90%]  ",
+                ? "bg-[#232324] hover:bg-muted/50 w-[90%] text-foreground  "
+                : "hover:bg-muted/50 text-[#a1a1aa] w-[90%]  ",
               "justify-start w-[90%]"
             )} >
             {item.name}
@@ -74,28 +74,28 @@ export default function StaffChat() {
   let result = dept.charAt(0).toUpperCase() + dept.slice(1);
 
   return (
-    <Card className=" z-50 w-[90%] text-[#f1f1f1]   h-[80%] mx-auto mt-[50px] border-[#27272a]" x-chunk="dashboard-05-chunk-4"  >
-      <CardHeader className="flex flex-row items-start bg-[#18181a]">
+    <Card className=" z-50 w-[90%] text-foreground   h-[80%] mx-auto mt-[50px] border-border" x-chunk="dashboard-05-chunk-4"  >
+      <CardHeader className="flex flex-row items-start bg-muted-background">
         <div className="grid gap-0.5">
           <CardTitle className="group flex items-center gap-2 text-lg">
             Docs
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className=" bg-[#09090b] border-[#27272a] p-6 text-sm grid grid-cols-8 gap-3">
-        <fieldset className="col-span-2  gap-6 rounded-lg border p-4   h-auto w-auto mr-1 flex-grow !grow border-[#27272a]   " >
-          <legend className="-ml-1 px-1 text-lg font-medium text-[#f1f1f1]">{result}</legend>
+      <CardContent className=" bg-background border-border p-6 text-sm grid grid-cols-8 gap-3">
+        <fieldset className="col-span-2  gap-6 rounded-lg border p-4   h-auto w-auto mr-1 flex-grow !grow border-border   " >
+          <legend className="-ml-1 px-1 text-lg font-medium text-foreground">{result}</legend>
           <SidebarNav items={videoMenu} />
         </fieldset>
 
-        <fieldset className="col-span-6   gap-6 rounded-lg border p-4  h-auto w-auto  ml-1 flex-grow !grow border-[#27272a]   " >
-          <legend className="-ml-1 px-1 text-lg font-medium text-[#f1f1f1]">{video}</legend>
+        <fieldset className="col-span-6   gap-6 rounded-lg border p-4  h-auto w-auto  ml-1 flex-grow !grow border-border   " >
+          <legend className="-ml-1 px-1 text-lg font-medium text-foreground">{video}</legend>
           <div className='flex justify-center'>
             <iframe width="1100" height="600" src={String(videoUrl)} allow="autoplay; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
           </div>
         </fieldset>
       </CardContent>
-      <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+      <CardFooter className="flex flex-row items-center border-t border-border bg-muted-background px-6 py-3">
         <Input type="hidden" defaultValue={user.email} name="userEmail" />
       </CardFooter>
     </Card>

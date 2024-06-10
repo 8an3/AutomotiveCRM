@@ -1530,7 +1530,7 @@ export default function CustomerProfile({ request, }) {
               selected={date}
               onSelect={setDate}
               initialFocus
-              className=' bg-[#09090b]'
+              className=' bg-background'
             />
             <input type="hidden" defaultValue={date} name="pickUpDate" />
 
@@ -1617,7 +1617,7 @@ export default function CustomerProfile({ request, }) {
     <>
       <FinanceIdContext.Provider value={financeIdState}>
 
-        <div className=" bg-[#09090b] mt-[50px]">
+        <div className=" bg-background mt-[50px]">
 
           <Topsection
             getTemplates={getTemplates}

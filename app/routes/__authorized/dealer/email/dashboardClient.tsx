@@ -156,12 +156,12 @@ export default function DashboardClient() {
             type='hidden'
             defaultValue={to}
             name="to"
-            className="m-2 mx-auto mr-2 w-[98%] bg-[#09090b] text-[#fafafa]   border-[#27272a]"
+            className="m-2 mx-auto mr-2 w-[98%] bg-background text-foreground   border-border"
           />
           <Input
             name="subject"
             placeholder="Subject"
-            className="m-2 mx-auto ml-2 w-[98%] bg-[#09090b] border-[#27272a] text-[#fafafa]"
+            className="m-2 mx-auto ml-2 w-[98%] bg-background border-border text-foreground"
             onChange={(e) => setSubject(e.target.value)}
           />
         </div>

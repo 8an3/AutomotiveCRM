@@ -475,7 +475,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenu>
             <DropdownMenuTrigger >
 
-              <Button name='intent' value='2DaysFromNow' type='submit' className="bg-[#02a9ff] cursor-pointer  w-[115px] p-3 mr-1 text-[#fafafa] active:bg-black font-bold uppercase   text-xs whitespace-nowrap  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+              <Button name='intent' value='2DaysFromNow' type='submit' className="bg-primary cursor-pointer  w-[115px] p-3 mr-1 text-foreground active:bg-black font-bold uppercase   text-xs whitespace-nowrap  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
                 Default Filters
               </Button>
             </DropdownMenuTrigger>
@@ -528,7 +528,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button name='intent' value='2DaysFromNow' type='submit'
-                className="bg-[#02a9ff] whitespace-nowrap p-3 cursor-pointer w-[140px] mx-1 text-[#fafafa] active:bg-black font-bold uppercase  hover:text-[#fafafa] text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+                className="bg-primary whitespace-nowrap p-3 cursor-pointer w-[140px] mx-1 text-foreground active:bg-black font-bold uppercase  hover:text-foreground text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
               >
                 Global Filter
               </Button>
@@ -569,12 +569,12 @@ export function DataTable<TData, TValue>({
             />
           )}
 
-          <Button onClick={() => setAllFilters([])} name='intent' type='submit' className="bg-[#02a9ff]  cursor-pointer w-[50px] mx-1 text-[#fafafa] active:bg-black font-bold uppercase hover:text-[#fafafa] whitespace-nowrap p-3 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+          <Button onClick={() => setAllFilters([])} name='intent' type='submit' className="bg-primary  cursor-pointer w-[50px] mx-1 text-foreground active:bg-black font-bold uppercase hover:text-foreground whitespace-nowrap p-3 text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
             Clear
           </Button>
 
           <Button
-            className="bg-[#02a9ff] w-[90px] hover:text-[#fafafa] cursor-pointer my-auto mx-1 text-[#fafafa] active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+            className="bg-primary w-[90px] hover:text-foreground cursor-pointer my-auto mx-1 text-foreground active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
             onClick={toggleFilter}>
             Toggle Col
           </Button>
@@ -583,7 +583,7 @@ export function DataTable<TData, TValue>({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <p className="cursor-pointer my-auto  hover:text-[#02a9ff] ">
+              <p className="cursor-pointer my-auto  hover:text-primary ">
                 <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.14998 14V1H0.849976V14H2.14998ZM6.14998 14V1H4.84998V14H6.14998ZM10.15 1V14H8.84998V1H10.15ZM14.15 14V1H12.85V14H14.15Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
               </p>
             </DropdownMenuTrigger>
@@ -610,7 +610,7 @@ export function DataTable<TData, TValue>({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <p className="cursor-pointer my-auto ml-3 mr-3 hover:text-[#02a9ff]">
+          <p className="cursor-pointer my-auto ml-3 mr-3 hover:text-primary">
             <Link to='/calendar/sales'>
               <svg width="25" height="25" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 1C4.77614 1 5 1.22386 5 1.5V2H10V1.5C10 1.22386 10.2239 1 10.5 1C10.7761 1 11 1.22386 11 1.5V2H12.5C13.3284 2 14 2.67157 14 3.5V12.5C14 13.3284 13.3284 14 12.5 14H2.5C1.67157 14 1 13.3284 1 12.5V3.5C1 2.67157 1.67157 2 2.5 2H4V1.5C4 1.22386 4.22386 1 4.5 1ZM10 3V3.5C10 3.77614 10.2239 4 10.5 4C10.7761 4 11 3.77614 11 3.5V3H12.5C12.7761 3 13 3.22386 13 3.5V5H2V3.5C2 3.22386 2.22386 3 2.5 3H4V3.5C4 3.77614 4.22386 4 4.5 4C4.77614 4 5 3.77614 5 3.5V3H10ZM2 6V12.5C2 12.7761 2.22386 13 2.5 13H12.5C12.7761 13 13 12.7761 13 12.5V6H2ZM7 7.5C7 7.22386 7.22386 7 7.5 7C7.77614 7 8 7.22386 8 7.5C8 7.77614 7.77614 8 7.5 8C7.22386 8 7 7.77614 7 7.5ZM9.5 7C9.22386 7 9 7.22386 9 7.5C9 7.77614 9.22386 8 9.5 8C9.77614 8 10 7.77614 10 7.5C10 7.22386 9.77614 7 9.5 7ZM11 7.5C11 7.22386 11.2239 7 11.5 7C11.7761 7 12 7.22386 12 7.5C12 7.77614 11.7761 8 11.5 8C11.2239 8 11 7.77614 11 7.5ZM11.5 9C11.2239 9 11 9.22386 11 9.5C11 9.77614 11.2239 10 11.5 10C11.7761 10 12 9.77614 12 9.5C12 9.22386 11.7761 9 11.5 9ZM9 9.5C9 9.22386 9.22386 9 9.5 9C9.77614 9 10 9.22386 10 9.5C10 9.77614 9.77614 10 9.5 10C9.22386 10 9 9.77614 9 9.5ZM7.5 9C7.22386 9 7 9.22386 7 9.5C7 9.77614 7.22386 10 7.5 10C7.77614 10 8 9.77614 8 9.5C8 9.22386 7.77614 9 7.5 9ZM5 9.5C5 9.22386 5.22386 9 5.5 9C5.77614 9 6 9.22386 6 9.5C6 9.77614 5.77614 10 5.5 10C5.22386 10 5 9.77614 5 9.5ZM3.5 9C3.22386 9 3 9.22386 3 9.5C3 9.77614 3.22386 10 3.5 10C3.77614 10 4 9.77614 4 9.5C4 9.22386 3.77614 9 3.5 9ZM3 11.5C3 11.2239 3.22386 11 3.5 11C3.77614 11 4 11.2239 4 11.5C4 11.7761 3.77614 12 3.5 12C3.22386 12 3 11.7761 3 11.5ZM5.5 11C5.22386 11 5 11.2239 5 11.5C5 11.7761 5.22386 12 5.5 12C5.77614 12 6 11.7761 6 11.5C6 11.2239 5.77614 11 5.5 11ZM7 11.5C7 11.2239 7.22386 11 7.5 11C7.77614 11 8 11.2239 8 11.5C8 11.7761 7.77614 12 7.5 12C7.22386 12 7 11.7761 7 11.5ZM9.5 11C9.22386 11 9 11.2239 9 11.5C9 11.7761 9.22386 12 9.5 12C9.77614 12 10 11.7761 10 11.5C10 11.2239 9.77614 11 9.5 11Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
             </Link>
@@ -618,7 +618,7 @@ export function DataTable<TData, TValue>({
 
         </Flex>
       </div>
-      <div className="mt-[20px] rounded-md rounded-2 border overflow-x-auto text-[#fafafa]">
+      <div className="mt-[20px] rounded-md rounded-2 border overflow-x-auto text-foreground">
         <Table className="rounded-md  rounded-2">
           <TableHeader>
 
@@ -654,7 +654,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`p-4 ${index % 2 === 0 ? 'bg-[#09090b]' : 'bg-[#2c3238]'}`}
+                  className={`p-4 ${index % 2 === 0 ? 'bg-background' : 'bg-[#2c3238]'}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

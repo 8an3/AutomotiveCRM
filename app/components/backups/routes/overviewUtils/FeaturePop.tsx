@@ -34,11 +34,11 @@ const FeaturePop = ({ finance, user }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className='rounded-md border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border' >
+        <Button className='rounded-md border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border' >
           Features
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[250px] bg-slate1 text-[#fafafa] border-2 border-slate12">
+      <PopoverContent className="w-[250px] bg-slate1 text-foreground border-2 border-slate12">
         <div className="grid">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">Features</h4>
@@ -52,12 +52,12 @@ const FeaturePop = ({ finance, user }) => {
               </div>
               <ModelPage />
               <a className="w-full mx-auto" href="/leads/sales" target="_blank"  >
-                <Button className="w-full border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
+                <Button className="w-full border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border" >
                   Dashboard
                 </Button>
               </a>
               <a className="w-full mx-auto" href={`/customer/${finance.clientfileId}/${finance.id}`} target="_blank">
-                <Button className=" w-full border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
+                <Button className=" w-full border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border" >
                   Client File
                 </Button>
               </a>
@@ -69,7 +69,7 @@ const FeaturePop = ({ finance, user }) => {
 
                 <ButtonLoading
                   size="lg"
-                  className="w-full cursor-pointer ml-auto p-5 hover:text-[#02a9ff]"
+                  className="w-full cursor-pointer ml-auto p-5 hover:text-primary"
                   type="submit"
                   isSubmitting={isSubmitting}
                   onClick={() => toast.success(`Informing finance managers of requested turnover...`)}

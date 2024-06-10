@@ -181,7 +181,7 @@ export default function MassEmail(table) {
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className=" bg-[#09090b]/80  fixed inset-0 backdrop-blur-sm" />
+        <Dialog.Overlay className=" bg-background/80  fixed inset-0 backdrop-blur-sm" />
         <Dialog.Content className=" fixed left-[50%] top-[50%] max-h-[85%] w-[90vw] overflow-y-scroll translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#0d1520] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none md:w-[750px]">
           <Dialog.Title className="m-0 text-[17px] font-medium text-[#C2E6FF]">
             Email
@@ -219,12 +219,12 @@ export default function MassEmail(table) {
               <div className="ml-auto flex px-2  ">
                 <p
                   onClick={() => setCc(!cc)}
-                  className="cursor-pointer text-[#C2E6FF] px-2 text-right text-[12px] hover:text-[#02a9ff]">
+                  className="cursor-pointer text-[#C2E6FF] px-2 text-right text-[12px] hover:text-primary">
                   cc
                 </p>
                 <p
                   onClick={() => setBcc(!bcc)}
-                  className="cursor-pointer text-[#C2E6FF] px-2 text-right text-[12px] hover:text-[#02a9ff] ">
+                  className="cursor-pointer text-[#C2E6FF] px-2 text-right text-[12px] hover:text-primary ">
                   bcc
                 </p>
               </div>
@@ -271,7 +271,7 @@ export default function MassEmail(table) {
                   setCreateTemplate("createEmailTemplate")
                 }}
                 name='template' value='createEmailTemplate' type='submit'
-                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+                className={` cursor-pointer mr-2 p-3 hover:text-primary hover:border-primary text-foreground border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'} `}
 
               >
                 Save Template
@@ -284,7 +284,7 @@ export default function MassEmail(table) {
                   toast.success(`Sent email to ${data.firstName}.`)
                 }}
                 name='emailType' value='fullCustom' type='submit'
-                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+                className={` cursor-pointer mr-2 p-3 hover:text-primary hover:border-primary text-foreground border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'} `}
               >
                 {buttonText}
               </Button>
@@ -294,7 +294,7 @@ export default function MassEmail(table) {
           </fetcher.Form >
           <Dialog.Close asChild>
             <button
-              className="text-[#C2E6FF]  hover:text-[#02a9ff] focus:shadow-violet7 absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+              className="text-[#C2E6FF]  hover:text-primary focus:shadow-violet7 absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
               aria-label="Close"
             >
               <Cross2Icon />

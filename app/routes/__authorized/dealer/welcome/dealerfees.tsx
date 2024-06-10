@@ -135,81 +135,45 @@ export const loader = async ({ request, params }) => {
   const url = urlSegmentsDashboard.slice(0, 3).join('/');
   console.log(url)
   let DealerInfo
-  const Dealerfees = [
-    { name: "userAdmin", value: '0', placeholder: "Admin" },
-    { name: "userFreight", value: '0', placeholder: "Freight" },
-    { name: "userCommodity", value: '0', placeholder: "Commodity" },
-    { name: "userPDI", value: '0', placeholder: "PDI" },
-    { name: "userAirTax", value: '0', placeholder: "Air Tax" },
-    { name: "userTireTax", value: '0', placeholder: "Tire Tax" },
-    { name: "userGovern", value: '0', placeholder: "Government Fees" },
-    { name: "userFinance", value: '0', placeholder: "Finance Fees" },
-    { name: "destinationCharge", value: '0', placeholder: "Destination Charge" },
-    { name: "userGasOnDel", value: '0', placeholder: "Gas On Delivery" },
-    { name: "userMarketAdj", value: '0', placeholder: "Market Adjustment" },
-    { name: "userDemo", value: '0', placeholder: "Demonstratration Fee" },
-    { name: "userOMVIC", value: '60', placeholder: "OMVIC or Other" },
-  ];
-  const FinanceOptions = [
-    { name: "userExtWarr", value: '0', placeholder: 'Extended Warranty' },
-    { name: "userLoanProt", value: '0', placeholder: 'Loan Protection' },
-    { name: "userGap", value: '0', placeholder: 'Gap Protection' },
-    { name: "userTireandRim", value: '0', placeholder: 'Tire and Rim' },
-    { name: "vinE", value: '0', placeholder: 'Vin Etching' },
-    { name: "rustProofing", value: '0', placeholder: 'Under Coating' },
-    { name: "userServicespkg", value: '0', placeholder: 'Service Package' },
-    { name: "lifeDisability", value: '0', placeholder: 'Life and Disability' },
-    { name: "userOther", value: '0', placeholder: 'Other data Package' },
-  ];
-  let deFees
-  try {
-    deFees = await prisma.dealer.findFirst();
-  } catch (error) {
-    if (!deFees) {
-      deFees = await prisma.dealer.create({
-        data: {
-          dealerName: 'Dealer Name',
-          dealerAddress: '1234 Example St',
-          dealerProv: 'Ottawa, ON K1A 0B1',
-          dealerPhone: '8198198194',
 
-          userLoanProt: 0,
-          userTireandRim: '0',
-          userGap: 0,
-          userExtWarr: '0',
-          userServicespkg: 0,
-          vinE: 0,
-          lifeDisability: 0,
-          rustProofing: 0,
-          userLicensing: 60,
-          userFinance: '0',
-          userDemo: '0',
-          userGasOnDel: '0',
-          userOMVIC: '60',
-          userOther: 0,
-          userTax: '13',
-          userAirTax: '0',
-          userTireTax: '0',
-          userGovern: '0',
-          userPDI: '0',
-          userLabour: '118',
-          userMarketAdj: '0',
-          userCommodity: '0',
-          destinationCharge: 0,
-          userFreight: '0',
-          userAdmin: '0',
-          userEmail: user?.email,
-        },
-      });
-    }
-    return json({ request, user, deFees, Dealerfees, FinanceOptions });
-
+  let deFees = await prisma.dealer.findUnique({ where: { id: 1 } })
+  if (!deFees) {
+    deFees = await prisma.dealer.create({
+      data: {
+        dealerName: 'Dealer Name',
+        dealerAddress: '1234 Example St',
+        dealerProv: 'Ottawa, ON K1A 0B1',
+        dealerPhone: '8198198194',
+        userLoanProt: 0,
+        userTireandRim: '0',
+        userGap: 0,
+        userExtWarr: '0',
+        userServicespkg: 0,
+        vinE: 0,
+        lifeDisability: 0,
+        rustProofing: 0,
+        userLicensing: 60,
+        userFinance: '0',
+        userDemo: '0',
+        userGasOnDel: '0',
+        userOMVIC: '60',
+        userOther: 0,
+        userTax: '13',
+        userAirTax: '0',
+        userTireTax: '0',
+        userGovern: '0',
+        userPDI: '0',
+        userLabour: '118',
+        userMarketAdj: '0',
+        userCommodity: '0',
+        destinationCharge: 0,
+        userFreight: '0',
+        userAdmin: '0',
+        userEmail: user?.email,
+      },
+    });
   }
-  return json({ request, user, deFees, Dealerfees, FinanceOptions });
-
-
-
-
+  return json({ request, user, deFees, });
 }
 
 export const meta = () => {
@@ -289,7 +253,7 @@ export default function WelcomeDealerFeesSection() {
             <h2 className="text-2xl font-thin">
               DEALER FEES
             </h2>
-            <p className="text-sm text-[#fafafa]">
+            <p className="text-sm text-foreground">
               This is where you can change values like freight, admin, taxes and
               such. If you don't have all this information with you, dont worry, you can always come back and update it later.
             </p>
@@ -305,8 +269,8 @@ export default function WelcomeDealerFeesSection() {
                   name={fee.name}
                   defaultValue={fee.value}
 
-                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
+                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                 focus:outline-none  focus:text-primary  mx-1"
                 />
               </div>
             ))}
@@ -315,8 +279,8 @@ export default function WelcomeDealerFeesSection() {
               <Input
                 defaultValue={deFees.userLicensing}
                 name="userLicensing"
-                className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
+                className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                 focus:outline-none  focus:text-primary  mx-1"
               />
               {errors?.userLicensing ? (
                 <em className="text-[#ff0202]">{errors.userLicensing}</em>
@@ -328,8 +292,8 @@ export default function WelcomeDealerFeesSection() {
               <Input
                 defaultValue={deFees.userTax}
                 name="userTax"
-                className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
+                className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                 focus:outline-none  focus:text-primary  mx-1"
               />
               {errors?.userTax ? (
                 <em className="text-[#ff0202]">{errors.userTax}</em>
@@ -340,7 +304,7 @@ export default function WelcomeDealerFeesSection() {
               <Input
                 defaultValue={deFees.userLabour}
                 name="userLabour"
-                className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
                  focus:outline-none  focus:text-[#ff0202]  mx-1"
               />
               {errors?.userLabour ? (
@@ -363,8 +327,8 @@ export default function WelcomeDealerFeesSection() {
                 <Input
                   name={option.name}
                   defaultValue={option.value}
-                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-slate4 active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#02a9ff]  mx-1"
+                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
+                 focus:outline-none  focus:text-primary  mx-1"
                 />
               </div>
             ))}
@@ -373,7 +337,7 @@ export default function WelcomeDealerFeesSection() {
               name="email"
             />
             <Toast.Provider swipeDirection="right">
-              <Button className="bg-[#02a9ff] mb-10 w-[75px] ml-2  mr-2 cursor-pointer text-[#fafafa] active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" type="submit"
+              <Button className="bg-primary mb-10 w-[75px] ml-2  mr-2 cursor-pointer text-foreground active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" type="submit"
                 onClick={() => {
                   setOpen(false);
                   window.clearTimeout(timerRef.current);
@@ -389,7 +353,7 @@ export default function WelcomeDealerFeesSection() {
                 open={open}
                 onOpenChange={setOpen}
               >
-                <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-[#fafafa] text-[15px]">
+                <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-foreground text-[15px]">
                   Dealer Fees Updated.
                 </Toast.Title>
                 <Toast.Description asChild>

@@ -215,7 +215,7 @@ const columns: ColumnDef<Payment>[] = [
         cell: ({ row }) => {
             const data = row.original
 
-            return <div className="bg-transparent px-5 h-[45px] w-[175px] flex-1 flex items-center justify-center text-[15px] leading-none  target:text-[#02a9ff] hover:text-[#02a9ff] text-[#EEEEEE]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff] cursor-pointer">
+            return <div className="bg-transparent px-5 h-[45px] w-[175px] flex-1 flex items-center justify-center text-[15px] leading-none  target:text-primary hover:text-primary text-[#EEEEEE]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary cursor-pointer">
                 <ClientCard data={data} />
             </div>
         },
@@ -229,7 +229,7 @@ const columns: ColumnDef<Payment>[] = [
         ),
         cell: ({ row }) => {
             const data = row.original
-            return <div className="bg-transparent px-5 w-[175px] cursor-pointer flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#EEEEEE] active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff] ">
+            return <div className="bg-transparent px-5 w-[175px] cursor-pointer flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-[#EEEEEE] active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary ">
                 <a target="_blank" href={`/customer/${data.id}`}>
                     {(row.getValue("lastName"))}
                 </a>
@@ -247,7 +247,7 @@ const columns: ColumnDef<Payment>[] = [
         },
         cell: ({ row }) => {
             const data = row.original
-            return <div className="my-auto bg-transparent  h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none target:text-[#02a9ff] hover:text-[#02a9ff] text-[#EEEEEE] active:bg-[#02a9ff]  uppercase outline-none ease-linear transition-all text-center duration-150 focus:outline-none focus:text-[#02a9ff]  cursor-pointer">
+            return <div className="my-auto bg-transparent  h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none target:text-primary hover:text-primary text-[#EEEEEE] active:bg-primary  uppercase outline-none ease-linear transition-all text-center duration-150 focus:outline-none focus:text-primary  cursor-pointer">
                 <ClientStatusCard data={data} />
             </div>
         },
@@ -272,7 +272,7 @@ const columns: ColumnDef<Payment>[] = [
 
             const formattedDate = data.nextAppointment && data.nextAppointment !== '1969-12-31 19:00' ? formatDate(data.nextAppointment) : 'TBD';
 
-            return <div className="bg-transparent px-5 h-[45px] w-[160px] flex-1 flex items-center justify-center text-[15px] leading-none  target:text-[#02a9ff] hover:text-[#02a9ff] text-[#EEEEEE] active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1  ">
+            return <div className="bg-transparent px-5 h-[45px] w-[160px] flex-1 flex items-center justify-center text-[15px] leading-none  target:text-primary hover:text-primary text-[#EEEEEE] active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1  ">
                 {data.nextAppointment === 'TBD' ? <p>TBD</p> : formattedDate}
             </div>
         },
@@ -287,7 +287,7 @@ const columns: ColumnDef<Payment>[] = [
             //  const id = data.id ? data.id.toString() : '';
 
 
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 ">
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 ">
                 {data.customerState === 'Pending' ? (<Badge className="bg-slate3">Pending</Badge>
                 ) : data.customerState === 'Attempted' ? (<Badge className="bg-slate3">Attempted</Badge>
                 ) : data.customerState === 'Reached' ? (<Badge className="bg-jade9">Reached</Badge>
@@ -354,7 +354,7 @@ const columns: ColumnDef<Payment>[] = [
             <DataTableColumnHeader column={column} title="Trade" />
         ),
         cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[250px] flex-1 flex items-center justify-center text-[13px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer">{(row.getValue("tradeDesc"))}</div>
+            return <div className="bg-transparent px-5 h-[45px] w-[250px] flex-1 flex items-center justify-center text-[13px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer">{(row.getValue("tradeDesc"))}</div>
         },
 
     },
@@ -364,7 +364,7 @@ const columns: ColumnDef<Payment>[] = [
             <DataTableColumnHeader column={column} title="Last Note" />
         ),
         cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer">{(row.getValue("lastNote"))}</div>
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer">{(row.getValue("lastNote"))}</div>
         },
 
     },
@@ -458,14 +458,14 @@ const columns: ColumnDef<Payment>[] = [
     {
         accessorKey: "pickUpDate",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent px-5 h-[45px] w-[175px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer " />
+            <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent px-5 h-[45px] w-[175px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer " />
         ),
         cell: ({ row }) => {
             const data = row.original
             if (data.pickUpDate) {
                 const pickupDate = data.pickUpDate
                 return (
-                    <div className="bg-transparent px-5 h-[45px] w-[150px] flex-1 flex items-center justify-center text-[15px] leading-none last:rounded-tr-md :text-[#02a9ff] text-grbg-transparent px-5 flex-1 flex items-center justify-center text-[15px] leading-none  target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer">
+                    <div className="bg-transparent px-5 h-[45px] w-[150px] flex-1 flex items-center justify-center text-[15px] leading-none last:rounded-tr-md :text-primary text-grbg-transparent px-5 flex-1 flex items-center justify-center text-[15px] leading-none  target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer">
                         {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
                     </div>
                 );
@@ -476,7 +476,7 @@ const columns: ColumnDef<Payment>[] = [
     {
         accessorKey: "lastContact",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent px-5 h-[45px] w-[175px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer" />
+            <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent px-5 h-[45px] w-[175px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer" />
         ),
         cell: ({ row }) => {
             const data = row.original
@@ -496,7 +496,7 @@ const columns: ColumnDef<Payment>[] = [
             if (data.lastContact) {
                 const lastContact1 = data.lastContact
                 return (
-                    <div className="bg-transparent px-5 h-[45px] w-[150px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer">
+                    <div className="bg-transparent px-5 h-[45px] w-[150px] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer">
                         {lastContact1 === '1969-12-31 19:00' || lastContact1 === null ? 'TBD' : data.pickUpDate}
                     </div>
                 );
@@ -526,7 +526,7 @@ const columns: ColumnDef<Payment>[] = [
             <p className="text-center">email</p>
         ),
         cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer">{(row.getValue("email"))}</div>
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer">{(row.getValue("email"))}</div>
         },
 
     },
@@ -535,7 +535,7 @@ const columns: ColumnDef<Payment>[] = [
         header: ({ column }) => (
             <p className="text-center">phone</p>
         ), cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer">{(row.getValue("phone"))}</div>
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer">{(row.getValue("phone"))}</div>
         },
 
     },
@@ -544,7 +544,7 @@ const columns: ColumnDef<Payment>[] = [
         header: ({ column }) => (
             <p className="text-center">address</p>
         ), cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer">{(row.getValue("address"))}</div>
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer">{(row.getValue("address"))}</div>
         },
 
     },
@@ -553,11 +553,11 @@ const columns: ColumnDef<Payment>[] = [
         header: ({ column }) => (
             <p className="text-center">postal</p>
         ), cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
               focus:outline-none
 
 
-              focus:text-[#02a9ff]
+              focus:text-primary
                mx-1 font-medium">{(row.getValue("postal"))}</div>
         },
 
@@ -567,11 +567,11 @@ const columns: ColumnDef<Payment>[] = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="city" />
         ), cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
               focus:outline-none
 
 
-              focus:text-[#02a9ff]
+              focus:text-primary
                mx-1 font-medium">{(row.getValue("city"))}</div>
         },
 
@@ -581,11 +581,11 @@ const columns: ColumnDef<Payment>[] = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="province" />
         ), cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
               focus:outline-none
 
 
-              focus:text-[#02a9ff]
+              focus:text-primary
                mx-1 font-medium">{(row.getValue("province"))}</div>
         },
 
@@ -605,11 +605,11 @@ const columns: ColumnDef<Payment>[] = [
             <DataTableColumnHeader column={column} title="userEmail" />
         ),
         cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
               focus:outline-none
 
 
-              focus:text-[#02a9ff]
+              focus:text-primary
                mx-1 font-medium">{(row.getValue("userEmail"))}</div>
         },
 
@@ -620,7 +620,7 @@ const columns: ColumnDef<Payment>[] = [
             <DataTableColumnHeader column={column} title="Pick Up Time" />
         ),
         cell: ({ row }) => {
-            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-gray-300 active:bg-[#02a9ff]  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-[#02a9ff]  mx-1 cursor-pointer w-[125px] ">
+            return <div className="bg-transparent px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-gray-300 active:bg-primary  uppercase  outline-none  ease-linear transition-all text-center duration-150  focus:outline-none  focus:text-primary  mx-1 cursor-pointer w-[125px] ">
                 {(row.getValue("pickUpTime"))}
             </div>
         },

@@ -95,7 +95,7 @@ export default function FinanceNotes() {
             >
               <Card //className="mr-1 mt-1 w-full rounded-[0px]"
 
-                className={`w-full rounded mt-2 bg-[#09090b] text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] ${message.urgentFinanceNote === 'soon'
+                className={`w-full rounded mt-2 bg-background text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary ${message.urgentFinanceNote === 'soon'
                   ? 'border-green-500 border:w-[5px] '
                   : message.urgentFinanceNote === 'asap'
                     ? 'border-yellow-500 border:w-[4px]  bg-yellow-200'
@@ -157,7 +157,7 @@ export default function FinanceNotes() {
                       name="intent"
                       type="submit"
                       value="updateFinanceNote"
-                      className="cursor-pointer hover:text-[#02a9ff] "
+                      className="cursor-pointer hover:text-primary "
                       onClick={() => {
                         handleSave(message.id);
                         setEditItemId(null);
@@ -227,7 +227,7 @@ export default function FinanceNotes() {
                     type="submit"
                     name="intent"
                     value="editFinanceNote"
-                    className="cursor-pointer mt-1 hover:text-[#02a9ff]"
+                    className="cursor-pointer mt-1 hover:text-primary"
                     onClick={() => handleEditClick(message.id)}
                   >
                     <svg
@@ -254,7 +254,7 @@ export default function FinanceNotes() {
                       type="submit"
                       value="deleteFinanceNote"
                       name="intent"
-                      className="cursor-pointer mt-1 hover:text-[#02a9ff]"
+                      className="cursor-pointer mt-1 hover:text-primary"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -291,7 +291,7 @@ export default function FinanceNotes() {
 
                   <DropdownMenu.Root>
                     <Toolbar.Button asChild>
-                      <DropdownMenu.Trigger className="cursor-pointer hover:text-[#02a9ff]">
+                      <DropdownMenu.Trigger className="cursor-pointer hover:text-primary">
                         <svg width="20px" height="20px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.4449 0.608765C8.0183 -0.107015 6.9817 -0.107015 6.55509 0.608766L0.161178 11.3368C-0.275824 12.07 0.252503 13 1.10608 13H13.8939C14.7475 13 15.2758 12.07 14.8388 11.3368L8.4449 0.608765ZM7.4141 1.12073C7.45288 1.05566 7.54712 1.05566 7.5859 1.12073L13.9798 11.8488C14.0196 11.9154 13.9715 12 13.8939 12H1.10608C1.02849 12 0.980454 11.9154 1.02018 11.8488L7.4141 1.12073ZM6.8269 4.48611C6.81221 4.10423 7.11783 3.78663 7.5 3.78663C7.88217 3.78663 8.18778 4.10423 8.1731 4.48612L8.01921 8.48701C8.00848 8.766 7.7792 8.98664 7.5 8.98664C7.2208 8.98664 6.99151 8.766 6.98078 8.48701L6.8269 4.48611ZM8.24989 10.476C8.24989 10.8902 7.9141 11.226 7.49989 11.226C7.08567 11.226 6.74989 10.8902 6.74989 10.476C6.74989 10.0618 7.08567 9.72599 7.49989 9.72599C7.9141 9.72599 8.24989 10.0618 8.24989 10.476Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
                       </DropdownMenu.Trigger>
                     </Toolbar.Button>
@@ -310,7 +310,7 @@ export default function FinanceNotes() {
                           {urgentFinanceNoteList.map((item) => (
                             <DropdownMenu.Item key={item.name} className="group  leading-none rounded-[3px] pt-1 h-[25px] px-[5px]  pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-600 data-[highlighted]:text-violet1">
                               <div className=" flex  justify-between">
-                                <label htmlFor={item.name} className="text-sm mr-auto text-left text-[#fafafa]1">
+                                <label htmlFor={item.name} className="text-sm mr-auto text-left text-foreground1">
                                   {item.label}
                                 </label>
                                 <input
@@ -352,7 +352,7 @@ export default function FinanceNotes() {
           <TextArea
             placeholder="Type your message here."
             name="customContent"
-            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
+            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary placeholder:text-gray-300 placeholder:uppercase"
           />
           <Input type="hidden" defaultValue={user.name} name="author" />
           <Input
@@ -380,10 +380,10 @@ export default function FinanceNotes() {
             <div className='flex' >
               <p className='mr-2'>CC: </p>
               <Select name='ccUser' >
-                <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-[#fafafa] placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
                   <SelectValue>Sales Person</SelectValue>
                 </SelectTrigger>
-                <SelectContent className='bg-slate1 text-[#fafafa]'>
+                <SelectContent className='bg-slate1 text-foreground'>
                   {userList.map((user, index) => (
                     <SelectItem key={index} value={user.email}>{user.name}</SelectItem>
                   ))}
@@ -395,7 +395,7 @@ export default function FinanceNotes() {
               variant='outline'
               name="intent"
               type="submit"
-              className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-[#fafafa]"
+              className="mr-1 bg-transparent cursor-pointer hover:text-primary text-foreground"
               value="saveFinanceNote"
 
             >

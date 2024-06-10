@@ -146,9 +146,9 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
       <Dialog.Root open={open}  >
         <Dialog.Portal>
           <Form method='post'>
-            <Dialog.Overlay className="z-50 bg-[#09090b]/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
+            <Dialog.Overlay className="z-50 bg-background/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
             <Dialog.Content className="z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y-
-             md:w-[350px] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px]   p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border-[#27272a] bg-[#09090b] text-[#fafafa] ">
+             md:w-[350px] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px]   p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border-border bg-background text-foreground ">
               <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
                 Add Client
               </Dialog.Title>
@@ -156,15 +156,15 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                 <div className="flex flex-col mt-3 ">
                   <div className="relative mt-3">
                     <Input
-                      className={`input border-[#27272a] bg-[#09090b]
-                    ${validity.firstName === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
-                    ${validity.firstName === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                      className={`input border-border bg-background
+                    ${validity.firstName === true ? 'border-green11 bg-green11 text-foreground' : ' '}
+                    ${validity.firstName === false ? 'border-red11 bg-red11 text-foreground' : ''}
                      `}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       type="text"
                       name="firstName"
                     />
-                    <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                    <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
                   </div>
 
                   {String(validity.firstName).length > 3 && validity.firstName === false && (
@@ -181,15 +181,15 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
 
                   <div className="relative mt-3">
                     <Input
-                      className={`input border-[#27272a] bg-[#09090b]
-                          ${validity.lastName === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
-                          ${validity.lastName === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                      className={`input border-border bg-background
+                          ${validity.lastName === true ? 'border-green11 bg-green11 text-foreground' : ' '}
+                          ${validity.lastName === false ? 'border-red11 bg-red11 text-foreground' : ''}
                            `}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       type="text"
                       name="lastName"
                     />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
                   </div>
 
                   {String(validity.lastName).length > 3 && validity.lastName == false && (
@@ -205,15 +205,15 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   ) : null}
                   <div className="relative mt-3">
                     <Input
-                      className={`input border-[#27272a] bg-[#09090b]
-                    ${validity.phone === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
-                    ${validity.phone === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                      className={`input border-border bg-background
+                    ${validity.phone === true ? 'border-green11 bg-green11 text-foreground' : ' '}
+                    ${validity.phone === false ? 'border-red11 bg-red11 text-foreground' : ''}
                      `}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       type="number"
                       name="phone"
                     />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
                   </div>
                   {String(validity.phone).length > 3 && validity.phone === false && (
                     <div className="text-[#ff0202] flex items-center">
@@ -228,15 +228,15 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   ) : null}
                   <div className="relative mt-3">
                     <Input
-                      className={`input border-[#27272a] bg-[#09090b]
-               ${validity.email === true ? 'border-green11 bg-green11 text-[#fafafa]' : ' '}
-               ${validity.email === false ? 'border-red11 bg-red11 text-[#fafafa]' : ''}
+                      className={`input border-border bg-background
+               ${validity.email === true ? 'border-green11 bg-green11 text-foreground' : ' '}
+               ${validity.email === false ? 'border-red11 bg-red11 text-foreground' : ''}
                 `}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       type="email"
                       name="email"
                     />
-                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
                   </div>
                   {String(validity.email).length > 3 && validity.email === false && (
                     <div className="text-[#ff0202] flex items-center">
@@ -251,18 +251,18 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   ) : null}
                   <div className="relative mt-3">
                     <Input
-                      className={`input border-[#27272a] bg-[#09090b]
+                      className={`input border-border bg-background
 
                    `}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       type="text"
                       name="address"
                     />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
                   </div>
                   <div className="relative mt-3">
                     <Input
-                      className={`input border-[#27272a] bg-[#09090b]
+                      className={`input border-border bg-background
 
                      `}
                       onChange={(e) => handleChange('firstName', e.target.value)}
@@ -270,7 +270,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                       list="ListOptions1"
                       name="brand"
                     />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
                   </div>
                   <datalist id="ListOptions1">
                     <option value="BMW-Motorrad" />
@@ -296,7 +296,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                           className="  "
                           type="text" list="ListOptions2" name="model"
                         />
-                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
+                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
                       </div>
                       <datalist id="ListOptions2">
                         {modelList.models.map((item, index) => (

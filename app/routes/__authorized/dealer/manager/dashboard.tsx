@@ -135,8 +135,8 @@ export async function loader({ params, request }: DataFunctionArgs) {
 }
 export default function Dashboard() {
   return (
-    <div className="flex min-h-screen w-full flex-col bg-[#151518] text-[#fafafa]">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-[#09090b] sm:flex">
+    <div className="flex min-h-screen w-full flex-col bg-muted/40 text-foreground">
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
           <Link
             to="#"
@@ -222,7 +222,7 @@ export default function Dashboard() {
         </nav>
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-[#09090b] px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 border-[#27272a]">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 border-border">
           <Sheet>
             <SheetTrigger asChild>
               <Button size="icon" variant="outline" className="sm:hidden">
@@ -302,7 +302,7 @@ export default function Dashboard() {
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
               <Card
-                className="sm:col-span-2 border-[#27272a] bg-[#09090b]" x-chunk="dashboard-05-chunk-0"
+                className="sm:col-span-2 border-border bg-background" x-chunk="dashboard-05-chunk-0"
               >
                 <CardHeader className="pb-3">
                   <CardTitle>Your Orders</CardTitle>
@@ -315,7 +315,7 @@ export default function Dashboard() {
                   <Button>Create New Order</Button>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-1" className="border-[#27272a] bg-[#09090b]">
+              <Card x-chunk="dashboard-05-chunk-1" className="border-border bg-background">
                 <CardHeader className="pb-2">
                   <CardDescription>This Week</CardDescription>
                   <CardTitle className="text-4xl">$1,329</CardTitle>
@@ -329,7 +329,7 @@ export default function Dashboard() {
                   <Progress value={25} aria-label="25% increase" />
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2" className="border-[#27272a] bg-[#09090b]">
+              <Card x-chunk="dashboard-05-chunk-2" className="border-border bg-background">
                 <CardHeader className="pb-2">
                   <CardDescription>This Month</CardDescription>
                   <CardTitle className="text-4xl">$5,329</CardTitle>
@@ -589,8 +589,8 @@ export default function Dashboard() {
 
               return (
                 <div className="relative mt-3">
-                  <Card className="overflow-hidden border-[#27272a]" x-chunk="dashboard-05-chunk-4"  >
-                    <CardHeader className="flex flex-row items-start bg-[#09090b]">
+                  <Card className="overflow-hidden border-border" x-chunk="dashboard-05-chunk-4"  >
+                    <CardHeader className="flex flex-row items-start bg-background">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
                           Stats
@@ -682,7 +682,7 @@ export default function Dashboard() {
                       </Pagination>
                     </CardFooter>
                   </Card>
-                  <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{sales.name}</label>
+                  <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{sales.name}</label>
                 </div>
               );
             })}

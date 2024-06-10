@@ -359,14 +359,14 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
         <div
           className={cn(
             "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
-            "bg-[#09090b] text-[#fafafa] transition-all align-center justify-center",
+            "bg-background text-foreground transition-all align-center justify-center",
             "sm:sticky sm:top-[120px]",
           )}
         >
           <select
             name="clientAtr"
             onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-            className='bg-black border border-white  text-[#fafafa]  focus:border-[#60b9fd] rounded-md p-2 '
+            className='bg-black border border-white  text-foreground  focus:border-[#60b9fd] rounded-md p-2 '
           >
             <option value="">Client</option>
             {Object.entries(clientAtr).map(([title, value]) => (
@@ -378,7 +378,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
           <select
             name="wantedVehAttr"
             onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-            className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '   >
+            className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '   >
             <option value="">Wanted Veh</option>
             {Object.entries(wantedVehAttr).map(([title, value]) => (
               <option key={title} value={title}>
@@ -389,7 +389,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
           <select
             name="tradeVehAttr"
             onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-            className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '         >
+            className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '         >
             <option value="">Trade Veh</option>
             {Object.entries(tradeVehAttr).map(([title, value]) => (
               <option key={title} value={title}>
@@ -400,7 +400,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
           <select
             name="salesPersonAttr"
             onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-            className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '          >
+            className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '          >
             <option value="">Sales Person</option>
             {Object.entries(salesPersonAttr).map(([title, value]) => (
               <option key={title} value={title}>
@@ -411,7 +411,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
           <select
             name="FandIAttr"
             onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-            className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
+            className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '        >
             <option value="">F & I Manager</option>
             {Object.entries(FandIAttr).map(([title, value]) => (
               <option key={title} value={title}>
@@ -422,7 +422,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
           <select
             name="dealerInfo"
             onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-            className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
+            className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '        >
             <option value="">Dealer Info</option>
             {Object.entries(dealerInfo).map(([title, value]) => (
               <option key={title} value={title}>
@@ -433,7 +433,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
           <select
             name="financeInfo"
             onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-            className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
+            className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '        >
             <option value="">Finance Info</option>
             {Object.entries(financeInfo).map(([title, value]) => (
               <option key={title} value={title}>
@@ -446,7 +446,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
         <div
           className={cn(
             "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-            "bg-[#09090b] text-[#fafafa] transition-all justify-center",
+            "bg-background text-foreground transition-all justify-center",
             // "sm:sticky sm:top-[80px]",
           )}
         >
@@ -454,19 +454,19 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={editor.isActive("bold") ? buttonActive : buttonInactive}
           >
-            <FaBold className="text-xl hover:text-[#02a9ff]" />
+            <FaBold className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={editor.isActive("italic") ? buttonActive : buttonInactive}
           >
-            <FaItalic className="text-xl hover:text-[#02a9ff]" />
+            <FaItalic className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleStrike().run()}
             className={editor.isActive("strike") ? buttonActive : buttonInactive}
           >
-            <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
+            <FaStrikethrough className="text-xl hover:text-primary" />
           </button>
 
           <Minus color="#09090b" strokeWidth={1.5} />
@@ -474,98 +474,98 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
             onClick={handleSetLink}
             className={editor.isActive("link") ? buttonActive : buttonInactive}
           >
-            <FaLink className="text-xl hover:text-[#02a9ff]" />
+            <FaLink className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().unsetLink().run()}
             disabled={!editor.isActive("link")}
             className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
           >
-            <FaUnlink className="text-xl hover:text-[#02a9ff]" />
+            <FaUnlink className="text-xl hover:text-primary" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
           <button
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
             className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
           >
-            <FaQuoteLeft className="text-xl hover:text-[#02a9ff]" />
+            <FaQuoteLeft className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleCode().run()}
             className={editor.isActive('code') ? buttonActive : buttonInactive}
             disabled={!editor.can().chain().focus().toggleCode().run()}
           >
-            <FaFileCode className="text-xl hover:text-[#02a9ff]" />
+            <FaFileCode className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
             className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
           >
-            <BiCodeBlock className="text-xl hover:text-[#02a9ff]" />
+            <BiCodeBlock className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
           >
-            <FaList className="text-xl hover:text-[#02a9ff]" />
+            <FaList className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
           >
-            <FaListOl className="text-xl hover:text-[#02a9ff]" />
+            <FaListOl className="text-xl hover:text-primary" />
           </button>
 
           <Minus color="#000" strokeWidth={1.5} />
           <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-            <MdHorizontalRule className="text-xl hover:text-[#02a9ff]" />
+            <MdHorizontalRule className="text-xl hover:text-primary" />
           </button>
           <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-            <IoMdReturnLeft className="text-xl hover:text-[#02a9ff]" />
+            <IoMdReturnLeft className="text-xl hover:text-primary" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
           <button
             onClick={() => editor.chain().focus().undo().run()}
             disabled={!editor.can().chain().focus().undo().run()}
           >
-            <FaUndo className="text-xl hover:text-[#02a9ff]" />
+            <FaUndo className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().redo().run()}
             disabled={!editor.can().chain().focus().redo().run()}
           >
-            <FaRedo className="text-xl hover:text-[#02a9ff]" />
+            <FaRedo className="text-xl hover:text-primary" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
           <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
             className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
           >
-            <FaAlignLeft className="text-xl hover:text-[#02a9ff]" />
+            <FaAlignLeft className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().setTextAlign('center').run()}
             className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
           >
-            <FaAlignCenter className="text-xl hover:text-[#02a9ff]" />
+            <FaAlignCenter className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().setTextAlign('right').run()}
             className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
           >
-            <FaAlignRight className="text-xl hover:text-[#02a9ff]" />
+            <FaAlignRight className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().setTextAlign('justify').run()}
             className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
           >
-            <FaAlignJustify className="text-xl hover:text-[#02a9ff]" />
+            <FaAlignJustify className="text-xl hover:text-primary" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
           <button
             onClick={() => editor.chain().focus().toggleHighlight().run()}
             className={editor.isActive('highlight') ? buttonActive : buttonInactive}
           >
-            <FaHighlighter className="text-xl hover:text-[#02a9ff]" />
+            <FaHighlighter className="text-xl hover:text-primary" />
           </button>
           <input
             type="color"
@@ -577,28 +577,28 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
             onClick={() => editor.chain().focus().unsetColor().run()}
             className={editor.isActive('highlight') ? buttonActive : buttonInactive}
           >
-            <FaEraser className="text-xl hover:text-[#02a9ff]" />
+            <FaEraser className="text-xl hover:text-primary" />
           </button>
           <Minus color="#000" strokeWidth={1.5} />
           <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
             className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
           >
-            <Heading1 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+            <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
             className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
 
           >
-            <Heading2 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+            <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
             className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
 
           >
-            <Heading3 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+            <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
           </button>
         </div>
         <div>
@@ -664,7 +664,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
                 name="clientAtr"
 
                 onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+                className='bg-background border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
               >
                 <option value="">Client</option>
                 {Object.entries(clientAtr).map(([title, value]) => (
@@ -678,7 +678,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
                 onChange={(event) => {
                   handleDropdownChange(wantedVehAttr[event.target.value]);
                 }}
-                className='bg-[#09090b] border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                className='bg-background border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                 <option value="">Wanted Veh</option>
                 {Object.entries(wantedVehAttr).map(([title, value]) => (
                   <option key={title} value={title}>
@@ -691,7 +691,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
                 onChange={(event) => {
                   handleDropdownChange(tradeVehAttr[event.target.value]);
                 }}
-                className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                className='bg-background border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                 <option value="">Trade Veh</option>
                 {Object.entries(tradeVehAttr).map(([title, value]) => (
                   <option key={title} value={title}>
@@ -704,7 +704,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
                 onChange={(event) => {
                   handleDropdownChange(salesPersonAttr[event.target.value]);
                 }}
-                className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
+                className='bg-background border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
                 <option value="">Sales Person</option>
                 {Object.entries(salesPersonAttr).map(([title, value]) => (
                   <option key={title} value={title}>
@@ -717,7 +717,7 @@ export function EditorTiptapHook({ content, handleUpdate, }: {
                 onChange={(event) => {
                   handleDropdownChange(FandIAttr[event.target.value]);
                 }}
-                className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
+                className='bg-background border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
                 <option value="">F & I Manager</option>
                 {Object.entries(FandIAttr).map(([title, value]) => (
                   <option key={title} value={title}>

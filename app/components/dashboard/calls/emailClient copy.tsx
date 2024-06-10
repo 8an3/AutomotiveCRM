@@ -459,12 +459,12 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <p
-          className="cursor-pointer text-[#fafafa] target:text-[#02a9ff] hover:text-[#02a9ff]" >
+          className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
           <Mail className="" />
         </p>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className=" bg-[#09090b]/80  fixed inset-0 backdrop-blur-sm" />
+        <Dialog.Overlay className=" bg-background/80  fixed inset-0 backdrop-blur-sm" />
         <Dialog.Content className=" fixed left-[50%] top-[50%] max-h-[85%] w-[90vw] overflow-y-scroll translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white text-black p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none md:w-[950px]">
 
           <Dialog.Description className="text-mauve11 mb-5 mt-[10px] text-[15px] leading-normal ">
@@ -508,12 +508,12 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                   <div className="ml-auto flex px-2  ">
                     <p
                       onClick={() => setCc(!cc)}
-                      className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff]">
+                      className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-primary">
                       cc
                     </p>
                     <p
                       onClick={() => setBcc(!bcc)}
-                      className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff] ">
+                      className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-primary ">
                       bcc
                     </p>
                   </div>
@@ -831,7 +831,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               name="clientAtr"
 
                               onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                              className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+                              className='bg-background border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
                             >
                               <option value="">Client</option>
                               {Object.entries(clientAtr).map(([title, value]) => (
@@ -845,7 +845,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(wantedVehAttr[event.target.value]);
                               }}
-                              className='bg-[#09090b] border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                              className='bg-background border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                               <option value="">Wanted Veh</option>
                               {Object.entries(wantedVehAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -858,7 +858,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(tradeVehAttr[event.target.value]);
                               }}
-                              className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                              className='bg-background border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                               <option value="">Trade Veh</option>
                               {Object.entries(tradeVehAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -871,7 +871,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(salesPersonAttr[event.target.value]);
                               }}
-                              className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
+                              className='bg-background border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
                               <option value="">Sales Person</option>
                               {Object.entries(salesPersonAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -884,7 +884,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(FandIAttr[event.target.value]);
                               }}
-                              className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
+                              className='bg-background border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
                               <option value="">F & I Manager</option>
                               {Object.entries(FandIAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -939,7 +939,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                     name='emailType'
                     value='fullCustom'
 
-                    className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+                    className={` cursor-pointer mr-2 p-3 hover:text-primary hover:border-primary text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'} `}
                   >
                     {buttonText}
                   </Button>
@@ -974,7 +974,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                     toast.message('Helping you become the hulk of sales...')
                   }}
                   loadingText="Loading..."
-                  className="w-auto cursor-pointer mt-2  hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border-black"
+                  className="w-auto cursor-pointer mt-2  hover:text-primary hover:border-primary text-black border-black"
                 >
                   Save As Template
                 </ButtonLoading>
@@ -985,7 +985,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
               <div className='max-h-[900px] overflow-y-scroll' >
 
                 {convos && convos.filter(convo => convo.financeId === data.financeId).map((convo, index) => (
-                  <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border-1 border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
+                  <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border-1 border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary">
                     <p className="my-2 ml-2 text-sm text-black">
                       Sent by: {convo.userName}
                     </p>
@@ -1028,7 +1028,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                           <TextArea
                             placeholder="Type your message here."
                             name="customContent"
-                            className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
+                            className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary placeholder:text-gray-300 placeholder:uppercase"
                           />
                           <Input type="hidden" defaultValue={user.name} name="author" />
                           <Input
@@ -1052,7 +1052,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               variant='outline'
                               name="intent"
                               type="submit"
-                              className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-[#fafafa]"
+                              className="mr-1 bg-transparent cursor-pointer hover:text-primary text-foreground"
                               value="saveFinanceNote"
                             >
                               Save
@@ -1076,7 +1076,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
           </Tabs>
           <Dialog.Close asChild>
             <button
-              className="text-black  hover:text-[#02a9ff] focus:shadow-violet7 absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+              className="text-black  hover:text-primary focus:shadow-violet7 absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
               aria-label="Close"
             >
               <Cross2Icon />
@@ -1722,12 +1722,12 @@ return (
   <Dialog.Root>
     <Dialog.Trigger asChild>
       <p
-        className="cursor-pointer text-[#fafafa] target:text-[#02a9ff] hover:text-[#02a9ff]" >
+        className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
         <Mail className="" />
       </p>
     </Dialog.Trigger>
     <Dialog.Portal>
-      <Dialog.Overlay className=" bg-[#09090b]/80  fixed inset-0 backdrop-blur-sm" />
+      <Dialog.Overlay className=" bg-background/80  fixed inset-0 backdrop-blur-sm" />
       <Dialog.Content className=" fixed left-[50%] top-[50%] max-h-[85%] w-[90vw] overflow-y-scroll translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white text-black p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none md:w-[750px]">
 
         <Dialog.Description className="text-mauve11 mb-5 mt-[10px] text-[15px] leading-normal ">
@@ -1771,12 +1771,12 @@ return (
                 <div className="ml-auto flex px-2  ">
                   <p
                     onClick={() => setCc(!cc)}
-                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff]">
+                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-primary">
                     cc
                   </p>
                   <p
                     onClick={() => setBcc(!bcc)}
-                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-[#02a9ff] ">
+                    className="cursor-pointer text-black px-2 text-right text-[12px] hover:text-primary ">
                     bcc
                   </p>
                 </div>
@@ -1829,7 +1829,7 @@ return (
                     toast.success(`Sent email to ${data.firstName}.`)
                   }}
                   name='emailType' value='fullCustom' type='submit'
-                  className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'} `}
+                  className={` cursor-pointer mr-2 p-3 hover:text-primary hover:border-primary text-black border border-black font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'} `}
                 >
                   {buttonText}
                 </Button>
@@ -1865,7 +1865,7 @@ return (
                   toast.message('Helping you become the hulk of sales...')
                 }}
                 loadingText="Loading..."
-                className="w-auto cursor-pointer mt-2  hover:text-[#02a9ff] hover:border-[#02a9ff] text-black border-black"
+                className="w-auto cursor-pointer mt-2  hover:text-primary hover:border-primary text-black border-black"
               >
                 Save As Template
               </ButtonLoading>
@@ -1876,7 +1876,7 @@ return (
             <div className='max-h-[900px] overflow-y-scroll' >
 
               {convos && convos.filter(convo => convo.financeId === data.financeId).map((convo, index) => (
-                <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border-1 border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff]">
+                <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border-1 border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary">
                   <p className="my-2 ml-2 text-sm text-black">
                     Sent by: {convo.userName}
                   </p>
@@ -1922,7 +1922,7 @@ return (
                         <TextArea
                           placeholder="Type your message here."
                           name="customContent"
-                          className="w-full rounded border-0 h-8 bg-[#09090b] px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#02a9ff] placeholder:text-gray-300 placeholder:uppercase"
+                          className="w-full rounded border-0 h-8 bg-background px-3 py-3 text-sm text-gray-300 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary placeholder:text-gray-300 placeholder:uppercase"
                         />
                         <Input type="hidden" defaultValue={user.name} name="author" />
                         <Input
@@ -1945,7 +1945,7 @@ return (
   variant='outline'
   name="intent"
   type="submit"
-  className="mr-1 bg-transparent cursor-pointer hover:text-[#02a9ff] text-[#fafafa]"
+  className="mr-1 bg-transparent cursor-pointer hover:text-primary text-foreground"
   value="saveFinanceNote"
 
 >
@@ -1976,7 +1976,7 @@ return (
 
   <Dialog.Close asChild>
     <button
-      className="text-black  hover:text-[#02a9ff] focus:shadow-violet7 absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+      className="text-black  hover:text-primary focus:shadow-violet7 absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
       aria-label="Close"
     >
       <Cross2Icon />

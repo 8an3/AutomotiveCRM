@@ -95,8 +95,8 @@ export const ModelPageHD = () => {
         window.open(modelUrl, '_blank')
     }
     return (
-        <Button variant='outline' onClick={Click} type="submit" content="update">
+        <p onClick={Click} type="submit" content="update">
             Model Page
-        </Button>
+        </p>
     )
 }

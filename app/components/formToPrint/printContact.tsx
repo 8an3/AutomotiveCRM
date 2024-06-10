@@ -676,7 +676,7 @@ const PrintContract = () => {
     doc.save(`${finance.name}.pdf`)
   }
   return (
-    <Button onClick={Click10} className="h-5 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" >
+    <Button onClick={Click10} className="h-5 border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border" >
       Contract - Cash
     </Button>
   )

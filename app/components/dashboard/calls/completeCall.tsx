@@ -82,14 +82,14 @@ const CompleteCall = ({ data, contactMethod }) => {
     <Dialog>
       <DialogTrigger asChild>
         <div className='mx-auto cursor-pointer'>
-          <ClipboardCheck className='mx-auto  text-[#fafafa] items-center justify-center hover:text-[#02a9ff] target:text-[#02a9ff]' />
+          <ClipboardCheck className='mx-auto  text-foreground items-center justify-center hover:text-primary target:text-primary' />
         </div>
       </DialogTrigger>
-      <DialogContent className="w-full md:w-[50%]  bg-[#09090b] text-[#fafafa] border-[#262626] h-auto">
+      <DialogContent className="w-full md:w-[50%]  bg-background text-foreground border-[#262626] h-auto">
         <DialogHeader>
           <DialogTitle>
-            <p className="mt-4 text-[#fafafa] ">Schedule Follow-up</p>
-            <hr className="my-3 text-[#27272a] w-[98%] mx-auto" />
+            <p className="mt-4 text-foreground ">Schedule Follow-up</p>
+            <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
           </DialogTitle>
         </DialogHeader>
         <Form method="post" >
@@ -97,10 +97,10 @@ const CompleteCall = ({ data, contactMethod }) => {
             <div className="relative mt-3">
 
               <Select name='resultOfcall' defaultValue="Left Message" >
-                <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]">
+                <SelectTrigger className="w-full  bg-background text-foreground border border-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className='bg-[#09090b] text-[#fafafa] '>
+                <SelectContent className='bg-background text-foreground '>
                   <SelectGroup>
                     <SelectLabel>Result of call</SelectLabel>
                     <SelectItem value="Reached">Reached</SelectItem>
@@ -111,25 +111,25 @@ const CompleteCall = ({ data, contactMethod }) => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Updating Completed Appointment</label>
+              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Updating Completed Appointment</label>
             </div>
-            <p className=' text-[#fafafa] mt-5'>Creating New Appointment</p>
-            <hr className="solid  text-[#27272a] " />
+            <p className=' text-foreground mt-5'>Creating New Appointment</p>
+            <hr className="solid  text-muted-foreground " />
             <div className="relative mt-3">
               <Input
                 type="text"
                 name="title"
                 defaultValue={`F/U on the ${data.model}`}
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
-              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Title</label>
+              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Title</label>
             </div>
             <div className="relative mt-3">
               <Select name='note' defaultValue="No Answer / Left Message">
-                <SelectTrigger className="w-full bg-[#09090b] text-[#fafafa] border border-[#27272a]">
+                <SelectTrigger className="w-full bg-background text-foreground border border-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className='bg-[#09090b] text-[#fafafa] '>
+                <SelectContent className='bg-background text-foreground '>
                   <SelectGroup>
                     <SelectLabel>Message examples</SelectLabel>
 
@@ -155,21 +155,21 @@ const CompleteCall = ({ data, contactMethod }) => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Pre-Made Notes</label>
+              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Pre-Made Notes</label>
             </div>
             <div className="relative mt-3">
               <Input
                 name="note"
-                className="w-full bg-[#09090b] border-[#27272a] "
+                className="w-full bg-background border-border "
               />
-              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Custom Notes</label>
+              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Custom Notes</label>
             </div>
             <div className="relative mt-3">
               <Select name='contactMethod' defaultValue="SMS">
-                <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]  ">
+                <SelectTrigger className="w-full  bg-background text-foreground border border-border  ">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className='bg-[#09090b] text-[#fafafa] '>
+                <SelectContent className='bg-background text-foreground '>
                   <SelectGroup>
                     <SelectLabel>Contact Method</SelectLabel>
                     <SelectItem value="Phone">Phone</SelectItem>
@@ -179,14 +179,14 @@ const CompleteCall = ({ data, contactMethod }) => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Custom Notes</label>
+              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Custom Notes</label>
             </div>
             <div className="relative mt-3">
               <Select name='resourceId' defaultValue="1">
-                <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a] ">
+                <SelectTrigger className="w-full  bg-background text-foreground border border-border ">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className='bg-[#09090b] text-[#fafafa] '>
+                <SelectContent className='bg-background text-foreground '>
                   <SelectGroup>
                     <SelectLabel>Type of Appointment</SelectLabel>
                     <SelectItem value="1">Sales Calls</SelectItem>
@@ -196,16 +196,16 @@ const CompleteCall = ({ data, contactMethod }) => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Type of Appointment</label>
+              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Type of Appointment</label>
             </div>
             <div className=' mt-5 flex-col mx-auto justify-center'>
-              <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
                 <div className='  my-3 flex justify-center   '>
                   <CalendarIcon className="mr-2 size-8 " />
                   {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
                 </div>
                 <Calendar
-                  className='mx-auto w-auto   bg-[#09090b] text-[#fafafa]'
+                  className='mx-auto w-auto   bg-background text-foreground'
                   mode="single"
                   selected={date}
                   onSelect={setDate}
@@ -214,7 +214,7 @@ const CompleteCall = ({ data, contactMethod }) => {
               </div>
             </div>
             <div className=' flex-col mx-auto justify-center' >
-              <div className="mx-auto w-[280px] rounded-md border-white bg-[#09090b] px-3 text-[#fafafa] " >
+              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
 
                 <input type='hidden' value={String(date)} name='value' />
                 <Popover>
@@ -222,20 +222,20 @@ const CompleteCall = ({ data, contactMethod }) => {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] px-4 text-[#fafafa] mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-[#02a9ff] border-[#27272a]",
-                        !date && " text-[#fafafa]"
+                        "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                        !date && " text-foreground"
                       )}
                     >
-                      <div className=' text-[#fafafa]  mx-auto flex justify-center  '>
+                      <div className=' text-foreground  mx-auto flex justify-center  '>
                         <ClockIcon className="mr-2 size-8 " />
                         {currentTime ? (time) : <span>Pick a Time</span>}
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-[#151518] p-0 text-[#f1f1f1] border-[#27272a]" align="start">
+                  <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <Select name='pickHour'  >
-                        <SelectTrigger className="m-3 w-auto mx-auto bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                        <SelectTrigger className="m-3 w-auto mx-auto bg-background text-foreground border border-border" >
                           <SelectValue defaultValue='09' />
                         </SelectTrigger>
                         <SelectContent className='bg-white text-black' >
@@ -255,7 +255,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                         </SelectContent>
                       </Select>
                       <Select name='pickMin'   >
-                        <SelectTrigger className="m-3 w-full bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                        <SelectTrigger className="m-3 w-full bg-background text-foreground border border-border" >
                           <SelectValue defaultValue='10' />
                         </SelectTrigger>
                         <SelectContent className='bg-white text-black'  >
@@ -305,7 +305,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                   })
                 }}
                 name='intent' size='sm' value='scheduleFUp' type='submit'
-                className={`bg-[#dc2626] cursor-pointer ml-2 mr-2 p-3 hover:text-[#02a9ff] text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                className={`bg-[#dc2626] cursor-pointer ml-2 mr-2 p-3 hover:text-primary text-foreground font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
               >
                 Complete
               </Button>

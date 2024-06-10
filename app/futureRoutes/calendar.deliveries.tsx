@@ -595,7 +595,7 @@ function EventCalendar() {
       <Dialog.Root open={open} onOpenChange={setOpen}>
 
         <Dialog.Portal>
-          <Dialog.Overlay className="z-49 bg-[#09090b]/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
+          <Dialog.Overlay className="z-49 bg-background/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
           <Dialog.Content className="z-50 bg-slate1 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
               Sales Delivery
@@ -636,19 +636,19 @@ function EventCalendar() {
         <CardContent className=''>
           <div className="flex  items-center mt-2">
             <Button
-              className="mx-1 bg-[#02a9ff] w-[75px]  cursor-pointer my-auto text-[#fafafa] active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+              className="mx-1 bg-primary w-[75px]  cursor-pointer my-auto text-foreground active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
               onClick={() => setOpenDatepickerModal(true)}  >
               Add Appt
             </Button>
             <Link to='/dashboard/calls' >
               <Button
-                className="mx-1 bg-[#02a9ff] w-[75px]  cursor-pointer my-auto  text-[#fafafa] active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+                className="mx-1 bg-primary w-[75px]  cursor-pointer my-auto  text-foreground active:bg-black font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
                 onClick={() => setOpenDatepickerModal(true)}  >
                 Dashboard
               </Button>
             </Link>
             <Button
-              className=" bg-transparent w-[75px]  cursor-pointer my-auto mx-1 text-[#fafafa]  font-bold uppercase   text-xs  rounded  outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
+              className=" bg-transparent w-[75px]  cursor-pointer my-auto mx-1 text-foreground  font-bold uppercase   text-xs  rounded  outline-none focus:outline-none  ease-linear transition-all text-center duration-150"
               onClick={() => setOpenDatepickerModal(true)}  >
               <AddCustomer />
             </Button>
@@ -659,7 +659,7 @@ function EventCalendar() {
               <select
 
                 name='calendar'
-                className="w-[180px] bg-[#02a9ff] text-[#fafafa] cursor-pointer h-5 text-xs font-bold uppercase ">
+                className="w-[180px] bg-primary text-foreground cursor-pointer h-5 text-xs font-bold uppercase ">
                 <option value="sales">sales</option>
                 <option value="parts">parts</option>
                 <option value="service">service</option>
@@ -809,7 +809,7 @@ const EventInfoModal = ({ user, open, handleClose, onDeleteEvent, currentEvent, 
     <Dialog.Root open={open} onOpenChange={setOpen}>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="z-49 bg-[#09090b]/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
+        <Dialog.Overlay className="z-49 bg-background/80 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
         <Dialog.Content className="z-50 bg-slate1 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
           <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
             Sales Delivery

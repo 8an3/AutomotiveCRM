@@ -99,18 +99,18 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
           <Button
             variant='ghost'
             className={cn(
-              'justify-start text-left  hover:border-[#02a9ff]',
+              'justify-start text-left  hover:border-primary',
               buttonVariants({ variant: 'ghost' }),
               pathname === item.to
-                ? "bg-[#232324] hover:bg-[#232324] w-[90%]   "
-                : "hover:bg-[#232324]  w-[90%]  ",
+                ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                : "hover:bg-muted/50  w-[90%]  ",
               "justify-start w-[90%]"
             )} >
             <p className=' text-lg'>
               {item.title}
             </p>
           </Button>
-          <p className="text-[#909098] text-sm text-left ml-[33px] ">
+          <p className="text-muted-foreground text-sm text-left ml-[33px] ">
             {item.description}
           </p>
         </Link>
@@ -125,9 +125,9 @@ export function NavigationMenuSales() {
     <div className='mt-5'>
       <Drawer direction="left">
         <DrawerTrigger asChild>
-          <Button variant="outline" className='ml-3 text-[#fafafa] border-none'>DSA</Button>
+          <Button variant="outline" className='ml-3 text-foreground border-none'>DSA</Button>
         </DrawerTrigger>
-        <DrawerContent className='text-[#fafafa] h-full md:w-[400px] border-[#27272a] '>
+        <DrawerContent className='text-foreground h-full md:w-[400px] border-border '>
           <div className="mx-auto w-full max-w-sm">
             <DrawerHeader>
               <ul className="grid gap-3  ">
@@ -152,12 +152,12 @@ export function NavigationMenuSales() {
         </DrawerContent>
       </Drawer >
       <Link to='/auth/login'>
-        <Button className='hover:border-[#02a9ff] cursor-pointer text-[#fafafa] ml-3 mr-3 bg-transparent hover:bg-transparent'>
+        <Button className='hover:border-primary cursor-pointer text-foreground ml-3 mr-3 bg-transparent hover:bg-transparent'>
           Join
         </Button>
       </Link>
       <Link to="/auth/login">
-        <Button className='hover:border-[#02a9ff] cursor-pointer text-[#fafafa] bg-transparent hover:bg-transparent'>
+        <Button className='hover:border-primary cursor-pointer text-foreground bg-transparent hover:bg-transparent'>
           Login
         </Button>
       </Link>

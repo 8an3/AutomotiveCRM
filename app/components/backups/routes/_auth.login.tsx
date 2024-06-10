@@ -103,15 +103,15 @@ export default function Route() {
         <div className='flex items-center justify-center text-center'>
           <Form action="/google" method="post">
             <div className=" fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-              <h1 className="text-[#fafafa]">Welcome to D.S.A.</h1>
-              <p className="text-[#fafafa] mt-5">Continue with your google account to login</p>
-              <Button variant='outline' className='w-auto rounded-xl mt-5 border border-white px-8 py-5 text-xl text-[#fafafa] '>
+              <h1 className="text-foreground">Welcome to D.S.A.</h1>
+              <p className="text-foreground mt-5">Continue with your google account to login</p>
+              <Button variant='outline' className='w-auto rounded-xl mt-5 border border-white px-8 py-5 text-xl text-foreground '>
                 <p className='mr-1'> Login with </p>
                 <FcGoogle className='text-[28px]' /><p>oogle</p>
               </Button>
-              <hr className="solid mt-5 text-[#fafafa] mb-5" />
+              <hr className="solid mt-5 text-foreground mb-5" />
               <Link to='/privacy'>
-                <p className='text-[#fafafa]'>To review our Privacy Policy</p>
+                <p className='text-foreground'>To review our Privacy Policy</p>
 
               </Link>
             </div>

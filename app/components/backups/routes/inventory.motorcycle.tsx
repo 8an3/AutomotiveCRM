@@ -965,7 +965,7 @@ export function InventoryMoto() {
                     placeholder="Search all columns..."
                 />
                 <Select
-                    className='text-[#fafafa] border-white focus:border-[#02a9ff] ml-2'
+                    className='text-foreground border-white focus:border-primary ml-2'
                     onValueChange={(value) => {
                         const item = DeliveriesList.find((i) => i.key === value);
 
@@ -975,7 +975,7 @@ export function InventoryMoto() {
                         }
                     }}
                 >
-                    <SelectTrigger className="w-auto text-[#fafafa] border-white focus:border-[#02a9ff]  ml-2">
+                    <SelectTrigger className="w-auto text-foreground border-white focus:border-primary  ml-2">
                         <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
                     </SelectTrigger>
                     <SelectContent className='bg-white text-black'>
@@ -989,13 +989,13 @@ export function InventoryMoto() {
 
 
 
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-background px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-2 text-[#fafafa] border-white">
+                        <Button variant="outline" className="ml-2 text-foreground border-white">
                             Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
@@ -1021,7 +1021,7 @@ export function InventoryMoto() {
                 </DropdownMenu>
             </div>
             <div className="rounded-md border border-[#262626] ">
-                <Table className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
+                <Table className='w-full overflow-x-auto border-[#262626] text-foreground'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow
@@ -1050,7 +1050,7 @@ export function InventoryMoto() {
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-                                    className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                                    className='cursor-pointer border-[#262626] bg-background p-4 capitalize text-foreground hover:text-primary'
                                     onClick={() => handleRowClick(row)}
 
                                 >
@@ -1069,7 +1069,7 @@ export function InventoryMoto() {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                                    className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
 
                                 >
                                     No results.
@@ -1111,7 +1111,7 @@ export function InventoryMoto() {
                                                                 name={fee.name}
                                                                 defaultValue={fee.value}
 
-                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-[#02a9ff]'
+                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-primary'
                                                             />
                                                         </div>
                                                     ))}
@@ -1151,7 +1151,7 @@ export function InventoryMoto() {
                                                                 name={fee.name}
                                                                 defaultValue={fee.value}
 
-                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-[#02a9ff]'
+                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-primary'
                                                             />
                                                         </div>
                                                     ))}
@@ -1192,7 +1192,7 @@ export function InventoryMoto() {
                                                                 name={fee.name}
                                                                 defaultValue={fee.value}
 
-                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-[#02a9ff]'
+                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-primary'
                                                             />
                                                         </div>
                                                     ))}
@@ -1233,7 +1233,7 @@ export function InventoryMoto() {
                                                                 name={fee.name}
                                                                 defaultValue={fee.value}
 
-                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-[#02a9ff]'
+                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-primary'
                                                             />
                                                         </div>
                                                     ))}
@@ -1272,7 +1272,7 @@ export function InventoryMoto() {
                 </Dialog>
             )}
             <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="flex-1 text-sm text-[#fafafa]">
+                <div className="flex-1 text-sm text-foreground">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.
                 </div>
@@ -1280,7 +1280,7 @@ export function InventoryMoto() {
                     <Button
                         variant="outline"
                         size="sm"
-                        className="text-[#fafafa] border-white"
+                        className="text-foreground border-white"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
@@ -1289,7 +1289,7 @@ export function InventoryMoto() {
                     <Button
                         variant="outline"
                         size="sm"
-                        className="text-[#fafafa] border-white"
+                        className="text-foreground border-white"
 
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}

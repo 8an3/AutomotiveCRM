@@ -71,26 +71,26 @@ export default function FinanceTab(merged) {
     <>
       <Tabs.Root className="flex flex-col shadow-[0_2px_10px] rounded  mt-5 mx-auto  border border-[#43484E]  bg-myColor-900" defaultValue="Price"  >
         <Tabs.List className="shrink-0 flex border-b border-slate2 " aria-label="Manage your account">
-          <Tabs.Trigger className="bg-myColor-900 px-2 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+          <Tabs.Trigger className="bg-myColor-900 px-2 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
               focus:outline-none      mx-1"  value="Price"    >
             Price
           </Tabs.Trigger>
-          <Tabs.Trigger className="bg-myColor-900 px-2 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
-                 focus:outline-none  focus:text-[#02a9ff]   mx-1"   value="Finance"   >
+          <Tabs.Trigger className="bg-myColor-900 px-2 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+                 focus:outline-none  focus:text-primary   mx-1"   value="Finance"   >
             Finance
           </Tabs.Trigger>
-          <Tabs.Trigger className="bg-myColor-900 px-2 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
-                focus:outline-none  focus:text-[#02a9ff]   mx-1"    value="Options"  >
+          <Tabs.Trigger className="bg-myColor-900 px-2 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+                focus:outline-none  focus:text-primary   mx-1"    value="Options"  >
             Options
           </Tabs.Trigger>
 
-          <Tabs.Trigger disabled className="bg-myColor-900 px-2 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] text-[#fafafa] active:bg-[#02a9ff] font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
-            focus:outline-none  focus:text-[#02a9ff]    mx-1"   value="Accessories"   >
+          <Tabs.Trigger disabled className="bg-myColor-900 px-2 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-foreground active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all text-center duration-150 cursor-pointer
+            focus:outline-none  focus:text-primary    mx-1"   value="Accessories"   >
             Accessories
           </Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content
-          className="grow p-5 bg-slate-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black"
+          className="grow p-5 bg-slate-900 text-foreground rounded-b-md outline-none  focus:shadow-black"
           value="Price"  >
           {dataFees
             .filter(
@@ -102,12 +102,12 @@ export default function FinanceTab(merged) {
             .map((fee, index) => (
               fee && <div
                 key={index}
-                className="mt-1 flex flex-wrap  text-[#fafafa]  justify-between "
+                className="mt-1 flex flex-wrap  text-foreground  justify-between "
               >
-                <p className="mt-1 basis-2/4 text-[#fafafa]  text-sm font-thin">
+                <p className="mt-1 basis-2/4 text-foreground  text-sm font-thin">
                   {fee.name}
                 </p>
-                <p className="flex basis-2/4  items-end   text-[#fafafa]   justify-end text-sm font-thin ">
+                <p className="flex basis-2/4  items-end   text-foreground   justify-end text-sm font-thin ">
                   ${fee.value}
                 </p>
               </div>
@@ -115,19 +115,19 @@ export default function FinanceTab(merged) {
 
           {merged.merged.desiredPayments === "Standard Payment" && (
             <>
-              <div className="mt-2 flex flex-wrap justify-between text-[#fafafa] ">
-                <p className="mt-2 basis-2/4  text-[#fafafa]  text-sm  font-thin">
+              <div className="mt-2 flex flex-wrap justify-between text-foreground ">
+                <p className="mt-2 basis-2/4  text-foreground  text-sm  font-thin">
                   Total
                 </p>
-                <p className="flex basis-2/4 text-[#fafafa]  items-end  justify-end text-right text-sm font-thin ">
+                <p className="flex basis-2/4 text-foreground  items-end  justify-end text-right text-sm font-thin ">
                   ${merged.merged.total}
                 </p>
               </div>
-              <div className="mt-2 flex flex-wrap justify-between text-[#fafafa]  ">
-                <p className="mt-2 basis-2/4   text-sm text-[#fafafa]  font-thin">
+              <div className="mt-2 flex flex-wrap justify-between text-foreground  ">
+                <p className="mt-2 basis-2/4   text-sm text-foreground  font-thin">
                   After Tax
                 </p>
-                <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
+                <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
                   ${merged.merged.onTax}
                 </p>
               </div>
@@ -139,11 +139,11 @@ export default function FinanceTab(merged) {
                   ${merged.merged.deposit}
                 </p>
               </div>
-              <div className="mt-2 flex flex-wrap justify-between text-[#fafafa]  ">
-                <p className="mt-2 basis-2/4   text-sm text-[#fafafa]  font-thin">
+              <div className="mt-2 flex flex-wrap justify-between text-foreground  ">
+                <p className="mt-2 basis-2/4   text-sm text-foreground  font-thin">
                   Balance
                 </p>
-                <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
+                <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
                   ${merged.merged.onTax - merged.merged.deposit}
                 </p>
               </div>
@@ -151,19 +151,19 @@ export default function FinanceTab(merged) {
           )}
           {merged.merged.desiredPayments === "Payments with Options" && (
             <>
-              <div className="mt-2 flex flex-wrap justify-between text-[#fafafa] ">
-                <p className="mt-2 basis-2/4  text-[#fafafa]  text-sm  font-thin">
+              <div className="mt-2 flex flex-wrap justify-between text-foreground ">
+                <p className="mt-2 basis-2/4  text-foreground  text-sm  font-thin">
                   Total
                 </p>
-                <p className="flex basis-2/4 text-[#fafafa]  items-end  justify-end text-right text-sm font-thin ">
+                <p className="flex basis-2/4 text-foreground  items-end  justify-end text-right text-sm font-thin ">
                   ${merged.merged.totalWithOptions}
                 </p>
               </div>
-              <div className="mt-2 flex flex-wrap text-[#fafafa]  justify-between ">
-                <p className="mt-2 basis-2/4 text-[#fafafa]   text-sm  font-thin">
+              <div className="mt-2 flex flex-wrap text-foreground  justify-between ">
+                <p className="mt-2 basis-2/4 text-foreground   text-sm  font-thin">
                   After Tax
                 </p>
-                <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
+                <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
                   ${merged.merged.qcTax}
                 </p>
               </div>
@@ -175,11 +175,11 @@ export default function FinanceTab(merged) {
                   ${merged.merged.deposit}
                 </p>
               </div>
-              <div className="mt-2 flex flex-wrap justify-between text-[#fafafa]  ">
-                <p className="mt-2 basis-2/4   text-sm text-[#fafafa]  font-thin">
+              <div className="mt-2 flex flex-wrap justify-between text-foreground  ">
+                <p className="mt-2 basis-2/4   text-sm text-foreground  font-thin">
                   Balance
                 </p>
-                <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
+                <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
                   ${merged.merged.qcTax - merged.merged.deposit}
                 </p>
               </div>
@@ -187,11 +187,11 @@ export default function FinanceTab(merged) {
           )}
           {merged.merged.desiredPayments === "No Tax Payment" && (
             <>
-              <div className="mt-2 flex flex-wrap text-[#fafafa]  justify-between ">
-                <p className="mt-2 basis-2/4  text-[#fafafa]  text-sm  font-thin">
+              <div className="mt-2 flex flex-wrap text-foreground  justify-between ">
+                <p className="mt-2 basis-2/4  text-foreground  text-sm  font-thin">
                   After Tax
                 </p>
-                <p className="flex basis-2/4  text-[#fafafa]  items-end   justify-end  text-right text-sm font-thin ">
+                <p className="flex basis-2/4  text-foreground  items-end   justify-end  text-right text-sm font-thin ">
                   Total ${merged.merged.native}
                 </p>
               </div>
@@ -203,11 +203,11 @@ export default function FinanceTab(merged) {
                   ${merged.merged.deposit}
                 </p>
               </div>
-              <div className="mt-2 flex flex-wrap justify-between text-[#fafafa]  ">
-                <p className="mt-2 basis-2/4   text-sm text-[#fafafa]  font-thin">
+              <div className="mt-2 flex flex-wrap justify-between text-foreground  ">
+                <p className="mt-2 basis-2/4   text-sm text-foreground  font-thin">
                   Balance
                 </p>
-                <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
+                <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
                   ${merged.merged.native - merged.merged.deposit}
                 </p>
               </div>
@@ -215,11 +215,11 @@ export default function FinanceTab(merged) {
           )}
           {merged.merged.desiredPayments === "No Tax Payment with Options" && (
             <>
-              <div className="mt-2 flex flex-wrap text-[#fafafa]  justify-between ">
-                <p className="mt-2 basis-2/4 text-[#fafafa]   text-sm  font-thin">
+              <div className="mt-2 flex flex-wrap text-foreground  justify-between ">
+                <p className="mt-2 basis-2/4 text-foreground   text-sm  font-thin">
                   Total
                 </p>
-                <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end  text-right text-sm font-thin ">
+                <p className="flex basis-2/4  items-end text-foreground   justify-end  text-right text-sm font-thin ">
                   ${merged.merged.totalWithOptions}
                 </p>
               </div>
@@ -231,11 +231,11 @@ export default function FinanceTab(merged) {
                   ${merged.merged.deposit}
                 </p>
               </div>
-              <div className="mt-2 flex flex-wrap justify-between text-[#fafafa]  ">
-                <p className="mt-2 basis-2/4   text-sm text-[#fafafa]  font-thin">
+              <div className="mt-2 flex flex-wrap justify-between text-foreground  ">
+                <p className="mt-2 basis-2/4   text-sm text-foreground  font-thin">
                   Balance
                 </p>
-                <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
+                <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
                   ${merged.merged.totalWithOptions - merged.merged.deposit}
                 </p>
               </div>
@@ -267,11 +267,11 @@ export default function FinanceTab(merged) {
                   ${merged.merged.deposit}
                 </p>
               </div>
-              <div className="mt-2 flex flex-wrap justify-between text-[#fafafa]  ">
-                <p className="mt-2 basis-2/4   text-sm text-[#fafafa]  font-thin">
+              <div className="mt-2 flex flex-wrap justify-between text-foreground  ">
+                <p className="mt-2 basis-2/4   text-sm text-foreground  font-thin">
                   Balance
                 </p>
-                <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
+                <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
                   ${merged.merged.otherTax - merged.merged.deposit}
                 </p>
               </div>
@@ -304,11 +304,11 @@ export default function FinanceTab(merged) {
                     ${merged.merged.deposit}
                   </p>
                 </div>
-                <div className="mt-2 flex flex-wrap justify-between text-[#fafafa]  ">
-                  <p className="mt-2 basis-2/4   text-sm text-[#fafafa]  font-thin">
+                <div className="mt-2 flex flex-wrap justify-between text-foreground  ">
+                  <p className="mt-2 basis-2/4   text-sm text-foreground  font-thin">
                     Balance
                   </p>
-                  <p className="flex basis-2/4  items-end text-[#fafafa]   justify-end text-sm font-thin ">
+                  <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
                     ${merged.merged.otherTaxWithOptions - merged.merged.deposit}
                   </p>
                 </div>
@@ -318,7 +318,7 @@ export default function FinanceTab(merged) {
 
         </Tabs.Content>
         <Tabs.Content
-          className="grow p-5 bg-slate-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black"
+          className="grow p-5 bg-slate-900 text-foreground rounded-b-md outline-none  focus:shadow-black"
           value="Finance"  >
           <div className="mt-2 flex flex-wrap justify-between ">
             <p className="mt-2 basis-2/4   text-sm  font-thin">
@@ -511,7 +511,7 @@ export default function FinanceTab(merged) {
             )}
         </Tabs.Content>
         <Tabs.Content
-          className="grow p-5 bg-slate-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black"
+          className="grow p-5 bg-slate-900 text-foreground rounded-b-md outline-none  focus:shadow-black"
           value="Options"  >
           {/* loading all and every option may be too consuming of internet resources, if they want to see the options and accessories they can go to the quote itself */}
           <p className="mt-2  basis-2/4   text-sm font-thin">
@@ -529,12 +529,12 @@ export default function FinanceTab(merged) {
             .map((fee, index) => (
               fee && <div
                 key={index}
-                className="mt-1 flex flex-wrap  text-[#fafafa]  justify-between "
+                className="mt-1 flex flex-wrap  text-foreground  justify-between "
               >
-                <p className="mt-1 basis-2/4 text-[#fafafa]  text-sm font-thin">
+                <p className="mt-1 basis-2/4 text-foreground  text-sm font-thin">
                   {fee.name}
                 </p>
-                <p className="flex basis-2/4  items-end   text-[#fafafa]   justify-end text-sm font-thin ">
+                <p className="flex basis-2/4  items-end   text-foreground   justify-end text-sm font-thin ">
                   ${fee.value}
                 </p>
               </div>
@@ -551,7 +551,7 @@ export default function FinanceTab(merged) {
         </Tabs.Content>
 
         <Tabs.Content
-          className="grow p-5 bg-slate-900 text-[#fafafa] rounded-b-md outline-none  focus:shadow-black"
+          className="grow p-5 bg-slate-900 text-foreground rounded-b-md outline-none  focus:shadow-black"
           value="Accessories"  >
         </Tabs.Content>
 

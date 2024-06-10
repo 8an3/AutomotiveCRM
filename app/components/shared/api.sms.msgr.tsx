@@ -65,7 +65,7 @@ export default function SmsDemo({ toNumber }) {
     <Sheet>
       <SheetTrigger asChild>
         <Button>
-          <Button className="myMessenger bg-transparent border-none text-black dark:text-[#fafafa] left-[100px]">
+          <Button className="myMessenger bg-transparent border-none text-black dark:text-foreground left-[100px]">
             <MailIn className="size-sm me-2 " />
             Messenger
           </Button>
@@ -266,7 +266,7 @@ export default function SmsDemo({toNumber}) {
     <Sheet>
       <SheetTrigger asChild>
         <Button>
-          <Button className="myMessenger bg-transparent border-none text-black dark:text-[#fafafa] left-[100px]">
+          <Button className="myMessenger bg-transparent border-none text-black dark:text-foreground left-[100px]">
             <MailIn className="size-sm me-2 " />
             Messenger
           </Button>

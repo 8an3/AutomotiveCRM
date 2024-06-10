@@ -107,7 +107,7 @@ export default function Route() {
   const userImagesCount = user.images.length;
 
   return (
-    <div className='max-w-xl  stack-lg m-5 text-[#fafafa]'>
+    <div className='max-w-xl  stack-lg m-5 text-foreground'>
       <header>
         <div className="flex space-x-3">
 

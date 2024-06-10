@@ -43,12 +43,12 @@ export default function NewLeadForm() {
             <input type='hidden' name='intent' value='updateNewLead' />
             <input type='hidden' name='financeId' value={notification.financeId} />
             <input type='hidden' name='clientfileId' value={notification.clientfileId} />
-            <CommandItem className="cursor-pointer hover:bg-[#232324] rounded-md">
+            <CommandItem className="cursor-pointer hover:bg-muted/50 rounded-md">
               <ul className="grid gap-3 text-sm mt-2">
                 <li className="grid grid-cols-1 items-center">
                   <span>{notification.title}</span>
-                  <span className="text-[#909098] text-xs">{notification.content}</span>
-                  <span className="text-[#909098] text-xs">
+                  <span className="text-muted-foreground text-xs">{notification.content}</span>
+                  <span className="text-muted-foreground text-xs">
                     {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
                   </span>
                 </li>

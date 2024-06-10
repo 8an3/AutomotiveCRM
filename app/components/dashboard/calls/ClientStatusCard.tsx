@@ -47,7 +47,7 @@ export default ClientStatusCard;
 /**   <select
                 defaultValue={data.status}
                 name='status'
-                className={`mx-auto text-xs h-8 cursor-pointer rounded border-gray-300 border px-2 bg-[#09090b] text-gray-300 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] broder uppercase`}>
+                className={`mx-auto text-xs h-8 cursor-pointer rounded border-gray-300 border px-2 bg-background text-gray-300 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] broder uppercase`}>
                 <option value="Active">Active</option>
                 <option value="Duplicate">Duplicate</option>
                 <option value="Invalid">Invalid</option>

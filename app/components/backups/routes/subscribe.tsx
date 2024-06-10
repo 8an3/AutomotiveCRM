@@ -35,7 +35,7 @@ export default function Subscribe() {
                             <div className='grid grid-cols-1 place-content-center mx-auto my-auto	mt-6' >
                                 <div className="item-4 grid grid-cols-1 scriptcard justify-end mx-auto my-auto	h-[450px] ">
                                     <div className="text-center">
-                                        <h2 className="scriptcardText text-[#fafafa] text-3xl sm:mt-0 mt-6 font-thin tracking-tight  sm:text-4xl mb-6 ">
+                                        <h2 className="scriptcardText text-foreground text-3xl sm:mt-0 mt-6 font-thin tracking-tight  sm:text-4xl mb-6 ">
                                             Subscription Plan
                                         </h2>
                                         <p className="scriptcardText text-[#fff]">
@@ -45,7 +45,7 @@ export default function Subscribe() {
                                             $19.95/MONTH
                                         </h3>
                                         <a href='https://buy.stripe.com/14k6pTg9J0IV0G4fYZ' target="_blank">
-                                            <Button type="submit" name='_action' value='subscribe' className=" border border-slate1  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border text-[#fff]" >
+                                            <Button type="submit" name='_action' value='subscribe' className=" border border-slate1  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border text-[#fff]" >
 
                                                 Subscribe
                                             </Button>
@@ -64,7 +64,7 @@ export default function Subscribe() {
                                                 type='submit'
                                                 isSubmitting={isSubmitting}
                                                 loadingText="Checking Subscription..."
-                                                className="w-auto cursor-pointer ml-auto mt-5  text-[#fff] border-[#fff]hover:text-[#02a9ff]"
+                                                className="w-auto cursor-pointer ml-auto mt-5  text-[#fff] border-[#fff]hover:text-primary"
                                             >                                                Continue
                                             </ButtonLoading>
                                         </Link>

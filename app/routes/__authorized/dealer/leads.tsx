@@ -39,7 +39,7 @@ export default function Quote() {
   const { notifications, user } = useLoaderData()
   return (
     <>
-      <div className="w-screen h-screen     bg-[#09090b] border-gray-300 font-bold uppercase  ">
+      <div className="w-screen h-screen     bg-background border-gray-300 font-bold uppercase  ">
 
         <Outlet />
       </div>

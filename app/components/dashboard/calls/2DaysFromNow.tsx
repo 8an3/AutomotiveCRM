@@ -30,7 +30,7 @@ export default function TwoDaysFromNow({ data }) {
     //     setButtonText('F/U ' + followUpDay1 + ' days')
     //     setAppointmentDate(getFutureDate(followUpDay1));
     //   }
-    /**           <select defaultValue={fUpDays} name='followUpDay1' className="mx-auto  rounded border-1  mz-1 px-2 border border-slate1 bg-[#09090b] h-9 text-bold uppercase text-[#fafafa] placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+    /**           <select defaultValue={fUpDays} name='followUpDay1' className="mx-auto  rounded border-1  mz-1 px-2 border border-slate1 bg-background h-9 text-bold uppercase text-foreground placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
                         onChange={handleDropdownChange}>
                         <option value="">Days</option>
                         <option value="1">1 Day</option>
@@ -59,10 +59,10 @@ export default function TwoDaysFromNow({ data }) {
             <Form method='post'>
                 <div className="flex justify-between">
                     <Select name='followUpDay1' onValueChange={handleDropdownChange}>
-                        <SelectTrigger className="w-auto border-[#27272a] text-[#fafafa] bg-[#09090b] font-bold uppercase">
+                        <SelectTrigger className="w-auto border-border text-foreground bg-background font-bold uppercase">
                             <SelectValue placeholder="Days" />
                         </SelectTrigger>
-                        <SelectContent className='border-[#27272a] text-[#fafafa] bg-[#09090b]'>
+                        <SelectContent className='border-border text-foreground bg-background'>
                             <SelectItem value="1">1 Day</SelectItem>
                             <SelectItem value="2">2 Days</SelectItem>
                             <SelectItem value="3">3 Days</SelectItem>
@@ -112,7 +112,7 @@ export default function TwoDaysFromNow({ data }) {
                             setButtonText('Follow-up set');
                         }}
                         type='submit'
-                        className={`p-3 cursor-pointer ml-2 mr-2 text-[#fafafa] font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-[#02a9ff]'}`}
+                        className={`p-3 cursor-pointer ml-2 mr-2 text-foreground font-bold uppercase text-xs rounded-md shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
                     >
                         {buttonText}
                     </Button>

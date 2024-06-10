@@ -46,23 +46,23 @@ export const meta: MetaFunction = () => {
 export default function Component() {
   return (
     <div
-      className="relative  flex-col items-start gap-8 md:flex pl-3 pr-3 md:w-[30%] text-[#fafafa] mx-auto"
+      className="relative  flex-col items-start gap-8 md:flex pl-3 pr-3 md:w-[30%] text-foreground mx-auto"
     >
       <Form method='post' action='/send/contactPublic' className="grid w-full items-start gap-6">
 
-        <fieldset className="grid gap-6 rounded-lg border p-4 border-[#27272a]  bg-[#09090b]">
+        <fieldset className="grid gap-6 rounded-lg border p-4 border-border  bg-background">
           <legend className="-ml-1 px-1 text-sm font-medium">Contact</legend>
           <div className="grid gap-3">
             <Label htmlFor="role">First Name</Label>
-            <Input name="userFname" placeholder='John' className="bg-[#09090b] text-[#fafafa]  border-[#27272a] " />
+            <Input name="userFname" placeholder='John' className="bg-background text-foreground  border-border " />
           </div>
           <div className="grid gap-3">
             <Label htmlFor="role">Last Name</Label>
-            <Input name="userFname" placeholder='Wick' className="bg-[#09090b] text-[#fafafa]  border-[#27272a] " />
+            <Input name="userFname" placeholder='Wick' className="bg-background text-foreground  border-border " />
           </div>
           <div className="grid gap-3">
             <Label htmlFor="role">Email</Label>
-            <Input name="useremail" placeholder='johnwick@thecontinental.com' className="bg-[#09090b] text-[#fafafa]  border-[#27272a] " />
+            <Input name="useremail" placeholder='johnwick@thecontinental.com' className="bg-background text-foreground  border-border " />
           </div>
           <div className="grid gap-3">
             <Label htmlFor="content">Content</Label>
@@ -70,10 +70,10 @@ export default function Component() {
               id="content"
               name="customContent"
               placeholder="Type your message here..."
-              className="bg-[#09090b] min-h-[9.5rem] text-[#fafafa]  border-[#27272a]"
+              className="bg-background min-h-[9.5rem] text-foreground  border-border"
             />
           </div>
-          <Button name='intent' value='contactForm' size='sm' className='mx-auto bg-[#dc2626] text-[#fafafa]  mt-3'>
+          <Button name='intent' value='contactForm' size='sm' className='mx-auto bg-[#dc2626] text-foreground  mt-3'>
             Submit
           </Button>
         </fieldset>

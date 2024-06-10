@@ -40,7 +40,7 @@ export default function Dealerfees() {
                 <img alt="logo" src={Walkthrough} className='mx-auto' />
                 <Separator className='separatorDF mt-10 mb-10' />
                 <Link to='/dealer/quote/Harley-Davidson'>
-                    <Button type="submit" className="bg-[#02a9ff] cursor-pointer mb-10 w-[75px] ml-2  mr-2 text-[#fafafa] active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
+                    <Button type="submit" className="bg-primary cursor-pointer mb-10 w-[75px] ml-2  mr-2 text-foreground active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150">
                         Next
                     </Button>
                 </Link>

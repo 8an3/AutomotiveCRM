@@ -40,9 +40,9 @@ export const configMeta = {
   color: "#1f1f1f", // EDITME
   ogType: "website",
   ogImageAlt: configSite?.title,
-  ogImageType: "money32/svg",
-  ogImagePath: "/money32.svg",
-  twitterImagePath: "/money16.svg",
+  ogImageType: "/favicons/money.svg",
+  ogImagePath: "/favicons/money.svg",
+  twitterImagePath: "/favicons/money.svg",
   fbAppId: "",
 
   author: {

@@ -31,7 +31,7 @@ export default function Interruptions(user, email) {
         <input type='hidden' name='userEmail' value={email} />
         <input type='hidden' name='intent' value='createInterruption' />
         <input type='hidden' name='pathname' value={pathname} />
-        <Button type='submit' size='icon' variant='ghost' className="right-[125px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]" onClick={() => {
+        <Button type='submit' size='icon' variant='ghost' className="right-[125px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" onClick={() => {
           submit
           toast.success('Reminder saved!')
         }}>

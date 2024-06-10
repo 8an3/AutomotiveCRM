@@ -96,18 +96,18 @@ export default function Example() {
 
    <select
 
-                  className={`border-black text-black placeholder:text-blue-300 broder mx-auto h-8  cursor-pointer rounded border bg-[#09090b] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}>
+                  className={`border-black text-black placeholder:text-blue-300 broder mx-auto h-8  cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}>
                   <option value="">All Categories</option>
                   {categories.map(category => <option key={category} value={category}>{category}</option>)}
                 </select>
 
                 <select
-                  className={`border-black text-black placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#09090b] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`border-black text-black placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                   value={selectedType} onChange={e => setSelectedType(e.target.value)}>
                   <option value="">All Types</option>
                   {types.map(type => <option key={type} value={type}>{type}</option>)}
                 </select>
-                <select className={`border-black text-black placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#09090b] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                <select className={`border-black text-black placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                   value={selectedEmail} onChange={e => setSelectedEmail(e.target.value)}>
                   <option value="">All Emails</option>
                   {emails.map(email => <option key={email} value={email}>{email}</option>)}
@@ -153,7 +153,7 @@ export default function Example() {
                       {item.userEmail}
                     </p>
                     <div>
-                      <button onClick={() => handleLineClick(index)} className='cursor-pointer ml-2 hover:text-[#02a9ff]'>
+                      <button onClick={() => handleLineClick(index)} className='cursor-pointer ml-2 hover:text-primary'>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-arrow-down-circle"><circle cx="12" cy="12" r="10" /><path d="M12 8v8" /><path d="m8 12 4 4 4-4" /></svg>
                       </button>
                     </div>
@@ -165,7 +165,7 @@ export default function Example() {
 
                     <div className={`${selectedLine === index ? 'block' : 'hidden'}`}>
                       <div className="">
-                        <button onClick={handleLineClick} className=" bg-white  hover:text-[#02a9ff] text-black border-black flex border p-2 text-left cursor-pointer ">
+                        <button onClick={handleLineClick} className=" bg-white  hover:text-primary text-black border-black flex border p-2 text-left cursor-pointer ">
 
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-x-circle"><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg>
                         </button>
@@ -181,7 +181,7 @@ export default function Example() {
                           <div className="py-1">
                             <div className='flex flex-row justify-between'>
                               <select name='Select a Dept' defaultValue={item.dept}
-                                className={`border-black text-black placeholder:text-blue-300 broder  h-8 cursor-pointer  justifty-start rounded border bg-[#09090b]  px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}>
+                                className={`border-black text-black placeholder:text-blue-300 broder  h-8 cursor-pointer  justifty-start rounded border bg-background  px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}>
                                 <option value="">Select a Dept</option>
                                 <option value="Active">Sales</option>
                                 <option value="Duplicate">Service</option>
@@ -217,7 +217,7 @@ export default function Example() {
                             </div>
                           </div>
                           <div className=" p-2">
-                            <Button type='submit' className="border-black cursor-pointer border uppercase hover:text-[#02a9ff]" variant='ghost'>
+                            <Button type='submit' className="border-black cursor-pointer border uppercase hover:text-primary" variant='ghost'>
                               Update
                             </Button>
                           </div>
@@ -225,7 +225,7 @@ export default function Example() {
                         <Form method='post' className="justify-end">
                           <Input name='intent' type='hidden' defaultValue='deleteTemplate' />
                           <Input name='id' type='hidden' defaultValue={item.id} />
-                          <Button type='submit' className="border-black cursor-pointer border uppercase hover:text-[#02a9ff] " variant='ghost'>
+                          <Button type='submit' className="border-black cursor-pointer border uppercase hover:text-primary " variant='ghost'>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
                           </Button>
                         </Form>
@@ -243,7 +243,7 @@ export default function Example() {
 
         <div className={`bg-white fixed bottom-0 overflow-y-auto w-[100vw] items-center overflow-x-hidden rounded-lg border border-b-0 border-slate12 shadow-md transition-all duration-1000 md:w-[50%]  ${isOpen ? 'h-[37%] ' || `${selectedLine === true && isOpen === true ? 'h-[50%] overflow-y-auto' : ''}` : 'h-14 '}`}>
           <div className="">
-            <button onClick={handleClick} className=" bg-white text-black border-black flex border p-2 text-left cursor-pointer hover:text-[#02a9ff]">
+            <button onClick={handleClick} className=" bg-white text-black border-black flex border p-2 text-left cursor-pointer hover:text-primary">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-folder-plus"><path d="M12 10v6" /><path d="M9 13h6" /><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /></svg>
               Create Template
             </button>
@@ -261,7 +261,7 @@ export default function Example() {
                   <div className='flex flex-row justify-between'>
                     <select placeholder='Select a Dept'
                       name='dept'
-                      className={`border-black text-black placeholder:text-blue-300 broder  h-8 cursor-pointer w-1/2 mr-2 justifty-start rounded border bg-[#09090b]  px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}>
+                      className={`border-black text-black placeholder:text-blue-300 broder  h-8 cursor-pointer w-1/2 mr-2 justifty-start rounded border bg-background  px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}>
                       <option value="">Select a Dept</option>
                       <option value="Active">Sales</option>
                       <option value="Duplicate">Service</option>
@@ -294,7 +294,7 @@ export default function Example() {
                   </div>
                 </div>
                 <div className=" p-2">
-                  <Button type='submit' className="border-black cursor-pointer border uppercase hover:text-[#02a9ff]" variant='ghost'>Save</Button>
+                  <Button type='submit' className="border-black cursor-pointer border uppercase hover:text-primary" variant='ghost'>Save</Button>
                 </div>
               </div>
             </Form>

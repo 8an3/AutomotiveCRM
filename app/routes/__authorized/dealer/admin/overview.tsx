@@ -217,7 +217,7 @@ export default function Route() {
         </TabsList>
         <TabsContent value="dealerFees" className='rounded-md'>
           <Card className='rounded-lg'>
-            <CardContent className="space-y-2 bg-[#09090b] text-[#fafafa] border-[#27272a] rounded-md">
+            <CardContent className="space-y-2 bg-background text-foreground border-border rounded-md">
               <Form method="post" className="">
 
                 <div className="grid grid-cols-1 gap-4 mx-auto">
@@ -227,7 +227,7 @@ export default function Route() {
                       <h2 className="text-2xl font-thin">
                         DEALER FEES
                       </h2>
-                      <p className="text-sm text-[#fafafa]">
+                      <p className="text-sm text-foreground">
                         This is where you can change values like freight, admin, taxes and
                         such. If you don't have all this information with you, dont worry, you can always come back and update it later.
                       </p>
@@ -241,43 +241,43 @@ export default function Route() {
                           <Input
                             name={fee.name}
                             defaultValue={fee.value}
-                            className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                            className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                           />
-                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
                         </div>
                       ))}
                       <div className="relative mt-3"  >
                         <Input
                           defaultValue={dealer.userLicensing}
                           name="userLicensing"
-                          className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                          className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
                         {errors?.userLicensing ? (
                           <em className="text-[#ff0202]">{errors.userLicensing}</em>
                         ) : null}
-                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
+                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
                       </div>
                       <div className="relative mt-3"  >
                         <Input
                           defaultValue={dealer.userTax}
                           name="userTax"
-                          className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                          className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
                         {errors?.userTax ? (
                           <em className="text-[#ff0202]">{errors.userTax}</em>
                         ) : null}
-                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax </label>
+                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax </label>
                       </div>
                       <div className="relative mt-3"  >
                         <Input
                           defaultValue={dealer.userLabour}
                           name="userLabour"
-                          className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                          className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
                         {errors?.userLabour ? (
                           <em className="text-[#ff0202]">{errors.userLabour}</em>
                         ) : null}
-                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour </label>
+                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour </label>
                       </div>
                     </div>
                   </div>
@@ -285,7 +285,7 @@ export default function Route() {
                   {/* Row 2 */}
                   <h2 className="text-2xl font-thin mt-1">
                     OPTIONS
-                    <hr className="mb-4 text-[#27272a]" />
+                    <hr className="mb-4 text-muted-foreground" />
 
                   </h2>
                   <div className="p-4 grid gap-2">
@@ -295,9 +295,9 @@ export default function Route() {
                           <Input
                             name={option.name}
                             defaultValue={option.value}
-                            className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                            className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                           />
-                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{option.placeholder}</label>
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{option.placeholder}</label>
                         </div>
                       ))}
                       <Input type='hidden'
@@ -326,13 +326,13 @@ export default function Route() {
         </TabsContent>
         <TabsContent value="account">
           <Card className='rounded-lg'>
-            <CardContent className="space-y-2 bg-[#09090b] text-[#fafafa] border-[#27272a] rounded-md">
+            <CardContent className="space-y-2 bg-background text-foreground border-border rounded-md">
               <Form method="post" className="">
                 <div className=" mt-5">
                   <h2 className="text-2xl font-thin">
                     Dealer Info
                   </h2>
-                  <p className="text-sm text-[#fafafa]">
+                  <p className="text-sm text-foreground">
                     Edit your dealer information, this is used all over the application. If anything changes be sure to come back here and update the information.
                   </p>
                   <Separator className="my-4" />
@@ -344,98 +344,98 @@ export default function Route() {
                     <Input
                       defaultValue={dealerName}
                       name="dealer"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       name="dealerAddress"
                       defaultValue={dealerAddress}
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address </label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address </label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerCity}
                       name="dealerCity"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City </label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City </label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerProv}
                       name="dealerProv"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Prov </label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Prov </label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       defaultValue={dealerPostal}
                       name="dealerPostal"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       type="phone"
                       name="dealerPhone"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                       defaultValue={dealerPhone}
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone Number</label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone Number</label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       name="dealerContact"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                       defaultValue={dealerContact}
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Contact</label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       name="dealerEmail"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                       defaultValue={dealerEmail}
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Email</label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Email</label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       name="dealerAdminContact"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                       defaultValue={dealerAdminContact}
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       name="dealerEmailAdmin"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                       defaultValue={dealerEmailAdmin}
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Admin Email</label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       name="github"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                       defaultValue={github}
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Github</label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Github</label>
                   </div>
                   <div className="relative mt-3"  >
                     <Input
                       name="vercel"
-                      className="bg-[#09090b] text-[#fafafa] border-[#27272a] px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                       defaultValue={vercel}
                     />
-                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Vercel</label>
+                    <label className="  text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Vercel</label>
                   </div>
                   <Button
                     type='submit'
@@ -453,26 +453,26 @@ export default function Route() {
           </Card>
         </TabsContent>
         <TabsContent value="stats1">
-          <div className='max-w-xl mx-auto justify-center text-[#fafafa]'>
+          <div className='max-w-xl mx-auto justify-center text-foreground'>
             <PageAdminHeader size="xs">
-              <h1 className='text-[#fafafa]'>Admin Dashboard</h1>
+              <h1 className='text-foreground'>Admin Dashboard</h1>
               <RemixLink to={`/admin/users/${user.id}`}>
                 <div className="space-y-2 text-right">
-                  <h2 className='text-[#fafafa]'>Welcome, {user.name}!</h2>
-                  <Badge className='text-[#fafafa] border-white' >{user.role.name}</Badge>
+                  <h2 className='text-foreground'>Welcome, {user.name}!</h2>
+                  <Badge className='text-foreground border-white' >{user.role.name}</Badge>
                 </div>
               </RemixLink>
             </PageAdminHeader>
 
             <section className="px-layout space-y-2">
-              <h3 className='text-[#fafafa]'>Database Metrics/Statistics</h3>
+              <h3 className='text-foreground'>Database Metrics/Statistics</h3>
               <div className="grid max-w-3xl gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {metrics.map((metric) => {
                   return (
                     <RemixLink key={metric.name} to={metric.to}>
                       <div className="card hover:card-hover stack rounded p-4 text-center">
-                        <p className="text-6xl font-extrabold text-[#fafafa]">{metric.count}</p>
-                        <span className='text-[#fafafa]'>{metric.name}</span>
+                        <p className="text-6xl font-extrabold text-foreground">{metric.count}</p>
+                        <span className='text-foreground'>{metric.name}</span>
                       </div>
                     </RemixLink>
                   );
@@ -481,15 +481,15 @@ export default function Route() {
             </section>
 
             <section className="px-layout">
-              <Debug className='text-[#fafafa]' name="rootLoaderData">{rootLoaderData}</Debug>
-              <Debug className='text-[#fafafa]' name="loaderData">{loaderData}</Debug>
+              <Debug className='text-foreground' name="rootLoaderData">{rootLoaderData}</Debug>
+              <Debug className='text-foreground' name="loaderData">{loaderData}</Debug>
             </section>
           </div>
         </TabsContent>
-        <TabsContent value="stats" className='rounded-md bg-[#09090b] text-[#fafafa]'>
-          <Card className='rounded-md text-[#fafafa]'>
+        <TabsContent value="stats" className='rounded-md bg-background text-foreground'>
+          <Card className='rounded-md text-foreground'>
             <CardHeader className='bg-myColor-900'>
-              <CardTitle className='text-[#fafafa]'>
+              <CardTitle className='text-foreground'>
                 <h3 className="text-2xl font-thin uppercase text-slate4">
                   Statistics
                 </h3>
@@ -497,14 +497,14 @@ export default function Route() {
               <CardDescription>
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2 bg-slate11 text-[#fafafa]">
+            <CardContent className="space-y-2 bg-slate11 text-foreground">
               <StatsTable statsData={statsData} comsRecords={comsRecords} />
             </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="Parts">
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-[#fafafa] rounded-md">
+            <CardContent className="space-y-2 bg-slate11 text-foreground rounded-md">
               <Form method="post" className="">
                 <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
 
@@ -715,43 +715,43 @@ export function StatsTable({ statsData, comsRecords }) {
       <TableCaption>List of Stats</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className='text-[#fafafa]'>Period</TableHead>
-          <TableHead className='text-[#fafafa]'>Quotes</TableHead>
-          <TableHead className='text-[#fafafa]'>Deposits</TableHead>
-          <TableHead className='text-[#fafafa]'>Financed</TableHead>
-          <TableHead className='text-[#fafafa]'>Delivered</TableHead>
-          <TableHead className='text-[#fafafa]'>Repeat Cust</TableHead>
-          <TableHead className='text-[#fafafa]'>Walk-in</TableHead>
-          <TableHead className='text-[#fafafa]'>Web-lead</TableHead>
-          <TableHead className='text-[#fafafa]'>Phone-lead</TableHead>
-          <TableHead className='text-[#fafafa]'>Total</TableHead>
-          <TableHead className='text-[#fafafa]'>emailsSent</TableHead>
-          <TableHead className='text-[#fafafa]'>smsSent</TableHead>
-          <TableHead className='text-[#fafafa]'>phoneCallsMade</TableHead>
-          <TableHead className='text-[#fafafa]'>timesContacted</TableHead>
-          <TableHead className='text-[#fafafa]'>Appts</TableHead>
-          <TableHead className='text-[#fafafa]'>Appts Showed</TableHead>
+          <TableHead className='text-foreground'>Period</TableHead>
+          <TableHead className='text-foreground'>Quotes</TableHead>
+          <TableHead className='text-foreground'>Deposits</TableHead>
+          <TableHead className='text-foreground'>Financed</TableHead>
+          <TableHead className='text-foreground'>Delivered</TableHead>
+          <TableHead className='text-foreground'>Repeat Cust</TableHead>
+          <TableHead className='text-foreground'>Walk-in</TableHead>
+          <TableHead className='text-foreground'>Web-lead</TableHead>
+          <TableHead className='text-foreground'>Phone-lead</TableHead>
+          <TableHead className='text-foreground'>Total</TableHead>
+          <TableHead className='text-foreground'>emailsSent</TableHead>
+          <TableHead className='text-foreground'>smsSent</TableHead>
+          <TableHead className='text-foreground'>phoneCallsMade</TableHead>
+          <TableHead className='text-foreground'>timesContacted</TableHead>
+          <TableHead className='text-foreground'>Appts</TableHead>
+          <TableHead className='text-foreground'>Appts Showed</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {stats.map((stat) => (
           <TableRow key={stat.period}>
-            <TableCell className='text-[#fafafa]'>{stat.period}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.quotes}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.deposits}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.financed}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.delivered}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.repeatCustomer}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.walkIn}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.webLead}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.phoneLead}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.total}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.emailsSent}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.smsSent}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.phoneCallsMade}</TableCell>
-            <TableCell className='text-[#fafafa]'>{stat.timesContacted}</TableCell>
-            <TableCell className='text-[#fafafa]'>Appts</TableCell>
-            <TableCell className='text-[#fafafa]'>Appts Showed</TableCell>
+            <TableCell className='text-foreground'>{stat.period}</TableCell>
+            <TableCell className='text-foreground'>{stat.quotes}</TableCell>
+            <TableCell className='text-foreground'>{stat.deposits}</TableCell>
+            <TableCell className='text-foreground'>{stat.financed}</TableCell>
+            <TableCell className='text-foreground'>{stat.delivered}</TableCell>
+            <TableCell className='text-foreground'>{stat.repeatCustomer}</TableCell>
+            <TableCell className='text-foreground'>{stat.walkIn}</TableCell>
+            <TableCell className='text-foreground'>{stat.webLead}</TableCell>
+            <TableCell className='text-foreground'>{stat.phoneLead}</TableCell>
+            <TableCell className='text-foreground'>{stat.total}</TableCell>
+            <TableCell className='text-foreground'>{stat.emailsSent}</TableCell>
+            <TableCell className='text-foreground'>{stat.smsSent}</TableCell>
+            <TableCell className='text-foreground'>{stat.phoneCallsMade}</TableCell>
+            <TableCell className='text-foreground'>{stat.timesContacted}</TableCell>
+            <TableCell className='text-foreground'>Appts</TableCell>
+            <TableCell className='text-foreground'>Appts Showed</TableCell>
           </TableRow>
         ))}
       </TableBody>

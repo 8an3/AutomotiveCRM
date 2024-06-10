@@ -38,7 +38,7 @@ const EmailSheet = (finance) => {
     return (
         <Sheet variant='left'>
             <SheetTrigger asChild>
-                <Button size='sm' className='rounded-md border border-black  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border bg-transparent hover:bg-transparent' >
+                <Button size='sm' className='rounded-md border border-black  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border bg-transparent hover:bg-transparent' >
                     Emails
                 </Button>
             </SheetTrigger>
@@ -68,7 +68,7 @@ const EmailSheet = (finance) => {
                                 type='submit'
                                 name='intent'
                                 value='sendPayments'
-                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border'
+                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border'
                             >
                                 Send Payments
                             </Button>
@@ -81,7 +81,7 @@ const EmailSheet = (finance) => {
                                 type='submit'
                                 name='intent'
                                 value='sendPayments'
-                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border'
+                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border'
                             >
                                 Full Breakdown
 
@@ -95,7 +95,7 @@ const EmailSheet = (finance) => {
                                 type='submit'
                                 name='intent'
                                 value='sendPayments'
-                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border'
+                                className='w-auto mt-2 border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border'
                             >
                                 Full Breakdown W/ Options
                             </Button>
@@ -122,7 +122,7 @@ const EmailSheet = (finance) => {
                                     <SelectValue placeholder="Payments (by default)" />
                                 </SelectTrigger>
                                 <SelectContent className="">
-                                    <ScrollArea className="h-[300px] w-[350px] rounded-md text-[#fafafa] bg-slate1 p-4 border border-slate12">                                        <SelectGroup>
+                                    <ScrollArea className="h-[300px] w-[350px] rounded-md text-foreground bg-slate1 p-4 border border-slate12">                                        <SelectGroup>
                                         <SelectLabel>Payments </SelectLabel>
                                         <SelectItem value="payments">Payments</SelectItem>{/*19 */}
                                         <SelectItem value="wBreakdown">W/ Full Breakdown</SelectItem>{/* 20*/}
@@ -163,7 +163,7 @@ const EmailSheet = (finance) => {
                                     </ScrollArea>
                                 </SelectContent>
                             </Select>
-                            <Button className="w-auto mt-2 border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border" type="submit" name="intent" value="justpaymentsCustom">
+                            <Button className="w-auto mt-2 border border-slate12  cursor-pointer hover:text-primary p-5 hover:border-primary hover:border" type="submit" name="intent" value="justpaymentsCustom">
                                 Email
                             </Button>
                         </Form>
@@ -173,7 +173,7 @@ const EmailSheet = (finance) => {
                                 type='submit'
                                 name='intent'
                                 value='sendPayments'
-                                className={` text-black border border-black mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-[#02a9ff] hover:text-[#02a9ff] hover:shadow-md focus:outline-none `}
+                                className={` text-black border border-black mr-2 cursor-pointer rounded border border-[#fff] p-3 text-center text-xs font-bold uppercase text-[#fff] shadow outline-none transition-all duration-150 ease-linear hover:border-primary hover:text-primary hover:shadow-md focus:outline-none `}
                             >
                                 Send Payments
                             </Button>

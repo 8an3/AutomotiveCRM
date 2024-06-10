@@ -62,7 +62,7 @@ export function SearchCustomerModal() {
           <div className="mx-auto justify-center text-center lowercase">
             <Button
               variant="ghost"
-              className='text-[#fafafa]'
+              className='text-foreground'
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
               First Name
@@ -88,7 +88,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-[#fafafa]'
+              className='text-foreground'
 
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -113,7 +113,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-[#fafafa]'
+              className='text-foreground'
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
@@ -137,7 +137,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-[#fafafa]'
+              className='text-foreground'
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
@@ -162,7 +162,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-[#fafafa]'
+              className='text-foreground'
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
@@ -186,7 +186,7 @@ export function SearchCustomerModal() {
         return (
           <div className="mx-auto justify-center text-center lowercase">
             <Button
-              className='text-[#fafafa]'
+              className='text-foreground'
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
@@ -256,7 +256,7 @@ export function SearchCustomerModal() {
       <DialogTrigger asChild>
         <Button
           variant='outline'
-          className=' px-4 mt-3 mx-auto text-[#fafafa] cursor-pointer hover:text-[#02a9ff] justify-center items-center   border-[#fff] hover:border-[#02a9ff] bg-transparent hover:bg-transparent w-[240px]'>
+          className=' px-4 mt-3 mx-auto text-foreground cursor-pointer hover:text-primary justify-center items-center   border-[#fff] hover:border-primary bg-transparent hover:bg-transparent w-[240px]'>
           <>
             <Search size={20} strokeWidth={1.5} />
             <p className='ml-2'>
@@ -265,7 +265,7 @@ export function SearchCustomerModal() {
           </>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[1000px] border-[#27272a] bg-[#09090b] text-[#fafafa] ">
+      <DialogContent className="sm:max-w-[1000px] border-border bg-background text-foreground ">
         <DialogHeader>
           <DialogTitle>Search Clients</DialogTitle>
         </DialogHeader>
@@ -273,7 +273,7 @@ export function SearchCustomerModal() {
           <div className="flex items-center py-4">
             <DebouncedInput
               value={globalFilter ?? ''}
-              onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-[#27272a] bg-[#09090b] p-2 text-[#fafafa] shadow"
+              onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-border bg-background p-2 text-foreground shadow"
               placeholder="Search all columns..."
             />
             <Input
@@ -284,23 +284,23 @@ export function SearchCustomerModal() {
               onChange={(event) =>
                 table.getColumn('phone')?.setFilterValue(event.target.value)
               }
-              className="ml-2 max-w-sm border-[#27272a] bg-[#09090b] "
+              className="ml-2 max-w-sm border-border bg-background "
             />
 
 
-            <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+            <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-background px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
             >
               Clear
             </Button>
           </div>
-          <div className="rounded-md border border-[#27272a] ">
-            <Table2 className='w-full overflow-x-auto border-[#27272a] text-[#fafafa] bg-[#09090b]'>
-              <TableHeader className='text-[#fafafa] border-[#27272a]'>
+          <div className="rounded-md border border-border ">
+            <Table2 className='w-full overflow-x-auto border-border text-foreground bg-background'>
+              <TableHeader className='text-foreground border-border'>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className=' border-[#27272a] text-[#fafafa]'>
+                  <TableRow key={headerGroup.id} className=' border-border text-foreground'>
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead className='items-center border-[#27272a]' key={header.id}>
+                        <TableHead className='items-center border-border' key={header.id}>
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -308,7 +308,7 @@ export function SearchCustomerModal() {
                               header.getContext()
                             )}
                           {header.column.getCanFilter() && showFilter && (
-                            <div className="mx-auto cursor-pointer items-center justify-center border-[#27272a] text-center">
+                            <div className="mx-auto cursor-pointer items-center justify-center border-border text-center">
                               <Filter column={header.column} table={table} />
                             </div>
                           )}
@@ -318,12 +318,12 @@ export function SearchCustomerModal() {
                   </TableRow>
                 ))}
               </TableHeader>
-              <TableBody className='  border-[#27272a] bg-[#09090b]  text-[#fafafa]  '>
+              <TableBody className='  border-border bg-background  text-foreground  '>
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
                     <TableRow
                       key={row.id}
-                      className='cursor-pointer border-[#27272a] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                      className='cursor-pointer border-border bg-background p-4 capitalize text-foreground hover:text-primary'
                       data-state={row.getIsSelected() && "selected"}
                     >
                       {row.getVisibleCells().map((cell) => (
@@ -340,7 +340,7 @@ export function SearchCustomerModal() {
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 cursor-pointer bg-[#09090b] border-[#27272a] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                      className="h-24 cursor-pointer bg-background border-border text-center capitalize text-foreground hover:text-primary"
                     >
                       No results.
                     </TableCell>
@@ -356,7 +356,7 @@ export function SearchCustomerModal() {
                 size="sm"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="border-slate1 text-[#fafafa]"
+                className="border-slate1 text-foreground"
               >
                 Previous
               </Button>
@@ -364,7 +364,7 @@ export function SearchCustomerModal() {
                 variant="outline"
                 size="sm"
                 onClick={() => table.nextPage()}
-                className="border-slate1 text-[#fafafa]"
+                className="border-slate1 text-foreground"
                 disabled={!table.getCanNextPage()}
               >
                 Next

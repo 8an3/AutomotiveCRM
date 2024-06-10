@@ -217,7 +217,7 @@ export default function Mainboard() {
 
                 <AlertDialog.Portal>
                     <AlertDialog.Overlay
-                        className="fixed inset-0 z-40 bg-[#09090b]/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+                        className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
                     <AlertDialog.Content
                         className=" z-50 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                         <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
@@ -244,7 +244,7 @@ export default function Mainboard() {
                         <div className="flex justify-end gap-[25px]">
                             <ButtonLoading
                                 size="lg"
-                                className="w-auto cursor-pointer mr-auto mt-5 hover:text-[#02a9ff]  "
+                                className="w-auto cursor-pointer mr-auto mt-5 hover:text-primary  "
                                 type="submit"
                                 isSubmitting={isSubmitting}
                                 onClick={() => {
@@ -257,7 +257,7 @@ export default function Mainboard() {
                             </ButtonLoading>
                             <ButtonLoading
                                 size="lg"
-                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
                                 type="submit"
                                 isSubmitting={isSubmitting}
                                 onClick={() => {
@@ -700,13 +700,13 @@ export function SearchTable() {
 
 
                 <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline'
-                    className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                    className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-background px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
             </div>
             <div className="rounded-md border border-[#262626] ">
-                <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
+                <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -736,7 +736,7 @@ export function SearchTable() {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                                    className='cursor-pointer border-[#262626] bg-background p-4 capitalize text-foreground hover:text-primary'
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
@@ -753,7 +753,7 @@ export function SearchTable() {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                                    className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
                                 >
                                     No results.
                                 </TableCell>
@@ -770,7 +770,7 @@ export function SearchTable() {
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="border-slate1 text-[#fafafa]"
+                        className="border-slate1 text-foreground"
                     >
                         Previous
                     </Button>
@@ -778,7 +778,7 @@ export function SearchTable() {
                         variant="outline"
                         size="sm"
                         onClick={() => table.nextPage()}
-                        className="border-slate1 text-[#fafafa]"
+                        className="border-slate1 text-foreground"
 
                         disabled={!table.getCanNextPage()}
                     >
@@ -1137,7 +1137,7 @@ export function WebleadsTable() {
 
             <>
                 <div className="rounded-md border border-[#262626] ">
-                    <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa] '>
+                    <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground '>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -1166,7 +1166,7 @@ export function WebleadsTable() {
                                 table.getRowModel().rows.map((row) => (
                                     <TableRow
                                         key={row.id}
-                                        className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                                        className='cursor-pointer border-[#262626] bg-background p-4 capitalize text-foreground hover:text-primary'
                                         data-state={row.getIsSelected() && "selected"}
                                         onClick={() => {
                                             handleRowClick(row);
@@ -1187,7 +1187,7 @@ export function WebleadsTable() {
                                 <TableRow>
                                     <TableCell
                                         colSpan={columns.length}
-                                        className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                                        className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
                                     >
                                         No results.
                                     </TableCell>
@@ -1204,7 +1204,7 @@ export function WebleadsTable() {
                             size="sm"
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage()}
-                            className="border-slate1 text-[#fafafa]"
+                            className="border-slate1 text-foreground"
                         >
                             Previous
                         </Button>
@@ -1212,7 +1212,7 @@ export function WebleadsTable() {
                             variant="outline"
                             size="sm"
                             onClick={() => table.nextPage()}
-                            className="border-slate1 text-[#fafafa]"
+                            className="border-slate1 text-foreground"
 
                             disabled={!table.getCanNextPage()}
                         >
@@ -1597,7 +1597,7 @@ export function FinanceBoard() {
             cell: ({ row }) => {
                 const data = row.original
                 return <div
-                    className="bg-transparent flex h-[45px] w-[50px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none">
+                    className="bg-transparent flex h-[45px] w-[50px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
 
                     <FinanceModal
                         data={data}
@@ -1624,7 +1624,7 @@ export function FinanceBoard() {
                 const data = row.original
                 //
                 return <div
-                    className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none">
+                    className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
                     <ClientCard data={data} />
                 </div>
             },
@@ -1639,7 +1639,7 @@ export function FinanceBoard() {
             cell: ({ row }) => {
                 const data = row.original
                 return <div
-                    className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff] ">
+                    className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-primary hover:text-primary focus:text-primary  focus:outline-none  active:bg-primary ">
                     <a target="_blank" href={`/customer/${data.id}`} rel="noreferrer">
                         {(row.getValue("lastName"))}
                     </a>
@@ -1658,7 +1658,7 @@ export function FinanceBoard() {
             cell: ({ row }) => {
                 const data = row.original
                 return <div
-                    className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none  active:bg-[#02a9ff]">
+                    className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
                     <ClientStatusCard data={data} />
                 </div>
             },
@@ -1684,7 +1684,7 @@ export function FinanceBoard() {
                 const formattedDate = data.nextAppointment && data.nextAppointment !== '1969-12-31 19:00' ? formatDate(data.nextAppointment) : 'TBD';
 
                 return <div
-                    className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff]  ">
+                    className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
                     {data.nextAppointment === 'TBD' ? <p>TBD</p> : formattedDate}
                 </div>
             },
@@ -1700,7 +1700,7 @@ export function FinanceBoard() {
 
 
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center px-5  text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff] ">
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center px-5  text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary ">
                     {data.customerState === 'Pending' ? (<Badge className="bg-slate3">Pending</Badge>
                     ) : data.customerState === 'Attempted' ? (<Badge className="bg-slate3">Attempted</Badge>
                     ) : data.customerState === 'Reached' ? (<Badge className="bg-jade9">Reached</Badge>
@@ -1799,7 +1799,7 @@ export function FinanceBoard() {
                 const data = row.original
 
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                     <LastNote data={data} />
                 </div>
             },
@@ -2072,7 +2072,7 @@ export function FinanceBoard() {
             ),
             cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("tradeDesc"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
             },
         },
 
@@ -2093,7 +2093,7 @@ export function FinanceBoard() {
             accessorKey: "pickUpDate",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Pick Up Date"
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff] " />
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
             ),
             cell: ({ row }) => {
                 const data = row.original
@@ -2101,7 +2101,7 @@ export function FinanceBoard() {
                     const pickupDate = data.pickUpDate
                     return (
                         <div
-                            className="bg-transparent :text-[#02a9ff] text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
+                            className="bg-transparent :text-primary text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
                         </div>
                     );
@@ -2113,7 +2113,7 @@ export function FinanceBoard() {
             accessorKey: "lastContact",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Last Contacted"
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]" />
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
             ),
             cell: ({ row }) => {
                 const data = row.original
@@ -2134,7 +2134,7 @@ export function FinanceBoard() {
                     const lastContact1 = data.lastContact
                     return (
                         <div
-                            className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
+                            className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {formattedDate === '1969-12-31 19:00' || formattedDate === null ? 'TBD' : formattedDate}
                         </div>
                     );
@@ -2165,7 +2165,7 @@ export function FinanceBoard() {
             ),
             cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("email"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
             },
 
         },
@@ -2175,7 +2175,7 @@ export function FinanceBoard() {
                 <p className="text-center">phone</p>
             ), cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("phone"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
             },
 
         },
@@ -2185,7 +2185,7 @@ export function FinanceBoard() {
                 <p className="text-center">address</p>
             ), cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("address"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
             },
 
         },
@@ -2194,12 +2194,12 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <p className="text-center">postal</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("postal"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("postal"))}</div>
             },
 
         },
@@ -2208,12 +2208,12 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="city" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("city"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("city"))}</div>
             },
 
         },
@@ -2222,12 +2222,12 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="province" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("province"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("province"))}</div>
             },
 
         },
@@ -2246,12 +2246,12 @@ export function FinanceBoard() {
                 <DataTableColumnHeader column={column} title="userEmail" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("userEmail"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("userEmail"))}</div>
             },
 
         },
@@ -2262,7 +2262,7 @@ export function FinanceBoard() {
             ),
             cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff] ">
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
                     {(row.getValue("pickUpTime"))}
                 </div>
             },
@@ -2639,7 +2639,7 @@ export function FinanceBoard() {
                 <p className="text-center">year</p>
             ), cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("year"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("year"))}</div>
             },
 
         },
@@ -2649,7 +2649,7 @@ export function FinanceBoard() {
                 <p className="text-center">modelName</p>
             ), cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("modelName"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("modelName"))}</div>
             },
 
         },
@@ -2659,7 +2659,7 @@ export function FinanceBoard() {
                 <p className="text-center">model2</p>
             ), cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("model2"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("model2"))}</div>
             },
 
         },
@@ -2669,7 +2669,7 @@ export function FinanceBoard() {
                 <p className="text-center">submodel</p>
             ), cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("submodel"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("submodel"))}</div>
             },
 
         },
@@ -2679,7 +2679,7 @@ export function FinanceBoard() {
                 <p className="text-center">price</p>
             ), cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("price"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("price"))}</div>
             },
 
         },
@@ -2689,7 +2689,7 @@ export function FinanceBoard() {
                 <p className="text-center">price</p>
             ), cell: ({ row }) => {
                 return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("price"))}</div>
+                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("price"))}</div>
             },
 
         },
@@ -3105,10 +3105,10 @@ export function FinanceBoard() {
                             setTodayfilterBy(item.name);
                         }
                     }}>
-                        <SelectTrigger className="w-auto text-[#02a9ff] border-[#02a9ff]  mr-2 ml-2">
+                        <SelectTrigger className="w-auto text-primary border-primary  mr-2 ml-2">
                             <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
                         </SelectTrigger>
-                        <SelectContent className='bg-slate1 text-[#fafafa]'>
+                        <SelectContent className='bg-slate1 text-foreground'>
                             {CallsList.map((item) => (
                                 <SelectItem value={item.key}>{item.name}</SelectItem>
                             ))}
@@ -3122,13 +3122,13 @@ export function FinanceBoard() {
                     </Select>
 
                     <Select onValueChange={(value) => handleInputChange2(value)}>
-                        <SelectTrigger className='text-[#02a9ff] border-[#02a9ff] w-auto  mr-3'>
+                        <SelectTrigger className='text-primary border-primary w-auto  mr-3'>
                             Global Filter
                         </SelectTrigger>
-                        <SelectContent align="end" className='bg-slate1 text-[#fafafa] '>
+                        <SelectContent align="end" className='bg-slate1 text-foreground '>
                             {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => (
                                 <SelectItem key={column.id} value={column.id}
-                                    className="bg-[#fff] text-[#000] capitalize cursor-pointer  hover:underline hover:text-[#02a9ff]">
+                                    className="bg-[#fff] text-[#000] capitalize cursor-pointer  hover:underline hover:text-primary">
                                     {column.id}
                                 </SelectItem>
                             ))}
@@ -3149,13 +3149,13 @@ export function FinanceBoard() {
                         />
                     )}
 
-                    <Button onClick={() => setAllFilters([])} className='bg-[#02a9ff] text-[#fafafa] hover:text-[#fafafa] mr-3'>
+                    <Button onClick={() => setAllFilters([])} className='bg-primary text-foreground hover:text-foreground mr-3'>
                         Clear
                     </Button>
                     <div className="flex" >
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <p className="cursor-pointer my-auto mr-5 hover:text-[#02a9ff] ">
+                                <p className="cursor-pointer my-auto mr-5 hover:text-primary ">
                                     <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.14998 14V1H0.849976V14H2.14998ZM6.14998 14V1H4.84998V14H6.14998ZM10.15 1V14H8.84998V1H10.15ZM14.15 14V1H12.85V14H14.15Z" fill="#02a9ff" fillRule="evenodd" clipRule="evenodd"></path></svg>
                                 </p>
                             </DropdownMenuTrigger>
@@ -3191,7 +3191,7 @@ export function FinanceBoard() {
                 </div>
 
                 <div className="rounded-md border border-[#262626] mt-2">
-                    <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa] '>
+                    <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground '>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -3220,7 +3220,7 @@ export function FinanceBoard() {
                                 table.getRowModel().rows.map((row) => (
                                     <TableRow
                                         key={row.id}
-                                        className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                                        className='cursor-pointer border-[#262626] bg-background p-4 capitalize text-foreground hover:text-primary'
                                         data-state={row.getIsSelected() && "selected"}
                                         onClick={() => handleRowClick(row)}
                                     >
@@ -3238,7 +3238,7 @@ export function FinanceBoard() {
                                 <TableRow>
                                     <TableCell
                                         colSpan={columns.length}
-                                        className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                                        className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
                                     >
                                         No results.
                                     </TableCell>
@@ -3255,7 +3255,7 @@ export function FinanceBoard() {
                             size="sm"
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage()}
-                            className="border-slate1 text-[#fafafa]"
+                            className="border-slate1 text-foreground"
                         >
                             Previous
                         </Button>
@@ -3263,7 +3263,7 @@ export function FinanceBoard() {
                             variant="outline"
                             size="sm"
                             onClick={() => table.nextPage()}
-                            className="border-slate1 text-[#fafafa]"
+                            className="border-slate1 text-foreground"
 
                             disabled={!table.getCanNextPage()}
                         >

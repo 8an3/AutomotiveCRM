@@ -105,7 +105,7 @@ export const PrintSpecBMWMoto = () => {
   return (
     <Button
       onClick={Click1}
-      className=" w-2/3  border border-slate12  cursor-pointer hover:text-[#02a9ff] p-5 hover:border-[#02a9ff] hover:border"
+      className=" border-slate12  hover:border-primary w-2/3  cursor-pointer border p-5 hover:border hover:text-primary"
       type="submit"
       content="update"
     >

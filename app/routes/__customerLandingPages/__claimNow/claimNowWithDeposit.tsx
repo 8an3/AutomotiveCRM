@@ -1,9 +1,9 @@
 import { LinksFunction, ActionFunction } from "@remix-run/node";
-import { Input, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, Label, Separator, Badge, RemixNavLinkText, } from "~/components/ui/index"
+import { Input, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, Label, Separator, Badge, RemixNavLinkText, Button, } from "~/components/ui/index"
 import { json } from "@remix-run/node";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { prisma } from "~/libs";
-import { useLoaderData, useSearchParams } from "@remix-run/react";
+import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 import React, { useState } from "react";
 import customer from '~/styles/customer.css'
 import tdImage from '~/images/td-logo-en.png'
@@ -14,6 +14,27 @@ import BMOImage from '~/images/bmwImage.svg'
 import { FaCheck } from "react-icons/fa";
 import NBC from '~/images/bnc.svg'
 import PC from '~/images/pc.svg'
+import Laurentian from '~/images/laurentian.svg'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/alert-dialog"
+
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: customer },
@@ -23,6 +44,11 @@ export const logos = [
     src: NBC,
     alt: 'NBC',
     href: "https://www.nbc.ca/personal/accounts/chequing.html?ef_id=Cj0KCQjwpZWzBhC0ARIsACvjWROZVLHlhWIzb8RQi5MMGabEGOCXYAPj-8gEapt8mhFY-FIRK36W2m4aApgXEALw_wcB:G:s&s_kwcid=AL!5258!3!564711256042!e!!g!!top%20canadian%20banks&cid=cpc_23554056_321788718_514034360_125535333&gad_source=1&gclid=Cj0KCQjwpZWzBhC0ARIsACvjWROZVLHlhWIzb8RQi5MMGabEGOCXYAPj-8gEapt8mhFY-FIRK36W2m4aApgXEALw_wcB&gclsrc=aw.ds"
+  },
+  {
+    src: Laurentian,
+    alt: 'Laurentian Bank',
+    href: "https://www.laurentianbank.ca/en"
   },
   {
     src: RBC,
@@ -90,7 +116,7 @@ export default function DealerCompleted() {
               Add a new recipient using the following email:
               <span >
                 {copiedText === dealer.dealerEmailAdmin || copiedText === dealer.dealerEmail ? (
-                  <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-[#02a9ff]" />
+                  <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />
                 ) : (
                   <strong onClick={() => copyText(dealer.dealerEmailAdmin)}>{dealer && dealer.dealerEmailAdmin && (
                     <p className='cursor-pointer' >Dealer Admin Email: {dealer.dealerEmailAdmin}</p>
@@ -107,7 +133,7 @@ export default function DealerCompleted() {
               In the notes enter your contract identifier:
               <span onClick={() => copyText(financeId)}>
                 {copiedText === financeId ? (
-                  <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-[#02a9ff]" />
+                  <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />
                 ) : (
                   <p>
                     <strong className='cursor-pointer' >{financeId}</strong>
@@ -116,15 +142,14 @@ export default function DealerCompleted() {
               </span>
             </li>
             <li>Send the e-transfer.</li>
+            <li>Once the etransfer has been sent, press continue.</li>
           </ol>
         </div>
 
-        <div className='mx-auto mb-[15px] mt-[15px] flex justify-center '>
-          <div className="text-black md:w-1/2 mx-auto  ">
-            <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto max-h-[850x]  max-w-[465px] w-[450px]  border-[#27272a] cursor-pointer " >
-              <legend className="-ml-1 px-1 text-lg font-medium">Banks</legend>
+        <div className="relative mt-5 mb-5">
+          <Card className="w-[425px] mx-auto">
+            <CardContent>
               <div className='flex flex-wrap justify-center gap-8  py-4'>
-
                 <TooltipProvider>
                   {logos.map(img => (
                     <Tooltip key={img.href}>
@@ -147,9 +172,11 @@ export default function DealerCompleted() {
                   ))}
                 </TooltipProvider>
               </div>
-            </fieldset>
-          </div>
+            </CardContent>
+          </Card>
+          <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Major Banks</label>
         </div>
+
 
         <h1 className="text-2xl font-bold mb-4">Or Reach Out To Your Rep</h1>
         <p className="mb-4">
@@ -165,7 +192,7 @@ export default function DealerCompleted() {
             <span className="text-[#8a8a93]">Email</span>
             <span className='cursor-pointer' onClick={() => copyText(salesRep.email)}>
               {copiedText === salesRep.email ? (
-                <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-[#02a9ff]" />
+                <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />
               ) : (
                 <span >{salesRep.email}</span>
               )}
@@ -176,6 +203,38 @@ export default function DealerCompleted() {
             <span >{salesRep.phone}</span>
           </li>
         </div>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button size='sm' className='bg-[#ff0000] text-white mt-5' variant="outline">Continue</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className='bg-[#ffffff]'>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Congratulations on taking the first step!</AlertDialogTitle>
+              <AlertDialogDescription>
+                Thank-you for your deposit, your sales rep with by in contact with you shortly.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <Form method='post' >
+                <input type='hidden' name='financeId' value={financeId} />
+                <input type='hidden' name='userEmail' value={salesRep.email} />
+                <input type='hidden' name='name' value={finance.name} />
+                <input type='hidden' name='model' value={finance.model} />
+                <input type='hidden' name='brand' value={finance.brand} />
+                <input type='hidden' name='year' value={finance.year} />
+                <input type='hidden' name='email' value={finance.email} />
+                <Button
+                  type='submit'
+                  variant='ghost'>
+                  <AlertDialogAction type='submit'
+                    className='bg-[#ff0000] text-white mt-5' >
+                    Continue
+                  </AlertDialogAction>
+                </Button>
+              </Form>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full mt-auto" />
       <p className="text-[#666666] text-[12px] leading-[24px]">
@@ -205,25 +264,18 @@ export async function action({ request, }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData())
   let formData = financeFormSchema.parse(formPayload)
   const intent = formPayload.intent
-  if (intent === 'createDealer') {
-    const dealer = await prisma.dealer.create({
-      data: {
-        dealerName: formData.dealerName,
-        dealerAddress: formData.dealerAddress,
-        dealerCity: formData.dealerCity,
-        dealerProv: formData.dealerProv,
-        dealerPostal: formData.dealerPostal,
-        dealerPhone: formData.dealerPhone,
-        dealerEmail: formData.dealerEmail,
-        dealerContact: formData.dealerContact,
-        dealerAdminContact: formData.dealerAdminContact,
-        dealerEmailAdmin: formData.dealerEmailAdmin,
-        dealerEtransferEmail: formData.dealerEtransferEmail,
-      }
-    })
-    return json({ dealer })
-  }
-
-  return null
+  const clientfile = await prisma.clientfile.findUnique({ where: { email: formData.email } })
+  const notifications = await prisma.notificationsUser.create({
+    data: {
+      userEmail: String(formData.userEmail),
+      title: 'New deposit!',
+      content: `${formData.name} put a deposit on a ${formData.year} ${formData.brand} ${formData.model}`,
+      type: "updates",
+      financeId: String(formData.financeId),
+      clientfileId: String(clientfile.id),
+    }
+  })
+  console.log(notifications, 'notifications')
+  return json({ notifications, clientfile })
 }
 

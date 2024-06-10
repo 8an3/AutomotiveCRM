@@ -101,6 +101,7 @@ export default function NotificationSystem(interruptionsData,) {
     ...interruptionsData.interruptionsData,
     ...loadNewLead,
   }
+
   const options = {
     weekday: 'short',
     year: 'numeric',
@@ -110,46 +111,66 @@ export default function NotificationSystem(interruptionsData,) {
     minute: '2-digit',
     second: '2-digit',
   };
-
-  // -------- leads
-  const [lead, setLead] = useState([])
   const dataFetcher = (url) => fetch(url).then(res => res.json());
-  const { data, error, isLoading, isValidating } = useSWR('http://localhost:3000/dealer/notifications/newLead', dataFetcher, { refreshInterval: 15000 })
-  useEffect(() => {
-    if (data) {
-      setLead(data);
-    }
-  }, [data]);
-  if (error) return <div>failed to load</div>
-  if (isLoading) return <div>loading...</div>
-  // -------- leads
-  const length = Object.keys(newNotifications).length + Object.keys(lead).length;
 
+  const [lead, setLead] = useState([]);
+  const [updates, setUpdates] = useState([]);
+
+  const { data: leadData, error: leadError, isLoading: leadLoading, isValidating: leadValidating } = useSWR(
+    'http://localhost:3000/dealer/notifications/newLead',
+    dataFetcher,
+    { refreshInterval: 15000 }
+  );
+
+  const { data: updateData, error: updateError, isLoading: updateLoading, isValidating: updateValidating } = useSWR(
+    'http://localhost:3000/dealer/notifications/updates',
+    dataFetcher,
+    { refreshInterval: 15000 }
+  );
+
+  useEffect(() => {
+    if (leadData) {
+      setLead(leadData);
+    }
+  }, [leadData]);
+
+  useEffect(() => {
+    if (updateData) {
+      setUpdates(updateData);
+    }
+  }, [updateData]);
+  if (leadError || updateError) return <div>Failed to load</div>;
+  if (leadLoading || updateLoading) return <div>Loading...</div>;
+
+  const length = Object.keys(newNotifications).length + Object.keys(lead).length;
+  if (updates) {
+    console.log(updates, 'updates')
+  }
   return (
     <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           {length > 0 ? (
-            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]" aria-expanded={open}>
+            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" aria-expanded={open}>
               <div className=" h-t relative w-7">
                 <div className="pointer-events-none absolute -right-4 -top-0.5 flex size-full">
                   <span className="relative flex size-3">
-                    <span className="absolute inline-flex  size-full animate-ping rounded-full bg-[#02a9ff] opacity-75"></span>
+                    <span className="absolute inline-flex  size-full animate-ping rounded-full bg-primary opacity-75"></span>
                     <span className="relative inline-flex size-3 rounded-full bg-[#0078b4]"></span>
                   </span>
                 </div>
-                <IoIosMailUnread color="#ededed" className="text-2xl hover:text-[#02a9ff] text-[##ededed]" />
+                <IoIosMailUnread color="#ededed" className="text-2xl hover:text-primary text-[##ededed]" />
               </div>
             </Button>
           ) : (
-            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]" aria-expanded={open}>
-              <IoIosMailUnread color="#ededed" className="text-2xl hover:text-[#02a9ff] text-[##ededed]" />
+            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" aria-expanded={open}>
+              <IoIosMailUnread color="#ededed" className="text-2xl hover:text-primary text-[##ededed]" />
             </Button>
           )}
         </PopoverTrigger>
         <PopoverContent className="w-[250px] p-0">
-          <Command className="rounded-lg border shadow-md bg-[#09090b] border-[#27272a] text-[#f1f1f1]">
-            <CommandInput className='bg-[#09090b] border-[#27272a] text-[#f1f1f1]' placeholder="Type a command or search..." />
+          <Command className="rounded-lg border shadow-md bg-background border-border text-foreground">
+            <CommandInput className='bg-background border-border text-foreground' placeholder="Type a command or search..." />
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup heading="Messages">
@@ -167,12 +188,12 @@ export default function NotificationSystem(interruptionsData,) {
                       <input type='hidden' name='intent' value='updateNewLead' />
                       <input type='hidden' name='financeId' value={notification.financeId} />
                       <input type='hidden' name='clientfileId' value={notification.clientfileId} />
-                      <CommandItem className="cursor-pointer hover:bg-[#232324] rounded-md">
+                      <CommandItem className="cursor-pointer hover:bg-muted/50 rounded-md">
                         <ul className="grid gap-3 text-sm mt-2">
                           <li className="grid grid-cols-1 items-center">
                             <span>{notification.title}</span>
-                            <span className="text-[#909098] text-xs">{notification.content}</span>
-                            <span className="text-[#909098] text-xs">
+                            <span className="text-muted-foreground text-xs">{notification.content}</span>
+                            <span className="text-muted-foreground text-xs">
                               {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
                             </span>
                           </li>
@@ -193,11 +214,11 @@ export default function NotificationSystem(interruptionsData,) {
                         <input type='hidden' name='intent' value='updateInterruption' />
                         <input type='hidden' name='pathname' value={pathname} />
                         <input type='hidden' name='location' value={notification.location} />
-                        <CommandItem value={notification.location} className="cursor-pointer hover:bg-[#232324] rounded-md"  >
+                        <CommandItem value={notification.location} className="cursor-pointer hover:bg-muted/50 rounded-md"  >
                           <ul className="grid gap-3 text-sm mt-2">
                             <li className="grid grid-cols-1 items-center ">
                               <span>{notification.title}</span>
-                              <span className="text-[#909098] text-xs">
+                              <span className="text-muted-foreground text-xs">
                                 {notification.date}
                               </span>
                             </li>
@@ -335,12 +356,12 @@ export async function action({ request }: LoaderArgs) {
                         <input type='hidden' name='intent' value='updateNewLead' />
                         <input type='hidden' name='financeId' value={notification.financeId} />
                         <input type='hidden' name='clientfileId' value={notification.clientfileId} />
-                        <CommandItem className="cursor-pointer hover:bg-[#232324] rounded-md">
+                        <CommandItem className="cursor-pointer hover:bg-muted/50 rounded-md">
                           <ul className="grid gap-3 text-sm mt-2">
                             <li className="grid grid-cols-1 items-center">
                               <span>1{notification.title}</span>
-                              <span className="text-[#909098] text-xs">{notification.content}</span>
-                              <span className="text-[#909098] text-xs">
+                              <span className="text-muted-foreground text-xs">{notification.content}</span>
+                              <span className="text-muted-foreground text-xs">
                                 {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
                               </span>
                             </li>
@@ -370,7 +391,7 @@ export async function action({ request }: LoaderArgs) {
 /**{totalNotifications > 1 && (
 <>
 <span className="relative t-3 r-3 h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#02a9ff] opacity-75"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0085c7]"></span>
           </span>
 </>
@@ -407,17 +428,17 @@ export async function action({ request }: LoaderArgs) {
 
                     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-[#02a9ff]">
+        <Button variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary">
           <div className=' relative h-t w-7'>
             <div className='pointer-events-none absolute  right-1 -top-3 flex h-full w-full'>
               <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute  inline-flex h-full w-full rounded-full bg-[#02a9ff] opacity-75">
+                <span className="animate-ping absolute  inline-flex h-full w-full rounded-full bg-primary opacity-75">
                 </span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0078b4]">
                 </span>
               </span>
             </div>
-            <Bell color="#fff" strokeWidth={1.5} className="text-2xl hover:text-[#02a9ff]" />
+            <Bell color="#fff" strokeWidth={1.5} className="text-2xl hover:text-primary" />
 
           </div>
 

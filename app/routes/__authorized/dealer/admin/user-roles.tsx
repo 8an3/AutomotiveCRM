@@ -47,7 +47,7 @@ export default function Route() {
   const { userCount } = useLoaderData<typeof loader>();
 
   return (
-    <div className='max-w-xl  mx-auto justify-center text-[#fafafa]'>
+    <div className='max-w-xl  mx-auto justify-center text-foreground'>
 
       <PageAdminHeader size="xs">
         <RemixLink to=".">

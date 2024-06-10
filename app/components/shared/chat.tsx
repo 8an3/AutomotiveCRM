@@ -199,14 +199,14 @@ export default function Chat() {
   location.pathname.startsWith(`/overview/`) && (
     <Tabs.List className="shrink-0 flex border-b mt-auto border-mauve6" aria-label="Manage your account">
       <Tabs.Trigger
-        className="bg-white2 px-5 h-[45px] flex-1 rounded-bl-md  flex items-center justify-center text-[15px] leading-none text-black select-none  hover:text-[#02a9ff] data-[state=active]:text-[#02a9ff] data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
+        className="bg-white2 px-5 h-[45px] flex-1 rounded-bl-md  flex items-center justify-center text-[15px] leading-none text-black select-none  hover:text-primary data-[state=active]:text-primary data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
         value="features"
       >
         Features
       </Tabs.Trigger>
 
       <Tabs.Trigger
-        className="bg-white2 px-5 h-[45px] flex-1 flex rounded-br-md items-center justify-center text-[15px] leading-none text-black select-none  hover:text-[#02a9ff] data-[state=active]:text-[#02a9ff] data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
+        className="bg-white2 px-5 h-[45px] flex-1 flex rounded-br-md items-center justify-center text-[15px] leading-none text-black select-none  hover:text-primary data-[state=active]:text-primary data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none "
         value="emails"
       >
         Email
@@ -242,7 +242,7 @@ value = "emails"
             <SelectTrigger className=" mt-2 rounded-[0px] border">
               <SelectValue placeholder="Select an email..." />
             </SelectTrigger>
-            <SelectContent className="bg-white2 dark:bg-black dark:text-[#fafafa] ">
+            <SelectContent className="bg-white2 dark:bg-black dark:text-foreground ">
               <ScrollArea className="h-[300px] w-[350px] rounded-md  p-4">
                 <SelectGroup>
                   <SelectLabel>Payments </SelectLabel>
@@ -309,7 +309,7 @@ value = "emails"
             <SelectTrigger className="w-full mt-2">
               <SelectValue placeholder="Payments (by default)" />
             </SelectTrigger>
-            <SelectContent className="bg-white2 dark:bg-black dark:text-[#fafafa] ">
+            <SelectContent className="bg-white2 dark:bg-black dark:text-foreground ">
               <ScrollArea className="h-[400px] w-[350px] rounded-md  p-4">
                 <SelectGroup>
                   <SelectLabel>Payments </SelectLabel>

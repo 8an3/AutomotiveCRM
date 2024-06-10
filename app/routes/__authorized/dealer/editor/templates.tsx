@@ -618,15 +618,15 @@ export function Example({ content, handleUpdate, }: {
                     }}
                     placeholder="search"
                     name='searchTerm'
-                    className='w-full mr-2 text-[#fafafa] border-white' />
-                  <Button className='text-[#fafafa] border-white' variant='outline' type="submit">
+                    className='w-full mr-2 text-foreground border-white' />
+                  <Button className='text-foreground border-white' variant='outline' type="submit">
                     Search
                   </Button>
                 </div>
               </CardTitle>
               <CardDescription> <div className="flex">
                 <select
-                  className={`border-white text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#09090b] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`border-white text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                   value={selectedType}
                   onChange={(e) => setSelectedDept(e.target.value)}
                 >
@@ -639,7 +639,7 @@ export function Example({ content, handleUpdate, }: {
                 </select>
 
                 <select
-                  className={`border-white text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#09090b] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`border-white text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
                 >
@@ -653,7 +653,7 @@ export function Example({ content, handleUpdate, }: {
                 <select
                   value={searchTerm}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className={`border-white text-[#fafafa] placeholder:text-blue-300 broder mx-auto ml-2 h-8  cursor-pointer rounded border bg-[#09090b] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`border-white text-foreground placeholder:text-blue-300 broder mx-auto ml-2 h-8  cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                 >
                   <option value="">Category</option>
                   {categories.map((category) => (
@@ -663,7 +663,7 @@ export function Example({ content, handleUpdate, }: {
                   ))}
                 </select>
                 <select
-                  className={`border-white text-[#fafafa] placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-[#09090b] px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`border-white text-foreground placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
                   value={selectedEmail}
                   onChange={(e) => setSelectedEmail(e.target.value)}
                 >
@@ -680,47 +680,47 @@ export function Example({ content, handleUpdate, }: {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 space-y-2 w-full items-center gap-4">
-                <div className={`mx-auto h-[800px] hover:text-[#02a9ff]  ml-2 mt-2 w-[98%] cursor-pointer  grow overflow-auto  rounded-md p-3  grid gris-cols-2 `}
+                <div className={`mx-auto h-[800px] hover:text-primary  ml-2 mt-2 w-[98%] cursor-pointer  grow overflow-auto  rounded-md p-3  grid gris-cols-2 `}
                   onClick={() => {
                   }} >
                   <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#262626]">
                     <div className="flex">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" className='m-2 mx-auto w-[95%] h-[50px] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff]  hover:bg-transparent bg-transparent text-[#fafafa] '>
+                          <Button variant="outline" className='m-2 mx-auto w-[95%] h-[50px] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary  hover:bg-transparent bg-transparent text-foreground '>
                             New Template
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[90%] bg-[#09090b]">
+                        <DialogContent className="sm:max-w-[90%] bg-background">
                           <DialogHeader>
-                            <DialogTitle className='text-[#fafafa]'>New Template</DialogTitle>
-                            <DialogDescription className='text-[#fafafa]'>
+                            <DialogTitle className='text-foreground'>New Template</DialogTitle>
+                            <DialogDescription className='text-foreground'>
                               Create new templates to send to your leads.
                             </DialogDescription>
                           </DialogHeader>
                           <div className=" w-full h-full p-3">
-                            <div className={` bg-[#09090b] w-full  items-center   rounded-md  `}  >
+                            <div className={` bg-background w-full  items-center   rounded-md  `}  >
                               <div className="flex flex-col space-y-4 mt-2 ">
                                 <div
-                                  className={`border-[#ffffff4d]  bg-[#09090b]  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
+                                  className={`border-[#ffffff4d]  bg-background  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
                                 >
                                   {/* Your content here */}
                                   <Form method="post">
-                                    <div className="bg-[#09090b] ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
+                                    <div className="bg-background ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
                                       {/* Row 1 */}
                                       <div className="relative">
-                                        <Input name="title" className="text-[#fafafa] border-white bg-[#09090b] block w-full pl-[115px]" type="text" />
-                                        <label className="absolute left-2 top-[6px] text-[#fafafa]">Template Title:</label>
+                                        <Input name="title" className="text-foreground border-white bg-background block w-full pl-[115px]" type="text" />
+                                        <label className="absolute left-2 top-[6px] text-foreground">Template Title:</label>
                                       </div>
                                       <div className="relative ">
-                                        <Input name="subject" className="text-[#fafafa] border-white bg-[#09090b] block w-full h-10 pl-[65px]" type="text" />
-                                        <label className="absolute left-2 top-2 text-[#fafafa]">Subject:</label>
+                                        <Input name="subject" className="text-foreground border-white bg-background block w-full h-10 pl-[65px]" type="text" />
+                                        <label className="absolute left-2 top-2 text-foreground">Subject:</label>
                                       </div>
                                       {/* Row 2 */}
                                       <div className="py-1">
                                         <div className="flex flex-row space-between-2">
                                           <Select name="dept"  >
-                                            <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-[#fafafa] border-white">
+                                            <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-foreground border-white">
                                               <SelectValue placeholder="Select a Dept" />
                                             </SelectTrigger>
                                             <SelectContent className='bg-white text-black'>
@@ -733,7 +733,7 @@ export function Example({ content, handleUpdate, }: {
                                             </SelectContent>
                                           </Select>
                                           <Select name="type"   >
-                                            <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-[#fafafa] border-white">
+                                            <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-foreground border-white">
                                               <SelectValue placeholder="Select Type" />
                                             </SelectTrigger>
                                             <SelectContent className='bg-white text-black'>
@@ -746,30 +746,30 @@ export function Example({ content, handleUpdate, }: {
                                         </div>
                                       </div>
                                       <div className="relative">
-                                        <Input name="category" type="text" className="text-[#fafafa] border-white bg-[#09090b] block w-full h-10 pl-[80px]" />
-                                        <label className="absolute left-2 top-2 text-[#fafafa]">Category:</label>
+                                        <Input name="category" type="text" className="text-foreground border-white bg-background block w-full h-10 pl-[80px]" />
+                                        <label className="absolute left-2 top-2 text-foreground">Category:</label>
                                       </div>
                                       {/* Row 3 */}
                                       <div className="py-1 flex justify-between">
 
                                         <div
                                           onClick={() => setDetails(!details)}
-                                          className="flex cursor-pointer items-center hover:text-[#02a9ff]"
+                                          className="flex cursor-pointer items-center hover:text-primary"
                                         >
-                                          <p className="text-bold text-[#fafafa] hover:text-[#02a9ff]">cc bcc</p>
+                                          <p className="text-bold text-foreground hover:text-primary">cc bcc</p>
                                         </div>
                                       </div>
                                       {/* Details */}
                                       {details && (
                                         <div className="flex flex-row justify-between">
                                           <div className="relative py-1">
-                                            <Input name="cc" placeholder="cc" type="text" className='text-[#fafafa] block w-full h-10 pl-8 border-white bg-[#363a3f] ' />
-                                            <label className="absolute left-2 top-[5px] text-[#fafafa]">cc</label>
+                                            <Input name="cc" placeholder="cc" type="text" className='text-foreground block w-full h-10 pl-8 border-white bg-[#363a3f] ' />
+                                            <label className="absolute left-2 top-[5px] text-foreground">cc</label>
                                           </div>
 
                                           <div className="relative py-1">
-                                            <Input name="bcc" placeholder="bcc" type="text" className='text-[#fafafa] border-white bg-[#363a3f]  block w-full h-10 pl-8' />
-                                            <label className="absolute left-2 top-[5px] text-[#fafafa]">bcc</label>
+                                            <Input name="bcc" placeholder="bcc" type="text" className='text-foreground border-white bg-[#363a3f]  block w-full h-10 pl-8' />
+                                            <label className="absolute left-2 top-[5px] text-foreground">bcc</label>
                                           </div>
                                         </div>
                                       )}
@@ -796,7 +796,7 @@ export function Example({ content, handleUpdate, }: {
                                             variant='outline'
                                             onClick={() =>
                                               toast.success(`Saved Template.`)
-                                            } className="border-white text-[#fafafa] cursor-pointer border uppercase px-4 py-3">
+                                            } className="border-white text-foreground cursor-pointer border uppercase px-4 py-3">
                                             Create
                                           </Button>
                                         </div>
@@ -816,7 +816,7 @@ export function Example({ content, handleUpdate, }: {
                     {filteredDropDown?.map((item, index) => (
                       <div
                         key={index}
-                        className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff] ${selectedLine !== index
+                        className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary ${selectedLine !== index
                           ? "opacity-80"
                           : "bg-slate11"
                           } `}
@@ -837,19 +837,19 @@ export function Example({ content, handleUpdate, }: {
                         }}
                       >
                         <div className="m-2 flex items-center justify-between">
-                          <p className="text-lg font-bold text-[#fafafa] text-left">{item.title}</p>
+                          <p className="text-lg font-bold text-foreground text-left">{item.title}</p>
                         </div>
                         <p className="my-2 ml-2 text-sm text-[#ffffffc9]">{item.subject}</p>
                         <p className="my-2 ml-2 text-sm text-[#ffffff70]">{item.snippet}</p>
 
                         <div className="flex">
 
-                          <Badge className="m-2 bg-transparent border-[#f5f5f5a8] text-[#fafafa]">{item.dept}</Badge>
-                          <Badge className="m-2  bg-transparent border-[#f5f5f5a8] text-[#fafafa]">{item.type}</Badge>
-                          <Badge className="m-2 bg-transparent border-[#f5f5f5a8] text-[#fafafa]">{item.category}</Badge>
+                          <Badge className="m-2 bg-transparent border-[#f5f5f5a8] text-foreground">{item.dept}</Badge>
+                          <Badge className="m-2  bg-transparent border-[#f5f5f5a8] text-foreground">{item.type}</Badge>
+                          <Badge className="m-2 bg-transparent border-[#f5f5f5a8] text-foreground">{item.category}</Badge>
                         </div>
                         <div className="flex">
-                          <p className="text-[#fafafa] ml-3 hover:text-[#02a9ff]"></p>
+                          <p className="text-foreground ml-3 hover:text-primary"></p>
                         </div>
 
                       </div>
@@ -867,28 +867,28 @@ export function Example({ content, handleUpdate, }: {
               <div className="grid w-full items-center gap-4">
                 {oldTempState === true ? (
                   <div className=" w-full h-full p-3">
-                    <div className={` bg-[#09090b] w-full  items-center  overflow-x-scroll  rounded-md  `}  >
+                    <div className={` bg-background w-full  items-center  overflow-x-scroll  rounded-md  `}  >
                       <div className="flex flex-col space-y-4 mt-[50px] ">
                         <div
-                          className={`border-[#ffffff4d]  bg-[#09090b]  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
+                          className={`border-[#ffffff4d]  bg-background  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
                         >
                           {/* Your content here */}
                           <Form method="post">
-                            <div className="bg-[#09090b] ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
+                            <div className="bg-background ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
                               {/* Row 1 */}
                               <div className="relative">
-                                <Input name="title" className="text-[#fafafa] border-white bg-[#09090b] block w-full pl-[115px]" type="text" />
-                                <label className="absolute left-2 top-[6px] text-[#fafafa]">Template Title:</label>
+                                <Input name="title" className="text-foreground border-white bg-background block w-full pl-[115px]" type="text" />
+                                <label className="absolute left-2 top-[6px] text-foreground">Template Title:</label>
                               </div>
                               <div className="relative ">
-                                <Input name="subject" className="text-[#fafafa] border-white bg-[#09090b] block w-full h-10 pl-[65px]" type="text" />
-                                <label className="absolute left-2 top-2 text-[#fafafa]">Subject:</label>
+                                <Input name="subject" className="text-foreground border-white bg-background block w-full h-10 pl-[65px]" type="text" />
+                                <label className="absolute left-2 top-2 text-foreground">Subject:</label>
                               </div>
                               {/* Row 2 */}
                               <div className="py-1">
                                 <div className="flex flex-row space-between-2">
                                   <Select name="dept"  >
-                                    <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-[#fafafa] border-white">
+                                    <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-foreground border-white">
                                       <SelectValue placeholder="Select a Dept" />
                                     </SelectTrigger>
                                     <SelectContent className='bg-white'>
@@ -901,7 +901,7 @@ export function Example({ content, handleUpdate, }: {
                                     </SelectContent>
                                   </Select>
                                   <Select name="type"   >
-                                    <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-[#fafafa] border-white">
+                                    <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-foreground border-white">
                                       <SelectValue placeholder="Select Type" />
                                     </SelectTrigger>
                                     <SelectContent className='bg-white'>
@@ -914,30 +914,30 @@ export function Example({ content, handleUpdate, }: {
                                 </div>
                               </div>
                               <div className="relative">
-                                <Input name="category" type="text" className="text-[#fafafa] border-white bg-[#09090b] block w-full h-10 pl-[80px]" />
-                                <label className="absolute left-2 top-2 text-[#fafafa]">Category:</label>
+                                <Input name="category" type="text" className="text-foreground border-white bg-background block w-full h-10 pl-[80px]" />
+                                <label className="absolute left-2 top-2 text-foreground">Category:</label>
                               </div>
                               {/* Row 3 */}
                               <div className="py-1 flex justify-between">
 
                                 <div
                                   onClick={() => setDetails(!details)}
-                                  className="flex cursor-pointer items-center hover:text-[#02a9ff]"
+                                  className="flex cursor-pointer items-center hover:text-primary"
                                 >
-                                  <p className="text-bold text-[#fafafa] hover:text-[#02a9ff]">cc bcc</p>
+                                  <p className="text-bold text-foreground hover:text-primary">cc bcc</p>
                                 </div>
                               </div>
                               {/* Details */}
                               {details && (
                                 <div className="flex flex-row justify-between">
                                   <div className="relative py-1">
-                                    <Input name="cc" placeholder="cc" type="text" className='text-[#fafafa] block w-full h-10 pl-8 border-white bg-[#363a3f] ' />
-                                    <label className="absolute left-2 top-[5px] text-[#fafafa]">cc</label>
+                                    <Input name="cc" placeholder="cc" type="text" className='text-foreground block w-full h-10 pl-8 border-white bg-[#363a3f] ' />
+                                    <label className="absolute left-2 top-[5px] text-foreground">cc</label>
                                   </div>
 
                                   <div className="relative py-1">
-                                    <Input name="bcc" placeholder="bcc" type="text" className='text-[#fafafa] border-white bg-[#363a3f]  block w-full h-10 pl-8' />
-                                    <label className="absolute left-2 top-[5px] text-[#fafafa]">bcc</label>
+                                    <Input name="bcc" placeholder="bcc" type="text" className='text-foreground border-white bg-[#363a3f]  block w-full h-10 pl-8' />
+                                    <label className="absolute left-2 top-[5px] text-foreground">bcc</label>
                                   </div>
                                 </div>
                               )}
@@ -971,7 +971,7 @@ export function Example({ content, handleUpdate, }: {
                                     variant='outline'
                                     onClick={() =>
                                       toast.success(`Saved Template.`)
-                                    } className="border-white text-[#fafafa] cursor-pointer border uppercase px-4 py-3">
+                                    } className="border-white text-foreground cursor-pointer border uppercase px-4 py-3">
                                     Create
                                   </Button>
                                 </div>
@@ -985,38 +985,38 @@ export function Example({ content, handleUpdate, }: {
                 ) : (
                   <div className=" w-full h-[915px] overflow-y-scroll p-3 mt-5">
                     <div
-                      className={` bg-[#09090b] w-full  items-center  overflow-x-hidden  rounded-md  `}  >
+                      className={` bg-background w-full  items-center  overflow-x-hidden  rounded-md  `}  >
 
                       <div className="flex flex-col space-y-4 mt-[50px] ">
                         <div
-                          className={`border-white  bg-[#09090b]  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
+                          className={`border-white  bg-background  w-auto items-center overflow-x-hidden shadow-sm transition-all duration-500`}
                         >
 
                           {/* Your content here */}
                           <Form method="post">
 
 
-                            <div className="bg-[#09090b] ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
+                            <div className="bg-background ml-3  mr-3 mx-auto grid grid-cols-1 justify-center gap-4">
                               {/* Row 1 */}
                               <div className="relative">
                                 <Input name="title" defaultValue={title}
-                                  className="text-[#fafafa] border-white bg-[#09090b] block w-full pl-[145px]"
+                                  className="text-foreground border-white bg-background block w-full pl-[145px]"
                                   type="text" />
-                                <label className="absolute left-2 top-[6px] text-[#fafafa]">Template Title:</label>
+                                <label className="absolute left-2 top-[6px] text-foreground">Template Title:</label>
                               </div>
                               <div className="relative ">
                                 <Input
                                   name="subject"
                                   defaultValue={subject}
-                                  className="text-[#fafafa] border-white bg-[#09090b] block w-full h-10 pl-[85px]"
+                                  className="text-foreground border-white bg-background block w-full h-10 pl-[85px]"
                                   type="text" />
-                                <label className="absolute left-2 top-2 text-[#fafafa]">Subject:</label>
+                                <label className="absolute left-2 top-2 text-foreground">Subject:</label>
                               </div>
                               {/* Row 2 */}
                               <div className="py-1">
                                 <div className="flex flex-row space-between-2">
                                   <Select name="dept">
-                                    <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-[#fafafa] border-white">
+                                    <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-1 text-foreground border-white">
                                       <SelectValue placeholder="Select a Dept" />
                                     </SelectTrigger>
                                     <SelectContent className='bg-white'>
@@ -1029,7 +1029,7 @@ export function Example({ content, handleUpdate, }: {
                                     </SelectContent>
                                   </Select>
                                   <Select name="type"  >
-                                    <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-[#fafafa] border-white">
+                                    <SelectTrigger className="w-auto ml-auto focus:border-[#60b9fd]  text-foreground border-white">
                                       <SelectValue placeholder="Select Type1" />
                                     </SelectTrigger>
                                     <SelectContent className='bg-white'>
@@ -1046,18 +1046,18 @@ export function Example({ content, handleUpdate, }: {
                                   name="category"
                                   type="text"
                                   defaultValue={subject}
-                                  className="text-[#fafafa] border-white bg-[#09090b] block w-full h-10 pl-[100px]"
+                                  className="text-foreground border-white bg-background block w-full h-10 pl-[100px]"
                                 />
-                                <label className="absolute left-2 top-2 text-[#fafafa]">Category:</label>
+                                <label className="absolute left-2 top-2 text-foreground">Category:</label>
                               </div>
                               {/* Row 3 */}
                               <div className="py-1 flex justify-between">
 
                                 <div
                                   onClick={() => setDetails(!details)}
-                                  className="flex cursor-pointer items-center hover:text-[#02a9ff]"
+                                  className="flex cursor-pointer items-center hover:text-primary"
                                 >
-                                  <p className="text-bold text-[#fafafa] hover:text-[#02a9ff]">cc bcc</p>
+                                  <p className="text-bold text-foreground hover:text-primary">cc bcc</p>
                                 </div>
                               </div>
                               {/* Details */}
@@ -1069,9 +1069,9 @@ export function Example({ content, handleUpdate, }: {
                                       placeholder="cc"
 
                                       type="text"
-                                      className='text-[#fafafa] block w-full h-10 pl-8 border-white bg-[#363a3f] '
+                                      className='text-foreground block w-full h-10 pl-8 border-white bg-[#363a3f] '
                                     />
-                                    <label className="absolute left-2 top-[5px] text-[#fafafa]">cc</label>
+                                    <label className="absolute left-2 top-[5px] text-foreground">cc</label>
                                   </div>
 
                                   <div className="relative py-1">
@@ -1080,8 +1080,8 @@ export function Example({ content, handleUpdate, }: {
                                       placeholder="bcc"
 
                                       type="text"
-                                      className='text-[#fafafa] border-white bg-[#363a3f]  block w-full h-10 pl-8' />
-                                    <label className="absolute left-2 top-[5px] text-[#fafafa]">bcc</label>
+                                      className='text-foreground border-white bg-[#363a3f]  block w-full h-10 pl-8' />
+                                    <label className="absolute left-2 top-[5px] text-foreground">bcc</label>
                                   </div>
                                 </div>
                               )}
@@ -1108,14 +1108,14 @@ export function Example({ content, handleUpdate, }: {
                                   <div
                                     className={cn(
                                       "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
-                                      "bg-[#09090b] text-[#fafafa] transition-all align-center justify-center",
+                                      "bg-background text-foreground transition-all align-center justify-center",
                                       "sm:sticky sm:top-[120px]",
                                     )}
                                   >
                                     <select
                                       name="clientAtr"
                                       onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                                      className='bg-[#09090b] border border-white  text-[#fafafa]  focus:border-[#60b9fd] rounded-md p-2 '
+                                      className='bg-background border border-white  text-foreground  focus:border-[#60b9fd] rounded-md p-2 '
                                     >
                                       <option value="">Client</option>
                                       {Object.entries(clientAtr).map(([title, value]) => (
@@ -1127,7 +1127,7 @@ export function Example({ content, handleUpdate, }: {
                                     <select
                                       name="wantedVehAttr"
                                       onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-                                      className='bg-[#09090b] border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '   >
+                                      className='bg-background border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '   >
                                       <option value="">Wanted Veh</option>
                                       {Object.entries(wantedVehAttr).map(([title, value]) => (
                                         <option key={title} value={title}>
@@ -1138,7 +1138,7 @@ export function Example({ content, handleUpdate, }: {
                                     <select
                                       name="tradeVehAttr"
                                       onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-                                      className='bg-[#09090b] border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '         >
+                                      className='bg-background border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '         >
                                       <option value="">Trade Veh</option>
                                       {Object.entries(tradeVehAttr).map(([title, value]) => (
                                         <option key={title} value={title}>
@@ -1149,7 +1149,7 @@ export function Example({ content, handleUpdate, }: {
                                     <select
                                       name="salesPersonAttr"
                                       onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-                                      className='bg-[#09090b] border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '          >
+                                      className='bg-background border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '          >
                                       <option value="">Sales Person</option>
                                       {Object.entries(salesPersonAttr).map(([title, value]) => (
                                         <option key={title} value={title}>
@@ -1160,7 +1160,7 @@ export function Example({ content, handleUpdate, }: {
                                     <select
                                       name="FandIAttr"
                                       onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-                                      className='bg-[#09090b] border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                      className='bg-background border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '        >
                                       <option value="">F & I Manager</option>
                                       {Object.entries(FandIAttr).map(([title, value]) => (
                                         <option key={title} value={title}>
@@ -1171,7 +1171,7 @@ export function Example({ content, handleUpdate, }: {
                                     <select
                                       name="dealerInfo"
                                       onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-                                      className='bg-[#09090b] border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                      className='bg-background border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '        >
                                       <option value="">Dealer Info</option>
                                       {Object.entries(dealerInfo).map(([title, value]) => (
                                         <option key={title} value={title}>
@@ -1182,7 +1182,7 @@ export function Example({ content, handleUpdate, }: {
                                     <select
                                       name="financeInfo"
                                       onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-                                      className='bg-[#09090b] border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                      className='bg-background border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '        >
                                       <option value="">Finance Info</option>
                                       {Object.entries(financeInfo).map(([title, value]) => (
                                         <option key={title} value={title}>
@@ -1195,7 +1195,7 @@ export function Example({ content, handleUpdate, }: {
                                   <div
                                     className={cn(
                                       "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-                                      "bg-[#09090b] text-[#fafafa] transition-all justify-center",
+                                      "bg-background text-foreground transition-all justify-center",
                                       // "sm:sticky sm:top-[80px]",
                                     )}
                                   >
@@ -1203,19 +1203,19 @@ export function Example({ content, handleUpdate, }: {
                                       onClick={() => editor.chain().focus().toggleBold().run()}
                                       className={editor.isActive("bold") ? buttonActive : buttonInactive}
                                     >
-                                      <FaBold className="text-xl hover:text-[#02a9ff]" />
+                                      <FaBold className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().toggleItalic().run()}
                                       className={editor.isActive("italic") ? buttonActive : buttonInactive}
                                     >
-                                      <FaItalic className="text-xl hover:text-[#02a9ff]" />
+                                      <FaItalic className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().toggleStrike().run()}
                                       className={editor.isActive("strike") ? buttonActive : buttonInactive}
                                     >
-                                      <FaStrikethrough className="text-xl hover:text-[#02a9ff]" />
+                                      <FaStrikethrough className="text-xl hover:text-primary" />
                                     </button>
 
                                     <Minus color="#09090b" strokeWidth={1.5} />
@@ -1223,98 +1223,98 @@ export function Example({ content, handleUpdate, }: {
                                       onClick={handleSetLink}
                                       className={editor.isActive("link") ? buttonActive : buttonInactive}
                                     >
-                                      <FaLink className="text-xl hover:text-[#02a9ff]" />
+                                      <FaLink className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().unsetLink().run()}
                                       disabled={!editor.isActive("link")}
                                       className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
                                     >
-                                      <FaUnlink className="text-xl hover:text-[#02a9ff]" />
+                                      <FaUnlink className="text-xl hover:text-primary" />
                                     </button>
                                     <Minus color="#000" strokeWidth={1.5} />
                                     <button
                                       onClick={() => editor.chain().focus().toggleBlockquote().run()}
                                       className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
                                     >
-                                      <FaQuoteLeft className="text-xl hover:text-[#02a9ff]" />
+                                      <FaQuoteLeft className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().toggleCode().run()}
                                       className={editor.isActive('code') ? buttonActive : buttonInactive}
                                       disabled={!editor.can().chain().focus().toggleCode().run()}
                                     >
-                                      <FaFileCode className="text-xl hover:text-[#02a9ff]" />
+                                      <FaFileCode className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                                       className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
                                     >
-                                      <BiCodeBlock className="text-xl hover:text-[#02a9ff]" />
+                                      <BiCodeBlock className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().toggleBulletList().run()}
                                       className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
                                     >
-                                      <FaList className="text-xl hover:text-[#02a9ff]" />
+                                      <FaList className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().toggleOrderedList().run()}
                                       className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
                                     >
-                                      <FaListOl className="text-xl hover:text-[#02a9ff]" />
+                                      <FaListOl className="text-xl hover:text-primary" />
                                     </button>
 
                                     <Minus color="#000" strokeWidth={1.5} />
                                     <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                                      <MdHorizontalRule className="text-xl hover:text-[#02a9ff]" />
+                                      <MdHorizontalRule className="text-xl hover:text-primary" />
                                     </button>
                                     <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-                                      <IoMdReturnLeft className="text-xl hover:text-[#02a9ff]" />
+                                      <IoMdReturnLeft className="text-xl hover:text-primary" />
                                     </button>
                                     <Minus color="#000" strokeWidth={1.5} />
                                     <button
                                       onClick={() => editor.chain().focus().undo().run()}
                                       disabled={!editor.can().chain().focus().undo().run()}
                                     >
-                                      <FaUndo className="text-xl hover:text-[#02a9ff]" />
+                                      <FaUndo className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().redo().run()}
                                       disabled={!editor.can().chain().focus().redo().run()}
                                     >
-                                      <FaRedo className="text-xl hover:text-[#02a9ff]" />
+                                      <FaRedo className="text-xl hover:text-primary" />
                                     </button>
                                     <Minus color="#000" strokeWidth={1.5} />
                                     <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
                                       className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
                                     >
-                                      <FaAlignLeft className="text-xl hover:text-[#02a9ff]" />
+                                      <FaAlignLeft className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().setTextAlign('center').run()}
                                       className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
                                     >
-                                      <FaAlignCenter className="text-xl hover:text-[#02a9ff]" />
+                                      <FaAlignCenter className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().setTextAlign('right').run()}
                                       className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
                                     >
-                                      <FaAlignRight className="text-xl hover:text-[#02a9ff]" />
+                                      <FaAlignRight className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().setTextAlign('justify').run()}
                                       className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
                                     >
-                                      <FaAlignJustify className="text-xl hover:text-[#02a9ff]" />
+                                      <FaAlignJustify className="text-xl hover:text-primary" />
                                     </button>
                                     <Minus color="#000" strokeWidth={1.5} />
                                     <button
                                       onClick={() => editor.chain().focus().toggleHighlight().run()}
                                       className={editor.isActive('highlight') ? buttonActive : buttonInactive}
                                     >
-                                      <FaHighlighter className="text-xl hover:text-[#02a9ff]" />
+                                      <FaHighlighter className="text-xl hover:text-primary" />
                                     </button>
                                     <input
                                       type="color"
@@ -1326,28 +1326,28 @@ export function Example({ content, handleUpdate, }: {
                                       onClick={() => editor.chain().focus().unsetColor().run()}
                                       className={editor.isActive('highlight') ? buttonActive : buttonInactive}
                                     >
-                                      <FaEraser className="text-xl hover:text-[#02a9ff]" />
+                                      <FaEraser className="text-xl hover:text-primary" />
                                     </button>
                                     <Minus color="#000" strokeWidth={1.5} />
                                     <button
                                       onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                                       className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
                                     >
-                                      <Heading1 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                                      <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
                                       className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
 
                                     >
-                                      <Heading2 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                                      <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
                                     </button>
                                     <button
                                       onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
                                       className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
 
                                     >
-                                      <Heading3 strokeWidth={1.5} className="text-xl hover:text-[#02a9ff]" />
+                                      <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
                                     </button>
                                   </div>
                                   <div>
@@ -1463,7 +1463,7 @@ export function SettingsMenu() {
             size="sm"
             className=" h-8 cursor-pointer justify-between lg:flex "
           >
-            <div className="text-[#fafafa] flex w-full items-center justify-between hover:text-[#02a9ff]">
+            <div className="text-foreground flex w-full items-center justify-between hover:text-primary">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>
 
             </div>

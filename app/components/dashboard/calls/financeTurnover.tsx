@@ -29,7 +29,7 @@ export default function FinanceTurnover({ data }) {
         <input type='hidden' name='financeId' value={data.id} />
         <ButtonLoading
           size="lg"
-          className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+          className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
           type="submit"
           isSubmitting={isSubmitting}
           loadingText="Updating client info..."

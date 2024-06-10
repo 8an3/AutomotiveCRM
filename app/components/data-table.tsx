@@ -477,20 +477,20 @@ export function DataTable<TData, TValue>({
 
   //defaultValue={todayfilterBy}>
   return (
-    <div className="mb-[20px]  even:bg-[#09090b]  rounded overflow-x-hidden   justify-center">
+    <div className="mb-[20px]  even:bg-background  rounded overflow-x-hidden   justify-center">
       <div className="flex items-center">
 
-        <Select className='bg-[#09090b] text-[#fafafa] border-[#262626] hover:text-[#02a9ff]  hover:border-[#02a9ff]' onValueChange={(value) => {
+        <Select className='bg-background text-foreground border-[#262626] hover:text-primary  hover:border-primary' onValueChange={(value) => {
           const item = CallsList.find(i => i.key === value) || DeliveriesList.find(i => i.key === value) || DepositsTakenList.find(i => i.key === value);
           if (item) {
             handleFilterChange(item.key);
             setTodayfilterBy(item.name);
           }
         }}>
-          <SelectTrigger className="w-auto bg-[#09090b] text-[#fafafa] border-[#262626] hover:border-[#02a9ff] hover:text-[#02a9ff] mr-3 ">
+          <SelectTrigger className="w-auto bg-background text-foreground border-[#262626] hover:border-primary hover:text-primary mr-3 ">
             <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
           </SelectTrigger>
-          <SelectContent className='bg-slate1 text-[#fafafa]'>
+          <SelectContent className='bg-slate1 text-foreground'>
             {CallsList.map((item) => (
               <SelectItem value={item.key}>{item.name}</SelectItem>
             ))}
@@ -504,12 +504,12 @@ export function DataTable<TData, TValue>({
         </Select>
 
         <Select onValueChange={(value) => handleInputChange(value)} >
-          <SelectTrigger className='text-[#fafafa] border-[#262626] w-auto  mr-3 hover:text-[#02a9ff]  hover:border-[#02a9ff]'>
+          <SelectTrigger className='text-foreground border-[#262626] w-auto  mr-3 hover:text-primary  hover:border-primary'>
             Global Filter
           </SelectTrigger>
-          <SelectContent align="end" className='bg-slate1 text-[#fafafa] '>
+          <SelectContent align="end" className='bg-slate1 text-foreground '>
             {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => (
-              <SelectItem key={column.id} value={column.id} className="bg-[#fff] text-[#000] capitalize cursor-pointer  hover:underline hover:text-[#02a9ff]">
+              <SelectItem key={column.id} value={column.id} className="bg-[#fff] text-[#000] capitalize cursor-pointer  hover:underline hover:text-primary">
                 {column.id}
               </SelectItem>
             ))}
@@ -532,12 +532,12 @@ export function DataTable<TData, TValue>({
 
         <Button
           variant='outline'
-          onClick={() => setAllFilters([])} className='bg-[#09090b] text-[#fafafa] border-[#262626] hover:text-[#02a9ff]  hover:border-[#02a9ff] hover:bg-transparent mr-3' >
+          onClick={() => setAllFilters([])} className='bg-background text-foreground border-[#262626] hover:text-primary  hover:border-primary hover:bg-transparent mr-3' >
           Clear
         </Button>
 
         <Button
-          variant='outline' onClick={toggleFilter} className='bg-[#09090b] text-[#fafafa] border-[#262626] hover:text-[#02a9ff]  hover:border-[#02a9ff] hover:bg-transparent mr-3' >
+          variant='outline' onClick={toggleFilter} className='bg-background text-foreground border-[#262626] hover:text-primary  hover:border-primary hover:bg-transparent mr-3' >
           Toggle Col
         </Button>
         <div className="mx-2">
@@ -547,7 +547,7 @@ export function DataTable<TData, TValue>({
         <div className="flex" >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <p className="cursor-pointer my-auto mr-5 hover:text-[#02a9ff] ">
+              <p className="cursor-pointer my-auto mr-5 hover:text-primary ">
                 <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.14998 14V1H0.849976V14H2.14998ZM6.14998 14V1H4.84998V14H6.14998ZM10.15 1V14H8.84998V1H10.15ZM14.15 14V1H12.85V14H14.15Z" fill="#cbd0d4" fillRule="evenodd" clipRule="evenodd"></path></svg>
               </p>
             </DropdownMenuTrigger>
@@ -581,7 +581,7 @@ export function DataTable<TData, TValue>({
           </Link>
         </div>
       </div >
-      <div className="mt-[20px] rounded-md  border border-[#262626] text-[#fafafa]">
+      <div className="mt-[20px] rounded-md  border border-[#262626] text-foreground">
 
         <Table className="rounded-md overflow-x-auto border-[#262626]">
           <TableHeader>
@@ -618,7 +618,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`p-4 text-[#fafafa] bg-[#09090b] border-[#262626] capitalize cursor-pointer  ${index % 2 === 0 ? 'bg-[#09090b]' : 'bg-[#09090b]'}`}
+                  className={`p-4 text-foreground bg-background border-[#262626] capitalize cursor-pointer  ${index % 2 === 0 ? 'bg-background' : 'bg-background'}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -634,7 +634,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-[#fafafa] bg-[#09090b] capitalize cursor-pointer hover:text-[#02a9ff]"
+                  className="h-24 text-center text-foreground bg-background capitalize cursor-pointer hover:text-primary"
                 >
                   No results.
                 </TableCell>

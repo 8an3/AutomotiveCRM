@@ -85,7 +85,7 @@ export default function Mainboard() {
 
 
     return (
-        <div className='bg-[#09090b]'>
+        <div className='bg-background'>
 
             <Tabs defaultValue={selectedTab} onSelect={handleTabChange} className='mt-[50px]'>
                 <TabsList className="ml-[19px] grid w-[600px] grid-cols-5">
@@ -535,7 +535,7 @@ export function SearchTable() {
             <div className="flex items-center py-4">
                 <DebouncedInput
                     value={globalFilter ?? ''}
-                    onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-[#262626] bg-[#09090b] p-2 text-[#fafafa] shadow"
+                    onChange={value => setGlobalFilter([value])} className="font-lg border-block w-[400px] border border-[#262626] bg-background p-2 text-foreground shadow"
                     placeholder="Search all columns..."
                 />
                 <Input
@@ -546,17 +546,17 @@ export function SearchTable() {
                     onChange={(event) =>
                         table.getColumn('phone')?.setFilterValue(event.target.value)
                     }
-                    className="ml-2 max-w-sm border-[#262626] bg-[#09090b] text-[#fafafa]"
+                    className="ml-2 max-w-sm border-[#262626] bg-background text-foreground"
                 />
 
 
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff] border-[#262626] hover:text-[#02a9ff] hover:bg-transparent hover:shadow-md focus:outline-none"
+                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-white  mx-2 my-auto h-7  cursor-pointer rounded bg-background px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary border-[#262626] hover:text-primary hover:bg-transparent hover:shadow-md focus:outline-none"
                 >
                     Clear
                 </Button>
             </div>
             <div className="rounded-md border border-[#262626] ">
-                <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
+                <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -585,7 +585,7 @@ export function SearchTable() {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                                    className='cursor-pointer border-[#262626] bg-background p-4 capitalize text-foreground hover:text-primary'
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
@@ -602,7 +602,7 @@ export function SearchTable() {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                                    className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
                                 >
                                     No results.
                                 </TableCell>
@@ -619,7 +619,7 @@ export function SearchTable() {
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="border-slate1 text-[#fafafa]"
+                        className="border-slate1 text-foreground"
                     >
                         Previous
                     </Button>
@@ -627,7 +627,7 @@ export function SearchTable() {
                         variant="outline"
                         size="sm"
                         onClick={() => table.nextPage()}
-                        className="border-slate1 text-[#fafafa]"
+                        className="border-slate1 text-foreground"
 
                         disabled={!table.getCanNextPage()}
                     >
@@ -987,7 +987,7 @@ export function WebleadsTable() {
             {!isRowSelected ? (
                 <>
                     <div className="rounded-md border border-[#262626] ">
-                        <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa] '>
+                        <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground '>
                             <TableHeader>
                                 {table.getHeaderGroups().map((headerGroup) => (
                                     <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -1016,7 +1016,7 @@ export function WebleadsTable() {
                                     table.getRowModel().rows.map((row) => (
                                         <TableRow
                                             key={row.id}
-                                            className='cursor-pointer border-[#262626] bg-[#09090b] p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                                            className='cursor-pointer border-[#262626] bg-background p-4 capitalize text-foreground hover:text-primary'
                                             data-state={row.getIsSelected() && "selected"}
                                             onClick={() => {
                                                 handleRowClick(row);
@@ -1037,7 +1037,7 @@ export function WebleadsTable() {
                                     <TableRow>
                                         <TableCell
                                             colSpan={columns.length}
-                                            className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                                            className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
                                         >
                                             No results.
                                         </TableCell>
@@ -1054,7 +1054,7 @@ export function WebleadsTable() {
                                 size="sm"
                                 onClick={() => table.previousPage()}
                                 disabled={!table.getCanPreviousPage()}
-                                className="border-slate1 text-[#fafafa]"
+                                className="border-slate1 text-foreground"
                             >
                                 Previous
                             </Button>
@@ -1062,7 +1062,7 @@ export function WebleadsTable() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => table.nextPage()}
-                                className="border-slate1 text-[#fafafa]"
+                                className="border-slate1 text-foreground"
 
                                 disabled={!table.getCanNextPage()}
                             >
@@ -1072,7 +1072,7 @@ export function WebleadsTable() {
                     </div>
                 </>
             ) : (
-                <Card className="w-[450px] mx-auto border-[#27272a] text-[#fafafa] bg-[#09090b]">
+                <Card className="w-[450px] mx-auto border-border text-foreground bg-background">
                     <Form method="post" >
 
                         <CardHeader>
@@ -1085,56 +1085,56 @@ export function WebleadsTable() {
                                     <Input
                                         defaultValue={clientFirstName} name='firstName'
                                         type="text"
-                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                        className="w-full bg-background border-border "
                                     />
-                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
                                 </div>
                                 <div className="relative mt-3">
                                     <Input
                                         defaultValue={clientLastName} name='lastName'
                                         type="text"
-                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                        className="w-full bg-background border-border "
                                     />
-                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
                                 </div>
                                 <div className="relative mt-3">
                                     <Input
                                         defaultValue={clientPhone} name='phone'
                                         type="text"
-                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                        className="w-full bg-background border-border "
                                     />
-                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
                                 </div>
                                 <div className="relative mt-3">
                                     <Input
                                         defaultValue={clientEmail} name='email'
                                         type="text"
-                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                        className="w-full bg-background border-border "
                                     />
-                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
                                 </div>
                                 <div className="relative mt-3">
                                     <Input
                                         defaultValue={clientAddress} name='address'
                                         type="text"
-                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                        className="w-full bg-background border-border "
                                     />
-                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
                                 </div>
                                 <div className="relative mt-3">
                                     <Input
                                         defaultValue={clientLeadNote} name='leadNote'
                                         type="text"
-                                        className="w-full bg-[#09090b] border-[#27272a] "
+                                        className="w-full bg-background border-border "
                                     />
-                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Client Notes</label>
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Client Notes</label>
                                 </div>
                                 <div className="relative mt-5">
                                     <Select name='typeOfContact'                                                >
-                                        <SelectTrigger className="w-full  bg-[#09090b] text-[#fafafa] border border-[#27272a]" >
+                                        <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
                                             <SelectValue defaultValue={data.typeOfContact} />
                                         </SelectTrigger>
-                                        <SelectContent className=' bg-[#09090b] text-[#fafafa] border border-[#27272a]' >
+                                        <SelectContent className=' bg-background text-foreground border border-border' >
                                             <SelectGroup>
                                                 <SelectLabel>Contact Method</SelectLabel>
                                                 <SelectItem value="Phone">Phone</SelectItem>
@@ -1144,17 +1144,17 @@ export function WebleadsTable() {
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
-                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Type To Be Contacted</label>
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Type To Be Contacted</label>
                                 </div>
                                 <div className="relative mt-3">
                                     <Input
-                                        className={`input border-[#27272a] bg-[#09090b]  `}
+                                        className={`input border-border bg-background  `}
                                         onChange={(e) => handleChange('firstName', e.target.value)}
                                         type="text"
                                         list="ListOptions1"
                                         name="brand"
                                     />
-                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
+                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
                                 </div>
                                 <datalist id="ListOptions1">
                                     <option value="BMW-Motorrad" />
@@ -1180,7 +1180,7 @@ export function WebleadsTable() {
                                                 className="  "
                                                 type="text" list="ListOptions2" name="model"
                                             />
-                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
+                                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
                                         </div>
                                         <datalist id="ListOptions2">
                                             {modelList.models.map((item, index) => (
@@ -1201,7 +1201,7 @@ export function WebleadsTable() {
                             <h1 className='   mt-3' >
                                 Contact Customer
                             </h1>
-                            <hr className=' max-w-sm  text-[#27272a] ' />
+                            <hr className=' max-w-sm  text-muted-foreground ' />
                             <div className='gap-3 my-2 grid grid-cols-3 max-w-sm mx-auto justify-center '>
                                 <LogCall data={data} />
                                 <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
@@ -1210,14 +1210,14 @@ export function WebleadsTable() {
                             <h1 className='   mt-3' >
                                 Quick Follow-up
                             </h1>
-                            <hr className=' max-w-sm  text-[#27272a]  ' />
+                            <hr className=' max-w-sm  text-muted-foreground  ' />
                             <div className='mr-auto mt-3'>
                                 <TwoDaysFromNow data={data} isSubmitting={isSubmitting} />
                             </div>
                             <h1 className='   mt-3' >
                                 In-depth Follow-up
                             </h1>
-                            <hr className=' max-w-sm  text-[#27272a]  ' />
+                            <hr className=' max-w-sm  text-muted-foreground  ' />
                             <div className='mr-auto mt-3'>
                                 <CompleteCall data={data} contactMethod={contactMethod} />
                             </div>
@@ -1244,13 +1244,13 @@ export function WebleadsTable() {
                                     setIsComplete(true);
                                 }}
                                 name='intent' value='newLead' type='submit'
-                                className={` cursor-pointer mr-2 p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                                className={` cursor-pointer mr-2 p-3 hover:text-primary hover:border-primary text-foreground border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                             >
                                 Complete
                             </Button>
                             <Button
                                 disabled={isComplete === false}
-                                className={` cursor-pointer ml-auto p-3 hover:text-[#02a9ff] hover:border-[#02a9ff] text-[#fafafa] border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
+                                className={` cursor-pointer ml-auto p-3 hover:text-primary hover:border-primary text-foreground border border-slate1 font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 `}
                             >
                                 <Link to={`/overview/${brandId}/${clientFinanceId}`}>
 
@@ -1379,7 +1379,7 @@ export function MainDashbaord() {
             cell: ({ row }) => {
                 const data = row.original
                 //
-                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none">
+                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
                     <ClientCard data={data} row={row} />
                 </div>
             },
@@ -1393,7 +1393,7 @@ export function MainDashbaord() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff] ">
+                return <div className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-primary hover:text-primary focus:text-primary  focus:outline-none  active:bg-primary ">
                     {(row.getValue("lastName"))}
                 </div>
             },
@@ -1409,7 +1409,7 @@ export function MainDashbaord() {
             },
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none  active:bg-[#02a9ff]">
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
                     <ClientStatusCard data={data} />
                 </div>
             },
@@ -1433,7 +1433,7 @@ export function MainDashbaord() {
                     second: '2-digit',
                 };
 
-                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none  active:bg-[#02a9ff]  ">
+                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
                     {data.nextAppointment === 'TBD' || data.nextAppointment === 'Wed, Dec 31, 1969, 07:00:00 PM' ? <p>TBD</p> : date.toLocaleDateString('en-US', options)}
                 </div>
             },
@@ -1445,7 +1445,7 @@ export function MainDashbaord() {
             ), cell: ({ row }) => {
                 const data = row.original
                 //  const id = data.id ? data.id.toString() : '';
-                return <div className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-[#02a9ff] hover:text-[#02a9ff] focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff]">
+                return <div className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none active:bg-primary">
 
                     {data.customerState === 'Pending' ? (<AttemptedOrReached data={data} />
                     ) : data.customerState === 'Attempted' ? (<AttemptedOrReached data={data} />
@@ -1503,7 +1503,7 @@ export function MainDashbaord() {
                 <DataTableColumnHeader column={column} title="Trade" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("tradeDesc"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
             },
 
         },
@@ -1513,7 +1513,7 @@ export function MainDashbaord() {
                 <DataTableColumnHeader column={column} title="Last Note" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("lastNote"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("lastNote"))}</div>
             },
 
         },
@@ -1607,14 +1607,14 @@ export function MainDashbaord() {
         {
             accessorKey: "pickUpDate",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff] " />
+                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
             ),
             cell: ({ row }) => {
                 const data = row.original
                 if (data.pickUpDate) {
                     const pickupDate = data.pickUpDate
                     return (
-                        <div className="bg-transparent :text-[#02a9ff] text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
+                        <div className="bg-transparent :text-primary text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
                         </div>
                     );
@@ -1625,7 +1625,7 @@ export function MainDashbaord() {
         {
             accessorKey: "lastContact",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]" />
+                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
             ),
             cell: ({ row }) => {
                 const data = row.original
@@ -1641,7 +1641,7 @@ export function MainDashbaord() {
                 };
                 if (date) {
                     return (
-                        <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">
+                        <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {date === 'TBD' ? <p>TBD</p> : date.toLocaleDateString('en-US', options)}
                         </div>
                     );
@@ -1686,7 +1686,7 @@ export function MainDashbaord() {
                             <input type='hidden' name='financeId' value={data.id} />
                             <ButtonLoading
                                 size="lg"
-                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-[#02a9ff]"
+                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
                                 type="submit"
                                 isSubmitting={isSubmitting}
                                 onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
@@ -1719,7 +1719,7 @@ export function MainDashbaord() {
                 <p className="text-center">email</p>
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("email"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
             },
 
         },
@@ -1728,7 +1728,7 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <p className="text-center">phone</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("phone"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
             },
 
         },
@@ -1737,7 +1737,7 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <p className="text-center">address</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff]  focus:outline-none active:bg-[#02a9ff]">{(row.getValue("address"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
             },
 
         },
@@ -1746,12 +1746,12 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <p className="text-center">postal</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("postal"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("postal"))}</div>
             },
 
         },
@@ -1760,12 +1760,12 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="city" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("city"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("city"))}</div>
             },
 
         },
@@ -1774,12 +1774,12 @@ export function MainDashbaord() {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="province" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("province"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("province"))}</div>
             },
 
         },
@@ -1798,12 +1798,12 @@ export function MainDashbaord() {
                 <DataTableColumnHeader column={column} title="userEmail" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-[#02a9ff] hover:text-[#02a9ff]
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
-                  focus:text-[#02a9ff]
-                   focus:outline-none active:bg-[#02a9ff]">{(row.getValue("userEmail"))}</div>
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("userEmail"))}</div>
             },
 
         },
@@ -1813,7 +1813,7 @@ export function MainDashbaord() {
                 <DataTableColumnHeader column={column} title="Pick Up Time" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-[#02a9ff]  hover:text-[#02a9ff]  focus:text-[#02a9ff] focus:outline-none active:bg-[#02a9ff] ">
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
                     {(row.getValue("pickUpTime"))}
                 </div>
             },
@@ -2213,7 +2213,7 @@ export function MainDashbaord() {
 
     return (
         <>
-            <div className="bg-[#09090b] text-gray-300 uppercase mt-10">
+            <div className="bg-background text-gray-300 uppercase mt-10">
                 <DataTable columns={columns} data={data} />
             </div>
         </>

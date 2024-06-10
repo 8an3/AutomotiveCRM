@@ -662,7 +662,7 @@ export function Example({ content, handleUpdate, }: {
               </select>
 
             </div>
-            <div className={`mx-auto  hover:text-[#02a9ff]  ml-2 mt-2 w-[98%] cursor-pointer  grow overflow-auto  rounded-md p-3  grid gris-cols-2 `}
+            <div className={`mx-auto  hover:text-primary  ml-2 mt-2 w-[98%] cursor-pointer  grow overflow-auto  rounded-md p-3  grid gris-cols-2 `}
               onClick={() => {
 
               }} >
@@ -671,14 +671,14 @@ export function Example({ content, handleUpdate, }: {
                 <div className="flex">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline" className='text-[#fff]   hover:text-[#02a9ff] border border-white py-2 px-3  rounded-md'>
+                      <Button variant="outline" className='text-[#fff]   hover:text-primary border border-white py-2 px-3  rounded-md'>
                         New Template
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[90%] bg-black">
                       <DialogHeader>
-                        <DialogTitle className='text-[#fafafa]'>New Template</DialogTitle>
-                        <DialogDescription className='text-[#fafafa]'>
+                        <DialogTitle className='text-foreground'>New Template</DialogTitle>
+                        <DialogDescription className='text-foreground'>
                           Create new templates to send to your leads.
                         </DialogDescription>
                       </DialogHeader>
@@ -738,9 +738,9 @@ export function Example({ content, handleUpdate, }: {
 
                                     <div
                                       onClick={() => setDetails(!details)}
-                                      className="flex cursor-pointer items-center hover:text-[#02a9ff]"
+                                      className="flex cursor-pointer items-center hover:text-primary"
                                     >
-                                      <p className="text-bold text-[#fff] hover:text-[#02a9ff]">cc bcc</p>
+                                      <p className="text-bold text-[#fff] hover:text-primary">cc bcc</p>
                                     </div>
                                   </div>
                                   {/* Details */}
@@ -801,7 +801,7 @@ export function Example({ content, handleUpdate, }: {
                 {filteredDropDown?.map((item, index) => (
                   <div
                     key={index}
-                    className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-[#02a9ff]  hover:text-[#02a9ff] active:border-[#02a9ff] ${selectedLine !== index
+                    className={`m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary ${selectedLine !== index
                       ? "opacity-80"
                       : "bg-slate11"
                       } `}
@@ -834,7 +834,7 @@ export function Example({ content, handleUpdate, }: {
                       <Badge className="m-2 border-[#f5f5f5a8] text-[#fff]">{item.category}</Badge>
                     </div>
                     <div className="flex">
-                      <p className="text-[#fff] ml-3 hover:text-[#02a9ff]"></p>
+                      <p className="text-[#fff] ml-3 hover:text-primary"></p>
                     </div>
 
                   </div>
@@ -900,9 +900,9 @@ export function Example({ content, handleUpdate, }: {
 
                             <div
                               onClick={() => setDetails(!details)}
-                              className="flex cursor-pointer items-center hover:text-[#02a9ff]"
+                              className="flex cursor-pointer items-center hover:text-primary"
                             >
-                              <p className="text-bold text-[#fff] hover:text-[#02a9ff]">cc bcc</p>
+                              <p className="text-bold text-[#fff] hover:text-primary">cc bcc</p>
                             </div>
                           </div>
                           {/* Details */}
@@ -1034,9 +1034,9 @@ export function Example({ content, handleUpdate, }: {
 
                               <div
                                 onClick={() => setDetails(!details)}
-                                className="flex cursor-pointer items-center hover:text-[#02a9ff]"
+                                className="flex cursor-pointer items-center hover:text-primary"
                               >
-                                <p className="text-bold text-[#fff] hover:text-[#02a9ff]">cc bcc</p>
+                                <p className="text-bold text-[#fff] hover:text-primary">cc bcc</p>
                               </div>
                             </div>
                             {/* Details */}
@@ -1087,14 +1087,14 @@ export function Example({ content, handleUpdate, }: {
                                 <div
                                   className={cn(
                                     "z-10 mt-2 mb-1 w-[95%]  flex  flex-wrap max-auto items-center gap-1 rounded-md p-1   mx-auto",
-                                    "bg-black text-[#fafafa] transition-all align-center justify-center",
+                                    "bg-black text-foreground transition-all align-center justify-center",
                                     "sm:sticky sm:top-[120px]",
                                   )}
                                 >
                                   <select
                                     name="clientAtr"
                                     onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                                    className='bg-black border border-white  text-[#fafafa]  focus:border-[#60b9fd] rounded-md p-2 '
+                                    className='bg-black border border-white  text-foreground  focus:border-[#60b9fd] rounded-md p-2 '
                                   >
                                     <option value="">Client</option>
                                     {Object.entries(clientAtr).map(([title, value]) => (
@@ -1106,7 +1106,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="wantedVehAttr"
                                     onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '   >
+                                    className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '   >
                                     <option value="">Wanted Veh</option>
                                     {Object.entries(wantedVehAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1117,7 +1117,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="tradeVehAttr"
                                     onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '         >
+                                    className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '         >
                                     <option value="">Trade Veh</option>
                                     {Object.entries(tradeVehAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1128,7 +1128,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="salesPersonAttr"
                                     onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '          >
+                                    className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '          >
                                     <option value="">Sales Person</option>
                                     {Object.entries(salesPersonAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1139,7 +1139,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="FandIAttr"
                                     onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '        >
                                     <option value="">F & I Manager</option>
                                     {Object.entries(FandIAttr).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1150,7 +1150,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="dealerInfo"
                                     onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '        >
                                     <option value="">Dealer Info</option>
                                     {Object.entries(dealerInfo).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1161,7 +1161,7 @@ export function Example({ content, handleUpdate, }: {
                                   <select
                                     name="financeInfo"
                                     onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-                                    className='bg-black border border-white  text-[#fafafa]   focus:border-[#60b9fd] rounded-md p-2 '        >
+                                    className='bg-black border border-white  text-foreground   focus:border-[#60b9fd] rounded-md p-2 '        >
                                     <option value="">Finance Info</option>
                                     {Object.entries(financeInfo).map(([title, value]) => (
                                       <option key={title} value={title}>
@@ -1174,7 +1174,7 @@ export function Example({ content, handleUpdate, }: {
                                 <div
                                   className={cn(
                                     "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-                                    "bg-black text-[#fafafa] transition-all justify-center",
+                                    "bg-black text-foreground transition-all justify-center",
                                     // "sm:sticky sm:top-[80px]",
                                   )}
                                 >
@@ -1386,7 +1386,7 @@ export function Example({ content, handleUpdate, }: {
                                         name="clientAtr"
 
                                         onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                                        className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+                                        className='bg-background border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
                                       >
                                         <option value="">Client</option>
                                         {Object.entries(clientAtr).map(([title, value]) => (
@@ -1400,7 +1400,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(wantedVehAttr[event.target.value]);
                                         }}
-                                        className='bg-[#09090b] border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                                        className='bg-background border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                                         <option value="">Wanted Veh</option>
                                         {Object.entries(wantedVehAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1413,7 +1413,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(tradeVehAttr[event.target.value]);
                                         }}
-                                        className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                                        className='bg-background border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
                                         <option value="">Trade Veh</option>
                                         {Object.entries(tradeVehAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1426,7 +1426,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(salesPersonAttr[event.target.value]);
                                         }}
-                                        className='bg-[#09090b] border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
+                                        className='bg-background border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
                                         <option value="">Sales Person</option>
                                         {Object.entries(salesPersonAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1439,7 +1439,7 @@ export function Example({ content, handleUpdate, }: {
                                         onChange={(event) => {
                                           handleDropdownChange(FandIAttr[event.target.value]);
                                         }}
-                                        className='bg-[#09090b] border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
+                                        className='bg-background border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
                                         <option value="">F & I Manager</option>
                                         {Object.entries(FandIAttr).map(([title, value]) => (
                                           <option key={title} value={title}>
@@ -1509,7 +1509,7 @@ export function SettingsMenu() {
             size="sm"
             className=" h-8 cursor-pointer justify-between lg:flex "
           >
-            <div className="text-[#fff] flex w-full items-center justify-between hover:text-[#02a9ff]">
+            <div className="text-[#fff] flex w-full items-center justify-between hover:text-primary">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>
 
             </div>

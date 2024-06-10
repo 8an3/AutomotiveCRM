@@ -175,7 +175,7 @@ export default function Automation() {
 
         </select>
         <button
-          className="px-4 py-2 bg-blue-500 text-[#fafafa] rounded cursor-pointer"
+          className="px-4 py-2 bg-blue-500 text-foreground rounded cursor-pointer"
           onClick={addLine}
         >
           Add Line

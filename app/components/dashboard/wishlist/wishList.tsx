@@ -236,15 +236,15 @@ export default function WishList() {
               <input type='hidden' name='id' defaultValue={data.id} />
               <input type='hidden' name='intent' defaultValue='editWishList' />
               <Select name='notified' >
-                <SelectTrigger className="w-full mx-auto bg-[#09090b] border-[#27272a]">
+                <SelectTrigger className="w-full mx-auto bg-background border-border">
                   <SelectValue placeholder='Edit Contacted' />
                 </SelectTrigger>
-                <SelectContent className='bg-[#09090b] border-[#27272a] text-[#fafafa]'>
+                <SelectContent className='bg-background border-border text-foreground'>
                   <SelectGroup>
-                    <SelectItem value="yes" className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md'>Yes</SelectItem>
-                    <SelectItem value="no answer" className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md'>No Answer</SelectItem>
-                    <SelectItem value="LVM" className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md'>LVM</SelectItem>
-                    <SelectItem value="no" className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md'>No</SelectItem>
+                    <SelectItem value="yes" className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md'>Yes</SelectItem>
+                    <SelectItem value="no answer" className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md'>No Answer</SelectItem>
+                    <SelectItem value="LVM" className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md'>LVM</SelectItem>
+                    <SelectItem value="no" className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md'>No</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -271,7 +271,7 @@ export default function WishList() {
               <input type='hidden' name='leadNote' defaultValue={wishListNotes || data.wishListNotes} />
               <input type='hidden' name='name' defaultValue={firstName + ' ' + lastName || data.firstName + ' ' + data.lastName} />
               <input type='hidden' name='intent' defaultValue='editWishList' />
-              <Button onClick={() => submit} size='icon' className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md mx-auto' >
+              <Button onClick={() => submit} size='icon' className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md mx-auto' >
                 <Save color="#ededed" className="mx-auto" />
               </Button>
             </Form>
@@ -297,7 +297,7 @@ export default function WishList() {
               <input type='hidden' name='brand' defaultValue={data.brand} />
               <input type='hidden' name='model' defaultValue={data.model} />
               <input type='hidden' name='intent' defaultValue='demoDayConvert' />
-              <Button onClick={() => submit} size='icon' className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md mx-auto' >
+              <Button onClick={() => submit} size='icon' className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md mx-auto' >
                 <FilePlus color="#ededed" className="mx-auto" />
 
               </Button>
@@ -318,7 +318,7 @@ export default function WishList() {
               <input type='hidden' name='userId' defaultValue={user.id} />
               <input type='hidden' name='id' defaultValue={data.id} />
               <input type='hidden' name='intent' defaultValue='demoDayDelete' />
-              <Button onClick={() => submit} size='icon' className='hover:bg-[#232324] w-[90%] cursor-pointer rounded-md mx-auto' >
+              <Button onClick={() => submit} size='icon' className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md mx-auto' >
                 <Trash2 color="#ededed" className="mx-auto" />
               </Button>
             </Form>
@@ -355,7 +355,7 @@ export default function WishList() {
         <Input
           value={value as string}
           onChange={e => setValue(e.target.value)}
-          className='mx-auto bg-[#09090b] border-[#27272a] text-center '
+          className='mx-auto bg-background border-border text-center '
           onBlur={onBlur}
         />
       )
@@ -494,7 +494,7 @@ export default function WishList() {
         <div className='flex'>
           <Input
             value={globalFilter ?? ''}
-            onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-[#262626] w-[400px] border border-[#262626] bg-[#09090b] p-2 text-[#fafafa] shadow"
+            onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-[#262626] w-[400px] border border-[#262626] bg-background p-2 text-foreground shadow"
             placeholder="Search all columns..."
           />
           <Input
@@ -505,10 +505,10 @@ export default function WishList() {
             onChange={(event) =>
               table.getColumn('phone')?.setFilterValue(event.target.value)
             }
-            className="ml-2 max-w-sm border-[#262626] bg-[#09090b] p-2 text-[#fafafa]"
+            className="ml-2 max-w-sm border-[#262626] bg-background p-2 text-foreground"
           />
           <select value={filterBy} onChange={handleDropdownChange}
-            className={`border-[#262626] bg-[#09090b] p-2 text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+            className={`border-[#262626] bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
           >
             <option value='' >Search By Model</option>
             {models.map((model, index) => (
@@ -517,19 +517,19 @@ export default function WishList() {
               </option>
             ))}
           </select>
-          <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-[#262626] bg-[#09090b] p-2 text-[#fafafa] placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+          <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-[#262626] bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
           >
             Clear
           </Button>
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant='outline' className="active:bg-[#09090b]  mx-2 my-auto h-7  cursor-pointer rounded bg-[#09090b] border border-[#262626] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff]  hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+            <Button variant='outline' className="active:bg-background  mx-2 my-auto h-7  cursor-pointer rounded bg-background border border-[#262626] px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
             >
               Add
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-[#09090b] border-[#27272a] text-[#fafafa]">
+          <DialogContent className="sm:max-w-[425px] bg-background border-border text-foreground">
             <DialogHeader>
               <DialogTitle>Wish List</DialogTitle>
               <DialogDescription>
@@ -542,40 +542,40 @@ export default function WishList() {
                 <div className="relative mt-3">
                   <Input
                     name="firstName"
-                    className="col-span-3 bg-[#09090b] border-[#27272a]"
+                    className="col-span-3 bg-background border-border"
                   />
-                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">First Name</label>
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">First Name</label>
                 </div>
                 <div className="relative mt-3">
                   <Input
                     name="lastName"
-                    className="col-span-3 bg-[#09090b] border-[#27272a]"
+                    className="col-span-3 bg-background border-border"
                   />
-                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Last Name</label>
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Last Name</label>
                 </div>
                 <div className="relative mt-3">
                   <Input
                     name="email"
-                    className="col-span-3 bg-[#09090b] border-[#27272a]"
+                    className="col-span-3 bg-background border-border"
                   />
-                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Email</label>
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Email</label>
                 </div>
                 <div className="relative mt-3">
                   <Input
                     name="phone"
-                    className="col-span-3 bg-[#09090b] border-[#27272a]"
+                    className="col-span-3 bg-background border-border"
                   />
-                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Phone</label>
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Phone</label>
                 </div>
                 <div className="relative mt-3">
                   <Input
-                    className=" col-span-3 bg-[#09090b] border-[#27272a]"
+                    className=" col-span-3 bg-background border-border"
                     type="text"
                     list="ListOptions1"
                     name="brand"
                     onChange={handleBrand}
                   />
-                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Brand</label>
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Brand</label>
                 </div>
                 <datalist id="ListOptions1">
                   <option value="BMW-Motorrad" />
@@ -598,8 +598,8 @@ export default function WishList() {
                 {modelList && (
                   <>
                     <div className="relative mt-3">
-                      <Input className=" col-span-3 bg-[#09090b] border-[#27272a]" type="text" list="ListOptions2" name="model" />
-                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Model</label>
+                      <Input className=" col-span-3 bg-background border-border" type="text" list="ListOptions2" name="model" />
+                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Model</label>
                     </div>
                     <datalist id="ListOptions2">
                       {modelList.models.map((item, index) => (
@@ -612,13 +612,13 @@ export default function WishList() {
 
               <div className="relative mt-3">
                 <Input
-                  className=" col-span-3 bg-[#09090b] border-[#27272a]"
+                  className=" col-span-3 bg-background border-border"
                   type="text"
                   list="ListOptions2"
                   name="brand2"
                   onChange={handleBrand2}
                 />
-                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Brand 2</label>
+                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Brand 2</label>
               </div>
               <datalist id="ListOptions2">
                 <option value="BMW-Motorrad" />
@@ -641,8 +641,8 @@ export default function WishList() {
               {modelList2 && (
                 <>
                   <div className="relative mt-3">
-                    <Input className=" col-span-3 bg-[#09090b] border-[#27272a]" type="text" list="ListOptions3" name="model2" />
-                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Model 2</label>
+                    <Input className=" col-span-3 bg-background border-border" type="text" list="ListOptions3" name="model2" />
+                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Model 2</label>
                   </div>
                   <datalist id="ListOptions3">
                     {modelList2.models.map((item, index) => (
@@ -655,12 +655,12 @@ export default function WishList() {
                 <Input
                   name="wishListNotes"
                   placeholder="wants less than 50k kms"
-                  className="col-span-3 bg-[#09090b] border-[#27272a]"
+                  className="col-span-3 bg-background border-border"
                 />
-                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#09090b] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#909098] peer-focus:-top-3 peer-focus:text-[#909098]">Notes</label>
+                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Notes</label>
               </div>
               <Button onClick={() => toast.success(`Added to wish list!`)}
-                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-[#09090b] w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-[#dc2626] px-3 py-2  text-center text-xs  font-bold uppercase text-[#fafafa] shadow outline-none  transition-all duration-150 ease-linear hover:border-[#02a9ff] border-[#262626] hover:text-[#02a9ff] hover:shadow-md focus:outline-none"
+                type='submit' name='intent' value='addWishList' variant='outline' className="active:bg-background w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-[#dc2626] px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary border-[#262626] hover:text-primary hover:shadow-md focus:outline-none"
               >
                 Save
               </Button>
@@ -670,7 +670,7 @@ export default function WishList() {
 
       </div>
       <div className="rounded-md border border-[#262626] ">
-        <Table2 className='w-full overflow-x-auto border-[#262626] text-[#fafafa]'>
+        <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className=' border-[#262626]'>
@@ -699,7 +699,7 @@ export default function WishList() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className='cursor-pointer border-[#262626] bg-[#09090b]  p-4 capitalize text-[#fafafa] hover:text-[#02a9ff]'
+                  className='cursor-pointer border-[#262626] bg-background  p-4 capitalize text-foreground hover:text-primary'
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -716,7 +716,7 @@ export default function WishList() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 cursor-pointer bg-[#09090b] text-center capitalize text-[#fafafa] hover:text-[#02a9ff]"
+                  className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
                 >
                   No results.
                 </TableCell>
@@ -733,7 +733,7 @@ export default function WishList() {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="border-[#262626] text-[#fafafa] bg-transparent hover:bg-transparent"
+            className="border-[#262626] text-foreground bg-transparent hover:bg-transparent"
           >
             Previous
           </Button>
@@ -741,7 +741,7 @@ export default function WishList() {
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            className="border-[#262626] text-[#fafafa] bg-[#09090b]   hover:bg-transparent"
+            className="border-[#262626] text-foreground bg-background   hover:bg-transparent"
 
             disabled={!table.getCanNextPage()}
           >

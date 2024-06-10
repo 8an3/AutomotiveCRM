@@ -32,7 +32,7 @@ export const loader = async ({ request }) => {
 export default function Quote() {
   return (
     <>
-      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-[#09090b] border-gray-300 font-bold   ">
+      <div className="w-full h-[100vh]   px-2 sm:px-1 lg:px-3 bg-background border-gray-300 font-bold   ">
 
         <Outlet />
       </div>

@@ -17,6 +17,7 @@ import { Code, Banknote, Laptop, X } from 'lucide-react';
 import { useEffect, useState, } from 'react';
 import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { managerSidebarNav, adminSidebarNav, devSidebarNav } from '~/components/shared/sidebar'
+import { ThemeToggleButton } from './theme-toggle';
 
 export default function UserSideBar(user: any, email: any,) {
   const userIsFinance = getUserIsAllowed(user, ["FINANCE"]);
@@ -26,12 +27,12 @@ export default function UserSideBar(user: any, email: any,) {
   return (
     <>
       <Sheet modal={false}  >
-        <SheetTrigger className='text-[#fafafa]'>
+        <SheetTrigger className='text-foreground'>
           <div
             onClick={() => {
               openDialog()
             }}
-            className=' cursor-pointer text-[#fafafa] left-[25px] top-[25px]  fixed'>
+            className=' cursor-pointer text-foreground left-[25px] top-[25px]  fixed'>
             {user && user?.email === 'skylerzanth@outlook.com' ?
               <Code size={32} color="#fff" strokeWidth={1.5} />
               :
@@ -47,7 +48,7 @@ export default function UserSideBar(user: any, email: any,) {
           </div>
         </SheetTrigger>
 
-        <SheetContent side='left' className='bg-[#09090b] text-[#fafafa] w-full md:w-[50%] overflow-y-auto' >
+        <SheetContent side='left' className='bg-background text-foreground w-full md:w-[50%] overflow-y-auto' >
           <SheetHeader>
             <SheetTitle>
               <h2>
@@ -111,7 +112,7 @@ export default function UserSideBar(user: any, email: any,) {
                     <SidebarNav items={adminSidebarNav} />
                   </>
                   : ''}
-
+          <ThemeToggleButton />
         </SheetContent>
       </Sheet >
     </>
@@ -133,7 +134,7 @@ export default function UserSideBar(user: any, email: any,) {
     return (
       <>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetContent side='left' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto' >
+          <SheetContent side='left' className='bg-background w-full md:w-[50%] overflow-y-auto' >
             <SheetHeader>
               <SheetTitle>
                 <h2>
@@ -152,7 +153,7 @@ export default function UserSideBar(user: any, email: any,) {
                         userIsADMIN && user?.email !== 'skylerzanth@outlook.com' ? 'Manage your site.' :
                           ''}
                 </h2>
-                <hr className="my-6 text-[#fafafa] w-[90%]" />
+                <hr className="my-6 text-foreground w-[90%]" />
               </SheetDescription>
             </SheetHeader>
             {user && user?.email === 'skylerzanth@outlook.com' ?
@@ -231,7 +232,7 @@ export default function UserSideBar(user: any, email: any,) {
             </Button>
           </SheetTrigger>
 
-          <SheetContent side='left' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto' >
+          <SheetContent side='left' className='bg-background w-full md:w-[50%] overflow-y-auto' >
             <SheetHeader>
               <SheetTitle>
                 <h2>
@@ -324,7 +325,7 @@ export default function UserSideBar(user: any, email: any,) {
             )}
           </Button>
         </SheetTrigger>
-        <SheetContent side='left' className='bg-[#09090b] w-full md:w-[50%] overflow-y-auto' >
+        <SheetContent side='left' className='bg-background w-full md:w-[50%] overflow-y-auto' >
           <SheetHeader>
             <SheetTitle>
               {user && user?.email === 'skylerzanth@outlook.com' && (

@@ -65,7 +65,7 @@ export default function Subscribe() {
                             <div className="mx-auto my-auto grid grid-cols-1	place-content-center">
                                 <div className="item-4 scriptcard mx-auto my-auto grid grid-cols-1 justify-end ">
                                     <div className="text-center">
-                                        <h2 className="scriptcardText mb-6 mt-6 text-3xl font-thin tracking-tight text-[#fafafa]  sm:mt-0 sm:text-4xl ">
+                                        <h2 className="scriptcardText mb-6 mt-6 text-3xl font-thin tracking-tight text-foreground  sm:mt-0 sm:text-4xl ">
                                             Subscription Plans
                                         </h2>
                                         <p className="scriptcardText text-[#fff]">
@@ -76,7 +76,7 @@ export default function Subscribe() {
                                                 <SalespersonPrice />
                                             ) : (
                                                 <fieldset
-                                                    className="mx-auto grid h-[650px] w-[90%] cursor-pointer rounded-lg border border-white p-4 hover:border-[#02a9ff] lg:w-[90%]"
+                                                    className="mx-auto grid h-[650px] w-[90%] cursor-pointer rounded-lg border border-white p-4 hover:border-primary lg:w-[90%]"
                                                     onClick={() => setSales(true)}
                                                 >
                                                     <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
@@ -125,7 +125,7 @@ export default function Subscribe() {
                                                         <div className="flex justify-center">
                                                             <Button
                                                                 size="sm"
-                                                                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-[#fafafa]"
+                                                                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-foreground"
                                                             >
                                                                 Continue
                                                             </Button>
@@ -137,7 +137,7 @@ export default function Subscribe() {
                                                 <DealerPrice />
                                             ) : (
                                                 <fieldset
-                                                    className="mx-auto grid h-[650px] w-[90%] cursor-pointer gap-6 rounded-lg border border-white p-4 hover:border-[#02a9ff] lg:h-full lg:w-[90%]"
+                                                    className="mx-auto grid h-[650px] w-[90%] cursor-pointer gap-6 rounded-lg border border-white p-4 hover:border-primary lg:h-full lg:w-[90%]"
                                                     onClick={() => setDealer(true)}
                                                 >
                                                     <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
@@ -178,7 +178,7 @@ export default function Subscribe() {
                                                         <div className="flex justify-center">
                                                             <Button
                                                                 size="sm"
-                                                                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-[#fafafa]"
+                                                                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-foreground"
                                                             >
                                                                 Continue
                                                             </Button>
@@ -187,7 +187,7 @@ export default function Subscribe() {
                                                 </fieldset>
                                             )}
                                         </div>
-                                        <fieldset className="mx-auto grid h-[150px] w-[350px] cursor-pointer gap-6 rounded-lg border border-white p-4 hover:border-[#02a9ff]">
+                                        <fieldset className="mx-auto grid h-[150px] w-[350px] cursor-pointer gap-6 rounded-lg border border-white p-4 hover:border-primary">
                                             <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
                                                 Once subscribed....
                                             </legend>
@@ -205,7 +205,7 @@ export default function Subscribe() {
                                                     type="submit"
                                                     isSubmitting={isSubmitting}
                                                     loadingText="Checking Subscription..."
-                                                    className="ml-auto mt-5 w-auto cursor-pointer border-[#fff] text-[#fff] hover:text-[#02a9ff]"
+                                                    className="ml-auto mt-5 w-auto cursor-pointer border-[#fff] text-[#fff] hover:text-primary"
                                                 >
                                                     Continue
                                                 </ButtonLoading>

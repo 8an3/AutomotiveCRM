@@ -151,14 +151,14 @@ export default function EmailClient({ data }) {
         <Dialog.Root>
           <Dialog.Trigger asChild>
             <p
-              className="cursor-pointer text-[#fafafa] target:text-[#02a9ff] hover:text-[#02a9ff]" >
+              className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
               <Mail className="" />
             </p>
           </Dialog.Trigger>
           <Dialog.Portal>
             <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
 
-            <Dialog.Content className=" w-[95%] md:w-[950px]   fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#09090b] border border-[#27272a] text-[#fafafa] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none ">
+            <Dialog.Content className=" w-[95%] md:w-[950px]   fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-background border border-border text-foreground p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none ">
               <DialogDescription>
                 <Tabs defaultValue="account" className="w-auto">
                   <TabsList className="grid w-full grid-cols-3">
@@ -172,15 +172,15 @@ export default function EmailClient({ data }) {
                     </div>
                   </TabsContent>
                   <TabsContent value="password">
-                    <Card className="overflow-hidden text-[#f1f1f1] w-[600px] mx-auto" x-chunk="dashboard-05-chunk-4 "  >
-                      <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                    <Card className="overflow-hidden text-foreground w-[600px] mx-auto" x-chunk="dashboard-05-chunk-4 "  >
+                      <CardHeader className="flex flex-row items-start bg-muted-background">
                         <div className="grid gap-0.5">
                           <CardTitle className="group flex items-center gap-2 text-lg">
                             Customer Interactions
                           </CardTitle>
                         </div>
                       </CardHeader>
-                      <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                      <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
                         <div className="grid gap-3 max-h-[70vh] h-auto">
                           <Card>
                             <CardContent>
@@ -191,7 +191,7 @@ export default function EmailClient({ data }) {
                                     className={cn(
                                       "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                                       message.userEmail === user.email
-                                        ? "ml-auto bg-[#dc2626] text-[#fafafa]"
+                                        ? "ml-auto bg-[#dc2626] text-foreground"
                                         : "bg-[#262626]"
                                     )}
                                   >
@@ -210,7 +210,7 @@ export default function EmailClient({ data }) {
                           </Card>
                         </div>
                       </CardContent>
-                      <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                      <CardFooter className="flex flex-row items-center border-t border-border bg-muted-background px-6 py-3">
 
                         <Button
                           value="saveFinanceNote"
@@ -233,8 +233,8 @@ export default function EmailClient({ data }) {
                   <TabsContent value="notes" className="">
                     <div className='max-h-[900px] '>
                       <>
-                        <Card className="overflow-hidden text-[#f1f1f1] w-[600px] mx-auto" x-chunk="dashboard-05-chunk-4 "  >
-                          <CardHeader className="flex flex-row items-start bg-[#18181a]">
+                        <Card className="overflow-hidden text-foreground w-[600px] mx-auto" x-chunk="dashboard-05-chunk-4 "  >
+                          <CardHeader className="flex flex-row items-start bg-muted-background">
                             <div className="grid gap-0.5">
                               <CardTitle className="group flex items-center gap-2 text-lg">
                                 Notes
@@ -254,7 +254,7 @@ export default function EmailClient({ data }) {
                               </TooltipProvider>
                             </div>
                           </CardHeader>
-                          <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-[#09090b]">
+                          <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
                             <div className="grid gap-3 max-h-[70vh] h-auto">
                               <Card>
                                 <CardContent>
@@ -265,7 +265,7 @@ export default function EmailClient({ data }) {
                                         className={cn(
                                           "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                                           message.author === user.email
-                                            ? "ml-auto bg-[#dc2626] text-[#fafafa]"
+                                            ? "ml-auto bg-[#dc2626] text-foreground"
                                             : "bg-[#262626]"
                                         )}
                                       >
@@ -284,7 +284,7 @@ export default function EmailClient({ data }) {
                               </Card>
                             </div>
                           </CardContent>
-                          <CardFooter className="flex flex-row items-center border-t border-[#27272a] bg-[#18181a] px-6 py-3">
+                          <CardFooter className="flex flex-row items-center border-t border-border bg-muted-background px-6 py-3">
                             <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
                               <Input type="hidden" defaultValue={user.email} name="author" />
                               <Input type="hidden" defaultValue={data.clientFileId} name="customerId" />
@@ -293,7 +293,7 @@ export default function EmailClient({ data }) {
                               <Input
                                 id="message"
                                 placeholder="Type your message..."
-                                className="flex-1 bg-[#18181a] border-[#27272a]"
+                                className="flex-1 bg-muted-background border-border"
                                 autoComplete="off"
                                 value={input}
                                 onChange={(event) => setInput(event.target.value)}
@@ -329,15 +329,15 @@ export default function EmailClient({ data }) {
 }
 
 /**   <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogContent className="gap-0 p-0 outline-none border-[#27272a] text-[#fafafa]">
+                        <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                           <DialogHeader className="px-4 pb-4 pt-5">
                             <DialogTitle>CC Employee</DialogTitle>
                             <DialogDescription>
                               Invite a user to this thread.
                             </DialogDescription>
                           </DialogHeader>
-                          <Command className="overflow-hidden rounded-t-none border-t border-[#27272a] bg-transparent">
-                            <CommandInput placeholder="Search user..." className='bg-[#18181a] text-[#fafafa]' />
+                          <Command className="overflow-hidden rounded-t-none border-t border-border bg-transparent">
+                            <CommandInput placeholder="Search user..." className='bg-muted-background text-foreground' />
                             <CommandList>
                               <CommandEmpty>No users found.</CommandEmpty>
                               <CommandGroup className="p-2">
@@ -369,7 +369,7 @@ export default function EmailClient({ data }) {
                                       <p className="text-sm font-medium leading-none">
                                         {user.name}
                                       </p>
-                                      <p className="text-sm text-[#909098]">
+                                      <p className="text-sm text-muted-foreground">
                                         {user.email}
                                       </p>
                                     </div>
@@ -381,13 +381,13 @@ export default function EmailClient({ data }) {
                               </CommandGroup>
                             </CommandList>
                           </Command>
-                          <DialogFooter className="flex items-center border-t border-[#27272a] p-4 sm:justify-between">
+                          <DialogFooter className="flex items-center border-t border-border p-4 sm:justify-between">
                             {selectedUsers.length > 0 ? (
                               <div className="flex -space-x-2 overflow-hidden">
                                 {selectedUsers.map((user) => (
                                   <Avatar
                                     key={user.email}
-                                    className="inline-block border-2 border-background border-[#27272a]"
+                                    className="inline-block border-2 border-background border-border"
                                   >
                                     <AvatarImage src={user.avatar} />
                                     <AvatarFallback>{user.name[0]}</AvatarFallback>
@@ -395,7 +395,7 @@ export default function EmailClient({ data }) {
                                 ))}
                               </div>
                             ) : (
-                              <p className="text-sm text-[#909098]">
+                              <p className="text-sm text-muted-foreground">
                                 Select users to add to this thread.
                               </p>
                             )}

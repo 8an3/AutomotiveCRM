@@ -1,7 +1,7 @@
 export default function Privacy() {
   return (
     <div className="text-myColor-200  md:w-1/2 mt-[100px] mx-auto">
-      <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-[#27272a] cursor-pointer " >
+      <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-border cursor-pointer " >
         <legend className="-ml-1 px-1 text-lg font-medium">DSA Privacy Policy</legend>
         <p className='px-[40px] pt-[5px] text-center text-sm  text-myColor-200 '>
           This privacy policy ("policy") will help you understand how D.S.A ("us", "we", "our") uses and protects the data you provide to us when you visit and use dealersalesassistant.ca automotive SaaS.

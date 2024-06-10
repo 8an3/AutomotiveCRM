@@ -22,7 +22,7 @@ export function SearchForm({ action = "/search" }: { action?: string }) {
           autoComplete="off"
           autoFocus={isRouteSearch}
           defaultValue={querySearchParams}
-          className="block w-[95%] ps-9 placeholder:text-surface-500 dark:placeholder:text-black text-[#fafafa] bg-[#09090b] border-[#27272a]"
+          className="block w-[95%] ps-9 placeholder:text-surface-500 dark:placeholder:text-black text-foreground bg-background border-border"
         />
         <span className="pointer-events-none absolute flex ps-3">
           <Search className="size-sm" />
