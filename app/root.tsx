@@ -237,7 +237,7 @@ export function ErrorBoundary() {
           <fieldset className="mx-auto grid max-h-[900px] h-auto w-[90%] lg:w-[60%]   rounded-lg border text-foreground border-border p-4    mt-[50px] ">
             <legend className="-ml-1 px-1 text-lg font-medium ">
               <div className='flex'>
-                <h3 className='text-foreground'>  Sorry, unexpected error occured.  </h3>
+                <h3 className='text-white'>  Sorry, unexpected error occured.  </h3>
 
                 <Button size="icon" variant="outline" onClick={() => copyText(error.message + ' || ' + String(error) + ' || ' + error.stack)} className="h-6 w-6     ml-2" >
                   <Copy className="h-3 w-3" />

@@ -43,17 +43,20 @@ export async function loader({ request, params }: LoaderFunction) {
         where: { userEmail: { equals: email, }, },
       });
       let automations
-      automations = await prisma.automations.findUnique({
-        where: { userEmail: { equals: email, }, },
-      });
-      if (!automations) {
-        automations = await prisma.automations.create({
-          data: {
-            userEmail: user.email,
-            pickUp24before: 'no',
-            appt24before: 'no',
-          }
-        })
+      try {
+        automations = await prisma.automations.findUnique({
+          where: { userEmail: { equals: email, }, },
+        });
+      } catch (error) {
+        if (!automations) {
+          automations = await prisma.automations.create({
+            data: {
+              userEmail: user.email,
+              pickUp24before: 'no',
+              appt24before: 'no',
+            }
+          })
+        }
       }
 
       const comsRecords = await prisma.previousComms.findMany({ where: { userEmail: email }, });
