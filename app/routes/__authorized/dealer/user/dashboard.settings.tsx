@@ -43,7 +43,7 @@ export async function loader({ request, params }: LoaderFunction) {
         where: { userEmail: { equals: email, }, },
       });
       let automations
-      automations = await prisma.automations.findMany({
+      automations = await prisma.automations.findUnique({
         where: { userEmail: { equals: email, }, },
       });
       if (!automations) {
