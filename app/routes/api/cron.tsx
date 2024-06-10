@@ -19,3 +19,4 @@ export async function loader({ request }: LoaderArgs) {
   if (request.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
     return request.status(401).end('Unauthorized');
   }
+*/
