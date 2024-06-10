@@ -242,10 +242,10 @@ model NotificationsUser {
   clientfileId String?
   to           String?
   from         String?
+  userEmail    String
 
   // Relations
-  reads     NotificationRead[]
-  userEmail String
+  reads NotificationRead[]
 
   user User @relation("NotificationsUser", fields: [userEmail], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
