@@ -1,9 +1,10 @@
 
 import { prisma } from "~/libs";
+import type { HeadersFunction, LinksFunction, LoaderArgs, V2_MetaDescriptor, V2_MetaFunction, } from "@remix-run/node";
+export async function loader({ request }: LoaderArgs) {
 
-export async function loader({ req }) {
-  if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).end('Unauthorized');
+  if (request.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+    return request.status(401).end('Unauthorized');
   }
   const notifications = await prisma.notificationsUser.create({
     data: {
