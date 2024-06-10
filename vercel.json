@@ -3,16 +3,5 @@
     "env": {
       "ENABLE_FILE_SYSTEM_API": "1"
     }
-  },
-  "functions": {
-    "dealer/api/checkAutomations.tsx": {
-      "runtime": "nodejs16.x"
-    }
-  },
-  "crons": [
-    {
-      "path": "/api/cron/10m",
-      "schedule": "*/10 * * * *"
-    }
-  ]
+  }
 }
