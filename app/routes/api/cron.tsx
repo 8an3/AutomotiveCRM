@@ -3,9 +3,6 @@ import { prisma } from "~/libs";
 import type { HeadersFunction, LinksFunction, LoaderArgs, V2_MetaDescriptor, V2_MetaFunction, } from "@remix-run/node";
 export async function loader({ request }: LoaderArgs) {
 
-  if (request.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
-    return request.status(401).end('Unauthorized');
-  }
   const notifications = await prisma.notificationsUser.create({
     data: {
       userEmail: 'skylerzanth@outlook.com',
@@ -15,5 +12,10 @@ export async function loader({ request }: LoaderArgs) {
     }
   })
 
-  return new Response('Hello Cron, fuk you !') && notifications;
+  return new Response('Hello Cron, fuk you !')
 }
+
+/*8
+  if (request.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+    return request.status(401).end('Unauthorized');
+  }

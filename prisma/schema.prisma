@@ -806,7 +806,7 @@ model ClientApts {
 
 model Automations {
   id             String  @id @default(cuid())
-  userEmail      String
+  userEmail      String  @unique
   pickUp24before String?
   appt24before   String?
 }

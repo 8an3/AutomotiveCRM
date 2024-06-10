@@ -1086,10 +1086,10 @@ export const action: ActionFunction = async ({ request }) => {
   }
   if (intent === 'automations') {
     const automations = await prisma.automations.update({
-      where: { userEmail: formData.userEmail },
+      where: { userEmail: Input.userEmail },
       data: {
-        pickUp24before: formData.pickUp24before,
-        appt24before: formData.appt24before,
+        pickUp24before: Input.pickUp24before,
+        appt24before: Input.appt24before,
       }
     })
     return automations
