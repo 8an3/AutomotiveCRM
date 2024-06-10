@@ -31,17 +31,14 @@ export const todoRoadmap = [
   { type: "done needs testing", desc: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
   // -----------------------------------------------------------WIP-----------------------------------------------------
   { type: "WIP", desc: "have your own csi reporting for the dealer that can be sent to customers" },
-  { type: "WIP", desc: "finish automation dash - wip" },
   { type: "WIP", desc: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
   { type: "WIP", desc: "Finance Dashboard" },
   { type: "WIP", desc: "mass email/sms - wip" },
   { type: "WIP", desc: "manager Dashboard" },
-  { type: "WIP", desc: "Dept Leaderboards" },
   { type: "WIP", desc: "sales manager dash" },
   { type: "WIP", desc: "dev control panel needs to send email to new dealers with sign in info" },
   { type: "WIP", desc: "https://developers.klaviyo.com/en/reference/get_campaigns" },
   // ---------------------------------------------------------ISSUE-----------------------------------------------------
-  { type: "issue", desc: "overview emails" },
   { type: "issue", desc: "export in managers section - export csv files of customers, inventory etc" },
   // -----------------------------------------------------OWNER---------------------------------------------------------
   { type: "owner", desc: "Owners dashboard" },
@@ -86,13 +83,11 @@ export const todoRoadmap = [
   // ----------------------------------------------------------MANAGER--------------------------------------------------
   // ---------------------------------------------------------ADMIN-----------------------------------------------------
 
-  { type: "admin", desc: "employee onboarding" },
   { type: "admin", desc: "have it populate api keys so managers can hand them out" },
   // ----------------------------------------------------------ADMIN----------------------------------------------------
   // ---------------------------------------------------DEALER ONBOARDING-----------------------------------------------
   { type: "dealer onboarding", desc: "invite user section where it send an email with links to the crm and" },
   { type: "dealer onboarding", desc: "role specific invites, for example when invitiing a tech only show him what hes going to be using maybe even see if you can book mark for them to make it super easy" },
-  { type: "dealer onboarding", desc: "automate on boarding" },
   { type: "dealer onboarding", desc: "free simple install with insructions, fee for total install - for dealer that already have an it team it would save them money" },
   // ------------------------------------------------------DEALER ONBOARDING--------------------------------------------
   // ------------------------------------------------INFASTRUCTURE------------------------------------------------------
@@ -127,6 +122,11 @@ export const todoRoadmap = [
 const DoneRoadMap = [
   { type: "issue", desc: "add ping system for notes - COMPLETED BUT NEEDS TESTING" },
   { type: "issue", desc: "need to change how to load overview,   by financeId maybe save the financeId to local storage or a cookie to always have acxcess to the last one u made" },
+  { type: "WIP", desc: "Dept Leaderboards" },
+  { type: "WIP", desc: "finish automation dash - wip" },
+  { type: "dealer onboarding", desc: "automate on boarding" },
+  { type: "admin", desc: "employee onboarding" },
+  { type: "issue", desc: "overview emails" },
   { type: "google", desc: "utilize other services from google, notes, to-do, sms, voice chat, call recording, video calling, teaam chat?, tasks and plans,  " }, { type: "done needs testing", desc: "API file upload will be released once google approves gmail as its still in the process right now - done needs testing" },
   { type: 'google', desc: 'has a push notiications for new incoming emails' },
   { type: "dealer onboarding", desc: "initial data can be put into seed file filed out by dealer" },
