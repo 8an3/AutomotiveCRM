@@ -24,7 +24,7 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import axios from 'axios'
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
-
+// dontergeasdf
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
