@@ -40,7 +40,7 @@
     "postinstall": "prisma generate"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
