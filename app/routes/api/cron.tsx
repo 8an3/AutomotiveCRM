@@ -2,7 +2,7 @@ import { json } from '@remix-run/node';
 import { Resend } from 'resend';
 import { prisma } from '~/libs';
 import React from 'react';
-import { CronEmail } from './email';
+import CronEmail from './email';
 
 const resend = new Resend('re_YFCDynPp_5cod9FSRkrbS6kfmRsoqSsBS'); // Replace with process.env.resend_API_KEY if using environment variables
 
@@ -36,7 +36,7 @@ const sendEmail = async (user, email, message, appointment) => {
 
   return json({ data });
 };
-
+// asdasdasd
 const checkReminders = async (users, apptType) => {
   try {
     const currentTime = new Date();

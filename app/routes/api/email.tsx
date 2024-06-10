@@ -20,7 +20,7 @@ import {
 import * as React from "react";
 import { Link2 } from 'lucide-react';
 
-export const CronEmail = (message, user, appointment) => {
+export const CronEmail = ({ message, user, appointment }) => {
   return (
     <Html>
       <Head />
@@ -57,8 +57,6 @@ export const CronEmail = (message, user, appointment) => {
     </Html>
   );
 };
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "";
-export default EmployEmail
+
+export default CronEmail
 
