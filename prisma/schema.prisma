@@ -805,10 +805,24 @@ model ClientApts {
 }
 
 model Automations {
-  id             String  @id @default(cuid())
-  userEmail      String  @unique
-  pickUp24before String?
-  appt24before   String?
+  id               String  @id @default(cuid())
+  userEmail        String  @unique
+  pickUp24before   String?
+  appt24before     String?
+  noFollowup       String?
+  askForReferral   String?
+  oneYearAnni      String?
+  del7days         String?
+  afterDelTY       String?
+  afterHoursClosed String?
+}
+
+model Automation {
+  id           String  @id @default(cuid())
+  userEmail    String?
+  type         String?
+  financeId    String?
+  clientfileId String?
 }
 
 model CheckLatestEmail {

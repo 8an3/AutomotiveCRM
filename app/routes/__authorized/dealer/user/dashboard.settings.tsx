@@ -45,10 +45,10 @@ export async function loader({ request, params }: LoaderFunction) {
       let automations
       try {
         automations = await prisma.automations.findUnique({
-          where: { userEmail: { equals: email, }, },
+          where: { userEmail: email, },
         });
       } catch (error) {
-        if (!automations) {
+        if (!automations.id) {
           automations = await prisma.automations.create({
             data: {
               userEmail: user.email,
@@ -390,22 +390,36 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
   const isSubmitting = navigation.state === "submitting";
   const [activixActivated, setActivixActivated] = useState(user.activixActivated);
 
-  const handleCheckboxChange = (event) => {
-    setActivixActivated(event.target.checked);
-  };
-
   const [newLook, setNewLook] = useState(getNewLook);
 
-  const initial = {
+  const [formData, setFormData] = useState({
     pickUp24before: automations.pickUp24before,
     appt24before: automations.appt24before,
+    noFollowup: automations.noFollowup,
+    askForReferral: automations.askForReferral,
+    oneYearAnni: automations.oneYearAnni,
+    del7days: automations.del7days,
+    afterDelTY: automations.afterDelTY,
+    afterHoursClosed: automations.afterHoursClosed,
+  });
 
-  }
-  const [formData, setFormData] = useState(initial);
+  const automationsList = [
+    { label: 'Appointment reminder / 24 hours', name: 'appt24before' },
+    { label: 'Pick-Up reminder / 24 hours', name: 'pickUp24before' },
+    { label: 'After Hour Closer Email', name: 'afterHoursClosed' },
+    { label: 'After Del Thank You', name: 'afterDelTY' },
+    { label: 'Delivered - Picked up 7 days ago', name: 'del7days' },
+    { label: 'One year Anni', name: 'oneYearAnni' },
+    { label: 'Delivered Asking for Referral', name: 'askForReferral' },
+    { label: 'No Follow-up Scheduled', name: 'noFollowup' },
+  ];
 
-  const handleChange = (e) => {
-    const { name, value, checked, type } = e.target;
-    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: checked ? 'yes' : 'no',
+    }));
   };
 
   return (
@@ -838,79 +852,32 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
           <CardContent className="space-y-2  text-foreground">
             <Form method='post' >
               <ul className="grid gap-3 text-sm mt-2">
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">
-                    Appointment reminder / 24 hours
-                  </span>
-                  <span>
-                    <div className="inline-flex items-center">
-                      <label className="relative flex items-center  rounded-full cursor-pointer" htmlFor="blue">
-                        <input type="checkbox"
-                          id="blue"
-                          name="appt24before"
-                          checked={formData.appt24before !== 'no'}
-                          onChange={(e) => {
-                            const { name, checked } = e.target;
-                            const newValue = checked
-                              ? 'yes'
-                              : 'no'; // Use the correct variable name here
-                            setFormData((prevFormData) => ({
-                              ...prevFormData,
-                              [name]: newValue,
-                            }));
-                          }}
-                          className=' border-[#c72323] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10'
-                        />
-                        <span
-                          className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
-                            stroke="currentColor" strokeWidth="1">
-                            <path fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"></path>
-                          </svg>
-                        </span>
-                      </label>
-                    </div>
-                  </span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">
-                    Pick-Up reminder / 24 hours
-                  </span>
-                  <span>
-                    <div className="inline-flex items-center">
-                      <label className="relative flex items-center  rounded-full cursor-pointer" htmlFor="blue">
-                        <input type="checkbox"
-                          id="blue"
-                          name="pickUp24before"
-                          checked={formData.pickUp24before !== 'no'}
-                          onChange={(e) => {
-                            const { name, checked } = e.target;
-                            const newValue = checked
-                              ? 'yes'
-                              : 'no'; // Use the correct variable name here
-                            setFormData((prevFormData) => ({
-                              ...prevFormData,
-                              [name]: newValue,
-                            }));
-                          }}
-                          className='border-[#c72323]  peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10'
-                        />
-                        <span
-                          className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
-                            stroke="currentColor" strokeWidth="1">
-                            <path fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"></path>
-                          </svg>
-                        </span>
-                      </label>
-                    </div>
-                  </span>
-                </li>
+                {automationsList.map((auto, index) => (
+                  <li key={index} className="flex items-center justify-between">
+                    <span className="text-muted-foreground">{auto.label}</span>
+                    <span>
+                      <div className="inline-flex items-center">
+                        <label className="relative flex items-center rounded-full cursor-pointer" htmlFor={auto.name}>
+                          <input
+                            type="checkbox"
+                            id={auto.name}
+                            name={auto.name}
+                            checked={formData[auto.name] === 'yes'}
+                            onChange={handleCheckboxChange}
+                            className='border-[#c72323] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10'
+                          />
+                          <span className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" strokeWidth="1">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
+                            </svg>
+                          </span>
+                        </label>
+                      </div>
+                    </span>
+                  </li>
+                ))}
               </ul>
+
               <Input type='hidden' defaultValue={user.email} name="userEmail" />
               <ButtonLoading
                 size="sm"

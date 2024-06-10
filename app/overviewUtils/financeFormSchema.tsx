@@ -10,6 +10,8 @@ const financeFormSchema = z.object({
   tradeVin: zfd.text(z.string().optional()),
   packageNumber: zfd.text(z.string().optional()),
   dealerContact: zfd.text(z.string().optional()),
+  pickUp24before: zfd.text(z.string().optional()),
+  appt24before: zfd.text(z.string().optional()),
   template: zfd.text(z.string().optional()),
   wishListNotes: zfd.text(z.string().optional()),
   customterState: zfd.text(z.string().optional()),

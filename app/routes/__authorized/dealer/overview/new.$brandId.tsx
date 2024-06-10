@@ -3700,10 +3700,8 @@ export default function Quote() {
   return (
     <>
       <div
-        className={`mb-10 mt-[50px] flex  h-[100vh] min-h-screen px-4 sm:px-6 lg:px-8 ${newLook === true
-          ? "bg-background text-foreground"
-          : "bg-slate1 text-black"
-          }`}
+        className={`mb-10 bg-background text-foreground mt-[50px] flex  h-[100vh] min-h-screen px-4 sm:px-6 lg:px-8
+        `}
       >
         <div className="w-full  rounded-lg">
           <div className="mx-auto my-auto md:flex">
