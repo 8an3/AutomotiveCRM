@@ -214,7 +214,7 @@ export default function Quote() {
                                     Model (required)
                                 </Label>
                                 <select name='model'
-                                    className={`border-black text-black w-full placeholder:text-blue-300  mx-auto  h-9 cursor-pointer rounded-md border bg-white px-3 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none  focus:border-[#60b9fd]`}
+                                    className={`border-black text-black w-full placeholder:text-blue-300  mx-auto  h-9 cursor-pointer rounded-md border bg-white px-3 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none  focus:border-primary`}
                                 >
                                     <option value='' >Search By Model</option>
                                     {modelList.map((model, index) => (

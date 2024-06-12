@@ -82,7 +82,7 @@ export default function FinanceNotes() {
   }
 
   return (
-    <div className="flex-auto px-4 lg:px-10 py-10 pt-0 bg-slate11">
+    <div className="flex-auto px-4 lg:px-10 py-10 pt-0 bg-background1">
       <div className="relative mx-3 mt-3 max-h-[800px] h-auto overflow-y-auto">
         <ul>
           {financeNotes.map((message) => (
@@ -147,7 +147,7 @@ export default function FinanceNotes() {
               />
 
               {/* Toolbar */}
-              < Toolbar.Root className="my-auto ml-auto  flex h-full  w-[30px] justify-center bg-slate11 p-[10px] shadow-[0_2px_2px] shadow-blackA4" >
+              < Toolbar.Root className="my-auto ml-auto  flex h-full  w-[30px] justify-center bg-background1 p-[10px] shadow-[0_2px_2px] shadow-blackA4" >
                 <Toolbar.ToggleGroup
                   type="multiple"
                   className="flex flex-col"
@@ -380,10 +380,10 @@ export default function FinanceNotes() {
             <div className='flex' >
               <p className='mr-2'>CC: </p>
               <Select name='ccUser' >
-                <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary">
                   <SelectValue>Sales Person</SelectValue>
                 </SelectTrigger>
-                <SelectContent className='bg-slate1 text-foreground'>
+                <SelectContent className='bg-background text-foreground'>
                   {userList.map((user, index) => (
                     <SelectItem key={index} value={user.email}>{user.name}</SelectItem>
                   ))}

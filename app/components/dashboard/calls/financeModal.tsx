@@ -356,7 +356,7 @@ export function FinanceModal(data) {
         <>
           <div className='xs:grid xs:grid-cols-1 mt-3 flex justify-between'>
             <select value={selectedType} onChange={handleTypeChange}
-              className=" text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+              className=" text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
             >
               <option value="0">Motorcycle Category</option>
 
@@ -369,7 +369,7 @@ export function FinanceModal(data) {
 
             {selectedType && (
               <select value={selectedOption} onChange={handleOptionChange}
-                className="text-gray-600  placeholder-blue-300 mx-auto ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                className="text-gray-600  placeholder-blue-300 mx-auto ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
               >
                 <option value="0">Tire and Rim Choice</option>
 
@@ -383,7 +383,7 @@ export function FinanceModal(data) {
 
             {selectedOption && (
               <select value={selectedYear} onChange={handleYearChange}
-                className="text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                className="text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
               >
                 <option value="0">Years</option>
 
@@ -1206,7 +1206,7 @@ export function FinanceModal(data) {
 
                       <div className='grid w-[98%] grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4'>
                         {ClientDetailsFunction2().map((fee, index) => (
-                          <div key={index} className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-slate11">
+                          <div key={index} className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-background1">
 
                             <div className="flex flex-wrap">
                               <div className="w-full lg:w-6/12 px-4">
@@ -1219,7 +1219,7 @@ export function FinanceModal(data) {
                                   </label>
                                   <input
                                     type="text"
-                                    className="w-full  rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                                    className="w-full  rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                                     name={fee.name}
                                     defaultValue={fee.value}
                                   />
@@ -1401,20 +1401,20 @@ export function FinanceModal(data) {
                         <div className='mt-3'>
                           <div className="main-button-group flex justify-between ">
                             <Badge id='myButton'
-                              className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === 'payments' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
+                              className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === 'payments' ? 'active bg-background text-foreground' : 'bg-background text-foreground'}`}
                               onClick={() => handleMainButtonClick('payments')}>
                               Payments
                             </Badge>
 
                             <Badge id='myButton1'
-                              className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === 'noTax' ? 'active bg-background text-foreground ' : 'bg-slate1 text-foreground'}`}
+                              className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === 'noTax' ? 'active bg-background text-foreground ' : 'bg-background text-foreground'}`}
                               onClick={() => handleMainButtonClick('noTax')}
                             >
                               No Tax
                             </Badge>
 
                             <Badge id='myButton2'
-                              className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === 'customTax' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
+                              className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === 'customTax' ? 'active bg-background text-foreground' : 'bg-background text-foreground'}`}
                               onClick={() => handleMainButtonClick('customTax')}
                             >
                               Custom Tax
@@ -1423,13 +1423,13 @@ export function FinanceModal(data) {
                           <div className="sub-button-group mt-2 flex justify-between">
 
                             <Badge id='myButton3'
-                              className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === 'withoutOptions' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
+                              className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === 'withoutOptions' ? 'active bg-background text-foreground' : 'bg-background text-foreground'}`}
                               onClick={() => handleSubButtonClick('withoutOptions')}
                             >
                               W/O Options
                             </Badge>
                             <Badge id='myButton5'
-                              className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === 'withOptions' ? 'active bg-background  text-foreground' : 'bg-slate1 text-foreground'}`}
+                              className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === 'withOptions' ? 'active bg-background  text-foreground' : 'bg-background text-foreground'}`}
                               onClick={() => handleSubButtonClick('withOptions')}
                             >
                               W/ Options

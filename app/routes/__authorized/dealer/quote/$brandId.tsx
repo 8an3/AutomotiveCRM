@@ -341,7 +341,7 @@ export default function Quote() {
                                 </Label>
                                 <select
                                     name='model'
-                                    className={` w-full placeholder:text-blue-300  mx-auto bg-white text-black hover:bg-transparent h-9 cursor-pointer rounded-md border  px-3 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none  focus:border-[#60b9fd]
+                                    className={` w-full placeholder:text-blue-300  mx-auto bg-white text-black hover:bg-transparent h-9 cursor-pointer rounded-md border  px-3 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none  focus:border-primary
                                     ${modelError === false && validity.model === false ? 'border-black bg-white text-black' : ' '}
 
                                     ${modelError === true ? 'border-red11 bg-red11 text-foreground' : ' '}

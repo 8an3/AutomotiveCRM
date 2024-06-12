@@ -1116,7 +1116,7 @@ export function PaymentCalc({ outletSize }) {
             <select
               value={selectedType}
               onChange={handleTypeChange}
-              className=" text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+              className=" text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
             >
               <option value="0">Motorcycle Category</option>
 
@@ -1131,7 +1131,7 @@ export function PaymentCalc({ outletSize }) {
               <select
                 value={selectedOption}
                 onChange={handleOptionChange}
-                className="text-gray-600  placeholder-blue-300 mx-auto ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                className="text-gray-600  placeholder-blue-300 mx-auto ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
               >
                 <option value="0">Tire and Rim Choice</option>
 
@@ -1147,7 +1147,7 @@ export function PaymentCalc({ outletSize }) {
               <select
                 value={selectedYear}
                 onChange={handleYearChange}
-                className="text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                className="text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
               >
                 <option value="0">Years</option>
 

@@ -42,7 +42,7 @@ const EmailSheet = (finance) => {
                     Emails
                 </Button>
             </SheetTrigger>
-            <SheetContent side='right' className='bg-slate1 text-black w-[500px] mt-3 ml-3 mr-3' >
+            <SheetContent side='right' className='bg-background text-black w-[500px] mt-3 ml-3 mr-3' >
                 <div className="grid gap-2">
                     <div className="space-y-2">
                         <h4 className="font-medium leading-none">
@@ -115,14 +115,14 @@ const EmailSheet = (finance) => {
                             <TextArea
                                 placeholder="Type your message here."
                                 name="customContent"
-                                className="h-[250px] mt-2 bg-slate1"
+                                className="h-[250px] mt-2 bg-background"
                             />
                             <Select name="emailType" >
                                 <SelectTrigger className="w-full mt-2">
                                     <SelectValue placeholder="Payments (by default)" />
                                 </SelectTrigger>
                                 <SelectContent className="">
-                                    <ScrollArea className="h-[300px] w-[350px] rounded-md text-foreground bg-slate1 p-4 border border-slate12">                                        <SelectGroup>
+                                    <ScrollArea className="h-[300px] w-[350px] rounded-md text-foreground bg-background p-4 border border-slate12">                                        <SelectGroup>
                                         <SelectLabel>Payments </SelectLabel>
                                         <SelectItem value="payments">Payments</SelectItem>{/*19 */}
                                         <SelectItem value="wBreakdown">W/ Full Breakdown</SelectItem>{/* 20*/}

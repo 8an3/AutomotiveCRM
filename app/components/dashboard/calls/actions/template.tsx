@@ -96,18 +96,18 @@ export default function Example() {
 
    <select
 
-                  className={`border-black text-black placeholder:text-blue-300 broder mx-auto h-8  cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}>
+                  className={`border-black text-black placeholder:text-blue-300 broder mx-auto h-8  cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}>
                   <option value="">All Categories</option>
                   {categories.map(category => <option key={category} value={category}>{category}</option>)}
                 </select>
 
                 <select
-                  className={`border-black text-black placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`border-black text-black placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                   value={selectedType} onChange={e => setSelectedType(e.target.value)}>
                   <option value="">All Types</option>
                   {types.map(type => <option key={type} value={type}>{type}</option>)}
                 </select>
-                <select className={`border-black text-black placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                <select className={`border-black text-black placeholder:text-blue-300 broder mx-auto ml-2  h-8 cursor-pointer rounded border bg-background px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                   value={selectedEmail} onChange={e => setSelectedEmail(e.target.value)}>
                   <option value="">All Emails</option>
                   {emails.map(email => <option key={email} value={email}>{email}</option>)}
@@ -181,7 +181,7 @@ export default function Example() {
                           <div className="py-1">
                             <div className='flex flex-row justify-between'>
                               <select name='Select a Dept' defaultValue={item.dept}
-                                className={`border-black text-black placeholder:text-blue-300 broder  h-8 cursor-pointer  justifty-start rounded border bg-background  px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}>
+                                className={`border-black text-black placeholder:text-blue-300 broder  h-8 cursor-pointer  justifty-start rounded border bg-background  px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}>
                                 <option value="">Select a Dept</option>
                                 <option value="Active">Sales</option>
                                 <option value="Duplicate">Service</option>
@@ -261,7 +261,7 @@ export default function Example() {
                   <div className='flex flex-row justify-between'>
                     <select placeholder='Select a Dept'
                       name='dept'
-                      className={`border-black text-black placeholder:text-blue-300 broder  h-8 cursor-pointer w-1/2 mr-2 justifty-start rounded border bg-background  px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}>
+                      className={`border-black text-black placeholder:text-blue-300 broder  h-8 cursor-pointer w-1/2 mr-2 justifty-start rounded border bg-background  px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}>
                       <option value="">Select a Dept</option>
                       <option value="Active">Sales</option>
                       <option value="Duplicate">Service</option>

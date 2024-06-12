@@ -210,14 +210,14 @@ export default function Route() {
               <CardDescription>
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2 bg-slate11 text-foreground">
+            <CardContent className="space-y-2 bg-background1 text-foreground">
               <StatsTable statsData={statsData} comsRecords={comsRecords} />
             </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="dealerFees" className='rounded-md'>
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-foreground rounded-md">
+            <CardContent className="space-y-2 bg-background1 text-foreground rounded-md">
               <Form method="post" className="">
 
                 <div className="grid grid-cols-1 gap-4 mx-auto">
@@ -332,7 +332,7 @@ export default function Route() {
         </TabsContent>
         <TabsContent value="account">
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-foreground rounded-md">
+            <CardContent className="space-y-2 bg-background1 text-foreground rounded-md">
               <Form method="post" className="">
                 <h1 className='text-foreground'>Dealer Info</h1>
                 <hr className="text-foreground" />
@@ -460,7 +460,7 @@ export default function Route() {
         </TabsContent>
         <TabsContent value="Parts">
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-foreground rounded-md">
+            <CardContent className="space-y-2 bg-background1 text-foreground rounded-md">
               <Form method="post" className="">
                 <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
 

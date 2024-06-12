@@ -64,15 +64,15 @@ model User {
   familyName       String?
   identityProvider String?
 
-  role          UserRole            @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
-  profile       UserProfile         @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  role        UserRole    @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
+  profile     UserProfile @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   // password      UserPassword?      @relation("UserPassword")
-  images        Image[]             @relation("Images")
-  notifications NotificationsUser[] @relation("NotificationsUser")
-  notes         Note[]              @relation("UserNotes")
+  images      Image[]     @relation("Images")
+  //notifications NotificationsUser[] @relation("NotificationsUser")
+  notes       Note[]      @relation("UserNotes")
   //UserPassword  UserPassword?
-  timeEntries   TimeEntry[]
-  workorders    Workorder[]
+  timeEntries TimeEntry[]
+  workorders  Workorder[]
 
   @@index([roleId])
   @@index([profileId])
@@ -245,9 +245,8 @@ model NotificationsUser {
   userEmail    String
 
   // Relations
-  reads NotificationRead[]
-
-  user User @relation("NotificationsUser", fields: [userEmail], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  reads  NotificationRead[]
+  userId String?
 
   @@index([userEmail])
 }

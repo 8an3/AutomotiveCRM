@@ -170,7 +170,7 @@ export function EditorTiptapHook({ content, user, to, subject, app, cc, bcc }: {
     <div className="p-1">
       <div className="mr-auto px-2   mt-auto grid grid-cols-1    rounded-md">
         <div className="my-2 flex justify-between">
-          <select className={`autofill:placeholder:text-[#C2E6FF] justifty-start mx-2 h-9 max-w-md cursor-pointer rounded border border-border  bg-background px-2 text-xs uppercase text-foreground shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`} onChange={(e) => {
+          <select className={`autofill:placeholder:text-[#C2E6FF] justifty-start mx-2 h-9 max-w-md cursor-pointer rounded border border-border  bg-background px-2 text-xs uppercase text-foreground shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`} onChange={(e) => {
             handleChange(e.target.value); // Pass the input value directly to handleChange
           }}    >
             <option value="">Select a Template</option>
@@ -349,7 +349,7 @@ export function EditorTiptapHook({ content, user, to, subject, app, cc, bcc }: {
             tippyOptions={{ duration: 100 }}
             className={cn(
               "flex items-center gap-1 rounded-md p-1 bg-white",
-              "  text-black shadow dark:bg-slate10",
+              "  text-black shadow dark:bg-background0",
             )}
           >
             <button
@@ -604,7 +604,7 @@ export function EditorTiptapHookCompose({ content, user, to, subject, app, cc, b
     <div className="p-1">
       <div className="mr-auto px-2   mt-auto grid grid-cols-1">
         <div className="my-2 flex justify-between w-[95%]">
-          <select className={`border-border text-foreground bg-background autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9  cursor-pointer rounded border   w-1/2   px-2 text-xs uppercase   shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`} onChange={(e) => {
+          <select className={`border-border text-foreground bg-background autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9  cursor-pointer rounded border   w-1/2   px-2 text-xs uppercase   shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`} onChange={(e) => {
             handleChange(e.target.value); // Pass the input value directly to handleChange
           }}    >
             <option value="">Select a Template</option>
@@ -783,7 +783,7 @@ export function EditorTiptapHookCompose({ content, user, to, subject, app, cc, b
             tippyOptions={{ duration: 100 }}
             className={cn(
               "flex items-center gap-1 rounded-md p-1 bg-white",
-              "  text-black shadow dark:bg-slate10",
+              "  text-black shadow dark:bg-background0",
             )}
           >
             <button
@@ -1059,7 +1059,7 @@ export function EditorTiptapHookComposeDashboardEmailClient({ content, subject, 
     <div className="p-1">
       <div className="mr-auto px-2   mt-auto grid grid-cols-1">
         <div className="my-2 flex justify-between w-[95%]">
-          <select className={`border-border text-foreground bg-background autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9  cursor-pointer rounded border   w-1/2   px-2 text-xs uppercase   shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`} onChange={(e) => {
+          <select className={`border-border text-foreground bg-background autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9  cursor-pointer rounded border   w-1/2   px-2 text-xs uppercase   shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`} onChange={(e) => {
             handleChange(e.target.value); // Pass the input value directly to handleChange
           }}    >
             <option value="">Select a Template</option>
@@ -1238,7 +1238,7 @@ export function EditorTiptapHookComposeDashboardEmailClient({ content, subject, 
             tippyOptions={{ duration: 100 }}
             className={cn(
               "flex items-center gap-1 rounded-md p-1 bg-white",
-              "  text-black shadow dark:bg-slate10",
+              "  text-black shadow dark:bg-background0",
             )}
           >
             <button

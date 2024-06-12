@@ -135,7 +135,7 @@ export default function ClientVehicleCard({ data, }) {
             <select
               name='selectBrand'
 
-              className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-[#c7c7cb] text-foreground h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] "
+              className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-[#c7c7cb] text-foreground h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary w-[180px] "
             >
               <option value="">Select Brand</option>
               {options.map((option, index) => (
@@ -865,7 +865,7 @@ export default async function ClientVehicleCard({ data }) {
               <select
                 name='selectBrand'
                 onChange={handleSelectChange}
-                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-foreground h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] w-[180px] mx-auto"
+                className="mx-auto cursor-pointer px-2 py-1 rounded-md border border-white text-foreground h-8 bg-[#363a3f] text-xs placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary w-[180px] mx-auto"
               >
                 <option value="">Select Brand</option>
                 {options.map((option, index) => (

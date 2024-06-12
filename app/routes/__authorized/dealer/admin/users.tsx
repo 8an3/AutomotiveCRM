@@ -382,7 +382,7 @@ export default function Route() {
                           <SelectTrigger className='mr-3 w-auto border-primary  text-primary'>
                             Role
                           </SelectTrigger>
-                          <SelectContent align="end" className='bg-slate1 text-foreground ' required>
+                          <SelectContent align="end" className='bg-background text-foreground ' required>
                             {userRole.map((role) => (
                               <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-primary hover:underline">
                                 {role.symbol}

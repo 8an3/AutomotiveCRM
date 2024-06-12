@@ -1269,7 +1269,7 @@ export default function EmailClient() {
                 <div className="mx-2 flex justify-between">
                   <div className="flex">
                     <select
-                      className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-foreground shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                      className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start  mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-foreground shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                       onChange={handleChange}>
                       <option value="">Select a Template</option>
                       {templates.map((template, index) => (
@@ -1321,7 +1321,7 @@ export default function EmailClient() {
             <div className="flex justify-between border-b border-[#262626]">
               <div className="my-2 flex">
                 <select
-                  className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start ml-2 mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-foreground shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start ml-2 mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-foreground shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                   onChange={handleChange}>
                   <option value="">Select a Template</option>
                   {templates && templates.filter(template => template.type === 'email').map((template, index) => (

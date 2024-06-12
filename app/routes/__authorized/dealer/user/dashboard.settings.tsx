@@ -393,14 +393,14 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
   const [newLook, setNewLook] = useState(getNewLook);
 
   const [formData, setFormData] = useState({
-    pickUp24before: automations.pickUp24before,
-    appt24before: automations.appt24before,
-    noFollowup: automations.noFollowup,
-    askForReferral: automations.askForReferral,
-    oneYearAnni: automations.oneYearAnni,
-    del7days: automations.del7days,
-    afterDelTY: automations.afterDelTY,
-    afterHoursClosed: automations.afterHoursClosed,
+    pickUp24before: automations.pickUp24before || '',
+    appt24before: automations.appt24before || '',
+    noFollowup: automations.noFollowup || '',
+    askForReferral: automations.askForReferral || '',
+    oneYearAnni: automations.oneYearAnni || '',
+    del7days: automations.del7days || '',
+    afterDelTY: automations.afterDelTY || '',
+    afterHoursClosed: automations.afterHoursClosed || '',
   });
 
   const automationsList = [

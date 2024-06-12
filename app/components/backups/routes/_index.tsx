@@ -422,8 +422,8 @@ export function Brands() {
       <h2 className="mx-auto mb-6 max-w-lg font-sans text-3xl font-bold tracking-tight text-foreground sm:text-4xl sm:leading-none">
         Current Brands with Ongoing Additions.<br className="hidden sm:block" />
       </h2>
-      <Card className='mx-auto w-[90%] bg-slate1'>
-        <CardContent className='bg-slate1'>
+      <Card className='mx-auto w-[90%] bg-background'>
+        <CardContent className='bg-background'>
           <div className="mx-auto mt-8 max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
             <div className="bg-slate-100 dark:bg-slate-200 flex flex-wrap justify-center gap-8 rounded-3xl py-4">
               <TooltipProvider>
@@ -827,7 +827,7 @@ function Footer() {
   return (
     <>
       <div className="mt-[100px] ">
-        <div className='bg-slate11 text-foreground'>
+        <div className='bg-background1 text-foreground'>
           <div className='mt-[50px] w-[80%] mx-auto space-y-3'>
             <p>Dealer Sales Assistant</p>
           </div>

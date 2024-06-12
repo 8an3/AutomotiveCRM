@@ -21,10 +21,10 @@ const ClientStatusCard = ({ data }) => {
         <Form className='items-center mx-auto my-auto ' method="post" onChange={(event) => { submit(event.currentTarget); }}>
             <Select defaultValue={data.status}
                 name='status'>
-                <SelectTrigger className="w-auto focus:border-[#60b9fd]">
+                <SelectTrigger className="w-auto focus:border-primary">
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>
-                <SelectContent className='bg-slate1 text-black'>
+                <SelectContent className='bg-background text-black'>
                     <SelectItem value="Active">Active</SelectItem>
                     <SelectItem value="Duplicate">Duplicate</SelectItem>
                     <SelectItem value="Invalid">Invalid</SelectItem>
@@ -47,7 +47,7 @@ export default ClientStatusCard;
 /**   <select
                 defaultValue={data.status}
                 name='status'
-                className={`mx-auto text-xs h-8 cursor-pointer rounded border-gray-300 border px-2 bg-background text-gray-300 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] broder uppercase`}>
+                className={`mx-auto text-xs h-8 cursor-pointer rounded border-gray-300 border px-2 bg-background text-gray-300 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary broder uppercase`}>
                 <option value="Active">Active</option>
                 <option value="Duplicate">Duplicate</option>
                 <option value="Invalid">Invalid</option>

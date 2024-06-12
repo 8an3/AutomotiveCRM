@@ -30,7 +30,7 @@ export default function TwoDaysFromNow({ data }) {
     //     setButtonText('F/U ' + followUpDay1 + ' days')
     //     setAppointmentDate(getFutureDate(followUpDay1));
     //   }
-    /**           <select defaultValue={fUpDays} name='followUpDay1' className="mx-auto  rounded border-1  mz-1 px-2 border border-slate1 bg-background h-9 text-bold uppercase text-foreground placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+    /**           <select defaultValue={fUpDays} name='followUpDay1' className="mx-auto  rounded border-1  mz-1 px-2 border border-slate1 bg-background h-9 text-bold uppercase text-foreground placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                         onChange={handleDropdownChange}>
                         <option value="">Days</option>
                         <option value="1">1 Day</option>

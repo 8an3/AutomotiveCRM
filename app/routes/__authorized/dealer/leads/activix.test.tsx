@@ -94,7 +94,7 @@ export default function CheckThis() {
     <div>
       <div className='flex justify-between mt-3 xs:grid xs:grid-cols-1'>
         <select value={selectedType} onChange={handleTypeChange}
-          className="rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+          className="rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
         >
           <option value="">Select Brand</option>
 
@@ -108,7 +108,7 @@ export default function CheckThis() {
 
         {selectedType && (
           <select value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}
-            className="mx-auto  rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+            className="mx-auto  rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
           >
             <option value="">Select Model</option>
 

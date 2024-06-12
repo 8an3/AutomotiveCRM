@@ -193,7 +193,7 @@ export default function LogCall({ data }) {
               Sample Descriptions
             </label>
             <Select name='note' defaultValue="No Answer / Left Message">
-              <SelectTrigger className="w-auto  focus:border-[#60b9fd]">
+              <SelectTrigger className="w-auto  focus:border-primary">
                 <SelectValue placeholder="Message examples" />
               </SelectTrigger>
               <SelectContent className='bg-white'>

@@ -58,7 +58,7 @@ export async function seedUsers() {
   invariant(REMIX_ADMIN_PASSWORD, "REMIX_ADMIN_PASSWORD must be set");
 
   // const hashedPassword = await bcrypt.hash(REMIX_ADMIN_PASSWORD, 10);
-  const user = await prisma.user.create({
+  const admin = await prisma.user.create({
     data: {
       email: REMIX_ADMIN_EMAIL,
       //    password: { create: { hash: hashedPassword } },
@@ -78,8 +78,20 @@ export async function seedUsers() {
     },
   });
   console.log(chalk.green("Admin user seeded!"));
-
-  await prisma.user.create({
+  const autoAdmin = await prisma.automations.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+  const dev = await prisma.user.create({
     data: {
       email: 'skylerzanth@gmail.com',
       name: "Justin Zanth",
@@ -100,7 +112,7 @@ export async function seedUsers() {
   console.log(chalk.green("Dev user seeded!"));
 
 
-  return user
+  return ({ admin, dev, autoAdmin })
 }
 export async function SeedLockFinanceTerminals() {
   console.log(chalk.yellow("Seeding lock finance terminals ..."));

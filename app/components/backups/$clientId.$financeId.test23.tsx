@@ -1538,7 +1538,7 @@ export default function CustomerProfile({ request, }) {
               defaultValue={finance[0].pickUpTime}
               name='pickUpTime'
               placeholder="Preferred Time To P/U"
-              className="w-1/2 mx-auto rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+              className="w-1/2 mx-auto rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
             >
               <option value="9:00">9:00</option>
               <option value="9:30">9:30</option>

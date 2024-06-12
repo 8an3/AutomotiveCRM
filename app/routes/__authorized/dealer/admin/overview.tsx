@@ -497,14 +497,14 @@ export default function Route() {
               <CardDescription>
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2 bg-slate11 text-foreground">
+            <CardContent className="space-y-2 bg-background1 text-foreground">
               <StatsTable statsData={statsData} comsRecords={comsRecords} />
             </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="Parts">
           <Card>
-            <CardContent className="space-y-2 bg-slate11 text-foreground rounded-md">
+            <CardContent className="space-y-2 bg-background1 text-foreground rounded-md">
               <Form method="post" className="">
                 <div className="grid sm:grid-cols-3 grid-cols-1  gap-2 mt-2">
 

@@ -124,7 +124,7 @@ export default function LogText({ data }) {
                   Templates
                 </label>
                 <select
-                  className={`border-black bg-white w-full text-black placeholder:text-blue-300 border justifty-start h-8 cursor-pointer rounded mb-65 px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`border-black bg-white w-full text-black placeholder:text-blue-300 border justifty-start h-8 cursor-pointer rounded mb-65 px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                   onChange={handleChange}>
                   <option value="">Select a template</option>
                   {templates && templates.filter(template => template.type === 'text').map((template, index) => (
@@ -382,7 +382,7 @@ const CalendarContainer = styled.div`
               <div className="flex items-center justify-between">
                 <select name='followUpDay2'
                   onChange={(e) => { setfollowUpDay(e) }}
-                  className="mx-auto mt-2  w-1/2 h-10 rounded border-1 border-slate12 ml-2 mr-2 bg-white  text-sm text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                  className="mx-auto mt-2  w-1/2 h-10 rounded border-1 border-slate12 ml-2 mr-2 bg-white  text-sm text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary">
                   <option value="1">1 Day</option>
                   <option value="2">2 Days</option>
                   <option value="3">3 Days</option>
@@ -436,7 +436,7 @@ const CalendarContainer = styled.div`
                       type="text"
                       name="title"
                       defaultValue={`F/U on the ${data?.unit}`}
-                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}
+                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-primary bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}
                       onChange={(e) => { settitle(e) }}
                     />
                   </div>
@@ -445,7 +445,7 @@ const CalendarContainer = styled.div`
                     <Label className='mt-2 text-black text-center' htmlFor="area">Note</Label>
                     <Input
                       name="note"
-                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}
+                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-primary bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}
                       onChange={(e) => { setnote(e) }}
                     />
                   </div>
@@ -453,7 +453,7 @@ const CalendarContainer = styled.div`
                     <select
                       onChange={(e) => { setcontactMethod(e) }}
                       name='contactMethod'
-                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}>
+                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-primary bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}>
                       <option value="">Contact Method</option>
                       <option value="Phone">Phone</option>
                       <option value="InPerson">In-Person</option>
@@ -467,7 +467,7 @@ const CalendarContainer = styled.div`
 
                     <select
                       name="timeOfDayModal"
-                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}>
+                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-primary bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}>
                       <option value="Time of day">Time of day</option>
                       <option value="09:00">9:00</option>
                       <option value="09:30">9:30</option>
@@ -716,7 +716,7 @@ export default function LogText({ data }) {
                   Templates
                 </label>
                 <select
-                  className={`border-black bg-white w-full text-black placeholder:text-blue-300 border justifty-start h-8 cursor-pointer rounded mb-65 px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`border-black bg-white w-full text-black placeholder:text-blue-300 border justifty-start h-8 cursor-pointer rounded mb-65 px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                   onChange={handleChange}>
                   <option value="">Select a template</option>
                   {templates && templates.filter(template => template.type === 'text').map((template, index) => (
@@ -1015,7 +1015,7 @@ const CalendarContainer = styled.div`
               <div className="flex items-center justify-between">
                 <select name='followUpDay2'
                   onChange={(e) => { setfollowUpDay(e) }}
-                  className="mx-auto mt-2  w-1/2 h-10 rounded border-1 border-slate12 ml-2 mr-2 bg-white  text-sm text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                  className="mx-auto mt-2  w-1/2 h-10 rounded border-1 border-slate12 ml-2 mr-2 bg-white  text-sm text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary">
                   <option value="1">1 Day</option>
                   <option value="2">2 Days</option>
                   <option value="3">3 Days</option>
@@ -1069,7 +1069,7 @@ const CalendarContainer = styled.div`
                       type="text"
                       name="title"
                       defaultValue={`F/U on the ${data?.unit}`}
-                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}
+                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-primary bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}
                       onChange={(e) => { settitle(e) }}
                     />
                   </div>
@@ -1078,7 +1078,7 @@ const CalendarContainer = styled.div`
                     <Label className='mt-2 text-black text-center' htmlFor="area">Note</Label>
                     <Input
                       name="note"
-                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}
+                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-primary bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}
                       onChange={(e) => { setnote(e) }}
                     />
                   </div>
@@ -1086,7 +1086,7 @@ const CalendarContainer = styled.div`
                     <select
                       onChange={(e) => { setcontactMethod(e) }}
                       name='contactMethod'
-                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}>
+                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-primary bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}>
                       <option value="">Contact Method</option>
                       <option value="Phone">Phone</option>
                       <option value="InPerson">In-Person</option>
@@ -1100,7 +1100,7 @@ const CalendarContainer = styled.div`
 
                     <select
                       name="timeOfDayModal"
-                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}>
+                      className={`mx-auto w-[80%] mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-primary bg-white text-black placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}>
                       <option value="Time of day">Time of day</option>
                       <option value="09:00">9:00</option>
                       <option value="09:30">9:30</option>

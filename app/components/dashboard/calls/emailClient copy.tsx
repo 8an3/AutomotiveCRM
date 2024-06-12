@@ -483,7 +483,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                     Templates
                   </label>
                   <select
-                    className={`border-black text-black  bg-white autofill:placeholder:text-text-black justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                    className={`border-black text-black  bg-white autofill:placeholder:text-text-black justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                     onChange={handleChange}>
                     <option value="">Select a template</option>
                     {templates && templates.filter(template => template.type === 'email').map((template, index) => (
@@ -539,7 +539,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                         <select
                           name="clientAtr"
                           onChange={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '
+                          className='bg-white border border-black  text-black  focus:border-primary rounded-md p-2 '
                         >
                           <option value="">Client</option>
                           {Object.entries(clientAtr).map(([title, value]) => (
@@ -551,7 +551,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                         <select
                           name="wantedVehAttr"
                           onChange={(event) => editor.commands.insertContent(wantedVehAttr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '   >
+                          className='bg-white border border-black  text-black  focus:border-primary rounded-md p-2 '   >
                           <option value="">Wanted Veh</option>
                           {Object.entries(wantedVehAttr).map(([title, value]) => (
                             <option key={title} value={title}>
@@ -562,7 +562,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                         <select
                           name="tradeVehAttr"
                           onChange={(event) => editor.commands.insertContent(tradeVehAttr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '         >
+                          className='bg-white border border-black  text-black  focus:border-primary rounded-md p-2 '         >
                           <option value="">Trade Veh</option>
                           {Object.entries(tradeVehAttr).map(([title, value]) => (
                             <option key={title} value={title}>
@@ -573,7 +573,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                         <select
                           name="salesPersonAttr"
                           onChange={(event) => editor.commands.insertContent(salesPersonAttr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '          >
+                          className='bg-white border border-black  text-black  focus:border-primary rounded-md p-2 '          >
                           <option value="">Sales Person</option>
                           {Object.entries(salesPersonAttr).map(([title, value]) => (
                             <option key={title} value={title}>
@@ -584,7 +584,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                         <select
                           name="FandIAttr"
                           onChange={(event) => editor.commands.insertContent(FandIAttr[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
+                          className='bg-white border border-black  text-black  focus:border-primary rounded-md p-2 '        >
                           <option value="">F & I Manager</option>
                           {Object.entries(FandIAttr).map(([title, value]) => (
                             <option key={title} value={title}>
@@ -595,7 +595,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                         <select
                           name="dealerInfo"
                           onChange={(event) => editor.commands.insertContent(dealerInfo[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
+                          className='bg-white border border-black  text-black  focus:border-primary rounded-md p-2 '        >
                           <option value="">Dealer Info</option>
                           {Object.entries(dealerInfo).map(([title, value]) => (
                             <option key={title} value={title}>
@@ -606,7 +606,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                         <select
                           name="financeInfo"
                           onChange={(event) => editor.commands.insertContent(financeInfo[event.target.value])}
-                          className='bg-white border border-black  text-black  focus:border-[#60b9fd] rounded-md p-2 '        >
+                          className='bg-white border border-black  text-black  focus:border-primary rounded-md p-2 '        >
                           <option value="">Finance Info</option>
                           {Object.entries(financeInfo).map(([title, value]) => (
                             <option key={title} value={title}>
@@ -774,7 +774,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                           tippyOptions={{ duration: 100 }}
                           className={cn(
                             "flex items-center gap-1 rounded-md p-1 bg-white",
-                            "  text-black shadow dark:bg-slate10",
+                            "  text-black shadow dark:bg-background0",
                           )}
                         >
                           <button
@@ -823,7 +823,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                           tippyOptions={{ duration: 100 }}
                           className={cn(
                             "flex items-center gap-1 rounded-md p-1 bg-white",
-                            "  text-black shadow dark:bg-slate10",
+                            "  text-black shadow dark:bg-background0",
                           )}
                         >
                           <div className="grid grid-cols-2 w-full items-center justify-between  ">
@@ -831,7 +831,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               name="clientAtr"
 
                               onClick={(event) => editor.commands.insertContent(clientAtr[event.target.value])}
-                              className='bg-background border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md p-2 '
+                              className='bg-background border-2  text-[#fff] border-[#fff] focus:border-primary rounded-md p-2 '
                             >
                               <option value="">Client</option>
                               {Object.entries(clientAtr).map(([title, value]) => (
@@ -845,7 +845,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(wantedVehAttr[event.target.value]);
                               }}
-                              className='bg-background border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                              className='bg-background border-2  text-[#fff] rounded-md ml-2 border-[#fff] focus:border-primary  p-2 '            >
                               <option value="">Wanted Veh</option>
                               {Object.entries(wantedVehAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -858,7 +858,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(tradeVehAttr[event.target.value]);
                               }}
-                              className='bg-background border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-[#60b9fd]  p-2 '            >
+                              className='bg-background border-2  text-[#fff] rounded-md mt-2 border-[#fff] focus:border-primary  p-2 '            >
                               <option value="">Trade Veh</option>
                               {Object.entries(tradeVehAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -871,7 +871,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(salesPersonAttr[event.target.value]);
                               }}
-                              className='bg-background border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-[#60b9fd] m-1 p-2 '            >
+                              className='bg-background border-2  text-[#fff] rounded-md mt-2 ml-2 border-[#fff] focus:border-primary m-1 p-2 '            >
                               <option value="">Sales Person</option>
                               {Object.entries(salesPersonAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -884,7 +884,7 @@ export default function EmailClient({ data, isButtonPressed, setIsButtonPressed 
                               onChange={(event) => {
                                 handleDropdownChange(FandIAttr[event.target.value]);
                               }}
-                              className='bg-background border-2  text-[#fff] border-[#fff] focus:border-[#60b9fd] rounded-md mt-2 p-2 '            >
+                              className='bg-background border-2  text-[#fff] border-[#fff] focus:border-primary rounded-md mt-2 p-2 '            >
                               <option value="">F & I Manager</option>
                               {Object.entries(FandIAttr).map(([title, value]) => (
                                 <option key={title} value={title}>
@@ -1746,7 +1746,7 @@ return (
                   Templates
                 </label>
                 <select
-                  className={`border-black text-black  bg-white autofill:placeholder:text-text-black justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                  className={`border-black text-black  bg-white autofill:placeholder:text-text-black justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                   onChange={handleChange}>
                   <option value="">Select a template</option>
                   {templates && templates.filter(template => template.type === 'email').map((template, index) => (

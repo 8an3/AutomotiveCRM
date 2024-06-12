@@ -1,12 +1,12 @@
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo, useDeferredValue } from 'react'
 import { Calendar, Views, dayjsLocalizer, Navigate as navigate } from 'react-big-calendar'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { type LinksFunction, type LoaderFunction, type ActionFunction, json, redirect, } from '@remix-run/node'
 import { model } from '~/models';
-import { useLoaderData, Link, useNavigate, useSubmit } from '@remix-run/react'
+import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form } from '@remix-run/react'
 import { getAllFinanceAptsForCalendar, } from '~/utils/financeAppts/get.server';
 import { prisma } from "~/libs";
 import { Text, } from '@radix-ui/themes';
@@ -23,7 +23,7 @@ import { getSession, commitSession } from '~/sessions/auth-session.server';
 import storeHoursCss from "~/styles/storeHours.css";
 import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import rbc from "~/styles/rbc.css";
-import { Button, buttonVariants, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Popover, PopoverTrigger, PopoverContent, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "~/components";
+import { Button, buttonVariants, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Popover, PopoverTrigger, PopoverContent, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, Input, } from "~/components";
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
@@ -35,6 +35,695 @@ import {
   AccordionTrigger,
 } from "~/components/ui/accordion"
 import base from "~/styles/base.css";
+
+
+const App = () => {
+  return (
+    <div>
+      <div className="block md:hidden">
+        <SmallScreenUI />
+      </div>
+      <div className="hidden md:block">
+        <LargeScreenUI />
+      </div>
+    </div>
+  );
+};
+const SmallScreenUI = () => {
+  return <div className="small-screen-ui">This is the small screen UI</div>;
+};
+
+const LargeScreenUI = () => {
+  return <div className="large-screen-ui">This is the large screen UI</div>;
+};
+
+export default function DnDResource() {
+  const { salesData, user, filteredData, query } = useLoaderData()
+  const [view, setView] = useState(Views.WEEK)
+  const onView = useCallback((newView) => setView(newView), [setView])
+  const submit = useSubmit();
+  const [draggedEvent, setDraggedEvent] = useState()
+  const [counters, setCounters] = useState({ item1: 0, item2: 0 })
+  const fetcher = useFetcher();
+
+  const resourceMap = [
+    { resourceId: 1, resourceTitle: 'Sales Calls' },
+    { resourceId: 2, resourceTitle: 'Sales Appointments' },
+    { resourceId: 3, resourceTitle: 'Deliveries' },
+    { resourceId: 4, resourceTitle: 'F & I' },
+  ]
+  //const formattedData = salesData
+  // add an hour to start so each appt has an end
+  const formattedData = salesData.map(event => ({
+    ...event,
+    start: new Date(event.start),
+    end: new Date(event.end), // 45 minutes in milliseconds
+  }));
+
+  const [myEvents, setMyEvents] = useState(formattedData)
+  const localizer = dayjsLocalizer(dayjs)
+  // toggles weather to make a copy when ddraging, i justr set it to false instead
+  const [copyEvent, setCopyEvent] = useState(false)
+  const toggleCopyEvent = useCallback(() => setCopyEvent((val) => !val), [])
+  // dnd
+
+  const newEvent = useCallback(
+    ({ event }) => {
+      //  const salespersonEmail = userEventData?.salespersonEmail || event.salespersonEmail || ''
+      //const title = userEventData?.title || event.title || ''
+      // const resourceId = userEventData?.resourceId || event.resourceId || ''
+      // const day = userEventData?.day || event.day || ''
+      const start = event.start //|| userEventData?.start || ''
+      const end = event.end// || userEventData?.end || ''
+      console.log(event, userEventData, 'submitting')
+      console.log(
+        //  salespersonEmail, 'salespersonEmail',
+        end, 'end',
+        start, 'start',
+        //    day, 'day',
+        // resourceId, 'resourceId',
+        //title, title,
+        email, "userEmail",
+      )
+      const formData = new FormData();
+      console.log('1')
+      formData.append("intent", 'newEvent');
+      console.log('2')
+      formData.append("userEmail", email);
+      console.log('3')
+      //  formData.append("id", userEventData.userId);
+      console.log('4')
+      //  formData.append("resourceId", resourceId);
+      console.log('5')
+      //  formData.append("day", day);
+      console.log('6')
+      //  formData.append("title", title);
+      console.log('7')
+      console.log('8')
+      // formData.append("salespersonEmail", salespersonEmail);
+      console.log('9')
+      formData.append("start", start);
+      console.log('10')
+      formData.append("end", end);
+      console.log('11')
+      console.log(formData, 'submitting')
+      submit(formData, { method: "post" });
+      console.log('12')
+
+      setMyEvents((prev) => {
+        const idList = prev.map((item) => item.id)
+        const newId = Math.max(...idList) + 1
+        return [...prev, { ...event, id: newId, }]
+      })
+    },
+    []
+  )
+
+  const DragAndDrop = useCallback(
+    ({ start, end, allDay: isAllDay }) => {
+
+      const startDate = new Date(start);
+      startDate.setHours(startDate.getHours() + 8);
+      const eightHourShift = new Date(start.getTime() + 480 * 60000)
+
+      const { id, name, userId, resourceId, resourceTitle, salespersonEmail, title, userEmail, userName } = draggedEvent
+      console.log(draggedEvent, 'draggedEvent')
+      const formData = new FormData();
+      formData.append("intent", 'newEvent');
+      formData.append("userEmail", email);
+      formData.append("id", id);
+      formData.append("resourceId", resourceId);
+      // formData.append("name", name);
+      ///  formData.append("userId", userId);
+      formData.append("resourceTitle", resourceTitle);
+      formData.append("userName", userName);
+      formData.append("userEmail", userEmail);
+      formData.append("title", title);
+      formData.append("salespersonEmail", salespersonEmail);
+      formData.append("start", start);
+      formData.append("end", eightHourShift);
+      submit(formData, { method: "post" });
+      const event = {
+        draggedEvent,
+        start,
+        end,
+      }
+
+      setDraggedEvent(null)
+      newEvent(event)
+    },
+    [draggedEvent, counters, setDraggedEvent, setCounters, newEvent]
+  )
+  const resizeEventMine = useCallback(
+    ({ start, end, allDay: isAllDay }) => {
+      const startDate = new Date(start);
+      startDate.setHours(startDate.getHours() + 8);
+      const eightHourShift = new Date(start.getTime() + 480 * 60000)
+
+
+      const { id, name, userId, resourceId, resourceTitle, salespersonEmail, title, userEmail, userName } = draggedEvent
+      console.log(draggedEvent, 'draggedEvent')
+      const formData = new FormData();
+      formData.append("intent", 'newEvent');
+      formData.append("userEmail", user.email);
+      formData.append("id", id);
+      formData.append("resourceId", resourceId);
+      // formData.append("name", name);
+      ///  formData.append("userId", userId);
+      formData.append("resourceTitle", resourceTitle);
+      formData.append("userName", userName);
+      formData.append("userEmail", userEmail);
+      formData.append("title", title);
+      formData.append("salespersonEmail", salespersonEmail);
+      formData.append("start", start);
+      formData.append("end", eightHourShift);
+      submit(formData, { method: "post" });
+      const event = {
+        draggedEvent,
+        start,
+        end,
+      }
+
+      setMyEvents((prev) => {
+        const idList = prev.map((item) => item.id)
+        const newId = Math.max(...idList) + 1
+        return [...prev, { ...event, id: newId, }]
+      })
+    },
+    [draggedEvent, counters, setDraggedEvent, setCounters, newEvent]
+  )
+  async function onEventTriggered(data, apptId) {
+    const finance = await prisma.clientApts.update({
+      data: {
+        ...data,
+      },
+      where: {
+        id: apptId,
+      },
+    });
+
+    console.log('finance updated successfully');
+    return finance;
+  }
+
+  const resizeEvent = useCallback(
+    ({ event, start, end }) => {
+      setMyEvents(async (prev) => {
+        const existing = prev.find((ev) => ev.id === event.id) ?? {}
+        const filtered = prev.filter((ev) => ev.id !== event.id)
+        const data = { start, end };
+        const apptId = event.id;
+        await onEventTriggered(data, apptId);
+        return [...filtered, { ...existing, start, end }]
+      })
+
+    },
+    [setMyEvents]
+  )
+
+  // min and max times
+  const minTime = new Date();
+  minTime.setHours(8, 0, 0);
+
+  const maxTime = new Date();
+  maxTime.setHours(21, 30, 0);
+
+  const [datePickerEventFormData, setDatePickerEventFormData] =
+    useState<DatePickerEventFormData>(initialDatePickerEventFormData)
+  const onAddEventFromDatePicker = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    const addHours = (date: Date | undefined, hours: number) => {
+      return date ? date.setHours(date.getHours() + hours) : undefined
+    }
+    const setMinToZero = (date: Date | undefined) => {
+      if (date) {
+        date.setSeconds(0);
+      }
+      return date;
+    }
+    const data: IEventInfo = {
+      ...datePickerEventFormData,
+      _id: generateId(),
+      start: setMinToZero(datePickerEventFormData.start),
+      end: datePickerEventFormData.allDay
+        ? addHours(datePickerEventFormData.start, 12)
+        : setMinToZero(datePickerEventFormData.end),
+    }
+    const newEvents = [...events, data]
+    setMyEvents(newEvents)
+    setDatePickerEventFormData(initialDatePickerEventFormData)
+  }
+  // add event modal
+  const [openSlot, setOpenSlot] = useState(false)
+  const handleSelectSlot = (event: Event) => {
+    setOpenSlot(true)
+    setCurrentEvent(event)
+  }
+  const generateId = () => (Math.floor(Math.random() * 10000) + 1).toString()
+  const handleClose = () => {
+    setEventFormData(initialEventFormState)
+    setOpenSlot(false)
+  }
+  const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
+  const onAddEvent = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+
+    const data: IEventInfo = {
+      ...eventFormData,
+      _id: generateId(),
+      start: currentEvent?.start,
+      end: currentEvent?.end,
+      completed: currentEvent?.completed,
+      apptType: currentEvent?.apptType,
+      id: currentEvent?.id,
+      contactMethod: currentEvent?.contactMethod,
+      firstName: currentEvent?.firstName,
+      lastName: currentEvent?.lastName,
+
+    }
+
+    const newEvents = [...myEvents, data]
+
+    setMyEvents(newEvents)
+    handleClose()
+  }
+  const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(null)
+  // event info modal
+  const [eventInfoModal, setEventInfoModal] = useState(false)
+  const [selected, setSelected] = useState<Event | IEventInfo | null>(null)
+  const [selData, setSelData] = useState<Event | IEventInfo | null>([])
+
+
+  async function FetchData(id) {
+    try {
+      const response = await prisma.clientApts.findUnique({
+        where: { id: id }
+      })
+      console.log(response, 'response')
+      return json({ response })
+    } catch (error) {
+      console.error('Error fetching appointment data:', error);
+    }
+  };
+
+  function HandleSelectEvent(event) {
+    // const data = fetchData(event.id);
+    console.log(event, 'from fetch')
+    setSelected(event);
+    setEventInfoModal(true)
+  }
+
+  const closeSelectEvent = useCallback(() => {
+    setEventInfoModal(false)
+  }, []);
+
+  const onDeleteEvent = () => {
+    setCurrentEvent(() => [...events].filter((e) => e._id !== (currentEvent as IEventInfo)._id!))
+    setEventInfoModal(false)
+  }
+  const onCompleteEvent = () => {
+    setEventInfoModal(false)
+  }
+  // add customer modal
+  const [addCustomerModal, setAddCustomerModal] = useState(false)
+  const [addApptModal, setAddApptModal] = useState(false)
+  const ViewNamesGroup = ({ views: viewNames, view, messages, onView }) => {
+    return viewNames.map((name) => (
+      <Button
+        key={name}
+        type="button"
+        className={clsx({ 'rbc-active': view === name })}
+        onClick={() => onView(name)}
+      >
+        <Text>{messages[name]}</Text>
+      </Button>
+    ))
+  }
+
+  const [showResources, setShowResources] = useState(true);
+
+  const toggleView = () => {
+    setShowResources(prevState => !prevState);
+  };
+
+  const CustomToolbar = ({
+    label,
+    localizer: { messages },
+    onNavigate,
+    onView,
+    view,
+    views,
+  }) => {
+    return (
+      <div className="rbc-toolbar">
+        <span className="rbc-btn-group">
+          <ViewNamesGroup
+            view={view}
+            views={views}
+            messages={messages}
+            onView={onView}
+          />
+        </span>
+
+        <span className="rbc-toolbar-label">{label}</span>
+        <span className="ml-auto justify-end mr-5">
+          <Button
+            onClick={toggleView}
+            className='mr-3'
+          >
+            Toggle Resource View
+          </Button>
+
+
+        </span>
+        <span className="ml-auto justify-end">
+          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(navigate.PREVIOUS)}>
+            <ChevronsLeft size={20} strokeWidth={1.5} />
+          </button>
+          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(navigate.TODAY)}>
+            <ChevronsRightLeft size={20} strokeWidth={1.5} />
+          </button>
+          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3' onClick={() => onNavigate(navigate.NEXT)}
+          >
+            <ChevronsRight size={20} strokeWidth={1.5} />
+          </button>
+        </span>
+      </div>
+    )
+  }
+
+  const [date, setDate] = useState<Date>()
+
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  const currentSecond = now.getSeconds();
+  const [hour, setHour] = useState(currentHour)
+  const [min, setMin] = useState(currentMinute)
+  const [sec, setSec] = useState(currentSecond);
+  useEffect(() => {
+    function updateTime() {
+      setHour(currentHour)
+      setMin(currentMinute)
+      setSec(currentSecond)
+    }
+    updateTime();
+    const intervalId = setInterval(updateTime, 60000);
+    return () => clearInterval(intervalId);
+  }, []);
+  const currentTime = `${hour}:${min}:${sec}`
+  const time = `${hour}:${min}:${sec}`
+  const newDate = new Date()
+
+  const navigate = useNavigate();
+  const [calendarLabel, setCalendarLabel] = useState('Sales')
+
+
+  console.log(currentEvent, 'myevents',)
+
+  return (
+    <>
+      <div className="h-[75px]  w-auto  border-b border-[#262626] bg-background text-foreground">
+        <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
+        <p className="text-muted-foreground   ml-[105px]  ">
+
+        </p>
+      </div>
+      <div className=" grow">
+        <div className='flex w-auto '>
+          <EventInfoModal
+            open={eventInfoModal}
+            handleClose={() => closeSelectEvent()}
+            onDeleteEvent={onDeleteEvent}
+            currentEvent={selected}
+            user={user}
+            onCompleteEvent={onCompleteEvent}
+          />
+          <AddCustomerModal
+            open={addCustomerModal}
+            handleClose={() => setAddCustomerModal(false)}
+            onDeleteEvent={onDeleteEvent}
+            currentEvent={currentEvent as IEventInfo}
+            user={user}
+            onCompleteEvent={onCompleteEvent}
+          />
+          <AddAppt
+            open={addApptModal}
+            handleClose={() => setAddApptModal(false)}
+            onDeleteEvent={onDeleteEvent}
+            currentEvent={currentEvent as IEventInfo}
+            user={user}
+            onCompleteEvent={onCompleteEvent}
+          />
+          <div className='h-screen w-[310px] border-r border-[#262626]'>
+            <div className=' mt-5 flex-col mx-auto justify-center'>
+              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
+                <div className='  my-3 flex justify-center   '>
+                  <CalendarIcon className="mr-2 size-8 " />
+                  {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                </div>
+                <SmallCalendar
+                  className='mx-auto w-auto   bg-background text-foreground'
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+
+                />
+              </div>
+            </div>
+            <div className=' mt-2 grid grid-cols-1  justify-center mx-auto'>
+              <input type='hidden' value={String(date)} name='value' />
+
+              <Button
+                variant={"ghost"}
+                className={cn(
+                  "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary  hover:border-transparent",
+                  !date && " text-foreground"
+                )}
+              >
+                <div className=' text-foreground  mx-auto flex justify-center my-auto '>
+                  <ClockIcon className="mr-2 size-8 " />
+                  {currentTime ? (time) : <span>Pick a Time</span>}
+                  <p className='my-auto'></p>
+                </div>
+              </Button>
+
+              <div className='mt-5 grow justify-center'>
+                <div className=' grid grid-cols-1 ' >
+                  <Accordion type="single" collapsible className="w-[240px] text-foreground mx-auto">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>Calendars</AccordionTrigger>
+                      <AccordionContent>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Sales')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Sales'
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Sales
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Finance')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Finance'
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Finance
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Drivers Schedule')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Drivers Schedule'
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Drivers Schedule
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Service')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Service'
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Service
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Accessories')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Accessories'
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Accessories
+                        </Button>
+                        <Button variant='ghost'
+                          onClick={() => (
+                            setCalendarLabel('Parts')
+                          )}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            calendarLabel === 'Parts'
+                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                              : "hover:bg-muted/50  w-[90%]  ",
+                            "justify-start w-[90%] "
+                          )} >
+                          Parts
+                        </Button>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                  <Button
+                    variant='outline'
+                    className=' px-4 mx-auto mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center border-border hover:border-primary  bg-transparent hover:bg-transparent w-[240px] '
+                    onClick={() => setAddCustomerModal(true)}>
+                    <>
+                      <UserPlus size={20} strokeWidth={1.5} />
+                      <p className='ml-2'>
+                        Add Customer
+                      </p>
+                    </>
+                  </Button>
+
+                  <Button
+                    variant='outline'
+                    onClick={() => (
+                      navigate('/dealer/leads/sales')
+                    )}
+                    className=' w-[240px] mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center  mx-auto  border-border hover:border-primary bg-transparent hover:bg-transparent   '  >
+                    <>
+                      <Gauge size={20} strokeWidth={1.5} />
+                      <p className='ml-2'>
+                        Sales Dashboard
+                      </p>
+                    </>
+                  </Button>
+
+                  <Button
+                    variant='outline'
+                    className=' px-4 mt-3 mx-auto text-foreground cursor-pointer hover:text-primary justify-center items-center   border-border hover:border-primary bg-transparent hover:bg-transparent w-[240px]'
+                    onClick={() => setAddApptModal(true)}>
+                    <>
+                      <CalendarPlus size={20} strokeWidth={1.5} />
+                      <p className='ml-2'>
+                        Add Appointment
+                      </p>
+                    </>
+                  </Button>
+
+                  <SearchCustomerModal />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex w-[97%] justify-center overflow-clip">
+            {showResources ? (
+              <DragAndDropCalendar
+                style={{
+                  // width: 'auto',//`calc(100vw - 210px)`,
+                  // height: 'auto',
+                  // maxHeight: "95vh",
+                  // overflow: "scroll",
+
+                  width: `calc(100vw - 310px)`,
+                  height: "100vh",
+                  overflowX: "hidden",
+                  overflowY: "scroll",
+                  objectFit: "contain",
+                  overscrollBehavior: "contain",
+                  color: "white",
+                }}
+                //    selected={selected}
+                defaultView={Views.DAY}
+                events={myEvents}
+                // step={30}
+                //showMultiDayTimes={true}
+                localizer={localizer}
+                min={minTime}
+                max={maxTime}
+
+                onView={onView}
+                view={view}
+                resizable
+                selectable
+
+                components={{
+                  toolbar: CustomToolbar,
+                  event: EventInfo,
+                }}
+                onEventDrop={DragAndDrop}
+                onEventResize={resizeEventMine}
+                onSelectEvent={(e) => HandleSelectEvent(e)}
+                onSelectSlot={handleSelectSlot}
+                //onClick={() => setOpenDatepickerModal(true)}
+
+                resourceIdAccessor="resourceId"
+                resources={resourceMap}
+                resourceTitleAccessor="resourceTitle"
+              />
+            ) : (
+              <DragAndDropCalendar
+                style={{
+                  width: `calc(100vw - 310px)`,
+                  height: "100vh",
+                  overflowX: "hidden",
+                  overflowY: "scroll",
+                  objectFit: "contain",
+                  overscrollBehavior: "contain",
+                  color: "white",
+                }}
+                // selected={selected}
+                defaultView={Views.DAY}
+                events={myEvents}
+                step={15}
+                showMultiDayTimes={true}
+                localizer={localizer}
+                min={minTime}
+                max={maxTime}
+                components={{
+                  toolbar: CustomToolbar,
+                  event: EventInfo,
+                }}
+                resizable
+                selectable
+                onEventDrop={DragAndDrop}
+                onEventResize={resizeEventMine}
+                onSelectEvent={HandleSelectEvent}
+                onSelectSlot={handleSelectSlot}
+              // onClick={() => setOpenDatepickerModal(true)}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+
+  )
+}
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
@@ -287,93 +976,81 @@ export async function action({ request }: ActionFunction) {
     return finance
   }
   if (intent === '2DaysFromNow') {
-    const updateLastApt = await prisma.clientApts.update({
-      data: {
-        completed: 'yes',
-        resultOfcall: formData.resultOfcall,
-        title: formData.title,
-        resourceId: Number(formData.resourceId),
-        note: formData.note,
-        financeId: formData.financeId,
-
-        apptStatus: 'Completed',
-      },
-      where: {
-        id: formData.aptId,
-      },
-    });
-    console.log('updated by 2daysfrom now')
-
-    const lastContact = today.toISOString();
+    let customerState = formData.customerState;
+    if (customerState === "Pending") {
+      customerState = "Attempted";
+    }
     const followUpDay2 = parseInt(formData.followUpDay1);
-    console.log('followUpDay:', followUpDay2);  // Add this line
-
+    console.log('followUpDay:', followUpDay2);
     function addDays(days) {
       let currentDate = new Date();
       currentDate.setDate(currentDate.getDate() + days);
       return currentDate;
     }
-
+    const complete = await CompleteLastAppt(userId, financeId)
+    const completeApt = await CompleteLastAppt(userId, financeId)
+    //-----------------------
+    //  let dateModal = new Date(formData.value);
     let newDate = addDays(followUpDay2);
-    newDate = new Date(newDate).toISOString();
-    const createNewApt = await prisma.clientApts.create({
+
+    const date = new Date(newDate);
+
+    const options = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    };
+
+    const apptDate = date.toLocaleDateString('en-US', options)
+
+    console.log(formData.value, date, "date info")
+
+    const todaysDate = new Date()
+    const lastContacted = todaysDate.toLocaleDateString('en-US', options)
+    //---------------------
+    const finance = await prisma.finance.update({
+      where: { id: formData.financeId },
       data: {
-        start: newDate,
-        end: formData.end,
-        contactMethod: formData.contactMethod,
-        completed: 'no',
-        apptStatus: formData.apptStatus,
-        apptType: formData.apptType,
-        note: formData.note,
-        unit: formData.unit,
-        brand: formData.brand,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        userId: userId || '',
-        userName: user?.name,
-        title: 'Contacted by Instant Function',
-        attachments: formData.attachments,
-        resultOfcall: 'Attempted',
-        resourceId: Number(formData.resourceId),
+        lastContact: lastContacted,
+        status: formData.status,
+        customerState: customerState,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: apptDate,
+        followUpDay: apptDate,
+        notes: formData.notes,
+      },
+    });
+    const createFollowup = await prisma.clientApts.create({
+      data: {
         financeId: formData.financeId,
-        stockNum: formData.stockNum,
-        vin: formData.vin,
-      },
-    });
-    console.log('updated by 2daysfrom now')
-    const financeId = formData.financeId
-
-    const dashboard = await prisma.dashboard.findUnique({
-      where: {
-        financeId: financeId,
-      },
-    });
-    const dashboardId = dashboard?.id;
-    const nextAppointment = newDate
-    const followUpDay = newDate
-    const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, dashboardId }
-    //  const updating = await updateFinance23(financeId, formData3, formPayload);
-    const comdata = {
-      financeId: formData.financeId,
-      userId: formData.userId,
-      content: formData.note,
-      title: 'Contacted by Instant Function',
-      direction: formData.direction,
-      result: formData.resultOfcall,
-      subject: formData.messageContent,
-      type: 'Text/phone',
-      userName: user?.name,
-      date: new Date().toISOString(),
-    }
-    const setComs = await prisma.communicationsOverview.create({
-      data: comdata,
-    });
-
-
-    return json({ updateLastApt, createNewApt, setComs })
+        userEmail: formData.userEmail,
+        address: formData.address,
+        phone: formData.phone,
+        email: formData.email,
+        lastName: formData.lastName,
+        firstName: formData.firstName,
+        brand: formData.brand,
+        unit: formData.unit,
+        note: formData.note,
+        apptType: formData.apptType,
+        apptStatus: formData.apptStatus,
+        completed: 'no',
+        contactMethod: formData.contactMethod,
+        end: new Date(new Date(apptDate).getTime() + 45 * 60000),
+        title: formData.title,
+        start: String(apptDate),
+        userId: user?.id,
+        description: formData.description,
+        resourceId: Number(formData.resourceId),
+        userName: user?.name,
+      }
+    })
+    return json({ complete, finance, completeApt, createFollowup, });
 
   }
   if (intent === 'textQuickFU') {
@@ -406,95 +1083,68 @@ export async function action({ request }: ActionFunction) {
     if (customerState === "Pending") {
       customerState = "Attempted";
     }
-    let dateModal = new Date(formData.dateModal);
-    const timeOfDayModal = formData.timeOfDayModal;
-    const [hours, minutes] = timeOfDayModal.split(':').map(Number);
-    dateModal.setHours(hours, minutes);
+    let dateModal = new Date(formData.value);
     const year = dateModal.getFullYear();
-    const month = String(dateModal.getMonth() + 1).padStart(2, '0');  // Months are 0-indexed in JavaScript
+    const month = String(dateModal.getMonth() + 1).padStart(2, '0');
     const day = String(dateModal.getDate()).padStart(2, '0');
-    const hour = String(dateModal.getHours()).padStart(2, '0');
-    const minute = String(dateModal.getMinutes()).padStart(2, '0');
-    const dateTimeString = `${year}-${month}-${day}T${hour}:${minute}:00.000`;
-    console.log(dateTimeString, 'datemodal');
-
-    const updateLastApt = await prisma.clientApts.update({
+    const hours = formData.hours;
+    const minutes = formData.minutes;
+    dateModal.setHours(hours, minutes);
+    const dateTimeString = `${year}-${month}-${day}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00.000`;
+    const date = new Date(dateTimeString);
+    const options = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    };
+    const apptDate = date.toLocaleDateString('en-US', options)
+    const todaysDate = new Date()
+    const completeApt = await CompleteLastAppt(userId, financeId)
+    const updating = await prisma.finance.update({
+      where: { id: formData.financeId },
       data: {
-        completed: 'yes',
-        resultOfcall: formData.resultOfcall,
-        title: formData.title,
-        resourceId: Number(formData.resourceId),
-        note: formData.completedNote,
-        financeId: formData.financeId,
-        apptStatus: 'Completed',
-      },
-      where: {
-        id: formData.aptId,
+
+        lastContact: today.toLocaleDateString('en-US', options),
+        status: formData.status,
+        customerState: formData.customerState,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: apptDate,
+        followUpDay: apptDate,
+        notes: formData.notes,
+
       },
     });
-    console.log('updated by scheduleFUp')
-    const createNewApt = await prisma.clientApts.create({
+    const createFollowup = await prisma.clientApts.create({
       data: {
-        title: 'Contacted by Instant Function',
-        start: dateTimeString,
-        end: formData.end,
-        contactMethod: formData.contactMethod,
-        completed: 'no',
-        apptStatus: formData.apptStatus,
-        apptType: formData.apptType,
-        note: formData.note,
-        unit: formData.unit,
-        brand: formData.brand,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
         address: formData.address,
-        userEmail: user.email,
-        //  description: formData.description,
-        userName: formData.username,
-        attachments: formData.attachments,
-        //  direction: formData.direction,
-        resultOfcall: formData.resultOfcall,
+        phone: formData.phone,
+        email: formData.email,
+        lastName: formData.lastName,
+        firstName: formData.firstName,
+        brand: formData.brand,
+        unit: formData.unit,
+        note: formData.note,
+        userEmail: formData.userEmail,
+        apptType: formData.apptType,
+        apptStatus: formData.apptStatus,
+        completed: 'no',
+        contactMethod: formData.contactMethod,
+        end: new Date(new Date(apptDate).getTime() + 45 * 60000),
+        title: formData.title,
+        start: apptDate,
+        userId: user?.id,
+        description: formData.description,
         resourceId: Number(formData.resourceId),
+        userName: user?.name,
         financeId: formData.financeId,
-        stockNum: formData.stockNum,
-        vin: formData.vin,
-      },
-    });
-    console.log('created createNewApt ', createNewApt)
-
-    const comdata = {
-      financeId: formData.financeId,
-      userId: formData.userId,
-      content: formData.note,
-      title: 'Contacted by Instant Function',
-      direction: formData.direction,
-      result: formData.resultOfcall,
-      subject: formData.messageContent,
-      type: 'Text',
-      userName: user?.name,
-      date: new Date().toISOString(),
-    }
-    const setComs = await prisma.communicationsOverview.create({
-      data: comdata,
-    });
-    const financeId = formData.financeId
-
-
-    const nextAppointment = dateTimeString
-    const followUpDay = dateTimeString
-    const updateDash = await prisma.dashboard.update({
-      where: {
-        financeId: financeId,
-      },
-      data: {
-        lastContact: date,
-        nextAppointment: nextAppointment,
       }
-    });
-    console.log(updateDash, createNewApt, setComs,)
-    return json({ updateLastApt, createNewApt, setComs, })
+    })
+    return json({ updating, completeApt, createFollowup, });
   }
   if (intent === "EmailClient") {
     const comdata = {
@@ -773,650 +1423,27 @@ export async function loader({ request, params }: LoaderFunction) {
       createdAt: 'desc',
     },
   });
-  //  console.log(salesData)
-  return json({ salesData, data, user, Delivery, searchData })
+
+
+  const response = await fetch("http://localhost:3000/dealer/api/allAppt");
+  const appts = await response.json();
+  const url = new URL(request.url)
+  const query = url.searchParams.get("query")
+  let filteredData
+
+  filteredData = query ? appts.filter(item =>
+    item.title.toLowerCase().includes(query.toLowerCase()) ||
+    item.unit.toLowerCase().includes(query.toLowerCase()) ||
+    item.firstName.toLowerCase().includes(query.toLowerCase()) ||
+    item.lastName.toLowerCase().includes(query.toLowerCase()) ||
+    item.email.toLowerCase().includes(query.toLowerCase()) ||
+    item.phone.toLowerCase().includes(query.toLowerCase())
+  ) : appts
+
+  return json({ salesData, data, user, Delivery, searchData, filteredData, query })
 }
 
 dayjs.extend(timezone)
-
-export default function DnDResource() {
-  const { salesData, user, data } = useLoaderData()
-  const [view, setView] = useState(Views.WEEK)
-  const onView = useCallback((newView) => setView(newView), [setView])
-  const submit = useSubmit();
-  const [draggedEvent, setDraggedEvent] = useState()
-  const [counters, setCounters] = useState({ item1: 0, item2: 0 })
-
-  const resourceMap = [
-    { resourceId: 1, resourceTitle: 'Sales Calls' },
-    { resourceId: 2, resourceTitle: 'Sales Appointments' },
-    { resourceId: 3, resourceTitle: 'Deliveries' },
-    { resourceId: 4, resourceTitle: 'F & I' },
-  ]
-  // add an hour to start so each appt has an end
-  const formattedData = salesData.map(event => ({
-    ...event,
-    start: new Date(event.start),
-    end: new Date(new Date(event.start).getTime() + 45 * 60000), // 45 minutes in milliseconds
-  }));
-  const [myEvents, setMyEvents] = useState(formattedData)
-  const localizer = dayjsLocalizer(dayjs)
-  // toggles weather to make a copy when ddraging, i justr set it to false instead
-  const [copyEvent, setCopyEvent] = useState(false)
-  const toggleCopyEvent = useCallback(() => setCopyEvent((val) => !val), [])
-  // dnd
-
-  const newEvent = useCallback(
-    ({ event }) => {
-      //  const salespersonEmail = userEventData?.salespersonEmail || event.salespersonEmail || ''
-      //const title = userEventData?.title || event.title || ''
-      // const resourceId = userEventData?.resourceId || event.resourceId || ''
-      // const day = userEventData?.day || event.day || ''
-      const start = event.start //|| userEventData?.start || ''
-      const end = event.end// || userEventData?.end || ''
-      console.log(event, userEventData, 'submitting')
-      console.log(
-        //  salespersonEmail, 'salespersonEmail',
-        end, 'end',
-        start, 'start',
-        //    day, 'day',
-        // resourceId, 'resourceId',
-        //title, title,
-        email, "userEmail",
-      )
-      const formData = new FormData();
-      console.log('1')
-      formData.append("intent", 'newEvent');
-      console.log('2')
-      formData.append("userEmail", email);
-      console.log('3')
-      //  formData.append("id", userEventData.userId);
-      console.log('4')
-      //  formData.append("resourceId", resourceId);
-      console.log('5')
-      //  formData.append("day", day);
-      console.log('6')
-      //  formData.append("title", title);
-      console.log('7')
-      console.log('8')
-      // formData.append("salespersonEmail", salespersonEmail);
-      console.log('9')
-      formData.append("start", start);
-      console.log('10')
-      formData.append("end", end);
-      console.log('11')
-      console.log(formData, 'submitting')
-      submit(formData, { method: "post" });
-      console.log('12')
-
-      setMyEvents((prev) => {
-        const idList = prev.map((item) => item.id)
-        const newId = Math.max(...idList) + 1
-        return [...prev, { ...event, id: newId, }]
-      })
-    },
-    []
-  )
-
-  const DragAndDrop = useCallback(
-    ({ start, end, allDay: isAllDay }) => {
-
-      const startDate = new Date(start);
-      startDate.setHours(startDate.getHours() + 8);
-      const eightHourShift = new Date(start.getTime() + 480 * 60000)
-
-      const { id, name, userId, resourceId, resourceTitle, salespersonEmail, title, userEmail, userName } = draggedEvent
-      console.log(draggedEvent, 'draggedEvent')
-      const formData = new FormData();
-      formData.append("intent", 'newEvent');
-      formData.append("userEmail", email);
-      formData.append("id", id);
-      formData.append("resourceId", resourceId);
-      // formData.append("name", name);
-      ///  formData.append("userId", userId);
-      formData.append("resourceTitle", resourceTitle);
-      formData.append("userName", userName);
-      formData.append("userEmail", userEmail);
-      formData.append("title", title);
-      formData.append("salespersonEmail", salespersonEmail);
-      formData.append("start", start);
-      formData.append("end", eightHourShift);
-      submit(formData, { method: "post" });
-      const event = {
-        draggedEvent,
-        start,
-        end,
-      }
-
-      setDraggedEvent(null)
-      newEvent(event)
-    },
-    [draggedEvent, counters, setDraggedEvent, setCounters, newEvent]
-  )
-  const resizeEventMine = useCallback(
-    ({ start, end, allDay: isAllDay }) => {
-      const startDate = new Date(start);
-      startDate.setHours(startDate.getHours() + 8);
-      const eightHourShift = new Date(start.getTime() + 480 * 60000)
-
-
-      const { id, name, userId, resourceId, resourceTitle, salespersonEmail, title, userEmail, userName } = draggedEvent
-      console.log(draggedEvent, 'draggedEvent')
-      const formData = new FormData();
-      formData.append("intent", 'newEvent');
-      formData.append("userEmail", user.email);
-      formData.append("id", id);
-      formData.append("resourceId", resourceId);
-      // formData.append("name", name);
-      ///  formData.append("userId", userId);
-      formData.append("resourceTitle", resourceTitle);
-      formData.append("userName", userName);
-      formData.append("userEmail", userEmail);
-      formData.append("title", title);
-      formData.append("salespersonEmail", salespersonEmail);
-      formData.append("start", start);
-      formData.append("end", eightHourShift);
-      submit(formData, { method: "post" });
-      const event = {
-        draggedEvent,
-        start,
-        end,
-      }
-
-      setMyEvents((prev) => {
-        const idList = prev.map((item) => item.id)
-        const newId = Math.max(...idList) + 1
-        return [...prev, { ...event, id: newId, }]
-      })
-    },
-    [draggedEvent, counters, setDraggedEvent, setCounters, newEvent]
-  )
-  async function onEventTriggered(data, apptId) {
-    const finance = await prisma.clientApts.update({
-      data: {
-        ...data,
-      },
-      where: {
-        id: apptId,
-      },
-    });
-
-    console.log('finance updated successfully');
-    return finance;
-  }
-
-  const resizeEvent = useCallback(
-    ({ event, start, end }) => {
-      setMyEvents(async (prev) => {
-        const existing = prev.find((ev) => ev.id === event.id) ?? {}
-        const filtered = prev.filter((ev) => ev.id !== event.id)
-        const data = { start, end };
-        const apptId = event.id;
-        await onEventTriggered(data, apptId);
-        return [...filtered, { ...existing, start, end }]
-      })
-
-    },
-    [setMyEvents]
-  )
-
-  // min and max times
-  const minTime = new Date();
-  minTime.setHours(8, 0, 0);
-
-  const maxTime = new Date();
-  maxTime.setHours(21, 30, 0);
-
-  const [datePickerEventFormData, setDatePickerEventFormData] =
-    useState<DatePickerEventFormData>(initialDatePickerEventFormData)
-  const onAddEventFromDatePicker = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    const addHours = (date: Date | undefined, hours: number) => {
-      return date ? date.setHours(date.getHours() + hours) : undefined
-    }
-    const setMinToZero = (date: Date | undefined) => {
-      if (date) {
-        date.setSeconds(0);
-      }
-      return date;
-    }
-    const data: IEventInfo = {
-      ...datePickerEventFormData,
-      _id: generateId(),
-      start: setMinToZero(datePickerEventFormData.start),
-      end: datePickerEventFormData.allDay
-        ? addHours(datePickerEventFormData.start, 12)
-        : setMinToZero(datePickerEventFormData.end),
-    }
-    const newEvents = [...events, data]
-    setMyEvents(newEvents)
-    setDatePickerEventFormData(initialDatePickerEventFormData)
-  }
-  // add event modal
-  const [openSlot, setOpenSlot] = useState(false)
-  const handleSelectSlot = (event: Event) => {
-    setOpenSlot(true)
-    setCurrentEvent(event)
-  }
-  const generateId = () => (Math.floor(Math.random() * 10000) + 1).toString()
-  const handleClose = () => {
-    setEventFormData(initialEventFormState)
-    setOpenSlot(false)
-  }
-  const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
-  const onAddEvent = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-
-    const data: IEventInfo = {
-      ...eventFormData,
-      _id: generateId(),
-      start: currentEvent?.start,
-      end: currentEvent?.end,
-      completed: currentEvent?.completed,
-      apptType: currentEvent?.apptType,
-      id: currentEvent?.id,
-      contactMethod: currentEvent?.contactMethod,
-      firstName: currentEvent?.firstName,
-      lastName: currentEvent?.lastName,
-
-    }
-
-    const newEvents = [...myEvents, data]
-
-    setMyEvents(newEvents)
-    handleClose()
-  }
-  const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(null)
-  // event info modal
-  const [eventInfoModal, setEventInfoModal] = useState(false)
-  const handleSelectEvent = (event: IEventInfo) => {
-    setCurrentEvent(event)
-    setEventInfoModal(true)
-  }
-  const onDeleteEvent = () => {
-    setCurrentEvent(() => [...events].filter((e) => e._id !== (currentEvent as IEventInfo)._id!))
-    setEventInfoModal(false)
-  }
-  const onCompleteEvent = () => {
-    setEventInfoModal(false)
-  }
-  // add customer modal
-  const [addCustomerModal, setAddCustomerModal] = useState(false)
-  const [addApptModal, setAddApptModal] = useState(false)
-  const ViewNamesGroup = ({ views: viewNames, view, messages, onView }) => {
-    return viewNames.map((name) => (
-      <Button
-        key={name}
-        type="button"
-        className={clsx({ 'rbc-active': view === name })}
-        onClick={() => onView(name)}
-      >
-        <Text>{messages[name]}</Text>
-      </Button>
-    ))
-  }
-
-  const [showResources, setShowResources] = useState(true);
-
-  const toggleView = () => {
-    setShowResources(prevState => !prevState);
-  };
-
-  const CustomToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="rbc-toolbar">
-        <span className="rbc-btn-group">
-          <ViewNamesGroup
-            view={view}
-            views={views}
-            messages={messages}
-            onView={onView}
-          />
-        </span>
-
-        <span className="rbc-toolbar-label">{label}</span>
-        <span className="ml-auto justify-end mr-5">
-          <Button
-            onClick={toggleView}
-            className='mr-3'
-          >
-            Toggle Resource View
-          </Button>
-
-
-        </span>
-        <span className="ml-auto justify-end">
-          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(navigate.PREVIOUS)}>
-            <ChevronsLeft size={20} strokeWidth={1.5} />
-          </button>
-          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(navigate.TODAY)}>
-            <ChevronsRightLeft size={20} strokeWidth={1.5} />
-          </button>
-          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3' onClick={() => onNavigate(navigate.NEXT)}
-          >
-            <ChevronsRight size={20} strokeWidth={1.5} />
-          </button>
-        </span>
-      </div>
-    )
-  }
-
-  const [date, setDate] = useState<Date>()
-
-  const now = new Date();
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
-  const currentSecond = now.getSeconds();
-  const [hour, setHour] = useState(currentHour)
-  const [min, setMin] = useState(currentMinute)
-  const [sec, setSec] = useState(currentSecond);
-  useEffect(() => {
-    function updateTime() {
-      setHour(currentHour)
-      setMin(currentMinute)
-      setSec(currentSecond)
-    }
-    updateTime();
-    const intervalId = setInterval(updateTime, 60000);
-    return () => clearInterval(intervalId);
-  }, []);
-  const currentTime = `${hour}:${min}:${sec}`
-  console.log(`Current time is `, currentTime);
-  const time = `${hour}:${min}:${sec}`
-  const newDate = new Date()
-
-  const navigate = useNavigate();
-  const [calendarLabel, setCalendarLabel] = useState('Sales')
-  return (
-    <>
-      <div className="h-[75px]  w-auto  border-b border-[#262626] bg-background text-foreground">
-        <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
-        <p className="text-muted-foreground   ml-[105px]  ">
-          {calendarLabel}
-        </p>
-      </div>
-      <div className=" grow">
-        <div className='flex w-auto '>
-          <EventInfoModal
-            open={eventInfoModal}
-            handleClose={() => setEventInfoModal(false)}
-            onDeleteEvent={onDeleteEvent}
-            currentEvent={currentEvent as IEventInfo}
-            user={user}
-            onCompleteEvent={onCompleteEvent}
-          />
-          <AddCustomerModal
-            open={addCustomerModal}
-            handleClose={() => setAddCustomerModal(false)}
-            onDeleteEvent={onDeleteEvent}
-            currentEvent={currentEvent as IEventInfo}
-            user={user}
-            onCompleteEvent={onCompleteEvent}
-          />
-          <AddAppt
-            open={addApptModal}
-            handleClose={() => setAddApptModal(false)}
-            onDeleteEvent={onDeleteEvent}
-            currentEvent={currentEvent as IEventInfo}
-            user={user}
-            onCompleteEvent={onCompleteEvent}
-          />
-          <div className='h-screen w-[310px] border-r border-[#262626]'>
-            <div className=' mt-5 flex-col mx-auto justify-center'>
-              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
-                <div className='  my-3 flex justify-center   '>
-                  <CalendarIcon className="mr-2 size-8 " />
-                  {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
-                </div>
-                <SmallCalendar
-                  className='mx-auto w-auto   bg-background text-foreground'
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </div>
-            </div>
-            <div className=' mt-2 grid grid-cols-1  justify-center mx-auto'>
-              <input type='hidden' value={String(date)} name='value' />
-
-              <Button
-                variant={"ghost"}
-                className={cn(
-                  "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary  hover:border-transparent",
-                  !date && " text-foreground"
-                )}
-              >
-                <div className=' text-foreground  mx-auto flex justify-center my-auto '>
-                  <ClockIcon className="mr-2 size-8 " />
-                  {currentTime ? (time) : <span>Pick a Time</span>}
-                  <p className='my-auto'></p>
-                </div>
-              </Button>
-
-              <div className='mt-5 grow justify-center'>
-                <div className=' grid grid-cols-1 ' >
-                  <Accordion type="single" collapsible className="w-[240px] text-foreground mx-auto">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger>Calendars</AccordionTrigger>
-                      <AccordionContent>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Sales')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Sales'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Sales
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Finance')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Finance'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Finance
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Drivers Schedule')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Drivers Schedule'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Drivers Schedule
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Service')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Service'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Service
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Accessories')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Accessories'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Accessories
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Parts')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Parts'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Parts
-                        </Button>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                  <Button
-                    variant='outline'
-                    className=' px-4 mx-auto mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center border-[#fff] hover:border-primary  bg-transparent hover:bg-transparent w-[240px] '
-                    onClick={() => setAddCustomerModal(true)}>
-                    <>
-                      <UserPlus size={20} strokeWidth={1.5} />
-                      <p className='ml-2'>
-                        Add Customer
-                      </p>
-                    </>
-                  </Button>
-
-                  <Button
-                    variant='outline'
-                    onClick={() => (
-                      navigate('/dealer/leads/sales')
-                    )}
-                    className=' w-[240px] mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center  mx-auto  border-[#fff] hover:border-primary bg-transparent hover:bg-transparent   '  >
-                    <>
-                      <Gauge size={20} strokeWidth={1.5} />
-                      <p className='ml-2'>
-                        Sales Dashboard
-                      </p>
-                    </>
-                  </Button>
-
-                  <Button
-                    variant='outline'
-                    className=' px-4 mt-3 mx-auto text-foreground cursor-pointer hover:text-primary justify-center items-center   border-[#fff] hover:border-primary bg-transparent hover:bg-transparent w-[240px]'
-                    onClick={() => setAddApptModal(true)}>
-                    <>
-                      <CalendarPlus size={20} strokeWidth={1.5} />
-                      <p className='ml-2'>
-                        Add Appointment
-                      </p>
-                    </>
-                  </Button>
-
-                  <SearchCustomerModal />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex w-[97%] justify-center overflow-clip">
-            {showResources ? (
-              <DragAndDropCalendar
-                style={{
-                  // width: 'auto',//`calc(100vw - 210px)`,
-                  // height: 'auto',
-                  // maxHeight: "95vh",
-                  // overflow: "scroll",
-
-                  width: `calc(100vw - 310px)`,
-                  height: "100vh",
-                  overflowX: "hidden",
-                  overflowY: "scroll",
-                  objectFit: "contain",
-                  overscrollBehavior: "contain",
-                  color: "white",
-                }}
-
-                defaultView={Views.DAY}
-                events={myEvents}
-                // step={30}
-                //showMultiDayTimes={true}
-                localizer={localizer}
-                min={minTime}
-                max={maxTime}
-
-                onView={onView}
-                view={view}
-                resizable
-                selectable
-
-                components={{
-                  toolbar: CustomToolbar,
-                  event: EventInfo,
-                }}
-                onEventDrop={DragAndDrop}
-                onEventResize={resizeEventMine}
-                onSelectEvent={handleSelectEvent}
-                onSelectSlot={handleSelectSlot}
-                onClick={() => setOpenDatepickerModal(true)}
-
-                resourceIdAccessor="resourceId"
-                resources={resourceMap}
-                resourceTitleAccessor="resourceTitle"
-              />
-            ) : (
-              <DragAndDropCalendar
-                style={{
-                  width: `calc(100vw - 310px)`,
-                  height: "100vh",
-                  overflowX: "hidden",
-                  overflowY: "scroll",
-                  objectFit: "contain",
-                  overscrollBehavior: "contain",
-                  color: "white",
-                }}
-                defaultView={Views.DAY}
-                events={myEvents}
-                step={15}
-                showMultiDayTimes={true}
-                localizer={localizer}
-                min={minTime}
-                max={maxTime}
-                components={{
-                  toolbar: CustomToolbar,
-                  event: EventInfo,
-                }}
-                resizable
-                selectable
-                onEventDrop={DragAndDrop}
-                onEventResize={resizeEventMine}
-                onSelectEvent={handleSelectEvent}
-                onSelectSlot={handleSelectSlot}
-                onClick={() => setOpenDatepickerModal(true)}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    </>
-
-  )
-}
-
-
 
 interface IProps {
   open: boolean;

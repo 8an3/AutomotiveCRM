@@ -251,7 +251,7 @@ export default function ClientCard({ data }) {
                                     <select defaultValue={data.pickUpTime}
                                         name='pickUpTime'
                                         placeholder='Time of day'
-                                        className="mx-auto rounded border-0 ml-2 mr-2 bg-background border-border  px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                                        className="mx-auto rounded border-0 ml-2 mr-2 bg-background border-border  px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary">
                                         <option>Time of day</option>
                                         <option value="9:00">9:00</option>
                                         <option value="9:30">9:30</option>

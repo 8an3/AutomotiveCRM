@@ -940,7 +940,7 @@ export default function Dashboard() {
         <>
           <div className='flex justify-between mt-3 xs:grid xs:grid-cols-1'>
             <select value={selectedType} onChange={handleTypeChange}
-              className=" rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+              className=" rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
             >
               <option value="0">Motorcycle Category</option>
 
@@ -953,7 +953,7 @@ export default function Dashboard() {
 
             {selectedType && (
               <select value={selectedOption} onChange={handleOptionChange}
-                className="mx-auto  rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                className="mx-auto  rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
               >
                 <option value="0">Tire and Rim Choice</option>
 
@@ -967,7 +967,7 @@ export default function Dashboard() {
 
             {selectedOption && (
               <select value={selectedYear} onChange={handleYearChange}
-                className="rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                className="rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
               >
                 <option value="0">Years</option>
 
@@ -4564,7 +4564,7 @@ export default function Dashboard() {
                         </div>
                         <div className="relative mt-3">
                           <Select name='resultOfcall' defaultValue="Attempted">
-                            <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-background border-border">
+                            <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent className='bg-background text-foreground bg-background'>
@@ -4582,7 +4582,7 @@ export default function Dashboard() {
                         </div>
                         <div className="relative mt-3">
                           <Select name='direction' defaultValue="Outgoing">
-                            <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-background border-border">
+                            <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
                               <SelectValue placeholder="" />
                             </SelectTrigger>
                             <SelectContent className='bg-background text-foreground bg-background'>
@@ -4890,7 +4890,7 @@ export default function Dashboard() {
                             </div>
                             <div className="relative mt-3">
                               <Select name='resultOfcall' defaultValue="Reached">
-                                <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-background border-border">
+                                <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className='bg-background text-foreground bg-background'>
@@ -4908,7 +4908,7 @@ export default function Dashboard() {
                             </div>
                             <div className="relative mt-3">
                               <Select name='direction' defaultValue="Incoming">
-                                <SelectTrigger className="w-full  focus:border-[#60b9fd]  bg-background border-border">
+                                <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className='bg-background text-foreground bg-background'>

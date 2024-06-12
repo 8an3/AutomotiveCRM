@@ -789,10 +789,10 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                     type="text"
                     name="title"
                     defaultValue={`F/U on the ${selectedRowData.unit}`}
-                    className='focus:border-[#60b9fd] bg-background text-foreground mt-3'
+                    className='focus:border-primary bg-background text-foreground mt-3'
                   />
                   <Select name='note' defaultValue="none">
-                    <SelectTrigger className="w-auto  focus:border-[#60b9fd] mt-3">
+                    <SelectTrigger className="w-auto  focus:border-primary mt-3">
                       <SelectValue placeholder="Time of day" />
 
                     </SelectTrigger>
@@ -821,10 +821,10 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                   <Input
                     name="note"
                     placeholder="or write a custom note"
-                    className='focus:border-[#60b9fd] mt-3 bg-background text-foreground'
+                    className='focus:border-primary mt-3 bg-background text-foreground'
                   />
                   <Select name='contactMethod'>
-                    <SelectTrigger className="w-auto focus:border-[#60b9fd] mt-3">
+                    <SelectTrigger className="w-auto focus:border-primary mt-3">
                       <SelectValue placeholder="Contact Method" />
                     </SelectTrigger>
                     <SelectContent className='bg-background'>
@@ -862,10 +862,10 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                   <div className='mt-3'></div>
 
                   <Select name='timeOfDayModal'>
-                    <SelectTrigger className="w-auto focus:border-[#60b9fd]">
+                    <SelectTrigger className="w-auto focus:border-primary">
                       <SelectValue placeholder="Time of day" />
                     </SelectTrigger>
-                    <SelectContent className='bg-slate1'>
+                    <SelectContent className='bg-background'>
                       <SelectItem value="09:00">9:00</SelectItem>
                       <SelectItem value="09:30">9:30</SelectItem>
                       <SelectItem value="10:00">10:00</SelectItem>
@@ -890,7 +890,7 @@ export const AddAppt = ({ open, handleClose, onDeleteEvent, currentEvent, onComp
                   <div className='mt-3'></div>
 
                   <Select name='resourceId'>
-                    <SelectTrigger className="w-auto focus:border-[#60b9fd]">
+                    <SelectTrigger className="w-auto focus:border-primary">
                       <SelectValue placeholder="Type of Appointment" />
                     </SelectTrigger>
                     <SelectContent className='bg-background'>

@@ -44,7 +44,7 @@ export default function AddAppt({ data }) {
                 <Calendar onChange={onChange} value={value} calendarType="gregory" />
                 <select
                   name="timeOfDay" defaultValue="Time of day"
-                  className={` w-[80%] text-xs mt-3 h-8 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}>
+                  className={` w-[80%] text-xs mt-3 h-8 cursor-pointer rounded border-1 border-primary bg-white text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}>
                   <option value="">Time of day</option>
                   <option value="9:00">9:00</option>
                   <option value="9:30">9:30</option>
@@ -73,7 +73,7 @@ export default function AddAppt({ data }) {
                     type="text"
                     name="title"
                     defaultValue={`F/U ${data.name} on the ${data.model}`}
-                    className="w-[80%] rounded border-1 border-[#60b9fd] h-8 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                    className="w-[80%] rounded border-1 border-primary h-8 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                   />
                 </div>
 
@@ -81,13 +81,13 @@ export default function AddAppt({ data }) {
                   <Label className='mt-2' htmlFor="area">Note</Label>
                   <Input
                     name="note"
-                    className="w-[80%] rounded border-1 border-[#60b9fd] h-8 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                    className="w-[80%] rounded border-1 border-primary h-8 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                   />
                 </div>
                 <div className="grid gap-2">
                   <select
                     name='contactMethod'
-                    className='w-[80%] text-xs mt-3 h-8 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]'>
+                    className='w-[80%] text-xs mt-3 h-8 cursor-pointer rounded border-1 border-primary bg-white text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary'>
                     <option value="">Contact Method</option>
                     <option value="Phone">Phone</option>
                     <option value="InPerson">In-Person</option>

@@ -2567,7 +2567,7 @@ export const meta: MetaFunction = () => {
 
 
                 <select value={filterBy} onChange={handleDropdownChange}
-                    className={`border-white text-black placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-white px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                    className={`border-white text-black placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border bg-white px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                 >
                     <option value='' >Search By Model</option>
                     {models.map((model, index) => (

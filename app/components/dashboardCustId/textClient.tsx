@@ -138,7 +138,7 @@ export default function LogText() {
               Templates
             </label>
             <select
-              className={`border-black w-full text-black placeholder:text-blue-300 broder justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+              className={`border-black w-full text-black placeholder:text-blue-300 broder justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
               onChange={handleChange}>
               <option value="">Select a template</option>
               {templates && templates.filter(template => template.type === 'text').map((template, index) => (
@@ -210,7 +210,7 @@ export default function LogText() {
               <>
                 <select name='followUpDay2'
                   onChange={(e) => { setfollowUpDay(e) }}
-                  className="mx-auto mt-2  w-1/2 h-10 rounded border-1 border-[#60b9fd] ml-2 mr-2 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                  className="mx-auto mt-2  w-1/2 h-10 rounded border-1 border-primary ml-2 mr-2 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary">
                   <option value="1">1 Day</option>
                   <option value="2">2 Days</option>
                   <option value="3">3 Days</option>
@@ -258,7 +258,7 @@ export default function LogText() {
                       type="text"
                       name="title"
                       defaultValue={`F/U on the ${data?.unit}`}
-                      className="w-[80%] rounded border-1 border-[#60b9fd] h-8 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                      className="w-[80%] rounded border-1 border-primary h-8 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       onChange={(e) => { settitle(e) }}
                     />
                   </div>
@@ -267,7 +267,7 @@ export default function LogText() {
                     <Label className='mt-2' htmlFor="area">Note</Label>
                     <Input
                       name="note"
-                      className="w-[80%] rounded border-1 border-[#60b9fd] h-8 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                      className="w-[80%] rounded border-1 border-primary h-8 bg-white  text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                       onChange={(e) => { setnote(e) }}
                     />
                   </div>
@@ -275,7 +275,7 @@ export default function LogText() {
                     <select
                       onChange={(e) => { setcontactMethod(e) }}
                       name='contactMethod'
-                      className='w-[80%] text-xs mt-3 h-8 cursor-pointer rounded border-1 border-[#60b9fd] bg-white text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]'>
+                      className='w-[80%] text-xs mt-3 h-8 cursor-pointer rounded border-1 border-primary bg-white text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary'>
                       <option value="">Contact Method</option>
                       <option value="Phone">Phone</option>
                       <option value="InPerson">In-Person</option>

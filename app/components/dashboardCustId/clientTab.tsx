@@ -34,7 +34,7 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
             <Input type="hidden" defaultValue={finance.clientfileId} name="financeId" />
             <Input type="hidden" defaultValue={clientfileId} name="clientfileId" />
             <Input type="hidden" defaultValue={clientFile.id} name="id" />
-            <div className="flex-auto px-4 lg:px-10 py-10 pt-0 bg-slate11">
+            <div className="flex-auto px-4 lg:px-10 py-10 pt-0 bg-background1">
 
               <div className="flex flex-wrap">
                 <div className="w-full lg:w-6/12 px-4">
@@ -204,7 +204,7 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                   defaultValue={clientFile.typeOfContact}
                   name='typeOfContact'
                   placeholder=""
-                  className=" max-w-sm mx-2 rounded border-0 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"              >
+                  className=" max-w-sm mx-2 rounded border-0 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"              >
                   <option value="">Best Form To Contact</option>
                   <option value="Phone">Phone</option>
                   <option value="Text">Text</option>
@@ -214,7 +214,7 @@ export function ClientTab({ timerRef, open, setOpen, user, }) {
                 <select
                   defaultValue={clientFile.timeToContact}
                   name='timeToContact'
-                  className="  max-w-sm mx-2 rounded border-0 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                  className="  max-w-sm mx-2 rounded border-0 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                 >
                   <option value="">Best Time To Contact</option>
                   <option value="Morning">Morning</option>

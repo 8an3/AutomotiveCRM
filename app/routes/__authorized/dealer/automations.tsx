@@ -161,10 +161,10 @@ export default function Automations() {
             </CardHeader>
             <CardContent>
               <Select name='action'>
-                <SelectTrigger className="w-auto focus:border-[#60b9fd]">
+                <SelectTrigger className="w-auto focus:border-primary">
                   <SelectValue placeholder="What event to take place?" />
                 </SelectTrigger>
-                <SelectContent className='bg-slate1'>
+                <SelectContent className='bg-background'>
                   <SelectItem value="New Task">New Task</SelectItem>
                   <SelectItem value="Send Email">Send Email</SelectItem>
                   <SelectItem value="Send SMS">Send SMS</SelectItem>
@@ -172,10 +172,10 @@ export default function Automations() {
               </Select>
               <div className='flex mt-2'>
                 <Select name='timeType'>
-                  <SelectTrigger className="w-auto focus:border-[#60b9fd] mr-2">
+                  <SelectTrigger className="w-auto focus:border-primary mr-2">
                     <SelectValue placeholder="No Delay" />
                   </SelectTrigger>
-                  <SelectContent className='bg-slate1'>
+                  <SelectContent className='bg-background'>
                     <SelectItem value="No delay">No delay</SelectItem>
                     <SelectItem value="Exact Time">Exact Time</SelectItem>
                     <SelectItem value="Same Day">Same Day</SelectItem>
@@ -189,19 +189,19 @@ export default function Automations() {
                 <Input type='number' name='executionTime' className='w-[100px]' />
               </div>
               <Select name='beforeAfter'>
-                <SelectTrigger className="w-auto focus:border-[#60b9fd] mt-2">
+                <SelectTrigger className="w-auto focus:border-primary mt-2">
                   <SelectValue placeholder="Type of Appointment" />
                 </SelectTrigger>
-                <SelectContent className='bg-slate1'>
+                <SelectContent className='bg-background'>
                   <SelectItem value="After">After</SelectItem>
                   <SelectItem value="Before">Before</SelectItem>
                 </SelectContent>
               </Select>
               <Select name='sendOnly'>
-                <SelectTrigger className="w-auto focus:border-[#60b9fd]">
+                <SelectTrigger className="w-auto focus:border-primary">
                   <SelectValue placeholder="Type of Appointment" />
                 </SelectTrigger>
-                <SelectContent className='bg-slate1'>
+                <SelectContent className='bg-background'>
                   <SelectItem value="Always Send">Always Send</SelectItem>
                   <SelectItem value="Dont Send If Closed">Dont send if closed</SelectItem>
                   <SelectItem value="Execute at next business hour">Execute at next business hour</SelectItem>

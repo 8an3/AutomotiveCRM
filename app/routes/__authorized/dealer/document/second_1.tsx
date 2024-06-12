@@ -204,7 +204,7 @@ export default function PrintAndDocs() {
 
   return (
     <>
-      <div className="h-screen justify-center bg-slate1">
+      <div className="h-screen justify-center bg-background">
         <ClientOnly fallback={<p>Fallback component ...</p>}>
           {() => (
             <React.Suspense fallback={<div>Loading...</div>}>

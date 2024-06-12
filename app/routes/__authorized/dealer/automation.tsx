@@ -112,7 +112,7 @@ export default function Automation() {
         </div>
         <div>
           <Label>When</Label>
-          <select className='border-black text-black bg-white autofill:placeholder:text-text-black justify-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]'>
+          <select className='border-black text-black bg-white autofill:placeholder:text-text-black justify-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary'>
             <option value=''>Select an option</option>
             <option value='Lead is Created'>Lead is Created</option>
             <option value='Lead is Updated'>Lead is Updated</option>
@@ -122,7 +122,7 @@ export default function Automation() {
         </div>
         <div>
           <Label>Trigger Field</Label>
-          <select className='border-black text-black bg-white autofill:placeholder:text-text-black justify-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]'>
+          <select className='border-black text-black bg-white autofill:placeholder:text-text-black justify-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary'>
             <option value=''>Select an option</option>
             <option value='All'>All</option>
             <option value='TASK / EVENT'>TASK / EVENT</option>
@@ -150,7 +150,7 @@ export default function Automation() {
             </option>
           ))}
         </select>
-        <select className='border-black text-black bg-white autofill:placeholder:text-text-black justify-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]'>
+        <select className='border-black text-black bg-white autofill:placeholder:text-text-black justify-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary'>
           <option value=''>Select an option</option>
           <option value='Is defined'>Is defined</option>
           <option value='Is not defined'>Is not defined</option>
@@ -168,7 +168,7 @@ export default function Automation() {
             </option>
           ))}
         </select>
-        <select className='border-black text-black bg-white autofill:placeholder:text-text-black justify-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]'>
+        <select className='border-black text-black bg-white autofill:placeholder:text-text-black justify-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary'>
           <option value=''>Select an option</option>
           <option value='AND'>AND</option>
           <option value='OR'>OR</option>

@@ -968,7 +968,7 @@ export default function Shight() {
     {
       email: "",
       name: "Entire dealers fall prey to this.",
-      content: <div className='grid w-full items-center bg-slate11  text-slate3 ' >
+      content: <div className='grid w-full items-center bg-background1  text-slate3 ' >
         <p>
           Do not order/promise parts to a customer who has not signed a bill of sale.
         </p>

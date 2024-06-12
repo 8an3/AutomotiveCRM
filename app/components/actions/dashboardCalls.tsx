@@ -1516,79 +1516,205 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     return json({ doTGwoDays, completeApt, setComs, saveComms });
   }
   if (intent === "2DaysFromNow") {
-    const lastContact = new Date().toISOString();
     let customerState = formData.customerState;
     if (customerState === "Pending") {
       customerState = "Attempted";
     }
     const followUpDay2 = parseInt(formData.followUpDay1);
-    console.log('followUpDay:', followUpDay2);  // Add this line
-
+    console.log('followUpDay:', followUpDay2);
     function addDays(days) {
       let currentDate = new Date();
       currentDate.setDate(currentDate.getDate() + days);
       return currentDate;
     }
-
     const complete = await CompleteLastAppt(userId, financeId)
-
     const completeApt = await CompleteLastAppt(userId, financeId)
-
+    //-----------------------
+    //  let dateModal = new Date(formData.value);
     let newDate = addDays(followUpDay2);
-    newDate = new Date(newDate).toISOString();
-    //  console.log('financeId:', financeId);  // Add this line
 
-    let clientAptsData = {
-      title: formData.title,
-      start: newDate,
+    const date = new Date(newDate);
 
-      //end: formData.end,
-      userId: user?.id,
-      contactMethod: formData.contactMethod,
-      completed: 'no',
-      apptStatus: formData.apptStatus,
-      apptType: formData.apptType,
-      note: formData.note,
-      unit: formData.unit,
-      brand: formData.brand,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      //  financeId: formData.financeId,
-      //description,
-      userName: user?.name,
-      messageTitle: 'Contacted by Instant Function',
-
-      // direction: 'Outgoing',
-      resultOfcall: 'Attempted',
-
+    const options = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
     };
 
-    const nextAppointment = newDate
-    const followUpDay = newDate
-    const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, }
-    const updating = await updateFinance23(financeId, formData3, formPayload);
-    const comdata = {
-      financeId: formData.financeId,
-      userId: formData.userId,
-      content: formData.note,
-      title: formData.title,
-      direction: formData.direction,
-      result: formData.resultOfcall,
-      subject: formData.messageContent,
-      type: 'Text',
-      userName: user?.name,
-      date: new Date().toISOString(),
-    }
-    const setComs = await prisma.communicationsOverview.create({
-      data: comdata,
+    const apptDate = date.toLocaleDateString('en-US', options)
+
+    console.log(formData.value, date, "date info")
+
+    const todaysDate = new Date()
+    const lastContacted = todaysDate.toLocaleDateString('en-US', options)
+    //---------------------
+    const finance = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: {
+        clientfileId: formData.clientfileId,
+        activixId: formData.activixId,
+        theRealActId: formData.theRealActId,
+        financeManager: formData.financeManager,
+        email: formData.email,
+        firstName: formData.firstName,
+        mileage: formData.mileage,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        name: formData.name,
+        address: formData.address,
+        city: formData.city,
+        postal: formData.postal,
+        province: formData.province,
+        dl: formData.dl,
+        typeOfContact: formData.typeOfContact,
+        timeToContact: formData.timeToContact,
+        iRate: formData.iRate,
+        months: formData.months,
+        discount: formData.discount,
+        total: formData.total,
+        onTax: formData.onTax,
+        on60: formData.on60,
+        biweekly: formData.biweekly,
+        weekly: formData.weekly,
+        weeklyOth: formData.weeklyOth,
+        biweekOth: formData.biweekOth,
+        oth60: formData.oth60,
+        weeklyqc: formData.weeklyqc,
+        biweeklyqc: formData.biweeklyqc,
+        qc60: formData.qc60,
+        deposit: formData.deposit,
+        biweeklNatWOptions: formData.biweeklNatWOptions,
+        weeklylNatWOptions: formData.weeklylNatWOptions,
+        nat60WOptions: formData.nat60WOptions,
+        weeklyOthWOptions: formData.weeklyOthWOptions,
+        biweekOthWOptions: formData.biweekOthWOptions,
+        oth60WOptions: formData.oth60WOptions,
+        biweeklNat: formData.biweeklNat,
+        weeklylNat: formData.weeklylNat,
+        nat60: formData.nat60,
+        qcTax: formData.qcTax,
+        otherTax: formData.otherTax,
+        totalWithOptions: formData.totalWithOptions,
+        otherTaxWithOptions: formData.otherTaxWithOptions,
+        desiredPayments: formData.desiredPayments,
+        freight: formData.freight,
+        admin: formData.admin,
+        commodity: formData.commodity,
+        pdi: formData.pdi,
+        discountPer: formData.discountPer,
+        userLoanProt: formData.userLoanProt,
+        userTireandRim: formData.userTireandRim,
+        userGap: formData.userGap,
+        userExtWarr: formData.userExtWarr,
+        userServicespkg: formData.userServicespkg,
+        deliveryCharge: formData.deliveryCharge,
+        vinE: formData.vinE,
+        lifeDisability: formData.lifeDisability,
+        rustProofing: formData.rustProofing,
+        userOther: formData.userOther,
+        paintPrem: formData.paintPrem,
+        licensing: formData.licensing,
+        stockNum: formData.stockNum,
+        options: formData.options,
+        accessories: formData.accessories,
+        labour: formData.labour,
+        year: formData.year,
+        brand: formData.brand,
+        model: formData.model,
+        model1: formData.model1,
+        color: formData.color,
+        modelCode: formData.modelCode,
+        msrp: formData.msrp,
+        userEmail: formData.userEmail,
+        tradeValue: formData.tradeValue,
+        tradeDesc: formData.tradeDesc,
+        tradeColor: formData.tradeColor,
+        tradeYear: formData.tradeYear,
+        tradeMake: formData.tradeMake,
+        tradeVin: formData.tradeVin,
+        tradeTrim: formData.tradeTrim,
+        tradeMileage: formData.tradeMileage,
+        tradeLocation: formData.tradeLocation,
+        trim: formData.trim,
+        vin: formData.vin,
+        leadNote: formData.leadNote,
+        sendToFinanceNow: formData.sendToFinanceNow,
+        dealNumber: formData.dealNumber,
+        bikeStatus: formData.bikeStatus,
+        lien: formData.lien,
+        dob: formData.dob,
+        othTax: formData.othTax,
+        optionsTotal: formData.optionsTotal,
+        lienPayout: formData.lienPayout,
+        referral: formData.referral,
+        visited: formData.visited,
+        bookedApt: formData.bookedApt,
+        aptShowed: formData.aptShowed,
+        aptNoShowed: formData.aptNoShowed,
+        testDrive: formData.testDrive,
+        metService: formData.metService,
+        metManager: formData.metManager,
+        metParts: formData.metParts,
+        sold: formData.sold,
+        depositMade: formData.depositMade,
+        refund: formData.refund,
+        turnOver: formData.turnOver,
+        financeApp: formData.financeApp,
+        approved: formData.approved,
+        signed: formData.signed,
+        pickUpSet: formData.pickUpSet,
+        demoed: formData.demoed,
+        delivered: formData.delivered,
+        lastContact: lastContacted,
+        status: formData.status,
+        customerState: formData.customerState,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: apptDate,
+        followUpDay: apptDate,
+        deliveredDate: formData.deliveredDate,
+        notes: formData.notes,
+        visits: formData.visits,
+        progress: formData.progress,
+        metSalesperson: formData.metSalesperson,
+        metFinance: formData.metFinance,
+        financeApplication: formData.financeApplication,
+        pickUpDate: formData.pickUpDate,
+        pickUpTime: formData.pickUpTime,
+        depositTakenDate: formData.depositTakenDate,
+        docsSigned: formData.docsSigned,
+        tradeRepairs: formData.tradeRepairs,
+        seenTrade: formData.seenTrade,
+        lastNote: formData.lastNote,
+        applicationDone: formData.applicationDone,
+        licensingSent: formData.licensingSent,
+        liceningDone: formData.liceningDone,
+        refunded: formData.refunded,
+        cancelled: formData.cancelled,
+        lost: formData.lost,
+        dLCopy: formData.dLCopy,
+        insCopy: formData.insCopy,
+        testDrForm: formData.testDrForm,
+        voidChq: formData.voidChq,
+        loanOther: formData.loanOther,
+        signBill: formData.signBill,
+        ucda: formData.ucda,
+        tradeInsp: formData.tradeInsp,
+        customerWS: formData.customerWS,
+        otherDocs: formData.otherDocs,
+        urgentFinanceNote: formData.urgentFinanceNote,
+        funded: formData.funded,
+        leadSource: formData.leadSource,
+      },
     });
-
-
     const createFollowup = await prisma.clientApts.create({
       data: {
+        financeId: formData.financeId,
+        userEmail: formData.userEmail,
         address: formData.address,
         phone: formData.phone,
         email: formData.email,
@@ -1601,20 +1727,16 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         apptStatus: formData.apptStatus,
         completed: 'no',
         contactMethod: formData.contactMethod,
-        end: formData.end,
+        end: new Date(new Date(apptDate).getTime() + 45 * 60000),
         title: formData.title,
-        start: newDate,
+        start: String(apptDate),
         userId: user?.id,
         description: formData.description,
         resourceId: Number(formData.resourceId),
         userName: user?.name,
-        financeId: formData.financeId,
       }
     })
-
-
-    //  console.log('hittind 2 days from noiw', formData, followUpDay, completeApt, createClientFinanceAptData)
-    return json({ complete, updating, completeApt, createFollowup, setComs });
+    return json({ complete, finance, completeApt, createFollowup, });
   }
   if (intent === "completeApt") {
     console.log('completeApt')
@@ -1634,54 +1756,193 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
   }
   if (intent === "scheduleFUp") {
+    console.log(formData, 'formData')
     const lastContact = new Date().toISOString();
     let customerState = formData.customerState;
     if (customerState === "Pending") {
       customerState = "Attempted";
     }
-    let dateModal = new Date(formData.dateModal);
-    const timeOfDayModal = formData.timeOfDayModal;
-    const [hours, minutes] = timeOfDayModal.split(':').map(Number);
-    dateModal.setHours(hours, minutes);
+    let dateModal = new Date(formData.value);
     const year = dateModal.getFullYear();
-    const month = String(dateModal.getMonth() + 1).padStart(2, '0');  // Months are 0-indexed in JavaScript
+    const month = String(dateModal.getMonth() + 1).padStart(2, '0');
     const day = String(dateModal.getDate()).padStart(2, '0');
-    const hour = String(dateModal.getHours()).padStart(2, '0');
-    const minute = String(dateModal.getMinutes()).padStart(2, '0');
-    const dateTimeString = `${year}-${month}-${day}T${hour}:${minute}:00.000`;
-    console.log(dateTimeString, 'datemodal');
-
-    let clientAptsData = {
-      title: formData.title,
-      start: dateTimeString,
-      //end: formData.end,
-      contactMethod: formData.contactMethod,
-      completed: formData.completed,
-      apptStatus: formData.apptStatus,
-      apptType: formData.apptType,
-      note: formData.note,
-      unit: formData.unit,
-      brand: formData.brand,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      resourceId: formData.resourceId,
-      //  financeId: formData.financeId,
-      //description,
-      userName: user?.name,
-      //  direction: 'Outgoing',
-      resultOfcall: 'Attempted',
-      userId,
+    const hours = formData.hours;
+    const minutes = formData.minutes;
+    dateModal.setHours(hours, minutes);
+    const dateTimeString = `${year}-${month}-${day}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00.000`;
+    const date = new Date(dateTimeString);
+    const options = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
     };
+    const apptDate = date.toLocaleDateString('en-US', options)
+    const todaysDate = new Date()
     const completeApt = await CompleteLastAppt(userId, financeId)
-
-    const nextAppointment = dateTimeString
-    const followUpDay = dateTimeString
-    const formData3 = { ...formData, nextAppointment, followUpDay, lastContact, customerState, }
-    const updating = await updateFinance23(financeId, formData3, formPayload);
-
+    const updating = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: {
+        clientfileId: formData.clientfileId,
+        activixId: formData.activixId,
+        theRealActId: formData.theRealActId,
+        financeManager: formData.financeManager,
+        email: formData.email,
+        firstName: formData.firstName,
+        mileage: formData.mileage,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        name: formData.name,
+        address: formData.address,
+        city: formData.city,
+        postal: formData.postal,
+        province: formData.province,
+        dl: formData.dl,
+        typeOfContact: formData.typeOfContact,
+        timeToContact: formData.timeToContact,
+        iRate: formData.iRate,
+        months: formData.months,
+        discount: formData.discount,
+        total: formData.total,
+        onTax: formData.onTax,
+        on60: formData.on60,
+        biweekly: formData.biweekly,
+        weekly: formData.weekly,
+        weeklyOth: formData.weeklyOth,
+        biweekOth: formData.biweekOth,
+        oth60: formData.oth60,
+        weeklyqc: formData.weeklyqc,
+        biweeklyqc: formData.biweeklyqc,
+        qc60: formData.qc60,
+        deposit: formData.deposit,
+        biweeklNatWOptions: formData.biweeklNatWOptions,
+        weeklylNatWOptions: formData.weeklylNatWOptions,
+        nat60WOptions: formData.nat60WOptions,
+        weeklyOthWOptions: formData.weeklyOthWOptions,
+        biweekOthWOptions: formData.biweekOthWOptions,
+        oth60WOptions: formData.oth60WOptions,
+        biweeklNat: formData.biweeklNat,
+        weeklylNat: formData.weeklylNat,
+        nat60: formData.nat60,
+        qcTax: formData.qcTax,
+        otherTax: formData.otherTax,
+        totalWithOptions: formData.totalWithOptions,
+        otherTaxWithOptions: formData.otherTaxWithOptions,
+        desiredPayments: formData.desiredPayments,
+        freight: formData.freight,
+        admin: formData.admin,
+        commodity: formData.commodity,
+        pdi: formData.pdi,
+        discountPer: formData.discountPer,
+        userLoanProt: formData.userLoanProt,
+        userTireandRim: formData.userTireandRim,
+        userGap: formData.userGap,
+        userExtWarr: formData.userExtWarr,
+        userServicespkg: formData.userServicespkg,
+        deliveryCharge: formData.deliveryCharge,
+        vinE: formData.vinE,
+        lifeDisability: formData.lifeDisability,
+        rustProofing: formData.rustProofing,
+        userOther: formData.userOther,
+        paintPrem: formData.paintPrem,
+        licensing: formData.licensing,
+        stockNum: formData.stockNum,
+        options: formData.options,
+        accessories: formData.accessories,
+        labour: formData.labour,
+        year: formData.year,
+        brand: formData.brand,
+        model: formData.model,
+        model1: formData.model1,
+        color: formData.color,
+        modelCode: formData.modelCode,
+        msrp: formData.msrp,
+        userEmail: formData.userEmail,
+        tradeValue: formData.tradeValue,
+        tradeDesc: formData.tradeDesc,
+        tradeColor: formData.tradeColor,
+        tradeYear: formData.tradeYear,
+        tradeMake: formData.tradeMake,
+        tradeVin: formData.tradeVin,
+        tradeTrim: formData.tradeTrim,
+        tradeMileage: formData.tradeMileage,
+        tradeLocation: formData.tradeLocation,
+        trim: formData.trim,
+        vin: formData.vin,
+        leadNote: formData.leadNote,
+        sendToFinanceNow: formData.sendToFinanceNow,
+        dealNumber: formData.dealNumber,
+        bikeStatus: formData.bikeStatus,
+        lien: formData.lien,
+        dob: formData.dob,
+        othTax: formData.othTax,
+        optionsTotal: formData.optionsTotal,
+        lienPayout: formData.lienPayout,
+        referral: formData.referral,
+        visited: formData.visited,
+        bookedApt: formData.bookedApt,
+        aptShowed: formData.aptShowed,
+        aptNoShowed: formData.aptNoShowed,
+        testDrive: formData.testDrive,
+        metService: formData.metService,
+        metManager: formData.metManager,
+        metParts: formData.metParts,
+        sold: formData.sold,
+        depositMade: formData.depositMade,
+        refund: formData.refund,
+        turnOver: formData.turnOver,
+        financeApp: formData.financeApp,
+        approved: formData.approved,
+        signed: formData.signed,
+        pickUpSet: formData.pickUpSet,
+        demoed: formData.demoed,
+        delivered: formData.delivered,
+        lastContact: todaysDate.toLocaleDateString('en-US', options),
+        status: formData.status,
+        customerState: formData.customerState,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: apptDate,
+        followUpDay: apptDate,
+        deliveredDate: formData.deliveredDate,
+        notes: formData.notes,
+        visits: formData.visits,
+        progress: formData.progress,
+        metSalesperson: formData.metSalesperson,
+        metFinance: formData.metFinance,
+        financeApplication: formData.financeApplication,
+        pickUpDate: formData.pickUpDate,
+        pickUpTime: formData.pickUpTime,
+        depositTakenDate: formData.depositTakenDate,
+        docsSigned: formData.docsSigned,
+        tradeRepairs: formData.tradeRepairs,
+        seenTrade: formData.seenTrade,
+        lastNote: formData.lastNote,
+        applicationDone: formData.applicationDone,
+        licensingSent: formData.licensingSent,
+        liceningDone: formData.liceningDone,
+        refunded: formData.refunded,
+        cancelled: formData.cancelled,
+        lost: formData.lost,
+        dLCopy: formData.dLCopy,
+        insCopy: formData.insCopy,
+        testDrForm: formData.testDrForm,
+        voidChq: formData.voidChq,
+        loanOther: formData.loanOther,
+        signBill: formData.signBill,
+        ucda: formData.ucda,
+        tradeInsp: formData.tradeInsp,
+        customerWS: formData.customerWS,
+        otherDocs: formData.otherDocs,
+        urgentFinanceNote: formData.urgentFinanceNote,
+        funded: formData.funded,
+        leadSource: formData.leadSource,
+      },
+    });
+    const end = new Date(new Date(date).getTime() + 45 * 60000)
     const createFollowup = await prisma.clientApts.create({
       data: {
         address: formData.address,
@@ -1692,13 +1953,14 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         brand: formData.brand,
         unit: formData.unit,
         note: formData.note,
+        userEmail: formData.userEmail,
         apptType: formData.apptType,
         apptStatus: formData.apptStatus,
         completed: 'no',
         contactMethod: formData.contactMethod,
-        end: formData.end,
+        end: end,
         title: formData.title,
-        start: dateTimeString,
+        start: apptDate,
         userId: user?.id,
         description: formData.description,
         resourceId: Number(formData.resourceId),
@@ -1706,24 +1968,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         financeId: formData.financeId,
       }
     })
-    const comdata = {
-      financeId: formData.financeId,
-      userId: formData.userId,
-      content: formData.note,
-      title: formData.title,
-      direction: formData.direction,
-      result: formData.resultOfcall,
-      subject: formData.messageContent,
-      type: 'Text',
-      userName: user?.name,
-      date: new Date().toISOString(),
-    }
-    const setComs = await prisma.communicationsOverview.create({
-      data: comdata,
-    });
-
-    //  console.log('hittind 2 days from noiw', formData, followUpDay, completeApt, createClientFinanceAptData)
-    return json({ updating, completeApt, createFollowup, setComs });
+    return json({ updating, completeApt, createFollowup, });
   }
   if (intent === "updateFinance") {
     console.log(formData, ' update finance data')

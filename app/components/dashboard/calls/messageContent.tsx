@@ -10,10 +10,10 @@ export default function MesasageContent() {
   return (
     <>
       <Select name='note' defaultValue="none">
-        <SelectTrigger className="w-auto  focus:border-[#60b9fd]">
+        <SelectTrigger className="w-auto  focus:border-primary">
           <SelectValue placeholder="Message examples" />
         </SelectTrigger>
-        <SelectContent className='bg-slate1'>
+        <SelectContent className='bg-background'>
           <SelectItem value="">-- Moving Forward --</SelectItem>
           <SelectItem value="Wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
           <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>

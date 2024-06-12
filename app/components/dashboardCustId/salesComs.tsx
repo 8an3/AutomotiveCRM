@@ -71,7 +71,7 @@ export function SalesComms({
       </Tabs.List>
       <Tabs.Content className="grow  bg-myColor-900 text-foreground rounded-b-md outline-none  focus:shadow-black" value="notes"  >
         <div className="mb-4 p-5 h-full   text-foreground">
-          <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-slate11" >
+          <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-background1" >
             <div className="rounded-t bg-background mb-4 p-4 ">
               <div className="text-center flex justify-between">
                 <h6 className="text-foreground text-xl font-bold uppercase px-3 py-2">
@@ -87,7 +87,7 @@ export function SalesComms({
       </Tabs.Content>
       <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-foreground rounded-b-md outline-none  focus:shadow-black" value="aptHist" >
         <div className="mb-4 w-full  text-foreground">
-          <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-slate11" >
+          <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-background1" >
             <div className="rounded-t bg-background mb-0 p-4 ">
               <div className="text-center flex justify-between">
                 <h6 className="text-foreground text-xl font-bold uppercase px-3 py-2">
@@ -153,7 +153,7 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
                     />
 
                     {/* Toolbar */}
-                    < Toolbar.Root className="my-auto ml-auto mt-1 mt-1 flex h-full  w-[30px] justify-center  p-[10px]   bg-slate11" >
+                    < Toolbar.Root className="my-auto ml-auto mt-1 mt-1 flex h-full  w-[30px] justify-center  p-[10px]   bg-background1" >
                       <Toolbar.ToggleGroup
                         type="multiple"
                         className="flex flex-col"
@@ -266,7 +266,7 @@ ${isToday(new Date(message?.start)) ? 'border-yellow-500 border:w-[4px] ' :
       </Tabs.Content>
       <Tabs.Content className="grow p-5 rounded-tr-md bg-myColor-900 text-foreground rounded-b-md outline-none  focus:shadow-black" value="coms" >
         <div className="mb-4 h-full  text-foreground">
-          <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-slate11" >
+          <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-lg  border-0 bg-background1" >
             <div className="rounded-t bg-background mb-0 p-4 ">
               <div className="text-center flex justify-between">
                 <h6 className="text-foreground text-xl font-bold uppercase px-3 py-2">

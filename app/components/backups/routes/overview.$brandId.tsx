@@ -336,7 +336,7 @@ export function Overview({ outletSize }) {
                 <>
                     <div className='flex justify-between mt-3 xs:grid xs:grid-cols-1'>
                         <select value={selectedType} onChange={handleTypeChange}
-                            className=" rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                            className=" rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                         >
                             <option value="0">Motorcycle Category</option>
 
@@ -349,7 +349,7 @@ export function Overview({ outletSize }) {
 
                         {selectedType && (
                             <select value={selectedOption} onChange={handleOptionChange}
-                                className="mx-auto  rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                                className="mx-auto  rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             >
                                 <option value="0">Tire and Rim Choice</option>
 
@@ -363,7 +363,7 @@ export function Overview({ outletSize }) {
 
                         {selectedOption && (
                             <select value={selectedYear} onChange={handleYearChange}
-                                className="rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                                className="rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             >
                                 <option value="0">Years</option>
 
@@ -1430,20 +1430,20 @@ export function Overview({ outletSize }) {
                         <div className='mt-3'>
                             <div className="flex main-button-group justify-between ">
                                 <Badge id='myButton'
-                                    className={`button  shadow hover:text-foreground bg-primary  transform cursor-pointer  ${mainButton === 'payments' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
+                                    className={`button  shadow hover:text-foreground bg-primary  transform cursor-pointer  ${mainButton === 'payments' ? 'active bg-background text-foreground' : 'bg-background text-foreground'}`}
                                     onClick={() => handleMainButtonClick('payments')}>
                                     Payments
                                 </Badge>
 
                                 <Badge id='myButton1'
-                                    className={`button  shadow bg-primary transform hover:text-foreground   cursor-pointer ${mainButton === 'noTax' ? 'active bg-background text-foreground ' : 'bg-slate1 text-foreground'}`}
+                                    className={`button  shadow bg-primary transform hover:text-foreground   cursor-pointer ${mainButton === 'noTax' ? 'active bg-background text-foreground ' : 'bg-background text-foreground'}`}
                                     onClick={() => handleMainButtonClick('noTax')}
                                 >
                                     No Tax
                                 </Badge>
 
                                 <Badge id='myButton2'
-                                    className={`button  shadow bg-primary transform   hover:text-foreground cursor-pointer ${mainButton === 'customTax' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
+                                    className={`button  shadow bg-primary transform   hover:text-foreground cursor-pointer ${mainButton === 'customTax' ? 'active bg-background text-foreground' : 'bg-background text-foreground'}`}
                                     onClick={() => handleMainButtonClick('customTax')}
                                 >
                                     Custom Tax
@@ -1452,7 +1452,7 @@ export function Overview({ outletSize }) {
                             <div className="flex sub-button-group justify-between mt-2">
 
                                 <Badge id='myButton3'
-                                    className={`button  shadow bg-primary transform hover:text-foreground cursor-pointer ${subButton === 'withoutOptions' ? 'active bg-background text-foreground' : 'bg-slate1 text-foreground'}`}
+                                    className={`button  shadow bg-primary transform hover:text-foreground cursor-pointer ${subButton === 'withoutOptions' ? 'active bg-background text-foreground' : 'bg-background text-foreground'}`}
                                     onClick={() => handleSubButtonClick('withoutOptions')}
                                 >
                                     W/O Options
@@ -1460,7 +1460,7 @@ export function Overview({ outletSize }) {
 
 
                                 <Badge id='myButton5'
-                                    className={`button  shadow bg-primary transform  cursor-pointer hover:text-foreground  ${subButton === 'withOptions' ? 'active bg-background  text-foreground' : 'bg-slate1 text-foreground'}`}
+                                    className={`button  shadow bg-primary transform  cursor-pointer hover:text-foreground  ${subButton === 'withOptions' ? 'active bg-background  text-foreground' : 'bg-background text-foreground'}`}
                                     onClick={() => handleSubButtonClick('withOptions')}
                                 >
                                     W/ Options
@@ -1969,7 +1969,7 @@ export default function Quote() {
             scaling="90%"
             radius="medium"
         >
-            <div className="flex min-h-screen px-4 mb-10 sm:px-6 lg:px-8 bg-slate1">
+            <div className="flex min-h-screen px-4 mb-10 sm:px-6 lg:px-8 bg-background">
                 <div className="w-full overflow-hidden rounded-lg">
                     <div className="md:flex my-auto mx-auto">
                         <div

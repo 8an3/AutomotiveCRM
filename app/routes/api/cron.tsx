@@ -86,6 +86,19 @@ const checkReminders = async (users, apptType) => {
 };
 
 export async function loader({ request, params }) {
+  await prisma.script.create({
+    data: {
+      email: 'skylerzanth@outlook.com',
+      name: 'Appointment Reminder!',
+      content: 'test',
+      category: 'updates',
+      subCat: 'test',
+    },
+  });
+  await processAutomations();
+  return json({ message: 'Automations completed...' });
+}
+export async function action({ request, params }) {
   await processAutomations();
   return json({ message: 'Automations completed...' });
 }

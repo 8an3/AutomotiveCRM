@@ -1422,7 +1422,7 @@ export function MainDashbaord() {
             cell: ({ row }) => {
                 const data = row.original;
 
-                const date = new Date(data.nextAppointment);
+                const date = new Date(String());
                 const options = {
                     weekday: 'short',
                     year: 'numeric',
@@ -1434,7 +1434,7 @@ export function MainDashbaord() {
                 };
 
                 return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
-                    {data.nextAppointment === 'TBD' || data.nextAppointment === 'Wed, Dec 31, 1969, 07:00:00 PM' ? <p>TBD</p> : date.toLocaleDateString('en-US', options)}
+                    {String(data.nextAppointment)}
                 </div>
             },
         },

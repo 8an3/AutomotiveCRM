@@ -38,7 +38,7 @@ const FeaturePop = ({ finance, user }) => {
           Features
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[250px] bg-slate1 text-foreground border-2 border-slate12">
+      <PopoverContent className="w-[250px] bg-background text-foreground border-2 border-slate12">
         <div className="grid justify-center">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">Features</h4>

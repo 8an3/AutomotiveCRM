@@ -193,7 +193,7 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
                       <select
                         name='timeToContact'
                         placeholder='Best Time To Contact'
-                        className="mx-auto mt-3 w-2/3  border-black cursor-pointer rounded border-1 ml-2 mr-2 bg-slate1 px-3 py-3 text-sm text-foreground placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                        className="mx-auto mt-3 w-2/3  border-black cursor-pointer rounded border-1 ml-2 mr-2 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary">
                         <option value="na">Best Time To Contact</option>
                         <option value="Morning">Morning</option>
                         <option value="Afternoon">Afternoon</option>
@@ -207,7 +207,7 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
                       </label>
                       <select
                         name='typeOfContact'
-                        className='w-2/3  mx-auto  text-xs  mb-2 cursor-pointer rounded border-1 border-black focus:border-[#60b9fd] bg-slate1 text-foreground  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]'>
+                        className='w-2/3  mx-auto  text-xs  mb-2 cursor-pointer rounded border-1 border-black focus:border-primary bg-background text-foreground  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary'>
                         <option value="">Contact Method</option>
                         <option value="Phone">Phone</option>
                         <option value="InPerson">In-Person</option>
@@ -336,7 +336,7 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
                     {(value instanceof Date) ? value.toLocaleDateString() : 'Pick a date'}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-2/3 bg-slate1 border border-slate12 text-foreground p-0" align="start">
+                <PopoverContent className="w-2/3 bg-background border border-slate12 text-foreground p-0" align="start">
                   <div>
                     <Calendar onChange={onChange} name='pickUpDate' value={value} calendarType="gregory" />
                   </div>
@@ -347,7 +347,7 @@ export default function ContactInfoDisplay({ finance, handleChange, formData, to
               </label>
               <select
                 name="pickUpTime"
-                className={`mx-auto w-2/3 mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-[#60b9fd] bg-slate1 text-foreground  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd] `}>
+                className={`mx-auto w-2/3 mb-2 text-xs mt-3 h-10 cursor-pointer rounded border-1 border-primary bg-background text-foreground  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary `}>
                 <option value="Time of day">Time of day</option>
                 <option value="09:00">9:00</option>
                 <option value="09:30">9:30</option>

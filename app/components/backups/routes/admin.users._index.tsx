@@ -325,7 +325,7 @@ export default function Route() {
                           <SelectTrigger className='mr-3 w-auto border-primary  text-primary'>
                             Role
                           </SelectTrigger>
-                          <SelectContent align="end" className='bg-slate1 text-foreground ' required>
+                          <SelectContent align="end" className='bg-background text-foreground ' required>
                             {userRole.map((role) => (
                               <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-primary hover:underline">
                                 {role.symbol}
@@ -350,7 +350,7 @@ export default function Route() {
 
       <TabsContent value="Add">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-slate11 text-foreground">
+          <CardContent className="space-y-2 rounded-md bg-background1 text-foreground">
             <Form method="post" className="">
 
               <div className="mt-2  grid  grid-cols-1 gap-2">
@@ -406,7 +406,7 @@ export default function Route() {
                       <SelectTrigger className='mr-3 w-auto border-primary  text-primary'>
                         Role
                       </SelectTrigger>
-                      <SelectContent align="end" className='bg-slate1 text-foreground '>
+                      <SelectContent align="end" className='bg-background text-foreground '>
                         {userRole.map((role) => (
                           <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-primary hover:underline">
                             {role.symbol}
@@ -434,7 +434,7 @@ export default function Route() {
 
       <TabsContent value="UserRoles">
         <Card>
-          <CardContent className="space-y-2 rounded-md bg-slate11 text-foreground  mt-5">
+          <CardContent className="space-y-2 rounded-md bg-background1 text-foreground  mt-5">
             <div className='flex justify-between'>
               <Button variant='outline' onClick={() => { setAddUserRole(true) }}>
                 Add User Role

@@ -190,7 +190,7 @@ export default function EmailClient() {
                 Templates
               </label>
               <select
-                className={`border-black text-black placeholder:text-blue-300 broder justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                className={`border-black text-black placeholder:text-blue-300 broder justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                 onChange={handleChange}>
                 <option value="">Select a template</option>
                 {templates && templates.filter(template => template.type === 'email').map((template, index) => (

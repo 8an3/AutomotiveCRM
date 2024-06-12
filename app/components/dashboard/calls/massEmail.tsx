@@ -194,7 +194,7 @@ export default function MassEmail(table) {
                 Templates
               </label>
               <select
-                className={`border-black text-[#C2E6FF]  bg-[#0d2847] autofill:placeholder:text-text-[#C2E6FF] justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+                className={`border-black text-[#C2E6FF]  bg-[#0d2847] autofill:placeholder:text-text-[#C2E6FF] justifty-start h-8 cursor-pointer rounded border px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
                 onChange={handleChange}>
                 <option value="">Select a template</option>
                 {templates && templates.filter(template => template.type === 'email').map((template, index) => (

@@ -7,6 +7,8 @@ const financeFormSchema = z.object({
   tradeColor: zfd.text(z.string().optional()),
   tradeYear: zfd.text(z.string().optional()),
   tradeMake: zfd.text(z.string().optional()),
+  minutes: zfd.text(z.string().optional()),
+  hours: zfd.text(z.string().optional()),
   tradeVin: zfd.text(z.string().optional()),
   packageNumber: zfd.text(z.string().optional()),
   dealerContact: zfd.text(z.string().optional()),

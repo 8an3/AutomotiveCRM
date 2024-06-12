@@ -386,14 +386,14 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
             <CardDescription>
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 bg-slate11 text-foreground">
+          <CardContent className="space-y-2 bg-background1 text-foreground">
             <StatsTable statsData={statsData} comsRecords={comsRecords} />
           </CardContent>
         </Card>
       </TabsContent>
       <TabsContent value="dealerFees" className='rounded-md'>
         <Card>
-          <CardContent className="space-y-2 bg-slate11 text-foreground rounded-md">
+          <CardContent className="space-y-2 bg-background1 text-foreground rounded-md">
             <Form method="post" className="">
 
               <div className="grid grid-cols-1 gap-4 mx-auto">
@@ -523,7 +523,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
               </p>
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 bg-slate11 text-foreground">
+          <CardContent className="space-y-2 bg-background1 text-foreground">
             <fetcher.Form method="post" className=''>
               <div className="grid sm:grid-cols-3 grid-cols-1  gap-2">
 
@@ -671,7 +671,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
               <CardTitle className='text-foreground'>Feature Settings</CardTitle>
               <CardDescription className='text-foreground'>Manage your cookie settings here.</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6 text-foreground space-y-2 bg-slate11">
+            <CardContent className="grid gap-6 text-foreground space-y-2 bg-background1">
               <div className="flex items-center justify-between space-x-2">
                 <Label htmlFor="necessary" className="flex flex-col space-y-1 mt-2">
                   <span>Activix Integration</span>
@@ -719,7 +719,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords }) {
               <Input type='hidden' name="email" defaultValue={user.email} />
               <Input type='hidden' name="userEmail" defaultValue={user.email} />
             </CardContent>
-            <CardFooter className='text-foreground bg-slate11'>
+            <CardFooter className='text-foreground bg-background1'>
               <ButtonLoading
                 size="lg"
                 className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"

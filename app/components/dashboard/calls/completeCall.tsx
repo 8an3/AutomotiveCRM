@@ -57,12 +57,12 @@ const CompleteCall = ({ data, contactMethod }) => {
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
   const currentSecond = now.getSeconds();
-  const [hour, setHour] = useState(currentHour)
-  const [min, setMin] = useState(currentMinute)
-  const [sec, setSec] = useState(currentSecond);
+  const [hour, setHour] = useState('09')
+  const [min, setMin] = useState('00')
+  const [sec, setSec] = useState('00');
 
   const currentTime = `${hour}:${min}:${currentSecond}`
-  console.log(`Current time is `, currentTime);
+
 
   useEffect(() => {
     function updateTime() {
@@ -74,7 +74,7 @@ const CompleteCall = ({ data, contactMethod }) => {
     const intervalId = setInterval(updateTime, 60000);
     return () => clearInterval(intervalId);
   }, []);
-  console.log(`Current time is `, currentTime);
+
   const time = `${hour}:${min}:${sec}`
   const newDate = new Date()
 
@@ -179,7 +179,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Custom Notes</label>
+              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
             </div>
             <div className="relative mt-3">
               <Select name='resourceId' defaultValue="1">
@@ -232,11 +232,11 @@ const CompleteCall = ({ data, contactMethod }) => {
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
+                  <PopoverContent className="w-[240px] bg-muted/40 p-0 text-foreground border-border" align="start">
                     <div className='align-center my-3 flex justify-center   '>
-                      <Select name='pickHour'  >
+                      <Select name='pickHour' onValueChange={(value) => setHour(value)} defaultValue='09'>
                         <SelectTrigger className="m-3 w-auto mx-auto bg-background text-foreground border border-border" >
-                          <SelectValue defaultValue='09' />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent className='bg-white text-black' >
                           <SelectGroup>
@@ -254,13 +254,14 @@ const CompleteCall = ({ data, contactMethod }) => {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <Select name='pickMin'   >
-                        <SelectTrigger className="m-3 w-full bg-background text-foreground border border-border" >
-                          <SelectValue defaultValue='10' />
+                      <Select defaultValue='00' name='pickMin' onValueChange={(value) => setMin(value)}>
+                        <SelectTrigger className="m-3 w-auto bg-background text-foreground border border-border" >
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent className='bg-white text-black'  >
                           <SelectGroup>
                             <SelectLabel>Minute</SelectLabel>
+                            <SelectItem value="00">00</SelectItem>
                             <SelectItem value="10">10</SelectItem>
                             <SelectItem value="20">20</SelectItem>
                             <SelectItem value="30">30</SelectItem>
@@ -294,6 +295,8 @@ const CompleteCall = ({ data, contactMethod }) => {
           <input type="hidden" defaultValue={data.vin} name="vin" />
           <input type="hidden" defaultValue={data.stockNum} name="stockNum" />
           <input type='hidden' name='activixId' value={data.activixId} />
+          <input type='hidden' name='minutes' value={min} />
+          <input type='hidden' name='hours' value={hour} />
 
           <div className="mt-[25px] flex justify-end">
             <DialogClose >
@@ -305,7 +308,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                   })
                 }}
                 name='intent' size='sm' value='scheduleFUp' type='submit'
-                className={`bg-[#dc2626] cursor-pointer ml-2 mr-2 p-3 hover:text-primary text-foreground font-bold uppercase text-xs rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
+                className={`bg-[#dc2626] cursor-pointer ml-2 mr-2 p-3 hover:text-primary text-foreground font-bold uppercase text-xs rounded-lg shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
               >
                 Complete
               </Button>

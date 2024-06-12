@@ -69,7 +69,7 @@ export default function PrintAndDocs() {
               </h6>
             </div>
           </div>
-          <div className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-slate11 z-50">
+          <div className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-background1 z-50">
             <CustomerGen />
           </div>
         </div>

@@ -322,7 +322,7 @@ export function Overview({ outletSize }) {
                 <>
                     <div className='flex justify-between mt-3 xs:grid xs:grid-cols-1'>
                         <select value={selectedType} onChange={handleTypeChange}
-                            className=" rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                            className=" rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                         >
                             <option value="0">Motorcycle Category</option>
 
@@ -335,7 +335,7 @@ export function Overview({ outletSize }) {
 
                         {selectedType && (
                             <select value={selectedOption} onChange={handleOptionChange}
-                                className="mx-auto  rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                                className="mx-auto  rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             >
                                 <option value="0">Tire and Rim Choice</option>
 
@@ -349,7 +349,7 @@ export function Overview({ outletSize }) {
 
                         {selectedOption && (
                             <select value={selectedYear} onChange={handleYearChange}
-                                className="rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                                className="rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                             >
                                 <option value="0">Years</option>
 
@@ -1955,7 +1955,7 @@ export default function Quote() {
                 scaling="90%"
                 radius="medium"
             >
-                <div className="flex min-h-screen px-4 mb-10 sm:px-6 lg:px-8 bg-slate1">
+                <div className="flex min-h-screen px-4 mb-10 sm:px-6 lg:px-8 bg-background">
                     <div className="w-full overflow-hidden rounded-lg">
                         <div className="md:flex my-auto mx-auto">
                             <div

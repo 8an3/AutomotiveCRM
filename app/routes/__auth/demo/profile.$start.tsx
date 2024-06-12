@@ -1091,7 +1091,7 @@ export default function MainForm() {
             <div className="grid gap-3">
               <Label htmlFor="name">Result</Label>
               <Select name='resultOfcall'  >
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-background border-border">
+                <SelectTrigger className="w-auto  focus:border-primary  bg-background border-border">
                   <SelectValue placeholder="Result of call" />
                 </SelectTrigger>
                 <SelectContent className='bg-background text-foreground bg-background'>
@@ -1109,7 +1109,7 @@ export default function MainForm() {
             <div className="grid gap-3">
               <Label htmlFor="name">Direction</Label>
               <Select name='direction' >
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-background border-border">
+                <SelectTrigger className="w-auto  focus:border-primary  bg-background border-border">
                   <SelectValue placeholder="Direction of call" />
                 </SelectTrigger>
                 <SelectContent className='bg-background text-foreground bg-background'>
@@ -1307,7 +1307,7 @@ export default function MainForm() {
             <div className="grid gap-3">
               <Label htmlFor="name">Result</Label>
               <Select name='resultOfcall'  >
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-background border-border">
+                <SelectTrigger className="w-auto  focus:border-primary  bg-background border-border">
                   <SelectValue placeholder="Result of call" />
                 </SelectTrigger>
                 <SelectContent className='bg-background text-foreground bg-background'>
@@ -1325,7 +1325,7 @@ export default function MainForm() {
             <div className="grid gap-3">
               <Label htmlFor="name">Direction</Label>
               <Select name='direction' >
-                <SelectTrigger className="w-auto  focus:border-[#60b9fd]  bg-background border-border">
+                <SelectTrigger className="w-auto  focus:border-primary  bg-background border-border">
                   <SelectValue placeholder="Direction of call" />
                 </SelectTrigger>
                 <SelectContent className='bg-background text-foreground bg-background'>

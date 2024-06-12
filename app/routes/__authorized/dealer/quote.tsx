@@ -41,7 +41,7 @@ export default function Quote() {
     const { newLook } = useLoaderData()
     return (
         <>
-            <div className={`flex h-[100vh] max-h-screen mix-h-screen px-4 sm:px-6 lg:px-8 ${newLook === true ? 'bg-background text-foreground' : 'bg-slate1 text-black'}`}>
+            <div className={`flex h-[100vh] max-h-screen mix-h-screen px-4 sm:px-6 lg:px-8 ${newLook === true ? 'bg-background text-foreground' : 'bg-background text-black'}`}>
                 <div className="w-full overflow-hidden rounded-lg ">
                     <div className="mx-auto my-auto md:flex">
                         <div className="mx-auto my-auto" >

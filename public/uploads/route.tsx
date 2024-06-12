@@ -137,7 +137,7 @@ export default function UploadFile() {
               <input type='hidden' defaultValue={user?.id} name='userId' />
             </div>
             <Select name='category'>
-              <SelectTrigger className="w-auto ml-3 mt-5 focus:border-[#60b9fd] text-black border border-black font-bold uppercase">
+              <SelectTrigger className="w-auto ml-3 mt-5 focus:border-primary text-black border border-black font-bold uppercase">
                 <SelectValue placeholder="Docs" />
               </SelectTrigger>
               <SelectContent className='bg-white'>
@@ -221,7 +221,7 @@ export default function UploadFile() {
               <input type='hidden' defaultValue={user?.id} name='userId' />
             </div>
             <Select name='category'>
-              <SelectTrigger className="w-auto ml-3 mt-5 focus:border-[#60b9fd] text-black border border-black font-bold uppercase">
+              <SelectTrigger className="w-auto ml-3 mt-5 focus:border-primary text-black border border-black font-bold uppercase">
                 <SelectValue placeholder="Docs" />
               </SelectTrigger>
               <SelectContent className='bg-black'>

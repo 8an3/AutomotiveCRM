@@ -14,7 +14,7 @@ const PresetFollowUpDay = ({ data }) => {
         <fetcher.Form method="post" onChange={(event) => {
             submit(event.currentTarget);
         }}>
-            <select defaultValue={data.followUpDay} name='followUpDay' className="mx-auto rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+            <select defaultValue={data.followUpDay} name='followUpDay' className="mx-auto rounded border-0 ml-2 mr-2 bg-white px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
             >
                 <option value="1">1 Day</option>
                 <option value="2">2 Days</option>

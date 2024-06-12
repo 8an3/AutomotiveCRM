@@ -479,13 +479,13 @@ export function DataTable<TData, TValue>({
                 Default Filters
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-slate1">
+            <DropdownMenuContent align="end" className="bg-background">
               <DropdownMenuLabel>Calls</DropdownMenuLabel>
               {CallsList.map((item) => (
                 <DropdownMenuCheckboxItem
                   key={item.key}
                   name={item.name}
-                  className="bg-slate1 capitalize cursor-pointer"
+                  className="bg-background capitalize cursor-pointer"
                   checked={item.name === todayfilterBy}
                   onCheckedChange={() => {
                     handleFilterChange(item.key);
@@ -499,7 +499,7 @@ export function DataTable<TData, TValue>({
                 <DropdownMenuCheckboxItem
                   key={item.key}
                   name={item.name}
-                  className="bg-slate1 capitalize cursor-pointer"
+                  className="bg-background capitalize cursor-pointer"
                   checked={item.name === todayfilterBy}
                   onCheckedChange={() => {
                     handleFilterChange(item.key);
@@ -513,7 +513,7 @@ export function DataTable<TData, TValue>({
                 <DropdownMenuCheckboxItem
                   key={item.key}
                   name={item.name}
-                  className="bg-slate1 capitalize cursor-pointer"
+                  className="bg-background capitalize cursor-pointer"
                   checked={item.name === todayfilterBy}
                   onCheckedChange={() => {
                     handleFilterChange(item.key);
@@ -533,7 +533,7 @@ export function DataTable<TData, TValue>({
                 Global Filter
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-slate1">
+            <DropdownMenuContent align="end" className="bg-background">
               <ScrollArea className="h-[500px] w-[200px] rounded-md  p-4">
                 {table
                   .getAllColumns()
@@ -543,7 +543,7 @@ export function DataTable<TData, TValue>({
                       <DropdownMenuCheckboxItem
                         key={column.id}
                         name="filterBy"
-                        className="bg-slate1 capitalize  cursor-pointer"
+                        className="bg-background capitalize  cursor-pointer"
                         checked={column.id === filterBy}
                         onCheckedChange={(value) =>
                           handleInputChange(column.id)
@@ -587,7 +587,7 @@ export function DataTable<TData, TValue>({
                 <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.14998 14V1H0.849976V14H2.14998ZM6.14998 14V1H4.84998V14H6.14998ZM10.15 1V14H8.84998V1H10.15ZM14.15 14V1H12.85V14H14.15Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
               </p>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-slate1">
+            <DropdownMenuContent align="end" className="bg-background">
               <ScrollArea className="h-[500px] w-[200px] rounded-md  p-4">
                 {table
                   .getAllColumns()
@@ -596,7 +596,7 @@ export function DataTable<TData, TValue>({
                     return (
                       <DropdownMenuCheckboxItem
                         key={column.id}
-                        className="bg-slate1 capitalize  cursor-pointer"
+                        className="bg-background capitalize  cursor-pointer"
                         checked={column.getIsVisible()}
                         onCheckedChange={(value) =>
                           column.toggleVisibility(!!value)

@@ -297,7 +297,7 @@ export default function ChatAppDashboardClient() {
       <CardFooter className="flex flex-row items-center border-t border-border bg-muted-background px-6 py-3">
         <div className='grid grid-cols-1' >
           <select
-            className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start w-[475px] mb-2 my-2 h-9   cursor-pointer rounded border  bg-muted-background border-border  text-xs uppercase   shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]`}
+            className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start w-[475px] mb-2 my-2 h-9   cursor-pointer rounded border  bg-muted-background border-border  text-xs uppercase   shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
             onChange={handleChange}>
             <option value="">Select a Template</option>
             {templates.map((template, index) => (

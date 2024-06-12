@@ -531,7 +531,7 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
           <SelectTrigger className="w-auto text-primary border-primary  mr-3 ">
             <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
           </SelectTrigger>
-          <SelectContent className='bg-slate1 text-foreground'>
+          <SelectContent className='bg-background text-foreground'>
             {CallsList.map((item) => (
               <SelectItem value={item.key}>{item.name}</SelectItem>
             ))}
@@ -548,7 +548,7 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
           <SelectTrigger className='text-primary border-primary w-auto  mr-3'>
             Global Filter
           </SelectTrigger>
-          <SelectContent align="end" className='bg-slate1 text-foreground '>
+          <SelectContent align="end" className='bg-background text-foreground '>
             {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => (
               <SelectItem key={column.id} value={column.id} className="bg-[#fff] text-[#000] capitalize cursor-pointer  hover:underline hover:text-primary">
                 {column.id}
@@ -617,7 +617,7 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
                 <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.14998 14V1H0.849976V14H2.14998ZM6.14998 14V1H4.84998V14H6.14998ZM10.15 1V14H8.84998V1H10.15ZM14.15 14V1H12.85V14H14.15Z" fill="#02a9ff" fillRule="evenodd" clipRule="evenodd"></path></svg>
               </p>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-slate1">
+            <DropdownMenuContent align="end" className="bg-background">
               <ScrollArea className="h-[500px] w-[200px] rounded-md  p-4">
                 {table
                   .getAllColumns()
@@ -626,7 +626,7 @@ export function DataTable<TData, TValue>({ columns, data, user, financeData }: D
                     return (
                       <DropdownMenuCheckboxItem
                         key={column.id}
-                        className="bg-slate1 capitalize  cursor-pointer"
+                        className="bg-background capitalize  cursor-pointer"
                         checked={column.getIsVisible()}
                         onCheckedChange={(value) =>
                           column.toggleVisibility(!!value)

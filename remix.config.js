@@ -1,15 +1,33 @@
 const {
   createRoutesFromFolders,
 } = require("@remix-run/v1-route-convention");
+var term = require('terminal-kit').terminal;
 
 // to determine if we're on the local development server
 const isDevelopment = process.env.NODE_ENV === "development";
 
 // to show environment condition
+
 if (isDevelopment) {
-  console.info({
-    message: `@DSA is running...`,
-    NODE_ENV: process.env.NODE_ENV,
+  term.slowTyping('Wake up Neo...\n', { flashStyle: term.brightWhite }, function () {
+    setTimeout(() => {
+      term.clear();
+      term.slowTyping('The matrix has you...\n', { flashStyle: term.brightWhite }, function () {
+        setTimeout(() => {
+          term.clear();
+          term.slowTyping('Follow the white rabbit...\n', { flashStyle: term.brightWhite }, function () {
+            setTimeout(() => {
+              term.clear();
+              term.slowTyping('Knock Knock!\n', { flashStyle: term.brightWhite }, function () {
+                setTimeout(() => {
+                  term.clear();
+                }, 2000); // Adjust the delay as needed
+              });
+            }, 2000); // Adjust the delay as needed
+          });
+        }, 2000); // Adjust the delay as needed
+      });
+    }, 2000); // Adjust the delay as needed
   });
 }
 
@@ -28,7 +46,8 @@ module.exports = {
   serverDependenciesToBundle: [
     "axios",
     "@azure/msal-react",
-    "Path2D"
+    "Path2D",
+    "chalk"
   ],
   tailwind: true,
   routes(defineRoutes) {

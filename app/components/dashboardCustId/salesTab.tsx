@@ -205,7 +205,7 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                   </h6>
                 </div>
               </div>
-              <div className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-slate11">
+              <div className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-background1">
                 <fetcher.Form method="post">
                   <Input type="hidden" defaultValue={finance[0].id} name="financeId" />
                   <Input type="hidden" defaultValue={finance[0].id} name="id" />
@@ -220,7 +220,7 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                         </label>
                         <input
                           type="text"
-                          className="w-full  rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                          className="w-full  rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
                           defaultValue={finance[0].brand}
                           name='brand'
                         />
@@ -565,10 +565,10 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       className="space-x-2 "
                     >
                       <Select name='userEmail' defaultValue={finance[0].userEmail}>
-                        <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                        <SelectTrigger className="max-w-sm rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary">
                           <SelectValue>Assigned Sales Person</SelectValue>
                         </SelectTrigger>
-                        <SelectContent className='bg-slate1 text-foreground'>
+                        <SelectContent className='bg-background text-foreground'>
                           {userList.map((user, index) => (
                             <SelectItem key={index} value={user.email}>{user.name}</SelectItem>
                           ))}
@@ -582,10 +582,10 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                       className="space-x-2 "
                     >
                       <Select name='financeManager' defaultValue={finance[0].financeManager}>
-                        <SelectTrigger className="max-w-sm  rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]">
+                        <SelectTrigger className="max-w-sm  rounded border-0 h-8 bg-background px-3 py-3 text-sm text-foreground placeholder-blue-600 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary">
                           <SelectValue>Assigned F & I</SelectValue>
                         </SelectTrigger>
-                        <SelectContent className='bg-slate1 text-foreground'>
+                        <SelectContent className='bg-background text-foreground'>
                           {userList.map((user, index) => (
                             <SelectItem key={index} value={user.id}>{user.name}</SelectItem>
                           ))}
@@ -615,7 +615,7 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                   </h6>
                 </div>
               </div>
-              <div className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-slate11">
+              <div className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-background1">
                 <fetcher.Form method="post">
                   <Input type="hidden" defaultValue={finance[0].id} name="financeId" />
                   <Input type="hidden" defaultValue={finance[0].id} name="id" />
@@ -781,7 +781,7 @@ export function SalesTab({ timerRef, open, setOpen, outletSize, merged, NewListF
                   </h6>
                 </div>
               </div>
-              <div className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-slate11">
+              <div className="flex-auto px-2 lg:px-10 py-10 pt-0 bg-background1">
                 <FinanceTab merged={merged} />
               </div>
             </div>

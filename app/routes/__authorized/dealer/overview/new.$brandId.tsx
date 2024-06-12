@@ -644,7 +644,7 @@ export function Overview({ outletSize }) {
             <select
               value={selectedType}
               onChange={handleTypeChange}
-              className=" text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+              className=" text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
             >
               <option value="0">Motorcycle Category</option>
 
@@ -659,7 +659,7 @@ export function Overview({ outletSize }) {
               <select
                 value={selectedOption}
                 onChange={handleOptionChange}
-                className="text-gray-600  placeholder-blue-300 mx-auto ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                className="text-gray-600  placeholder-blue-300 mx-auto ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
               >
                 <option value="0">Tire and Rim Choice</option>
 
@@ -675,7 +675,7 @@ export function Overview({ outletSize }) {
               <select
                 value={selectedYear}
                 onChange={handleYearChange}
-                className="text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-[#60b9fd]"
+                className="text-gray-600 placeholder-blue-300 ml-2 mr-2 rounded border-0 bg-white px-3 py-3 text-sm shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
               >
                 <option value="0">Years</option>
 
@@ -2526,11 +2526,11 @@ export function Overview({ outletSize }) {
                         </div>
                       </PopoverTrigger>
                       <PopoverContent
-                        className="w-auto bg-white p-0 text-black"
+                        className="w-auto bg-background p-0 text-foreground"
                         align="start"
                       >
                         <Calendar
-                          className="bg-white text-black"
+                          className="bg-background text-foreground"
                           mode="single"
                           selected={dateCal}
                           onSelect={setDate}
@@ -2563,7 +2563,7 @@ export function Overview({ outletSize }) {
                         </div>
                       </PopoverTrigger>
                       <PopoverContent
-                        className="w-auto bg-white p-0 text-black"
+                        className="w-auto bg-background p-0 text-foreground"
                         align="start"
                       >
                         <div className="flex items-center">
@@ -2575,7 +2575,7 @@ export function Overview({ outletSize }) {
                             <SelectTrigger className="m-3 w-auto">
                               <SelectValue placeholder="hour" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white text-black">
+                            <SelectContent className="bg-background text-foreground">
                               <SelectGroup>
                                 <SelectLabel>Hour</SelectLabel>
                                 <SelectItem value="09">09</SelectItem>
@@ -2600,7 +2600,7 @@ export function Overview({ outletSize }) {
                             <SelectTrigger className="m-3 w-auto">
                               <SelectValue placeholder="min" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white text-black">
+                            <SelectContent className="bg-background text-foreground">
                               <SelectGroup>
                                 <SelectLabel>Minute</SelectLabel>
                                 <SelectItem value="00">00</SelectItem>

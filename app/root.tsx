@@ -199,19 +199,19 @@ export function ErrorBoundary() {
     return (
       <RootDocumentBoundary className='bg-background'>
         <Layout isSpaced>
-          <fieldset className="mx-auto grid max-h-[900px] h-auto w-[90%] lg:w-[60%] cursor-pointer rounded-lg border text-foreground border-border p-4    mt-10 ">
-            <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
+          <fieldset className="mx-auto grid max-h-[900px] h-auto w-[90%] lg:w-[60%] cursor-pointer rounded-lg border text-white border-border p-4    mt-10 ">
+            <legend className="-ml-1 px-1 text-lg font-medium text-white">
               <h1>Error {error.status}</h1>
             </legend>
             <br className="my-1" />
-            <div className="font-semibold"> {error.statusText && <h2>{error.statusText}</h2>}</div>
+            <div className="font-semibold text-white"> {error.statusText && <h2>{error.statusText}</h2>}</div>
             <ul className="grid gap-3">
               <li className="text-left">
-                <span className="text-[#8a8a93]">{message}</span>
+                <span className="text-white">{message}</span>
               </li>
               <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
               <li className="text-left">
-                <span className="text-[#8a8a93]">{error.data}</span>
+                <span className="text-white">{error.data}</span>
               </li>
             </ul>
           </fieldset>
@@ -246,14 +246,14 @@ export function ErrorBoundary() {
                 {copiedText === error.message + ' || ' + String(error) + ' || ' + error.stack && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg text-[#3eff17] " />}
               </div>
             </legend>
-            <span className="text-[#8a8a93]">If the error doesn't go away after reloading the page please send us a copy of the error by clicking the copy button above.</span>
+            <span className="text-white">If the error doesn't go away after reloading the page please send us a copy of the error by clicking the copy button above.</span>
 
-            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+            <hr className="my-4 text-white w-[95%] mx-auto" />
 
             <br className="my-1" />
 
             <div className='group'>
-              <div className="font-semibold flex">
+              <div className="font-semibold flex text-white">
                 Error from Dealer Sales Assistant
                 <Button size="icon" variant="outline" onClick={() => copyText(error.message)} className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2" >
                   <Copy className="h-3 w-3" />
@@ -263,10 +263,10 @@ export function ErrorBoundary() {
               </div>
               <ul className="grid gap-3">
                 <li className="text-left">
-                  <span className="text-[#8a8a93]">Here's the error information that can be informed to D.S.A.</span>
+                  <span className="text-white">Here's the error information that can be informed to D.S.A.</span>
                 </li>
                 <li className="text-left">
-                  <span className="text-[#8a8a93]">{error.message}</span>
+                  <span className="text-white">{error.message}</span>
                 </li>
               </ul>
             </div>
@@ -274,8 +274,8 @@ export function ErrorBoundary() {
 
             <ul>
               <li className="text-left  group">
-                <span className="text-[#8a8a93]">
-                  <Debug name="error" isAlwaysShow isCollapsibleOpen className='text-foreground bg-background border-border'>
+                <span className=" ">
+                  <Debug name="error" isAlwaysShow isCollapsibleOpen className='text-white bg-background border-border'>
                     {error}
                   </Debug>
                 </span>
@@ -287,11 +287,12 @@ export function ErrorBoundary() {
               </li>
             </ul>
 
-            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+            <hr className="my-4 text-white w-[95%] mx-auto" />
 
             <div className='group'>
-              <div className="font-semibold flex ">
-                The stack trace is:
+              <div>
+                <p className="font-semibold flex text-white">  The stack trace is:</p>
+
                 <Button size="icon" variant="outline" onClick={() => copyText(error.stack)} className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"  >
                   <Copy className="h-3 w-3" />
                   <span className="sr-only">Copy</span>
@@ -300,7 +301,7 @@ export function ErrorBoundary() {
               </div>
               <ul>
                 <li className="text-left ">
-                  <span className="text-[#8a8a93]">{error.stack}</span>
+                  <span className="text-white">{error.stack}</span>
                 </li>
               </ul>
             </div>

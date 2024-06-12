@@ -81,7 +81,7 @@ export default function Quote() {
     return (
         <>
 
-            <div className="flex h-[100vh] px-4 sm:px-6 lg:px-8 bg-slate1">
+            <div className="flex h-[100vh] px-4 sm:px-6 lg:px-8 bg-background">
                 <div className="w-full overflow-hidden rounded-lg ">
                     <div className="md:flex my-auto mx-auto">
                         <div
