@@ -154,7 +154,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
               </Dialog.Title>
               <Form method="post">
                 <div className="flex flex-col mt-3 ">
-                  <div className="relative mt-3">
+                  <div className="relative mt-5">
                     <Input
                       className={`input border-border bg-background
                     ${validity.firstName === true ? 'border-green11 bg-green11 text-foreground' : ' '}
@@ -179,7 +179,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                     <p className="text-[#ff0202] flex items-center">{errors.firstName}</p>
                   ) : null}
 
-                  <div className="relative mt-3">
+                  <div className="relative mt-5">
                     <Input
                       className={`input border-border bg-background
                           ${validity.lastName === true ? 'border-green11 bg-green11 text-foreground' : ' '}
@@ -203,7 +203,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   {errors?.lastName ? (
                     <p className="text-[#ff0202] flex items-center">{errors.lastName}</p>
                   ) : null}
-                  <div className="relative mt-3">
+                  <div className="relative mt-5">
                     <Input
                       className={`input border-border bg-background
                     ${validity.phone === true ? 'border-green11 bg-green11 text-foreground' : ' '}
@@ -226,7 +226,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   {errors?.phone ? (
                     <p className="text-[#ff0202] flex items-center">{errors.phone}</p>
                   ) : null}
-                  <div className="relative mt-3">
+                  <div className="relative mt-5">
                     <Input
                       className={`input border-border bg-background
                ${validity.email === true ? 'border-green11 bg-green11 text-foreground' : ' '}
@@ -249,7 +249,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   {errors?.email ? (
                     <p className="text-[#ff0202] flex items-center">{errors.email}</p>
                   ) : null}
-                  <div className="relative mt-3">
+                  <div className="relative mt-5">
                     <Input
                       className={`input border-border bg-background
 
@@ -260,7 +260,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                     />
                     <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
                   </div>
-                  <div className="relative mt-3">
+                  <div className="relative mt-5">
                     <Input
                       className={`input border-border bg-background
 
@@ -291,7 +291,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   </datalist>
                   {modelList && (
                     <>
-                      <div className="relative mt-3">
+                      <div className="relative mt-5">
                         <Input
                           className="  "
                           type="text" list="ListOptions2" name="model"

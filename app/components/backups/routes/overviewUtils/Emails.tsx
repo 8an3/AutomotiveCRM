@@ -24,7 +24,7 @@ import {
     SelectValue,
 } from "~/components/ui/select"
 import { ScrollArea } from "~/components/ui/scroll-area"
-import { SendEmail, SendPayments } from "~/routes/__authorized/dealer/email/server"
+import { SendEmail, SendPayments } from "~/routes/__authorized/dealer/email/notificationsClient"
 
 const EmailSheet = (finance) => {
     const { user, tokens } = useLoaderData()

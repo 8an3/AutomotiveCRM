@@ -767,8 +767,8 @@ model FinanceNote {
 }
 
 model ClientApts {
-  id            String   @id @default(cuid())
-  finance       Finance? @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  id            String    @id @default(cuid())
+  finance       Finance?  @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   financeId     String
   title         String?
   start         String?
@@ -794,11 +794,10 @@ model ClientApts {
   resultOfcall  String?
   resourceId    Int?
   activixId     String?
-  activixNoteId String?  @unique
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  isPublished DateTime? @default(now())
+  activixNoteId String?   @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  isPublished   DateTime? @default(now())
 
   @@index([financeId])
 }

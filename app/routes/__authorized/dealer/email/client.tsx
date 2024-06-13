@@ -32,9 +32,7 @@ import {
   AccordionContent,
   Label,
 } from "~/components";
-import ProvideAppContext, {
-  useAppContext,
-} from "~/components/microsoft/AppContext";
+import ProvideAppContext, { useAppContext, } from "~/components/microsoft/AppContext";
 import {
   deleteMessage,
   getDrafts,
@@ -124,7 +122,6 @@ import {
 } from "~/components/ui/tooltip";
 
 import secondary from "~/styles/secondary.css";
-import { SaveDraft, SendEmail } from "./server";
 import { type LinksFunction } from "@remix-run/node";
 import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
 

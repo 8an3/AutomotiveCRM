@@ -58,6 +58,7 @@ import { prisma } from "~/libs/prisma.server";
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import InterruptionsForm from "~/components/shared/interruptionsForm";
 import NewLeadForm from "~/components/shared/newLeadForm";
+import GetData from "./email/notificationsClient";
 
 function NotificationSkeleton() {
   return (
@@ -70,14 +71,13 @@ let url3 = ''
 let url2 = 'http://localhost:3000/dealer/notifications/updates'
 let url1 = 'http://localhost:3000/dealer/notifications/messages'
 
-export default function NotificationSystem(interruptionsData,) {
-  const { messages } = useLoaderData()
-  console.log(messages, 'messages')
+export default function NotificationSystem(interruptionsData, getEmails) {
+  const { messages, } = useLoaderData()
+  console.log(getEmails, 'messages')
   const { loadNewLead } = interruptionsData;
   const location = useLocation();
   const pathname = location.pathname
   const [notifications, setNotifications] = useState()
-  const [emails, setEmails] = useState([])
   const [emailsCount, setEmailsCount] = useState(0)
   const [value, setValue] = useState("")
   const [open, setOpen] = useState(false)
@@ -89,12 +89,6 @@ export default function NotificationSystem(interruptionsData,) {
   const [leadCount, setLeadCount] = useState(0);
   const [updateCount, setUpdateCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
-
-  useEffect(() => {
-    const getEmails = window.localStorage.getItem("emails");
-    const parseemailData = getEmails ? JSON.parse(getEmails) : [];
-    setEmails(parseemailData);
-  }, []);
 
 
   const newNotifications = {
@@ -115,19 +109,18 @@ export default function NotificationSystem(interruptionsData,) {
 
   const [lead, setLead] = useState([]);
   const [updates, setUpdates] = useState([]);
+  const [emails, setEmails] = useState(getEmails)
 
-  const { data: leadData, error: leadError, isLoading: leadLoading, isValidating: leadValidating } = useSWR(
+
+  const { data: leadData, error: leadError, isLoading: leadLoading, isValidating } = useSWR(
     'http://localhost:3000/dealer/notifications/newLead',
     dataFetcher,
-    { refreshInterval: 15000 }
+    { refreshInterval: 180000 }
   );
 
-  const { data: updateData, error: updateError, isLoading: updateLoading, isValidating: updateValidating } = useSWR(
-    'http://localhost:3000/dealer/notifications/updates',
-    dataFetcher,
-    { refreshInterval: 15000 }
-  );
-
+  const { data: updateData, error: updateError, isLoading: updateLoading } = useSWR('http://localhost:3000/dealer/notifications/updates', dataFetcher, { refreshInterval: 180000 });
+  //const { data: emailData } = useSWR('http://localhost:3000/dealer/email/server', dataFetcher, { refreshInterval: 180000 });
+  // 60,000 ms is one min
   useEffect(() => {
     if (leadData) {
       setLead(leadData);
@@ -139,6 +132,13 @@ export default function NotificationSystem(interruptionsData,) {
       setUpdates(updateData);
     }
   }, [updateData]);
+
+  /***  useEffect(() => {
+      if (emailData) {
+        setEmails(emailData);
+      }
+    }, [emailData]); */
+
   if (leadError || updateError) return <div>Failed to load</div>;
   if (leadLoading || updateLoading) return <div>Loading...</div>;
 
@@ -146,6 +146,9 @@ export default function NotificationSystem(interruptionsData,) {
   if (updates) {
     console.log(updates, 'updates')
   }
+
+
+
   return (
     <>
       <Popover open={open} onOpenChange={setOpen}>
@@ -168,71 +171,92 @@ export default function NotificationSystem(interruptionsData,) {
             </Button>
           )}
         </PopoverTrigger>
-        <PopoverContent className="w-[250px] p-0">
-          <Command className="rounded-lg border shadow-md bg-background border-border text-foreground">
-            <CommandInput className='bg-background border-border text-foreground' placeholder="Type a command or search..." />
-            <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup heading="Messages">
+        <PopoverContent className="w-[300px] p-0">
+          <Tabs defaultValue="Alerts" className="w-[280px] mx-auto">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="Alerts">Alerts</TabsTrigger>
+              <TabsTrigger value="Email">Email</TabsTrigger>
+              <TabsTrigger value="SMS">SMS</TabsTrigger>
+            </TabsList>
+            <TabsContent value="Alerts">
+              <Command className="rounded-lg border shadow-md bg-background border-border text-foreground">
+                <CommandInput className='bg-background border-border text-foreground' placeholder="Type a command or search..." />
+                <CommandList>
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandSeparator />
+                  <CommandGroup heading="Updates">
 
-              </CommandGroup>
-              <CommandSeparator />
-              <CommandGroup heading="Updates">
+                  </CommandGroup>
+                  <CommandGroup heading="New Leads">
+                    {lead && lead.map((notification) => (
+                      <fetcher.Form method='post' key={notification.id}>
+                        <Button type='submit' variant='ghost' className='text-left mb-4'>
+                          <input type='hidden' name='id' value={notification.id} />
+                          <input type='hidden' name='intent' value='updateNewLead' />
+                          <input type='hidden' name='financeId' value={notification.financeId} />
+                          <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                          <CommandItem className="cursor-pointer hover:bg-muted/50 rounded-md">
+                            <ul className="grid gap-3 text-sm mt-2">
+                              <li className="grid grid-cols-1 items-center">
+                                <span>{notification.title}</span>
+                                <span className="text-muted-foreground text-xs">{notification.content}</span>
+                                <span className="text-muted-foreground text-xs">
+                                  {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
+                                </span>
+                              </li>
+                            </ul>
+                          </CommandItem>
+                          {isValidating ? <div className="spinner" /> : null}
+                        </Button>
+                      </fetcher.Form>
+                    ))
+                    }
+                  </CommandGroup>
+                  <CommandGroup heading="Reminders">
+                    {interruptions ? (
+                      interruptions.map((notification) => (
+                        <fetcher.Form method='post' key={notification.id} >
+                          <Button type='submit' variant='ghost' className='text-left mb-2'          >
+                            <input type='hidden' name='id' value={notification.id} />
+                            <input type='hidden' name='intent' value='updateInterruption' />
+                            <input type='hidden' name='pathname' value={pathname} />
+                            <input type='hidden' name='location' value={notification.location} />
+                            <CommandItem value={notification.location} className="cursor-pointer hover:bg-muted/50 rounded-md"  >
+                              <ul className="grid gap-3 text-sm mt-2">
+                                <li className="grid grid-cols-1 items-center ">
+                                  <span>{notification.title}</span>
+                                  <span className="text-muted-foreground text-xs">
+                                    {notification.date}
+                                  </span>
+                                </li>
+                              </ul>
+                            </CommandItem>
+                          </Button>
+                        </fetcher.Form>
+                      ))
+                    ) : (
+                      <CommandItem>No reminders to be remembered.</CommandItem>
+                    )}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </TabsContent>
+            <TabsContent value="Email">
 
-              </CommandGroup>
-              <CommandGroup heading="New Leads">
-                {lead && lead.map((notification) => (
-                  <fetcher.Form method='post' key={notification.id}>
-                    <Button type='submit' variant='ghost' className='text-left mb-4'>
-                      <input type='hidden' name='id' value={notification.id} />
-                      <input type='hidden' name='intent' value='updateNewLead' />
-                      <input type='hidden' name='financeId' value={notification.financeId} />
-                      <input type='hidden' name='clientfileId' value={notification.clientfileId} />
-                      <CommandItem className="cursor-pointer hover:bg-muted/50 rounded-md">
-                        <ul className="grid gap-3 text-sm mt-2">
-                          <li className="grid grid-cols-1 items-center">
-                            <span>{notification.title}</span>
-                            <span className="text-muted-foreground text-xs">{notification.content}</span>
-                            <span className="text-muted-foreground text-xs">
-                              {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
-                            </span>
-                          </li>
-                        </ul>
-                      </CommandItem>
-                      {isValidating ? <div className="spinner" /> : null}
-                    </Button>
-                  </fetcher.Form>
-                ))
-                }
-              </CommandGroup>
-              <CommandGroup heading="Reminders">
-                {interruptions ? (
-                  interruptions.map((notification) => (
-                    <fetcher.Form method='post' key={notification.id} >
-                      <Button type='submit' variant='ghost' className='text-left mb-2'          >
-                        <input type='hidden' name='id' value={notification.id} />
-                        <input type='hidden' name='intent' value='updateInterruption' />
-                        <input type='hidden' name='pathname' value={pathname} />
-                        <input type='hidden' name='location' value={notification.location} />
-                        <CommandItem value={notification.location} className="cursor-pointer hover:bg-muted/50 rounded-md"  >
-                          <ul className="grid gap-3 text-sm mt-2">
-                            <li className="grid grid-cols-1 items-center ">
-                              <span>{notification.title}</span>
-                              <span className="text-muted-foreground text-xs">
-                                {notification.date}
-                              </span>
-                            </li>
-                          </ul>
-                        </CommandItem>
-                      </Button>
-                    </fetcher.Form>
-                  ))
-                ) : (
-                  <CommandItem>No reminders to be remembered.</CommandItem>
-                )}
-              </CommandGroup>
-            </CommandList>
-          </Command>
+            </TabsContent>
+            <TabsContent value="SMS">
+              <Command className="rounded-lg border shadow-md bg-background border-border text-foreground">
+                <CommandInput className='bg-background border-border text-foreground' placeholder="Type a command or search..." />
+                <CommandList>
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandGroup heading="SMS">
+                  </CommandGroup>
+
+                  <CommandSeparator />
+                </CommandList>
+              </Command>
+            </TabsContent>
+          </Tabs>
         </PopoverContent>
       </Popover >
     </>
@@ -311,7 +335,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const messages = getMessages()
 
   const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
-  return json({ user, notifications, interruptions, loadNewLead, messages });
+  return json({ user, notifications, interruptions, loadNewLead, messages, getEmails });
 }
 
 export async function action({ request }: LoaderArgs) {

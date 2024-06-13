@@ -1,13 +1,10 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-
-// <GetUserSnippet>
 import { Client, type GraphRequestOptions, type PageCollection, PageIterator, type ClientOptions } from '@microsoft/microsoft-graph-client';
 import { type AuthCodeMSALBrowserAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import type { User, Event, Message } from '@microsoft/microsoft-graph-types';
 import { prisma } from '~/libs';
+import { useRootLoaderData } from '~/hooks';
 
 let graphClient: Client | undefined = undefined;
 
@@ -19,7 +16,6 @@ async function ensureClient(authProvider: AuthCodeMSALBrowserAuthenticationProvi
   graphClient = await Client.initWithMiddleware(clientOptions);
   return graphClient;
 }
-
 export async function getUser(authProvider: AuthCodeMSALBrowserAuthenticationProvider): Promise<User> {
   ensureClient(authProvider);
   const user: User = await graphClient!
@@ -28,7 +24,6 @@ export async function getUser(authProvider: AuthCodeMSALBrowserAuthenticationPro
     .get();
   return user;
 }
-
 export async function getUserWeekCalendar(authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   timeZone: string): Promise<Event[]> {
   ensureClient(authProvider);
@@ -64,21 +59,18 @@ export async function getUserWeekCalendar(authProvider: AuthCodeMSALBrowserAuthe
     return response.value;
   }
 }
-
 export async function UploadFileToDrive(authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   parentId: any, file: any, fileName: any): Promise<Event> {
   ensureClient(authProvider);
 
   return await graphClient!.api(`/me/drive/items/${parentId}:/${fileName}:/content`).put(file);
-}// done
-
+}
 export async function FetchDriveItems(authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   itemId: any): Promise<Event> {
   ensureClient(authProvider);
 
   return await graphClient!.api(`/me/drive/items/${itemId}/content`).get();
-}// done
-
+}
 export async function createEvent(authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   newEvent: Event): Promise<Event> {
   ensureClient(authProvider);
@@ -86,7 +78,7 @@ export async function createEvent(authProvider: AuthCodeMSALBrowserAuthenticatio
   return await graphClient!
     .api('/me/events')
     .post(newEvent);
-}// done
+}
 export async function getEmails(authProvider: AuthCodeMSALBrowserAuthenticationProvider): Promise<Message[]> {
   ensureClient(authProvider);
   var messages = await graphClient!.api('/me/messages')
@@ -94,7 +86,6 @@ export async function getEmails(authProvider: AuthCodeMSALBrowserAuthenticationP
     .get();
   return messages.value
 }
-// done
 export async function getEmailList(authProvider: AuthCodeMSALBrowserAuthenticationProvider): Promise<Message[]> {
   ensureClient(authProvider);
   var messages = await graphClient!.api('/me/messages')
@@ -103,7 +94,6 @@ export async function getEmailList(authProvider: AuthCodeMSALBrowserAuthenticati
     .get();
   return messages.value
 }
-
 export async function getEmailById(authProvider: AuthCodeMSALBrowserAuthenticationProvider, id: string): Promise<Message[]> {
   ensureClient(authProvider);
   var email = await graphClient!.api(`/me/messages/${id}`)
@@ -118,8 +108,6 @@ export async function getEmailById2(authProvider: AuthCodeMSALBrowserAuthenticat
     .get();
   return email.value
 }
-
-
 export async function getFolders(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   folderName: any
@@ -236,7 +224,6 @@ export async function getTestInbox(
     .get();
   return email;
 }
-
 export async function getAllFolders(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
 
@@ -302,6 +289,7 @@ export async function messageDone(
     destinationId: "deleteditems",
   };
   var email = await graphClient!.api(`/me/messages/${id}/move`).update(message);
+
   return email;
 }
 // need to test
@@ -333,6 +321,8 @@ export async function replyMessage(
     const email = await graphClient!
       .api(`/me/messages/${id}/reply`)
       .post(reply);
+    await SaveComs(to, body, subject)
+
     return email;
   } catch (error) {
     console.error('Error replying to message:', error);
@@ -351,6 +341,8 @@ export async function replyAllEmail(
   };
   var email = await graphClient!.api(`/me/messages/${id}/replyAll`)
     .post(replyAll);
+  await SaveComs(to, body, subject)
+
   return email;
 }
 // need to test
@@ -402,6 +394,8 @@ export async function forwardEmail(
   };
   var email = await graphClient!.api(`/me/messages/${id}/forward`)
     .post(forward);
+  await SaveComs(to, body, subject)
+
   return email;
 }
 export async function listAttachment(
@@ -437,9 +431,10 @@ export async function ComposeEmail(
     ]
   };
   var email = await graphClient!.api("/me/sendMail").post(message);
+  await SaveComs(to, body, subject)
+
   return email;
 }
-
 export async function createReplyDraft(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider, id: String
 ) {
@@ -447,6 +442,8 @@ export async function createReplyDraft(
   var email = await graphClient!
     .api(`/me/message/${id}/createReply`)
     .post();
+  await SaveComs(to, body, subject)
+
   return email;
 }
 export async function SendNewEmail(
@@ -488,6 +485,8 @@ export async function SendNewEmail(
   try {
     const email = await graphClient!.api("/me/sendMail")
       .post(sendMail);
+    await SaveComs(to, body, subject)
+
     return email;
   } catch (error) {
     console.error("Error sending email:", error);
@@ -521,12 +520,11 @@ export async function ComposeEmailDashboardEmailClient(
   };
   const email = await graphClient!.api('/me/sendMail')
     .post(sendMail);
+  await SaveComs(to, body, subject)
 
 
   return email
 }
-
-
 export async function ComposeEmailTwo(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   subject: any,
@@ -555,12 +553,9 @@ export async function ComposeEmailTwo(
   const email = await graphClient!.api('/me/sendMail')
     .post(sendMail);
 
-
+  await SaveComs(to, body, subject)
   return email;
 }
-
-
-
 // this one works
 export async function UploadFile(authProvider, fileName, fileContent) {
   await ensureClient(authProvider);
@@ -600,7 +595,6 @@ export async function UploadFile(authProvider, fileName, fileContent) {
 
   return await response?.json();
 }
-
 export async function listFilesByFinanceId(authProvider, financeId) {
   await ensureClient(authProvider);
 
@@ -610,7 +604,6 @@ export async function listFilesByFinanceId(authProvider, financeId) {
 
   return response.value;
 }
-
 export async function downloadFile(authProvider, fileId) {
   await ensureClient(authProvider);
 
@@ -640,4 +633,22 @@ export async function deleteFile(authProvider, fileId) {
     console.error('Error deleting file:', error);
     return { success: false, error: error.message };
   }
+}
+async function SaveComs(to, body, subject) {
+  const { user } = useRootLoaderData()
+  const finance = await prisma.finance.findFirst({ where: { email: to } })
+  await prisma.previousComms.create({
+    data: {
+      financeId: finance.id,
+      body: body,
+      userName: user?.name,
+      type: 'Email',
+      customerEmail: to,
+      direction: 'Outgoing',
+      subject: subject,
+      result: 'Attempted',
+      userEmail: user?.email,
+      dept: 'Sales',
+    }
+  })
 }

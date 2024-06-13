@@ -125,7 +125,7 @@ import {
 } from "~/components/ui/tooltip";
 
 import secondary from "~/styles/secondary.css";
-import { SaveDraft, SendEmail } from "./server";
+import { SaveDraft, SendEmail } from "./notificationsClient";
 
 
 

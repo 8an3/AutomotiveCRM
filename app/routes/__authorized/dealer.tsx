@@ -8,6 +8,7 @@ import Sidebar, { managerSidebarNav, adminSidebarNav, devSidebarNav, } from '~/c
 import UserSideBar from '~/components/shared/userSideBar';
 import Interruptions from '~/components/shared/interruptions';
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
+import GetData from './dealer/email/notificationsClient';
 
 export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -44,7 +45,7 @@ export async function loader({ request }: LoaderFunction) {
     }));
   }
   const loadNewLead = getloadNewLead()
-  return json({ user, email, interruptionsData, loadNewLead });
+  return json({ user, email, interruptionsData, loadNewLead, });
 }
 
 export async function action({ request, params }: ActionFunction) {
@@ -155,7 +156,7 @@ export async function action({ request, params }: ActionFunction) {
 };
 
 export default function SettingsLayout() {
-  const { user, email, interruptionsData, loadNewLead } = useLoaderData()
+  const { user, email, interruptionsData, loadNewLead, getEmails } = useLoaderData()
   const location = useLocation();
   const pathname = location.pathname
 
@@ -166,7 +167,7 @@ export default function SettingsLayout() {
           <Interruptions user={user} email={email} />
           <UserSideBar user={user} email={email} />
           <Sidebar user={user} email={email} />
-          <NotificationSystem interruptionsData={interruptionsData} loadNewLead={loadNewLead} />
+          <NotificationSystem interruptionsData={interruptionsData} loadNewLead={loadNewLead} getEmails={getEmails} />
         </>
       )}
       <Outlet />

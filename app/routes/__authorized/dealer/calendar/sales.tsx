@@ -1,6 +1,6 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo, useDeferredValue } from 'react'
-import { Calendar, Views, dayjsLocalizer, Navigate as navigate } from 'react-big-calendar'
+import { Calendar, Views, dayjsLocalizer, Navigate } from 'react-big-calendar'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
@@ -35,6 +35,7 @@ import {
   AccordionTrigger,
 } from "~/components/ui/accordion"
 import base from "~/styles/base.css";
+import useSWR, { SWRConfig } from 'swr'
 
 
 const App = () => {
@@ -315,20 +316,21 @@ export default function DnDResource() {
 
 
   async function FetchData(id) {
+    const fetcher = url => fetch(url).then(r => r.json())
+    console.log(id, 'id')
     try {
-      const response = await prisma.clientApts.findUnique({
-        where: { id: id }
-      })
-      console.log(response, 'response')
-      return json({ response })
+      const { data, error } = useSWR(`http://localhost:3000/dealer/api/singleAppt?apptId=${id}`, fetcher)
+
+      console.log(data, 'response')
+      return json({ data })
     } catch (error) {
       console.error('Error fetching appointment data:', error);
     }
   };
 
   function HandleSelectEvent(event) {
-    // const data = fetchData(event.id);
-    console.log(event, 'from fetch')
+    const data = FetchData(event.id);
+    console.log(event.id, data, 'from fetch')
     setSelected(event);
     setEventInfoModal(true)
   }
@@ -397,13 +399,17 @@ export default function DnDResource() {
 
         </span>
         <span className="ml-auto justify-end">
-          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(navigate.PREVIOUS)}>
+          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(Navigate.PREVIOUS)}
+          >
             <ChevronsLeft size={20} strokeWidth={1.5} />
           </button>
-          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(navigate.TODAY)}>
+          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center '
+            onClick={() => onNavigate(Navigate.TODAY)}
+          >
             <ChevronsRightLeft size={20} strokeWidth={1.5} />
           </button>
-          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3' onClick={() => onNavigate(navigate.NEXT)}
+          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3'
+            onClick={() => onNavigate(Navigate.NEXT)}
           >
             <ChevronsRight size={20} strokeWidth={1.5} />
           </button>
@@ -438,6 +444,7 @@ export default function DnDResource() {
   const navigate = useNavigate();
   const [calendarLabel, setCalendarLabel] = useState('Sales')
 
+  const onNavigate = useCallback((newDate) => setDate(newDate), [setDate])
 
   console.log(currentEvent, 'myevents',)
 
@@ -446,35 +453,10 @@ export default function DnDResource() {
       <div className="h-[75px]  w-auto  border-b border-[#262626] bg-background text-foreground">
         <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
         <p className="text-muted-foreground   ml-[105px]  ">
-
         </p>
       </div>
       <div className=" grow">
         <div className='flex w-auto '>
-          <EventInfoModal
-            open={eventInfoModal}
-            handleClose={() => closeSelectEvent()}
-            onDeleteEvent={onDeleteEvent}
-            currentEvent={selected}
-            user={user}
-            onCompleteEvent={onCompleteEvent}
-          />
-          <AddCustomerModal
-            open={addCustomerModal}
-            handleClose={() => setAddCustomerModal(false)}
-            onDeleteEvent={onDeleteEvent}
-            currentEvent={currentEvent as IEventInfo}
-            user={user}
-            onCompleteEvent={onCompleteEvent}
-          />
-          <AddAppt
-            open={addApptModal}
-            handleClose={() => setAddApptModal(false)}
-            onDeleteEvent={onDeleteEvent}
-            currentEvent={currentEvent as IEventInfo}
-            user={user}
-            onCompleteEvent={onCompleteEvent}
-          />
           <div className='h-screen w-[310px] border-r border-[#262626]'>
             <div className=' mt-5 flex-col mx-auto justify-center'>
               <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
@@ -488,13 +470,11 @@ export default function DnDResource() {
                   selected={date}
                   onSelect={setDate}
                   initialFocus
-
                 />
               </div>
             </div>
             <div className=' mt-2 grid grid-cols-1  justify-center mx-auto'>
               <input type='hidden' value={String(date)} name='value' />
-
               <Button
                 variant={"ghost"}
                 className={cn(
@@ -508,7 +488,6 @@ export default function DnDResource() {
                   <p className='my-auto'></p>
                 </div>
               </Button>
-
               <div className='mt-5 grow justify-center'>
                 <div className=' grid grid-cols-1 ' >
                   <Accordion type="single" collapsible className="w-[240px] text-foreground mx-auto">
@@ -607,7 +586,6 @@ export default function DnDResource() {
                       </p>
                     </>
                   </Button>
-
                   <Button
                     variant='outline'
                     onClick={() => (
@@ -621,7 +599,6 @@ export default function DnDResource() {
                       </p>
                     </>
                   </Button>
-
                   <Button
                     variant='outline'
                     className=' px-4 mt-3 mx-auto text-foreground cursor-pointer hover:text-primary justify-center items-center   border-border hover:border-primary bg-transparent hover:bg-transparent w-[240px]'
@@ -633,13 +610,11 @@ export default function DnDResource() {
                       </p>
                     </>
                   </Button>
-
                   <SearchCustomerModal />
                 </div>
               </div>
             </div>
           </div>
-
           <div className="flex w-[97%] justify-center overflow-clip">
             {showResources ? (
               <DragAndDropCalendar
@@ -657,7 +632,7 @@ export default function DnDResource() {
                   overscrollBehavior: "contain",
                   color: "white",
                 }}
-                //    selected={selected}
+                selected={selected}
                 defaultView={Views.DAY}
                 events={myEvents}
                 // step={30}
@@ -665,7 +640,8 @@ export default function DnDResource() {
                 localizer={localizer}
                 min={minTime}
                 max={maxTime}
-
+                date={date}
+                onNavigate={onNavigate}
                 onView={onView}
                 view={view}
                 resizable
@@ -696,7 +672,7 @@ export default function DnDResource() {
                   overscrollBehavior: "contain",
                   color: "white",
                 }}
-                // selected={selected}
+                selected={selected}
                 defaultView={Views.DAY}
                 events={myEvents}
                 step={15}
@@ -704,6 +680,8 @@ export default function DnDResource() {
                 localizer={localizer}
                 min={minTime}
                 max={maxTime}
+                date={date}
+                onNavigate={onNavigate}
                 components={{
                   toolbar: CustomToolbar,
                   event: EventInfo,
@@ -717,9 +695,34 @@ export default function DnDResource() {
               // onClick={() => setOpenDatepickerModal(true)}
               />
             )}
+
           </div>
         </div>
       </div>
+      <EventInfoModal
+        open={eventInfoModal}
+        handleClose={() => closeSelectEvent()}
+        onDeleteEvent={onDeleteEvent}
+        currentEvent={selected}
+        user={user}
+        onCompleteEvent={onCompleteEvent}
+      />
+      <AddCustomerModal
+        open={addCustomerModal}
+        handleClose={() => setAddCustomerModal(false)}
+        onDeleteEvent={onDeleteEvent}
+        currentEvent={currentEvent as IEventInfo}
+        user={user}
+        onCompleteEvent={onCompleteEvent}
+      />
+      <AddAppt
+        open={addApptModal}
+        handleClose={() => setAddApptModal(false)}
+        onDeleteEvent={onDeleteEvent}
+        currentEvent={currentEvent as IEventInfo}
+        user={user}
+        onCompleteEvent={onCompleteEvent}
+      />
     </>
 
   )

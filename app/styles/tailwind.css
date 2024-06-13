@@ -7,6 +7,21 @@
     @apply bg-background text-foreground;
   }
 
+
+  .rdp-button:active {
+    @apply: bg-background;
+    @apply: text-foreground;
+    @apply: hover-accent;
+
+  }
+
+  .rdp-button:focus {
+    @apply: bg-background;
+    @apply: text-foreground;
+    @apply: hover-accent;
+
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;

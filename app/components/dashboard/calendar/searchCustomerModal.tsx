@@ -256,7 +256,7 @@ export function SearchCustomerModal() {
       <DialogTrigger asChild>
         <Button
           variant='outline'
-          className=' px-4 mt-3 mx-auto text-foreground cursor-pointer hover:text-primary justify-center items-center   border-[#fff] hover:border-primary bg-transparent hover:bg-transparent w-[240px]'>
+          className=' px-4 mt-3 mx-auto text-foreground cursor-pointer hover:text-primary justify-center items-center   border-border hover:border-primary bg-transparent hover:bg-transparent w-[240px]'>
           <>
             <Search size={20} strokeWidth={1.5} />
             <p className='ml-2'>

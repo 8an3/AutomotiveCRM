@@ -22,8 +22,6 @@ import { model } from "~/models";
 import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
 import axios from 'axios';
 import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
-import { google } from 'googleapis';
-import oauth2Client, { SendEmail, Unauthorized, } from "~/routes/__authorized/dealer/email/server";
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { CreateNote, UpdateNote, CreateCommunications, CreateCompleteEvent, CompleteTask, CreateLead, CreateTask, UpdateLead, SyncLeadData, UpdateLeadBasic, UpdateLeadPhone, UpdateLeademail, UpdateLeadWantedVeh, UpdateLeadEchangeVeh, UpdateLeadStatus } from "~/routes/__authorized/dealer/api/activix";
@@ -33,23 +31,6 @@ import { GetUser } from "~/utils/loader.server";
 import { prisma } from "~/libs";
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 
-const getAccessToken = async (refreshToken) => {
-  try {
-    const accessTokenObj = await axios.post(
-      'https://www.googleapis.com/oauth2/v4/token',
-      {
-        refresh_token: refreshToken,
-        client_id: "286626015732-f4db11irl7g5iaqb968umrv2f1o2r2rj.apps.googleusercontent.com",
-        client_secret: "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",
-        grant_type: 'refresh_token'
-      }
-    );
-
-    return accessTokenObj.data.access_token;
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {

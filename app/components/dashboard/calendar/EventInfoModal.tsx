@@ -83,7 +83,7 @@ function GetIds({ request }) {
 
 }
 
-export default function EventInfoModal({ user, open, handleClose, onClose, currentEvent, }: IProps) {
+export default function EventInfoModal({ user, open, handleClose, currentEvent, }: IProps) {
   React.useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, []);
@@ -111,8 +111,12 @@ export default function EventInfoModal({ user, open, handleClose, onClose, curre
   // <CallClient />
   //<SmsClient data={data} />
 
-  const firstName = currentEvent?.firstName;
-  const lastName = currentEvent?.lastName;
+  function capitalizeFirstLetter(string) {
+    return string[0].toUpperCase() + string.slice(1);
+  }
+
+  const firstName = currentEvent?.firstName
+  const lastName = currentEvent?.lastName
   const userEmail = user.email;
   const brand = currentEvent?.brand;
   const email = currentEvent?.email;
@@ -147,6 +151,7 @@ export default function EventInfoModal({ user, open, handleClose, onClose, curre
   const newDate = new Date()
   const currentTime = `${hour}:${min}:${currentSecond}`
   const [valueSelected, setValueSelected] = useState(false)
+
   return (
     <>
       <Dialog open={open} onOpenChange={handleClose}>
@@ -154,14 +159,14 @@ export default function EventInfoModal({ user, open, handleClose, onClose, curre
           <DialogHeader>
             <DialogTitle>
               <div className='flex items-center cursor-pointer'>
-                <Link to={`/customer/${currentEvent?.getClientFileById}/${currentEvent?.financeId}`} className='cursor-pointer hover:underline text-foreground'>
+                <Link to={`/customer/${currentEvent?.getClientFileById}/${currentEvent?.financeId}`} className='flex cursor-pointer hover:underline text-foreground'>
                   {currentEvent?.completed === 'yes' && (
                     <img
                       loading="lazy"
                       src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
-                      className="w-4"
+                      className="w-4 mr-3 "
                       alt="Logo"
-                    />)}  {firstName} {lastName}
+                    />)} {firstName} {lastName}
                 </Link>
               </div>
             </DialogTitle>

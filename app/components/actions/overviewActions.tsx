@@ -8,7 +8,7 @@ import { commitSession as commitPref, getSession as getPref } from "~/utils/pref
 import { getSession } from '~/sessions/auth-session.server';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { GetUser } from "~/utils/loader.server";
-import { SendPayments, } from '~/routes/__authorized/dealer/email/server';
+import { SendPayments, } from '~/routes/__authorized/dealer/email/notificationsClient';
 import GetUserFromRequest from "~/utils/auth/getUser";
 import { getSession as custSession, commitSession as custCommit } from '~/sessions/customer-session.server';
 import PaymentCalculatorEmail from '~/emails/PaymentCalculatorEmail';
@@ -202,21 +202,23 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
             subject: `${finance?.brand} ${model} model information.`,
             react: <PaymentCalculatorEmail user={user} finance={finance} modelData={modelData} formData={formData} />
         });
+        await prisma.previousComms.create({
+            data: {
+                financeId: finance.financeId,
+                body: formData.body || 'Templated Email',
+                userName: user.name,
+                type: 'Email',
+                customerEmail: finance.email,
+                direction: 'Outgoing',
+                subject: `${finance?.brand} ${model} model information.`,
+                result: 'Attempted',
+                userEmail: user.email,
+                dept: 'Sales',
+            }
+        })
         return json({ data, })
     }
-    if (formPayload.intent === 'emailPayments') {
-        return redirect('/dashboard/features/emailPayments'),
-            { headers: { "Set-Cookie": await commitPref(session66) } }
-    }
-    if (formPayload.intent === 'emailPDF') {
-        return redirect('/dashboard/features/emailClientSpecAndModel'),
-            { headers: { "Set-Cookie": await commitPref(session66) } }
-    }
-    if (formPayload.intent === 'sendPayments') {
-        console.log(user, tokens, 'inside handesendpayments')
-        const send = SendPayments(tokens, user, formData)
-        return send
-    }
+
 
     if (formPayload.financeTurnover === true) {
         const finance = await prisma.lockFinanceTerminals.update({
