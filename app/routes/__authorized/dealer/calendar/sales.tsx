@@ -37,29 +37,28 @@ import {
 import base from "~/styles/base.css";
 import useSWR, { SWRConfig } from 'swr'
 
+const useScreenSize = () => {
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
-const App = () => {
-  return (
-    <div>
-      <div className="block md:hidden">
-        <SmallScreenUI />
-      </div>
-      <div className="hidden md:block">
-        <LargeScreenUI />
-      </div>
-    </div>
-  );
-};
-const SmallScreenUI = () => {
-  return <div className="small-screen-ui">This is the small screen UI</div>;
-};
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 768);
+    };
 
-const LargeScreenUI = () => {
-  return <div className="large-screen-ui">This is the large screen UI</div>;
+    // Set initial value
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return isSmallScreen;
 };
 
 export default function DnDResource() {
   const { salesData, user, filteredData, query } = useLoaderData()
+  const isSmallScreen = useScreenSize();
+
   const [view, setView] = useState(Views.WEEK)
   const onView = useCallback((newView) => setView(newView), [setView])
   const submit = useSubmit();
@@ -406,7 +405,7 @@ export default function DnDResource() {
           <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center '
             onClick={() => onNavigate(Navigate.TODAY)}
           >
-            <ChevronsRightLeft size={20} strokeWidth={1.5} />
+            Today
           </button>
           <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3'
             onClick={() => onNavigate(Navigate.NEXT)}
@@ -418,6 +417,53 @@ export default function DnDResource() {
     )
   }
 
+  const mobileToolbar = ({
+    label,
+    localizer: { messages },
+    onNavigate,
+    onView,
+    view,
+    views,
+  }) => {
+    return (
+      <div className="grid grid-cols-1">
+
+        <span className="mx-auto">{label}</span>
+
+        <span className="mx-auto">
+          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(Navigate.PREVIOUS)}
+          >
+            <ChevronsLeft size={20} strokeWidth={1.5} />
+          </button>
+          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center '
+            onClick={() => onNavigate(Navigate.TODAY)}
+          >
+            Today
+          </button>
+          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3'
+            onClick={() => onNavigate(Navigate.NEXT)}
+          >
+            <ChevronsRight size={20} strokeWidth={1.5} />
+          </button>
+        </span>
+      </div>
+    )
+  }
+  const noToolbar = ({
+    label,
+    localizer: { messages },
+    onNavigate,
+    onView,
+    view,
+    views,
+  }) => {
+    return (
+      <div className="rbc-toolbar">
+
+
+      </div>
+    )
+  }
   const [date, setDate] = useState<Date>()
 
   const now = new Date();
@@ -448,283 +494,351 @@ export default function DnDResource() {
 
   console.log(currentEvent, 'myevents',)
 
-  return (
-    <>
-      <div className="h-[75px]  w-auto  border-b border-[#262626] bg-background text-foreground">
-        <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
-        <p className="text-muted-foreground   ml-[105px]  ">
-        </p>
-      </div>
-      <div className=" grow">
-        <div className='flex w-auto '>
-          <div className='h-screen w-[310px] border-r border-[#262626]'>
-            <div className=' mt-5 flex-col mx-auto justify-center'>
-              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
-                <div className='  my-3 flex justify-center   '>
-                  <CalendarIcon className="mr-2 size-8 " />
-                  {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+  const LargeScreenUI = () => {
+    return (
+      <div className="large-screen-ui">
+        <>
+          <div className="h-[75px]  w-auto  border-b border-[#262626] bg-background text-foreground">
+            <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
+            <p className="text-muted-foreground   ml-[105px]  ">
+            </p>
+          </div>
+          <div className=" grow">
+            <div className='flex w-auto '>
+              <div className='h-screen w-[310px] border-r border-[#262626]'>
+                <div className=' mt-5 flex-col mx-auto justify-center'>
+                  <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
+                    <div className='  my-3 flex justify-center   '>
+                      <CalendarIcon className="mr-2 size-8 " />
+                      {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                    </div>
+                    <SmallCalendar
+                      className='mx-auto w-auto   bg-background text-foreground'
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                    />
+                  </div>
                 </div>
-                <SmallCalendar
-                  className='mx-auto w-auto   bg-background text-foreground'
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </div>
-            </div>
-            <div className=' mt-2 grid grid-cols-1  justify-center mx-auto'>
-              <input type='hidden' value={String(date)} name='value' />
-              <Button
-                variant={"ghost"}
-                className={cn(
-                  "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary  hover:border-transparent",
-                  !date && " text-foreground"
-                )}
-              >
-                <div className=' text-foreground  mx-auto flex justify-center my-auto '>
-                  <ClockIcon className="mr-2 size-8 " />
-                  {currentTime ? (time) : <span>Pick a Time</span>}
-                  <p className='my-auto'></p>
-                </div>
-              </Button>
-              <div className='mt-5 grow justify-center'>
-                <div className=' grid grid-cols-1 ' >
-                  <Accordion type="single" collapsible className="w-[240px] text-foreground mx-auto">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger>Calendars</AccordionTrigger>
-                      <AccordionContent>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Sales')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Sales'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Sales
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Finance')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Finance'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Finance
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Drivers Schedule')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Drivers Schedule'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Drivers Schedule
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Service')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Service'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Service
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Accessories')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Accessories'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Accessories
-                        </Button>
-                        <Button variant='ghost'
-                          onClick={() => (
-                            setCalendarLabel('Parts')
-                          )}
-                          className={cn(
-                            buttonVariants({ variant: "ghost" }),
-                            calendarLabel === 'Parts'
-                              ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                              : "hover:bg-muted/50  w-[90%]  ",
-                            "justify-start w-[90%] "
-                          )} >
-                          Parts
-                        </Button>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                <div className=' mt-2 grid grid-cols-1  justify-center mx-auto'>
+                  <input type='hidden' value={String(date)} name='value' />
                   <Button
-                    variant='outline'
-                    className=' px-4 mx-auto mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center border-border hover:border-primary  bg-transparent hover:bg-transparent w-[240px] '
-                    onClick={() => setAddCustomerModal(true)}>
-                    <>
-                      <UserPlus size={20} strokeWidth={1.5} />
-                      <p className='ml-2'>
-                        Add Customer
-                      </p>
-                    </>
-                  </Button>
-                  <Button
-                    variant='outline'
-                    onClick={() => (
-                      navigate('/dealer/leads/sales')
+                    variant={"ghost"}
+                    className={cn(
+                      "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary  hover:border-transparent",
+                      !date && " text-foreground"
                     )}
-                    className=' w-[240px] mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center  mx-auto  border-border hover:border-primary bg-transparent hover:bg-transparent   '  >
-                    <>
-                      <Gauge size={20} strokeWidth={1.5} />
-                      <p className='ml-2'>
-                        Sales Dashboard
-                      </p>
-                    </>
+                  >
+                    <div className=' text-foreground  mx-auto flex justify-center my-auto '>
+                      <ClockIcon className="mr-2 size-8 " />
+                      {currentTime ? (time) : <span>Pick a Time</span>}
+                      <p className='my-auto'></p>
+                    </div>
                   </Button>
-                  <Button
-                    variant='outline'
-                    className=' px-4 mt-3 mx-auto text-foreground cursor-pointer hover:text-primary justify-center items-center   border-border hover:border-primary bg-transparent hover:bg-transparent w-[240px]'
-                    onClick={() => setAddApptModal(true)}>
-                    <>
-                      <CalendarPlus size={20} strokeWidth={1.5} />
-                      <p className='ml-2'>
-                        Add Appointment
-                      </p>
-                    </>
-                  </Button>
-                  <SearchCustomerModal />
+                  <div className='mt-5 grow justify-center'>
+                    <div className=' grid grid-cols-1 ' >
+                      <Accordion type="single" collapsible className="w-[240px] text-foreground mx-auto">
+                        <AccordionItem value="item-1">
+                          <AccordionTrigger>Calendars</AccordionTrigger>
+                          <AccordionContent>
+                            <Button variant='ghost'
+                              onClick={() => (
+                                setCalendarLabel('Sales')
+                              )}
+                              className={cn(
+                                buttonVariants({ variant: "ghost" }),
+                                calendarLabel === 'Sales'
+                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                                  : "hover:bg-muted/50  w-[90%]  ",
+                                "justify-start w-[90%] "
+                              )} >
+                              Sales
+                            </Button>
+                            <Button variant='ghost'
+                              onClick={() => (
+                                setCalendarLabel('Finance')
+                              )}
+                              className={cn(
+                                buttonVariants({ variant: "ghost" }),
+                                calendarLabel === 'Finance'
+                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                                  : "hover:bg-muted/50  w-[90%]  ",
+                                "justify-start w-[90%] "
+                              )} >
+                              Finance
+                            </Button>
+                            <Button variant='ghost'
+                              onClick={() => (
+                                setCalendarLabel('Drivers Schedule')
+                              )}
+                              className={cn(
+                                buttonVariants({ variant: "ghost" }),
+                                calendarLabel === 'Drivers Schedule'
+                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                                  : "hover:bg-muted/50  w-[90%]  ",
+                                "justify-start w-[90%] "
+                              )} >
+                              Drivers Schedule
+                            </Button>
+                            <Button variant='ghost'
+                              onClick={() => (
+                                setCalendarLabel('Service')
+                              )}
+                              className={cn(
+                                buttonVariants({ variant: "ghost" }),
+                                calendarLabel === 'Service'
+                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                                  : "hover:bg-muted/50  w-[90%]  ",
+                                "justify-start w-[90%] "
+                              )} >
+                              Service
+                            </Button>
+                            <Button variant='ghost'
+                              onClick={() => (
+                                setCalendarLabel('Accessories')
+                              )}
+                              className={cn(
+                                buttonVariants({ variant: "ghost" }),
+                                calendarLabel === 'Accessories'
+                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                                  : "hover:bg-muted/50  w-[90%]  ",
+                                "justify-start w-[90%] "
+                              )} >
+                              Accessories
+                            </Button>
+                            <Button variant='ghost'
+                              onClick={() => (
+                                setCalendarLabel('Parts')
+                              )}
+                              className={cn(
+                                buttonVariants({ variant: "ghost" }),
+                                calendarLabel === 'Parts'
+                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                                  : "hover:bg-muted/50  w-[90%]  ",
+                                "justify-start w-[90%] "
+                              )} >
+                              Parts
+                            </Button>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                      <Button
+                        variant='outline'
+                        className=' px-4 mx-auto mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center border-border hover:border-primary  bg-transparent hover:bg-transparent w-[240px] '
+                        onClick={() => setAddCustomerModal(true)}>
+                        <>
+                          <UserPlus size={20} strokeWidth={1.5} />
+                          <p className='ml-2'>
+                            Add Customer
+                          </p>
+                        </>
+                      </Button>
+                      <Button
+                        variant='outline'
+                        onClick={() => (
+                          navigate('/dealer/leads/sales')
+                        )}
+                        className=' w-[240px] mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center  mx-auto  border-border hover:border-primary bg-transparent hover:bg-transparent   '  >
+                        <>
+                          <Gauge size={20} strokeWidth={1.5} />
+                          <p className='ml-2'>
+                            Sales Dashboard
+                          </p>
+                        </>
+                      </Button>
+                      <Button
+                        variant='outline'
+                        className=' px-4 mt-3 mx-auto text-foreground cursor-pointer hover:text-primary justify-center items-center   border-border hover:border-primary bg-transparent hover:bg-transparent w-[240px]'
+                        onClick={() => setAddApptModal(true)}>
+                        <>
+                          <CalendarPlus size={20} strokeWidth={1.5} />
+                          <p className='ml-2'>
+                            Add Appointment
+                          </p>
+                        </>
+                      </Button>
+                      <SearchCustomerModal />
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <div className="flex w-[97%] justify-center overflow-clip">
+                {showResources ? (
+                  <DragAndDropCalendar
+                    style={{
+                      // width: 'auto',//`calc(100vw - 210px)`,
+                      // height: 'auto',
+                      // maxHeight: "95vh",
+                      // overflow: "scroll",
+
+                      width: `calc(100vw - 310px)`,
+                      height: "100vh",
+                      overflowX: "hidden",
+                      overflowY: "scroll",
+                      objectFit: "contain",
+                      overscrollBehavior: "contain",
+                      color: "white",
+                    }}
+                    selected={selected}
+                    defaultView={Views.DAY}
+                    events={myEvents}
+                    // step={30}
+                    //showMultiDayTimes={true}
+                    localizer={localizer}
+                    min={minTime}
+                    max={maxTime}
+                    date={date}
+                    onNavigate={onNavigate}
+                    onView={onView}
+                    view={view}
+                    resizable
+                    selectable
+
+                    components={{
+                      toolbar: CustomToolbar,
+                      event: EventInfo,
+                    }}
+                    onEventDrop={DragAndDrop}
+                    onEventResize={resizeEventMine}
+                    onSelectEvent={(e) => HandleSelectEvent(e)}
+                    onSelectSlot={handleSelectSlot}
+                    //onClick={() => setOpenDatepickerModal(true)}
+
+                    resourceIdAccessor="resourceId"
+                    resources={resourceMap}
+                    resourceTitleAccessor="resourceTitle"
+                  />
+                ) : (
+                  <DragAndDropCalendar
+                    style={{
+                      width: `calc(100vw - 310px)`,
+                      height: "100vh",
+                      overflowX: "hidden",
+                      overflowY: "scroll",
+                      objectFit: "contain",
+                      overscrollBehavior: "contain",
+                      color: "white",
+                    }}
+                    selected={selected}
+                    defaultView={Views.DAY}
+                    events={myEvents}
+                    step={15}
+                    showMultiDayTimes={true}
+                    localizer={localizer}
+                    min={minTime}
+                    max={maxTime}
+                    date={date}
+                    onNavigate={onNavigate}
+                    components={{
+                      toolbar: CustomToolbar,
+                      event: EventInfo,
+                    }}
+                    resizable
+                    selectable
+                    onEventDrop={DragAndDrop}
+                    onEventResize={resizeEventMine}
+                    onSelectEvent={HandleSelectEvent}
+                    onSelectSlot={handleSelectSlot}
+                  // onClick={() => setOpenDatepickerModal(true)}
+                  />
+                )}
+
               </div>
             </div>
           </div>
-          <div className="flex w-[97%] justify-center overflow-clip">
-            {showResources ? (
-              <DragAndDropCalendar
-                style={{
-                  // width: 'auto',//`calc(100vw - 210px)`,
-                  // height: 'auto',
-                  // maxHeight: "95vh",
-                  // overflow: "scroll",
+          <EventInfoModal
+            open={eventInfoModal}
+            handleClose={() => closeSelectEvent()}
+            onDeleteEvent={onDeleteEvent}
+            currentEvent={selected}
+            user={user}
+            onCompleteEvent={onCompleteEvent}
+          />
+          <AddCustomerModal
+            open={addCustomerModal}
+            handleClose={() => setAddCustomerModal(false)}
+            onDeleteEvent={onDeleteEvent}
+            currentEvent={currentEvent as IEventInfo}
+            user={user}
+            onCompleteEvent={onCompleteEvent}
+          />
+          <AddAppt
+            open={addApptModal}
+            handleClose={() => setAddApptModal(false)}
+            onDeleteEvent={onDeleteEvent}
+            currentEvent={currentEvent as IEventInfo}
+            user={user}
+            onCompleteEvent={onCompleteEvent}
+          />
+        </>
+      </div>
+    );
+  };
 
-                  width: `calc(100vw - 310px)`,
-                  height: "100vh",
-                  overflowX: "hidden",
-                  overflowY: "scroll",
-                  objectFit: "contain",
-                  overscrollBehavior: "contain",
-                  color: "white",
-                }}
-                selected={selected}
-                defaultView={Views.DAY}
-                events={myEvents}
-                // step={30}
-                //showMultiDayTimes={true}
-                localizer={localizer}
-                min={minTime}
-                max={maxTime}
-                date={date}
-                onNavigate={onNavigate}
-                onView={onView}
-                view={view}
-                resizable
-                selectable
-
-                components={{
-                  toolbar: CustomToolbar,
-                  event: EventInfo,
-                }}
-                onEventDrop={DragAndDrop}
-                onEventResize={resizeEventMine}
-                onSelectEvent={(e) => HandleSelectEvent(e)}
-                onSelectSlot={handleSelectSlot}
-                //onClick={() => setOpenDatepickerModal(true)}
-
-                resourceIdAccessor="resourceId"
-                resources={resourceMap}
-                resourceTitleAccessor="resourceTitle"
+  const SmallScreenUI = () => {
+    return (
+      <div className="small-screen-ui h-screen w-screen overflow-x-hidden mt-5">
+        <div className='h-[40vh] mx-auto '>
+          <div className=' mt-5 flex-col mx-auto justify-center'>
+            <div className="  rounded-md border-white bg-background px-3 text-foreground " >
+              <SmallCalendar
+                className='flex justify-center  bg-background text-foreground'
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
               />
-            ) : (
-              <DragAndDropCalendar
-                style={{
-                  width: `calc(100vw - 310px)`,
-                  height: "100vh",
-                  overflowX: "hidden",
-                  overflowY: "scroll",
-                  objectFit: "contain",
-                  overscrollBehavior: "contain",
-                  color: "white",
-                }}
-                selected={selected}
-                defaultView={Views.DAY}
-                events={myEvents}
-                step={15}
-                showMultiDayTimes={true}
-                localizer={localizer}
-                min={minTime}
-                max={maxTime}
-                date={date}
-                onNavigate={onNavigate}
-                components={{
-                  toolbar: CustomToolbar,
-                  event: EventInfo,
-                }}
-                resizable
-                selectable
-                onEventDrop={DragAndDrop}
-                onEventResize={resizeEventMine}
-                onSelectEvent={HandleSelectEvent}
-                onSelectSlot={handleSelectSlot}
-              // onClick={() => setOpenDatepickerModal(true)}
-              />
-            )}
 
+            </div>
           </div>
         </div>
+        <div className='h-[55vh]'>
+          <DragAndDropCalendar
+            className='overflow-y-scroll'
+            style={{
+              //  width: `calc(100vw - 310px)`,
+              // height: "100vh",
+              overflowX: "hidden",
+              overflowY: "scroll",
+              objectFit: "contain",
+              overscrollBehavior: "contain",
+              color: "white",
+            }}
+            selected={selected}
+            defaultView={Views.AGENDA}
+            events={myEvents}
+            step={15}
+            showMultiDayTimes={true}
+            localizer={localizer}
+            min={minTime}
+            max={maxTime}
+            date={date}
+            onNavigate={onNavigate}
+            components={{
+              toolbar: noToolbar,
+              event: EventInfo,
+            }}
+            resizable
+            selectable
+            //onEventDrop={DragAndDrop}
+            // onEventResize={resizeEventMine}
+            onSelectEvent={HandleSelectEvent}
+          // onSelectSlot={handleSelectSlot}
+          // onClick={() => setOpenDatepickerModal(true)}
+          />
+        </div>
       </div>
-      <EventInfoModal
-        open={eventInfoModal}
-        handleClose={() => closeSelectEvent()}
-        onDeleteEvent={onDeleteEvent}
-        currentEvent={selected}
-        user={user}
-        onCompleteEvent={onCompleteEvent}
-      />
-      <AddCustomerModal
-        open={addCustomerModal}
-        handleClose={() => setAddCustomerModal(false)}
-        onDeleteEvent={onDeleteEvent}
-        currentEvent={currentEvent as IEventInfo}
-        user={user}
-        onCompleteEvent={onCompleteEvent}
-      />
-      <AddAppt
-        open={addApptModal}
-        handleClose={() => setAddApptModal(false)}
-        onDeleteEvent={onDeleteEvent}
-        currentEvent={currentEvent as IEventInfo}
-        user={user}
-        onCompleteEvent={onCompleteEvent}
-      />
-    </>
-
+    )
+  };
+  return (
+    <div>
+      {isSmallScreen ? (
+        <SmallScreenUI />
+      ) : (
+        <LargeScreenUI />
+      )}
+    </div>
   )
 }
 

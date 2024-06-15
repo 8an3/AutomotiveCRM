@@ -429,6 +429,7 @@ export default function DashboardPage() {
     { type: "Dev", desc: "Docs" },
     { type: "Dev", desc: "new hooks when upgrading platform" },
     { type: "Dev", desc: "sales manager dash" },
+    { type: "Dev", desc: "mobile frendly dash and calendar" },
 
     { type: "Dev", desc: "Notification system needs to show email and sms notifications" },
     { type: "Dev", desc: "some sort of email webhook whether we use swr or a microsoft api so create notifications of new emails" },
@@ -723,7 +724,7 @@ export default function DashboardPage() {
                             <ButtonLoading
                               size="sm"
                               value='createDealer'
-                              className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-foreground border border-border"
+                              className="bg-primary ml-auto w-auto cursor-pointer mt-5   text-foreground border border-border"
                               name="intent"
                               type="submit"
                               isSubmitting={isSubmitting}
@@ -862,7 +863,7 @@ export default function DashboardPage() {
                             <ButtonLoading
                               size="sm"
                               value='sendInitialEmail'
-                              className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-foreground border border-border"
+                              className="bg-primary ml-auto w-auto cursor-pointer mt-5   text-foreground border border-border"
                               name="intent"
                               type="submit"
                               isSubmitting={isSubmitting}
@@ -1066,7 +1067,7 @@ export default function DashboardPage() {
                               <ButtonLoading
                                 size="sm"
                                 value='createDealer'
-                                className="bg-[#dc2626] ml-auto w-auto cursor-pointer mt-5   text-foreground border border-border"
+                                className="bg-primary ml-auto w-auto cursor-pointer mt-5   text-foreground border border-border"
                                 name="intent"
                                 type="submit"
                                 isSubmitting={isSubmitting}
@@ -1169,7 +1170,7 @@ export default function DashboardPage() {
                             name='intent'
                             value='createLead'
                             size='sm'
-                            className=' bg-[#dc2626]'
+                            className=' bg-primary'
                             onClick={() => {
                               toast.success('Sent http request to api to create lead')
                             }}

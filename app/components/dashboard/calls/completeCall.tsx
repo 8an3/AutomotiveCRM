@@ -308,7 +308,7 @@ const CompleteCall = ({ data, contactMethod }) => {
                   })
                 }}
                 name='intent' size='sm' value='scheduleFUp' type='submit'
-                className={`bg-[#dc2626] cursor-pointer ml-2 mr-2 p-3 hover:text-primary text-foreground font-bold uppercase text-xs rounded-lg shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
+                className={`bg-primary cursor-pointer ml-2 mr-2 p-3 hover:text-primary text-foreground font-bold uppercase text-xs rounded-lg shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
               >
                 Complete
               </Button>

@@ -334,7 +334,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                     value="AddCustomer"
                     type="submit"
                     size='sm'
-                    className='bg-[#dc2626]'
+                    className='bg-primary'
                   >
                     Add
                   </Button>

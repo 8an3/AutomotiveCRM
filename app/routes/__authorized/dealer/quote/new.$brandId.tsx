@@ -404,7 +404,7 @@ export default function Quote() {
                             <ButtonLoading
                                 size="sm"
                                 type="submit"
-                                className="w-auto cursor-pointer ml-auto mt-3 bg-[#dc2626] hover:bg-transparent"
+                                className="w-auto cursor-pointer ml-auto mt-3 bg-primary hover:bg-transparent"
                                 name="intent"
                                 value="submit"
                                 isSubmitting={isSubmitting}

@@ -157,7 +157,7 @@ export default function DialogTest(user, data) {
               <ButtonLoading
                 size="sm"
                 value="editWishList"
-                className="w-auto cursor-pointer ml-auto mt-5 bg-[#dc2626]"
+                className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
                 name="intent"
                 type="submit"
                 isSubmitting={isSubmitting}

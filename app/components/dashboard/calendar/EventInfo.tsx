@@ -137,12 +137,11 @@ const EventInfo = ({ event }) => {
                 <img
                   loading="lazy"
                   src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
-                  className="w-4"
+                  className="w-4 mr-3"
                   alt="Logo"
                 />
               )}
               <p className='  text-xs'>{capitalizeFirstLetter(event.firstName)} {capitalizeFirstLetter(event.lastName)} </p>
-              <Bookmark strokeWidth={1.5} />
             </div>
           </TooltipTrigger>
           <TooltipContent className='w-[450px] bg-background border-border rounded-md '>

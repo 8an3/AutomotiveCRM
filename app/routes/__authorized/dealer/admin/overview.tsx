@@ -255,7 +255,7 @@ export default function Route() {
                         {errors?.userLicensing ? (
                           <em className="text-[#ff0202]">{errors.userLicensing}</em>
                         ) : null}
-                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
+                        <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Licensing</label>
                       </div>
                       <div className="relative mt-3"  >
                         <Input
@@ -266,7 +266,7 @@ export default function Route() {
                         {errors?.userTax ? (
                           <em className="text-[#ff0202]">{errors.userTax}</em>
                         ) : null}
-                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax </label>
+                        <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sales tax </label>
                       </div>
                       <div className="relative mt-3"  >
                         <Input
@@ -277,7 +277,7 @@ export default function Route() {
                         {errors?.userLabour ? (
                           <em className="text-[#ff0202]">{errors.userLabour}</em>
                         ) : null}
-                        <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour </label>
+                        <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Service Labour </label>
                       </div>
                     </div>
                   </div>
@@ -308,7 +308,7 @@ export default function Route() {
                         defaultValue='updateDealerFeesAdmin'
                         name="intent"
                       />
-                      <Button size='sm' className="bg-[#dc2626] ml-auto mr-2" type="submit"
+                      <Button size='sm' className="bg-primary ml-auto mr-2" type="submit"
                         onClick={() => {
                           setIsButtonPressed(true);
                           toast.message('Dealer Fees Updated', {})
@@ -442,7 +442,7 @@ export default function Route() {
                     name='intent'
                     value='updateDealerInfo'
                     size='sm'
-                    className='ml-3 mr-2 bg-[#dc2626]'
+                    className='ml-3 mr-2 bg-primary'
                   >
                     Save changes
                   </Button>

@@ -561,7 +561,7 @@ export default function Dashboard() {
                               <AlertDialogTrigger asChild>
                                 <Button
                                   size='sm'
-                                  className=' bg-[#dc2626]'
+                                  className=' bg-primary'
                                 >
                                   Save changes
                                 </Button>
@@ -579,7 +579,7 @@ export default function Dashboard() {
                                   <ButtonLoading
                                     size="sm"
                                     value="updateClientInfoFinance"
-                                    className="w-auto cursor-pointer ml-auto mt-5 bg-[#dc2626]"
+                                    className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
                                     name="intent"
                                     type="submit"
                                     isSubmitting={isSubmitting}
@@ -730,7 +730,7 @@ export default function Dashboard() {
                         <ButtonLoading
                           size="sm"
                           value="dealProgress"
-                          className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-[#dc2626]"
+                          className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-primary"
                           name="intent"
                           type="submit"
                           isSubmitting={isSubmitting}

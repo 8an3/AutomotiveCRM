@@ -250,10 +250,7 @@ export function PdfGen() {
           const data = { merged, user, userId };
           iFrameRef.current.contentWindow.postMessage(data, '*');
         };
-
         iFrameRef.current.addEventListener('load', handleLoad);
-
-        // Clean up the event listener when the component is unmounted
         return () => {
           iFrameRef.current?.removeEventListener('load', handleLoad);
         };

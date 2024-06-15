@@ -73,7 +73,7 @@ export default function Component() {
               className="bg-background min-h-[9.5rem] text-foreground  border-border"
             />
           </div>
-          <Button name='intent' value='contactForm' size='sm' className='mx-auto bg-[#dc2626] text-foreground  mt-3'>
+          <Button name='intent' value='contactForm' size='sm' className='mx-auto bg-primary text-foreground  mt-3'>
             Submit
           </Button>
         </fieldset>

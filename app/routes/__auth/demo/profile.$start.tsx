@@ -213,7 +213,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                           <Button
                             size="icon"
                             variant="outline"
-                            className="ml-auto rounded-full bg-[#dc2626] text-white"
+                            className="ml-auto rounded-full bg-primary text-white"
                             onClick={() => setOpenAppt(true)}
                           >
                             <PlusIcon className="h-4 w-4 text-white" />
@@ -232,7 +232,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                         )}
 
                       </TooltipTrigger>
-                      <TooltipContent sideOffset={10} className='bg-[#dc2626]'>Add Appointment</TooltipContent>
+                      <TooltipContent sideOffset={10} className='bg-primary'>Add Appointment</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </CardHeader>
@@ -1225,7 +1225,7 @@ export default function MainForm() {
                   setPage(3)
                   setEnd(String(newDate))
                 }}
-                className='bg-[#dc2626] ml-auto  mr-auto'>
+                className='bg-primary ml-auto  mr-auto'>
                 Add Appointment
                 <PaperPlaneIcon className="h-4 w-4 ml-2" />
 
@@ -1434,7 +1434,7 @@ export default function MainForm() {
             <Button
               name="intent"
               onClick={() => setPage(2)}
-              className='bg-[#dc2626] ml-auto  mr-auto'>
+              className='bg-primary ml-auto  mr-auto'>
               Add Appointment
               <PaperPlaneIcon className="h-4 w-4 ml-2" />
             </Button>

@@ -1945,68 +1945,10 @@ export default function Dashboard() {
     items: Item[];
   }
 
-  //------------------------------------------------------------------------------//
-  //------------------------------------------------------------------------------//
-  //------------------------------------------------------------------------------//
-  /**  <Select className='bg-background text-foreground border-[#262626] hover:text-primary  hover:border-primary'
-                      onValueChange={(value) => {
-
-                      }}>
-                      <SelectTrigger className="w-auto bg-background text-foreground border-[#262626] hover:border-primary hover:text-primary mr-3 ">
-                        <SelectValue>Customer Progress</SelectValue>
-                      </SelectTrigger>
-                      <SelectContent className='bg-muted/40 text-foreground'>
-                        {ClientResultFunction({ formData }).map((item) => (
-                          <SelectItem
-                            checked={item.value === 'on' || (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'))}
-                            value={item.value}
-                          >
-                            {item.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
 
 
-                      <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-7 gap-1 text-sm text-foreground border-[#f2f2f2]"
-                        >
-                          Customer Progress
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <Form method='post' >
-                          <ScrollArea className="h-[500px] w-[200px] rounded-md p-4 bg-muted/40 text-foreground">
-                            {items.map((item) => {
-                              const isChecked =
-                                item.value === 'on' ||
-                                (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
-                              return (
-                                <DropdownMenuCheckboxItem
-                                  key={item.name}
-                                  className="capitalize cursor-pointer"
-                                  checked={checkedItems[item.name] ?? isChecked}
-                                  value={item.value}
-                                  onCheckedChange={(e) => handleCheckedChange(item.name, e.target.checked)}
-                                >
-                                  {item.label}
-                                </DropdownMenuCheckboxItem>
-                              );
-                            })}
-                            <input type='hidden' name='financeId' value={finance.id} />
 
 
-                          </ScrollArea>
-                        </Form>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-
-
-                    */
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -2247,7 +2189,7 @@ export default function Dashboard() {
                               <AlertDialogTrigger asChild>
                                 <Button
                                   size='sm'
-                                  className=' bg-[#dc2626]'
+                                  className=' bg-primary'
                                 >
                                   Save changes
                                 </Button>
@@ -2265,7 +2207,7 @@ export default function Dashboard() {
                                   <ButtonLoading
                                     size="sm"
                                     value="updateClientInfoFinance"
-                                    className="w-auto cursor-pointer ml-auto mt-5 bg-[#dc2626]"
+                                    className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
                                     name="intent"
                                     type="submit"
                                     isSubmitting={isSubmitting}
@@ -2416,7 +2358,7 @@ export default function Dashboard() {
                         <ButtonLoading
                           size="sm"
                           value="dealProgress"
-                          className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-[#dc2626]"
+                          className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-primary"
                           name="intent"
                           type="submit"
                           isSubmitting={isSubmitting}
@@ -2532,7 +2474,7 @@ export default function Dashboard() {
                             variant="outline"
                             name='intent'
                             value='updateWantedUnit'
-                            className="h-8 gap-1 ml-auto bg-[#dc2626] mt-3 "
+                            className="h-8 gap-1 ml-auto bg-primary mt-3 "
                             onClick={() => {
                               toast.success(`Wanted unit saved!`)
                             }}>
@@ -2632,7 +2574,7 @@ export default function Dashboard() {
                             variant="outline"
                             name='intent'
                             value='updateTrade'
-                            className="h-8 gap-1 ml-auto bg-[#dc2626] mt-3 "
+                            className="h-8 gap-1 ml-auto bg-primary mt-3 "
                             onClick={() => {
                               toast.success(`Trade unit saved!`)
                             }}>
@@ -4181,34 +4123,35 @@ export default function Dashboard() {
                               <span className="sr-only">CC Employee</span>
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent sideOffset={10} className='bg-[#dc2626]'>CC Employee</TooltipContent>
+                          <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
-                    <div className="grid gap-3 max-h-[70vh] h-auto">
-                      <Card>
+                  <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
+                    <div className="grid gap-3 ">
+                      <Card
+                        className=" flex flex-col-reverse  max-h-[50vh] h-auto overflow-y-scroll">
                         <CardContent>
                           <div className="space-y-4 mt-5">
 
-                            {financeNotes.map((message, index) => (
+                            {financeNotes.slice().reverse().map((message, index) => (
                               <div
                                 key={index}
                                 className={cn(
                                   "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                  message.author === user.email
-                                    ? "ml-auto bg-[#dc2626] text-foreground"
+                                  message.userEmail === user.email
+                                    ? "ml-auto bg-primary text-foreground"
                                     : "bg-[#262626]"
                                 )}
                               >
                                 <div className='grid grid-cols-1'>
-                                  {message.author !== user.email && (
+                                  {message.userEmail !== user.email && (
                                     <p className='text-[#8c8c8c]'>
-                                      {message.author}
+                                      {message.userName}
                                     </p>
                                   )}
-                                  {message.customContent}
+                                  {message.body}
                                 </div>
                               </div>
                             ))}
@@ -4303,6 +4246,10 @@ export default function Dashboard() {
                   <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
 
                     <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
+                      <input type='hidden' name='financeId' defaultValue={finance.id} />
+                      <input type='hidden' name='userEmail' defaultValue={user.email} />
+                      <input type='hidden' name='clientfileId' defaultValue={finance.clientfileId} />
+                      <input type='hidden' name='userName' defaultValue={user.name} />
                       <Input
                         id="message"
                         placeholder="Type your message..."
@@ -4310,7 +4257,7 @@ export default function Dashboard() {
                         autoComplete="off"
                         value={input}
                         onChange={(event) => setInput(event.target.value)}
-                        name="customContent"
+                        name="body"
                       />
                       <Button
                         value="saveFinanceNote"
@@ -4321,27 +4268,11 @@ export default function Dashboard() {
                           toast.success(`Note saved`)
                         }}
                         disabled={inputLength === 0}
-                        className='bg-[#dc2626] '>
+                        className='bg-primary '>
                         <PaperPlaneIcon className="h-4 w-4" />
                         <span className="sr-only">Send</span>
                       </Button>
-                      <Input type="hidden" defaultValue={user.email} name="author" />
-                      <Input
-                        type="hidden"
-                        defaultValue={clientFile.id}
-                        name="customerId"
-                      />
-                      <input type="hidden" defaultValue={finance.id} name="financeId" />
-                      <Input
-                        type="hidden"
-                        defaultValue={finance.name}
-                        name="name"
-                      />
-                      <Input
-                        type="hidden"
-                        defaultValue="saveFinanceNote"
-                        name="intent"
-                      />
+
                     </fetcher.Form>
                   </CardFooter>
                 </Card>
@@ -4378,7 +4309,7 @@ export default function Dashboard() {
                               <span className="sr-only">CC Employee</span>
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent sideOffset={10} className='bg-[#dc2626]'>Add Appointment</TooltipContent>
+                          <TooltipContent sideOffset={10} className='bg-primary'>Add Appointment</TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>
@@ -4710,7 +4641,7 @@ export default function Dashboard() {
                             onClick={() => {
                               toast.success(`Appointment Added!`)
                             }}
-                            className='bg-[#dc2626] ml-auto  mr-auto'>
+                            className='bg-primary ml-auto  mr-auto'>
                             Add Appointment
                             <PaperPlaneIcon className="h-4 w-4 ml-2" />
                           </Button>
@@ -4752,7 +4683,7 @@ export default function Dashboard() {
                               <span className="sr-only">Add Communication</span>
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent sideOffset={10} className='bg-[#dc2626]'>Add Communication</TooltipContent>
+                          <TooltipContent sideOffset={10} className='bg-primary'>Add Communication</TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>
@@ -4934,7 +4865,7 @@ export default function Dashboard() {
                               onClick={() => {
                                 toast.success(`Communication Added!`)
                               }}
-                              className='bg-[#dc2626] ml-auto '>
+                              className='bg-primary ml-auto '>
                               Add Communication
                               <PaperPlaneIcon className=" ml-2 h-4 w-4" />
                             </Button>
@@ -4999,7 +4930,7 @@ export default function Dashboard() {
                             toast.success(`File uploaded!`)
                           }}
                           disabled={inputLength === 0}
-                          className='bg-[#dc2626] ml-2'>
+                          className='bg-primary ml-2'>
                           <UploadIcon className="h-4 w-4" />
                           <span className="sr-only">Upload</span>
                         </Button>
@@ -5710,47 +5641,46 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     //  await SaveFinanceNote({ formData, })
     const SaveFinanceNote = await prisma.financeNote.create({
       data: {
+        body: formData.body,
+        userEmail: formData.userEmail,
+        clientfileId: formData.clientfileId,
+        userName: formData.userName,
         financeId: formData.financeId,
-        slug: formData.slug,
-        customContent: formData.customContent,
-        urgentFinanceNote: formData.urgentFinanceNote,
-        author: formData.author,
-        customerId: formData.customerId,
       },
     });
-    const notiFinance = await prisma.finance.findUnique({ where: { id: formData.financeId }, });
-    let notification;
-    if (formData.userEmail !== notiFinance.userEmail) {
-      notification = await prisma.notificationsUser.create({
-        data: {
-          title: `Note left on ${notiFinance?.name} by ${user?.username}`,
-          //  content: formData.content,
-          read: 'false',
-          type: 'Note',
-          content: formData.customContent,
-          userId: user?.id,
-          financeId: formData.financeId,
-          clientfileId: formData.clientfileId,
-        },
-      });
-    }
-    let saved
-    if (formData.ccUser) {
-      saved = await prisma.notificationsUser.create({
-        data: {
-          title: `New note on ${formData.name}'s file.`,
-          content: `Note left by ${formData.author}`,
-          read: 'no',
-          userId: formData.ccUser,
-          financeId: financeId,
-          clientfileId: clientfileId,
+    /**    const notiFinance = await prisma.finance.findUnique({ where: { id: formData.financeId }, });
+        let notification;
+        if (formData.userEmail !== notiFinance.userEmail) {
+          notification = await prisma.notificationsUser.create({
+            data: {
+              title: `Note left on ${notiFinance?.name} by ${user?.username}`,
+              //  content: formData.content,
+              read: 'false',
+              type: 'Note',
+              content: formData.customContent,
+              userId: user?.id,
+              financeId: formData.financeId,
+              clientfileId: formData.clientfileId,
+            },
+          });
         }
-      })
-    }
-    if (user?.activixActivated === 'yes') {
-      await CreateNote(formData)
-    }
-    return json({ SaveFinanceNote, notification, saved })
+        let saved
+        if (formData.ccUser) {
+          saved = await prisma.notificationsUser.create({
+            data: {
+              title: `New note on ${formData.name}'s file.`,
+              content: `Note left by ${formData.author}`,
+              read: 'no',
+              userId: formData.ccUser,
+              financeId: financeId,
+              clientfileId: clientfileId,
+            }
+          })
+        }
+        if (user?.activixActivated === 'yes') {
+          await CreateNote(formData)
+        } */
+    return json({ SaveFinanceNote, })
   }
   if (intent === 'deleteFinanceNote') {
     const id = formData.id

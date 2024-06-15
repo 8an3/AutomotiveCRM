@@ -160,7 +160,7 @@ export async function loader({ request, params }: LoaderFunction) {
     convoList = getConvos;
   }
 
-  console.log(convoList, 'channels');
+  //console.log(convoList, 'channels');
   const getTexts = await client.conversations.v1.conversations('CH4f08622d81c34b4ea947f8ea233148a5')
     .messages
     .list({ limit: 200 })

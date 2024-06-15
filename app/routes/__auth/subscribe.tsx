@@ -125,7 +125,7 @@ export default function Subscribe() {
                                                         <div className="flex justify-center">
                                                             <Button
                                                                 size="sm"
-                                                                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-foreground"
+                                                                className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
                                                             >
                                                                 Continue
                                                             </Button>
@@ -178,7 +178,7 @@ export default function Subscribe() {
                                                         <div className="flex justify-center">
                                                             <Button
                                                                 size="sm"
-                                                                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-foreground"
+                                                                className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
                                                             >
                                                                 Continue
                                                             </Button>

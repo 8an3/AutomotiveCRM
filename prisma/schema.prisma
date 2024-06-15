@@ -756,14 +756,11 @@ model FinanceNote {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  financeId         String?
-  slug              String    @unique @default(cuid())
-  customContent     String?
-  urgentFinanceNote String?
-  author            String?
-  isPublished       DateTime? @default(now())
-  customerId        String
-  dept              String?
+  financeId    String?
+  body         String?
+  userEmail    String?
+  userName     String?
+  clientfileId String
 }
 
 model ClientApts {

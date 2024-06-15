@@ -3536,7 +3536,7 @@ export function Overview({ outletSize }) {
                 <ButtonLoading
                   size="sm"
                   value="updateFinance"
-                  className="mb-5 mr-5   mt-5 w-auto cursor-pointer bg-[#dc2626]"
+                  className="mb-5 mr-5   mt-5 w-auto cursor-pointer bg-primary"
                   name="intent"
                   type="submit"
                   isSubmitting={isSubmitting}
@@ -3629,7 +3629,7 @@ export function Overview({ outletSize }) {
                       // SubmitTheForm( );
 
                     }}
-                    className="ml-auto bg-[#dc2626] "
+                    className="ml-auto bg-primary "
                   >
                     <PaperPlaneIcon className="ml-2 h-4 w-4" />
                   </Button>
@@ -3675,7 +3675,7 @@ export function Overview({ outletSize }) {
               </div>
               <DialogFooter className=" border-t border-border p-4  ">
                 <DialogClose className="flex justify-center">
-                  <Button size="icon" className="ml-auto bg-[#dc2626] "  >
+                  <Button size="icon" className="ml-auto bg-primary "  >
                     <X className="ml-2 h-4 w-4" />
                   </Button>
                 </DialogClose>

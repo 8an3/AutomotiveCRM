@@ -11,8 +11,10 @@ import { toast } from "sonner"
 import { CheckIcon, PaperPlaneIcon, PlusIcon } from "@radix-ui/react-icons"
 import { prisma } from "~/libs";
 
-export default function EmailClient({ data }) {
-  const { user, conversations, financeNotes, } = useLoaderData();
+export default function EmailClient({
+  data,
+}) {
+  const { user, conversations, financeNotes, latestNotes } = useLoaderData();
   const [convos, setConvos] = useState([])
   const [financeNotesList, setFinanceNoteList] = useState([])
   const [conversationsList, setConversationsList] = useState([])
@@ -145,10 +147,15 @@ export default function EmailClient({ data }) {
       </>
     );
   };
+  const [latestNote, setlatestNote] = useState([])
+  useEffect(() => {
+
+    setlatestNote(latestNotes[0])
+  }, []);
   return (
     <>
       {data && (
-        <Dialog.Root>
+        <Dialog.Root >
           <Dialog.Trigger asChild>
             <p
               className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
@@ -157,11 +164,10 @@ export default function EmailClient({ data }) {
           </Dialog.Trigger>
           <Dialog.Portal>
             <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
-
             <Dialog.Content className=" w-[95%] md:w-[950px]   fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-background border border-border text-foreground p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none ">
               <DialogDescription>
-                <Tabs defaultValue="account" className="w-auto">
-                  <TabsList className="grid w-full grid-cols-3">
+                <Tabs defaultValue="account" className=" ">
+                  <TabsList className="grid w-[360px] grid-cols-3">
                     <TabsTrigger value="account">Email</TabsTrigger>
                     <TabsTrigger value="password">Prev Interactions</TabsTrigger>
                     <TabsTrigger value="notes">Notes</TabsTrigger>
@@ -191,7 +197,7 @@ export default function EmailClient({ data }) {
                                     className={cn(
                                       "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                                       message.userEmail === user.email
-                                        ? "ml-auto bg-[#dc2626] text-foreground"
+                                        ? "ml-auto bg-primary text-foreground"
                                         : "bg-[#262626]"
                                     )}
                                   >
@@ -221,7 +227,7 @@ export default function EmailClient({ data }) {
                             toast.success(`Note saved`)
                           }}
                           disabled={inputLength === 0}
-                          className='bg-[#dc2626] '>
+                          className='bg-primary '>
                           <PlusIcon className="h-4 w-4" />
 
                           <span className="sr-only">Add</span>
@@ -249,7 +255,7 @@ export default function EmailClient({ data }) {
                                       <span className="sr-only">CC Employee</span>
                                     </Button>
                                   </TooltipTrigger>
-                                  <TooltipContent sideOffset={10} className='bg-[#dc2626]'>CC Employee</TooltipContent>
+                                  <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
                             </div>
@@ -259,26 +265,23 @@ export default function EmailClient({ data }) {
                               <Card>
                                 <CardContent>
                                   <div className="space-y-4 mt-5">
-                                    {financeNotesList.map((message, index) => (
-                                      <div
-                                        key={index}
-                                        className={cn(
-                                          "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                          message.author === user.email
-                                            ? "ml-auto bg-[#dc2626] text-foreground"
-                                            : "bg-[#262626]"
+                                    <div
+                                      className={cn(
+                                        "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                                        latestNote.userEmail === user.email
+                                          ? "ml-auto bg-primary text-foreground"
+                                          : "bg-[#262626]"
+                                      )}
+                                    >
+                                      <div className='grid grid-cols-1'>
+                                        {latestNote.userEmail !== user.email && (
+                                          <p className='text-[#8c8c8c]'>
+                                            {latestNote.userName}
+                                          </p>
                                         )}
-                                      >
-                                        <div className='grid grid-cols-1'>
-                                          {message.author !== user.email && (
-                                            <p className='text-[#8c8c8c]'>
-                                              {message.author}
-                                            </p>
-                                          )}
-                                          {message.customContent}
-                                        </div>
+                                        {latestNote.body}
                                       </div>
-                                    ))}
+                                    </div>
                                   </div>
                                 </CardContent>
                               </Card>
@@ -308,7 +311,7 @@ export default function EmailClient({ data }) {
                                   toast.success(`Note saved`)
                                 }}
                                 disabled={inputLength === 0}
-                                className='bg-[#dc2626] '>
+                                className='bg-primary '>
                                 <PaperPlaneIcon className="h-4 w-4" />
                                 <span className="sr-only">Send</span>
                               </Button>

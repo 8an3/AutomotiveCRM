@@ -32,31 +32,22 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   if (!user) { redirect('/login') }
   const deFees = await getDealerFeesbyEmail(user.email);
   const session = await sixSession(request.headers.get("Cookie"));
-
   const sliderWidth = session.get("sliderWidth");
-  // const userEmail = user?.email
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user.email, }, });
-  //let finance = [];
   const finance = await prisma.finance.findMany({ where: { userEmail: user?.email }, });
   const brand = finance?.brand;
   const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
-  //const customerId = finance?.id;
   const financeNotes = await prisma.financeNote.findMany({ orderBy: { createdAt: "desc" }, });
   const searchData = await prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
-  const webLeadData = await prisma.finance.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: user?.email } });
-  // const financeData2 = await prisma.finance.findMany({ where: { id: dashData2.financeId }, });
   const conversations = await prisma.previousComms.findMany({ orderBy: { createdAt: "desc" }, });
   const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
-  console.log('in component,', searchData)
-
-  // const notifications = await prisma.notificationsUser.findMany({ where: { userEmail: email } })
 
   const fetchLatestNotes = async (webLeadData) => {
     const promises = webLeadData.map(async (webLeadData) => {
       try {
         const latestNote = await prisma.financeNote.findFirst({
-          where: { customerId: webLeadData.financeId },
+          where: { financeId: webLeadData.financeId },
           orderBy: { createdAt: 'desc' },
         });
         return latestNote;
@@ -68,8 +59,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
     return Promise.all(promises);
   };
-  const latestNotes = fetchLatestNotes(webLeadData);
-
+  const latestNotes = await fetchLatestNotes(finance);
 
 
   // wish list loader
@@ -323,7 +313,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         conversations,
         getWishList,
         // notifications,
-        webLeadData,
         wishlistMatches,
         request,
       }, {
@@ -347,7 +336,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       searchData,
       getWishList,
       // notifications,
-      webLeadData,
       wishlistMatches,
       request
     }, {
@@ -2434,20 +2422,15 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     return DeleteCustomer;
   }
   // notes
+
   if (intent === "saveFinanceNote") {
-    await updateFinanceNotes({ formData });
-    return updateFinanceNotes;
-  }
-  if (intent === "createFinanceNote") {
     const createFinanceNotes = await prisma.financeNote.create({
       data: {
-        slug: formData.slug,
-        customContent: formData.customContent,
-        urgentFinanceNote: formData.urgentFinanceNote,
-        author: formData.author,
-        isPublished: formData.isPublished,
-        customerId: formData.customerId,
-        dept: formData.dept,
+        body: formData.body,
+        userEmail: formData.userEmail,
+        clientfileId: formData.clientfileId,
+        userName: formData.userName,
+        financeId: formData.financeId,
       },
     });
     return createFinanceNotes;

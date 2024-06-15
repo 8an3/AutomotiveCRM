@@ -319,7 +319,7 @@ export default function SearchLeads() {
               <input type="hidden" name="rowId" value={row.id} />
               <input type="hidden" name="intent" value='navToFinanceFile' />
               <input type='hidden' name='clientfileId' defaultValue={data.id} />
-              <Button size='sm' className='mx-auto bg-[#dc2626]' >
+              <Button size='sm' className='mx-auto bg-primary' >
                 Client's file
               </Button>
             </Form>
@@ -655,7 +655,7 @@ export default function SearchLeads() {
               <ButtonLoading
                 size="sm"
                 value="demoDayEdit"
-                className="w-auto cursor-pointer ml-auto mt-5 bg-[#dc2626]"
+                className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
                 name="intent"
                 type="submit"
                 isSubmitting={isSubmitting}

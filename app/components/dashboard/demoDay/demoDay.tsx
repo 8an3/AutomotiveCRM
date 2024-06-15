@@ -754,7 +754,7 @@ export default function DemoDay() {
                 <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Notes</label>
               </div>
               <Button onClick={() => toast.success(`Added to Demo Day list!`)}
-                type='submit' name='intent' value='addDemoDay' variant='outline' className="active:bg-background w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-[#dc2626] px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary border-[#262626] hover:text-primary hover:shadow-md focus:outline-none"
+                type='submit' name='intent' value='addDemoDay' variant='outline' className="active:bg-background w-[75px] mt-10 mx-2 my-auto h-7  cursor-pointer rounded bg-primary px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary border-[#262626] hover:text-primary hover:shadow-md focus:outline-none"
               >
                 Save
               </Button>
@@ -927,7 +927,7 @@ export default function DemoDay() {
               <ButtonLoading
                 size="sm"
                 value="demoDayEdit"
-                className="w-auto cursor-pointer ml-auto mt-5 bg-[#dc2626]"
+                className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
                 name="intent"
                 type="submit"
                 isSubmitting={isSubmitting}

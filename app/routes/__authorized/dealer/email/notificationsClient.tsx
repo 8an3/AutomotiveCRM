@@ -28,6 +28,7 @@ export default async function DashboardClient() {
   const dataFetcher = await testInbox(app.authProvider!);
   const { data, } = useSWR(dataFetcher, { refreshInterval: 180000 });
   const [emails, setEmails] = useState();
+
   useEffect(() => {
     if (data) {
       setEmails(data)
@@ -45,7 +46,7 @@ export default async function DashboardClient() {
        }
      };
      fetchEmails();
- 
+
    }, []); */
   const options = {
     weekday: 'short',

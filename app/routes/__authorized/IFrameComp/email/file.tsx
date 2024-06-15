@@ -196,7 +196,7 @@ export default function Root() {
           <div className="relative ml-2">
             <Input id="file" type="file" className='hidden' name='file' onChange={handleFileChange} />
             <label htmlFor="file" className={`h-[37px] cursor-pointer border border-border rounded-md text-foreground bg-background px-4 py-2 inline-block w-full
-                    ${isFile === false ? 'border-[#dc2626]' : 'border-[#3dff3d]'}`}  >
+                    ${isFile === false ? 'border-primary' : 'border-[#3dff3d]'}`}  >
               <span className="mr-4">
                 {isFile === false ? <p>Choose File</p> : <p>File Selected</p>}
               </span>
@@ -219,7 +219,7 @@ export default function Root() {
               toast.success(`File uploaded!`)
             }}
             disabled={isFile === false}
-            className='bg-[#dc2626] ml-auto my-auto'>
+            className='bg-primary ml-auto my-auto'>
             <UploadIcon className="h-4 w-4" />
             <span className="sr-only">Upload</span>
           </Button>
@@ -247,14 +247,14 @@ export default function Root() {
                       setDownloadFileId(file.id)
 
                       handleDownload()
-                    }} size="icon" className='bg-[#dc2626] ml-auto mr-2' >
+                    }} size="icon" className='bg-primary ml-auto mr-2' >
                       <DownloadIcon className="h-4 w-4" />
                     </Button>
                     <Button onClick={() => {
                       setDownloadFileId(file.id)
 
                       handleDelete()
-                    }} size="icon" className='bg-[#dc2626] ml-auto' >
+                    }} size="icon" className='bg-primary ml-auto' >
                       <Trash className="h-4 w-4" />
                     </Button>
                   </div>

@@ -281,7 +281,7 @@ export default function StaffChat({ content }) {
                     className={cn(
                       "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                       conversation.userEmail === user.email
-                        ? "ml-auto bg-[#dc2626] text-foreground"
+                        ? "ml-auto bg-primary text-foreground"
                         : "bg-[#262626]"
                     )}
                   >
@@ -327,7 +327,7 @@ export default function StaffChat({ content }) {
               toast.success(`Message Sent!`);
             }}
             //   disabled={inputLength === 0}
-            className="bg-[#dc2626] "
+            className="bg-primary "
           >
             <PaperPlaneIcon className="h-4 w-4" />
             <span className="sr-only">Send</span>

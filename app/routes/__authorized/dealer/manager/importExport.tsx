@@ -186,7 +186,7 @@ export default function ImportExport() {
                   <div className="relative mt-3">
                     <Input id="file" type="file" className='hidden' name='csv' onChange={handleFileChange} />
                     <label htmlFor="file" className={`h-[37px] cursor-pointer border border-border rounded-md text-foreground bg-background px-4 py-2 inline-block w-[225px]
-                    ${isFile === false ? 'border-[#dc2626]' : 'border-[#3dff3d]'}`}  >
+                    ${isFile === false ? 'border-primary' : 'border-[#3dff3d]'}`}  >
                       <span className="mr-4">
                         {isFile === false ? <p>Choose File - No File Chosen</p> : <p>File Selected</p>}
                       </span>
@@ -208,7 +208,7 @@ export default function ImportExport() {
                       toast.success(`Downloading data....`)
                     }}
                     disabled={isFile === false && selectImport === false}
-                    className='bg-[#dc2626] '>
+                    className='bg-primary '>
                     <UploadIcon className="h-4 w-4" />
                     <span className="sr-only">Upload</span>
                   </Button>
@@ -261,7 +261,7 @@ export default function ImportExport() {
                       toast.success(`Downloading data....`)
                     }}
                     disabled={selectExport === false}
-                    className='bg-[#dc2626] '>
+                    className='bg-primary '>
                     <DownloadIcon className="h-4 w-4" />
                     <span className="sr-only">Download</span>
                   </Button>

@@ -243,7 +243,7 @@ export function CSI() {
           variant='outline'
           size='sm'
           type='submit'
-          className='text-foreground bg-transparent hover:bg-transparent bg-[#dc2626] '
+          className='text-foreground bg-transparent hover:bg-transparent bg-primary '
         >
           Save
         </Button>

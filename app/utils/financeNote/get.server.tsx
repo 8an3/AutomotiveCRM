@@ -22,7 +22,7 @@ export async function getAllFinanceNotes(financeId) {
       orderBy: { createdAt: "desc" },
 
       where: {
-        customerId: financeId,
+        financeId: financeId,
       },
     });
     return financeNotes;

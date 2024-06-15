@@ -253,13 +253,13 @@ export default function Route() {
                                       }}
                                       className="card hover:card-hover queue-center"
                                     >
-                                      <Button size='sm' variant="outline" className="ml-autp bg-[#dc2626]">
+                                      <Button size='sm' variant="outline" className="ml-autp bg-primary">
                                         Edit
                                       </Button>
                                     </RemixLink>
                                   </div>
                                 </CardContent>
-                                <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{user.name}</label>
+                                <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{user.name}</label>
                               </div>
                             </li>
                           );
@@ -268,7 +268,7 @@ export default function Route() {
                       {configDev.isDevelopment && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button size='sm' variant="outline" className="bg-[#dc2626]">
+                            <Button size='sm' variant="outline" className="bg-primary">
                               <span>Delete All {formatPluralItems("User", userCount)}</span>
                             </Button>
                           </AlertDialogTrigger>
@@ -412,27 +412,27 @@ export default function Route() {
               <Form method='post' className='space-y-3 max-w-sm '>
                 <div className="relative mt-3"  >
                   <Input name='name' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Name</label>
+                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Name</label>
                 </div>
                 <div className="relative mt-3"  >
                   <Input name='username' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Username</label>
+                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Username</label>
                 </div>
                 <div className="relative mt-3"  >
                   <Input name='email' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Email</label>
+                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Email</label>
                 </div>
                 <div className="relative mt-3"  >
                   <Input name='phone' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">S Phone</label>
+                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">S Phone</label>
                 </div>
                 <div className="relative mt-3"  >
                   <Input name='phone' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Position</label>
+                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Position</label>
                 </div>
                 <div className="relative mt-3"  >
                   <Input name='omvicNumber' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  OMVIC #</label>
+                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  OMVIC #</label>
                 </div>
                 <div className="relative mt-3"  >
                   <Select name='userRole'>
@@ -446,9 +446,9 @@ export default function Route() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <label className="required:border-[#dc2626] text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500"> Role</label>
+                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500"> Role</label>
                 </div>
-                <Button size='sm' variant='outline' type='submit' name='intent' value='addUser' className='mt-5 bg-[#dc2626]'>
+                <Button size='sm' variant='outline' type='submit' name='intent' value='addUser' className='mt-5 bg-primary'>
                   Add User
                 </Button>
               </Form>

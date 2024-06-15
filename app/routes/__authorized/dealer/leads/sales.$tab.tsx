@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, HTMLProps, useState, useEffect, Suspense, } from 'react'
+import React, { HTMLAttributes, HTMLProps, useState, useEffect, Suspense, useRef, } from 'react'
 import { Await, Form, Link, useActionData, useLoaderData, useLocation, useNavigation, useSubmit } from '@remix-run/react'
 import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, DropdownMenuLabel, TextArea, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, } from "~/components/ui/index";
 import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
@@ -43,6 +43,7 @@ import {
     CardTitle,
 } from "~/components/ui/card"
 import SearchLeads from '~/components/dashboard/demoDay/searchLeads';
+import { prisma } from '~/libs';
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
     { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
@@ -1289,7 +1290,7 @@ export function Loading() {
     )
 }
 export function MainDashbaord() {
-    const { finance, } = useLoaderData();
+    const { finance, searchData, user } = useLoaderData();
     const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
     useEffect(() => {
         const data = async () => {
@@ -1309,7 +1310,7 @@ export function MainDashbaord() {
             console.log('hitswr!! ')
         }
     }, [swrData]);
-
+    const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
 
 
     const defaultColumn: Partial<ColumnDef<Payment>> = {
@@ -1337,6 +1338,7 @@ export function MainDashbaord() {
             )
         },
     }
+
     const columns: ColumnDef<Payment>[] = [
         {
             id: 'select',
@@ -1366,7 +1368,6 @@ export function MainDashbaord() {
                 </div>
             ),
         },
-
         {
             accessorKey: "firstName",
             header: ({ column }) => {
@@ -1473,14 +1474,34 @@ export function MainDashbaord() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-
-                //<SmsClient data={data} />
                 const [isButtonPressed, setIsButtonPressed] = useState(false);
+                const handleLoad = () => {
+                    const iFrameData = {
+                        user,
+                        searchData,
+                        data
+                    }
+                    console.log(iFrameData, 'iFrameData')
+                    iFrameRef.current?.contentWindow?.postMessage(iFrameData, '*');
+                }
                 return <>
                     <div className='my-2 grid grid-cols-3 gap-3'>
-                        <LogCall data={data} />
-                        <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
-                        <Logtext data={data} />
+                        <LogCall
+                            data={data}
+                        />
+
+                        <EmailClient
+                            data={data}
+                            setIsButtonPressed={setIsButtonPressed}
+                            isButtonPressed={isButtonPressed}
+                        />
+                        <Button variant='ghost' onClick={handleLoad}>
+                            <Logtext
+                                data={data}
+                                searchData={searchData}
+                                iFrameRef={iFrameRef}
+                            />
+                        </Button>
                     </div>
                 </>
             },

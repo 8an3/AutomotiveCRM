@@ -93,7 +93,7 @@ function NewHeader() {
           </p>
           <div className='flex justify-center'>
             <Link to='/demo/dashboard' >
-              <Button size='sm' className='mx-auto bg-[#dc2626] text-foreground  mt-3'>
+              <Button size='sm' className='mx-auto bg-primary text-foreground  mt-3'>
                 Continue
               </Button>
             </Link>
@@ -382,7 +382,7 @@ export function DealerPrice() {
             <div className="flex justify-center">
               <Button
                 size="sm"
-                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-foreground"
+                className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
               >
                 Continue
               </Button>
@@ -438,7 +438,7 @@ export function SalespersonPrice() {
             <div className="flex justify-center">
               <Button
                 size="sm"
-                className="mx-auto mt-3 rounded-md bg-[#dc2626] p-2 text-foreground"
+                className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
               >
                 Continue
               </Button>
@@ -682,7 +682,7 @@ function NewSection() {
               However, adopting our CRM will significantly elevate your sales game, surpassing the impact of the last five sales training sessions. Guaranteed to be the most significant change in your career, whether you're a newcomer, a sales superstar, or a seasoned salesperson who isn't tech-savvy. You'll undoubtedly see a remarkable increase—Just read the upcoming story about wasting time with mass emails.
             </p>
             <div className='flex justify-center'>
-              <Button size='sm' className='mx-auto bg-[#dc2626] text-foreground  mt-3'>
+              <Button size='sm' className='mx-auto bg-primary text-foreground  mt-3'>
                 Continue
               </Button>
             </div>
@@ -710,7 +710,7 @@ function NewSection() {
               </p>
             </div>
             <div className='flex justify-center'>
-              <Button size='sm' className='mx-auto bg-[#dc2626] text-foreground  mt-3'>
+              <Button size='sm' className='mx-auto bg-primary text-foreground  mt-3'>
                 Continue
               </Button>
             </div>

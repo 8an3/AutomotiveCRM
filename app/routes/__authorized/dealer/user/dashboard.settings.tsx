@@ -532,7 +532,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
               ) : (
                 <ButtonLoading
                   size="sm"
-                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
                   type="submit"
                   name='intent'
                   value='updateUser'
@@ -695,7 +695,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
             <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
               <ButtonLoading
                 size="sm"
-                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
                 type="submit"
                 name='intent'
                 value='updateFees'
@@ -769,7 +769,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
               <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
                 <ButtonLoading
                   size="sm"
-                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
                   type="submit"
                   name='intent'
                   value='activixActivated'
@@ -821,7 +821,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
               <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
                 <ButtonLoading
                   size="sm"
-                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
                   type="submit"
                   name='intent'
                   value='appearance'
@@ -881,7 +881,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
               <Input type='hidden' defaultValue={user.email} name="userEmail" />
               <ButtonLoading
                 size="sm"
-                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-[#dc2626]"
+                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
                 type="submit"
                 name='intent'
                 value='automations'

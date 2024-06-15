@@ -1402,7 +1402,7 @@ export function EditorTiptapHookComposeDashboardEmailClient({ content, subject, 
                 SendIt(body);
               }, 5);
             }}
-            className={`border-border text-foreground bg-[#dc2626] w-auto mr-2 cursor-pointer rounded border ml-auto  p-3 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-[#95959f]  hover:text-primary hover:shadow-md focus:outline-none `}
+            className={`border-border text-foreground bg-primary w-auto mr-2 cursor-pointer rounded border ml-auto  p-3 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-[#95959f]  hover:text-primary hover:shadow-md focus:outline-none `}
           >
             Send
           </Button>
