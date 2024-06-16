@@ -154,7 +154,7 @@ export default function SMSConv() {
 
         staffChatContent = (
             <div onClick={() => { }} id="OpenChannel" className='text-foreground'>
-                <div className="flex justify-between border-b border-[#262626]">
+                <div className="flex justify-between border-b border-border">
                     <div className='flex align-middle'>
 
                         {conversation === 'list' || conversation === 'conversation' && (
@@ -185,7 +185,7 @@ export default function SMSConv() {
                 <div className='relative w-[100%] max-h-[950px] h-auto overflow-y-scroll' >
                     <ChatMessages identity={user.email} messages={messagesConvo} messagesRef={messagesRef} />
                 </div>
-                <div className="mt-auto   rounded-md  border-[#262626]">
+                <div className="mt-auto   rounded-md  border-border">
 
                     <Form ref={$form} method="post"  >
                         <input className='w-full p-2' type="hidden" name='sender' defaultValue={user.email} />

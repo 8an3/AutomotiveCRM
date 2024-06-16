@@ -263,15 +263,15 @@ export default function Shight() {
 
 /**
  *   <>
-      <div className=" mx-auto flex h-[85%] w-[95%] border border-[#262626]">
-        <div className="sidebar w-[25%] border-r border-[#262626]">
-          <div className="border-b border-[#262626]">
+      <div className=" mx-auto flex h-[85%] w-[95%] border border-border">
+        <div className="sidebar w-[25%] border-r border-border">
+          <div className="border-b border-border">
             <p className="text-bold  p-2 text-lg text-[#fff]">
               Category
             </p>
           </div>
-          <div className="border-b border-[#262626]">
-            <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#262626]">
+          <div className="border-b border-border">
+            <div className="h-auto max-h-[950px] overflow-y-auto border-b border-border">
               {scripts.reduce((unique, mail) => {
                 if (!unique.some(item => item.category === mail.category)) {
                   unique.push(mail);
@@ -294,8 +294,8 @@ export default function Shight() {
             </p>
           </div>
         </div>
-        <div className="emailList w-[25%] border-r border-[#262626]">
-          <div className="border-b border-[#262626]">
+        <div className="emailList w-[25%] border-r border-border">
+          <div className="border-b border-border">
             <p className="text-bold  p-2 text-lg text-[#fff]">
               Sub-category
             </p>
@@ -311,12 +311,12 @@ export default function Shight() {
           </div>
         </div>
         <div className="email flex h-full w-[50%]  flex-col">
-          <div className="border-b border-[#262626]">
+          <div className="border-b border-border">
             <p className="text-bold  p-2 text-lg text-[#fff]">
               Script
             </p>
           </div>
-          <div className="flex justify-between  border-[#262626]">
+          <div className="flex justify-between  border-border">
             {selectedRecord && (
               <div className="h-auto max-h-[950px] overflow-y-auto">
                 <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
@@ -585,13 +585,13 @@ export default function Shight() {
   };
   return (
     <>
-      <div className="border-1 mx-auto flex h-[95%] w-[95%] border border-[#262626]">
-        <div className="sidebar w-[25%] border-r border-[#262626]">
-          <div className="border-b border-[#262626]">
+      <div className="border-1 mx-auto flex h-[95%] w-[95%] border border-border">
+        <div className="sidebar w-[25%] border-r border-border">
+          <div className="border-b border-border">
             <CategoryList scripts={scripts} />
           </div>
         </div>
-        <div className="emailList w-[25%] border-r border-[#262626]">
+        <div className="emailList w-[25%] border-r border-border">
           <div className=" ">
             <div>
               <Input name="search" placeholder="Search" className='m-2 mx-auto w-[95%] border border-[#ffffff4d] bg-[#000] text-[#fff] focus:border-primary' />
@@ -600,7 +600,7 @@ export default function Shight() {
           </div>
         </div>
         <div className="email flex h-full w-[50%]  flex-col">
-          <div className="flex justify-between border-b border-[#262626]">
+          <div className="flex justify-between border-b border-border">
 
             <ScriptsList scripts={scripts} />
           </div>

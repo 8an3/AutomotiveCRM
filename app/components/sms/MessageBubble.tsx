@@ -89,7 +89,7 @@ const Media = ({ hasFailed, url }) => {
         }
       }}
     >
-      {!url && !hasFailed && <div className="border border-[#262626] bg-black"></div>}
+      {!url && !hasFailed && <div className="border border-border bg-black"></div>}
 
 
       {hasFailed && (

@@ -1833,7 +1833,7 @@ export function Overview({ outletSize }) {
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select email..." />
                 </SelectTrigger>
-                <SelectContent className='bg-background text-foreground border-[#262626]'>
+                <SelectContent className='bg-background text-foreground border-border'>
                   <SelectGroup>
                     <SelectLabel>Emails</SelectLabel>
                     {email.map((framework) => (

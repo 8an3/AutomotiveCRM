@@ -302,24 +302,24 @@ export default function ClientCard({ data }) {
                             Update
                         </ButtonLoading>
                     </Form>
-                    <Form method='post' >
-                        <input type='hidden' name='intent' value='financeTurnover' />
-                        <input type='hidden' name='locked' value={lockedValue} />
-                        <input type='hidden' name='financeManager' value={user.email} />
-                        <input type='hidden' name='financeId' value={data.id} />
-                        <ButtonLoading
-                            size="sm"
-                            className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
-                            type="submit"
-                            isSubmitting={isSubmitting}
-                            onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
-                            loadingText="Reaching out to the finance dept..."
-                        >
-                            Finance Turnover
-                        </ButtonLoading>
-                    </Form>
-                    <div className=' mt-3'>
 
+                    <div className='flex justify-between mt-3'>
+                        <Form method='post' >
+                            <input type='hidden' name='intent' value='financeTurnover' />
+                            <input type='hidden' name='locked' value={lockedValue} />
+                            <input type='hidden' name='financeManager' value={user.email} />
+                            <input type='hidden' name='financeId' value={data.id} />
+                            <ButtonLoading
+                                size="sm"
+                                className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
+                                type="submit"
+                                isSubmitting={isSubmitting}
+                                onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
+                                loadingText="Reaching out to the finance dept..."
+                            >
+                                Finance Turnover
+                            </ButtonLoading>
+                        </Form>
 
                         <a href={`/dealer/customer/${data.clientfileId}/${data.id}`} target="_blank">
                             <ButtonLoading

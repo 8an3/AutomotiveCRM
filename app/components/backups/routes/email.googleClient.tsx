@@ -530,7 +530,7 @@ export default function EmailClient() {
 
     return (
       <>
-        <div className="!border-b !border-[#262626]">
+        <div className="!border-b !border-border">
           <Button
             onClick={() => {
               GetEmailsFromFolder('DRAFT')
@@ -545,7 +545,7 @@ export default function EmailClient() {
             Compose
           </Button>
         </div>
-        <div className="border-b border-[#262626]">
+        <div className="border-b border-border">
           <p className="m-2 text-[#fff]"> </p>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
@@ -1015,14 +1015,14 @@ export default function EmailClient() {
 
   return (
     <>
-      <div className="!border-1 !mx-auto !bg-black flex !w-[95%] !h-[90vh] !border !border-[#262626] mt-[60px]">
-        <div className="sidebar w-[10%] border-r !border-[#262626]">
-          <div className="border-b !border-[#262626]">
+      <div className="!border-1 !mx-auto !bg-black flex !w-[95%] !h-[90vh] !border !border-border mt-[60px]">
+        <div className="sidebar w-[10%] border-r !border-border">
+          <div className="border-b !border-border">
             <LabelList />
           </div>
         </div>
-        <div className="emailList !w-[35%] !border-r !border-[#262626]">
-          <div className="flex items-center justify-center border-b border-[#262626]">
+        <div className="emailList !w-[35%] !border-r !border-border">
+          <div className="flex items-center justify-center border-b border-border">
             <Tabs defaultValue="Unread" className="m-2 w-[95%]">
               <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger onClick={() => {
@@ -1082,7 +1082,7 @@ export default function EmailClient() {
         </div>
         {openReply === true && (
           <div className="email flex h-full w-[60%]  flex-col">
-            <div className="flex justify-between !border-b !border-[#262626]">
+            <div className="flex justify-between !border-b !border-border">
               <div className="!my-2 !ml-2 !flex">
                 <Button
                   onClick={() => {
@@ -1221,7 +1221,7 @@ export default function EmailClient() {
               </div>
             </div>
             {!reply && (
-              <div className="m-2 rounded-md border border-[#262626]">
+              <div className="m-2 rounded-md border border-border">
                 <div className="m-2 flex items-center justify-between">
                   <p className="text-bold  text-lg text-[#fff]">
                     {selectedEmail.name}
@@ -1240,7 +1240,7 @@ export default function EmailClient() {
               </div>
             )}
             {reply && (
-              <div className=" justify-center border-b border-[#262626]">
+              <div className=" justify-center border-b border-border">
                 <Input defaultValue={to} name='to' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-foreground' />
                 <Input defaultValue={subject} name='subject' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-foreground' />
                 <div className='mx-auto mt-2 flex w-[98%]' >
@@ -1250,7 +1250,7 @@ export default function EmailClient() {
               </div>
             )}
             {selectedEmail.body && (
-              <div className="!grow  !border-t bg-white border-[#262626]">
+              <div className="!grow  !border-t bg-white border-border">
                 <p className="  !text-sm  ">
                   <div className="parent-container">
                     <MyIFrameComponent />
@@ -1259,7 +1259,7 @@ export default function EmailClient() {
               </div>
             )}
             {reply && (
-              <div className="border-l mb-2 items-end justify-end rounded-md border-t border-[#262626]">
+              <div className="border-l mb-2 items-end justify-end rounded-md border-t border-border">
 
                 {/*<Textarea value={text} ref={textareaRef} onChange={(e) => setText(e.target.value)} className="m-2 mx-auto h-[200px] w-[98%]" placeholder="Reply to email..." />*/}
                 <EditorTiptapHook onChange={someFunction} />
@@ -1318,7 +1318,7 @@ export default function EmailClient() {
         )}
         {composeEmail === true && (
           <div className="email flex h-full w-[60%]  flex-col">
-            <div className="flex justify-between border-b border-[#262626]">
+            <div className="flex justify-between border-b border-border">
               <div className="my-2 flex">
                 <select
                   className={`autofill:placeholder:text-text-[#C2E6FF] justifty-start ml-2 mr-2 h-9 w-auto cursor-pointer rounded border  border-white bg-[#1c2024] px-2 text-xs uppercase text-foreground shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
@@ -1365,7 +1365,7 @@ export default function EmailClient() {
                 </Button>
               </div>
             </div>
-            <div className=" justify-center border-b border-[#262626]">
+            <div className=" justify-center border-b border-border">
               <Input placeholder='To' name='to' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-foreground' />
               <Input placeholder='Subject' name='subject' className='m-2 mx-auto w-[98%] bg-[#1c2024] text-foreground' />
               <div className='mx-auto mt-2 flex w-[98%]' >
@@ -1373,7 +1373,7 @@ export default function EmailClient() {
                 <Input name='bcc' placeholder='bcc' className='text-right mx-auto ml-1 bg-[#1c2024]  text-foreground' />
               </div>
             </div>
-            <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-[#262626]">
+            <div className="border-1 mb-2 grow items-end justify-end overflow-auto rounded-md border-t border-border">
 
               <EditorTiptapHook onChange={someFunction} />
 

@@ -498,14 +498,14 @@ export default function DnDResource() {
     return (
       <div className="large-screen-ui">
         <>
-          <div className="h-[75px]  w-auto  border-b border-[#262626] bg-background text-foreground">
+          <div className="h-[75px]  w-auto  border-b border-border bg-background text-foreground">
             <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
             <p className="text-muted-foreground   ml-[105px]  ">
             </p>
           </div>
           <div className=" grow">
             <div className='flex w-auto '>
-              <div className='h-screen w-[310px] border-r border-[#262626]'>
+              <div className='h-screen w-[310px] border-r border-border'>
                 <div className=' mt-5 flex-col mx-auto justify-center'>
                   <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
                     <div className='  my-3 flex justify-center   '>

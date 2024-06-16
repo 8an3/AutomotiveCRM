@@ -554,11 +554,11 @@ export default function SearchTable() {
           Clear
         </Button>
       </div>
-      <div className="rounded-md border border-[#262626] ">
-        <Table className='w-full text-foreground border-[#262626] overflow-x-auto'>
+      <div className="rounded-md border border-border ">
+        <Table className='w-full text-foreground border-border overflow-x-auto'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className=' border-[#262626]'>
+              <TableRow key={headerGroup.id} className=' border-border'>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead className='items-center ' key={header.id}>
@@ -569,7 +569,7 @@ export default function SearchTable() {
                           header.getContext()
                         )}
                       {header.column.getCanFilter() && showFilter && (
-                        <div className="mx-auto items-center justify-center text-center cursor-pointer border-[#262626]">
+                        <div className="mx-auto items-center justify-center text-center cursor-pointer border-border">
                           <Filter column={header.column} table={table} />
                         </div>
                       )}
@@ -584,7 +584,7 @@ export default function SearchTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className='p-4 text-foreground bg-background capitalize cursor-pointer hover:text-primary border-[#262626]'
+                  className='p-4 text-foreground bg-background capitalize cursor-pointer hover:text-primary border-border'
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (

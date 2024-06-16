@@ -46,7 +46,7 @@ export const msalConfig = {
     "User.ReadWrite.All",
     "User.ReadWrite",
   ],
-  prompt: "login_prompt",
+  prompt: "loginRedirect",
   resource: "https://graph.microsoft.com",
   authority: `https://login.microsoftonline.com/common`,
 }
@@ -60,7 +60,7 @@ export const config = {
     // redirectUri: `https://www.dealersalesassistant.ca/auth/login`,
     authority: `https://login.microsoftonline.com/common`,
     postLogoutRedirectUri: "/",
-    prompt: "login",
+    prompt: "loginRedirect",
   },
   cache: {
     cacheLocation: 'localStorage',
@@ -115,7 +115,7 @@ export const loginRequest = {
   clientId: msalConfig.clientId,
   knownAuthorities: [],
   redirectUri: msalConfig.redirectUri,
-  prompt: "login",
+  prompt: "loginRedirect",
   scopes: [
     'User.Read',
     'Mail.ReadWrite',

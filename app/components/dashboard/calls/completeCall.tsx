@@ -85,7 +85,7 @@ const CompleteCall = ({ data, contactMethod }) => {
           <ClipboardCheck className='mx-auto  text-foreground items-center justify-center hover:text-primary target:text-primary' />
         </div>
       </DialogTrigger>
-      <DialogContent className="w-full md:w-[50%]  bg-background text-foreground border-[#262626] h-auto">
+      <DialogContent className="w-full md:w-[50%]  bg-background text-foreground border-border h-auto">
         <DialogHeader>
           <DialogTitle>
             <p className="mt-4 text-foreground ">Schedule Follow-up</p>

@@ -1020,13 +1020,13 @@ export function InventoryMoto() {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className="rounded-md border border-[#262626] ">
-                <Table className='w-full overflow-x-auto border-[#262626] text-foreground'>
+            <div className="rounded-md border border-border ">
+                <Table className='w-full overflow-x-auto border-border text-foreground'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow
                                 key={headerGroup.id}
-                                className=' border-[#262626]'
+                                className=' border-border'
                             >
                                 {headerGroup.headers.map((header) => {
                                     return (
@@ -1050,7 +1050,7 @@ export function InventoryMoto() {
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-                                    className='cursor-pointer border-[#262626] bg-background p-4 capitalize text-foreground hover:text-primary'
+                                    className='cursor-pointer border-border bg-background p-4 capitalize text-foreground hover:text-primary'
                                     onClick={() => handleRowClick(row)}
 
                                 >

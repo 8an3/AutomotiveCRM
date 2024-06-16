@@ -89,11 +89,11 @@ export default function Component() {
 
   return (
     <>
-      <div className="border-1 mx-auto flex w-[95%] h-[90vh] border border-[#262626] ">
+      <div className="border-1 mx-auto flex w-[95%] h-[90vh] border border-border ">
 
 
-        <div className="emailList w-[100%] border-r border-[#262626]">
-          <div className="flex border-b border-[#262626] text-foreground p-2 justify-between">
+        <div className="emailList w-[100%] border-r border-border">
+          <div className="flex border-b border-border text-foreground p-2 justify-between">
             <p>Staff Chat</p>    <Link to="/dealer/im/lobby" ><XCircle /></Link>
           </div>
           <Link to="/dealer/im/lobby">

@@ -666,7 +666,7 @@ export function Example({ content, handleUpdate, }: {
               onClick={() => {
 
               }} >
-              <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#262626]">
+              <div className="h-auto max-h-[950px] overflow-y-auto border-b border-border">
 
                 <div className="flex">
                   <Dialog>

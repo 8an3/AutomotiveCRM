@@ -89,10 +89,13 @@ export default function AddCustomer() {
   const data = useActionData()
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' >
+      <DialogTrigger>
+        <button className='hidden md:block p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' >
           <UserPlus size={20} strokeWidth={1.5} color="#cbd0d4" />
         </button>
+        <p className='block md:hidden  cursor-pointer  ' >
+          Add Customer
+        </p>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] border-border bg-background text-foreground ">
         <DialogHeader>

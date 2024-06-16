@@ -297,11 +297,11 @@ const ChatApp = () => {
 
   if (loggedIn) {
     return (
-      <div className="mx-auto mt-[65px] flex h-[93%] w-[95%] border border-[#262626] bg-black">
+      <div className="mx-auto mt-[65px] flex h-[93%] w-[95%] border border-border bg-black">
         <div className="grid h-[100%] w-1/4 max-w-[25%] grid-cols-1 space-y-2 border border-[#ffffff4d]">
-          <div className="flex justify-center border-b border-r border-[#262626] ">
+          <div className="flex justify-center border-b border-r border-border ">
 
-            <div className="flex items-center justify-center border-b border-[#262626]">
+            <div className="flex items-center justify-center border-b border-border">
               <Tabs defaultValue="New Chat" className="m-2 w-[95%]">
                 <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger onClick={() => {
@@ -415,11 +415,11 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(mapStateToProps, mapDispatchToProps)(ChatApp);
 
 
-/** <div className="bg-black border border-[#262626] mt-[60px]">
-      <div className="w-[30%] border !border-[#262626]" >
+/** <div className="bg-black border border-border mt-[60px]">
+      <div className="w-[30%] border !border-border" >
 
       </div>
-      <div className="w-[70%] border !border-[#262626]">
+      <div className="w-[70%] border !border-border">
 
       </div>
     </div> */

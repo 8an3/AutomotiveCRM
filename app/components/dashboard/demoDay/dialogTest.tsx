@@ -46,7 +46,7 @@ export default function DialogTest(user, data, firstName, lastName, email, phone
             <Menu color="#ededed" className='mx-auto' />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[250px] p-0 border-[#262626] bg-background text-foreground">
+        <PopoverContent className="w-[250px] p-0 border-border bg-background text-foreground">
           <Command>
             <CommandEmpty>Edit Demo Day Customer.</CommandEmpty>
             <CommandGroup>

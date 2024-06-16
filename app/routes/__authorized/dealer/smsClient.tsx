@@ -307,11 +307,11 @@ export default function ChatApp() {
   }
 
   return <Loader2 className="animate-spin" />;
-}<div className="bg-black border border-[#262626] mt-[60px]">
-      <div className="w-[30%] border !border-[#262626]" >
+}<div className="bg-black border border-border mt-[60px]">
+      <div className="w-[30%] border !border-border" >
 
       </div>
-      <div className="w-[70%] border !border-[#262626]">
+      <div className="w-[70%] border !border-border">
 
       </div>
     </div> */

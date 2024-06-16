@@ -455,24 +455,28 @@ export default function SearchLeads() {
   return (
     <div className="mx-auto mt-[10px] w-[95%] justify-center text-foreground">
       <div className="flex items-center py-4 justify-between">
-        <div className='flex'>
-          <Input
-            value={globalFilter ?? ''}
-            onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-[#262626] w-[400px] border border-[#262626] bg-background p-2 text-foreground shadow"
-            placeholder="Search all columns..."
-          />
-          <Input
-            placeholder={`Search phone # ...`}
-            value={
-              (table.getColumn('phone')?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn('phone')?.setFilterValue(event.target.value)
-            }
-            className="ml-2 max-w-sm border-[#262626] bg-background p-2 text-foreground"
-          />
+        <div className='flex items-center'>
+          <div className="relative mt-3">
+            <Input
+              value={globalFilter ?? ''}
+              onChange={event => setGlobalFilter(event.target.value)} className="font-lg border-border  w-[250px] border border-border bg-background p-2 text-foreground shadow"
+            />
+            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Search all columns</label>
+          </div>
+          <div className="relative mt-3">
+            <Input
+              value={
+                (table.getColumn('phone')?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn('phone')?.setFilterValue(event.target.value)
+              }
+              className="ml-2   w-[250px] border-border bg-background p-2 text-foreground"
+            />
+            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Search phone #</label>
+          </div>
           <select value={filterBy} onChange={handleDropdownChange}
-            className={`border-[#262626] bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
+            className={`border-border bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
           >
             <option value='' >Search By Model</option>
             {models.map((model, index) => (
@@ -482,18 +486,18 @@ export default function SearchLeads() {
             ))}
           </select>
 
-          <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-[#262626] bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs uppercase shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
+          <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-border bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
           >
             Clear
           </Button>
         </div>
 
       </div>
-      <div className="rounded-md border border-[#262626]">
-        <Table className=" border-[#262626] text-foreground">
-          <TableHeader className=" border-[#262626] text-foreground">
+      <div className="rounded-md border border-border">
+        <Table className=" border-border text-foreground">
+          <TableHeader className=" border-border text-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className=" border-[#262626] text-foreground">
+              <TableRow key={headerGroup.id} className=" border-border text-foreground">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -509,14 +513,14 @@ export default function SearchLeads() {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className=" border-[#262626] text-foreground">
+          <TableBody className=" border-border text-foreground">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
 
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className=" border-[#262626] text-foreground hover:bg-muted/50 rounded-md w-[97%] cursor-pointer"
+                  className=" border-border text-foreground hover:bg-muted/50 rounded-md w-[97%] cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -530,7 +534,7 @@ export default function SearchLeads() {
 
               ))
             ) : (
-              <TableRow className=" border-[#262626] text-foreground">
+              <TableRow className=" border-border text-foreground">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"

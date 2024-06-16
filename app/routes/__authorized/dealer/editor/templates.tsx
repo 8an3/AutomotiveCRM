@@ -683,7 +683,7 @@ export function Example({ content, handleUpdate, }: {
                 <div className={`mx-auto h-[800px] hover:text-primary  ml-2 mt-2 w-[98%] cursor-pointer  grow overflow-auto  rounded-md p-3  grid gris-cols-2 `}
                   onClick={() => {
                   }} >
-                  <div className="h-auto max-h-[950px] overflow-y-auto border-b border-[#262626]">
+                  <div className="h-auto max-h-[950px] overflow-y-auto border-b border-border">
                     <div className="flex">
                       <Dialog>
                         <DialogTrigger asChild>

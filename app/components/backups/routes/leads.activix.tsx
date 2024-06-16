@@ -514,11 +514,11 @@ export function SearchTable() {
                     Clear
                 </Button>
             </div>
-            <div className="rounded-md border border-[#262626] ">
-                <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground'>
+            <div className="rounded-md border border-border ">
+                <Table2 className='w-full overflow-x-auto border-border text-foreground'>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className=' border-[#262626]'>
+                            <TableRow key={headerGroup.id} className=' border-border'>
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <TableHead className='items-center ' key={header.id}>
@@ -529,7 +529,7 @@ export function SearchTable() {
                                                     header.getContext()
                                                 )}
                                             {header.column.getCanFilter() && showFilter && (
-                                                <div className="mx-auto cursor-pointer items-center justify-center border-[#262626] text-center">
+                                                <div className="mx-auto cursor-pointer items-center justify-center border-border text-center">
                                                     <Filter column={header.column} table={table} />
                                                 </div>
                                             )}
@@ -544,7 +544,7 @@ export function SearchTable() {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-foreground hover:text-primary'
+                                    className='cursor-pointer border-border bg-slate8 p-4 capitalize text-foreground hover:text-primary'
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
@@ -919,11 +919,11 @@ export function WebleadsTable() {
         <div className="mx-auto mt-[75px] w-[95%] justify-center ">
             {!isRowSelected ? (
                 <>
-                    <div className="rounded-md border border-[#262626] ">
-                        <Table2 className='w-full overflow-x-auto border-[#262626] text-foreground '>
+                    <div className="rounded-md border border-border ">
+                        <Table2 className='w-full overflow-x-auto border-border text-foreground '>
                             <TableHeader>
                                 {table.getHeaderGroups().map((headerGroup) => (
-                                    <TableRow key={headerGroup.id} className=' border-[#262626]'>
+                                    <TableRow key={headerGroup.id} className=' border-border'>
                                         {headerGroup.headers.map((header) => {
                                             return (
                                                 <TableHead className='items-center' key={header.id}>
@@ -949,7 +949,7 @@ export function WebleadsTable() {
                                     table.getRowModel().rows.map((row) => (
                                         <TableRow
                                             key={row.id}
-                                            className='cursor-pointer border-[#262626] bg-slate8 p-4 capitalize text-foreground hover:text-primary'
+                                            className='cursor-pointer border-border bg-slate8 p-4 capitalize text-foreground hover:text-primary'
                                             data-state={row.getIsSelected() && "selected"}
                                             onClick={() => {
                                                 handleRowClick(row);

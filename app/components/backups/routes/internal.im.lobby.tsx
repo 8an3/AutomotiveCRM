@@ -116,10 +116,10 @@ export default function IMLobby() {
 
   return (
     <>
-      <div className="border-1 mx-auto flex w-[95%] h-[90vh] border border-[#262626]">
+      <div className="border-1 mx-auto flex w-[95%] h-[90vh] border border-border">
 
         <div className="email flex h-full w-[100%]  flex-col">
-          <div className="flex border-b border-[#262626] text-foreground p-2 justify-between">
+          <div className="flex border-b border-border text-foreground p-2 justify-between">
             <p> Staff Chat</p> <Link to='/dealer/im/chatMenu'>
               <button><XCircle /></button>
             </Link>
@@ -133,7 +133,7 @@ export default function IMLobby() {
             </ul>
           </div>
 
-          <div className="flex  border-t border-[#262626] justify-center">
+          <div className="flex  border-t border-border justify-center">
             <Form ref={$form} method="post">
               <Input name="message" className="m-2 mx-auto w-[300px]" placeholder="Message..." />
               <input className='w-full p-2' type="hidden" name='name' defaultValue={user.name} />

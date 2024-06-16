@@ -480,14 +480,14 @@ export function DataTable<TData, TValue>({
     <div className="mb-[20px]  even:bg-background  rounded overflow-x-hidden   justify-center">
       <div className="flex items-center">
 
-        <Select className='bg-background text-foreground border-[#262626] hover:text-primary  hover:border-primary' onValueChange={(value) => {
+        <Select className='bg-background text-foreground border-border hover:text-primary  hover:border-primary' onValueChange={(value) => {
           const item = CallsList.find(i => i.key === value) || DeliveriesList.find(i => i.key === value) || DepositsTakenList.find(i => i.key === value);
           if (item) {
             handleFilterChange(item.key);
             setTodayfilterBy(item.name);
           }
         }}>
-          <SelectTrigger className="w-auto bg-background text-foreground border-[#262626] hover:border-primary hover:text-primary mr-3 ">
+          <SelectTrigger className="w-auto bg-background text-foreground border-border hover:border-primary hover:text-primary mr-3 ">
             <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
           </SelectTrigger>
           <SelectContent className='bg-background text-foreground'>
@@ -504,7 +504,7 @@ export function DataTable<TData, TValue>({
         </Select>
 
         <Select onValueChange={(value) => handleInputChange(value)} >
-          <SelectTrigger className='text-foreground border-[#262626] w-auto  mr-3 hover:text-primary  hover:border-primary'>
+          <SelectTrigger className='text-foreground border-border w-auto  mr-3 hover:text-primary  hover:border-primary'>
             Global Filter
           </SelectTrigger>
           <SelectContent align="end" className='bg-background text-foreground '>
@@ -532,12 +532,12 @@ export function DataTable<TData, TValue>({
 
         <Button
           variant='outline'
-          onClick={() => setAllFilters([])} className='bg-background text-foreground border-[#262626] hover:text-primary  hover:border-primary hover:bg-transparent mr-3' >
+          onClick={() => setAllFilters([])} className='bg-background text-foreground border-border hover:text-primary  hover:border-primary hover:bg-transparent mr-3' >
           Clear
         </Button>
 
         <Button
-          variant='outline' onClick={toggleFilter} className='bg-background text-foreground border-[#262626] hover:text-primary  hover:border-primary hover:bg-transparent mr-3' >
+          variant='outline' onClick={toggleFilter} className='bg-background text-foreground border-border hover:text-primary  hover:border-primary hover:bg-transparent mr-3' >
           Toggle Col
         </Button>
         <div className="mx-2">
@@ -560,7 +560,7 @@ export function DataTable<TData, TValue>({
                     return (
                       <DropdownMenuCheckboxItem
                         key={column.id}
-                        className="bg-background capitalize  cursor-pointer"
+                        className="bg-background capitalize  cursor-pointer text-foreground"
                         checked={column.getIsVisible()}
                         onCheckedChange={(value) =>
                           column.toggleVisibility(!!value)
@@ -581,13 +581,13 @@ export function DataTable<TData, TValue>({
           </Link>
         </div>
       </div >
-      <div className="mt-[20px] rounded-md  border border-[#262626] text-foreground">
+      <div className="mt-[20px] rounded-md  border border-border text-foreground">
 
-        <Table className="rounded-md overflow-x-auto border-[#262626]">
+        <Table className="rounded-md overflow-x-auto border-border">
           <TableHeader>
 
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className=' border-[#262626]'>
+              <TableRow key={headerGroup.id} className=' border-border'>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -612,13 +612,13 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className="overflow-x-auto border-[#262626]">
+          <TableBody className="overflow-x-auto border-border">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row, index) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`p-4 text-foreground bg-background border-[#262626] capitalize cursor-pointer  ${index % 2 === 0 ? 'bg-background' : 'bg-background'}`}
+                  className={`p-4 text-foreground bg-background border-border capitalize cursor-pointer  ${index % 2 === 0 ? 'bg-background' : 'bg-background'}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

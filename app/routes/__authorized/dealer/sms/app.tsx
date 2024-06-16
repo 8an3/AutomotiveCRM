@@ -470,7 +470,7 @@ const ChatApp = (item) => {
 
         channelContent = (
             <div onClick={() => { }} id="OpenChannel" className='text-foreground'>
-                <div className="flex justify-between border-b border-[#262626]">
+                <div className="flex justify-between border-b border-border">
                     <div className='flex align-middle'>
 
                         <Button variant='outline' onClick={() => SetConversation('list')}>
@@ -498,7 +498,7 @@ const ChatApp = (item) => {
                 <div className='relative w-[100%] max-h-[950px] h-auto overflow-y-scroll' >
                     <ChatMessages identity={`+1${user.phone}`} messages={messagesConvo} messagesRef={messagesRef} />
                 </div>
-                <div className="mt-auto   rounded-md  border-[#262626]">
+                <div className="mt-auto   rounded-md  border-border">
 
                     <Form ref={$form} method="post"  >
                         <input className='w-full p-2' type="hidden" name='phone' defaultValue={`+1${user.phone}`} />
@@ -542,11 +542,11 @@ const ChatApp = (item) => {
             <>
                 {conversation === 'largeScreen' && (
 
-                    <div className="mx-auto mt-[65px] h-[93%] w-[95%] border border-[#262626] bg-black flex">
+                    <div className="mx-auto mt-[65px] h-[93%] w-[95%] border border-border bg-black flex">
 
                         <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d]  w-[25%] `}>
 
-                            <div className="tabListSZ mx-auto flex w-full border-b border-[#262626]">
+                            <div className="tabListSZ mx-auto flex w-full border-b border-border">
                                 <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
                                     <TabsList className="grid w-auto grid-cols-2">
                                         <TabsTrigger
@@ -722,7 +722,7 @@ const ChatApp = (item) => {
                     <div className="">
                         <div className={`leftPanel flex flex-col space-y-2 border border-[#ffffff4d]  w-full `}>
 
-                            <div className="tabListSZ mx-auto flex w-full border-b border-[#262626]">
+                            <div className="tabListSZ mx-auto flex w-full border-b border-border">
                                 <Tabs defaultValue="SMS" className="m-2 mx-auto w-[95%] justify-start">
                                     <TabsList className="grid w-auto grid-cols-2">
                                         <TabsTrigger

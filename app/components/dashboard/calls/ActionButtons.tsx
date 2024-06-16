@@ -44,7 +44,7 @@ export function ActionButtons<T extends RowData>({
           onClick={() => setPageIndex(0)}
           disabled={!hasPreviousPage}
         >
-           <FastArrowLeft />
+          <FastArrowLeft />
         </button>
         <button
           className="border rounded p-1"
@@ -58,7 +58,7 @@ export function ActionButtons<T extends RowData>({
           onClick={() => nextPage()}
           disabled={!hasNextPage}
         >
-           <NavArrowRight />
+          <NavArrowRight />
         </button>
         <button
           className="border rounded p-1"
