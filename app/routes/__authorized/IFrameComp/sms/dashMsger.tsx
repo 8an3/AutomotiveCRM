@@ -1,6 +1,6 @@
 
 import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
-import { Form, Link, useActionData, useFetcher, useLoaderData, useSubmit, useNavigation, useParams, useNavigate, useLocation } from "@remix-run/react";
+import { Form, Link, useActionData, useFetcher, useLoaderData, useSubmit, useNavigation, useParams, useNavigate, useLocation, useSearchParams } from "@remix-run/react";
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { type DataFunctionArgs, type ActionFunction, json, type LinksFunction, redirect } from '@remix-run/node'
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
@@ -12,60 +12,57 @@ import { cn } from "~/components/ui/utils"
 import { Tabs, Badge, TabsContent, TabsList, TabsTrigger, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Card, CardContent, CardDescription, CardFooter, Alert, Debug, InputPassword, Layout, PageHeader, RemixForm, RemixLinkText, CardHeader, CardTitle, Tooltip, TooltipContent, TooltipTrigger, TooltipProvider, Avatar, AvatarFallback, AvatarImage, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, RemixNavLink, Input, Separator, Button, Label, PopoverTrigger, PopoverContent, Popover, TextArea } from "~/components"
 import { CheckIcon, PaperPlaneIcon, PlusIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
+import twilio from 'twilio';
 
-const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
-const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
-const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
-const proxyPhone = '+12176347250'
 
-export default function ChatAppDashboardClient() {
-  const { user, client: newClient, getTemplates, twilioSmsDetails, newToken, callToken } = useLoaderData();
-  const [customer, setCust] = useState()
+export default function ChatAppDashboardClient({ cust, customerPhone, searchData, customerfinanceId, customerName, customerEmail, convoId, messages, messagesRef, identity, convoList, getText, getTemplates }) {
+  const { newToken, user, conversationsData, username, } = useLoaderData()
+
+  console.log(convoList, conversationsData, getText, convoId, 'isMobileDevice')
+
   const [templates, setTemplates] = useState(getTemplates);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [text, setText] = useState('');
+  const [input, setInput] = React.useState("")
+  const [conversationSID, setConversationSID] = useState('')
+
+  let multipliedConvoList = [];
+  for (let i = 0; i < 30; i++) {
+    multipliedConvoList = multipliedConvoList.concat(convoList);
+  }
+
+  // const [messages, setMessages] = useState(getText);
+
   const $form = useRef<HTMLFormElement>(null);
 
-  useEffect(() => {
-    const getCust = window.localStorage.getItem("customer");
-    const parseCust = getCust ? JSON.parse(getCust) : [];
-    setCust(parseCust)
-  }, []);
 
+  const [conversation, SetConversation] = useState('list');
 
-
-
-
-  const [input, setInput] = React.useState("")
   const inputLength = input.trim().length
-  const fetcher = useFetcher();
-  const [messages, setMessages] = React.useState([
-    {
-      userEmail: 'customer',
-      body: "Hi, I was looking at the model, do you have that in stock?",
-    },
-    {
-      userEmail: "skylerzanth@outlook.com",
-      body: "Hey, yes we do, what color did you like most?.",
-    },
-    {
-      userEmail: 'customer',
-      body: "red, is that available?",
-    },
-    {
-      userEmail: "skylerzanth@outlook.com",
-      body: "Let me check for you, one sec.",
-    },
-  ])
+  const fetcher = useFetcher()
   const handleChange = (event) => {
-    const selectedTitle = event.target.value;
-    const selectedTemplate = templates.find(
-      (template) => template.title === selectedTitle
-    );
+    const selectedTemplate = templates.find(template => template.title === event.target.value);
+    setSelectedTemplate(selectedTemplate);
 
-    setSelectedTemplate(selectedTemplate.body);
-    setInput(selectedTemplate.body);
-    //  console.log(selectedTemplate)
   };
+  useEffect(() => {
+    if (selectedTemplate) {
+      setText(selectedTemplate.body);
+    }
+  }, [selectedTemplate]);
+
+
+
+  const handleScreenSizeChange = () => {
+    const isLargeScreen = window.innerWidth >= 1025;
+    SetConversation(isLargeScreen ? 'largeScreen' : 'list');
+  };
+
+  useEffect(() => {
+    handleScreenSizeChange();
+    window.addEventListener('resize', handleScreenSizeChange);
+    return () => window.removeEventListener('resize', handleScreenSizeChange);
+  }, []);
 
   const { key } = useLocation();
   useEffect(
@@ -74,208 +71,15 @@ export default function ChatAppDashboardClient() {
     },
     [key],
   );
+
   const chatClientRef = useRef(null);
 
-  // ---------------------------sms---------------------------//
-  const [conversation, setConversation] = useState([])
-  const [conversationSID, setConversationSID] = useState('')
-  const [chatServiceSid, setChatServiceSid] = useState('')
-  const [loggedIn, setLoggedIn] = useState(user.email);
-  const [statusString, setStatusString] = useState("Fetching credentials…");
-  const username = user.username// +myPhone
-  const [name, setName] = useState(username);
-  const [token, setToken] = useState(newToken);
-  const [chatReady, setChatReady] = useState(false);
-  const [channels, setChannels] = useState(conversation);
-  const [newMessage, setNewMessage] = useState("");
-  const [client, setClient] = useState(newClient);
-  const [status, setStatus] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [currentConversation, setCurrentConversation] = useState(conversationSID);
-  const [isTyping, setIsTyping] = useState(false);
-  const messagesRef = useRef(null);
 
-  const logOut = (event) => {
-    if (event) {
-      event.preventDefault();
-    }
-    setName("");
-    setLoggedIn(false);
-    setToken("");
-    setChatReady(false);
-    setChannels([]);
-    setNewMessage("");
-    chatClientRef.current && chatClientRef.current.shutdown();
-  };
-  useEffect(() => {
 
-    const initConversations = async () => {
-      const token = callToken
 
-      setTimeout(() => {
-        const client = new Client(token);
-        setClient(client);
-        setStatusString("Connecting to Twilio…")
+  // -----------------------------------------------------------
 
-        client.on("connectionStateChanged", (state) => {
-          if (state === "connecting") {
-            setStatusString("Connecting to Twilio…")
-            setStatus("default")
-          }
-          if (state === "connected") {
-            setStatusString("You are connected.")
-            setStatus("success")
-            setLoading(false)
-            setLoggedIn(user.email)
-          }
-          if (state === "disconnecting") {
-            setStatusString("Disconnecting from Twilio…")
-            setChatReady(false)
-            setStatus("default")
-          }
-          if (state === "disconnected") {
-            setStatusString("Disconnected.",)
-            setChatReady(false)
-            setStatus("warning")
-          }
-          if (state === "denied") {
-            setStatusString("Failed to connect.",)
-            setChatReady(false)
-            setStatus("error")
-          }
-        });
-
-        client.on('tokenAboutToExpire', () => {
-          //    console.log('About to expire');
-          const username = 'skylerzanth'//twilioSmsDetails.username ;
-          const password = 'skylerzanth1234'//twilioSmsDetails.password ;
-          setName(username)
-          if (username.length > 0 && password.length > 0) {
-            getToken(username, password)
-              .then((token) => {
-                // login(token);
-                setToken(token)
-              })
-              .catch(() => {
-                localStorage.setItem("username", username);
-                localStorage.setItem("password", password);
-              })
-              .finally(() => {
-                setLoading(false);
-                setStatusString("Fetching credentials…");
-              });
-          }
-        });
-        client.on('tokenExpired', () => {
-          //     console.log('Token expired');
-          client.removeAllListeners();
-          const client2 = new Client(token);
-          setClient(client2);
-          setStatusString("Connecting to Twilio…")
-        });
-        client.on("conversationJoined", (conversation) => {
-          setChannels((prevChannels) => [...prevChannels, conversation]);
-        });
-        client.on("conversationLeft", (thisConversation) => {
-          setChannels((prevChannels) =>
-            prevChannels.filter((it) => it !== thisConversation)
-          );
-        });
-        client.on('typingStarted', (user) => {
-          console.log('typing..', user);
-          if (user.conversation.sid === currentConversation) setIsTyping(true);
-        });
-        client.on('typingEnded', (user) => {
-          console.log('typing end..', user);
-          if (user.conversation.sid === currentConversation) setIsTyping(false);
-        });
-      }, 10);
-
-    }
-    initConversations()
-    setChatReady(true);
-  }, []);
-
-  /**let conversationSid = data.conversationId
-  if (!conversationSid) {
-    const getConvoId = async () => {
-      conversationSid = await prisma.clientfile.findUnique({ where: { email: customer?.email } })
-      return conversationSid
-    }
-    conversationSid = getConvoId()
-  }
-      if (conversationSid) {
-    setConversation(conversationSid)
-    console.log(conversation)
-  } else {
-    const haveconvoquestion = async () => {
-      const hasConvo = await prisma.clientfile.findUnique({
-        where: {
-          id: customer?.clientfileId
-        }
-      })
-      if (hasConvo.conversationId.length > 15) {
-        const getConvo = await client.conversations.v1.Services(hasConvo.conversationId)
-        //console.log(getConvo, 'getconvo')
-        setConversation(getConvo)
-      } else {
-        const createConvo = await client.conversations.v1.conversations
-          .create({ friendlyName: user.name + customer.phone })
-          .then(conversation => setConversationSID(conversation.sid)
-          )
-        const getConvo = await client.conversations.v1.conversations(conversationSID)
-          .fetch()
-          .then(conversation => setChatServiceSid(conversation.chatServiceSid));
-
-        const addCustomer = await client.conversations.v1.conversations(conversationSID)
-          .participants
-          .create({
-            'messagingBinding.address': `+1${user?.phone}`, // customers number
-            'messagingBinding.proxyAddress': proxyPhone,
-          })
-          .then(participant => console.log(participant.sid));
-        await prisma.clientfile.update({
-          where: {
-            id: customer.clientfileId
-          },
-          data: {
-            conversationId: conversationSID
-          }
-        })
-
-        const getConversation = await client.conversations.v1.Services(conversationSID)
-        //   console.log(getConvo, 'getconvo')
-        setConversation(getConvo)
-      }
-    }
-  }*/
-
-  const [smsData, setSmsData] = useState()
-
-  useEffect(() => {
-    const handleMessage = (event) => {
-      const data = event.data;
-      console.log('Received data:', data);
-      const dataIframe = data;
-      setSmsData(dataIframe)
-    };
-    window.addEventListener('message', handleMessage);
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, []);
-
-  let conversationSid
-  if (smsData) {
-    console.log(smsData, 'datadata')
-
-    conversationSid = smsData.conversationId
-    if (conversationSid) {
-      setConversation(conversationSid)
-      console.log(conversation)
-    }
-  }
-
+  console.log(messages, 'messages')
   return (
     <Card className=" z-50 text-foreground" x-chunk="dashboard-05-chunk-4" >
       <CardHeader className="flex flex-row items-start bg-muted-background">
@@ -291,40 +95,20 @@ export default function ChatAppDashboardClient() {
             <CardContent className='flex-grow  overflow-y-scroll overflow-x-clip'>
               <div className="space-y-4 mt-5  max-h-[800px] h-auto">
 
-                {messages.map((message, index) => (
+                {messagesConvo && messagesConvo.map((message, index) => (
                   <div
                     key={index}
                     className={cn(
                       "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                      message.userEmail === user.email
+                      message.author === identity.toLowerCase().replace(/\s/g, '')
                         ? "ml-auto bg-primary text-foreground"
                         : "bg-[#262626]"
                     )}
                   >
                     <div className='grid grid-cols-1'>
-                      {message.userEmail !== user.email && (
+                      {message.author !== identity.toLowerCase().replace(/\s/g, '') && (
                         <p className='text-[#8c8c8c]'>
-                          {message.userEmail}
-                        </p>
-                      )}
-                      {message.body}
-                    </div>
-                  </div>
-                ))}
-                {conversation.map((message, index) => (
-                  <div
-                    key={index}
-                    className={cn(
-                      "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                      message.userEmail === user.email
-                        ? "ml-auto bg-primary text-foreground"
-                        : "bg-[#262626]"
-                    )}
-                  >
-                    <div className='grid grid-cols-1'>
-                      {message.userEmail !== user.email && (
-                        <p className='text-[#8c8c8c]'>
-                          {message.userEmail}
+                          {message.author}
                         </p>
                       )}
                       {message.body}
@@ -392,6 +176,7 @@ export const links: LinksFunction = () => [
 
 ];
 
+
 async function getToken(
   username: string,
   password: string
@@ -417,16 +202,12 @@ async function getToken(
     throw new Error(`ERROR received from ${requestAddress}: ${error}\n`);
   }
 }
-function checkForMobileDevice(userAgent) {
-  // Example patterns to check for mobile devices
-  const mobileDevicePatterns = ['iPhone', 'Android', 'Mobile'];
+//const { convoList, callToken, newToken, user, getText, getTemplates, conversationsData, username, isMobileDevice } = useLoaderData()
 
-  // Check if the User-Agent contains any of the mobile device patterns
-  return mobileDevicePatterns.some(pattern => userAgent.includes(pattern));
-}
-export async function loader({ request, params }) {
+export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
+
   const user = await GetUser(email)
   const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'
   const authToken = 'd38e2fd884be4196d0f6feb0b970f63f'
@@ -448,7 +229,7 @@ export async function loader({ request, params }) {
       });
   }
   const firstTime = await prisma.twilioSMSDetails.findUnique({ where: { userEmail: user?.email } })
-  const twilioSmsDetails = firstTime
+
   let convoList = {}
   let conversationSid;
   let participantSid;
@@ -462,7 +243,7 @@ export async function loader({ request, params }) {
       try {
         // Create a conversation
         const conversation = await client.conversations.v1.conversations.create({ friendlyName: 'My test' });
-        const conversationSid = conversation.sid;
+        const conversationSid = convoId;
 
         // Fetch conversation details
         await delay(50);
@@ -524,15 +305,64 @@ export async function loader({ request, params }) {
     })
 
   }
+  let getConvos;
 
+  if (!Array.isArray(convoList) || convoList.length === 0) {
+    getConvos = await client.conversations.v1.users(`${username}`).userConversations.list({ limit: 50 });
+    // .then(userConversations => userConversations.forEach(u => console.log(u.friendlyName)))
+    convoList = getConvos;
+  }
 
+  const conversation = await prisma.getConversation.findFirst({
+    where: { userEmail: 'skylerzanth@gmail.com'/*user.email*/ },
+    orderBy: {
+      createdAt: 'desc', // or updatedAt: 'desc'
+    },
+  });
+  let getText
+  if (conversation) {
+    const storeObject = JSON.parse(conversation.jsonData);
+    // console.log(storeObject);
 
+    // Extract conversationSid from the first object in the array
+    const conversationSid = storeObject[0].conversationSid;
+
+    if (conversationSid) {
+      //  console.log(conversationSid, 'channels');
+      getText = await client.conversations.v1.conversations(conversationSid)
+        .messages
+        .list({ limit: 200 });
+    } else {
+      console.log('conversationSid is undefined');
+    }
+  }
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user?.email, }, });
+  const convosList = await client.conversations.v1.users(username).userConversations.list({ limit: 50 });
+  console.log(convosList, 'convosList is convosList');
+
+  const conversationsData = [];
+  for (let convo of convosList) {
+    const fetchedConversation = await client.conversations.v1.conversations(convo.conversationSid).fetch();
+    console.log(fetchedConversation, 'fetchedConversation is fetchedConversation');
+
+    const messages = await client.conversations.v1.conversations(convo.conversationSid).messages.list({ limit: 1, order: 'desc' });
+    if (messages.length > 0) {
+      const message = messages[0];
+      const convoData = {
+        body: message.body,
+        author: message.author,
+        conversationSid: message.conversationSid,
+        createdDate: message.dateCreated,
+      };
+      conversationsData.push(convoData);
+    }
+  }
 
   const userAgent = request.headers.get('User-Agent');
   const isMobileDevice = checkForMobileDevice(userAgent);
 
-  return json({ convoList, callToken, username, newToken, user, password, getTemplates, twilioSmsDetails, isMobileDevice, client })
+  console.log(conversationsData);
+  return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates, conversationsData, isMobileDevice })
 }
 
 export async function action({ request, }: ActionFunction) {
@@ -578,27 +408,237 @@ export async function action({ request, }: ActionFunction) {
   return null
 }
 
-function SendMessage(item, user, text) {
-  const conversationSid = item.conversationSid
+/**
+ *
 
-  const url = `https://conversations.twilio.com/v1/Conversations/${conversationSid}/Messages`;
-  const credentials = `${accountSid}:${authToken}`;
-  const base64Credentials = btoa(credentials);
 
-  fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${base64Credentials}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      author: `+1${user.phone}`,
-      body: text,
-    }),
-  })
-    .then(response => response.json())
-    .then(message => console.log(message.sid))
-    .catch(error => console.error('Error:', error));
+    // ---------------------sms client -----------------------------
 
-}
+     const [convoId, setConvoId] = useState('')
+    const getObjectById = (id) => {
+        return searchData.find(item => item.id === id);
+    };
+    const { convoList, getText, getTemplates, conversationsData, callToken, newToken } = useLoaderData()
+    const username = user?.username.toLowerCase().replace(/\s/g, '');//'skylerzanth'//localStorage.getItem("username") ?? "";
+    const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+    const proxyPhone = '+12176347250'
 
+
+    const [messagesConvo, setMessagesConvo] = useState([]);
+    const [selectedChannelSid, setSelectedChannelSid] = useState([]);
+    const [selectedConversation, setSelectedConversation] = useState([]);
+    const [templates, setTemplates] = useState(getTemplates);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [text, setText] = useState('');
+    const [input, setInput] = React.useState("")
+    const [conversationSID, setConversationSID] = useState('')
+    const [loggedIn, setLoggedIn] = useState(user.email);
+    const [statusString, setStatusString] = useState("Fetching credentials…");
+    let multipliedConvoList = [];
+    for (let i = 0; i < 30; i++) {
+        multipliedConvoList = multipliedConvoList.concat(convoList);
+    }
+    const [channels, setChannels] = useState(multipliedConvoList);
+    const [selectedChannel, setSelectedChannel] = useState([]);
+    const [currentConversation, setCurrentConversation] = useState(null);
+    const [messages, setMessages] = useState(getText);
+    const [message, setMessage] = useState(messages || null);
+    const [chatReady, setChatReady] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState('');
+    const $form = useRef<HTMLFormElement>(null);
+    const [isTyping, setIsTyping] = useState(false);
+    const [newClient, setClient] = useState();
+    const [newMessage, setNewMessage] = useState("");
+    const [token, setToken] = useState(newToken);
+    const client = new Client(token);
+    const [name, setName] = useState(username);
+    const [to, setTo] = useState('');
+    const [channelName, setChannelName] = useState('');
+    const [from, setFrom] = useState('');
+    const [conversation_sid, setConversation_sid] = useState('');
+    const [smsMenu, setSmsMenu] = useState('true');
+    const [sms, setSms] = useState(true);
+    const [size, setSize] = useState(751);
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const [conversation, SetConversation] = useState('list');
+
+    const inputLength = input.trim().length
+    const submit = useSubmit();
+    const fetcher = useFetcher()
+    // const dispatch = useDispatch();
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const chatClientRef = useRef(null);
+
+    useEffect(() => {
+
+        const initConversations = async () => {
+            const token = callToken
+
+            setTimeout(() => {
+                const client = new Client(token);
+                setClient(client);
+                setStatusString("Connecting to Twilio…")
+
+                client.on("connectionStateChanged", (state) => {
+                    if (state === "connecting") {
+                        setStatusString("Connecting to Twilio…")
+                        setStatus("default")
+                    }
+                    if (state === "connected") {
+                        setStatusString("You are connected.")
+                        setStatus("success")
+                        setLoading(false)
+                        setLoggedIn(user.email)
+                    }
+                    if (state === "disconnecting") {
+                        setStatusString("Disconnecting from Twilio…")
+                        setChatReady(false)
+                        setStatus("default")
+                    }
+                    if (state === "disconnected") {
+                        setStatusString("Disconnected.",)
+                        setChatReady(false)
+                        setStatus("warning")
+                    }
+                    if (state === "denied") {
+                        setStatusString("Failed to connect.",)
+                        setChatReady(false)
+                        setStatus("error")
+                    }
+                });
+
+                client.on('tokenAboutToExpire', () => {
+                    console.log('About to expire');
+                    const username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+                    const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+                    setName(username)
+                    if (username.length > 0 && password.length > 0) {
+                        getToken(username, password)
+                            .then((token) => {
+                                // login(token);
+                                setToken(token)
+                            })
+                            .catch(() => {
+                                localStorage.setItem("username", username);
+                                localStorage.setItem("password", password);
+                            })
+                            .finally(() => {
+                                setLoading(false);
+                                setStatusString("Fetching credentials…");
+                            });
+                    }
+                });
+                client.on('tokenExpired', () => {
+                    console.log('Token expired');
+                    client.removeAllListeners();
+                    const client2 = new Client(token);
+                    setClient(client2);
+                    setStatusString("Connecting to Twilio…")
+                });
+                client.on("conversationJoined", (conversation) => {
+                    setChannels((prevChannels) => [...prevChannels, conversation]);
+                });
+                client.on("conversationLeft", (thisConversation) => {
+                    setChannels((prevChannels) =>
+                        prevChannels.filter((it) => it !== thisConversation)
+                    );
+                });
+                client.on('typingStarted', (user) => {
+                    console.log('typing..', user);
+                    //if (user.conversation.sid === currentConversation.sid) setIsTyping(true);
+                });
+                client.on('typingEnded', (user) => {
+                    console.log('typing end..', user);
+                    // if (user.conversation.sid === currentConversation.sid) setIsTyping(false);
+                });
+            }, 10);
+
+        }
+        initConversations()
+        setChatReady(true);
+    }, []);
+
+    const handleConversationClick = (conversationId) => {
+        setSelectedConversation(conversationId);
+        if (conversation !== 'list') {
+            SetConversation('list')
+        }
+        if (conversation === 'list') {
+            SetConversation('conversation')
+        }
+    };
+    const { key } = useLocation();
+    const squared = require('twilio')(accountSid, authToken);
+
+    // ---------------------sms client -----------------------------
+ *
+ *  const handleButtonClickSMS = async (rowData) => {
+        const theFileId = await getObjectById(rowData.clientfileId)
+        setConvoId(theFileId.conversationId)
+        setCustomerEmail(rowData.email);
+        setCustomerName(rowData.name);
+        setCustomerfinanceId(rowData.id);
+        setCustomerPhone(rowData.phone);
+        setClientfileId(rowData.clientfileId);
+        setOpenSMS(true);
+        console.log(customerPhone, customerfinanceId, customerName, customerEmail, convoId, searchData)
+        // ---------------------sms client -----------------------------
+        const getConversation = await squared.conversations.v1.conversations(convoId)
+            .fetch()
+            .then(conversation => {
+                console.log(conversation)
+                setMessagesConvo(conversation.messages);
+
+
+                setSelectedChannelSid(conversation.conversationSid);
+                setChannelName(conversation.author || convoId)
+
+            });
+        console.log(getConversation, 'getConversation')
+        const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+        const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+
+        const url = `https://conversations.twilio.com/v1/Conversations/${convoId}/Messages`;
+        const credentials = `${accountSid}:${authToken}`;
+        const base64Credentials = btoa(credentials);
+        fetch(url, { method: 'GET', headers: { 'Authorization': `Basic ${base64Credentials}` } })
+            .then(response => response.json())
+            .then(data => {
+                setMessagesConvo(data.messages);
+                setSelectedChannelSid(data.conversationSid);
+                setChannelName(rowData.name || rowData.convsationId)
+            })
+            .catch(error => console.error('Error:', error));
+        console.log(messagesConvo, selectedChannelSid, 'smsMenu')
+
+    }
+    const messagesRef = useRef(null);
+
+    // ---------------------sms client -----------------------------
+
+    <Logtext
+                            data={data}
+                            searchData={searchData}
+                            iFrameRef={iFrameRef}
+                            convoId={convoId}
+                            openSMS={openSMS}
+                            setOpenSMS={setOpenSMS}
+                            customerPhone={customerPhone}
+                            customerfinanceId={customerfinanceId}
+                            customerName={customerName}
+                            customerEmail={customerEmail}
+                            messages={messagesConvo}
+                            messagesRef={messagesRef}
+                            identity={`+1${user.phone}`}
+                            convoList={convoList}
+                            getText={getText}
+                            getTemplates={getTemplates}
+                        />
+
+
+
+
+
+                        */

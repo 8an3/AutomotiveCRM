@@ -292,9 +292,10 @@ export default function ClientCard({ data }) {
                         </div>
                         <ButtonLoading
                             size="sm"
-                            value='updateFinanceTwo'
+                            value='updateFinance'
                             className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
-                            name="intent" type="submit"
+                            name="intent"
+                            type="submit"
                             isSubmitting={isSubmitting}
                             onClick={() => toast.success(`Quote updated for ${data.firstName}`)}
                             loadingText="Updating client info..."

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, } from 'react';
-import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui";
+import React, { useEffect, useRef, useState, } from 'react';
+import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, TextArea } from "~/components/ui";
 import { Form, Link, useActionData, useLoaderData, useNavigation, } from "@remix-run/react";
 import {
   Card,
@@ -12,7 +12,7 @@ import {
 import { FaCheck } from "react-icons/fa";
 
 import { scriptsLoader, scriptsAction } from '~/components/actions/scriptsAL';
-import { Copy } from 'lucide-react';
+import { ChevronDown, ChevronUp, Copy } from 'lucide-react';
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { Toaster, toast } from 'sonner'
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
@@ -131,132 +131,230 @@ export default function Shight() {
     setSelectedScript(true);
   };
 
-  return (
-    <>
-      <div className=" mx-auto flex h-[80vh] text-foreground  ">
-        <Card className={` mx-2 transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'grow' : 'w-[15%]'} `}        >
-          <CardHeader onClick={handleCategoryClick} className='cursor-pointer'>
-            <CardTitle>Category</CardTitle>
-          </CardHeader>
-          {selectedCategorySize && (
-            <>
-              <CardContent className="space-y-2 ">
-                <div className="h-auto max-h-[700px] space-y-1 overflow-y-auto  ">
-                  {scripts.reduce((unique, mail) => {
-                    if (!unique.some(item => item.category === mail.category)) {
-                      unique.push(mail);
-                    }
-                    return unique;
-                  }, []).map((mail, index) => (
-                    <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => {
-                      handleSubcategoryClick();
-                      handleEmailClick(mail.category)
-                    }}>
-                      <div className="m-2 flex items-center justify-between">
-                        <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
-                      </div>
-                    </div>
-                  ))}
 
-                </div>
-              </CardContent>
-              <CardFooter>
-                <p>Your ability to close increases with the amount of tools at your disposal. A mechanic without a tire iron wouldnt be able to change a tire. So why dont more sales people take better care of their scripts, closes, and such?</p>
-              </CardFooter>
-            </>
-          )}
-        </Card>
+  // --------------------prompter-----------------
+  const Prompter = () => {
+    const prompterRef = useRef(null);
+    const [state, setState] = useState('start');
 
-        <Card
-          className={`mx-2 transition delay-300 duration-1000  ease-in-out ${selectedSubcategory ? 'grow' : 'w-[15%]'} `}
-        >
-          <CardHeader onClick={handleSubcategoryClick} className='cursor-pointer'>
-            <CardTitle>Sub-category</CardTitle>
+    useEffect(() => {
+      const controlPrompter = (event) => {
+        if (event.code && event.code !== 'Space') return;
+        setState((prevState) => (prevState === 'start' ? 'stop' : 'start'));
+      };
+
+      const prompter = prompterRef.current;
+      document.addEventListener('keyup', controlPrompter);
+      prompter.addEventListener('click', controlPrompter);
+
+      return () => {
+        document.removeEventListener('keyup', controlPrompter);
+        prompter.removeEventListener('click', controlPrompter);
+      };
+    }, []);
+
+    useEffect(() => {
+      const prompter = prompterRef.current;
+      if (state === 'start') {
+        prompter.start();
+      } else {
+        prompter.stop();
+      }
+    }, [state]);
+
+    const [script, setScript] = useState("Just a quick follow-up to let you know that I'm here for you whenever you're ready to move forward with the purchase. Life can sometimes get in the way of these decisions, and I want you to know that I haven't forgotten about you as your salesperson. Whether it's in a week, a month, or even six months, I'm here to assist you.  It's worth noting that we currently have promotional finance rates to help clients get on their dream bikes today. If that's of interest to you, now would be an ideal time to take advantage of it. Even if I don't hear back from you, I'll give you a call in March, right before the start of the next season, to see if you're ready to explore your options further. Your satisfaction is my priority, and I'm here to make the process as smooth as possible for you.");
+    const [speed, setSpeed] = useState(3);
+    const speedDown = () => {
+      setSpeed(current => current - 1)
+      setSpeed(speed - 1)
+      console.log(speed, 'spoeed')
+    };
+
+    const speedUp2 = () => {
+      setSpeed(current => current + 1)
+      setSpeed(speed + 1)
+      console.log(speed, 'spoeed')
+    };
+
+    const speedUp = () => {
+      setTimeout(() => {
+        setSpeed(speed + 1);
+      }, 2000);
+    };
+    return (
+      <div className=' '>
+        <Card className="  flex h-[60vh] w-[90%] md:w-[800px] text-foreground  ">
+          <CardHeader>
           </CardHeader>
-          <CardContent className="space-y-2">
-            {selectedSubcategory && (
-              <div className='h-auto max-h-[70vh] overflow-y-auto'>
-                <div className=" space-y-1  ">
-                  {subcategories.map((subCat, index) => (
-                    <div
-                      key={index}
-                      className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary"
-                      onClick={() => {
-                        handleSubCatLisstClick(scripts.find((mail) => mail.subCat === subCat));
-                        handleScriptClick();
-                      }}
-                    >
-                      <div className="m-2 flex items-center justify-between">
-                        <p className="text-lg font-bold text-[#fff]">{subCat}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+          <CardContent>
+            <div className='grid grid-cols-1' >
+              <div className="relative h-[500px]  overflow-hidden">
+                <marquee ref={prompterRef} className=" h-[500px] " direction="up" scrollamount={speed} loop="1">
+                  {script}
+                </marquee>
+              </div >
+              <div className='flex items-center' >
+                <TextArea name='script' defaultValue={script} onChange={(event) => setScript(event.target.value)} className='border-border bg-background text-foreround w-[450px] mr-3' />
+                <Button size='icon' className='bg-primary text-foreground mr-3' onClick={() => {
+                  setSpeed(speed - 1)
+                }} >
+                  <ChevronDown color="#ffffff" />
+                </Button>
+                <Button size='icon' className='bg-primary text-foreground mr-3' onClick={() => {
+                  setSpeed(speed + 1)
+                }} >
+                  <ChevronUp color="#ffffff" />
+                </Button>
+                <a className='text-primary'>
+                  {speed}
+                </a>
+              </div >
+            </div >
           </CardContent>
         </Card>
 
 
-        <Card className={`mx-2  transition delay-300 duration-1000 ease-in-out ${selectedScript ? 'grow' : 'w-[15%]'} `}        >
-          <CardHeader onClick={handleScriptClick} className='cursor-pointer'>
-            <CardTitle>Script</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 ">
-            {selectedScript && (
-              <div className="h-auto max-h-[70vh] overflow-y-auto">
-                {selectedRecord && (
-                  <div className="">
-                    <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
-                      <div className="m-2  items-center justify-between p-2 text-foreground">
-                        <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
-                        <div className='flex justify-between text-[16px]  text-[#fff]'>
-                          <p className='text-[20px]'>{selectedRecord.name}</p>
-                        </div>
-                        <p className='mt-5'>{selectedRecord.content}</p>
-                        <div className='mt-5 flex  items-center justify-between text-[#fff]'>
-                          <div className='flex' >
-                            <Button variant='outline' className="cursor-pointer bg-transparent text-foreground  hover:border-primary hover:bg-transparent hover:text-primary" onClick={() => copyText(selectedRecord.content)} >
-
-                              {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-primary" />}
-                              {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-primary" />}
-                            </Button>
-
+      </div >
+    );
+  };
+  return (
+    <>
+      <Tabs defaultValue="account" className="w-[90%]">
+        <TabsList>
+          <TabsTrigger value="account">Scripts</TabsTrigger>
+          <TabsTrigger value="password">Teleprompter</TabsTrigger>
+        </TabsList>
+        <TabsContent value="account">
+          <div className=" mx-auto flex h-[700vh] text-foreground  ">
+            <Card className={` mx-2 transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'grow' : 'w-[15%]'} `}        >
+              <CardHeader onClick={handleCategoryClick} className='cursor-pointer'>
+                <CardTitle>Category</CardTitle>
+              </CardHeader>
+              {selectedCategorySize && (
+                <>
+                  <CardContent className="space-y-2 ">
+                    <div className="h-auto max-h-[700px] space-y-1 overflow-y-auto  ">
+                      {scripts.reduce((unique, mail) => {
+                        if (!unique.some(item => item.category === mail.category)) {
+                          unique.push(mail);
+                        }
+                        return unique;
+                      }, []).map((mail, index) => (
+                        <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => {
+                          handleSubcategoryClick();
+                          handleEmailClick(mail.category)
+                        }}>
+                          <div className="m-2 flex items-center justify-between">
+                            <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
                           </div>
-                          <Form method='post'>
-                            <input type='hidden' name='name' value={selectedRecord.name} />
-                            <input type='hidden' name='body' value={selectedRecord.content} />
-                            <input type='hidden' name='category' value={selectedRecord.category} />
-                            <input type='hidden' name='userEmail' value={user.email} />
-                            <input type='hidden' name='subject' value='Copied from scripts' />
-                            <input type='hidden' name='title' value='Copied from scripts' />
-                            <input type='hidden' name='dept' value='sales' />
-                            <ButtonLoading
-                              size="lg"
-                              name='intent'
-                              value='createTemplate'
-                              type='submit'
-                              isSubmitting={isSubmitting}
-                              onClick={() => {
-                                toast.message('Helping you become the hulk of sales...')
-                              }}
-                              loadingText="Loading..."
-                              className="w-auto cursor-pointer border-white bg-transparent text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
-                            >
-                              Save As Template
-                            </ButtonLoading>
-                          </Form>
                         </div>
-                      </div>
+                      ))}
+
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <p>Your ability to close increases with the amount of tools at your disposal. A mechanic without a tire iron wouldnt be able to change a tire. So why dont more sales people take better care of their scripts, closes, and such?</p>
+                  </CardFooter>
+                </>
+              )}
+            </Card>
+
+            <Card
+              className={`mx-2 transition delay-300 duration-1000  ease-in-out ${selectedSubcategory ? 'grow' : 'w-[15%]'} `}
+            >
+              <CardHeader onClick={handleSubcategoryClick} className='cursor-pointer'>
+                <CardTitle>Sub-category</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {selectedSubcategory && (
+                  <div className='h-auto max-h-[70vh] overflow-y-auto'>
+                    <div className=" space-y-1  ">
+                      {subcategories.map((subCat, index) => (
+                        <div
+                          key={index}
+                          className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary"
+                          onClick={() => {
+                            handleSubCatLisstClick(scripts.find((mail) => mail.subCat === subCat));
+                            handleScriptClick();
+                          }}
+                        >
+                          <div className="m-2 flex items-center justify-between">
+                            <p className="text-lg font-bold text-[#fff]">{subCat}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
 
-      </div>
+
+            <Card className={`mx-2  transition delay-300 duration-1000 ease-in-out ${selectedScript ? 'grow' : 'w-[15%]'} `}        >
+              <CardHeader onClick={handleScriptClick} className='cursor-pointer'>
+                <CardTitle>Script</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 ">
+                {selectedScript && (
+                  <div className="h-auto max-h-[70vh] overflow-y-auto">
+                    {selectedRecord && (
+                      <div className="">
+                        <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
+                          <div className="m-2  items-center justify-between p-2 text-foreground">
+                            <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
+                            <div className='flex justify-between text-[16px]  text-[#fff]'>
+                              <p className='text-[20px]'>{selectedRecord.name}</p>
+                            </div>
+                            <p className='mt-5'>{selectedRecord.content}</p>
+                            <div className='mt-5 flex  items-center justify-between text-[#fff]'>
+                              <div className='flex' >
+                                <Button variant='outline' className="cursor-pointer bg-transparent text-foreground  hover:border-primary hover:bg-transparent hover:text-primary" onClick={() => copyText(selectedRecord.content)} >
+
+                                  {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-primary" />}
+                                  {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-primary" />}
+                                </Button>
+
+                              </div>
+                              <Form method='post'>
+                                <input type='hidden' name='name' value={selectedRecord.name} />
+                                <input type='hidden' name='body' value={selectedRecord.content} />
+                                <input type='hidden' name='category' value={selectedRecord.category} />
+                                <input type='hidden' name='userEmail' value={user.email} />
+                                <input type='hidden' name='subject' value='Copied from scripts' />
+                                <input type='hidden' name='title' value='Copied from scripts' />
+                                <input type='hidden' name='dept' value='sales' />
+                                <ButtonLoading
+                                  size="lg"
+                                  name='intent'
+                                  value='createTemplate'
+                                  type='submit'
+                                  isSubmitting={isSubmitting}
+                                  onClick={() => {
+                                    toast.message('Helping you become the hulk of sales...')
+                                  }}
+                                  loadingText="Loading..."
+                                  className="w-auto cursor-pointer border-white bg-transparent text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
+                                >
+                                  Save As Template
+                                </ButtonLoading>
+                              </Form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+          </div>
+        </TabsContent>
+        <TabsContent value="password">
+          <Prompter />
+        </TabsContent>
+      </Tabs>
+
     </>
   )
 }

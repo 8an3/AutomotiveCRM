@@ -149,10 +149,9 @@ export default function SettingsLayout() {
     },
   ]
   return (
-    <>
+    <div className='max-w-[100vw] w-[100vw]'>
       <Outlet />
-
-    </>
+    </div>
   )
 }
 /** <div className="hidden space-y-6 p-10 pb-16 md:block">

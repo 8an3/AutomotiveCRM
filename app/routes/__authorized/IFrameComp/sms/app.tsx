@@ -671,7 +671,7 @@ const ChatApp = (item) => {
                                                         setChannelName(item.author || item.sid)
                                                         console.log(smsMenu, 'smsMenu')
 
-                                                        console.log(selectedChannelSid)
+                                                        //  console.log(selectedChannelSid)
                                                     }}
                                                     className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary${activeChannel ? ' channel-item--active' : ''}`}                    >
                                                     <div className=' w-[95%] '>
@@ -786,7 +786,7 @@ Facebook
                                                         setChannelName(item.author || item.sid)
                                                         console.log(smsMenu, 'smsMenu')
                                                         handleConversationClick(item.conversationSid)
-                                                        console.log(selectedChannelSid)
+                                                        // console.log(selectedChannelSid)
                                                     }}
                                                     className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary${activeChannel ? ' channel-item--active' : ''}`}                    >
                                                     <div className=' w-[95%] '>
@@ -847,7 +847,7 @@ Facebook
                                                         setChannelName(item.author || item.sid)
                                                         console.log(smsMenu, 'smsMenu')
 
-                                                        console.log(selectedChannelSid)
+                                                        //  console.log(selectedChannelSid)
                                                     }}
                                                     className={`m-2 mx-auto mb-auto w-[95%] cursor-pointer rounded-md border  border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary${activeChannel ? ' channel-item--active' : ''}`}                    >
                                                     <div className=' w-[95%] '>

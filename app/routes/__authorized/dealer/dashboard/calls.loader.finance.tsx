@@ -21,20 +21,20 @@ export async function loader({ request, params }: LoaderFunction) {
 
     const financeData = await prisma.finance.findMany({
         where: {
-            financeManager: {
+            userEmail: {
                 equals: user.email,
             },
         },
     });
-    const dashData = await prisma.dashboard.findMany({
+    const clientfile = await prisma.clientfile.findMany({
         where: {
-            financeId: {
-                in: financeData.map(financeRecord => financeRecord.id),
+            email: {
+                in: financeData.map(financeRecord => financeRecord.email),
             },
         },
     });
     const combinedData = financeData.map(financeRecord => {
-        const correspondingDashRecord = dashData.find(dashRecord => dashRecord.financeId === financeRecord.id);
+        const correspondingDashRecord = clientfile.find(file => file.email === financeRecord.email);
 
         return {
             ...correspondingDashRecord,
@@ -44,5 +44,5 @@ export async function loader({ request, params }: LoaderFunction) {
     });
 
     // console.log('financeData:', combinedData);
-    return financeData
+    return combinedData
 }

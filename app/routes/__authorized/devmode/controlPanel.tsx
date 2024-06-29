@@ -429,22 +429,11 @@ export default function DashboardPage() {
     { type: "Dev", desc: "Docs" },
     { type: "Dev", desc: "new hooks when upgrading platform" },
     { type: "Dev", desc: "sales manager dash" },
-    { type: "Dev", desc: "mobile frendly dash and calendar" },
-
     { type: "Dev", desc: "Notification system needs to show email and sms notifications" },
     { type: "Dev", desc: "some sort of email webhook whether we use swr or a microsoft api so create notifications of new emails" },
 
     { type: "Dev", desc: "----------------------DONE----------------------" },
-    { type: "Dev", desc: "need to make function that addes prisma statemnt to save alll communucations" },
-    { type: "Dev", desc: "automation - instead of doing it like activxi... that no one can use anyways - just have options of different automation tasks like follow up after pick up, or reminders before appts, you can always offer customized automations but theres no point having a system no one uses but the person choose the time frames" },
-    { type: "Dev", desc: "Dealer Onboarding - done" },
-    { type: "Dev", desc: "in quote loader there is updateReadStatus() instead of it being triggered here this should be converted to an automation" },
-    { type: "Dev", desc: "welcome email for sales people" },
-    { type: "Dev", desc: "once dealer signs up, send welcome email bringing them to the page they need to fill out for the informatoin to build their site" },
-    { type: "Dev", desc: "file upload in customer file - done " },
-    { type: "Dev", desc: "emails in overview - done" },
-    { type: "Dev", desc: "employee onboarding - done - be need to redo admin dashbaoard that deals with usrs" },
-    { type: "Dev", desc: "Dealer Onboarding - done - automate creation of vercel need to get the url and save it in our database, just use the one repo once you sync it upgrades evrvyones vercel sites" },
+
   ];
 
   const devTasks = {};

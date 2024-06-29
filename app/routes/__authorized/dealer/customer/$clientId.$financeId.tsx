@@ -174,6 +174,7 @@ import { Calendar as SmallCalendar } from '~/components/ui/calendar';
 import { FaSave } from "react-icons/fa";
 import UnitPicker from "~/components/dashboard/unitPicker/unitPicker";
 import { cors } from "remix-utils";
+import { TextFunction } from "~/components/dashboard/calls/logText";
 
 /**  const [formData, setFormData] = useState({
     referral: mergedFinanceList.referral || "off",
@@ -1893,14 +1894,10 @@ export default function Dashboard() {
     }
   }, []);
 
-
-
-
   const [firstPage, setFirstPage] = useState(true);
   const [secPage, setSecPage] = useState(false);
   const [minForm, setMinForm] = useState('00');
   const [hourForm, setHourForm] = useState('09');
-
 
   function handleNextPage() {
     if (firstPage === true) {
@@ -1945,9 +1942,360 @@ export default function Dashboard() {
     items: Item[];
   }
 
+  // -----------------------------sms ---------------------------------//
+  const { searchData, convoList, } = useLoaderData();
+  const [messagesConvo, setMessagesConvo] = useState([]);
+  const [chatReady, setChatReady] = useState(false);
+
+  console.log(
+    'messagesConvo', messagesConvo,
+    'searchData', searchData,
+    'convoList', convoList,
+  )
+  let multipliedConvoList = [];
+  for (let i = 0; i < 30; i++) {
+    multipliedConvoList = multipliedConvoList.concat(convoList);
+  }
+  const [channels, setChannels] = useState(multipliedConvoList);
+  const [openSMS, setOpenSMS] = useState(false);
+  const [customerEmail, setCustomerEmail] = useState('')
+  const [customerName, setCustomerName] = useState('')
+  const [customerfinanceId, setCustomerfinanceId] = useState('')
+  const [smsDetails, setSmsDetails] = useState([])
+  const [channelName, setChannelName] = useState('');
+  const [selectedChannelSid, setSelectedChannelSid] = useState([]);
+
+  const handleButtonClick = (rowData) => {
+    setOpen(true);
+    setCustomerEmail(rowData.email);
+    setCustomerName(rowData.name);
+    setCustomerfinanceId(rowData.financeId);
+  };
+  const getObjectById = (id) => { return searchData.find(item => item.id === id); };
 
 
 
+  const handleButtonClickSMS = async (data) => {
+    const theFile = await getObjectById(data.clientfileId)
+    const clientfileId = data.clientfileId
+    const conversationId = theFile?.conversationId
+    const messageDetails = {
+      conversationId: conversationId,
+      clientfileId: clientfileId,
+      name: data.name,
+      email: data.email,
+      financeId: data.id,
+      phone: data.phone,
+      identity: `+1${user.phone}`,
+    }
+    setSmsDetails(messageDetails)
+    setChannelName(data.author || conversationId)
+    setSelectedChannelSid(conversationId);
+    setOpenSMS(true);
+  }
+  useEffect(() => {
+    handleButtonClickSMS(finance)
+  }, []);
+
+  const selectedChannel = Array.isArray(channels) ? channels.find((it) => it.sid === selectedChannelSid) : null;
+
+  useEffect(() => {
+    const initConversations = async () => {
+      const token = callToken
+
+      setTimeout(() => {
+        const client = new Client(token);
+        setClient(client);
+        setStatusString("Connecting to Twilio…")
+
+        client.on("connectionStateChanged", (state) => {
+          if (state === "connecting") {
+            setStatusString("Connecting to Twilio…")
+            setStatus("default")
+          }
+          if (state === "connected") {
+            setStatusString("You are connected.")
+            setStatus("success")
+            setLoading(false)
+            setLoggedIn(user.email)
+          }
+          if (state === "disconnecting") {
+            setStatusString("Disconnecting from Twilio…")
+            setChatReady(false)
+            setStatus("default")
+          }
+          if (state === "disconnected") {
+            setStatusString("Disconnected.",)
+            setChatReady(false)
+            setStatus("warning")
+          }
+          if (state === "denied") {
+            setStatusString("Failed to connect.",)
+            setChatReady(false)
+            setStatus("error")
+          }
+        });
+
+        client.on('tokenAboutToExpire', () => {
+          console.log('About to expire');
+          const username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+          const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+          setName(username)
+          if (username.length > 0 && password.length > 0) {
+            getToken(username, password)
+              .then((token) => {
+                // login(token);
+                setToken(token)
+              })
+              .catch(() => {
+                localStorage.setItem("username", username);
+                localStorage.setItem("password", password);
+              })
+              .finally(() => {
+                setLoading(false);
+                setStatusString("Fetching credentials…");
+              });
+          }
+        });
+        client.on('tokenExpired', () => {
+          console.log('Token expired');
+          client.removeAllListeners();
+          const client2 = new Client(token);
+          setClient(client2);
+          setStatusString("Connecting to Twilio…")
+        });
+        client.on("conversationJoined", (conversation) => {
+          setChannels((prevChannels) => [...prevChannels, conversation]);
+        });
+        client.on("conversationLeft", (thisConversation) => {
+          setChannels((prevChannels) =>
+            prevChannels.filter((it) => it !== thisConversation)
+          );
+        });
+        client.on('typingStarted', (user) => {
+          console.log('typing..', user);
+          if (user.conversation.sid === currentConversation.sid) setIsTyping(true);
+        });
+        client.on('typingEnded', (user) => {
+          console.log('typing end..', user);
+          if (user.conversation.sid === currentConversation.sid) setIsTyping(false);
+        });
+      }, 10);
+
+    }
+    initConversations()
+    setChatReady(true);
+  }, []);
+  const [financeNotesList, setFinanceNoteList] = useState([])
+  const [conversationsList, setConversationsList] = useState([])
+  const [customer, setCustomer] = useState()
+  const [customerMessages, setCustomerMessages] = useState([])
+  const [conversationSid, setConversationSid] = useState('')
+
+  useEffect(() => {
+    function getNotesByFinanceId(notes, financeId) {
+      return notes.filter(note => note.financeId === financeId);
+    }
+    const filteredNotes = getNotesByFinanceId(financeNotes, data.id);
+    setFinanceNoteList(filteredNotes)
+    function GetConversationsByID(conversations, financeId) {
+      return conversations.filter(conversation => conversation.conversationSid === financeId);
+    }
+    const filteredConversations = GetConversationsByID(messagesConvo, user.conversationSid);
+    setConversationsList(filteredConversations)
+  }, [messagesConvo]);
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [latestNote, setlatestNote] = useState([])
+
+  useEffect(() => {
+    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+    setCustomer(smsDetails);
+
+    if (smsDetails) {
+      const newConversationSid = smsDetails.conversationId;
+      setConversationSid(newConversationSid);
+
+      if (newConversationSid) {
+        const url = `https://conversations.twilio.com/v1/Conversations/${newConversationSid}/Messages`;
+        const credentials = `${accountSid}:${authToken}`;
+        const base64Credentials = btoa(credentials);
+
+        async function fetchMessages() {
+          try {
+            const response = await fetch(url, {
+              method: 'GET',
+              headers: { 'Authorization': `Basic ${base64Credentials}` },
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data.length !== 0) {
+              setCustomerMessages(data.messages);
+
+            }
+            else {
+              setCustomerMessages([])
+            }
+            console.log(data, 'fetched messages');
+            return data;
+          } catch (error) {
+            console.error('Failed to fetch messages:', error);
+          }
+        }
+
+        fetchMessages();
+      }
+    }
+  }, [smsDetails]);
+
+  // -----------------------------sms ---------------------------------//
+  // -----------------------------email ---------------------------------//
+  const { conversations, } = useLoaderData();
+
+  const [emailData, setEmailData] = useState([])
+
+  useEffect(() => {
+    if (data) {
+
+      function getNotesByFinanceId(notes, financeId) {
+        return notes.filter(note => note.financeId === financeId);
+      }
+      const filteredNotes = getNotesByFinanceId(financeNotes, data.financeId);
+
+      setFinanceNoteList(filteredNotes)
+      console.log(filteredNotes, 'email client notes')
+      function GetConversationsByID(conversations, financeId) {
+        return conversations.filter(conversation => conversation.financeId === financeId);
+      }
+      const filteredConversations = GetConversationsByID(conversations, data.financeId);
+
+      setConversationsList(filteredConversations)
+      console.log(filteredNotes, 'email client notes')
+    }
+
+  }, [data.financeId]);
+  //  const [customerEmail, setCustomerEmail] = useState('')
+  //  const [customerName, setCustomerName] = useState('')
+  //  const [customerfinanceId, setCustomerfinanceId] = useState('')
+
+
+  useEffect(() => {
+    if (data && open === true) {
+      const serializedUser = JSON.stringify(user);
+      const cust = {
+        email: customerEmail,
+        name: customerName,
+        financeId: customerfinanceId,
+      }
+      const serializedCust = JSON.stringify(cust);
+      window.localStorage.setItem("user", serializedUser);
+      window.localStorage.setItem("customer", serializedCust);
+    }
+
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      const getemailData = window.localStorage.getItem("emailData");
+      const parseemailData = getemailData ? JSON.parse(getemailData) : [];
+      setEmailData(parseemailData)
+    }
+  }, []);
+
+  if (emailData) {
+    const SaveFunction = async () => {
+      const createFinanceNotes = await prisma.previousComms.create({
+        data: {
+          dept: 'Sales',
+          financeId: emailData.financeId,
+          body: emailData.body,
+          userName: emailData.userName,
+          type: 'Email',
+          customerEmail: emailData.customerEmail,
+          direction: 'Outgoing',
+          subject: emailData.subject,
+          result: 'Attempted',
+          userEmail: emailData.userEmail,
+        },
+      });
+      return createFinanceNotes
+    }
+    SaveFunction()
+
+  }
+
+  const MyIFrameComponentEmail = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+      const handleHeightMessage = (event: MessageEvent) => {
+        if (
+          event.data &&
+          event.data.type === "iframeHeight" &&
+          event.data.height
+        ) {
+          setIsLoading(false);
+          if (iFrameRef.current) {
+            iFrameRef.current.style.height = `${event.data.height}px`;
+          }
+        }
+      };
+      const currentHost =
+        typeof window !== "undefined" ? window.location.host : null;
+      if (iFrameRef.current) {
+        if (currentHost === "localhost:3000") {
+          iFrameRef.current.src = "http://localhost:3000/dealer/email/dashboardClient";
+        }
+        if (currentHost === "dealersalesassistant.ca") {
+          iFrameRef.current.src =
+            "https://www.dealersalesassistant.ca/dealer/email/dashboardClient";
+        }
+        window.addEventListener("message", handleHeightMessage);
+
+        const cust = {
+          email: data.email,
+          name: data.name,
+          financeId: data.financeId,
+        };
+        const sendData = { cust, user };
+
+        // Add load event listener to ensure iframe is loaded
+        const onLoad = () => {
+          iFrameRef.current.contentWindow.postMessage(sendData, '*');
+        };
+        iFrameRef.current.addEventListener('load', onLoad);
+
+        return () => {
+          window.removeEventListener("message", handleHeightMessage);
+          iFrameRef.current?.removeEventListener('load', onLoad);
+        };
+      }
+    }, []);
+
+    return (
+      <>
+        <div className="size-full ">
+          <iframe
+            ref={iFrameRef}
+            title="my-iframe"
+            width="100%"
+            className=" border-none"
+            style={{
+              minHeight: "40vh"
+
+            }}
+          />
+        </div>
+      </>
+    );
+  };
+
+
+  // -----------------------------email ---------------------------------//
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -2419,7 +2767,6 @@ export default function Dashboard() {
                   <TabsTrigger value="Accessories">Accessories</TabsTrigger>
                   <TabsTrigger value="Parts">Parts</TabsTrigger>
                 </TabsList>
-
               </div>
               <TabsContent value="Sales" className="  text-foreground rounded-lg">
                 <div className='grid grid-cols-2' >
@@ -2500,7 +2847,7 @@ export default function Dashboard() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-7 gap-1 text-sm text-foreground border-[#f2f2f2]"
+                            className="h-7 gap-1 text-sm text-foreground border-border"
                           >
                             <ListFilter className="h-3.5 w-3.5" />
                             <span className="sr-only sm:not-sr-only"> Sales Person</span>
@@ -4344,7 +4691,7 @@ export default function Dashboard() {
                             return (
                               <TableRow
                                 key={message.id}
-                                className="bg-accent border-border">
+                                className="bg-background border-border">
                                 <TableCell>
                                   {message.title}
                                 </TableCell>
@@ -4985,6 +5332,86 @@ export default function Dashboard() {
                   </CardFooter>
                 </Card>
               </TabsContent>
+              <TabsContent value="Phone">
+              </TabsContent>
+              <TabsContent value="SMS">
+                <Card className=""    >
+                  <CardHeader className="flex flex-row items-start bg-muted/50">
+                    <div className="grid gap-0.5">
+                      <CardTitle className="group flex items-center gap-2 text-lg">
+                        SMS
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="mt-5 ">
+                    <div className=" ">
+                      <TextFunction
+                        customerMessages={customerMessages}
+                        customer={customer}
+                        data={data}
+                        user={user}
+                        smsDetails={smsDetails}
+                        latestNote={latestNote}
+                      />
+                    </div>
+                  </CardContent>
+                  <CardFooter className=" ">
+                  </CardFooter>
+                </Card>
+
+              </TabsContent>
+              <TabsContent value="Email">
+                <Card
+                  className="overflow-x-clip text-foreground rounded-lg  w-[95%] max-w-[600px]" x-chunk="dashboard-05-chunk-4"
+                >
+                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                    <div className="grid gap-0.5">
+                      <CardTitle className="group flex items-center gap-2 text-lg">
+                        SMS
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">To leave yourself or your colleagues notes regarding the customer.</span>
+                        </Button>
+                      </CardTitle>
+                    </div>
+                    <div className="ml-auto flex items-center gap-1">
+                      <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="ml-auto rounded-full"
+                              onClick={() => setOpen(true)}
+                            >
+                              <PlusIcon className="h-4 w-4" />
+                              <span className="sr-only">CC Employee</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </CardHeader>
+                  <CardContent className=" p-6 text-sm bg-background ">
+                    <div className="grid gap-3 ">
+                      <MyIFrameComponentEmail />
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                  </CardFooter>
+                </Card>
+
+              </TabsContent>
+              <TabsList className='mt-2'>
+                <TabsTrigger value="Phone">Phone</TabsTrigger>
+                <TabsTrigger value="SMS">SMS</TabsTrigger>
+                <TabsTrigger value="Email">Email</TabsTrigger>
+              </TabsList>
             </Tabs>
           </div>
         </main>
@@ -6538,6 +6965,32 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const parts = await prisma.part.findMany()
   const clientUnit = await prisma.inventoryMotorcycle.findFirst({ where: { stockNumber: merged.stockNum } })
 
+  // -----------------------------sms ---------------------------------//
+  const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+  const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+  const godClient = require('twilio')(accountSid, authToken);
+  const client = godClient
+  const searchData = await prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
+  let convoList = {}
+  let getConvos;
+  let callToken;
+  let username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+  let password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+  if (username.length > 0 && password.length > 0) {
+    const token = await getToken(username, password)
+    callToken = token
+  }
+
+  if (!Array.isArray(convoList) || convoList.length === 0) {
+    getConvos = await client.conversations.v1.users(`${username}`).userConversations.list({ limit: 50 });
+    // .then(userConversations => userConversations.forEach(u => console.log(u.friendlyName)))
+    convoList = getConvos;
+  }
+  // -----------------------------sms ---------------------------------//
+  // -----------------------------email---------------------------------//
+  const conversations = await prisma.previousComms.findMany({ orderBy: { createdAt: "desc" }, });
+
+  // -----------------------------email---------------------------------//
 
   if (user?.activixActivated === 'yes') {
     const financeData = finance
@@ -6546,39 +6999,39 @@ export async function loader({ params, request }: DataFunctionArgs) {
   if (brand === 'Manitou') {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, searchData, convoList, conversations })
   }
   if (brand === 'Switch') {
     const modelData = await getDataByModel(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
   }
   if (brand === 'Kawasaki') {
     const modelData = await getDataKawasaki(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
   }
   if (brand === 'BMW-Motorrad') {
     const bmwMoto = await getLatestBMWOptions(financeId)
     const bmwMoto2 = await getLatestBMWOptions2(financeId)
     const modelData = await getDataBmwMoto(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, }))
   }
   if (brand === 'Triumph') {
     const modelData = await getDataTriumph(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
   }
   if (brand === 'Harley-Davidson') {
     const modelData = await getDataHarley(finance);
     const apptFinance2 = await getAllFinanceApts2(financeId)
     const aptFinance3 = await getAllFinanceApts(financeId)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
   }
   if (brand === 'Indian' || brand === 'Can-Am' || brand === 'Sea-Doo' || brand === 'Ski-Doo' || brand === 'Suzuki' || brand === 'Spyder' || brand === 'Can-Am-SXS') {
     const modelData = await getDataByModel(finance)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, searchData, convoList, conversations, }))
 
   }
-  return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, clientfileId }))
+  return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
 }
 
 type ValuePiece = Date | null;
@@ -6586,3 +7039,29 @@ type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 const FinanceIdContext = React.createContext();
+
+async function getToken(
+  username: string,
+  password: string
+): Promise<string> {
+  const requestAddress = 'https://dsatokenservice-4995.twil.io/token-service'
+  if (!requestAddress) {
+    throw new Error(
+      "REACT_APP_ACCESS_TOKEN_SERVICE_URL is not configured, cannot login"
+    );
+  }
+
+  try {
+    const response = await axios.get(requestAddress, {
+      params: { identity: 'skylerzanth', password: 'skylerzanth1234' },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      throw new Error(error.response.data ?? "Authentication error.");
+    }
+
+    console.error(`ERROR received from ${requestAddress}: ${error}\n`);
+    throw new Error(`ERROR received from ${requestAddress}: ${error}\n`);
+  }
+}

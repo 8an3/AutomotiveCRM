@@ -550,10 +550,13 @@ export async function ComposeEmailTwo(
     },
     saveToSentItems: 'false'
   };
+  console.log(sendMail, 'email1')
+
   const email = await graphClient!.api('/me/sendMail')
     .post(sendMail);
 
-  await SaveComs(to, body, subject)
+  // await SaveComs(to, body, subject)
+  console.log(email, 'email2')
   return email;
 }
 // this one works

@@ -1,5 +1,5 @@
 import React, { HTMLAttributes, HTMLProps, useState, useEffect, Suspense, useRef, } from 'react'
-import { Await, Form, Link, useActionData, useLoaderData, useLocation, useNavigation, useSubmit } from '@remix-run/react'
+import { Await, Form, Link, useActionData, useFetcher, useLoaderData, useLocation, useNavigation, useSubmit } from '@remix-run/react'
 import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, } from "~/components/ui/index";
 import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
 import { getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns } from "@tanstack/react-table";
@@ -58,8 +58,9 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
-
-
+import WebLeads from '~/components/dashboard/demoDay/webLeads';
+import { Mail, MessageSquare } from 'lucide-react';
+import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
@@ -129,7 +130,7 @@ export default function Mainboard() {
                 )}
                 {selectedTab === "newLeads" && (
                     <TabsContent className="w-[98%]" value="newLeads">
-                        <WebleadsTable />
+                        <WebLeads />
                     </TabsContent>
                 )}
                 {selectedTab === "search" && (
@@ -832,6 +833,7 @@ export function WebleadsTable() {
                                     <option value="Triumph" />
                                     <option value="Spyder" />
                                     <option value="Yamaha" />
+                                    <option value="Used" />
                                 </datalist>
                                 {modelList && (
                                     <>
@@ -949,9 +951,117 @@ export function Loading() {
     )
 }
 
+
+async function getToken(
+    username: string,
+    password: string
+): Promise<string> {
+    const requestAddress = 'https://dsatokenservice-4995.twil.io/token-service'
+    if (!requestAddress) {
+        throw new Error(
+            "REACT_APP_ACCESS_TOKEN_SERVICE_URL is not configured, cannot login"
+        );
+    }
+
+    try {
+        const response = await axios.get(requestAddress, {
+            params: { identity: 'skylerzanth', password: 'skylerzanth1234' },
+        });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error(error.response.data ?? "Authentication error.");
+        }
+
+        console.error(`ERROR received from ${requestAddress}: ${error}\n`);
+        throw new Error(`ERROR received from ${requestAddress}: ${error}\n`);
+    }
+}
+
+async function login(
+    username: string,
+    password: string,
+    setToken: (token: string) => void
+): Promise<string> {
+    try {
+        const token = await getToken(username.trim(), password);
+        if (token === "") {
+            return "Received an empty token from backend.";
+        }
+
+        localStorage.setItem("username", username);
+        localStorage.setItem("password", password);
+        setToken(token);
+
+        return "";
+    } catch (error) {
+        let message = "Unknown Error";
+        if (error instanceof Error) {
+            message = error.message;
+        } else {
+            message = String(error);
+        }
+        return message;
+    }
+}
+
 export function MainDashbaord() {
-    const { finance, searchData, user } = useLoaderData();
+    let username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+    let password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+    //const username = user?.username.toLowerCase().replace(/\s/g, '');//'skylerzanth'//localStorage.getItem("username") ?? "";
+    //const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+    const proxyPhone = '+12176347250'
+
+    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken } = useLoaderData();
     const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
+    const [messagesConvo, setMessagesConvo] = useState([]);
+    const [selectedChannelSid, setSelectedChannelSid] = useState([]);
+    const [selectedConversation, setSelectedConversation] = useState([]);
+    const [templates, setTemplates] = useState(getTemplates);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [conversationSID, setConversationSID] = useState('')
+    const [loggedIn, setLoggedIn] = useState(user.email);
+    const [statusString, setStatusString] = useState("Fetching credentials…");
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [text, setText] = useState('');
+
+    let multipliedConvoList = [];
+    for (let i = 0; i < 30; i++) {
+        multipliedConvoList = multipliedConvoList.concat(convoList);
+    }
+    const [channels, setChannels] = useState(multipliedConvoList);
+    const [currentConversation, setCurrentConversation] = useState(null);
+
+    const [messages, setMessages] = useState(text);
+    const [message, setMessage] = useState(messages || null);
+    const [chatReady, setChatReady] = useState(false);
+
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState('');
+
+    const [isTyping, setIsTyping] = useState(true);
+
+    const [newClient, setClient] = useState();
+    const [newMessage, setNewMessage] = useState("");
+
+    const [token, setToken] = useState(newToken);
+
+    const [name, setName] = useState(username);
+    const [to, setTo] = useState('');
+    const [channelName, setChannelName] = useState('');
+    const [from, setFrom] = useState('');
+    const [conversation_sid, setConversation_sid] = useState('');
+    const [smsMenu, setSmsMenu] = useState('true');
+    const [sms, setSms] = useState(true);
+    const [size, setSize] = useState(751);
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const [conversation, SetConversation] = useState('list');
+    const [conversationsList, setConversationsList] = useState([])
+    const [customer, setCustomer] = useState()
+    let fetcher = useFetcher();
+    const [convos, setConvos] = useState([])
+
+
 
 
     useEffect(() => {
@@ -973,7 +1083,6 @@ export function MainDashbaord() {
         }
     }, [swrData]);
     const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
-
 
     const defaultColumn: Partial<ColumnDef<Payment>> = {
         cell: ({ getValue, row: { index }, column: { id }, table }) => {
@@ -1000,6 +1109,140 @@ export function MainDashbaord() {
             )
         },
     }
+
+    const [open, setOpen] = useState(false);
+    const [openSMS, setOpenSMS] = useState(false);
+    const [customerEmail, setCustomerEmail] = useState('')
+    const [customerName, setCustomerName] = useState('')
+    const [customerfinanceId, setCustomerfinanceId] = useState('')
+    const handleButtonClick = (rowData) => {
+        setOpen(true);
+        setCustomerEmail(rowData.email);
+        setCustomerName(rowData.name);
+        setCustomerfinanceId(rowData.financeId);
+    };
+    const getObjectById = (id) => { return searchData.find(item => item.id === id); };
+
+    const [smsDetails, setSmsDetails] = useState([])
+
+    const handleButtonClickSMS = async (data) => {
+        const theFile = await getObjectById(data.clientfileId)
+        const clientfileId = data.clientfileId
+        const conversationId = theFile?.conversationId
+        const messageDetails = {
+            conversationId: conversationId,
+            clientfileId: clientfileId,
+            name: data.name,
+            email: data.email,
+            financeId: data.id,
+            phone: data.phone,
+            identity: `+1${user.phone}`,
+        }
+        setSmsDetails(messageDetails)
+        setChannelName(data.author || conversationId)
+        setSelectedChannelSid(conversationId);
+        setOpenSMS(true);
+    }
+    const selectedChannel = Array.isArray(channels) ? channels.find((it) => it.sid === selectedChannelSid) : null;
+
+    useEffect(() => {
+        const initConversations = async () => {
+            const token = callToken
+
+            setTimeout(() => {
+                const client = new Client(token);
+                setClient(client);
+                setStatusString("Connecting to Twilio…")
+
+                client.on("connectionStateChanged", (state) => {
+                    if (state === "connecting") {
+                        setStatusString("Connecting to Twilio…")
+                        setStatus("default")
+                    }
+                    if (state === "connected") {
+                        setStatusString("You are connected.")
+                        setStatus("success")
+                        setLoading(false)
+                        setLoggedIn(user.email)
+                    }
+                    if (state === "disconnecting") {
+                        setStatusString("Disconnecting from Twilio…")
+                        setChatReady(false)
+                        setStatus("default")
+                    }
+                    if (state === "disconnected") {
+                        setStatusString("Disconnected.",)
+                        setChatReady(false)
+                        setStatus("warning")
+                    }
+                    if (state === "denied") {
+                        setStatusString("Failed to connect.",)
+                        setChatReady(false)
+                        setStatus("error")
+                    }
+                });
+
+                client.on('tokenAboutToExpire', () => {
+                    console.log('About to expire');
+                    const username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+                    const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+                    setName(username)
+                    if (username.length > 0 && password.length > 0) {
+                        getToken(username, password)
+                            .then((token) => {
+                                // login(token);
+                                setToken(token)
+                            })
+                            .catch(() => {
+                                localStorage.setItem("username", username);
+                                localStorage.setItem("password", password);
+                            })
+                            .finally(() => {
+                                setLoading(false);
+                                setStatusString("Fetching credentials…");
+                            });
+                    }
+                });
+                client.on('tokenExpired', () => {
+                    console.log('Token expired');
+                    client.removeAllListeners();
+                    const client2 = new Client(token);
+                    setClient(client2);
+                    setStatusString("Connecting to Twilio…")
+                });
+                client.on("conversationJoined", (conversation) => {
+                    setChannels((prevChannels) => [...prevChannels, conversation]);
+                });
+                client.on("conversationLeft", (thisConversation) => {
+                    setChannels((prevChannels) =>
+                        prevChannels.filter((it) => it !== thisConversation)
+                    );
+                });
+                client.on('typingStarted', (user) => {
+                    console.log('typing..', user);
+                    if (user.conversation.sid === currentConversation.sid) setIsTyping(true);
+                });
+                client.on('typingEnded', (user) => {
+                    console.log('typing end..', user);
+                    if (user.conversation.sid === currentConversation.sid) setIsTyping(false);
+                });
+            }, 10);
+
+        }
+        initConversations()
+        setChatReady(true);
+    }, []);
+
+    let channelContent;
+    const [state, setState] = useState({
+        newMessage: '',
+        channelProxy: selectedChannel,
+        messages: [],
+        loadingState: 'initializing',
+        boundChannels: new Set(),
+    });
+
+    const messagesRef = useRef(null);
 
     const columns: ColumnDef<Payment>[] = [
         {
@@ -1136,34 +1379,56 @@ export function MainDashbaord() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-                const [isButtonPressed, setIsButtonPressed] = useState(false);
-                const handleLoad = () => {
-                    const iFrameData = {
-                        user,
-                        searchData,
-                        data
-                    }
-                    console.log(iFrameData, 'iFrameData')
-                    iFrameRef.current?.contentWindow?.postMessage(iFrameData, '*');
+
+                let channelContent
+
+                if (selectedChannelSid) {
+                    channelContent = selectedChannelSid
+                } else if (statusString !== "success") {
+                    channelContent = "Loading your chat!";
+                } else {
+                    channelContent = "";
                 }
                 return <>
-                    <div className='my-2 grid grid-cols-3 gap-3'>
+                    <div className=' items-center grid grid-cols-3 gap-3'>
                         <LogCall
                             data={data}
                         />
-
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => handleButtonClick(data)}
+                            className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
+                            <Mail className="" />
+                        </Button>
                         <EmailClient
                             data={data}
-                            setIsButtonPressed={setIsButtonPressed}
-                            isButtonPressed={isButtonPressed}
+                            open={open}
+                            setOpen={setOpen}
+                            customerfinanceId={customerfinanceId}
+                            customerName={customerName}
+                            customerEmail={customerEmail}
                         />
-                        <Button variant='ghost' onClick={handleLoad}>
-                            <Logtext
-                                data={data}
-                                searchData={searchData}
-                                iFrameRef={iFrameRef}
-                            />
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                handleButtonClickSMS(data)
+                            }}
+                            className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
+                            <MessageSquare color="#ffffff" />
                         </Button>
+                        <Logtext
+                            data={data}
+                            searchData={searchData}
+                            openSMS={openSMS}
+                            setOpenSMS={setOpenSMS}
+                            smsDetails={smsDetails}
+                            text={text}
+                            setText={setText}
+                            conversationsData={conversationsData}
+                            messagesConvo={messagesConvo}
+                        />
                     </div>
                 </>
             },

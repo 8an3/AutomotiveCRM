@@ -917,7 +917,7 @@ export function UnitPickerTable({ finance, }) {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="ml-3 text-foreground border-[#f2f2f2]">
+            <Button variant="outline" size="sm" className="ml-3 text-foreground border-border">
               {todayfilterBy || "Default Filters"} <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -937,13 +937,13 @@ export function UnitPickerTable({ finance, }) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button size="sm" onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="text-foreground bg-background border-[#f2f2f2] mx-2 my-auto h-7  cursor-pointer rounded   px-3 py-2  text-center text-xs  font-bold uppercase  shadow outline-none  transition-all duration-150 ease-linear  hover:shadow-md focus:outline-none"
+        <Button size="sm" onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="text-foreground bg-background border-border mx-2 my-auto h-7  cursor-pointer rounded   px-3 py-2  text-center text-xs  font-bold uppercase  shadow outline-none  transition-all duration-150 ease-linear  hover:shadow-md focus:outline-none"
         >
           Clear
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="ml-auto text-foreground border-[#f2f2f2]">
+            <Button variant="outline" size="sm" className="ml-auto text-foreground border-border">
               Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -1033,7 +1033,7 @@ export function UnitPickerTable({ finance, }) {
       <Button
         variant="outline"
         size="sm"
-        className="border rounded p-2 mb-2 mt-2 border-[#f2f2f2] text-foreground"
+        className="border rounded p-2 mb-2 mt-2 border-border text-foreground"
         onClick={() =>
           console.info(
             'table.getSelectedRowModel().flatRows',
@@ -1090,7 +1090,7 @@ export function UnitPickerTable({ finance, }) {
           <Button
             variant="outline"
             size="sm"
-            className="  text-foreground bg-background border-[#f2f2f2]"
+            className="  text-foreground bg-background border-border"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -1099,7 +1099,7 @@ export function UnitPickerTable({ finance, }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-foreground bg-background border-[#f2f2f2]"
+            className="text-foreground bg-background border-border"
 
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
@@ -1228,7 +1228,7 @@ export default function UnitPicker({ data }) {
     <Dialog.Root  >
 
       <Dialog.Trigger>
-        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3 border-[#f2f2f2] bg-background text-[#f2f2f2]"  >
+        <Button size="sm" variant="outline" className="h-8 gap-1 mr-3 border-border bg-background text-[#f2f2f2]"  >
           <Truck className="h-3.5 w-3.5" />
           <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
             Assign Stock Unit

@@ -145,6 +145,25 @@ export default function DashboardClient() {
     const parseCust = getCust ? JSON.parse(getCust) : [];
     setCust(parseCust)
     setTo(parseCust?.email)
+    const handleMessage = (event) => {
+      const data = event.data;
+      if (data && data.cust && data.user) {
+        console.log(data);
+
+        const { user, cust } = data;
+
+        console.log('merged1', user, cust, data);
+        //setTo(cust.email);
+        // setCust(cust);
+        // setUser(user);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
   }, []);
 
   console.log(to, customer, user, ' inside dashboard client')

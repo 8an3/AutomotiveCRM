@@ -23,6 +23,8 @@ import { GetUser } from "~/utils/loader.server";
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
 import { QuoteServerActivix } from '~/utils/quote/quote.server';
+import twilio from 'twilio';
+import axios from "axios";
 
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
@@ -30,6 +32,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const email = session2.get("email")
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
+  const proxyPhone = '+12176347250'
   const deFees = await getDealerFeesbyEmail(user.email);
   const session = await sixSession(request.headers.get("Cookie"));
   const sliderWidth = session.get("sliderWidth");
@@ -61,8 +64,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   };
   const latestNotes = await fetchLatestNotes(finance);
 
-
-  // wish list loader
   const wishList = await prisma.wishList.findMany({ where: { userId: user?.id }, })
   const inventory = await prisma.inventoryMotorcycle.findMany({
     select: { make: true, model: true, status: true, }
@@ -89,7 +90,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   }
   const filteredEmailsSet = new Set();
 
-  // Assuming this function is marked as async
   async function processWishList() {
     for (const wishListItem of wishList) {
       for (const inventoryItem of inventory) {
@@ -121,8 +121,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       }
     }
   }
-
-  // Call the async function
   const wishlistMatches = processWishList().then(() => {
     // Handle completion if needed
   }).catch(error => {
@@ -131,17 +129,150 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
   const getDemoDay = await prisma.demoDay.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: 'skylerzanth@outlook.com' } });
 
-  /** if (brand === "Manitou") {
-     const modelData = await getDataByModelManitou(finance);
-     const manOptions = await getLatestOptionsManitou(user.email);
-     const deferredData = {
-       finance, deFees, sliderWidth, wishlistMatches, financeNotes, dashBoardCustURL, getWishList, conversations, latestNotes, notifications, request, //  manOptions,
-     };
-     return defer({ data: deferredData },
-       json({ ok: true, getDemoDay, modelData, user, },
-         { headers: { "Set-Cookie": await commitSession(session2), }, }
-       ));
-   } */
+
+  const webLeadData = await prisma.finance.findMany({
+    where: { OR: [{ userEmail: null }, { userEmail: '' }], },
+  });
+
+  const clientfileRecords = await prisma.clientfile.findMany({
+    where: { email: { in: finance.map(financeRecord => financeRecord.email), }, },
+  });
+
+  const combinedData = finance.map(financeRecord => {
+    const correspondingClientfile = clientfileRecords.find(clientfile => clientfile.email === financeRecord.email);
+    return { ...financeRecord, ...correspondingClientfile, };
+  });
+  let callToken;
+  let username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+  let password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+  if (username.length > 0 && password.length > 0) {
+    const token = await getToken(username, password)
+    callToken = token
+  }
+
+  const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+  const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+  const godClient = require('twilio')(accountSid, authToken);
+  const client = godClient
+
+  let convoList = {}
+  let conversationSid;
+  let participantSid;
+  let userSid;
+  let conversationChatServiceSid;
+  let newToken;
+
+  const firstTime = await prisma.twilioSMSDetails.findUnique({ where: { userEmail: 'skylerzanth@gmail.com', } })//user?.email } })
+
+  //  console.log(callToken, 'callToken')
+
+  if (!firstTime) {
+    function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    async function performOperations() {
+      try {
+        // Create a conversation
+        const conversation = await client.conversations.v1.conversations.create({ friendlyName: 'My test' });
+        const conversationSid = conversation.sid;
+
+        // Fetch conversation details
+        await delay(50);
+        try {
+          const fetchedConversation = await client.conversations.v1.conversations(conversationSid).fetch();
+          conversationChatServiceSid = fetchedConversation.body;
+        } catch (error) { console.error('Error fetching conversation:', error); }
+
+        // Create a participant/customer
+        await delay(50);
+        try {
+          const participant = await client.conversations.v1.conversations(conversationSid).participants.create({
+            'messagingBinding.address': `+1${user?.phone}`, // customers number
+            'messagingBinding.proxyAddress': proxyPhone,
+          });
+          participantSid = participant.sid;
+        } catch (error) { console.error('Error creating participant:', error); }
+
+        // Create a user // need tog et rid of this when when wqe use this to create convos
+        await delay(50);
+        try {
+          const createdUser = await client.conversations.v1.users.create({ identity: `${username}` });
+          userSid = createdUser.sid;
+        } catch (error) { console.error('Error creating user:', error); }
+
+        // Create a participant for the user/employee
+        await delay(50);
+        try {
+          const userParticipant = await client.conversations.v1.conversations(conversationSid)
+            .participants
+            .create({ identity: `${username}` });
+          userSid = userParticipant.sid
+        } catch (error) { console.error('Error creating user:', error); }
+
+        // List user conversations
+        await delay(50);
+        try {
+          convoList = await client.conversations.v1.users(userSid).userConversations.list({ limit: 50 });
+          //   userConversations.forEach(u => console.log(u.friendlyName));
+        } catch (error) { console.error('Error creating user:', error); }
+
+
+      } catch (error) { console.error('Error performing operations:', error); }
+    }
+
+    // Call the function
+    performOperations();
+
+    await prisma.twilioSMSDetails.create({
+      data: {
+        conversationSid: conversationSid,
+        participantSid: participantSid,
+        userSid: userSid,
+        username: username,
+        userEmail: 'skylerzanth@gmail.com', // email,
+        passClient: password,
+        proxyPhone: proxyPhone,
+      }
+    })
+
+  }
+  let getConvos;
+
+  if (!Array.isArray(convoList) || convoList.length === 0) {
+    getConvos = await client.conversations.v1.users(`${username}`).userConversations.list({ limit: 50 });
+    // .then(userConversations => userConversations.forEach(u => console.log(u.friendlyName)))
+    convoList = getConvos;
+  }
+
+
+  const conversation = await prisma.getConversation.findFirst({
+    where: { userEmail: 'skylerzanth@gmail.com'/*user.email*/ },
+    orderBy: {
+      createdAt: 'desc', // or updatedAt: 'desc'
+    },
+  });
+  let getText
+  if (conversation) {
+    const storeObject = JSON.parse(conversation.jsonData);
+    // console.log(storeObject);
+
+    // Extract conversationSid from the first object in the array
+    const conversationSid = storeObject[0].conversationSid;
+
+    if (conversationSid) {
+      //  console.log(conversationSid, 'channels');
+      getText = await client.conversations.v1.conversations(conversationSid)
+        .messages
+        .list({ limit: 200 });
+    } else {
+      console.log('conversationSid is undefined');
+    }
+  }
+
+  const userAgent = request.headers.get('User-Agent');
+  const isMobileDevice = checkForMobileDevice(userAgent);
+
+
+
   if (brand === "Manitou") {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(user.email);
@@ -159,8 +290,9 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       conversations,
       latestNotes,
-      // notifications,
-      request
+      webLeadData,
+      request,
+      convoList, username, newToken, password, getText, isMobileDevice,// conversationsData
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -183,9 +315,10 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       getWishList,
       latestNotes,
       conversations,
-      // notifications,
+      webLeadData,
       dashBoardCustURL,
-      request
+      request,
+      convoList, username, newToken, password, getText, isMobileDevice,// conversationsData
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -207,9 +340,11 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       conversations,
       wishlistMatches,
       getWishList,
-      // notifications,
+      webLeadData,
       dashBoardCustURL,
-      request
+      callToken,
+      request,
+      convoList, username, newToken, password, getText, isMobileDevice, //conversationsData
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -236,9 +371,11 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       financeNotes,
       conversations,
       getWishList,
-      // notifications,
+      webLeadData,
       dashBoardCustURL,
-      request
+      callToken,
+      request,
+      convoList, username, newToken, password, getText, isMobileDevice, //conversationsData
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -255,14 +392,17 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       deFees,
       sliderWidth,
       user,
+      combinedData,
+      convoList, username, newToken, password, getText, isMobileDevice, //conversationsData
       latestNotes,
       financeNotes,
       getWishList,
       conversations,
-      // notifications,
+      webLeadData,
       wishlistMatches,
       dashBoardCustURL,
-      request
+      request,
+      callToken,
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -283,11 +423,14 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       latestNotes,
       dashBoardCustURL,
       getWishList,
+      combinedData,
       conversations,
-      // notifications,
+      webLeadData,
       getTemplates,
       request,
       wishlistMatches,
+      callToken,
+      convoList, username, newToken, password, getText, isMobileDevice,// conversationsData
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
@@ -310,11 +453,15 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
         getTemplates,
         latestNotes,
         searchData,
+        combinedData,
         conversations,
         getWishList,
-        // notifications,
+        webLeadData,
         wishlistMatches,
         request,
+        callToken,
+        convoList, username, newToken, password, getText, isMobileDevice,
+
       }, {
         headers: {
           "Set-Cookie": await commitSession(session2),
@@ -335,14 +482,49 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
       conversations,
       searchData,
       getWishList,
-      // notifications,
+      webLeadData,
       wishlistMatches,
-      request
+      combinedData,
+      request,
+      callToken,
+      godClient,
+      convoList, username, newToken, password, getText, conversationsData, isMobileDevice
     }, {
       headers: {
         "Set-Cookie": await commitSession(session2),
       },
     });
+  }
+}
+
+function checkForMobileDevice(userAgent) {
+  const mobileDevicePatterns = ['iPhone', 'Android', 'Mobile'];
+  return mobileDevicePatterns.some(pattern => userAgent.includes(pattern));
+}
+
+async function getToken(
+  username: string,
+  password: string
+): Promise<string> {
+  const requestAddress = 'https://dsatokenservice-4995.twil.io/token-service'
+  if (!requestAddress) {
+    throw new Error(
+      "REACT_APP_ACCESS_TOKEN_SERVICE_URL is not configured, cannot login"
+    );
+  }
+
+  try {
+    const response = await axios.get(requestAddress, {
+      params: { identity: 'skylerzanth', password: 'skylerzanth1234' },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      throw new Error(error.response.data ?? "Authentication error.");
+    }
+
+    console.error(`ERROR received from ${requestAddress}: ${error}\n`);
+    throw new Error(`ERROR received from ${requestAddress}: ${error}\n`);
   }
 }
 

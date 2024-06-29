@@ -24,15 +24,7 @@ import { Bell, BellRing, BookOpenCheck, Mail, Milestone, X } from 'lucide-react'
 import { Button, Input, Label } from "~/components/ui";
 import useSWR, { SWRConfig, mutate } from 'swr';
 import EmailMessages from "./notifications/email";
-import {
-  CalendarIcon,
-  CheckIcon,
-  EnvelopeClosedIcon,
-  FaceIcon,
-  GearIcon,
-  PersonIcon,
-  RocketIcon,
-} from "@radix-ui/react-icons"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu";
 
 import {
   Command,
@@ -143,122 +135,100 @@ export default function NotificationSystem(interruptionsData, getEmails) {
   if (leadLoading || updateLoading) return <div>Loading...</div>;
 
   const length = Object.keys(newNotifications).length + Object.keys(lead).length;
-  if (updates) {
-    console.log(updates, 'updates')
-  }
-
-
 
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          {length > 0 ? (
-            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" aria-expanded={open}>
-              <div className=" h-t relative w-7">
-                <div className="pointer-events-none absolute -right-4 -top-0.5 flex size-full">
-                  <span className="relative flex size-3">
-                    <span className="absolute inline-flex  size-full animate-ping rounded-full bg-primary opacity-75"></span>
-                    <span className="relative inline-flex size-3 rounded-full bg-[#0078b4]"></span>
-                  </span>
-                </div>
-                <IoIosMailUnread color="#ededed" className="text-2xl hover:text-primary text-[##ededed]" />
+      <DropdownMenu >
+        <DropdownMenuTrigger className="right-[75px] top-[25px] mt-1 border-none fixed hover:bg-transparent bg-transparent hover:text-primary"  >
+          <div className=" h-t relative w-7">
+            {length > 0 && (
+              <div className="pointer-events-none absolute -right-4 -top-0.5 flex size-full">
+                <span className="relative flex size-3">
+                  <span className="absolute inline-flex  size-full animate-ping rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex size-3 rounded-full bg-[#0078b4]"></span>
+                </span>
               </div>
-            </Button>
-          ) : (
-            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" aria-expanded={open}>
-              <IoIosMailUnread color="#ededed" className="text-2xl hover:text-primary text-[##ededed]" />
-            </Button>
+            )}
+            <IoIosMailUnread color="#ededed" className="text-2xl hover:text-primary text-[##ededed]" />
+          </div>
+
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className=" w-56 bg-background text-foreground ">
+          <DropdownMenuLabel className='text-muted-foreground'>New Leads</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            {lead && lead.map((notification) => (
+              <fetcher.Form method='post' key={notification.id}>
+                <div className='text-left mb-4'>
+                  <input type='hidden' name='id' value={notification.id} />
+                  <input type='hidden' name='intent' value='updateNewLead' />
+                  <input type='hidden' name='financeId' value={notification.financeId} />
+                  <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                  <DropdownMenuItem className="cursor-pointer" >
+                    <ul className="grid gap-3 text-sm">
+                      <li className="grid grid-cols-1 items-center" onClick={submit}>
+                        <span>{notification.title}</span>
+                        <span className="text-muted-foreground text-xs">{notification.content}</span>
+                        <span className="text-muted-foreground text-xs">
+                          {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
+                        </span>
+                      </li>
+                    </ul>
+                  </DropdownMenuItem>
+                  {isValidating ? <div className="spinner" /> : null}
+                </div>
+              </fetcher.Form>
+            ))
+            }
+            {lead && (
+              <DropdownMenuSeparator />
+            )}
+          </DropdownMenuGroup>
+          <DropdownMenuLabel className='text-muted-foreground'>Reminders</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            {interruptions && (
+              interruptions.map((notification) => (
+                <fetcher.Form method='post' key={notification.id} >
+                  <input type='hidden' name='id' value={notification.id} />
+                  <input type='hidden' name='intent' value='updateInterruption' />
+                  <input type='hidden' name='pathname' value={pathname} />
+                  <input type='hidden' name='location' value={notification.location} />
+                  <DropdownMenuItem className="cursor-pointer">
+                    <ul className="grid gap-3 text-sm mt-2">
+                      <li className="grid grid-cols-1 items-center " onClick={submit}>
+                        <span>{notification.title}</span>
+                        <span className="text-muted-foreground text-xs">
+                          {notification.date}
+                        </span>
+                      </li>
+                    </ul>
+                  </DropdownMenuItem>
+                </fetcher.Form>
+              ))
+            )}
+          </DropdownMenuGroup>
+          {interruptions && (
+            <DropdownMenuSeparator />
           )}
-        </PopoverTrigger>
-        <PopoverContent className="w-[300px] p-0">
-          <Tabs defaultValue="Alerts" className="w-[280px] mx-auto">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="Alerts">Alerts</TabsTrigger>
-              <TabsTrigger value="Email">Email</TabsTrigger>
-              <TabsTrigger value="SMS">SMS</TabsTrigger>
-            </TabsList>
-            <TabsContent value="Alerts">
-              <Command className="rounded-lg border shadow-md bg-background border-border text-foreground">
-                <CommandInput className='bg-background border-border text-foreground' placeholder="Type a command or search..." />
-                <CommandList>
-                  <CommandEmpty>No results found.</CommandEmpty>
-                  <CommandSeparator />
-                  <CommandGroup heading="Updates">
+          <DropdownMenuLabel className='text-muted-foreground'>Updates</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
 
-                  </CommandGroup>
-                  <CommandGroup heading="New Leads">
-                    {lead && lead.map((notification) => (
-                      <fetcher.Form method='post' key={notification.id}>
-                        <Button type='submit' variant='ghost' className='text-left mb-4'>
-                          <input type='hidden' name='id' value={notification.id} />
-                          <input type='hidden' name='intent' value='updateNewLead' />
-                          <input type='hidden' name='financeId' value={notification.financeId} />
-                          <input type='hidden' name='clientfileId' value={notification.clientfileId} />
-                          <CommandItem className="cursor-pointer hover:bg-muted/50 rounded-md">
-                            <ul className="grid gap-3 text-sm mt-2">
-                              <li className="grid grid-cols-1 items-center">
-                                <span>{notification.title}</span>
-                                <span className="text-muted-foreground text-xs">{notification.content}</span>
-                                <span className="text-muted-foreground text-xs">
-                                  {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
-                                </span>
-                              </li>
-                            </ul>
-                          </CommandItem>
-                          {isValidating ? <div className="spinner" /> : null}
-                        </Button>
-                      </fetcher.Form>
-                    ))
-                    }
-                  </CommandGroup>
-                  <CommandGroup heading="Reminders">
-                    {interruptions ? (
-                      interruptions.map((notification) => (
-                        <fetcher.Form method='post' key={notification.id} >
-                          <Button type='submit' variant='ghost' className='text-left mb-2'          >
-                            <input type='hidden' name='id' value={notification.id} />
-                            <input type='hidden' name='intent' value='updateInterruption' />
-                            <input type='hidden' name='pathname' value={pathname} />
-                            <input type='hidden' name='location' value={notification.location} />
-                            <CommandItem value={notification.location} className="cursor-pointer hover:bg-muted/50 rounded-md"  >
-                              <ul className="grid gap-3 text-sm mt-2">
-                                <li className="grid grid-cols-1 items-center ">
-                                  <span>{notification.title}</span>
-                                  <span className="text-muted-foreground text-xs">
-                                    {notification.date}
-                                  </span>
-                                </li>
-                              </ul>
-                            </CommandItem>
-                          </Button>
-                        </fetcher.Form>
-                      ))
-                    ) : (
-                      <CommandItem>No reminders to be remembered.</CommandItem>
-                    )}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </TabsContent>
-            <TabsContent value="Email">
+          </DropdownMenuGroup>
+          <DropdownMenuLabel className='text-muted-foreground'>Email</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
 
-            </TabsContent>
-            <TabsContent value="SMS">
-              <Command className="rounded-lg border shadow-md bg-background border-border text-foreground">
-                <CommandInput className='bg-background border-border text-foreground' placeholder="Type a command or search..." />
-                <CommandList>
-                  <CommandEmpty>No results found.</CommandEmpty>
-                  <CommandGroup heading="SMS">
-                  </CommandGroup>
+          </DropdownMenuGroup>
+          <DropdownMenuLabel className='text-muted-foreground'>SMS</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
 
-                  <CommandSeparator />
-                </CommandList>
-              </Command>
-            </TabsContent>
-          </Tabs>
-        </PopoverContent>
-      </Popover >
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
     </>
   )
 
@@ -368,8 +338,114 @@ export async function action({ request }: LoaderArgs) {
 
   return json({ message, });
 }
+/**  <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          {length > 0 ? (
+            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" aria-expanded={open}>
+              <div className=" h-t relative w-7">
+                <div className="pointer-events-none absolute -right-4 -top-0.5 flex size-full">
+                  <span className="relative flex size-3">
+                    <span className="absolute inline-flex  size-full animate-ping rounded-full bg-primary opacity-75"></span>
+                    <span className="relative inline-flex size-3 rounded-full bg-[#0078b4]"></span>
+                  </span>
+                </div>
+                <IoIosMailUnread color="#ededed" className="text-2xl hover:text-primary text-[##ededed]" />
+              </div>
+            </Button>
+          ) : (
+            <Button size='icon' variant="outline" className="right-[75px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" aria-expanded={open}>
+              <IoIosMailUnread color="#ededed" className="text-2xl hover:text-primary text-[##ededed]" />
+            </Button>
+          )}
+        </PopoverTrigger>
+        <PopoverContent className="w-[300px] p-3 bg-background">
+          <Tabs defaultValue="Alerts" className="w-[280px] mx-auto">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="Alerts">Alerts</TabsTrigger>
+              <TabsTrigger value="Email">Email</TabsTrigger>
+              <TabsTrigger value="SMS">SMS</TabsTrigger>
+            </TabsList>
+            <TabsContent value="Alerts">
+              <Command className="rounded-lg border shadow-md bg-background border-border text-foreground">
+                <CommandInput className='bg-background border-border text-foreground' placeholder="Type a command or search..." />
+                <CommandList>
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandSeparator />
+                  <CommandGroup heading="Updates">
 
+                  </CommandGroup>
+                  <CommandGroup heading="New Leads">
+                    {lead && lead.map((notification) => (
+                      <fetcher.Form method='post' key={notification.id}>
+                        <Button type='submit' variant='ghost' className='text-left mb-4'>
+                          <input type='hidden' name='id' value={notification.id} />
+                          <input type='hidden' name='intent' value='updateNewLead' />
+                          <input type='hidden' name='financeId' value={notification.financeId} />
+                          <input type='hidden' name='clientfileId' value={notification.clientfileId} />
+                          <CommandItem className="cursor-pointer hover:bg-muted/50 rounded-md">
+                            <ul className="grid gap-3 text-sm mt-2">
+                              <li className="grid grid-cols-1 items-center">
+                                <span>{notification.title}</span>
+                                <span className="text-muted-foreground text-xs">{notification.content}</span>
+                                <span className="text-muted-foreground text-xs">
+                                  {new Date(notification.createdAt).toLocaleDateString('en-US', options)}
+                                </span>
+                              </li>
+                            </ul>
+                          </CommandItem>
+                          {isValidating ? <div className="spinner" /> : null}
+                        </Button>
+                      </fetcher.Form>
+                    ))
+                    }
+                  </CommandGroup>
+                  <CommandGroup heading="Reminders">
+                    {interruptions ? (
+                      interruptions.map((notification) => (
+                        <fetcher.Form method='post' key={notification.id} >
+                          <Button type='submit' variant='ghost' className='text-left mb-2'          >
+                            <input type='hidden' name='id' value={notification.id} />
+                            <input type='hidden' name='intent' value='updateInterruption' />
+                            <input type='hidden' name='pathname' value={pathname} />
+                            <input type='hidden' name='location' value={notification.location} />
+                            <CommandItem value={notification.location} className="cursor-pointer hover:bg-muted/50 rounded-md"  >
+                              <ul className="grid gap-3 text-sm mt-2">
+                                <li className="grid grid-cols-1 items-center ">
+                                  <span>{notification.title}</span>
+                                  <span className="text-muted-foreground text-xs">
+                                    {notification.date}
+                                  </span>
+                                </li>
+                              </ul>
+                            </CommandItem>
+                          </Button>
+                        </fetcher.Form>
+                      ))
+                    ) : (
+                      <CommandItem>No reminders to be remembered.</CommandItem>
+                    )}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </TabsContent>
+            <TabsContent value="Email">
 
+            </TabsContent>
+            <TabsContent value="SMS">
+              <Command className="rounded-lg border shadow-md bg-background border-border text-foreground">
+                <CommandInput className='bg-background border-border text-foreground' placeholder="Type a command or search..." />
+                <CommandList>
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandGroup heading="SMS">
+                  </CommandGroup>
+
+                  <CommandSeparator />
+                </CommandList>
+              </Command>
+            </TabsContent>
+          </Tabs>
+        </PopoverContent>
+      </Popover > */
 /**
  *
    {notificationsNewLead ? (

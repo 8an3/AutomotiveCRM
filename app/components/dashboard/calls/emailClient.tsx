@@ -13,8 +13,13 @@ import { prisma } from "~/libs";
 
 export default function EmailClient({
   data,
+  open,
+  setOpen,
+  customerEmail,
+  customerName,
+  customerfinanceId
 }) {
-  const { user, conversations, financeNotes, latestNotes } = useLoaderData();
+  const { user, conversations, financeNotes, latestNotes, } = useLoaderData();
   const [convos, setConvos] = useState([])
   const [financeNotesList, setFinanceNoteList] = useState([])
   const [conversationsList, setConversationsList] = useState([])
@@ -25,7 +30,6 @@ export default function EmailClient({
   let formRef = useRef();
   const [input, setInput] = React.useState("")
   const inputLength = input.trim().length
-  const [open, setOpen] = React.useState(false)
 
   useEffect(() => {
     if (data) {
@@ -47,15 +51,18 @@ export default function EmailClient({
     }
 
   }, [data.financeId]);
+  //  const [customerEmail, setCustomerEmail] = useState('')
+  //  const [customerName, setCustomerName] = useState('')
+  //  const [customerfinanceId, setCustomerfinanceId] = useState('')
 
 
   useEffect(() => {
-    if (data) {
+    if (data && open === true) {
       const serializedUser = JSON.stringify(user);
       const cust = {
-        email: data.email,
-        name: data.name,
-        financeId: data.financeId,
+        email: customerEmail,
+        name: customerName,
+        financeId: customerfinanceId,
       }
       const serializedCust = JSON.stringify(cust);
       window.localStorage.setItem("user", serializedUser);
@@ -122,12 +129,25 @@ export default function EmailClient({
             "https://www.dealersalesassistant.ca/dealer/email/dashboardClient";
         }
         window.addEventListener("message", handleHeightMessage);
-      }
-      return () => {
-        if (iFrameRef.current) {
+
+        const cust = {
+          email: data.email,
+          name: data.name,
+          financeId: data.financeId,
+        };
+        const sendData = { cust, user };
+
+        // Add load event listener to ensure iframe is loaded
+        const onLoad = () => {
+          iFrameRef.current.contentWindow.postMessage(sendData, '*');
+        };
+        iFrameRef.current.addEventListener('load', onLoad);
+
+        return () => {
           window.removeEventListener("message", handleHeightMessage);
-        }
-      };
+          iFrameRef.current?.removeEventListener('load', onLoad);
+        };
+      }
     }, []);
 
     return (
@@ -152,16 +172,20 @@ export default function EmailClient({
 
     setlatestNote(latestNotes[0])
   }, []);
+
+  const handleButtonClick = (rowData) => {
+    setOpen(true);
+    setCustomerEmail(rowData.email);
+    setCustomerName(rowData.name);
+    setCustomerfinanceId(rowData.financeId);
+  };
+
+
   return (
     <>
       {data && (
-        <Dialog.Root >
-          <Dialog.Trigger asChild>
-            <p
-              className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
-              <Mail className="" />
-            </p>
-          </Dialog.Trigger>
+        <Dialog.Root open={open} onOpenChange={setOpen}>
+
           <Dialog.Portal>
             <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
             <Dialog.Content className=" w-[95%] md:w-[950px]   fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-background border border-border text-foreground p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none ">
