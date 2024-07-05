@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Form, Link, useActionData, useLoaderData, useNavigation, useNavigate, useSubmit } from '@remix-run/react'
 import {
     Button,
@@ -60,7 +60,7 @@ import EmailClient from '~/components/dashboard/calls/emailClient';
 import ClientStatusCard from '~/components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '~/components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '~/components/dashboard/calls/2DaysFromNow';
-import { dashboardAction, dashboardLoader } from "~/components/actions/dashboardCalls";
+import { dashboardAction, dashboardLoader } from "~/components/actions/financeCalls";
 import { CalendarCheck } from "lucide-react";
 import AttemptedOrReached from "~/components/dashboard/calls/setAttOrReached";
 import ContactTimesByType from "~/components/dashboard/calls/ContactTimesByType";
@@ -85,6 +85,14 @@ import { ButtonLoading } from "~/components/ui/button-loading";
 import useSWR from 'swr';
 import LastNote from '~/components/dashboard/calls/lastNote';
 import WishList from '~/components/dashboard/wishlist/wishList'
+import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
+import { SmDataTable } from '~/components/smData-table';
+import { DataTable } from "~/components/data-table"
+import SmClientCard from '~/components/dashboard/calls/smClientCard';
+import { Mail, MessageSquare } from 'lucide-react';
+import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
+import { FinanceDialog } from '~/components/dashboard/calls/finance';
+import { prisma } from '~/libs';
 
 export let loader = dashboardLoader
 
@@ -94,13 +102,44 @@ export const links: LinksFunction = () => [
     { rel: "icon", type: "image/svg", href: '/dashboard.svg' },
 ]
 
-let url = '/api/finance'
+let url = '/dealer/api/finance'
 
 export default function Mainboard() {
     const submit = useSubmit();
     const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = useState("dashboard");
-    const { data: lockData, mutate, error } = useSWR(url, (url) => fetch(url).then((res) => res.json()), { refreshInterval: 60000 });
+    const [lockData, setLockData] = useState();
+
+    useEffect(() => {
+        let interval;
+        async function getLockedData() {
+            try {
+                const Locked = await prisma.lockFinanceTerminals.findUnique({ where: { id: 1 } });
+                const lockedData = Locked.locked;
+                const financeId = Locked.financeId;
+                const finance = await prisma.finance.findUnique({ where: { id: financeId } });
+                const data = { lockedData, ...finance };
+                return data;
+            } catch (error) {
+                console.error('Failed to fetch locked data:', error);
+                return null;
+            }
+        }
+
+        async function fetchData() {
+            const data = await getLockedData();
+            if (data) {
+                setLockData(data);
+            }
+        }
+        fetchData();
+        interval = setInterval(fetchData, 60000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+
+    // const { data: lockData, mutate, error } = useSWR(url, (url) => fetch(url).then((res) => res.json()), { refreshInterval: 60000 });
     const [open, setOpen] = useState(false);
     const [key, setKey] = useState(0);
     const [financeData, setFinanceData] = useState({});
@@ -128,7 +167,7 @@ export default function Mainboard() {
         } catch (error) {
             console.error('Fetch error:', error);
         }
-    }, [error, lockData]);
+    }, [lockData]);
 
 
     const updateDatabaseState = async () => {
@@ -173,8 +212,8 @@ export default function Mainboard() {
 
     return (
         <>
-            <Tabs defaultValue="dashboard">
-                <TabsList className="ml-[19px] grid w-[600px] grid-cols-4">
+            <Tabs className='mt-[50px] ' defaultValue="dashboard">
+                <TabsList className="ml-[5px]">
                     <TabsTrigger onClick={() => {
                         setSelectedTab("null")
                         setSelectedTab("dashboard")
@@ -185,8 +224,6 @@ export default function Mainboard() {
                         setSelectedTab("newLeads")
                     }}
                         value="newLeads">New Leads</TabsTrigger>
-                    <TabsTrigger onClick={() => setSelectedTab("search")} value="search">Search Leads</TabsTrigger>
-                    <TabsTrigger onClick={() => setSelectedTab("wishList")} value="wishList">Wish List</TabsTrigger>
 
                 </TabsList>
                 {selectedTab === "dashboard" && (
@@ -199,16 +236,7 @@ export default function Mainboard() {
                         <WebleadsTable />
                     </TabsContent>
                 )}
-                {selectedTab === "search" && (
-                    <TabsContent className="w-[98%]" value="search">
-                        <SearchTable />
-                    </TabsContent>
-                )}
-                {selectedTab === "wishList" && (
-                    <TabsContent className="w-[98%]" value="wishList">
-                        <WishList />
-                    </TabsContent>
-                )}
+
             </Tabs>
 
 
@@ -276,7 +304,6 @@ export default function Mainboard() {
         </>
     )
 }
-
 
 declare module '@tanstack/table-core' {
     interface FilterFns {
@@ -1261,8 +1288,6 @@ async function getData(): Promise<dashBoardType[]> {
     return res.json();
 }
 
-
-
 export type Payment = {
     id: string
     fiannceId: string
@@ -1399,237 +1424,307 @@ export const meta: MetaFunction = () => {
         },
     ];
 };
-
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     dashData: TData[];
 }
-
 export function FinanceBoard() {
-    const { deFees, manOptions, bmwMoto, bmwMoto2, user, records } = useLoaderData()
+    let username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+    let password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+    //const username = user?.username.toLowerCase().replace(/\s/g, '');//'skylerzanth'//localStorage.getItem("username") ?? "";
+    //const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+    const proxyPhone = '+12176347250'
 
-    const [data, setPaymentData,] = useState<dashBoardType[]>([]);
+    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken, deFees, products } = useLoaderData();
+    const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
+    const [messagesConvo, setMessagesConvo] = useState([]);
+    const [selectedChannelSid, setSelectedChannelSid] = useState([]);
+    const [selectedConversation, setSelectedConversation] = useState([]);
+    const [templates, setTemplates] = useState(getTemplates);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [conversationSID, setConversationSID] = useState('')
+    const [loggedIn, setLoggedIn] = useState(user.email);
+    const [statusString, setStatusString] = useState("Fetching credentials…");
+
+    const [text, setText] = useState('');
+
+    let multipliedConvoList = [];
+    for (let i = 0; i < 30; i++) {
+        multipliedConvoList = multipliedConvoList.concat(convoList);
+    }
+    const [channels, setChannels] = useState(multipliedConvoList);
+    const [currentConversation, setCurrentConversation] = useState(null);
+
+    const [messages, setMessages] = useState(text);
+    const [message, setMessage] = useState(messages || null);
+    const [chatReady, setChatReady] = useState(false);
+
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState('');
+
+    const [isTyping, setIsTyping] = useState(true);
+
+    const [newClient, setClient] = useState();
+    const [newMessage, setNewMessage] = useState("");
+
+    const [token, setToken] = useState(newToken);
+
+    const [name, setName] = useState(username);
+    const [to, setTo] = useState('');
+    const [channelName, setChannelName] = useState('');
+    const [from, setFrom] = useState('');
+    const [conversation_sid, setConversation_sid] = useState('');
+    const [smsMenu, setSmsMenu] = useState('true');
+    const [sms, setSms] = useState(true);
+    const [size, setSize] = useState(751);
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const [conversation, SetConversation] = useState('list');
+    const [conversationsList, setConversationsList] = useState([])
+    const [customer, setCustomer] = useState()
+
+    const [convos, setConvos] = useState([])
+
+
+
+
     useEffect(() => {
         const data = async () => {
             const result = await getData();
-            //const filteredData = result.filter(item => item.financeManager === user.email);
             setPaymentData(result);
         };
         data()
     }, []);
-    //console.log(data, 'data')
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === "submitting";
+    const dataFetcher = (url) => fetch(url).then(res => res.json());
+    const { data: swrData } = useSWR(isSubmitting ? 'http://localhost:3000/dealer/dashboard/calls/loader' : null, dataFetcher, {})
 
-    type newLead = {
-        contact: string
+    useEffect(() => {
+        if (swrData) {
+            setPaymentData(swrData);
+            console.log('hitswr!! ')
+        }
+    }, [swrData]);
+    const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
 
-        financeId: string
-        clientfileId: string
-        clientfile: string
-        financeNote: string
-        customContent: string
-        author: string
-        customerId: string
+    const defaultColumn: Partial<ColumnDef<Payment>> = {
+        cell: ({ getValue, row: { index }, column: { id }, table }) => {
+            const initialValue = getValue()
+            // We need to keep and update the state of the cell normally
+            const [value, setValue] = useState(initialValue)
+
+            // When the input is blurred, we'll call our table meta's updateData function
+            const onBlur = () => {
+                ; (table.options.meta as TableMeta).updateData(index, id, value)
+            }
+
+            // If the initialValue is changed external, sync it up with our state
+            useEffect(() => {
+                setValue(initialValue)
+            }, [initialValue])
+
+            return (
+                <input
+                    value={value as string}
+                    onChange={e => setValue(e.target.value)}
+                    onBlur={onBlur}
+                />
+            )
+        },
     }
 
-    type Payment = {
-        id: string
-        firstName: string
-        lastName: string
-        email: string
-        phone: number
-        address: string
-        prov: string
-        subRows?: newLead[]
-        sold: string
-        deposit: string
-        signed: string
-        docsSigned: string
-        approved: string
-        deliveredDate: string
-        financeApplication: string
-        delivered: string
-        tradeInsp: string
-        pickUpSet: string
-        licensingSent: string
-        liceningDone: string
-        lost: string
-        make: string
-        year: string
-        modelName: string
-        model2: string
-        submodel: string
-        price: string
-        brand: string
-        model: string
-        year: string
-        tradeDesc: string
-        tradeYear: string
-        tradeMake: string
-        tradeMileage: string
-    }
-
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    );
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({
-            id: false,
-            tradeDesc: false,
-            lastNote: false,
-            contactTimesByType: false,
-            pickUpDate: false,
-            lastContact: false,
-            email: false,
-            phone: false,
-            address: false,
-            postal: false,
-            city: false,
-            province: false,
-            financeId: false,
-            userEmail: false,
-            pickUpTime: false,
-            timeToContact: false,
-            timeOfDay: false,
-            msrp: false,
-            freight: false,
-            pdi: false,
-            admin: false,
-            commodity: false,
-            accessories: false,
-            labour: false,
-            painPrem: false,
-            licensing: false,
-            trailer: false,
-            depositMade: false,
-            months: false,
-            iRate: false,
-            on60: false,
-            biweekly: false,
-            weekly: false,
-            qc60: false,
-            biweeklyqc: false,
-            weeklyqc: false,
-            nat60: false,
-            biweeklNat: false,
-            weeklylNat: false,
-            oth60: false,
-            biweekOth: false,
-            weeklyOth: false,
-            nat60WOptions: false,
-            desiredPayments: false,
-            biweeklNatWOptions: false,
-            weeklylNatWOptions: false,
-            oth60WOptions: false,
-            biweekOthWOptions: false,
-            visited: false,
-            aptShowed: false,
-            bookedApt: false,
-            aptNoShowed: false,
-            testDrive: false,
-            metParts: false,
-            refund: false,
-            turnOver: false,
-            financeApp: false,
-            pickUpSet: false,
-            demoed: false,
-            tradeMake: false,
-            tradeYear: false,
-            tradeTrim: false,
-            tradeColor: false,
-            tradeVin: false,
-            result: false,
-            referral: false,
-            metService: false,
-            metManager: false,
-            timesContacted: false,
-            visits: false,
-            progress: false,
-            metFinance: false,
-            metSalesperson: false,
-            seenTrade: false,
-            tradeRepairs: false,
-            tradeValue: false,
-            modelCode: false,
-            color: false,
-            model1: false,
-            stockNum: false,
-            otherTaxWithOptions: false,
-            totalWithOptions: false,
-            otherTax: false,
-            qcTax: false,
-            deposit: false,
-            rustProofing: false,
-            lifeDisability: false,
-            userServicespkg: false,
-            userExtWarr: false,
-            userGap: false,
-            userTireandRim: false,
-            userLoanProt: false,
-            deliveryCharge: false,
-            onTax: false,
-            total: false,
-            typeOfContact: false,
-            contactMethod: false,
-            note: false,
-        });
-    const [rowSelection, setRowSelection] = React.useState({})
-    const [showFilter, setShowFilter] = useState(false);
-    const [expanded, setExpanded] = React.useState<ExpandedState>({})
-    const handleInputChange = (name, checked) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: checked ? 'on' : 'off',
-        }));
+    const [open, setOpen] = useState(false);
+    const [openSMS, setOpenSMS] = useState(false);
+    const [customerEmail, setCustomerEmail] = useState('')
+    const [customerName, setCustomerName] = useState('')
+    const [customerfinanceId, setCustomerfinanceId] = useState('')
+    const handleButtonClick = (rowData) => {
+        setOpen(true);
+        setCustomerEmail(rowData.email);
+        setCustomerName(rowData.name);
+        setCustomerfinanceId(rowData.financeId);
     };
+    const getObjectById = (id) => { return searchData.find(item => item.id === id); };
+
+    const [smsDetails, setSmsDetails] = useState([])
+
+    const handleButtonClickSMS = async (data) => {
+        const theFile = await getObjectById(data.clientfileId)
+        const clientfileId = data.clientfileId
+        const conversationId = theFile?.conversationId
+        const messageDetails = {
+            conversationId: conversationId,
+            clientfileId: clientfileId,
+            name: data.name,
+            email: data.email,
+            financeId: data.id,
+            phone: data.phone,
+            identity: `+1${user.phone}`,
+        }
+        setSmsDetails(messageDetails)
+        setChannelName(data.author || conversationId)
+        setSelectedChannelSid(conversationId);
+        setOpenSMS(true);
+    }
+    const selectedChannel = Array.isArray(channels) ? channels.find((it) => it.sid === selectedChannelSid) : null;
+
+    useEffect(() => {
+        const initConversations = async () => {
+            const token = callToken
+
+            setTimeout(() => {
+                const client = new Client(token);
+                setClient(client);
+                setStatusString("Connecting to Twilio…")
+
+                client.on("connectionStateChanged", (state) => {
+                    if (state === "connecting") {
+                        setStatusString("Connecting to Twilio…")
+                        setStatus("default")
+                    }
+                    if (state === "connected") {
+                        setStatusString("You are connected.")
+                        setStatus("success")
+                        setLoading(false)
+                        setLoggedIn(user.email)
+                    }
+                    if (state === "disconnecting") {
+                        setStatusString("Disconnecting from Twilio…")
+                        setChatReady(false)
+                        setStatus("default")
+                    }
+                    if (state === "disconnected") {
+                        setStatusString("Disconnected.",)
+                        setChatReady(false)
+                        setStatus("warning")
+                    }
+                    if (state === "denied") {
+                        setStatusString("Failed to connect.",)
+                        setChatReady(false)
+                        setStatus("error")
+                    }
+                });
+
+                client.on('tokenAboutToExpire', () => {
+                    console.log('About to expire');
+                    const username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+                    const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+                    setName(username)
+                    if (username.length > 0 && password.length > 0) {
+                        getToken(username, password)
+                            .then((token) => {
+                                // login(token);
+                                setToken(token)
+                            })
+                            .catch(() => {
+                                localStorage.setItem("username", username);
+                                localStorage.setItem("password", password);
+                            })
+                            .finally(() => {
+                                setLoading(false);
+                                setStatusString("Fetching credentials…");
+                            });
+                    }
+                });
+                client.on('tokenExpired', () => {
+                    console.log('Token expired');
+                    client.removeAllListeners();
+                    const client2 = new Client(token);
+                    setClient(client2);
+                    setStatusString("Connecting to Twilio…")
+                });
+                client.on("conversationJoined", (conversation) => {
+                    setChannels((prevChannels) => [...prevChannels, conversation]);
+                });
+                client.on("conversationLeft", (thisConversation) => {
+                    setChannels((prevChannels) =>
+                        prevChannels.filter((it) => it !== thisConversation)
+                    );
+                });
+                client.on('typingStarted', (user) => {
+                    console.log('typing..', user);
+                    if (user.conversation.sid === currentConversation.sid) setIsTyping(true);
+                });
+                client.on('typingEnded', (user) => {
+                    console.log('typing end..', user);
+                    if (user.conversation.sid === currentConversation.sid) setIsTyping(false);
+                });
+            }, 10);
+
+        }
+        initConversations()
+        setChatReady(true);
+    }, []);
+
+    let channelContent;
+    const [state, setState] = useState({
+        newMessage: '',
+        channelProxy: selectedChannel,
+        messages: [],
+        loadingState: 'initializing',
+        boundChannels: new Set(),
+    });
+
+    const messagesRef = useRef(null);
+
     const columns: ColumnDef<Payment>[] = [
         {
-            accessorKey: "firstName",
-            header: ({ column }) => {
-                //
-                return <>
-                    <DataTableColumnHeader column={column} title="Finance" />
+            id: 'select',
+            header: ({ table }) => (
+                <div className='flex mx-auto my-auto'>
+                    <IndeterminateCheckbox
+                        checked={table.getIsAllRowsSelected()}
+                        indeterminate={table.getIsSomeRowsSelected()}
+                        onChange={table.getToggleAllRowsSelectedHandler()}
+                        className='border-[#c72323]'
 
-                </>
-
-            },
-            cell: ({ row }) => {
-                const data = row.original
-                return <div
-                    className="bg-transparent flex h-[45px] w-[50px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
-
-                    <FinanceModal
-                        data={data}
-                        selectedRowData={selectedRowData}
                     />
 
                 </div>
-            },
 
 
+            ),
+            cell: ({ row }) => (
+                <div className="px-1">
+                    <IndeterminateCheckbox
+                        checked={row.getIsSelected()}
+                        indeterminate={row.getIsSomeSelected()}
+                        onChange={row.getToggleSelectedHandler()}
+                        className='border-[#c72323]'
+
+                    />
+                </div>
+            ),
         },
-
+        {
+            accessorKey: "bank",
+            header: ({ column }) => {
+                return <>
+                    <DataTableColumnHeader column={column} title="Finance" />
+                </>
+            },
+            cell: ({ row }) => {
+                const data = row.original
+                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
+                    <FinanceDialog data={data} user={user} deFees={deFees} products={products} />
+                </div>
+            },
+        },
         {
             accessorKey: "firstName",
             header: ({ column }) => {
-                // <Button  onClick={() => {  handleRowClick(row);  ;   }}> <Landmark /> </Button>
                 return <>
                     <DataTableColumnHeader column={column} title="First Name" />
-
                 </>
-
             },
             cell: ({ row }) => {
                 const data = row.original
                 //
-                return <div
-                    className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
-                    <ClientCard data={data} />
+                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
+                    <ClientCard data={data} row={row} />
                 </div>
             },
-
-
         },
         {
             accessorKey: "lastName",
@@ -1638,17 +1733,12 @@ export function FinanceBoard() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-                return <div
-                    className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-primary hover:text-primary focus:text-primary  focus:outline-none  active:bg-primary ">
-                    <a target="_blank" href={`/customer/${data.id}`} rel="noreferrer">
-                        {(row.getValue("lastName"))}
-                    </a>
+                return <div className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-primary hover:text-primary focus:text-primary  focus:outline-none  active:bg-primary ">
+                    {(row.getValue("lastName"))}
                 </div>
             },
-
         },
         {
-
             accessorKey: "status",
             header: ({ column }) => {
                 return <>
@@ -1657,8 +1747,7 @@ export function FinanceBoard() {
             },
             cell: ({ row }) => {
                 const data = row.original
-                return <div
-                    className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
                     <ClientStatusCard data={data} />
                 </div>
             },
@@ -1670,39 +1759,21 @@ export function FinanceBoard() {
             ),
             cell: ({ row }) => {
                 const data = row.original;
-                const formatDate = (dateString) => {
-                    const date = new Date(dateString);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const hours = date.getHours();
-                    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-                    return `${year}-${month}-${day} ${hours}:${minutes}`;
-                };
-
-                const formattedDate = data.nextAppointment && data.nextAppointment !== '1969-12-31 19:00' ? formatDate(data.nextAppointment) : 'TBD';
-
-                return <div
-                    className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
-                    {data.nextAppointment === 'TBD' ? <p>TBD</p> : formattedDate}
+                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
+                    {String(data.nextAppointment)}
                 </div>
             },
         },
         {
-
             accessorKey: "customerState",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="State" />
             ), cell: ({ row }) => {
                 const data = row.original
                 //  const id = data.id ? data.id.toString() : '';
-
-
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center px-5  text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary ">
-                    {data.customerState === 'Pending' ? (<Badge className="bg-slate3">Pending</Badge>
-                    ) : data.customerState === 'Attempted' ? (<Badge className="bg-slate3">Attempted</Badge>
+                return <div className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none active:bg-primary">
+                    {data.customerState === 'Pending' ? (<AttemptedOrReached data={data} />
+                    ) : data.customerState === 'Attempted' ? (<AttemptedOrReached data={data} />
                     ) : data.customerState === 'Reached' ? (<Badge className="bg-jade9">Reached</Badge>
                     ) : data.customerState === 'sold' ? (<Badge className="bg-jade9">Sold</Badge>
                     ) : data.customerState === 'depositMade' ? (<Badge className="bg-jade9">Deposit</Badge>
@@ -1717,13 +1788,6 @@ export function FinanceBoard() {
                     ) : (
                         ''
                     )}
-                    {data.customerState === 'Pending' && (
-                        <AttemptedOrReached data={data} />
-                    )}
-                    {data.customerState === 'Attempted' && (
-                        <AttemptedOrReached data={data} />
-                    )}
-
                 </div>
             },
         },
@@ -1734,17 +1798,124 @@ export function FinanceBoard() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-                // <CallClient />
-                //<SmsClient data={data} />
-
-
-                const [isButtonPressed, setIsButtonPressed] = useState(false);
-
+                let channelContent
+                if (selectedChannelSid) {
+                    channelContent = selectedChannelSid
+                } else if (statusString !== "success") {
+                    channelContent = "Loading your chat!";
+                } else {
+                    channelContent = "";
+                }
                 return <>
-                    <div className='my-2 grid grid-cols-3 gap-3'>
-                        <LogCall data={data} />
-                        <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
-                        <Logtext data={data} />
+                    <div className=' items-center grid grid-cols-3 gap-3'>
+                        <LogCall
+                            data={data}
+                        />
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => handleButtonClick(data)}
+                            className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
+                            <Mail className="" />
+                        </Button>
+                        <EmailClient
+                            data={data}
+                            open={open}
+                            setOpen={setOpen}
+                            customerfinanceId={customerfinanceId}
+                            customerName={customerName}
+                            customerEmail={customerEmail}
+                        />
+                        <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => {
+                                handleButtonClickSMS(data)
+                            }}
+                            className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
+                            <MessageSquare color="#ffffff" />
+                        </Button>
+                        <Logtext
+                            data={data}
+                            searchData={searchData}
+                            openSMS={openSMS}
+                            setOpenSMS={setOpenSMS}
+                            smsDetails={smsDetails}
+                            text={text}
+                            setText={setText}
+                            conversationsData={conversationsData}
+                            messagesConvo={messagesConvo}
+                        />
+                    </div>
+                </>
+            },
+        },
+        {
+            accessorKey: "model",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Model" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE] hover:text-primary">
+                    <ClientVehicleCard data={data} />
+                </div>
+            },
+        },
+        {
+            accessorKey: "tradeDesc",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Trade" />
+            ),
+            cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
+            },
+
+        },
+        {
+            accessorKey: "lastNote",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Last Note" />
+            ),
+            cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("lastNote"))}</div>
+            },
+
+        },
+        {
+            accessorKey: "singleFinNote",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Notes" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original;
+                const single = data.singleFinNote;
+                const last = data.lastNote
+                if (single) {
+                    return (
+                        { single }
+                    )
+                }
+                else if (last) {
+                    return (
+                        { last }
+                    )
+                }
+                else
+                    return null;
+            },
+        },
+        {
+            accessorKey: "followUpDay",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Preset F/U Day" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                return <>
+
+                    <div className='w-[150px]'>
+                        <PresetFollowUpDay data={data} />
                     </div>
                 </>
             },
@@ -1759,6 +1930,7 @@ export function FinanceBoard() {
                 const isSubmitting = navigation.state === "submitting";
                 const data = row.original
                 return <>
+
                     <div className='w-[200px]'>
                         <TwoDaysFromNow data={data} isSubmitting={isSubmitting} />
                     </div>
@@ -1774,311 +1946,19 @@ export function FinanceBoard() {
                 const data = row.original
                 const contactMethod = data.contactMethod
                 return <>
+
                     <div className='w-[125px] cursor-pointer'>
+
                         <CompleteCall data={data} contactMethod={contactMethod} />
                     </div>
                 </>
             },
         },
         {
-            accessorKey: "model",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Model" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <ClientVehicleCard data={data} />
-                </div>
-            },
-        },
-        {
-            accessorKey: "lastNote",
-            header: ({ column }) => (<DataTableColumnHeader column={column} title="Last Note" />),
-            cell: ({ row }) => {
-                const data = row.original
-
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
-                    <LastNote data={data} />
-                </div>
-            },
-        },
-        {
-            accessorKey: "sold",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Sold" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[50px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='sold'
-                                checked={data.sold === 'on'}
-                                onChange={(e) => handleInputChange(data.sold, e.target.checked)}
-                            />
-
-
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "deposit",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Deposit" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[50px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='deposit'
-                                checked={data.deposit === 'on'}
-                                onChange={(e) => handleInputChange(data.deposit, e.target.checked)}
-                            />
-
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-
-        {
-            accessorKey: "approved",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="approved" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[75px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='approved' checked={data.approved === 'on'}
-                                onChange={(e) => handleInputChange(data.approved, e.target.checked)} />
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "tradeInsp",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="tradeInsp" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[100px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='tradeInsp'
-                                checked={data.tradeInsp === 'on'}
-                                onChange={(e) => handleInputChange(data.tradeInsp, e.target.checked)}
-                            />
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "signed",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="signed" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[75px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='signed'
-                                checked={data.signed === 'on'}
-                                onChange={(e) => handleInputChange(data.signed, e.target.checked)} />
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "financeApplication",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="financeApplication" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[100px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='financeApplication'
-                                checked={data.financeApplication === 'on'}
-                                onChange={(e) => handleInputChange(data.financeApplication, e.target.checked)}
-                            />
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "docsSigned",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="docsSigned" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[100px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='docsSigned'
-                                checked={data.docsSigned === 'on'}
-                                onChange={(e) => handleInputChange(data.docsSigned, e.target.checked)}
-                            />
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "pickUpSet",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="pickUpSet" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[100px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='pickUpSet'
-                                checked={data.pickUpSet === 'on'}
-                                onChange={(e) => handleInputChange(data.pickUpSet, e.target.checked)}
-                            />
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "licensingSent",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="licensingSent" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[100px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='licensingSent'
-                                checked={data.licensingSent === 'on'}
-                                onChange={(e) => handleInputChange(data.licensingSent, e.target.checked)}
-                            />
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "liceningDone",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="liceningDone" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[100px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='liceningDone'
-                                checked={data.liceningDone === 'on'}
-                                onChange={(e) => handleInputChange(data.liceningDone, e.target.checked)}
-                            />
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "lost",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="lost" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <div className="w-[100px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
-                    <Text as="label" size="2">
-                        <Flex gap="2">
-                            <Checkbox
-                                name='lost'
-                                checked={data.lost === 'on'}
-                                onChange={(e) => handleInputChange(data.lost, e.target.checked)}
-                            />
-                        </Flex>
-                    </Text>
-                </div>
-            },
-        },
-        {
-            accessorKey: "deliveredDate",
-            cell: ({ row }) => {
-                const data = row.original
-                //
-                return <>
-                    <div className='w-[125px] cursor-pointer'>
-                        <Text as="label" size="2">
-                            <Flex gap="2">
-                                <Checkbox
-                                    name='deliveredDate'
-                                    checked={data.deliveredDate === 'on'}
-                                    onChange={(e) => handleInputChange(data.deliveredDate, e.target.checked)}
-                                />
-                            </Flex>
-                        </Text>
-                    </div>
-                </>
-            },
-        },
-        {
-            accessorKey: "delivered",
-            cell: ({ row }) => {
-                const data = row.original
-                //
-                return <>
-                    <div className='w-[75px] cursor-pointer'>
-                        <Text as="label" size="2">
-                            <Flex gap="2">
-                                <Checkbox
-                                    name='delivered'
-                                    checked={data.delivered === 'on'}
-                                    onChange={(e) => handleInputChange(data.delivered, e.target.checked)}
-                                />
-                            </Flex>
-                        </Text>
-                    </div>
-                </>
-            },
-        },
-        {
-            accessorKey: "tradeDesc",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Trade" />
-            ),
-            cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
-            },
-        },
-
-        {
             accessorKey: "contactTimesByType",
-            header: ({ column }) => (<DataTableColumnHeader column={column} title="Contact Times By Type" />),
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Contact Times By Type" />
+            ),
             cell: ({ row }) => {
                 const data = row.original
                 //
@@ -2092,16 +1972,14 @@ export function FinanceBoard() {
         {
             accessorKey: "pickUpDate",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Pick Up Date"
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
+                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
             ),
             cell: ({ row }) => {
                 const data = row.original
                 if (data.pickUpDate) {
                     const pickupDate = data.pickUpDate
                     return (
-                        <div
-                            className="bg-transparent :text-primary text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
+                        <div className="bg-transparent :text-primary text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
                         </div>
                     );
@@ -2112,30 +1990,24 @@ export function FinanceBoard() {
         {
             accessorKey: "lastContact",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Last Contacted"
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
+                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
             ),
             cell: ({ row }) => {
                 const data = row.original
-                const formatDate = (dateString) => {
-                    const date = new Date(dateString);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const hours = date.getHours();
-                    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-                    return `${year}-${month}-${day} ${hours}:${minutes}`;
+                const date = new Date(data.lastContact);
+                const options = {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
                 };
-
-                // usage
-                const formattedDate = formatDate(data.lastContact);
-                if (formattedDate) {
-                    const lastContact1 = data.lastContact
+                if (date) {
                     return (
-                        <div
-                            className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
-                            {formattedDate === '1969-12-31 19:00' || formattedDate === null ? 'TBD' : formattedDate}
+                        <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
+                            {date === 'TBD' ? <p>TBD</p> : date.toLocaleDateString('en-US', options)}
                         </div>
                     );
                 }
@@ -2143,7 +2015,55 @@ export function FinanceBoard() {
             },
 
         },
+        {
+            accessorKey: "unitPicker",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Turnover" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                const lockedValue = Boolean(true)
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                const navigation = useNavigation();
+                const isSubmitting = navigation.state === "submitting";
+                const PromiseConst = async () => {
+                    const promise = await new Promise(resolve => setTimeout(resolve, 3000));
+                    return promise
+                }
+                PromiseConst()
 
+
+                /**
+                 * <FinanceTurnover data={data} lockedValue={lockedValue} />
+                    <input type='hidden' name='intent' value='financeTurnover' />
+                    <Form method='post' onSubmit={handleSubmit}>
+                        <input type='hidden' name='locked' value={lockedValue} />
+                        <input type='hidden' name='financeId' value={data.id} />
+                    </Form>
+
+                    *
+                    */
+                return <>
+                    <div className='w-[175px] cursor-pointer'>
+                        <Form method='post' >
+                            <input type='hidden' name='intent' value='financeTurnover' />
+                            <input type='hidden' name='locked' value={lockedValue} />
+                            <input type='hidden' name='financeId' value={data.id} />
+                            <ButtonLoading
+                                size="lg"
+                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
+                                type="submit"
+                                isSubmitting={isSubmitting}
+                                onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
+                                loadingText="Updating client info..."
+                            >
+                                Finance Turnover
+                            </ButtonLoading>
+                        </Form>
+                    </div>
+                </>
+            },
+        },
 
         {
             accessorKey: "id",
@@ -2164,8 +2084,7 @@ export function FinanceBoard() {
                 <p className="text-center">email</p>
             ),
             cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
             },
 
         },
@@ -2174,8 +2093,7 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <p className="text-center">phone</p>
             ), cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
             },
 
         },
@@ -2184,8 +2102,7 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <p className="text-center">address</p>
             ), cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
             },
 
         },
@@ -2261,8 +2178,7 @@ export function FinanceBoard() {
                 <DataTableColumnHeader column={column} title="Pick Up Time" />
             ),
             cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
                     {(row.getValue("pickUpTime"))}
                 </div>
             },
@@ -2273,7 +2189,10 @@ export function FinanceBoard() {
             accessorKey: "timeToContact",
             header: "model1",
         },
-
+        {
+            accessorKey: "deliveredDate",
+            header: "deliveredDate",
+        },
         {
             accessorKey: "timeOfDay",
             header: "timeOfDay",
@@ -2426,6 +2345,10 @@ export function FinanceBoard() {
             accessorKey: "metParts",
             header: "metParts",
         },
+        {
+            accessorKey: "sold",
+            header: "sold",
+        },
 
         {
             accessorKey: "refund",
@@ -2439,7 +2362,14 @@ export function FinanceBoard() {
             accessorKey: "financeApp",
             header: "financeApp",
         },
-
+        {
+            accessorKey: "approved",
+            header: "approved",
+        },
+        {
+            accessorKey: "signed",
+            header: "signed",
+        },
 
         {
             accessorKey: "pickUpSet",
@@ -2470,7 +2400,10 @@ export function FinanceBoard() {
             accessorKey: "tradeVin",
             header: "tradeVin",
         },
-
+        {
+            accessorKey: "delivered",
+            header: "delivered",
+        },
         {
             accessorKey: "desiredPayments",
             header: "desiredPayments",
@@ -2513,7 +2446,10 @@ export function FinanceBoard() {
             accessorKey: "visits",
             header: "visits",
         },
-
+        {
+            accessorKey: "financeApplication",
+            header: "financeApplication",
+        },
         {
             accessorKey: "progress",
             header: "progress",
@@ -2531,7 +2467,10 @@ export function FinanceBoard() {
             accessorKey: "seenTrade",
             header: "seenTrade",
         },
-
+        {
+            accessorKey: "docsSigned",
+            header: "docsSigned",
+        },
         {
             accessorKey: "tradeRepairs",
             header: "tradeRepairs",
@@ -2628,652 +2567,852 @@ export function FinanceBoard() {
             accessorKey: "note",
             header: "note",
         },
-        {
-            accessorKey: "make",
-            header: "make",
-        },
 
+
+
+    ]
+    const smColumns: ColumnDef<Payment>[] = [
         {
-            accessorKey: "year",
+            accessorKey: "firstName",
+            header: ({ column }) => {
+                return <>
+                    <DataTableColumnHeader column={column} title="First Name" />
+                </>
+            },
+            cell: ({ row }) => {
+                const data = row.original
+                //
+                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px]   leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
+                    <SmClientCard data={data} searchData={searchData} />
+                </div>
+            },
+        },
+        {
+
+            accessorKey: "status",
+            header: ({ column }) => {
+                return <>
+                    <DataTableColumnHeader column={column} title="Status" />
+                </>
+            },
+            cell: ({ row }) => {
+                const data = row.original
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    <ClientStatusCard data={data} />
+                </div>
+            },
+        },
+        {
+            accessorKey: "nextAppointment",
             header: ({ column }) => (
-                <p className="text-center">year</p>
+                <DataTableColumnHeader column={column} title="Next Appt" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original;
+
+                const date = new Date(String());
+                const options = {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                };
+
+                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
+                    {String(data.nextAppointment)}
+                </div>
+            },
+        },
+        {
+            accessorKey: "customerState",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="State" />
             ), cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("year"))}</div>
+                const data = row.original
+                //  const id = data.id ? data.id.toString() : '';
+                return <div className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none active:bg-primary">
+
+                    {data.customerState === 'Pending' ? (<AttemptedOrReached data={data} />
+                    ) : data.customerState === 'Attempted' ? (<AttemptedOrReached data={data} />
+                    ) : data.customerState === 'Reached' ? (<Badge className="bg-jade9">Reached</Badge>
+                    ) : data.customerState === 'sold' ? (<Badge className="bg-jade9">Sold</Badge>
+                    ) : data.customerState === 'depositMade' ? (<Badge className="bg-jade9">Deposit</Badge>
+                    ) : data.customerState === 'turnOver' ? (<Badge className="bg-blue-9">Turn Over</Badge>
+                    ) : data.customerState === 'financeApp' ? (<Badge className="bg-blue-9">Application Done</Badge>
+                    ) : data.customerState === 'approved' ? (<Badge className="bg-jade9">Approved</Badge>
+                    ) : data.customerState === 'signed' ? (<Badge className="bg-jade9">Signed</Badge>
+                    ) : data.customerState === 'pickUpSet' ? (<Badge className="bg-jade9">Pick Up Set</Badge>
+                    ) : data.customerState === 'delivered' ? (<Badge className="bg-jade9">Delivered</Badge>
+                    ) : data.customerState === 'refund' ? (<Badge className="bg-[#cf5454]">Refunded</Badge>
+                    ) : data.customerState === 'funded' ? (<Badge className="bg-[#cf5454]">Funded</Badge>
+                    ) : (
+                        ''
+                    )}
+                </div>
+            },
+        },
+        {
+            accessorKey: "contact",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Contact" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                const [isButtonPressed, setIsButtonPressed] = useState(false);
+                const handleLoad = () => {
+                    const iFrameData = {
+                        user,
+                        searchData,
+                        data
+                    }
+                    console.log(iFrameData, 'iFrameData')
+                    iFrameRef.current?.contentWindow?.postMessage(iFrameData, '*');
+                }
+                return <>
+                    <div className='my-2 grid grid-cols-3 gap-3'>
+                        <LogCall data={data} />
+                        <EmailClient data={data} setIsButtonPressed={setIsButtonPressed} isButtonPressed={isButtonPressed} />
+                        <Button variant='ghost' onClick={handleLoad} className='my-auto mx-auto'>
+                            <Logtext data={data} searchData={searchData} iFrameRef={iFrameRef} />
+                        </Button>
+                    </div>
+                </>
+            },
+        },
+        {
+            accessorKey: "model",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Model" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
+                    <ClientVehicleCard data={data} />
+                </div>
+            },
+        },
+        {
+            accessorKey: "tradeDesc",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Trade" />
+            ),
+            cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
             },
 
         },
         {
-            accessorKey: "modelName",
+            accessorKey: "lastNote",
             header: ({ column }) => (
-                <p className="text-center">modelName</p>
-            ), cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("modelName"))}</div>
+                <DataTableColumnHeader column={column} title="Last Note" />
+            ),
+            cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("lastNote"))}</div>
             },
 
         },
         {
-            accessorKey: "model2",
+            accessorKey: "singleFinNote",
             header: ({ column }) => (
-                <p className="text-center">model2</p>
-            ), cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("model2"))}</div>
+                <DataTableColumnHeader column={column} title="Notes" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original;
+                const single = data.singleFinNote;
+                const last = data.lastNote
+                if (single) {
+                    return (
+                        { single }
+                    )
+                }
+                else if (last) {
+                    return (
+                        { last }
+                    )
+                }
+                else
+                    return null;
+            },
+        },
+        {
+            accessorKey: "followUpDay",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Preset F/U Day" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                return <>
+
+                    <div className='w-[150px]'>
+                        <PresetFollowUpDay data={data} />
+                    </div>
+                </>
+            },
+        },
+        {
+            accessorKey: "twoDaysFromNow",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Set New Apt." />
+            ),
+            cell: ({ row }) => {
+                const navigation = useNavigation();
+                const isSubmitting = navigation.state === "submitting";
+                const data = row.original
+                return <>
+
+                    <div className='w-[200px]'>
+                        <TwoDaysFromNow data={data} isSubmitting={isSubmitting} />
+                    </div>
+                </>
+            },
+        },
+        {
+            accessorKey: "completeCall",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Complete Call" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                const contactMethod = data.contactMethod
+                return <>
+
+                    <div className='w-[125px] cursor-pointer'>
+
+                        <CompleteCall data={data} contactMethod={contactMethod} />
+                    </div>
+                </>
+            },
+        },
+        {
+            accessorKey: "contactTimesByType",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Contact Times By Type" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                //
+                return <>
+                    <div className='w-[175px] cursor-pointer'>
+                        <ContactTimesByType data={data} />
+                    </div>
+                </>
+            },
+        },
+        {
+            accessorKey: "pickUpDate",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                if (data.pickUpDate) {
+                    const pickupDate = data.pickUpDate
+                    return (
+                        <div className="bg-transparent :text-primary text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
+                            {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
+                        </div>
+                    );
+                } else
+                    return null;
+            },
+        },
+        {
+            accessorKey: "lastContact",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                const date = new Date(data.lastContact);
+                const options = {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                };
+                if (date) {
+                    return (
+                        <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
+                            {date === 'TBD' ? <p>TBD</p> : date.toLocaleDateString('en-US', options)}
+                        </div>
+                    );
+                }
+                return null;
             },
 
         },
         {
-            accessorKey: "submodel",
+            accessorKey: "unitPicker",
             header: ({ column }) => (
-                <p className="text-center">submodel</p>
-            ), cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("submodel"))}</div>
+                <DataTableColumnHeader column={column} title="Turnover" />
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                const lockedValue = Boolean(true)
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                const navigation = useNavigation();
+                const isSubmitting = navigation.state === "submitting";
+                const PromiseConst = async () => {
+                    const promise = await new Promise(resolve => setTimeout(resolve, 3000));
+                    return promise
+                }
+                PromiseConst()
+
+
+                /**
+                 * <FinanceTurnover data={data} lockedValue={lockedValue} />
+                    <input type='hidden' name='intent' value='financeTurnover' />
+                    <Form method='post' onSubmit={handleSubmit}>
+                        <input type='hidden' name='locked' value={lockedValue} />
+                        <input type='hidden' name='financeId' value={data.id} />
+                    </Form>
+
+                    *
+                    */
+                return <>
+                    <div className='w-[175px] cursor-pointer'>
+                        <Form method='post' >
+                            <input type='hidden' name='intent' value='financeTurnover' />
+                            <input type='hidden' name='locked' value={lockedValue} />
+                            <input type='hidden' name='financeId' value={data.id} />
+                            <ButtonLoading
+                                size="lg"
+                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
+                                type="submit"
+                                isSubmitting={isSubmitting}
+                                onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
+                                loadingText="Updating client info..."
+                            >
+                                Finance Turnover
+                            </ButtonLoading>
+                        </Form>
+                    </div>
+                </>
+            },
+        },
+
+        {
+            accessorKey: "id",
+
+            cell: ({ row }) => {
+                const data = row.original
+                return (
+                    <>
+                        {/* <DocuUploadDashboard data={data} />*/}
+                    </>
+                );
             },
 
         },
         {
-            accessorKey: "price",
+            accessorKey: "email",
             header: ({ column }) => (
-                <p className="text-center">price</p>
-            ), cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("price"))}</div>
+                <p className="text-center">email</p>
+            ),
+            cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
             },
 
         },
         {
-            accessorKey: "price",
+            accessorKey: "phone",
             header: ({ column }) => (
-                <p className="text-center">price</p>
+                <p className="text-center">phone</p>
             ), cell: ({ row }) => {
-                return <div
-                    className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("price"))}</div>
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
             },
 
         },
+        {
+            accessorKey: "address",
+            header: ({ column }) => (
+                <p className="text-center">address</p>
+            ), cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
+            },
+
+        },
+        {
+            accessorKey: "postal",
+            header: ({ column }) => (
+                <p className="text-center">postal</p>
+            ), cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                  hover:shadow-md
+
+
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("postal"))}</div>
+            },
+
+        },
+        {
+            accessorKey: "city",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="city" />
+            ), cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                  hover:shadow-md
+
+
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("city"))}</div>
+            },
+
+        },
+        {
+            accessorKey: "province",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="province" />
+            ), cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                  hover:shadow-md
+
+
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("province"))}</div>
+            },
+
+        },
+        {
+            accessorKey: "financeId",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="financeId" />
+            ), cell: ({ row }) => {
+                return <div className="w-[200px] text-center font-medium">{(row.getValue("financeId"))}</div>
+            },
+
+        },
+        {
+            accessorKey: "userEmail",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="userEmail" />
+            ),
+            cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                  hover:shadow-md
+
+
+                  focus:text-primary
+                   focus:outline-none active:bg-primary">{(row.getValue("userEmail"))}</div>
+            },
+
+        },
+        {
+            accessorKey: "pickUpTime",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Pick Up Time" />
+            ),
+            cell: ({ row }) => {
+                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
+                    {(row.getValue("pickUpTime"))}
+                </div>
+            },
+
+        },
+
+        {
+            accessorKey: "timeToContact",
+            header: "model1",
+        },
+        {
+            accessorKey: "deliveredDate",
+            header: "deliveredDate",
+        },
+        {
+            accessorKey: "timeOfDay",
+            header: "timeOfDay",
+        },
+        {
+            accessorKey: "msrp",
+            header: "msrp",
+        },
+        {
+            accessorKey: "freight",
+            header: "freight",
+        },
+        {
+            accessorKey: "pdi",
+            header: "pdi",
+        },
+        {
+            accessorKey: "admin",
+            header: "admin",
+        },
+        {
+            accessorKey: "commodity",
+            header: "commodity",
+        },
+        {
+            accessorKey: "accessories",
+            header: "accessories",
+        },
+        {
+            accessorKey: "labour",
+            header: "labour",
+        },
+        {
+            accessorKey: "painPrem",
+            header: "painPrem",
+        },
+        {
+            accessorKey: "licensing",
+            header: "licensing",
+        },
+        {
+            accessorKey: "trailer",
+            header: "trailer",
+        },
+        {
+            accessorKey: "depositMade",
+            header: "depositMade",
+        },
+        {
+            accessorKey: "months",
+            header: "months",
+        },
+        {
+            accessorKey: "iRate",
+            header: "iRate",
+        },
+        {
+            accessorKey: "on60",
+            header: "on60",
+        },
+        {
+            accessorKey: "biweekly",
+            header: "biweekly",
+        },
+        {
+            accessorKey: "weekly",
+            header: "weekly",
+        },
+        {
+            accessorKey: "qc60",
+            header: "qc60",
+        },
+        {
+            accessorKey: "biweeklyqc",
+            header: "biweeklyqc",
+        },
+        {
+            accessorKey: "weeklyqc",
+            header: "weeklyqc",
+        },
+        {
+            accessorKey: "nat60",
+            header: "nat60",
+        },
+        {
+            accessorKey: "biweeklNat",
+            header: "biweeklNat",
+        },
+        {
+            accessorKey: "weeklylNat",
+            header: "weeklylNat",
+        },
+        {
+            accessorKey: "oth60",
+            header: "oth60",
+        },
+        {
+            accessorKey: "biweekOth",
+            header: "biweekOth",
+        },
+        {
+            accessorKey: "weeklyOth",
+            header: "weeklyOth",
+        },
+        {
+            accessorKey: "nat60WOptions",
+            header: "nat60WOptions",
+        },
+        {
+            accessorKey: "desiredPayments",
+            header: "desiredPayments",
+        },
+        {
+            accessorKey: "biweeklNatWOptions",
+            header: "biweeklNatWOptions",
+        },
+        {
+            accessorKey: "weeklylNatWOptions",
+            header: "weeklylNatWOptions",
+        },
+        {
+            accessorKey: "oth60WOptions",
+            header: "oth60WOptions",
+        },
+        {
+            accessorKey: "biweekOthWOptions",
+            header: "biweekOthWOptions",
+        },
+        {
+            accessorKey: "visited",
+            header: "visited",
+        },
+        {
+            accessorKey: "aptShowed",
+            header: "aptShowed",
+        },
+        {
+            accessorKey: "bookedApt",
+            header: "bookedApt",
+        },
+        {
+            accessorKey: "aptNoShowed",
+            header: "aptNoShowed",
+        },
+        {
+            accessorKey: "testDrive",
+            header: "testDrive",
+        },
+        {
+            accessorKey: "metParts",
+            header: "metParts",
+        },
+        {
+            accessorKey: "sold",
+            header: "sold",
+        },
+
+        {
+            accessorKey: "refund",
+            header: "refund",
+        },
+        {
+            accessorKey: "turnOver",
+            header: "turnOver",
+        },
+        {
+            accessorKey: "financeApp",
+            header: "financeApp",
+        },
+        {
+            accessorKey: "approved",
+            header: "approved",
+        },
+        {
+            accessorKey: "signed",
+            header: "signed",
+        },
+
+        {
+            accessorKey: "pickUpSet",
+            header: "pickUpSet",
+        },
+        {
+            accessorKey: "demoed",
+            header: "demoed",
+        },
+
+        {
+            accessorKey: "tradeMake",
+            header: "tradeMake",
+        },
+        {
+            accessorKey: "tradeYear",
+            header: "tradeYear",
+        },
+        {
+            accessorKey: "tradeTrim",
+            header: "tradeTrim",
+        },
+        {
+            accessorKey: "tradeColor",
+            header: "tradeColor",
+        },
+        {
+            accessorKey: "tradeVin",
+            header: "tradeVin",
+        },
+        {
+            accessorKey: "delivered",
+            header: "delivered",
+        },
+        {
+            accessorKey: "desiredPayments",
+            header: "desiredPayments",
+        },
+        {
+            accessorKey: "result",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Result" />
+            ), cell: ({ row }) => {
+
+                return <div className="w-[250px] text-center font-medium">
+                    Result
+                </div>
+            },
+
+        },
+        {
+            accessorKey: "referral",
+            header: "referral",
+        },
+        {
+            accessorKey: "metService",
+            header: "metService",
+        },
+
+        {
+            accessorKey: "metManager",
+            header: "metManager",
+        },
+        {
+            accessorKey: "metParts",
+            header: "metParts",
+        },
+        {
+            accessorKey: "timesContacted",
+            header: "timesContacted",
+        },
+
+        {
+            accessorKey: "visits",
+            header: "visits",
+        },
+        {
+            accessorKey: "financeApplication",
+            header: "financeApplication",
+        },
+        {
+            accessorKey: "progress",
+            header: "progress",
+        },
+
+        {
+            accessorKey: "metFinance",
+            header: "metFinance",
+        },
+        {
+            accessorKey: "metSalesperson",
+            header: "metSalesperson",
+        },
+        {
+            accessorKey: "seenTrade",
+            header: "seenTrade",
+        },
+        {
+            accessorKey: "docsSigned",
+            header: "docsSigned",
+        },
+        {
+            accessorKey: "tradeRepairs",
+            header: "tradeRepairs",
+        },
+        {
+            accessorKey: "tradeValue",
+            header: "tradeValue",
+        },
+        {
+            accessorKey: "modelCode",
+            header: "modelCode",
+        },
+        {
+            accessorKey: "color",
+            header: "color",
+        },
+        {
+            accessorKey: "model1",
+            header: "model1",
+        },
+        {
+            accessorKey: "stockNum",
+            header: "stockNum",
+        },
+        {
+            accessorKey: "otherTaxWithOptions",
+            header: "otherTaxWithOptions",
+        },
+        {
+            accessorKey: "totalWithOptions",
+            header: "totalWithOptions",
+        },
+        {
+            accessorKey: "otherTax",
+            header: "otherTax",
+        },
+        {
+            accessorKey: "qcTax",
+            header: "lastContact",
+        },
+        {
+            accessorKey: "deposit",
+            header: "tradeValue",
+        },
+        {
+            accessorKey: "rustProofing",
+            header: "modelCode",
+        },
+        {
+            accessorKey: "lifeDisability",
+            header: "color",
+        },
+        {
+            accessorKey: "userServicespkg",
+            header: "model1",
+        },
+        {
+            accessorKey: "userExtWarr",
+            header: "userExtWarr",
+        },
+        {
+            accessorKey: "userGap",
+            header: "userGap",
+        },
+        {
+            accessorKey: "userTireandRim",
+            header: "userTireandRim",
+        },
+        {
+            accessorKey: "userLoanProt",
+            header: "userLoanProt",
+        },
+        {
+            accessorKey: "deliveryCharge",
+            header: "lastContact",
+        },
+        {
+            accessorKey: "onTax",
+            header: "tradeValue",
+        },
+        {
+            accessorKey: "total",
+            header: "modelCode",
+        },
+        {
+            accessorKey: "typeOfContact",
+            header: "typeOfContact",
+        },
+        {
+            accessorKey: "contactMethod",
+            header: "contactMethod",
+        },
+        {
+            accessorKey: "note",
+            header: "note",
+        },
+
 
 
     ]
 
-    const table = useReactTable({
-        data,
-        columns,
-        filterFns: {
-            fuzzy: fuzzyFilter,
-        },
-        globalFilterFn: fuzzyFilter,
-
-        onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
-        state: {
-            sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
-
-        },
-    })
-    const [globalFilter, setGlobalFilter] = React.useState('')
-
-    const [isRowSelected, setIsRowSelected] = useState(false);
-    const [selectedRowId, setSelectedRowId] = React.useState('');
-    const [clientId, setClientId] = React.useState('');
-    const [clientEmail, setClientEmail] = React.useState('');
-    const [clientFirstName, setClientFirstName] = React.useState('');
-    const [clientLastName, setClientLastName] = React.useState('');
-    const [selectedRowData, setSelectedRowData] = React.useState([]);
-    const [clientPhone, setClientPhone] = React.useState([]);
-    const [clientAddress, setClientAddress] = React.useState([]);
-    const [clientLeadNote, setClientLeadNote] = React.useState([]);
-    const [clientFinanceId, setClientFinanceId] = React.useState([]);
-    const [isButtonPressed, setIsButtonPressed] = useState(false);
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === "submitting";
-    const contactMethod = data.contactMethod
-    const [isComplete, setIsComplete] = useState(false)
-    const errors = useActionData() as Record<string, string | null>;
-
-    const handleRowClick = (row) => {
-        setIsRowSelected(true);
-        setSelectedRowId(row.original.id);
-        setSelectedRowData(row.original)
-        setClientId(row.original.id)
-        setClientEmail(row.original.email)
-        setClientFirstName(row.original.firstName)
-        setClientLastName(row.original.lastName)
-        setClientPhone(row.original.phone)
-        setClientAddress(row.original.address)
-        setClientLeadNote(row.original.leadNote)
-        setClientFinanceId(row.original.id)
-        setSelectedRowData(row);
-        setIsModalOpen(true);
-        setOpen(true)
-        console.log(selectedRowData, selectedRowId, row, 'row')
-    };
-
-    const userEmail = user?.email;
-    const [brandId, setBrandId] = useState('');
-
-    const handleBrand = (e) => {
-        setBrandId(e.target.value);
-    };
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [open, setOpen] = React.useState(false);
-    const [filterBy, setFilterBy] = useState('');
-
-    const handleInputChange2 = (name) => {
-        setFilterBy(name);
-    };
-
-    function MassEmail() {
-
-        return (
-            <>
-
-            </>
-        )
-    }
-
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
-        return `${year}-${month}-${day}`;
-    };
-    const formatMonth = (dateString) => {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
-        return `${year}-${month}`;
-    };
-    const now = new Date(); // Current date and time
-    const formattedDate = formatDate(now);
-
-    //console.log(formattedDate); // Output: "Wed, Nov 02, 2023, 09:05 AM"
-
-    function getToday() {
-        const today = new Date();
-        today.setDate(today.getDate());
-        console.log(formatDate(today), 'today')
-        return formatDate(today);
-    }
-
-    function getTomorrow() {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        return formatDate(tomorrow);
-    }
-
-    function getYesterday() {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        return formatDate(yesterday);
-    }
-
-    function getLastDayOfPreviousMonth() {
-        const date = new Date();
-        date.setDate(1); // sets the day to the last day of the previous month
-        return formatMonth(date);
-    }
-
-    function getFirstDayOfCurrentMonth() {
-        const date = new Date();
-        date.setDate(1); // sets the day to the first day of the current month
-        return formatDate(date);
-    }
-
-    function getFirstDayOfTwoMonthsAgo() {
-        const date = new Date();
-        date.setMonth(date.getMonth() - 2);
-        date.setDate(1); // sets the day to the first day of the month two months ago
-        return formatMonth(date);
-    }
-
-    function getYear() {
-        const today = new Date();
-        return today.getFullYear().toString();
-    }
-
-    const getThisYear = getYear();
-
-
-    const [todayfilterBy, setTodayfilterBy] = useState(null);
-
-    const DeliveriesList = [
-        {
-            key: "todaysDeliveries",
-            name: "Deliveries - Today",
-        },
-        {
-            key: "tomorowsDeliveries",
-            name: "Deliveries - Tomorrow",
-        },
-        {
-            key: "yestDeliveries",
-            name: "Deliveries - Yesterday",
-        },
-        {
-            key: "deliveredThisMonth",
-            name: "Delivered - Current Month",
-        },
-        {
-            key: "deliveredLastMonth",
-            name: "Delivered - Last Month",
-        },
-        {
-            key: "deliveredThisYear",
-            name: "Delivered - Year",
-        },
-    ];
-    const DepositsTakenList = [
-        {
-            key: "depositsToday",
-            name: "Deposit Taken - Need to Finalize Deal",
-        },
-    ];
-
-    const CallsList = [
-        {
-            key: "pendingCalls",
-            name: "Pending Calls",
-        },
-        {
-            key: "todaysCalls",
-            name: "Today's Calls",
-        },
-        {
-            key: "tomorowsCalls",
-            name: "Tomorrow's Calls",
-        },
-        {
-            key: "yestCalls",
-            name: "Yesterday's if missed",
-        },
-        {
-            key: "missedCalls",
-            name: "Missed Calls - Current Month",
-        },
-        {
-            key: "missedCallsLastMonth",
-            name: "Missed Calls - Last Month",
-        },
-        {
-            key: "missedCallsTwoMonths",
-            name: "Missed Calls - 2 Months Ago",
-        },
-        {
-            key: "missedCallsYear",
-            name: "Missed Calls - Year",
-        },
-    ];
-
-
-    const handleFilterChange = (selectedFilter) => {
-        setAllFilters()
-        const customerStateColumn = table.getColumn('customerState');
-        const nextAppointmentColumn = table.getColumn('nextAppointment');
-        const deliveredDate = table.getColumn('deliveredDate');
-        const pickUpDate = table.getColumn('pickUpDate');
-        const status = table.getColumn('status');
-        const depositMade = table.getColumn('depositMade');
-        const sold = table.getColumn('sold')
-        const delivered = table.getColumn('delivered')
-        const signed = table.getColumn('signed')
-        const financeApp = table.getColumn('financeApp')
-
-        if (selectedFilter === "deliveredThisMonth") {
-            customerStateColumn?.setFilterValue('delivered');
-            deliveredDate?.setFilterValue(getFirstDayOfCurrentMonth);
-            status?.setFilterValue('active');
-
-        }
-
-        if (selectedFilter === "deliveredLastMonth") {
-            customerStateColumn?.setFilterValue('delivered');
-            deliveredDate?.setFilterValue(getLastDayOfPreviousMonth);
-            status?.setFilterValue('active');
-        }
-
-        if (selectedFilter === "deliveredThisYear") {
-            customerStateColumn?.setFilterValue('delivered');
-            deliveredDate?.setFilterValue(getThisYear);
-            status?.setFilterValue('active');
-        }
-
-        if (selectedFilter === "pendingCalls") {
-            customerStateColumn?.setFilterValue('Pending');
-            status?.setFilterValue('active');
-        }
-
-        if (selectedFilter === "todaysCalls") {
-            nextAppointmentColumn?.setFilterValue(getToday);
-            console.log(nextAppointmentColumn, 'nextAppointmentColumn')
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('off');
-            sold?.setFilterValue('off');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "tomorowsCalls") {
-            nextAppointmentColumn?.setFilterValue(getTomorrow);
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('off');
-            sold?.setFilterValue('off');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "yestCalls") {
-            nextAppointmentColumn?.setFilterValue(getYesterday);
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('off');
-            sold?.setFilterValue('off');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "missedCalls") {
-            nextAppointmentColumn?.setFilterValue(getFirstDayOfCurrentMonth);
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('off');
-            sold?.setFilterValue('off');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "missedCallsLastMonth") {
-            nextAppointmentColumn?.setFilterValue(getLastDayOfPreviousMonth);
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('off');
-            sold?.setFilterValue('off');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "missedCallsTwoMonths") {
-            nextAppointmentColumn?.setFilterValue(getFirstDayOfTwoMonthsAgo);
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('off');
-            sold?.setFilterValue('off');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "missedCallsYear") {
-            nextAppointmentColumn?.setFilterValue(getThisYear);
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('off');
-            sold?.setFilterValue('off');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "todaysDeliveries") {
-            pickUpDate?.setFilterValue(getToday);
-            status?.setFilterValue('active');
-            sold?.setFilterValue('on');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "tomorowsDeliveries") {
-            pickUpDate?.setFilterValue(getTomorrow);
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('on');
-            sold?.setFilterValue('on');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "yestDeliveries") {
-            pickUpDate?.setFilterValue(getYesterday);
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('on');
-            sold?.setFilterValue('on');
-            delivered?.setFilterValue('off')
-        }
-
-        if (selectedFilter === "depositsToday") {
-            status?.setFilterValue('active');
-            depositMade?.setFilterValue('on');
-            sold?.setFilterValue('on');
-            delivered?.setFilterValue('off')
-            signed?.setFilterValue('off')
-            financeApp?.setFilterValue('off')
-        }
-    };
-
-    // clears filters
-    const setAllFilters = () => {
-        setColumnFilters([]);
-        setSorting([])
-        setFilterBy('')
-    };
-
-    // toggle column filters
-
-    const toggleFilter = () => {
-        setShowFilter(!showFilter);
-    };
-
-
-    const [edit, setEdit] = useState(false);
-    const toggleColumns = () => {
-        setEdit((prev) => !prev);
-    };
-
-    const copyText = (text) => {
-        navigator.clipboard.writeText(text)
-            .then(() => {
-                setCopiedText(text);
-                setTimeout(() => setCopiedText(''), 3000); // Reset after 3 seconds
-            })
-            .catch((error) => {
-                console.error('Failed to copy text: ', error);
-            });
-    };
-    const [copiedText, setCopiedText] = useState('');
 
     return (
-        <div className="mx-auto w-[95%] justify-center ">
-
-            <>
-                <div className='flex '>
-
-                    <Input
-                        placeholder={`Search phone # ...`}
-                        value={
-                            (table.getColumn('phone')?.getFilterValue() as string) ?? ""
-                        }
-                        onChange={(event) =>
-                            table.getColumn('phone')?.setFilterValue(event.target.value)
-                        }
-                        className=" max-w-sm border-[#878787] bg-[#363a3f] text-[#fff]"
-                    />
-                    <Select onValueChange={(value) => {
-                        const item = CallsList.find(i => i.key === value) || DeliveriesList.find(i => i.key === value) || DepositsTakenList.find(i => i.key === value);
-                        if (item) {
-                            handleFilterChange(item.key);
-                            setTodayfilterBy(item.name);
-                        }
-                    }}>
-                        <SelectTrigger className="w-auto text-primary border-primary  mr-2 ml-2">
-                            <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
-                        </SelectTrigger>
-                        <SelectContent className='bg-background text-foreground'>
-                            {CallsList.map((item) => (
-                                <SelectItem value={item.key}>{item.name}</SelectItem>
-                            ))}
-                            {DeliveriesList.map((item) => (
-                                <SelectItem value={item.key}>{item.name}</SelectItem>
-                            ))}
-                            {DepositsTakenList.map((item) => (
-                                <SelectItem value={item.key}>{item.name}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select onValueChange={(value) => handleInputChange2(value)}>
-                        <SelectTrigger className='text-primary border-primary w-auto  mr-3'>
-                            Global Filter
-                        </SelectTrigger>
-                        <SelectContent align="end" className='bg-background text-foreground '>
-                            {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => (
-                                <SelectItem key={column.id} value={column.id}
-                                    className="bg-[#fff] text-[#000] capitalize cursor-pointer  hover:underline hover:text-primary">
-                                    {column.id}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-
-                    {filterBy && (
-                        <Input
-                            placeholder={`Filter ${filterBy} ...`}
-                            value={
-                                (table.getColumn(filterBy)?.getFilterValue() as string) ?? ""
-                            }
-                            onChange={(event) =>
-                                table.getColumn(filterBy)?.setFilterValue(event.target.value)
-                            }
-                            className="ml-2 max-w-sm "
-                        />
-                    )}
-
-                    <Button onClick={() => setAllFilters([])} className='bg-primary text-foreground hover:text-foreground mr-3'>
-                        Clear
-                    </Button>
-                    <div className="flex" >
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <p className="cursor-pointer my-auto mr-5 hover:text-primary ">
-                                    <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.14998 14V1H0.849976V14H2.14998ZM6.14998 14V1H4.84998V14H6.14998ZM10.15 1V14H8.84998V1H10.15ZM14.15 14V1H12.85V14H14.15Z" fill="#02a9ff" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                                </p>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="bg-background">
-                                <ScrollArea className="h-[500px] w-[200px] rounded-md  p-4">
-                                    {table
-                                        .getAllColumns()
-                                        .filter((column) => column.getCanHide())
-                                        .map((column) => {
-                                            return (
-                                                <DropdownMenuCheckboxItem
-                                                    key={column.id}
-                                                    className="bg-background capitalize  cursor-pointer"
-                                                    checked={column.getIsVisible()}
-                                                    onCheckedChange={(value) =>
-                                                        column.toggleVisibility(!!value)
-                                                    }
-                                                >
-                                                    {column.id}
-                                                </DropdownMenuCheckboxItem>
-                                            );
-                                        })}
-                                </ScrollArea>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        <AddCustomer />
-                        <Link to='/calendar/sales'>
-                            <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' >
-                                <CalendarCheck color="#02a9ff" size={20} strokeWidth={1.5} />
-                            </button>
-                        </Link>
-                    </div>
-                </div>
-
-                <div className="rounded-md border border-border mt-2">
-                    <Table2 className='w-full overflow-x-auto border-border text-foreground '>
-                        <TableHeader>
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id} className=' border-border'>
-                                    {headerGroup.headers.map((header) => {
-                                        return (
-                                            <TableHead className='items-center' key={header.id}>
-                                                {header.isPlaceholder
-                                                    ? null
-                                                    : flexRender(
-                                                        header.column.columnDef.header,
-                                                        header.getContext()
-                                                    )}
-                                                {header.column.getCanFilter() && showFilter && (
-                                                    <div className="mx-auto cursor-pointer items-center justify-center text-center ">
-                                                        <Filter column={header.column} table={table} />
-                                                    </div>
-                                                )}
-                                            </TableHead>
-                                        )
-                                    })}
-                                </TableRow>
-                            ))}
-                        </TableHeader>
-                        <TableBody>
-                            {table.getRowModel().rows?.length ? (
-                                table.getRowModel().rows.map((row) => (
-                                    <TableRow
-                                        key={row.id}
-                                        className='cursor-pointer border-border bg-background p-4 capitalize text-foreground hover:text-primary'
-                                        data-state={row.getIsSelected() && "selected"}
-                                        onClick={() => handleRowClick(row)}
-                                    >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell className='justify-center' key={cell.id}>
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={columns.length}
-                                        className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
-                                    >
-                                        No results.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table2>
-                </div>
-                <div className="flex items-center justify-end space-x-2 py-4">
-
-                    <div className="space-x-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                            className="border-slate1 text-foreground"
-                        >
-                            Previous
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.nextPage()}
-                            className="border-slate1 text-foreground"
-
-                            disabled={!table.getCanNextPage()}
-                        >
-                            Next
-                        </Button>
-                    </div>
-                </div>
-            </>
-
-        </div >
+        <div>
+            <div className="block md:hidden">
+                <SmDataTable columns={smColumns} data={data} />
+            </div>
+            <div className="hidden md:block">
+                <DataTable columns={columns} data={data} />
+            </div>
+        </div>
     )
 }
-

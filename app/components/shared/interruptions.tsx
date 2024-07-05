@@ -7,7 +7,12 @@ import { GetUser } from '~/utils/loader.server';
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { prisma } from '~/libs';
 import { toast } from 'sonner';
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip"
 
 export async function action({ request, params }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData())
@@ -31,12 +36,24 @@ export default function Interruptions(user, email) {
         <input type='hidden' name='userEmail' value={email} />
         <input type='hidden' name='intent' value='createInterruption' />
         <input type='hidden' name='pathname' value={pathname} />
-        <Button type='submit' size='icon' variant='ghost' className="right-[125px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" onClick={() => {
-          submit
-          toast.success('Reminder saved!')
-        }}>
-          <BellPlus color="#fdfcfc" />
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button type='submit' size='icon' variant='ghost' className="right-[125px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" onClick={() => {
+                submit
+                toast.success('Reminder saved!')
+              }}>
+                <BellPlus color="#fdfcfc" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className='w-[250px]'>
+              <div>
+                <p>Interruption reminder</p>
+                <p>If something needs your attention but you don't want to forget what you were last doing, hit this button and a notification will be waiting for you when your done. When you come back to your desk, you will know exactly what you were doing before you were interrupted.</p>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </fetcher.Form>
     </div>
   )

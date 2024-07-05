@@ -2945,88 +2945,803 @@ export default function Dashboard() {
                 </div>
               </TabsContent>
               <TabsContent value="Finance">
-                <div className="">
-                  <div className="mx-auto mt-10 mb-10">
-                    <Card className=" w-[550px] rounded-lg text-foreground mx-auto">
-                      <CardHeader className=" bg-muted/50  flex flex-row items-start t-rounded-lg">
-                        <div className="grid gap-0.5">
-                          <CardTitle className="group flex items-center gap-2 text-lg">
-                            Payment Calculator
-                          </CardTitle>
-                          <CardDescription>{date}</CardDescription>
-                        </div>
-                        <div className="ml-auto flex items-center gap-1">
-                          <Button size="sm" variant="outline" className="h-8 gap-1">
-                            <CiEdit className="h-3.5 w-3.5" />
-                            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                              Emails
-                            </span>
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button size="icon" variant="outline" className="h-8 w-8">
-                                <MoreVertical className="h-3.5 w-3.5" />
-                                <span className="sr-only">More</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <a
-                                className="mx-auto w-full"
-                                href="/dealer/leads/sales"
-                                target="_blank"
-                              >
-                                <DropdownMenuItem>Dashboard</DropdownMenuItem>
-                              </a>
-                              <a
-                                className="mx-auto w-full"
-                                href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
-                                target="_blank"
-                              >
-                                <DropdownMenuItem>Client File</DropdownMenuItem>
-                              </a>
+                <div className="mx-auto mt-10 mb-10">
+                  <Card className=" w-[550px] rounded-lg text-foreground mx-auto">
+                    <CardHeader className=" bg-muted/50  flex flex-row items-start t-rounded-lg">
+                      <div className="grid gap-0.5">
+                        <CardTitle className="group flex items-center gap-2 text-lg">
+                          Payment Calculator
+                        </CardTitle>
+                        <CardDescription>{date}</CardDescription>
+                      </div>
+                      <div className="ml-auto flex items-center gap-1">
+                        <Button size="sm" variant="outline" className="h-8 gap-1">
+                          <CiEdit className="h-3.5 w-3.5" />
+                          <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                            Emails
+                          </span>
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button size="icon" variant="outline" className="h-8 w-8">
+                              <MoreVertical className="h-3.5 w-3.5" />
+                              <span className="sr-only">More</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <a
+                              className="mx-auto w-full"
+                              href="/dealer/leads/sales"
+                              target="_blank"
+                            >
+                              <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                            </a>
+                            <a
+                              className="mx-auto w-full"
+                              href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
+                              target="_blank"
+                            >
+                              <DropdownMenuItem>Client File</DropdownMenuItem>
+                            </a>
 
-                              <DropdownMenuSeparator />
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <PrintSpec />
+                            </DropdownMenuItem>
+                            <Form method="post">
                               <DropdownMenuItem>
-                                <PrintSpec />
+                                <input
+                                  type="hidden"
+                                  name="intent"
+                                  value="financeTurnover"
+                                />
+                                <input type="hidden" name="locked" value={lockedValue} />
+                                <input
+                                  type="hidden"
+                                  name="financeId"
+                                  value={finance.id}
+                                />
+                                <ButtonLoading
+                                  size="lg"
+                                  className="ml-auto w-full cursor-pointer p-5 hover:text-primary"
+                                  type="submit"
+                                  isSubmitting={isSubmitting}
+                                  onClick={() =>
+                                    toast.success(
+                                      `Informing finance managers of requested turnover...`
+                                    )
+                                  }
+                                  loadingText="Notifying finance managers..."
+                                >
+                                  Finance Turnover
+                                </ButtonLoading>
                               </DropdownMenuItem>
-                              <Form method="post">
-                                <DropdownMenuItem>
-                                  <input
-                                    type="hidden"
-                                    name="intent"
-                                    value="financeTurnover"
+                            </Form>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </CardHeader>
+                    {secPage && (
+                      <>
+                        <CardContent className="p-6 text-sm bg-background">
+                          <div className="grid gap-3">
+                            <div className="font-semibold">Payment Details</div>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Brand</span>
+                              <span>{finance.brand}</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Model</span>
+                              <span> {finance.model}</span>
+                            </li>
+                            {finance.brand !== "BMW-Motorrad" && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Color</span>
+                                  <span>{finance.color}</span>
+                                </li>
+                              </>
+                            )}
+                            {finance.modelCode !== null && (
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Model Code</span>
+                                <span>{finance.modelCode}</span>
+                              </li>
+                            )}
+                            {finance.modelCode !== null && (
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Year</span>
+                                <span>{finance.year}</span>
+                              </li>
+                            )}
+                            {finance.stockNum !== null && (
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Stock Number</span>
+                                <span>{finance.stockNum}</span>
+                              </li>
+                            )}
+
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">MSRP</span>
+                                <span>
+                                  <Input
+                                    name="msrp"
+                                    id="msrp"
+                                    className="h-8 w-20 text-right bg-background border-border "
+                                    autoComplete="msrp"
+                                    defaultValue={formData.msrp}
+                                    onChange={handleChange}
                                   />
-                                  <input type="hidden" name="locked" value={lockedValue} />
-                                  <input
-                                    type="hidden"
-                                    name="financeId"
-                                    value={finance.id}
+                                </span>
+                              </li>
+                              {formData.freight > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Freight</span>
+                                  <span>
+                                    <Input
+                                      className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
+                                      defaultValue={formData.freight}
+                                      placeholder="freight"
+                                      type="text"
+                                      name="freight"
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              )}
+
+                              {formData.pdi > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">PDI</span>
+                                  <span>
+                                    <Input
+                                      className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
+                                      defaultValue={formData.pdi}
+                                      placeholder="pdi"
+                                      type="text"
+                                      name="pdi"
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              )}
+                              {formData.admin > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Admin</span>
+                                  <span>
+                                    <Input
+                                      className="mt-2 h-8 w-20 items-end justify-end  text-right  bg-background border-border "
+                                      defaultValue={formData.admin}
+                                      placeholder="admin"
+                                      type="text"
+                                      name="admin"
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              )}
+                              {formData.commodity > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Commodity</span>
+                                  <span>
+                                    <Input
+                                      className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
+                                      defaultValue={formData.commodity}
+                                      placeholder="commodity"
+                                      type="text"
+                                      name="commodity"
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              )}
+
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Accessories</span>
+                                <span>
+                                  <Input
+                                    name="accessories"
+                                    id="msrp"
+                                    className="h-8 w-20 text-right bg-background border-border "
+                                    autoComplete="msrp"
+                                    defaultValue={formData.accessories}
+                                    onChange={handleChange}
                                   />
-                                  <ButtonLoading
-                                    size="lg"
-                                    className="ml-auto w-full cursor-pointer p-5 hover:text-primary"
-                                    type="submit"
-                                    isSubmitting={isSubmitting}
-                                    onClick={() =>
-                                      toast.success(
-                                        `Informing finance managers of requested turnover...`
-                                      )
-                                    }
-                                    loadingText="Notifying finance managers..."
-                                  >
-                                    Finance Turnover
-                                  </ButtonLoading>
-                                </DropdownMenuItem>
-                              </Form>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </CardHeader>
-                      {secPage && (
-                        <>
-                          <CardContent className="p-6 text-sm bg-background">
-                            <div className="grid gap-3">
-                              <div className="font-semibold">Payment Details</div>
+                                </span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Labour Hours</span>
+                                <span>
+                                  <Input
+                                    name="labour"
+                                    id="msrp"
+                                    className="h-8 w-20 text-right bg-background border-border "
+                                    autoComplete="msrp"
+                                    defaultValue={formData.labour}
+                                    onChange={handleChange}
+                                  />
+                                </span>
+                              </li>
+                              <li className="flex items-center justify-between font-semibold">
+                                <span className="text-[#8a8a93]">Licensing</span>
+                                <span>
+                                  <Input
+                                    className="ml-auto mt-2 h-8 w-20  justify-end text-right bg-background border-border "
+                                    defaultValue={licensing}
+                                    placeholder="licensing"
+                                    type="text"
+                                    name="licensing"
+                                    onChange={handleChange}
+                                  />
+                                </span>
+                              </li>
+                              {/*
+                            {modelData.trailer > 0 && (
+                              <li className="flex items-center justify-between font-semibold">
+                                <span className="text-[#8a8a93]">Trailer</span>
+                                <span>${modelData.trailer}</span>
+                              </li>
+                            )}
+                            {modelData.painPrem > 0 && (
+                              <li className="flex items-center justify-between font-semibold">
+                                <span className="text-[#8a8a93]">Paint Premium</span>
+                                <span> ${modelData.painPrem}</span>
+                              </li>
+                            )}
+                            */}
+                            </ul>
+                          </div>
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                          <div className="font-semibold">Standard Terms</div>
+                          <div className="my-4">
+                            <div className="main-button-group flex justify-between ">
+                              <Badge
+                                id="myButton"
+                                className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("payments")}
+                              >
+                                Payments
+                              </Badge>
+
+                              <Badge
+                                id="myButton1"
+                                className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                                  ? "active bg-[#0a0a0a]2 text-foreground "
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("noTax")}
+                              >
+                                No Tax
+                              </Badge>
+
+                              <Badge
+                                id="myButton2"
+                                className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("customTax")}
+                              >
+                                Custom Tax
+                              </Badge>
+                            </div>
+                            <div className="sub-button-group mt-2 flex justify-between">
+                              <Badge
+                                id="myButton3"
+                                className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleSubButtonClick("withoutOptions")}
+                              >
+                                W/O Options
+                              </Badge>
+
+                              <Badge
+                                id="myButton5"
+                                className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleSubButtonClick("withOptions")}
+                              >
+                                W/ Options
+                              </Badge>
+                            </div>
+                          </div>
+                          {mainButton === "payments" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <ul className="grid gap-3">
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Monthly</span>
+                                    <span> ${on60}</span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">
+                                      Bi-weekly
+                                    </span>
+                                    <span> ${biweekly}</span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Weekly</span>
+                                    <span> ${weekly}</span>
+                                  </li>
+                                </ul>
+                              )}
+                              {subButton === "withOptions" && (
+                                <>
+                                  <div className="font-semibold">Options Include</div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${qc60}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Bi-weekly
+                                      </span>
+                                      <span> ${biweeklyqc}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${weeklyqc}</span>
+                                    </li>
+                                  </ul>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          {mainButton === "noTax" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <div>
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${nat60}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Bi-weekly
+                                      </span>
+                                      <span> ${biweeklNat}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${weeklylNat}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                              {subButton === "withOptions" && (
+                                <div>
+                                  <div className="font-semibold">Options Include</div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${nat60WOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Bi-weekly
+                                      </span>
+                                      <span> ${biweeklNatWOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${biweeklNatWOptions}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {mainButton === "customTax" && (
+                            <div className="">
+                              <ul className="grid gap-3">
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Other tax %
+                                  </span>
+                                  <span>
+                                    <Input
+                                      name="othTax"
+                                      id="othTax"
+                                      className="h-8 w-20 text-right bg-background border-border "
+                                      autoComplete="othTax"
+                                      defaultValue={formData.othTax}
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              </ul>
+                              {subButton === "withoutOptions" && (
+                                <div className="mt-5 flex justify-between">
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${oth60}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Bi-weekly
+                                      </span>
+                                      <span> ${biweekOth}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${weeklyOth}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                              {subButton === "withOptions" && (
+                                <div>
+                                  <div className="font-semibold">Options Include</div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${oth60WOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Bi-weekly
+                                      </span>
+                                      <span> ${biweekOthWOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${weeklyOthWOptions}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                          <div className="font-semibold">Contract Variables</div>
+                          <div className="grid grid-cols-2 ">
+                            <div className=" mt-2 ">
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <label htmlFor="Term">Term</label>
+                                <Input
+                                  className="h-8 w-20 bg-background border-border "
+                                  name="months"
+                                  id="months"
+                                  autoComplete="months"
+                                  defaultValue={months}
+                                  onChange={handleChange}
+                                  type="number"
+                                />
+                              </div>
+                            </div>
+                            <div className="mt-2 grid items-end justify-end ">
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <label className="text-right" htmlFor="iRate">
+                                  Rate
+                                </label>
+                                <Input
+                                  className="h-8 w-20 items-end justify-end text-right bg-background border-border  "
+                                  name="iRate"
+                                  id="iRate"
+                                  autoComplete="iRate"
+                                  defaultValue={iRate}
+                                  onChange={handleChange}
+                                />
+                              </div>
+                            </div>
+                            <div className=" mt-2 ">
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <label htmlFor="deposit">Deposit</label>
+                                <Input
+                                  className="h-8 w-20 bg-background border-border "
+                                  name="deposit"
+                                  id="deposit"
+                                  autoComplete="deposit"
+                                  defaultValue={deposit}
+                                  onChange={handleChange}
+                                  type="number"
+                                />
+                              </div>
+                            </div>
+                            <div className=" mt-2 grid items-end justify-end ">
+                              <div className="grid w-full max-w-sm items-center gap-1.5 ">
+                                <label htmlFor="tradeValue">Trade Value</label>
+                                <Input
+                                  className="ml-auto h-8 w-20 text-right bg-background border-border "
+                                  name="tradeValue"
+                                  id="tradeValue"
+                                  autoComplete="tradeValue"
+                                  defaultValue={tradeValue}
+                                  onChange={handleChange}
+                                />
+                              </div>
+                            </div>
+                            <div className=" mt-2 ">
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <label htmlFor="deposit">Lien</label>
+                                <Input
+                                  className="h-8 w-20 bg-background border-border "
+                                  name="lien"
+                                  id="lien"
+                                  autoComplete="lien"
+                                  defaultValue={lien}
+                                  onChange={handleChange}
+                                  type="number"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                          <Drawer>
+                            <DrawerTrigger asChild>
+                              <Button variant="outline">Other Inputs</Button>
+                            </DrawerTrigger>
+                            <DrawerContent className='bg-background text-foreground'>
+                              <div className="mx-auto w-full max-w-sm">
+                                <DrawerHeader>
+                                  <DrawerTitle>Other Inputs</DrawerTitle>
+                                  <DrawerDescription>Changes to discounts and such</DrawerDescription>
+                                </DrawerHeader>
+                                <div className="p-4 pb-0">
+                                  <div className="flex items-center justify-center space-x-2">
+                                    <ul className="grid gap-3">
+                                      <li className="flex items-center justify-between">
+                                        <span className="text-[#8a8a93]">Discount $</span>
+                                        <span>
+                                          <Input
+                                            name="discount"
+                                            id="msrp"
+                                            className="h-8 w-20 text-right bg-background border-border "
+                                            autoComplete="msrp"
+                                            defaultValue={discount}
+                                            onChange={handleChange}
+                                          />
+                                        </span>
+                                      </li>
+                                      <li className="flex items-center justify-between">
+                                        <span className="text-[#8a8a93]"> Discount (1.1-15)%</span>
+                                        <span>
+                                          <Input
+                                            name="discountPer"
+                                            id="msrp"
+                                            className="h-8 w-20 text-right bg-background border-border "
+                                            autoComplete="msrp"
+                                            defaultValue={0}
+                                            onChange={handleChange}
+                                          />
+                                        </span>
+                                      </li>
+                                      <li className="flex items-center justify-between">
+                                        <span className="text-[#8a8a93]">Delivery Charge</span>
+                                        <span>
+                                          <Input
+                                            name="deliveryCharge"
+                                            id="msrp"
+                                            className="h-8 w-20 text-right bg-background border-border "
+                                            autoComplete="msrp"
+                                            defaultValue={deliveryCharge}
+                                            onChange={handleChange}
+                                          />
+                                        </span>
+                                      </li>
+                                      {totalLabour > 0 && (
+                                        <li className="flex items-center justify-between">
+                                          <span className="text-[#8a8a93]">Total Labour</span>
+                                          <span> ${totalLabour}</span>
+                                        </li>
+                                      )}
+                                    </ul>
+                                  </div>
+                                </div>
+                                <DrawerFooter>
+                                  <DrawerClose asChild>
+                                    <Button variant="outline">Close</Button>
+                                  </DrawerClose>
+                                </DrawerFooter>
+                              </div>
+                            </DrawerContent>
+                          </Drawer>
+
+
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                          <div className="font-semibold">Total</div>
+                          <ul className="grid gap-3">
+                            {perDiscountGiven > 0 && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Total Before Discount
+                                  </span>
+                                  <span>${beforeDiscount}</span>
+                                </li>
+                              </>
+                            )}
+                            {perDiscountGiven > 0 && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Discount (MSRP only)
+                                  </span>
+                                  <span> ${perDiscountGiven}</span>
+                                </li>
+                              </>
+                            )}
+                            {mainButton === "payments" && (
+                              <div>
+                                {subButton === "withoutOptions" && (
+                                  <>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${onTax}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${onTax - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                                {subButton === "withOptions" && (
+                                  <>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${qcTax}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${qcTax - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                            {mainButton === "noTax" && (
+                              <div>
+                                {subButton === "withoutOptions" && (
+                                  <>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${native}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${native - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                                {subButton === "withOptions" && (
+                                  <>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${totalWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${totalWithOptions - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                            {mainButton === "customTax" && (
+                              <div>
+                                {subButton === "withoutOptions" && (
+                                  <>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${otherTax}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${otherTax - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                                {subButton === "withOptions" && (
+                                  <>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${otherTaxWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${otherTaxWithOptions - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </ul>
+                        </CardContent>
+                      </>
+                    )}
+                    {firstPage && (
+                      <>
+                        <CardContent className="p-6 text-sm  bg-background">
+                          <div className="grid gap-3">
+                            <div className="font-semibold">Payment Details</div>
+                            <ul className="grid gap-3">
+
                               <li className="flex items-center justify-between">
                                 <span className="text-[#8a8a93]">Brand</span>
                                 <span>{finance.brand}</span>
@@ -3062,1298 +3777,581 @@ export default function Dashboard() {
                                 </li>
                               )}
 
-                              <ul className="grid gap-3">
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">MSRP</span>
-                                  <span>
-                                    <Input
-                                      name="msrp"
-                                      id="msrp"
-                                      className="h-8 w-20 text-right bg-background border-border "
-                                      autoComplete="msrp"
-                                      defaultValue={formData.msrp}
-                                      onChange={handleChange}
-                                    />
-                                  </span>
-                                </li>
-                                {formData.freight > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Freight</span>
-                                    <span>
-                                      <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
-                                        defaultValue={formData.freight}
-                                        placeholder="freight"
-                                        type="text"
-                                        name="freight"
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                )}
-
-                                {formData.pdi > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">PDI</span>
-                                    <span>
-                                      <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
-                                        defaultValue={formData.pdi}
-                                        placeholder="pdi"
-                                        type="text"
-                                        name="pdi"
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                )}
-                                {formData.admin > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Admin</span>
-                                    <span>
-                                      <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right  bg-background border-border "
-                                        defaultValue={formData.admin}
-                                        placeholder="admin"
-                                        type="text"
-                                        name="admin"
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                )}
-                                {formData.commodity > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Commodity</span>
-                                    <span>
-                                      <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  text-right bg-background border-border "
-                                        defaultValue={formData.commodity}
-                                        placeholder="commodity"
-                                        type="text"
-                                        name="commodity"
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                )}
-
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Accessories</span>
-                                  <span>
-                                    <Input
-                                      name="accessories"
-                                      id="msrp"
-                                      className="h-8 w-20 text-right bg-background border-border "
-                                      autoComplete="msrp"
-                                      defaultValue={formData.accessories}
-                                      onChange={handleChange}
-                                    />
-                                  </span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Labour Hours</span>
-                                  <span>
-                                    <Input
-                                      name="labour"
-                                      id="msrp"
-                                      className="h-8 w-20 text-right bg-background border-border "
-                                      autoComplete="msrp"
-                                      defaultValue={formData.labour}
-                                      onChange={handleChange}
-                                    />
-                                  </span>
-                                </li>
-                                <li className="flex items-center justify-between font-semibold">
-                                  <span className="text-[#8a8a93]">Licensing</span>
-                                  <span>
-                                    <Input
-                                      className="ml-auto mt-2 h-8 w-20  justify-end text-right bg-background border-border "
-                                      defaultValue={licensing}
-                                      placeholder="licensing"
-                                      type="text"
-                                      name="licensing"
-                                      onChange={handleChange}
-                                    />
-                                  </span>
-                                </li>
-                                {/*
-                            {modelData.trailer > 0 && (
-                              <li className="flex items-center justify-between font-semibold">
-                                <span className="text-[#8a8a93]">Trailer</span>
-                                <span>${modelData.trailer}</span>
-                              </li>
-                            )}
-                            {modelData.painPrem > 0 && (
-                              <li className="flex items-center justify-between font-semibold">
-                                <span className="text-[#8a8a93]">Paint Premium</span>
-                                <span> ${modelData.painPrem}</span>
-                              </li>
-                            )}
-                            */}
-                              </ul>
-                            </div>
-                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                            <div className="font-semibold">Standard Terms</div>
-                            <div className="my-4">
-                              <div className="main-button-group flex justify-between ">
-                                <Badge
-                                  id="myButton"
-                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("payments")}
-                                >
-                                  Payments
-                                </Badge>
-
-                                <Badge
-                                  id="myButton1"
-                                  className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
-                                    ? "active bg-[#0a0a0a]2 text-foreground "
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("noTax")}
-                                >
-                                  No Tax
-                                </Badge>
-
-                                <Badge
-                                  id="myButton2"
-                                  className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("customTax")}
-                                >
-                                  Custom Tax
-                                </Badge>
-                              </div>
-                              <div className="sub-button-group mt-2 flex justify-between">
-                                <Badge
-                                  id="myButton3"
-                                  className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleSubButtonClick("withoutOptions")}
-                                >
-                                  W/O Options
-                                </Badge>
-
-                                <Badge
-                                  id="myButton5"
-                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleSubButtonClick("withOptions")}
-                                >
-                                  W/ Options
-                                </Badge>
-                              </div>
-                            </div>
-                            {mainButton === "payments" && (
-                              <div className="">
-                                {subButton === "withoutOptions" && (
-                                  <ul className="grid gap-3">
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">Monthly</span>
-                                      <span> ${on60}</span>
-                                    </li>
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">
-                                        Bi-weekly
-                                      </span>
-                                      <span> ${biweekly}</span>
-                                    </li>
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">Weekly</span>
-                                      <span> ${weekly}</span>
-                                    </li>
-                                  </ul>
-                                )}
-                                {subButton === "withOptions" && (
-                                  <>
-                                    <div className="font-semibold">Options Include</div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${qc60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweeklyqc}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${weeklyqc}</span>
-                                      </li>
-                                    </ul>
-                                  </>
-                                )}
-                              </div>
-                            )}
-
-                            {mainButton === "noTax" && (
-                              <div className="">
-                                {subButton === "withoutOptions" && (
-                                  <div>
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${nat60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweeklNat}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${weeklylNat}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                                {subButton === "withOptions" && (
-                                  <div>
-                                    <div className="font-semibold">Options Include</div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${nat60WOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweeklNatWOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${biweeklNatWOptions}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-
-                            {mainButton === "customTax" && (
-                              <div className="">
-                                <ul className="grid gap-3">
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Other tax %
-                                    </span>
-                                    <span>
-                                      <Input
-                                        name="othTax"
-                                        id="othTax"
-                                        className="h-8 w-20 text-right bg-background border-border "
-                                        autoComplete="othTax"
-                                        defaultValue={formData.othTax}
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                </ul>
-                                {subButton === "withoutOptions" && (
-                                  <div className="mt-5 flex justify-between">
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${oth60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweekOth}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${weeklyOth}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                                {subButton === "withOptions" && (
-                                  <div>
-                                    <div className="font-semibold">Options Include</div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${oth60WOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweekOthWOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${weeklyOthWOptions}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-
-                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                            <div className="font-semibold">Contract Variables</div>
-                            <div className="grid grid-cols-2 ">
-                              <div className=" mt-2 ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                  <label htmlFor="Term">Term</label>
-                                  <Input
-                                    className="h-8 w-20 bg-background border-border "
-                                    name="months"
-                                    id="months"
-                                    autoComplete="months"
-                                    defaultValue={months}
-                                    onChange={handleChange}
-                                    type="number"
-                                  />
-                                </div>
-                              </div>
-                              <div className="mt-2 grid items-end justify-end ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                  <label className="text-right" htmlFor="iRate">
-                                    Rate
-                                  </label>
-                                  <Input
-                                    className="h-8 w-20 items-end justify-end text-right bg-background border-border  "
-                                    name="iRate"
-                                    id="iRate"
-                                    autoComplete="iRate"
-                                    defaultValue={iRate}
-                                    onChange={handleChange}
-                                  />
-                                </div>
-                              </div>
-                              <div className=" mt-2 ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                  <label htmlFor="deposit">Deposit</label>
-                                  <Input
-                                    className="h-8 w-20 bg-background border-border "
-                                    name="deposit"
-                                    id="deposit"
-                                    autoComplete="deposit"
-                                    defaultValue={deposit}
-                                    onChange={handleChange}
-                                    type="number"
-                                  />
-                                </div>
-                              </div>
-                              <div className=" mt-2 grid items-end justify-end ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5 ">
-                                  <label htmlFor="tradeValue">Trade Value</label>
-                                  <Input
-                                    className="ml-auto h-8 w-20 text-right bg-background border-border "
-                                    name="tradeValue"
-                                    id="tradeValue"
-                                    autoComplete="tradeValue"
-                                    defaultValue={tradeValue}
-                                    onChange={handleChange}
-                                  />
-                                </div>
-                              </div>
-                              <div className=" mt-2 ">
-                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                  <label htmlFor="deposit">Lien</label>
-                                  <Input
-                                    className="h-8 w-20 bg-background border-border "
-                                    name="lien"
-                                    id="lien"
-                                    autoComplete="lien"
-                                    defaultValue={lien}
-                                    onChange={handleChange}
-                                    type="number"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-
-                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                            <Drawer>
-                              <DrawerTrigger asChild>
-                                <Button variant="outline">Other Inputs</Button>
-                              </DrawerTrigger>
-                              <DrawerContent className='bg-background text-foreground'>
-                                <div className="mx-auto w-full max-w-sm">
-                                  <DrawerHeader>
-                                    <DrawerTitle>Other Inputs</DrawerTitle>
-                                    <DrawerDescription>Changes to discounts and such</DrawerDescription>
-                                  </DrawerHeader>
-                                  <div className="p-4 pb-0">
-                                    <div className="flex items-center justify-center space-x-2">
-                                      <ul className="grid gap-3">
-                                        <li className="flex items-center justify-between">
-                                          <span className="text-[#8a8a93]">Discount $</span>
-                                          <span>
-                                            <Input
-                                              name="discount"
-                                              id="msrp"
-                                              className="h-8 w-20 text-right bg-background border-border "
-                                              autoComplete="msrp"
-                                              defaultValue={discount}
-                                              onChange={handleChange}
-                                            />
-                                          </span>
-                                        </li>
-                                        <li className="flex items-center justify-between">
-                                          <span className="text-[#8a8a93]"> Discount (1.1-15)%</span>
-                                          <span>
-                                            <Input
-                                              name="discountPer"
-                                              id="msrp"
-                                              className="h-8 w-20 text-right bg-background border-border "
-                                              autoComplete="msrp"
-                                              defaultValue={0}
-                                              onChange={handleChange}
-                                            />
-                                          </span>
-                                        </li>
-                                        <li className="flex items-center justify-between">
-                                          <span className="text-[#8a8a93]">Delivery Charge</span>
-                                          <span>
-                                            <Input
-                                              name="deliveryCharge"
-                                              id="msrp"
-                                              className="h-8 w-20 text-right bg-background border-border "
-                                              autoComplete="msrp"
-                                              defaultValue={deliveryCharge}
-                                              onChange={handleChange}
-                                            />
-                                          </span>
-                                        </li>
-                                        {totalLabour > 0 && (
-                                          <li className="flex items-center justify-between">
-                                            <span className="text-[#8a8a93]">Total Labour</span>
-                                            <span> ${totalLabour}</span>
-                                          </li>
-                                        )}
-                                      </ul>
-                                    </div>
-                                  </div>
-                                  <DrawerFooter>
-                                    <DrawerClose asChild>
-                                      <Button variant="outline">Close</Button>
-                                    </DrawerClose>
-                                  </DrawerFooter>
-                                </div>
-                              </DrawerContent>
-                            </Drawer>
-
-
-                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                            <div className="font-semibold">Total</div>
-                            <ul className="grid gap-3">
-                              {perDiscountGiven > 0 && (
-                                <>
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Total Before Discount
-                                    </span>
-                                    <span>${beforeDiscount}</span>
-                                  </li>
-                                </>
-                              )}
-                              {perDiscountGiven > 0 && (
-                                <>
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Discount (MSRP only)
-                                    </span>
-                                    <span> ${perDiscountGiven}</span>
-                                  </li>
-                                </>
-                              )}
-                              {mainButton === "payments" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${onTax}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${onTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${qcTax}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${qcTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                              {mainButton === "noTax" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${native}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${native - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${totalWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${totalWithOptions - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                              {mainButton === "customTax" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${otherTax}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${otherTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${otherTaxWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${otherTaxWithOptions - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
                             </ul>
-                          </CardContent>
-                        </>
-                      )}
-                      {firstPage && (
-                        <>
-                          <CardContent className="p-6 text-sm  bg-background">
-                            <div className="grid gap-3">
-                              <div className="font-semibold">Payment Details</div>
-                              <ul className="grid gap-3">
+                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                            <div className="font-semibold">Price</div>
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">MSRP</span>
+                                <span> ${formData.msrp}</span>
+                              </li>
+                              {formData.freight > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Freight</span>
+                                  <span>${formData.freight}</span>
+                                </li>
+                              )}
 
+                              {formData.pdi > 0 && (
                                 <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Brand</span>
-                                  <span>{finance.brand}</span>
+                                  <span className="text-[#8a8a93]">PDI</span>
+                                  <span>${formData.pdi}</span>
                                 </li>
+                              )}
+                              {formData.admin > 0 && (
                                 <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Model</span>
-                                  <span> {finance.model}</span>
+                                  <span className="text-[#8a8a93]">Admin</span>
+                                  <span>${formData.admin}</span>
                                 </li>
-                                {finance.brand !== "BMW-Motorrad" && (
-                                  <>
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">Color</span>
-                                      <span>{finance.color}</span>
-                                    </li>
-                                  </>
-                                )}
-                                {finance.modelCode !== null && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Model Code</span>
-                                    <span>{finance.modelCode}</span>
-                                  </li>
-                                )}
-                                {finance.modelCode !== null && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Year</span>
-                                    <span>{finance.year}</span>
-                                  </li>
-                                )}
-                                {finance.stockNum !== null && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Stock Number</span>
-                                    <span>{finance.stockNum}</span>
-                                  </li>
-                                )}
+                              )}
+                              {formData.commodity > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Commodity</span>
+                                  <span>${formData.commodity}</span>
+                                </li>
+                              )}
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Accessories</span>
+                                <span>${accessories}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  Labour Hours
+                                </span>
+                                <span>${formData.labour}</span>
+                              </li>
+                              <li className="flex items-center justify-between font-semibold">
+                                <span className="text-[#8a8a93]">Licensing</span>
+                                <span>${licensing}</span>
+                              </li>
 
-                              </ul>
-                              <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                              <div className="font-semibold">Price</div>
-                              <ul className="grid gap-3">
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">MSRP</span>
-                                  <span> ${formData.msrp}</span>
+                              {finance.brand === 'Sea-Doo' && modelData.trailer > 0 && (
+                                <li className="flex items-center justify-between font-semibold">
+                                  <span className="text-[#8a8a93]">Trailer</span>
+                                  <span>${modelData.trailer}</span>
                                 </li>
-                                {formData.freight > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Freight</span>
-                                    <span>${formData.freight}</span>
-                                  </li>
-                                )}
+                              )}
+                              {finance.brand === 'Triumph' && modelData.painPrem > 0 && (
+                                <li className="flex items-center justify-between font-semibold">
+                                  <span className="text-[#8a8a93]">Paint Premium</span>
+                                  <span> ${modelData.painPrem}</span>
+                                </li>
+                              )}
 
-                                {formData.pdi > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">PDI</span>
-                                    <span>${formData.pdi}</span>
-                                  </li>
-                                )}
-                                {formData.admin > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Admin</span>
-                                    <span>${formData.admin}</span>
-                                  </li>
-                                )}
-                                {formData.commodity > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Commodity</span>
-                                    <span>${formData.commodity}</span>
-                                  </li>
-                                )}
+                            </ul>
+                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                            <div className="font-semibold">Fees</div>
+                            <ul className="grid gap-3">
+                              {deFees.userAirTax > 0 && (
                                 <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Accessories</span>
-                                  <span>${accessories}</span>
+                                  <span className="text-[#8a8a93]">Air Tax</span>
+                                  <span>${deFees.userAirTax}</span>
                                 </li>
+                              )}
+                              {deFees.userTireTax > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Tire Tax</span>
+                                  <span> ${deFees.userTireTax}</span>
+                                </li>
+                              )}
+                              {deFees.userGovern > 0 && (
                                 <li className="flex items-center justify-between">
                                   <span className="text-[#8a8a93]">
-                                    Labour Hours
+                                    Government Fees
                                   </span>
-                                  <span>${formData.labour}</span>
+                                  <span> ${deFees.userGovern}</span>
                                 </li>
-                                <li className="flex items-center justify-between font-semibold">
-                                  <span className="text-[#8a8a93]">Licensing</span>
-                                  <span>${licensing}</span>
+                              )}
+                              {deFees.userFinance > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Finance Fees
+                                  </span>
+                                  <span> ${deFees.userFinance}</span>
                                 </li>
+                              )}
+                              {deFees.destinationCharge > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Destination Charge
+                                  </span>
+                                  <span>${deFees.destinationCharge}</span>
+                                </li>
+                              )}
+                              {deFees.userGasOnDel > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Gas On Delivery
+                                  </span>
+                                  <span>${deFees.userGasOnDel}</span>
+                                </li>
+                              )}
+                              {deFees.userMarketAdj > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Market Adjustment
+                                  </span>
+                                  <span> ${deFees.userMarketAdj}</span>
+                                </li>
+                              )}
+                              {deFees.userDemo > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Demonstrate features or walkaround
+                                  </span>
+                                  <span>${deFees.userDemo}</span>
+                                </li>
+                              )}
+                              {deFees.userOMVIC > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    OMVIC / Other GV Fees
+                                  </span>
+                                  <span> ${deFees.userOMVIC}</span>
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                          <div className="font-semibold">Standard Terms</div>
+                          <div className="mt-3">
+                            <div className="main-button-group flex justify-between ">
+                              <Badge
+                                id="myButton"
+                                className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("payments")}
+                              >
+                                Payments
+                              </Badge>
 
-                                {finance.brand === 'Sea-Doo' && modelData.trailer > 0 && (
-                                  <li className="flex items-center justify-between font-semibold">
-                                    <span className="text-[#8a8a93]">Trailer</span>
-                                    <span>${modelData.trailer}</span>
-                                  </li>
-                                )}
-                                {finance.brand === 'Triumph' && modelData.painPrem > 0 && (
-                                  <li className="flex items-center justify-between font-semibold">
-                                    <span className="text-[#8a8a93]">Paint Premium</span>
-                                    <span> ${modelData.painPrem}</span>
-                                  </li>
-                                )}
+                              <Badge
+                                id="myButton1"
+                                className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                                  ? "active bg-[#0a0a0a]2 text-foreground "
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("noTax")}
+                              >
+                                No Tax
+                              </Badge>
 
-                              </ul>
-                              <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                              <div className="font-semibold">Fees</div>
-                              <ul className="grid gap-3">
-                                {deFees.userAirTax > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Air Tax</span>
-                                    <span>${deFees.userAirTax}</span>
-                                  </li>
-                                )}
-                                {deFees.userTireTax > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Tire Tax</span>
-                                    <span> ${deFees.userTireTax}</span>
-                                  </li>
-                                )}
-                                {deFees.userGovern > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Government Fees
-                                    </span>
-                                    <span> ${deFees.userGovern}</span>
-                                  </li>
-                                )}
-                                {deFees.userFinance > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Finance Fees
-                                    </span>
-                                    <span> ${deFees.userFinance}</span>
-                                  </li>
-                                )}
-                                {deFees.destinationCharge > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Destination Charge
-                                    </span>
-                                    <span>${deFees.destinationCharge}</span>
-                                  </li>
-                                )}
-                                {deFees.userGasOnDel > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Gas On Delivery
-                                    </span>
-                                    <span>${deFees.userGasOnDel}</span>
-                                  </li>
-                                )}
-                                {deFees.userMarketAdj > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Market Adjustment
-                                    </span>
-                                    <span> ${deFees.userMarketAdj}</span>
-                                  </li>
-                                )}
-                                {deFees.userDemo > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Demonstrate features or walkaround
-                                    </span>
-                                    <span>${deFees.userDemo}</span>
-                                  </li>
-                                )}
-                                {deFees.userOMVIC > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      OMVIC / Other GV Fees
-                                    </span>
-                                    <span> ${deFees.userOMVIC}</span>
-                                  </li>
-                                )}
-                              </ul>
+                              <Badge
+                                id="myButton2"
+                                className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("customTax")}
+                              >
+                                Custom Tax
+                              </Badge>
                             </div>
-                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                            <div className="font-semibold">Standard Terms</div>
-                            <div className="mt-3">
-                              <div className="main-button-group flex justify-between ">
-                                <Badge
-                                  id="myButton"
-                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("payments")}
-                                >
-                                  Payments
-                                </Badge>
+                            <div className="sub-button-group mt-2 flex justify-between">
+                              <Badge
+                                id="myButton3"
+                                className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleSubButtonClick("withoutOptions")}
+                              >
+                                W/O Options
+                              </Badge>
 
-                                <Badge
-                                  id="myButton1"
-                                  className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
-                                    ? "active bg-[#0a0a0a]2 text-foreground "
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("noTax")}
-                                >
-                                  No Tax
-                                </Badge>
-
-                                <Badge
-                                  id="myButton2"
-                                  className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("customTax")}
-                                >
-                                  Custom Tax
-                                </Badge>
-                              </div>
-                              <div className="sub-button-group mt-2 flex justify-between">
-                                <Badge
-                                  id="myButton3"
-                                  className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleSubButtonClick("withoutOptions")}
-                                >
-                                  W/O Options
-                                </Badge>
-
-                                <Badge
-                                  id="myButton5"
-                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleSubButtonClick("withOptions")}
-                                >
-                                  W/ Options
-                                </Badge>
-                              </div>
+                              <Badge
+                                id="myButton5"
+                                className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleSubButtonClick("withOptions")}
+                              >
+                                W/ Options
+                              </Badge>
                             </div>
-                            {mainButton === "payments" && (
-                              <div className="">
-                                {subButton === "withoutOptions" && (
-                                  <ul className="grid gap-3 mt-3">
+                          </div>
+                          {mainButton === "payments" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <ul className="grid gap-3 mt-3">
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Monthly</span>
+                                    <span> ${on60}</span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">
+                                      Bi-weekly
+                                    </span>
+                                    <span> ${biweekly}</span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Weekly</span>
+                                    <span> ${weekly}</span>
+                                  </li>
+                                </ul>
+                              )}
+                              {subButton === "withOptions" && (
+                                <>
+                                  <div className="font-semibold mt-3">Options Include</div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
                                     <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">Monthly</span>
-                                      <span> ${on60}</span>
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${qc60}</span>
                                     </li>
                                     <li className="flex items-center justify-between">
                                       <span className="text-[#8a8a93]">
                                         Bi-weekly
                                       </span>
-                                      <span> ${biweekly}</span>
+                                      <span> ${biweeklyqc}</span>
                                     </li>
                                     <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">Weekly</span>
-                                      <span> ${weekly}</span>
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${weeklyqc}</span>
                                     </li>
                                   </ul>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          {mainButton === "noTax" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <div>
+                                  <ul className="grid gap-3 mt-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${nat60}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Bi-weekly
+                                      </span>
+                                      <span> ${biweeklNat}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${weeklylNat}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                              {subButton === "withOptions" && (
+                                <div>
+                                  <div className="font-semibold mt-3">Options Include</div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${nat60WOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Bi-weekly
+                                      </span>
+                                      <span> ${biweeklNatWOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${biweeklNatWOptions}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {mainButton === "customTax" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <div className="mt-3 flex justify-between">
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${oth60}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Bi-weekly
+                                      </span>
+                                      <span> ${biweekOth}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${weeklyOth}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                              {subButton === "withOptions" && (
+                                <div>
+                                  <div className="font-semibold mt-3">Options Include</div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Monthly
+                                      </span>
+                                      <span> ${oth60WOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Bi-weekly
+                                      </span>
+                                      <span> ${biweekOthWOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        Weekly
+                                      </span>
+                                      <span> ${weeklyOthWOptions}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                          <div className="font-semibold">Contract Variables</div>
+                          <ul className="grid gap-3 mt-3">
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Term</span>
+                              <span>{months}</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Rate</span>
+                              <span>{iRate}%</span>
+                            </li>
+                            {deposit > 0 && (
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Deposit</span>
+                                <span>${deposit}</span>
+                              </li>
+                            )}
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Trade Value</span>
+                              <span>${tradeValue}</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Lien</span>
+                              <span>${lien}</span>
+                            </li>
+                          </ul>
+
+
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                          <div className="font-semibold">Total</div>
+                          <ul className="grid gap-3">
+                            {perDiscountGiven > 0 && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Total Before Discount
+                                  </span>
+                                  <span>${beforeDiscount}</span>
+                                </li>
+                              </>
+                            )}
+                            {perDiscountGiven > 0 && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Discount (MSRP only)
+                                  </span>
+                                  <span> ${perDiscountGiven}</span>
+                                </li>
+                              </>
+                            )}
+                            {mainButton === "payments" && (
+                              <div>
+                                {subButton === "withoutOptions" && (
+                                  <>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${onTax}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${onTax - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                                 {subButton === "withOptions" && (
                                   <>
-                                    <div className="font-semibold mt-3">Options Include</div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${qc60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweeklyqc}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${weeklyqc}</span>
-                                      </li>
-                                    </ul>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${qcTax}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${qcTax - deposit}</span>
+                                    </li>
                                   </>
                                 )}
                               </div>
                             )}
-
                             {mainButton === "noTax" && (
-                              <div className="">
+                              <div>
                                 {subButton === "withoutOptions" && (
-                                  <div>
-                                    <ul className="grid gap-3 mt-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${nat60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweeklNat}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${weeklylNat}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
+                                  <>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${native}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${native - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                                 {subButton === "withOptions" && (
-                                  <div>
-                                    <div className="font-semibold mt-3">Options Include</div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${nat60WOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweeklNatWOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${biweeklNatWOptions}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
+                                  <>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${totalWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${totalWithOptions - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                               </div>
                             )}
-
                             {mainButton === "customTax" && (
-                              <div className="">
+                              <div>
                                 {subButton === "withoutOptions" && (
-                                  <div className="mt-3 flex justify-between">
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${oth60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweekOth}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${weeklyOth}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
+                                  <>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${otherTax}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${otherTax - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                                 {subButton === "withOptions" && (
-                                  <div>
-                                    <div className="font-semibold mt-3">Options Include</div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Monthly
-                                        </span>
-                                        <span> ${oth60WOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Bi-weekly
-                                        </span>
-                                        <span> ${biweekOthWOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          Weekly
-                                        </span>
-                                        <span> ${weeklyOthWOptions}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
+                                  <>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        With taxes
+                                      </span>
+                                      <span> ${otherTaxWithOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between mt-3">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${otherTaxWithOptions - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                               </div>
                             )}
+                          </ul>
+                        </CardContent>
+                      </>
+                    )}
 
-                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                            <div className="font-semibold">Contract Variables</div>
-                            <ul className="grid gap-3 mt-3">
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Term</span>
-                                <span>{months}</span>
-                              </li>
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Rate</span>
-                                <span>{iRate}%</span>
-                              </li>
-                              {deposit > 0 && (
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Deposit</span>
-                                  <span>${deposit}</span>
-                                </li>
-                              )}
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Trade Value</span>
-                                <span>${tradeValue}</span>
-                              </li>
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Lien</span>
-                                <span>${lien}</span>
-                              </li>
-                            </ul>
-
-
-                            <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                            <div className="font-semibold">Total</div>
-                            <ul className="grid gap-3">
-                              {perDiscountGiven > 0 && (
-                                <>
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Total Before Discount
-                                    </span>
-                                    <span>${beforeDiscount}</span>
-                                  </li>
-                                </>
-                              )}
-                              {perDiscountGiven > 0 && (
-                                <>
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Discount (MSRP only)
-                                    </span>
-                                    <span> ${perDiscountGiven}</span>
-                                  </li>
-                                </>
-                              )}
-                              {mainButton === "payments" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${onTax}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${onTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${qcTax}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${qcTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                              {mainButton === "noTax" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${native}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${native - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${totalWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${totalWithOptions - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                              {mainButton === "customTax" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${otherTax}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${otherTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          With taxes
-                                        </span>
-                                        <span> ${otherTaxWithOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between mt-3">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${otherTaxWithOptions - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                            </ul>
-                          </CardContent>
-                        </>
-                      )}
-
-                      <CardFooter className=" bg-muted/50   flex flex-row items-center border-t px-6 py-3  b-rounded-md">
-                        <div className="text-[#8a8a93] text-xs">
-                          Updated <time dateTime="2023-11-23">November 23, 2023</time>
-                        </div>
-                        <Pagination className="ml-auto mr-0 w-auto">
-                          <PaginationContent>
-                            <PaginationItem>
-                              <Button
-                                onClick={() => handlePrevPage()}
-                                size="icon"
-                                variant="outline"
-                                className="h-6 w-6"
-                              >
-                                <ChevronLeft className="h-3.5 w-3.5" />
-                                <span className="sr-only">Previous Order</span>
-                              </Button>
-                            </PaginationItem>
-                            <PaginationItem>
-                              <Button
-                                onClick={() => handleNextPage()}
-                                size="icon"
-                                variant="outline"
-                                className="h-6 w-6"
-                              >
-                                <ChevronRight className="h-3.5 w-3.5" />
-                                <span className="sr-only">Next Order</span>
-                              </Button>
-                            </PaginationItem>
-                          </PaginationContent>
-                        </Pagination>
-                      </CardFooter>
-                    </Card>
-                  </div>
+                    <CardFooter className=" bg-muted/50   flex flex-row items-center border-t px-6 py-3  b-rounded-md">
+                      <div className="text-[#8a8a93] text-xs">
+                        Updated <time dateTime="2023-11-23">November 23, 2023</time>
+                      </div>
+                      <Pagination className="ml-auto mr-0 w-auto">
+                        <PaginationContent>
+                          <PaginationItem>
+                            <Button
+                              onClick={() => handlePrevPage()}
+                              size="icon"
+                              variant="outline"
+                              className="h-6 w-6"
+                            >
+                              <ChevronLeft className="h-3.5 w-3.5" />
+                              <span className="sr-only">Previous Order</span>
+                            </Button>
+                          </PaginationItem>
+                          <PaginationItem>
+                            <Button
+                              onClick={() => handleNextPage()}
+                              size="icon"
+                              variant="outline"
+                              className="h-6 w-6"
+                            >
+                              <ChevronRight className="h-3.5 w-3.5" />
+                              <span className="sr-only">Next Order</span>
+                            </Button>
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    </CardFooter>
+                  </Card>
                 </div>
               </TabsContent>
               <TabsContent value="Service">Change your password here.</TabsContent>

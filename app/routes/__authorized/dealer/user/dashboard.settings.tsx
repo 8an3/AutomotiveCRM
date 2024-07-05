@@ -1,11 +1,11 @@
-import { Form, useActionData, useFetcher, useLoaderData, useNavigation } from '@remix-run/react'
+import { Form, useActionData, useFetcher, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
 import { Separator, Button, Input, Label, Switch, Checkbox } from '~/components/ui/index'
 import { json, redirect, type ActionFunction, type DataFunctionArgstype, type MetaFunction, type LoaderFunction, } from '@remix-run/node'
 import DailySheet from '~/components/formToPrint/dailyWorkPlan'
 import { getUserById, updateUser, updateDealerFees, getDealerFeesbyEmail, getDealerFeesbyEmailAdmin } from '~/utils/user.server'
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { toast } from "sonner"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMergedFinance } from '~/utils/dashloader/dashloader.server'
 import { deleteDailyPDF } from '~/utils/dailyPDF/delete.server'
 import { saveDailyWorkPlan } from '~/utils/dailyPDF/create.server'
@@ -24,7 +24,23 @@ import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";
 import axios from 'axios'
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
+import { deleteProduct, getHomeData, createProduct, Board, createProvidor, updateProvidorName, deletePrice, updateProductName, upsertItem, getProductData } from '~/components/user/finance/product'
+import { INTENTS, type RenderedItem, ItemMutationFields, ItemMutation, CONTENT_TYPES } from '~/components/user/finance/types'
+import { badRequest } from "~/utils/http";
+import invariant from "tiny-invariant";
+import { SaveButton, CancelButton, EditableText } from '~/components/user/finance/components'
+import { Plus } from 'lucide-react'
+import { flushSync } from "react-dom";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "~/components/ui/hover-card"
+import { Trash } from "lucide-react";
+import { parseItemMutation } from '~/components/user/finance/utils'
+
 // dontergeasdf
+
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
@@ -63,7 +79,8 @@ export async function loader({ request, params }: LoaderFunction) {
       const session2 = await getAppearance(request.headers.get("Cookie"));
       const getNewLook = user.newLook
       console.log(getNewLook, 'checking appearance')
-      return ({ user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations })
+      let financeProducts = await getHomeData();
+      return ({ user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations, financeProducts })
     } else {
       return redirect('/subscribe');
     }
@@ -351,7 +368,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
   const eventDateRef = React.useRef(new Date());
   const timerRef = React.useRef(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, []);
 
@@ -424,11 +441,15 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
 
   return (
     <Tabs defaultValue="dealerFees" className="w-[75%] ml-5 mr-auto" >
-      <TabsList className="grid grid-cols-4 rounded-md ">
+      <TabsList className="rounded-md ">
         <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
         <TabsTrigger className='rounded-md' value="account">Account</TabsTrigger>
         <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>
         <TabsTrigger className='rounded-md' value="Automations">Automations</TabsTrigger>
+        {user.position === 'Finance Manager' && (
+          <TabsTrigger className='rounded-md' value="FinanceProducts">Finance Products</TabsTrigger>
+        )}
+        <TabsTrigger className='rounded-md' value="FinanceProducts">Finance Products</TabsTrigger>
       </TabsList>
       <TabsContent value="stats" className='rounded-md'>
         <Card className='rounded-md text-foreground border-border border'>
@@ -895,6 +916,20 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
           </CardContent>
         </Card>
       </TabsContent>
+      <TabsContent value="FinanceProducts" className='rounded-md'>
+        <Card className='rounded-md text-foreground border-border border bg-muted-background w-[70vw] h-[70vh] max-h-[70vh] overflow-y-scroll'>
+          <CardHeader className=''>
+            <CardTitle className='text-foreground'>
+              <h3 className="text-2xl font-thin uppercase text-foreground">
+                Finance Products
+              </h3>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-foreground">
+            <Products />
+          </CardContent>
+        </Card>
+      </TabsContent>
 
     </Tabs>
   )
@@ -903,7 +938,11 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
 export const action: ActionFunction = async ({ request }) => {
   const formPayload = Object.fromEntries(await request.formData())
   const Input = financeFormSchema.parse(formPayload)
+  console.log(Input, 'inputs from form')
   const intent = formPayload.intent
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  let user = await GetUser(email)
   if (intent === 'updateFees') {
     const saveDealer = await prisma.dealer.update({
       data: {
@@ -1061,6 +1100,98 @@ export const action: ActionFunction = async ({ request }) => {
     })
     return automations
   }
+  switch (intent) {
+    case INTENTS.createProduct: {
+      let name = formPayload.name
+      if (!name) throw badRequest("Bad request");
+      let board = await createProduct(name);
+      return board
+    }
+    case INTENTS.deleteProduct: {
+      let productId = formPayload.productId
+      if (!productId) throw badRequest("Missing productId");
+      await deleteProduct(Number(productId));
+      return { ok: true };
+    }
+    case INTENTS.createProvidor: {
+      let productId = formPayload.productId
+      let name = formPayload.name
+      if (!name) throw badRequest("Bad request");
+      if (!productId) throw badRequest("Missing productId");
+      await createProvidor(productId, name);
+      return { ok: true };
+    }
+    case INTENTS.updateProvidor: {
+      let id = formPayload.id
+      let name = formPayload.name
+      if (!name) throw badRequest("Bad request - name");
+      if (!id) throw badRequest("Missing id");
+      await updateProvidorName(id, name);
+      return { ok: true };
+    }
+    case INTENTS.deletePrice: {
+      let id = formPayload.id
+      await deletePrice(id);
+      return { ok: true };
+    }
+    case INTENTS.updateProductName: {
+      let name = formPayload.name || ''
+      let productId = formPayload.productId || ''
+      invariant(name, "Missing name");
+      await updateProductName(productId, name);
+      return { ok: true };
+    }
+    case INTENTS.createPrice: {
+      let productId = formPayload.productId || ''
+      let packagePrice = formPayload.packagePrice || ''
+      let packageName = formPayload.packageName || ''
+      let providorId = formPayload.providorId || ''
+      await prisma.financePrice.create({
+        data: {
+          packageName: packageName,
+          packagePrice: Number(packagePrice),
+          financeProduct: {
+            connect: {
+              id: productId
+            }
+          },
+          financeProvidor: {
+            connect: {
+              id: providorId
+            }
+          }
+        }
+      })
+      return { ok: true };
+    }
+    case 'updatePackageName': {
+      let packageName = Input.packageName || ''
+      let priceId = formPayload.priceId || ''
+      if (!packageName) throw badRequest("Missing packageName");
+      if (!priceId) throw badRequest("Missing priceId");
+      await prisma.financePrice.update({
+        where: { id: priceId },
+        data: { packageName }
+      })
+      return { ok: true };
+    }
+    case 'updatePackagePrice': {
+      let packagePrice = formPayload.packagePrice || 0
+      let priceId = formPayload.priceId || ''
+      if (!packagePrice) throw badRequest("Missing packagePrice");
+      if (!priceId) throw badRequest("Missing priceId");
+
+      await prisma.financePrice.update({
+        where: { id: priceId },
+        data: { packagePrice: Number(packagePrice) }
+      })
+      return { ok: true };
+    }
+
+    default: {
+      throw badRequest(`Unknown intent: ${intent}`);
+    }
+  }
 }
 export const meta: MetaFunction = () => {
   return [
@@ -1090,3 +1221,571 @@ export default function Mainbody() {
   )
 }
 
+function Products() {
+  let { financeProducts } = useLoaderData<typeof loader>();
+  const [financeProductsList, setFinanceProductsList] = useState(financeProducts);
+  let navigation = useNavigation();
+  let isCreating = navigation.formData?.get("intent") === "createProduct";
+  let fetcher = useFetcher();
+  const isSubmitting = navigation.state === "submitting";
+
+  const addFinanceProduct = () => {
+    setFinanceProductsList([
+      ...financeProducts,
+      { id: Date.now(), name: "", financeProvidors: [] },
+    ]);
+  };
+
+  const updateFinanceProduct = (index, newProduct) => {
+    const updatedProducts = [...financeProducts];
+    updatedProducts[index] = newProduct;
+    setFinanceProductsList(updatedProducts);
+  };
+
+  return (
+    <div className="p-4">
+      <fetcher.Form method="post" className=" max-w-md flex items-center">
+        <input type="hidden" name="intent" value="createProduct" />
+        <div className="grid gap-3 mx-3 mb-3">
+          <div className="relative mt-3">
+            <Input
+              name='name'
+              type="text"
+              className="w-full bg-background border-border "
+            />
+            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">New Finance Product</label>
+          </div>
+        </div>
+        <ButtonLoading
+          size="sm"
+          className="w-auto cursor-pointer bg-primary"
+          type="submit"
+          isSubmitting={isSubmitting}
+          onClick={() => toast.success(`Update complete.`)}
+          loadingText="Creating..."
+        >
+          Create
+        </ButtonLoading>
+      </fetcher.Form>
+      <h3 className="text-xl font-thin uppercase text-foreground">
+        Products
+      </h3>
+      {financeProductsList.map((product, index) => {
+        const [providors, setProvidors] = useState([]);
+
+        return (
+          <FinanceProduct
+            key={product.id}
+            product={product}
+            onUpdate={(newProduct) => updateFinanceProduct(index, newProduct)}
+          />
+        )
+      })}
+
+    </div>
+  );
+}
+
+function FinanceProduct({ product, onUpdate }) {
+  const [productSec, setProductSec] = useState();
+  const [providorsList, setProvidorsList] = useState(product.financeProvidor);
+  let [editing, setEditing] = useState(false);
+  let inputRef = useRef<HTMLInputElement>(null);
+  let submit = useSubmit();
+
+  const addProvidor = () => {
+    setProvidorsList([
+      ...providors,
+      { id: Date.now(), name: "", financePrices: [] },
+    ]);
+  };
+
+  const updateProvidor = (index, newProvidor) => {
+    const updatedProvidors = [...providors];
+    updatedProvidors[index] = newProvidor;
+    setProvidorsList(updatedProvidors);
+    onUpdate({ ...product, financeProvidors: updatedProvidors });
+  };
+
+  return (
+    <div className="grid grid-cols-1overflow-x-auto">
+      <div className='flex items-center'>
+        <h1>
+          <EditableText
+            value={product.name}
+            fieldName="name"
+            inputClassName="border border-slate-400 wrounded-lg  text-foreground"
+            buttonClassName="w-auto  mx-3 my-4 block rounded-lg text-center  border border-transparent  px-2 py-1 text-foreground"
+            buttonLabel={`Edit product "${product.name}" name`}
+            inputLabel="Edit product name"
+          >
+            <input type="hidden" name="intent" value={INTENTS.updateProductName} />
+            <input type="hidden" name="productId" value={product.id} />
+          </EditableText>
+        </h1>
+        {editing ? (
+          <Form
+            method="post"
+            // navigate={false}
+            className="p-2 flex-shrink-0 flex flex-col gap-3 overflow-hidden max-h-full w-[250px] border rounded-[6px] shadow bg-background"
+            onSubmit={(event) => {
+              event.preventDefault();
+              let formData = new FormData(event.currentTarget);
+              formData.set("id", crypto.randomUUID());
+              submit(formData, {
+                //  navigate: false,
+                method: "post",
+                unstable_flushSync: true,
+              });
+              onAdd();
+              invariant(inputRef.current, "missing input ref");
+              inputRef.current.value = "";
+            }}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setEditing(false);
+              }
+            }}
+          >
+            <input type="hidden" name="intent" value={INTENTS.createProvidor} />
+            <input type="hidden" name="productId" value={product.id} />
+            <input
+              autoFocus
+              required
+              ref={inputRef}
+              type="text"
+              name="name"
+              className="border border-border bg-background w-full rounded-lg py-1 px-2 text-foreground"
+            />
+            <div className="flex justify-between">
+              <SaveButton>Save Providor</SaveButton>
+              <CancelButton onClick={() => setEditing(false)}>Cancel</CancelButton>
+            </div>
+          </Form>
+        ) : (
+          <div className='ml-3'>
+            <Button
+              onClick={() => {
+                flushSync(() => {
+                  setEditing(true);
+                });
+                onAdd();
+              }}
+              size='sm'
+              variant='outline'
+              aria-label="Add new column"
+              className="flex-shrink-0 flex justify-center ml-3 py-3  bg-primary hover:bg-white bg-opacity-10 hover:bg-opacity-5 rounded-[6px]"
+            >
+              <Plus color="#fcfcfc" /> Add Providor
+            </Button>
+          </div>
+
+        )}
+      </div>
+      <div className='flex'>
+        {providorsList.map((providor, index) => (
+          <FinanceProvidor
+            key={providor.id}
+            providor={providor}
+            product={product}
+            onUpdate={(newProvidor) => updateProvidor(index, newProvidor)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FinanceProvidor({ providor, onUpdate, product }) {
+  const [prices, setPrices] = useState(product.financePrice);
+
+  const addPrice = () => {
+    setPrices([...prices, { id: Date.now(), packageName: "", packagePrice: 0 }]);
+  };
+
+  const updatePrice = (index, newPrice) => {
+    const updatedPrices = [...prices];
+    updatedPrices[index] = newPrice;
+    setPrices(updatedPrices);
+    onUpdate({ ...providor, financePrices: updatedPrices });
+  };
+
+  let listRef = useRef<HTMLUListElement>(null);
+  let [edit, setEdit] = useState(false);
+  function scrollList() {
+    invariant(listRef.current);
+    listRef.current.scrollTop = listRef.current.scrollHeight;
+  }
+  return (
+    <div className="mb-4 p-4 border rounded-lg mx-2">
+      {/**repalce with new price */}
+      <div className="p-2">
+        <EditableText
+          fieldName="name"
+          value={providor.name}
+          inputLabel="Edit providor name"
+          buttonLabel={`Edit providor "${providor.name}" name`}
+          inputClassName="border border-slate-400 wrounded-lg  text-foreground"
+          buttonClassName="mx-3 my-4  w-auto  block text-center border-b  border-border py-3 px-2 text-slate-800 "
+        >
+          <input type="hidden" name="intent" value={INTENTS.updateProvidor} />
+          <input type="hidden" name="id" value={providor.id} />
+        </EditableText>
+      </div>
+
+      {prices.map((price, index) => (
+        <FinancePrice
+          key={price.id}
+          price={price}
+          onUpdate={(newPrice) => updatePrice(index, newPrice)}
+        />
+      ))}
+      {edit ? (
+        <NewPrice
+          providorId={providor.id}
+          productId={product.id}
+          nextOrder={prices.length === 0 ? 1 : prices[prices.length - 1].order + 1}
+          onAddPrice={() => scrollList()}
+          onComplete={() => setEdit(false)}
+        />
+      ) : (
+        <div className="p-2 pt-1">
+          <Button
+            variant='outline'
+            type="button"
+            onClick={() => {
+              flushSync(() => {
+                setEdit(true);
+              });
+              scrollList();
+            }}
+            className="flex items-center gap-2 rounded-lg text-center p-2 text-foreground bg-primary hover:bg-slate-200 focus:bg-slate-200"
+          >
+            <Plus color="#fcfcfc" /> Add Price
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+/**function NewPrice({ providorId, onAddPrice, onComplete, nextOrder }) {
+  let textAreaRef = useRef<HTMLTextAreaElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+  let submit = useSubmit();
+  let fetcher = useFetcher();
+
+  return (
+    <Form
+      method="post"
+      className="flex flex-col gap-2.5 p-2 pt-1"
+      onSubmit={(event) => {
+        event.preventDefault();
+
+        let formData = new FormData(event.currentTarget);
+        let id = crypto.randomUUID();
+        formData.set(ItemMutationFields.id.name, id);
+
+        submit(formData, {
+          method: "post",
+          fetcherKey: `price:${id}`,
+          navigate: false,
+          unstable_flushSync: true,
+        });
+
+        invariant(textAreaRef.current);
+        textAreaRef.current.value = "";
+        onAddPrice();
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          onComplete();
+        }
+      }}
+    >
+      <input type="hidden" name="intent" value={INTENTS.createItem} />
+      <input
+        type="hidden"
+        name={ItemMutationFields.providorId.name}
+        value={providorId}
+      />
+      <input
+        type="hidden"
+        name={ItemMutationFields.order.name}
+        value={nextOrder}
+      />
+      <input
+        autoFocus
+        required
+        ref={textAreaRef}
+        name={ItemMutationFields.packageName.name}
+        placeholder="Enter a title for this card"
+        className="outline-none shadow shadow-slate-300 border-slate-300 text-sm rounded-lg w-full py-1 px-2 resize-none placeholder:text-sm placeholder:text-slate-500 h-14"
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            invariant(buttonRef.current, "expected button ref");
+            buttonRef.current.click();
+          }
+          if (event.key === "Escape") {
+            onComplete();
+          }
+        }}
+        onChange={(event) => {
+          let el = event.currentTarget;
+          el.style.height = el.scrollHeight + "px";
+        }}
+      />
+      <input
+        autoFocus
+        required
+        ref={textAreaRef}
+        name={ItemMutationFields.packagePrice.name}
+        placeholder="Enter a title for this card"
+        className="outline-none shadow shadow-slate-300 border-slate-300 text-sm rounded-lg w-full py-1 px-2 resize-none placeholder:text-sm placeholder:text-slate-500 h-14"
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            invariant(buttonRef.current, "expected button ref");
+            buttonRef.current.click();
+          }
+          if (event.key === "Escape") {
+            onComplete();
+          }
+        }}
+        onChange={(event) => {
+          let el = event.currentTarget;
+          el.style.height = el.scrollHeight + "px";
+        }}
+      />
+      <div className="flex justify-between">
+        <SaveButton ref={buttonRef}>Save Card</SaveButton>
+        <CancelButton onClick={onComplete}>Cancel</CancelButton>
+      </div>
+    </Form>
+  )
+} */
+
+/**function NewProvidor({ productId, onAdd, editInitially }) {
+  let [editing, setEditing] = useState(editInitially);
+  let inputRef = useRef<HTMLInputElement>(null);
+  let submit = useSubmit();
+
+  return (
+    <div className='grid grid-cols-1'>
+      {editing ? (
+        <Form
+          method="post"
+          navigate={false}
+          className="p-2 flex-shrink-0 flex flex-col gap-3 overflow-hidden max-h-full w-[250px] border rounded-[6px] shadow bg-background"
+          onSubmit={(event) => {
+            event.preventDefault();
+            let formData = new FormData(event.currentTarget);
+            formData.set("id", crypto.randomUUID());
+            submit(formData, {
+              navigate: false,
+              method: "post",
+              unstable_flushSync: true,
+            });
+            onAdd();
+            invariant(inputRef.current, "missing input ref");
+            inputRef.current.value = "";
+          }}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+              setEditing(false);
+            }
+          }}
+        >
+          <input type="hidden" name="intent" value={INTENTS.createProvidor} />
+          <input type="hidden" name="productId" value={productId} />
+          <input
+            autoFocus
+            required
+            ref={inputRef}
+            type="text"
+            name="name"
+            className="border border-border bg-background w-full rounded-lg py-1 px-2 text-foreground"
+          />
+          <div className="flex justify-between">
+            <SaveButton>Save Providor</SaveButton>
+            <CancelButton onClick={() => setEditing(false)}>Cancel</CancelButton>
+          </div>
+        </Form>
+      ) : (
+        <Button
+          onClick={() => {
+            flushSync(() => {
+              setEditing(true);
+            });
+            onAdd();
+          }}
+          size='icon'
+          variant='outline'
+          aria-label="Add new column"
+          className="flex-shrink-0 flex justify-center  bg-primary hover:bg-white bg-opacity-10 hover:bg-opacity-5 rounded-[6px]"
+        >
+          <Plus color="#fcfcfc" />
+        </Button>
+      )}
+    </div>
+  )
+}
+ */
+
+function FinancePrice({ price, onUpdate }) {
+  let textAreaRef = useRef<HTMLTextAreaElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+  let submit = useSubmit();
+  let fetcher = useFetcher();
+  let deleteFetcher = useFetcher();
+  console.log(price, 'prioce')
+  return (
+    <div className="mb-2 p-2 ">
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <div
+            draggable
+            className="text-left bg-background text-foreground shadow shadow-muted-background border border-border text-sm rounded-[6px] w-full py-1 px-2 relative"
+          >
+            <div>
+              <EditableText
+                fieldName="packageName"
+                value={price.packageName}
+                inputLabel="Edit package name"
+                buttonLabel={`Edit Package Name "${price.packageName}" name`}
+                inputClassName="border border-slate-400 wrounded-lg  text-foreground"
+                buttonClassName="mx-3 my-4 w-auto  block text-center py-3 px-2 text-slate-800 "
+              >
+                <input type="hidden" name="intent" value='updatePackageName' />
+                <input type="hidden" name="priceId" value={price.id} />
+              </EditableText>
+              <EditableText
+                fieldName="packagePrice"
+                value={price.packagePrice}
+                inputLabel="Edit package price"
+                buttonLabel={`Edit package price "${price.packagePrice}" name`}
+                inputClassName="border border-slate-400 wrounded-lg  text-foreground"
+                buttonClassName="mx-3 my-4 w-auto   block text-center  py-1 px-2 text-slate-800 "
+              >
+                <input type="hidden" name="intent" value='updatePackagePrice' />
+                <input type="hidden" name="priceId" value={price.id} />
+              </EditableText>
+            </div>
+
+          </div>
+        </HoverCardTrigger>
+        <HoverCardContent className="w-[100px] h-[100px] bg-background border border-border">
+          <deleteFetcher.Form method="post">
+            <input type="hidden" name="intent" value={INTENTS.deletePrice} />
+            <input type="hidden" name="priceId" value={price.id} />
+            <Button
+              size='icon'
+              variant='ghost'
+              aria-label="Delete card"
+              className="absolute mx-auto my-auto bg-background hover:text-brand-red"
+              type="submit"
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
+            >
+              <Trash color="#fcfcfc" />
+            </Button>
+          </deleteFetcher.Form>
+        </HoverCardContent>
+      </HoverCard>
+
+    </div>
+  );
+}
+
+
+function NewPrice({ productId, providorId, onAddPrice, onComplete, nextOrder }) {
+  let textAreaRef = useRef<HTMLTextAreaElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+  let submit = useSubmit();
+  let fetcher = useFetcher();
+
+  return (
+    <fetcher.Form
+      method="post"
+      className="p-2 flex-shrink-0 flex flex-col gap-3 overflow-hidden max-h-full w-[250px] border rounded-[6px] shadow bg-background"
+      onSubmit={(event) => {
+        event.preventDefault();
+
+        let formData = new FormData(event.currentTarget);
+        let id = crypto.randomUUID();
+        formData.set(ItemMutationFields.id.name, id);
+
+        submit(formData, {
+          method: "post",
+          fetcherKey: `price:${id}`,
+          navigate: false,
+          unstable_flushSync: true,
+        });
+
+        invariant(textAreaRef.current);
+        textAreaRef.current.value = "";
+        onAddPrice();
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          onComplete();
+        }
+      }}
+    >
+      <input type="hidden" name="intent" value={INTENTS.createPrice} />
+      <input type="hidden" name='providorId' value={providorId} />
+      <input type="hidden" name='productId' value={productId} />
+      <input type="hidden" name={ItemMutationFields.order.name} value={nextOrder} />
+      <Input
+        autoFocus
+        required
+        ref={textAreaRef}
+        name='packageName'
+        placeholder="Enter a package name"
+        className="border border-border bg-background w-full rounded-lg py-1 px-2 text-foreground"
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            invariant(buttonRef.current, "expected button ref");
+            buttonRef.current.click();
+          }
+          if (event.key === "Escape") {
+            onComplete();
+          }
+        }}
+        onChange={(event) => {
+          let el = event.currentTarget;
+          el.style.height = el.scrollHeight + "px";
+        }}
+      />
+      <Input
+        autoFocus
+        required
+        ref={textAreaRef}
+        name='packagePrice'
+        placeholder="Enter a package name"
+        className="border border-border bg-background w-full rounded-lg py-1 px-2 text-foreground"
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            invariant(buttonRef.current, "expected button ref");
+            buttonRef.current.click();
+          }
+          if (event.key === "Escape") {
+            onComplete();
+          }
+        }}
+        onChange={(event) => {
+          let el = event.currentTarget;
+          el.style.height = el.scrollHeight + "px";
+        }}
+      />
+
+      <div className="flex justify-between">
+        <SaveButton ref={buttonRef}>Save Price</SaveButton>
+        <CancelButton onClick={onComplete}>Cancel</CancelButton>
+      </div>
+    </fetcher.Form>
+  )
+}

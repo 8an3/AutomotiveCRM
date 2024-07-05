@@ -289,23 +289,27 @@ export default function EmailClient({
                               <Card>
                                 <CardContent>
                                   <div className="space-y-4 mt-5">
-                                    <div
-                                      className={cn(
-                                        "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                        latestNote.userEmail === user.email
-                                          ? "ml-auto bg-primary text-foreground"
-                                          : "bg-[#262626]"
-                                      )}
-                                    >
-                                      <div className='grid grid-cols-1'>
-                                        {latestNote.userEmail !== user.email && (
-                                          <p className='text-[#8c8c8c]'>
-                                            {latestNote.userName}
-                                          </p>
+                                    {latestNote ? (
+                                      <div
+                                        className={cn(
+                                          "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                                          latestNote.userEmail === user.email
+                                            ? "ml-auto bg-primary text-foreground"
+                                            : "bg-[#262626]"
                                         )}
-                                        {latestNote.body}
+                                      >
+                                        <div className='grid grid-cols-1'>
+                                          {latestNote.userEmail !== user.email && (
+                                            <p className='text-[#8c8c8c]'>
+                                              {latestNote.userName}
+                                            </p>
+                                          )}
+                                          {latestNote.body}
+                                        </div>
                                       </div>
-                                    </div>
+                                    ) : (
+                                      <p>No notes on file.</p>
+                                    )}
                                   </div>
                                 </CardContent>
                               </Card>

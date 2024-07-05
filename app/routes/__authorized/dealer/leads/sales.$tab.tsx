@@ -102,6 +102,8 @@ export default function Mainboard() {
         }
     };
 
+    //
+
     return (
         <div className='bg-background'>
 
@@ -118,7 +120,6 @@ export default function Mainboard() {
                             setSelectedTab("newLeads")
                         }}
                             value="newLeads">New Leads</TabsTrigger>
-                        <TabsTrigger onClick={() => setSelectedTab("search")} value="search">Search Leads</TabsTrigger>
                         <TabsTrigger onClick={() => setSelectedTab("wishList")} value="wishList">Wish List</TabsTrigger>
                         <TabsTrigger onClick={() => setSelectedTab("demoDay")} value="demoDay">Demo Day</TabsTrigger>
                     </TabsList>
@@ -133,11 +134,6 @@ export default function Mainboard() {
                         <WebLeads />
                     </TabsContent>
                 )}
-                {selectedTab === "search" && (
-                    <TabsContent className="w-[98%]" value="search">
-                        <SearchLeads />
-                    </TabsContent>
-                )}
                 {selectedTab === "wishList" && (
                     <TabsContent className="w-[98%]" value="wishList">
                         <WishList />
@@ -149,6 +145,7 @@ export default function Mainboard() {
                     </TabsContent>
                 )}
             </Tabs>
+
         </div>
     )
 }
@@ -1012,11 +1009,12 @@ export function MainDashbaord() {
     //const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
     const proxyPhone = '+12176347250'
 
-    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken } = useLoaderData();
+    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken, email } = useLoaderData();
+    console.log(user, email, ';user2')
+
     const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
     const [messagesConvo, setMessagesConvo] = useState([]);
     const [selectedChannelSid, setSelectedChannelSid] = useState([]);
-    const [selectedConversation, setSelectedConversation] = useState([]);
     const [templates, setTemplates] = useState(getTemplates);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [conversationSID, setConversationSID] = useState('')

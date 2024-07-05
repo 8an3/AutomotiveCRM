@@ -31,6 +31,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
   const user = await GetUser(email)
+  console.log(user, email, 'dashboard laoder')
   if (!user) { redirect('/login') }
   const proxyPhone = '+12176347250'
   const deFees = await getDealerFeesbyEmail(user.email);
@@ -270,231 +271,33 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
   const userAgent = request.headers.get('User-Agent');
   const isMobileDevice = checkForMobileDevice(userAgent);
+  /*
+   */
+  console.log(user, email, ';user')
 
 
-
-  if (brand === "Manitou") {
-    const modelData = await getDataByModelManitou(finance);
-    const manOptions = await getLatestOptionsManitou(user.email);
-    return json({
-      ok: true, getDemoDay,
-      modelData,
-      finance,
-      deFees,
-      manOptions,
-      sliderWidth,
-      wishlistMatches,
-      user,
-      financeNotes,
-      dashBoardCustURL,
-      getWishList,
-      conversations,
-      latestNotes,
-      webLeadData,
-      request,
-      convoList, username, newToken, password, getText, isMobileDevice,// conversationsData
-    }, {
-      headers: {
-        "Set-Cookie": await commitSession(session2),
-      },
-    });
-  }
-  if (brand === "Switch") {
-    const modelData = await getDataByModel(finance);
-    const manOptions = await getLatestOptionsManitou(email);
-    return json({
-      ok: true, getDemoDay,
-      modelData,
-      finance,
-      deFees,
-      manOptions,
-      sliderWidth,
-      user,
-      financeNotes,
-      wishlistMatches,
-      getWishList,
-      latestNotes,
-      conversations,
-      webLeadData,
-      dashBoardCustURL,
-      request,
-      convoList, username, newToken, password, getText, isMobileDevice,// conversationsData
-    }, {
-      headers: {
-        "Set-Cookie": await commitSession(session2),
-      },
-    });
-  }
-
-  if (brand === "Kawasaki") {
-    const modelData = await getDataKawasaki(finance);
-    return json({
-      ok: true, getDemoDay,
-      modelData,
-      finance,
-      deFees,
-      sliderWidth,
-      user,
-      financeNotes,
-      latestNotes,
-      conversations,
-      wishlistMatches,
-      getWishList,
-      webLeadData,
-      dashBoardCustURL,
-      callToken,
-      request,
-      convoList, username, newToken, password, getText, isMobileDevice, //conversationsData
-    }, {
-      headers: {
-        "Set-Cookie": await commitSession(session2),
-      },
-    });
-  }
-
-  if (brand === "BMW-Motorrad") {
-    const financeId = finance?.id;
-    const bmwMoto = await getLatestBMWOptions(financeId);
-    const bmwMoto2 = await getLatestBMWOptions2(financeId);
-    const modelData = await getDataBmwMoto(finance);
-    return json({
-      ok: true, getDemoDay,
-      modelData,
-      finance,
-      deFees,
-      bmwMoto,
-      latestNotes,
-      bmwMoto2,
-      sliderWidth,
-      user,
-      wishlistMatches,
-      financeNotes,
-      conversations,
-      getWishList,
-      webLeadData,
-      dashBoardCustURL,
-      callToken,
-      request,
-      convoList, username, newToken, password, getText, isMobileDevice, //conversationsData
-    }, {
-      headers: {
-        "Set-Cookie": await commitSession(session2),
-      },
-    });
-  }
-
-  if (brand === "Triumph") {
-    const modelData = await getDataTriumph(finance);
-    return json({
-      ok: true, getDemoDay,
-      modelData,
-      finance,
-      deFees,
-      sliderWidth,
-      user,
-      combinedData,
-      convoList, username, newToken, password, getText, isMobileDevice, //conversationsData
-      latestNotes,
-      financeNotes,
-      getWishList,
-      conversations,
-      webLeadData,
-      wishlistMatches,
-      dashBoardCustURL,
-      request,
-      callToken,
-    }, {
-      headers: {
-        "Set-Cookie": await commitSession(session2),
-      },
-    });
-  }
-
-  if (brand === "Harley-Davidson") {
-    const modelData = await getDataHarley(finance);
-    return json({
-      ok: true, getDemoDay,
-      modelData,
-      finance,
-      deFees,
-      sliderWidth,
-      user,
-      financeNotes,
-      latestNotes,
-      dashBoardCustURL,
-      getWishList,
-      combinedData,
-      conversations,
-      webLeadData,
-      getTemplates,
-      request,
-      wishlistMatches,
-      callToken,
-      convoList, username, newToken, password, getText, isMobileDevice,// conversationsData
-    }, {
-      headers: {
-        "Set-Cookie": await commitSession(session2),
-      },
-    });
-  } else {
-    let modelData;
-    if (finance !== null) {
-      let modelData;
-      modelData = await getDataByModel(finance);
-      return json({
-        ok: true, getDemoDay,
-        modelData,
-        finance,
-        deFees,
-        sliderWidth,
-        user,
-        financeNotes,
-        dashBoardCustURL,
-        getTemplates,
-        latestNotes,
-        searchData,
-        combinedData,
-        conversations,
-        getWishList,
-        webLeadData,
-        wishlistMatches,
-        request,
-        callToken,
-        convoList, username, newToken, password, getText, isMobileDevice,
-
-      }, {
-        headers: {
-          "Set-Cookie": await commitSession(session2),
-        },
-      });
-    }
-    return json({
-      ok: true, getDemoDay,
-      modelData,
-      finance,
-      deFees,
-      sliderWidth,
-      user,
-      financeNotes,
-      dashBoardCustURL,
-      latestNotes,
-      getTemplates,
-      conversations,
-      searchData,
-      getWishList,
-      webLeadData,
-      wishlistMatches,
-      combinedData,
-      request,
-      callToken,
-      godClient,
-      convoList, username, newToken, password, getText, conversationsData, isMobileDevice
-    }, {
-      headers: {
-        "Set-Cookie": await commitSession(session2),
-      },
-    });
-  }
+  return json({
+    ok: true,
+    getDemoDay,
+    //modelData,
+    finance,
+    deFees,
+    sliderWidth,
+    user,
+    financeNotes,
+    latestNotes,
+    dashBoardCustURL,
+    getWishList,
+    combinedData,
+    conversations,
+    webLeadData,
+    getTemplates,
+    request,
+    wishlistMatches,
+    callToken,
+    convoList, username, newToken, password, getText, isMobileDevice, email
+    // conversationsData
+  }, { headers: { "Set-Cookie": await commitSession(session2), }, })
 }
 
 function checkForMobileDevice(userAgent) {

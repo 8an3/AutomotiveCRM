@@ -9,6 +9,7 @@ import UserSideBar from '~/components/shared/userSideBar';
 import Interruptions from '~/components/shared/interruptions';
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import GetData from './dealer/email/notificationsClient';
+import SearchFunction from './dealer/search';
 
 export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -164,6 +165,7 @@ export default function SettingsLayout() {
     <>
       {(pathname !== '/dealer/email/dashboardClient' && pathname !== '/dealer/sms/dashMsger') && (
         <>
+          <SearchFunction />
           <Interruptions user={user} email={email} />
           <UserSideBar user={user} email={email} />
           <Sidebar user={user} email={email} />

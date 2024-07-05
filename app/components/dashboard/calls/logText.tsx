@@ -12,6 +12,7 @@ import axios from "axios";
 
 const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
 const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+//const client = twilio(accountSid, authToken);
 
 async function getToken(username, password) {
   const requestAddress = 'https://dsatokenservice-4995.twil.io/token-service'
@@ -137,6 +138,72 @@ export default function SmsClientDash({ data, searchData, openSMS, setOpenSMS, s
         fetchMessages();
       }
     }
+    /* else {
+
+      async function GetNumber() {
+        const areaCode = user.phone.slice(0, 3);
+        const locals = await client.availablePhoneNumbers("CA").local.list({
+          areaCode: areaCode,
+          limit: 1,
+        });
+        const incomingPhoneNumber = await client.incomingPhoneNumbers.create({
+          phoneNumber: locals.available_phone_numbers[0].phone_number,
+        });
+        // create new conversation sid
+
+        // save invo in twilioSMSDetails
+        const saved = await prisma.twilioSMSDetails.create({
+          data: {
+            conversationSid: '',
+            participantSid: '',
+            userSid: '',
+            username: 'skylerzanth',
+            password: 'skylerzanth1234',
+            userEmail: user.email,
+            passClient: '',
+            myPhone: locals.available_phone_numbers[0].phone_number,
+            proxyPhone: '',
+          }
+        })
+           const newConversationSid = saved.conversationId;
+      setConversationSid(newConversationSid);
+         if (newConversationSid) {
+        const url = `https://conversations.twilio.com/v1/Conversations/${newConversationSid}/Messages`;
+        const credentials = `${accountSid}:${authToken}`;
+        const base64Credentials = btoa(credentials);
+
+        async function fetchMessages() {
+          try {
+            const response = await fetch(url, {
+              method: 'GET',
+              headers: { 'Authorization': `Basic ${base64Credentials}` },
+            });
+            console.log(response, 'response')
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data.length !== 0) {
+              setCustomerMessages(data.messages);
+
+            }
+            else {
+              setCustomerMessages([])
+            }
+            console.log(data, 'fetched messages');
+            return data;
+          } catch (error) {
+            console.error('Failed to fetch messages:', error);
+          }
+        }
+
+        fetchMessages();
+      }
+      }
+
+GetNumber()
+    }*/
   }, [smsDetails]);
 
   return (
@@ -175,26 +242,29 @@ export default function SmsClientDash({ data, searchData, openSMS, setOpenSMS, s
                       <Card>
                         <CardContent>
                           <div className="space-y-4 mt-5">
-                            {conversationsList.map((message, index) => (
-                              <div
-                                key={index}
-                                className={cn(
-                                  "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                  message.userEmail === user.email
-                                    ? "ml-auto bg-primary text-foreground"
-                                    : "bg-[#262626]"
-                                )}
-                              >
-                                <div className='grid grid-cols-1'>
-                                  {message.userEmail !== user.email && (
-                                    <p className='text-[#8c8c8c]'>
-                                      {message.userEmail}
-                                    </p>
+                            {conversationsList && conversationsList.length >= 1 ? (
+                              conversationsList.map((message, index) => (
+                                <div
+                                  key={index}
+                                  className={cn(
+                                    "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                                    message.userEmail === user.email
+                                      ? "ml-auto bg-primary text-foreground"
+                                      : "bg-[#262626]"
                                   )}
-                                  {message.body}
+                                >
+                                  <div className='grid grid-cols-1'>
+                                    {message.userEmail !== user.email && (
+                                      <p className='text-[#8c8c8c]'>
+                                        {message.userEmail}
+                                      </p>
+                                    )}
+                                    {message.body}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              ))) : (
+                              <p>No conversations found.</p>
+                            )}
                           </div>
                         </CardContent>
                       </Card>
@@ -238,23 +308,27 @@ export default function SmsClientDash({ data, searchData, openSMS, setOpenSMS, s
                           <Card className=" flex flex-col-reverse   max-h-[70vh] h-auto overflow-y-scroll  ">
                             <CardContent>
                               <div className="space-y-4 mt-5">
-                                <div
-                                  className={cn(
-                                    "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                    latestNote.userEmail === user.email
-                                      ? "ml-auto bg-primary text-foreground"
-                                      : "bg-[#262626]"
-                                  )}
-                                >
-                                  <div className='grid grid-cols-1'>
-                                    {latestNote.userEmail !== user.email && (
-                                      <p className='text-[#8c8c8c]'>
-                                        {latestNote.userName}
-                                      </p>
+                                {latestNote ? (
+                                  <div
+                                    className={cn(
+                                      "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                                      latestNote.userEmail === user.email
+                                        ? "ml-auto bg-primary text-foreground"
+                                        : "bg-[#262626]"
                                     )}
-                                    {latestNote.body}
+                                  >
+                                    <div className='grid grid-cols-1'>
+                                      {latestNote.userEmail !== user.email && (
+                                        <p className='text-[#8c8c8c]'>
+                                          {latestNote.userName}
+                                        </p>
+                                      )}
+                                      {latestNote.body}
+                                    </div>
                                   </div>
-                                </div>
+                                ) : (
+                                  <p>No notes on file.</p>
+                                )}
                               </div>
                             </CardContent>
                           </Card >
@@ -381,17 +455,6 @@ export function TextFunction({ customerMessages, customer, data, user, smsDetail
             <PaperPlaneIcon className="h-4 w-4" />
             <span className="sr-only">Send</span>
           </Button>
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" variant="outline" className="ml-auto rounded-md" onClick={() => setOpen(true)}  >
-                  <PlusIcon className="h-4 w-4" />
-                  <span className="sr-only">CC Employee</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </fetcher.Form>
       </div>
     </>

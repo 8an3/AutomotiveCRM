@@ -50,3 +50,13 @@ export enum HttpStatus {
   GATEWAY_TIMEOUT = 504,
   HTTP_VERSION_NOT_SUPPORTED = 505,
 }
+export function notFound() {
+  return new Response("Not Found", { status: 404, statusText: "Not Found" });
+}
+
+export function badRequest(body: string) {
+  return new Response(body, {
+    status: 400,
+    statusText: "Bad Request",
+  });
+}
