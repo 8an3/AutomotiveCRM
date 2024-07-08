@@ -310,10 +310,10 @@ model Board {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    String?
+  userEmail String?
   boardId   String?
   color     String?
-  name      String?
+  name      String   @unique
 
   columns Column[]
   items   Item[]
@@ -323,7 +323,7 @@ model Column {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name      String?
+  name      String   @unique
   order     Float    @default(0)
   Board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId   String
@@ -338,7 +338,7 @@ model Item {
   updatedAt DateTime @updatedAt
   title     String
   content   String?
-  order     Float
+  order     Float?
 
   Board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId String
@@ -659,10 +659,20 @@ model EmailTemplates {
   category  String?
   type      String?
   subject   String?
-  title     String?
   dept      String?
-  review    String?
-  fromEmail String?
+}
+
+model EmailTemplatesForDropdown {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subCat    String?
+  body      String?
+  userEmail String?
+  category  String?
+  type      String?
+  subject   String?
 }
 
 model EmailClient {
@@ -688,6 +698,17 @@ model EmailClient {
   review      String?
   date        String?
   fromEmail   String?
+}
+
+// so user can add their own templates to the drop down on overview, finance dashbaoard or anywhere where the overview is displayed
+model UserEmailTemplates {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userEmail String?
+  body      String?
+  subject   String?
+  review    String?
 }
 
 // ----------------------------------------------------------------------------
@@ -1086,9 +1107,16 @@ model Session {
 // finance paticulars
 // -----------------------------------------------------------------------------
 model LockFinanceTerminals {
-  id        Int     @id @default(1)
-  locked    Boolean @default(false)
-  financeId String?
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  locked       Boolean  @default(false)
+  financeId    String?
+  salesEmail   String?
+  financeEmail String?
+  customerName String?
+  unit         String?
+  note         String?
 }
 
 // dashboardId         String? @unique
@@ -1096,162 +1124,171 @@ model LockFinanceTerminals {
 model Finance {
   id String @id @default(cuid())
 
-  clientfileId             String?
-  activixId                String? @unique
-  theRealActId             String?
-  financeManager           String?
-  email                    String?
-  firstName                String?
-  mileage                  String?
-  lastName                 String?
-  phone                    String?
-  name                     String?
-  address                  String?
-  city                     String?
-  postal                   String?
-  province                 String?
-  dl                       String?
-  typeOfContact            String?
-  timeToContact            String?
-  iRate                    String?
-  months                   String?
-  discount                 String?
-  total                    String?
-  onTax                    String?
-  on60                     String?
-  biweekly                 String?
-  weekly                   String?
-  weeklyOth                String?
-  biweekOth                String?
-  oth60                    String?
-  weeklyqc                 String?
-  biweeklyqc               String?
-  qc60                     String?
-  deposit                  String?
-  biweeklNatWOptions       String?
-  weeklylNatWOptions       String?
-  nat60WOptions            String?
-  weeklyOthWOptions        String?
-  biweekOthWOptions        String?
-  oth60WOptions            String?
-  biweeklNat               String?
-  weeklylNat               String?
-  nat60                    String?
-  qcTax                    String?
-  otherTax                 String?
-  totalWithOptions         String?
-  otherTaxWithOptions      String?
-  desiredPayments          String?
-  freight                  String?
-  admin                    String?
-  commodity                String?
-  pdi                      String?
-  discountPer              String?
-  userLoanProt             Int?
-  userTireandRim           String?
-  userGap                  Int?
-  userExtWarr              String?
-  userServicespkg          Int?
-  deliveryCharge           Int?
-  vinE                     Int?
-  lifeDisability           Int?
-  rustProofing             Int?
-  userOther                Int?
-  paintPrem                String?
-  licensing                String?
-  stockNum                 String?
-  options                  String?
-  accessories              Int?
-  labour                   String?
-  year                     String?
-  brand                    String?
-  model                    String?
-  model1                   String?
-  color                    String?
-  modelCode                String?
-  msrp                     String?
-  userEmail                String?
-  tradeValue               String?
-  tradeDesc                String?
-  tradeColor               String?
-  tradeYear                String?
-  tradeMake                String?
-  tradeVin                 String?
-  tradeTrim                String?
-  tradeMileage             String?
-  tradeLocation            String?
-  trim                     String?
-  vin                      String?
-  leadNote                 String?
-  sendToFinanceNow         String?
-  dealNumber               String?
-  bikeStatus               String?
-  lien                     String?
-  dob                      String?
-  othTax                   String?
-  optionsTotal             String?
-  lienPayout               String?
-  referral                 String?
-  visited                  String?
-  bookedApt                String?
-  aptShowed                String?
-  aptNoShowed              String?
-  testDrive                String?
-  metService               String?
-  metManager               String?
-  metParts                 String?
-  sold                     String?
-  depositMade              String?
-  refund                   String?
-  turnOver                 String?
-  financeApp               String?
-  approved                 String?
-  signed                   String?
-  pickUpSet                String?
-  demoed                   String?
-  delivered                String?
-  lastContact              String?
-  status                   String?
-  customerState            String?
-  result                   String?
-  timesContacted           String?
-  nextAppointment          String?
-  followUpDay              String?
-  deliveryDate             String?
-  deliveredDate            String?
-  notes                    String?
-  visits                   String?
-  progress                 String?
-  metSalesperson           String?
-  metFinance               String?
-  financeApplication       String?
-  pickUpDate               String?
-  pickUpTime               String?
-  depositTakenDate         String?
-  docsSigned               String?
-  tradeRepairs             String?
-  seenTrade                String?
-  lastNote                 String?
-  applicationDone          String?
-  licensingSent            String?
-  liceningDone             String?
-  refunded                 String?
-  cancelled                String?
-  lost                     String?
-  dLCopy                   String?
-  insCopy                  String?
-  testDrForm               String?
-  voidChq                  String?
-  loanOther                String?
-  signBill                 String?
-  ucda                     String?
-  tradeInsp                String?
-  customerWS               String?
-  otherDocs                String?
-  urgentFinanceNote        String?
-  funded                   String?
-  leadSource               String?
+  clientfileId        String?
+  activixId           String? @unique
+  theRealActId        String?
+  financeManager      String?
+  email               String?
+  firstName           String?
+  mileage             String?
+  lastName            String?
+  phone               String?
+  name                String?
+  address             String?
+  city                String?
+  postal              String?
+  province            String?
+  dl                  String?
+  typeOfContact       String?
+  timeToContact       String?
+  iRate               String?
+  months              String?
+  discount            String?
+  total               String?
+  onTax               String?
+  on60                String?
+  biweekly            String?
+  weekly              String?
+  weeklyOth           String?
+  biweekOth           String?
+  oth60               String?
+  weeklyqc            String?
+  biweeklyqc          String?
+  qc60                String?
+  deposit             String?
+  biweeklNatWOptions  String?
+  weeklylNatWOptions  String?
+  nat60WOptions       String?
+  weeklyOthWOptions   String?
+  biweekOthWOptions   String?
+  oth60WOptions       String?
+  biweeklNat          String?
+  weeklylNat          String?
+  nat60               String?
+  qcTax               String?
+  otherTax            String?
+  totalWithOptions    String?
+  otherTaxWithOptions String?
+  desiredPayments     String?
+  freight             String?
+  admin               String?
+  commodity           String?
+  pdi                 String?
+  discountPer         String?
+  userLoanProt        Int?
+  userTireandRim      String?
+  userGap             Int?
+  userExtWarr         String?
+  userServicespkg     Int?
+  deliveryCharge      Int?
+  vinE                Int?
+  lifeDisability      Int?
+  rustProofing        Int?
+  userOther           Int?
+  paintPrem           String?
+  licensing           String?
+  stockNum            String?
+  options             String?
+  accessories         Int?
+  labour              String?
+  year                String?
+  brand               String?
+  model               String?
+  model1              String?
+  color               String?
+  modelCode           String?
+  msrp                String?
+  userEmail           String?
+  tradeValue          String?
+  tradeDesc           String?
+  tradeColor          String?
+  tradeYear           String?
+  tradeMake           String?
+  tradeVin            String?
+  tradeTrim           String?
+  tradeMileage        String?
+  tradeLocation       String?
+  trim                String?
+  vin                 String?
+  leadNote            String?
+  sendToFinanceNow    String?
+  dealNumber          String?
+  bikeStatus          String?
+  lien                String?
+  dob                 String?
+  othTax              String?
+  optionsTotal        String?
+  lienPayout          String?
+  referral            String?
+  visited             String?
+  bookedApt           String?
+  aptShowed           String?
+  aptNoShowed         String?
+  testDrive           String?
+  metService          String?
+  metManager          String?
+  metParts            String?
+  sold                String?
+  depositMade         String?
+  refund              String?
+  turnOver            String?
+  financeApp          String?
+  approved            String?
+  signed              String?
+  pickUpSet           String?
+  demoed              String?
+  delivered           String?
+  lastContact         String?
+  status              String?
+  customerState       String?
+  result              String?
+  timesContacted      String?
+  nextAppointment     String?
+  followUpDay         String?
+  deliveryDate        String?
+  deliveredDate       String?
+  notes               String?
+  visits              String?
+  progress            String?
+  metSalesperson      String?
+  metFinance          String?
+  financeApplication  String?
+  pickUpDate          String?
+  pickUpTime          String?
+  depositTakenDate    String?
+  docsSigned          String?
+  tradeRepairs        String?
+  seenTrade           String?
+  lastNote            String?
+  applicationDone     String?
+  licensingSent       String?
+  liceningDone        String?
+  refunded            String?
+  cancelled           String?
+  lost                String?
+  dLCopy              String?
+  insCopy             String?
+  testDrForm          String?
+  voidChq             String?
+  loanOther           String?
+  signBill            String?
+  ucda                String?
+  tradeInsp           String?
+  customerWS          String?
+  otherDocs           String?
+  urgentFinanceNote   String?
+  funded              String?
+  leadSource          String?
+
   financeDeptProductsTotal String?
+  bank                     String?
+  loanNumber               String?
+  idVerified               String?
+  dealerCommission         String?
+  financeCommission        String?
+  salesCommission          String?
+  firstPayment             String?
+  loanMaturity             String?
 
   // coms
   InPerson Int?

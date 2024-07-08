@@ -225,7 +225,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
       },
     });
 
-    return json({ finance, updateActivix }, redirect(`/dealer/overview/${brand}`), { headers: { "Set-Cookie": serializedSession, } }
+    return json({ finance, updateActivix }, redirect(`/dealer/overview/new/${brand}`), { headers: { "Set-Cookie": serializedSession, } }
     );
 
   } else {
@@ -428,7 +428,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
             await createBMWOptions(formData);
             return json({ finance }), redirect(`/dealer/options/${formData.brand}`, { headers });
           default:
-            return json({ finance }), redirect(`/dealer/overview/${formData.brand}`, { headers });
+            return json({ finance }), redirect(`/dealer/overview/new/${formData.brand}`, { headers });
         }
       } else {
         console.log('does not has clientfile')
@@ -624,7 +624,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
             await createBMWOptions(formData);
             return json({ finance }), redirect(`/dealer/options/${formData.brand}`, { headers });
           default:
-            return json({ finance }), redirect(`/dealer/overview/${formData.brand}`, { headers });
+            return json({ finance }), redirect(`/dealer/overview/new/${formData.brand}`, { headers });
         }
       }
     } catch (error) {

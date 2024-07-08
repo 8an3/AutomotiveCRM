@@ -13,6 +13,8 @@ import GetUserFromRequest from "~/utils/auth/getUser";
 import { getSession as custSession, commitSession as custCommit } from '~/sessions/customer-session.server';
 import PaymentCalculatorEmail from '~/emails/PaymentCalculatorEmail';
 import { Resend } from 'resend';
+import CustomBody from '~/emails/customBody';
+import emitter from '~/routes/__authorized/dealer/emitter';
 
 //import { UpdateLead } from '~/routes/_authorized/dealer/api/activix';
 const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
@@ -153,19 +155,8 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
     const financeId = formData.financeId
     const sliderWidth = formData.sliderWidth
     const tokens = userSession.get('accessToken')
+    console.log(formData, 'formdata overview')
 
-    if (formPayload.intent === 'financeTurnover') {
-        const locked = Boolean(formPayload.locked);
-        const claim = await prisma.lockFinanceTerminals.update({
-            where: {
-                id: 1
-            },
-            data: {
-                locked: locked
-            }
-        });
-        return claim;
-    }
 
     const userId = user?.id;
     const clientfileId = formData.clientfileId
@@ -189,19 +180,38 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
         }
     }
     if (formPayload.intent === 'email') {
-        console.log('hitemail')
         const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
-        const deFees = await prisma.dealer.findUnique({ where: { id: 1 } })
 
         const model = finance?.model || '';
         const modelData = formData.modelData
-        const data = await resend.emails.send({
-            from: "Sales <sales@resend.dev>",
-            reply_to: user?.email,
-            to: [`${finance?.email}`],
-            subject: `${finance?.brand} ${model} model information.`,
-            react: <PaymentCalculatorEmail user={user} finance={finance} modelData={modelData} formData={formData} />
-        });
+        const value = formData.template
+        let data;
+        if (value.startsWith("customEmailDropdown")) {
+            const prefix = "customEmailDropdown";
+            const id = value.slice(prefix.length);
+            const emailDrop = await prisma.emailTemplatesForDropdown.findUnique({
+                where: { id: id },
+            });
+            console.log(value, emailDrop, 'hitd')
+
+            data = await resend.emails.send({
+                from: "Sales <sales@resend.dev>",
+                reply_to: user?.email,
+                to: [`${finance?.email}`],
+                subject: emailDrop.subject || '',
+                react: <CustomBody body={emailDrop.body} user={user} />
+            });
+
+        } else {
+            console.log('hitemail')
+            data = await resend.emails.send({
+                from: "Sales <sales@resend.dev>",
+                reply_to: user?.email,
+                to: [`${finance?.email}`],
+                subject: `${finance?.brand} ${model} model information.`,
+                react: <PaymentCalculatorEmail user={user} finance={finance} modelData={modelData} formData={formData} />
+            });
+        }
         await prisma.previousComms.create({
             data: {
                 financeId: finance.financeId,
@@ -216,20 +226,27 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 dept: 'Sales',
             }
         })
-        return json({ data, })
+        return json({ data })
     }
-
-
-    if (formPayload.financeTurnover === true) {
-        const finance = await prisma.lockFinanceTerminals.update({
-            where: {
-                id: 1,
-            },
+    if (formPayload.intent === 'clientTurnover') {
+        let data = {
+            locked: true,
+            financeId: formData.financeId,
+            salesEmail: user.email,
+            customerName: formData.customerName,
+            unit: formData.unit,
+            //note: 'financeNote' ?? ''
+        }
+        const create = await prisma.lockFinanceTerminals.create({
             data: {
-                financeId: formData.financeId
+                locked: true,
+                financeId: formData.financeId,
+                salesEmail: user.email,
+                customerName: formData.customerName,
+                unit: formData.unit,
             }
         })
-        return finance
+        return json({ create })
     }
     if (formPayload.intent === 'updateFinance') {
         let dateModal = new Date(formData.pickedDate);

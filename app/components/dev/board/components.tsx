@@ -1,7 +1,7 @@
-import { useFetcher } from "@remix-run/react";
-import { forwardRef, useRef, useState } from "react";
+import { Form, useFetcher, useSubmit } from "@remix-run/react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { Button } from "~/components/ui";
+import { Button, Input } from "~/components/ui";
 
 export let SaveButton = forwardRef<
   HTMLButtonElement,
@@ -72,16 +72,17 @@ export function EditableText({
         });
         buttonRef.current?.focus();
       }}
+
     >
       {children}
-      <input
+      <Input
         required
         ref={inputRef}
         type="text"
         aria-label={inputLabel}
         name={fieldName}
         defaultValue={value}
-        className={inputClassName}
+        className={`w-full bg-background border border-border text-foreground rounded-[6px] ${inputClassName}`}
         onKeyDown={(event) => {
           if (event.key === "Escape") {
             flushSync(() => {
@@ -112,9 +113,106 @@ export function EditableText({
         });
         inputRef.current?.select();
       }}
-      className={buttonClassName}
+      className={`cursor-pointer ${buttonClassName}`}
     >
-      {value || <span className="text-slate-400 italic">Edit</span>}
+      {value || <span className="text-foreground italic ">Edit</span>}
+    </button>
+  );
+}
+
+
+export function EditableTextManual({
+  children,
+  fieldName,
+  value,
+  inputClassName,
+  inputLabel,
+  buttonClassName,
+  buttonLabel,
+}: {
+  children: React.ReactNode;
+  fieldName: string;
+  value: string;
+  inputClassName: string;
+  inputLabel: string;
+  buttonClassName: string;
+  buttonLabel: string;
+}) {
+  let fetcher = useFetcher();
+  let [edit, setEdit] = useState(false);
+  let inputRef = useRef<HTMLInputElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+
+  const submit = useSubmit()
+  let formRef = useRef<HTMLFormElement>(null);
+  let taskInputRef = useRef<HTMLInputElement>(null);
+
+  // optimistic update
+  if (fetcher.formData?.has(fieldName)) {
+    value = String(fetcher.formData.get("name"));
+  }
+
+  const handleBlur = () => {
+    if (inputRef.current?.value !== value && inputRef.current?.value.trim() !== "") {
+      const formData = new FormData();
+      formData.append(fieldName, value);
+      submit(formData, { method: 'post', preventScrollReset: true });
+    }
+    flushSync(() => {
+      setEdit(false);
+    });
+    buttonRef.current?.focus();
+
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append(fieldName, event.target.value);
+    fetcher.submit(formData, { method: 'post' });
+    flushSync(() => {
+      setEdit(false);
+    });
+    buttonRef.current?.focus();
+  };
+
+  return edit ? (
+    <fetcher.Form method='post' onSubmit={handleSubmit}>
+      {children}
+      <Input
+        required
+        ref={inputRef}
+        type="text"
+        aria-label={inputLabel}
+        name={fieldName}
+        defaultValue={value}
+        className={`w-full bg-background border border-border text-foreground rounded-[6px] ${inputClassName}`}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            flushSync(() => {
+              setEdit(false);
+            });
+            buttonRef.current?.focus();
+          }
+        }}
+        onBlur={handleBlur}
+
+      />
+    </fetcher.Form>
+  ) : (
+    <button
+      aria-label={buttonLabel}
+      type="button"
+      ref={buttonRef}
+      onClick={() => {
+        flushSync(() => {
+          setEdit(true);
+        });
+        inputRef.current?.select();
+      }}
+      className={`cursor-pointer ${buttonClassName}`}
+    >
+      {value || <span className="text-foreground italic ">Edit</span>}
     </button>
   );
 }

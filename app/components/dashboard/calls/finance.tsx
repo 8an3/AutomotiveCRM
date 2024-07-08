@@ -3,81 +3,15 @@ import { Landmark } from "lucide-react"
 import { Form, Link, useActionData, useFetcher, useLoaderData, useSubmit, useNavigation, useParams, useNavigate } from "@remix-run/react";
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { ClientResultFunction, ClientStateFunction, } from "~/components/lists/clientResultList";
-import { type DataFunctionArgs, type ActionFunction, json, type LinksFunction, redirect } from '@remix-run/node'
-import { getDealerFeesbyEmail } from "~/utils/user.server";
-import { getDataKawasaki, getFinanceWithDashboard, getLatestBMWOptions, getLatestBMWOptions2, getDataBmwMoto, getDataByModel, getDataHarley, getDataTriumph, findQuoteById, findDashboardDataById, getDataByModelManitou, getLatestOptionsManitou, getFinance, getClientFileByEmail, getClientFileById } from "~/utils/finance/get.server";
-import { getAllFinanceNotes } from '~/utils/financeNote/get.server';
-import { getAllFinanceApts, getAllFinanceApts2 } from "~/utils/financeAppts/get.server";
-import { getDocsbyUserId } from "~/utils/docTemplates/get.server";
-import { getAppointmentsForFinance } from "~/utils/client/getClientAptsForFile.server";
-import { Topsection } from "~/components/dashboardCustId/topSection";
-import { ClientTab } from "~/components/dashboardCustId/clientTab";
-import { PartsTab } from "~/components/dashboardCustId/partsTab";
-import { SalesTab } from "~/components/dashboardCustId/salesTab";
-import { SalesComms } from "~/components/dashboardCustId/salesComs";
-import financeFormSchema from "~/overviewUtils/financeFormSchema";
-import { updateClientFileRecord, updateFinanceWithDashboard } from "~/utils/finance/update.server";
-import DeleteCustomer from "~/components/dashboard/calls/actions/DeleteCustomer";
-import { deleteFinanceNote } from "~/utils/financeNote/delete.server";
-import { updateFinanceNote } from "~/utils/financeNote/update.server";
-import UpdateAppt from "~/components/dashboard/calls/actions/updateAppt";
-import { getMergedFinance, getMergedFinanceOnFinance, getClientListMerged } from "~/utils/dashloader/dashloader.server";
-import { getComsOverview } from "~/utils/communications/communications.server";
 import { prisma } from "~/libs";
-import { commitSession as commitIds, getSession as getIds, SetClient66 } from '~/utils/misc.user.server';
-import { getSession } from "~/sessions/auth-session.server";
-import { UpdateLeadBasic, UpdateLeadApiOnly, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "~/routes/__authorized/dealer/api/activix";
-import axios from "axios";
-import { GetUser } from "~/utils/loader.server";
-import base from "~/styles/base.css";
-import { Cross2Icon, CaretSortIcon, CalendarIcon, ClockIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
-import { Calendar } from '~/components/ui/calendar';
-import { format } from "date-fns"
-import { cn } from "~/components/ui/utils"
-import harleyDavidson from '~/logos/hd.png'
-import clsx from 'clsx'
-import { isDate } from 'date-fns';
 import { FaCheck } from "react-icons/fa";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "~/components/ui/alert-dialog"
 import {
   ChevronLeft,
   ChevronRight,
   Copy,
-  CreditCard,
-  File,
-  Home,
-  LineChart,
-  ListFilter,
   MoreVertical,
-  Package,
-  Package2,
-  PanelLeft,
-  Search,
-  Settings,
-  ShoppingCart,
-  Truck,
-  Users2,
 } from "lucide-react"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "~/components/ui/breadcrumb"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
-//import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, } from "~/components/ui/dropdown-menu";
 import {
   Pagination,
   PaginationContent,
@@ -138,8 +72,7 @@ import { toast } from "sonner"
 import { FaMotorcycle } from "react-icons/fa";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
-
-
+import { ModelPage } from "~/overviewUtils/modelPage";
 import { ImageSelectNav } from '~/overviewUtils/imageselect'
 import canamIndex from '~/logos/canamIndex.png'
 import manitouIndex from '~/logos/manitouIndex.png'
@@ -175,8 +108,9 @@ import UnitPicker from "~/components/dashboard/unitPicker/unitPicker";
 import { cors } from "remix-utils";
 import { TextFunction } from "~/components/dashboard/calls/logText";
 import CustomerGen from "~/routes/__authorized/dealer/document/customerGen";
+import { EditableText, EditableTextManual } from "~/components/dev/board/components";
 
-export function FinanceDialog({ data, user, deFees, products }) {
+export function FinanceDialog({ data, user, deFees, products, emailTemplatesDropdown }) {
   const finance = data
   const { clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, financeNotes, userList, modelData, manOptions, bmwMoto, bmwMoto2, notifications } = useLoaderData();
 
@@ -1882,14 +1816,132 @@ export function FinanceDialog({ data, user, deFees, products }) {
     { name: 'notes', value: financeAppData.notes, label: 'Notes', },
   ];
   let bankingInformation = [
-    { name: 'bank', value: financeAppData.bank, label: 'Bank', },
-    { name: 'loanNumber', value: financeAppData.loanNumber, label: 'Loan Number', },
-    { name: 'idVerified', value: financeAppData.idVerified, label: 'ID Verified', },
-    { name: 'dealerCommission', value: financeAppData.dealerCommission, label: 'Dealer Commission', },
+    { name: 'bank', value: finance.bank, label: 'Bank', },
+    { name: 'loanNumber', value: finance.loanNumber, label: 'Loan Number', },
+    { name: 'idVerified', value: finance.idVerified, label: 'ID Verified', },
+    { name: 'firstPayment', value: finance.firstPayment, label: 'First Payment', },
+    { name: 'loanMaturity', value: finance.loanMaturity, label: 'Loan Maturity', },
+    { name: 'dealerCommission', value: finance.dealerCommission, label: 'Dealer Commission', },
+    { name: 'financeCommission', value: finance.financeCommission, label: 'Finance Manager Commission', },
+    { name: 'salesCommission', value: finance.salesCommission, label: 'Salesperson Commission', },
+    { name: 'financeDeptProductsTotal', value: finance.financeDeptProductsTotal, label: 'Finance Products Total', },
+  ];
+  const [newValue, setValue] = useState("");
+  const email = [
+    {
+      value: "Send Payments",
+      label: "Send Payments",
+      template: "justPayments",
+      financeId: finance.id,
+    },
+    {
+      value: "Full Breakdown",
+      label: "Full Breakdown",
+      template: "fullBreakdown",
+      financeId: finance.id,
+    },
+    {
+      value: "Full Breakdown W/ Options",
+      label: "Full Breakdown W/ Options",
+      template: "FullBreakdownWOptions",
+      financeId: finance.id,
+    },
+    {
+      value: "Custom Templated Emails",
+      label: "Custom Templated Emails",
+      template: "Custom-Templated-Emails",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+    {
+      value: "Send Payments Custom",
+      label: "Send Payments Custom",
+      template: "justPaymentsCustom",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+    {
+      value: "Full Breakdown Custom",
+      label: "Full Breakdown Custom",
+      template: "fullBreakdownCustom",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+    {
+      value: "Full Breakdown W/ Options Custom",
+      label: "Full Breakdown W/ Options Custom",
+      template: "FullBreakdownWOptionsCustom",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
   ];
 
+  const updatedEmailArray = email.concat(
+    emailTemplatesDropdown.map(template => ({
+      value: template.id,
+      label: template.subject,
+      template: 'customEmailDropdown' + template.id,
+      financeId: finance.id,
+      // Add additional properties if they exist
+      ...(template.desiredPayments && { desiredPayments: template.desiredPayments }),
+    }))
+  );
+  console.log(updatedEmailArray, 'updatedsdaf')
+  const [openEmail, setOpenEmail] = useState(false);
+  const [emailLabel, setEmailLabel] = useState('');
+  const [emailDesiredPayments, setEmailDesiredPayments] = useState('');
+  const [emailFinanceId, setEmailFinanceId] = useState('');
+  const [emailTemplate, setEmailTemplate] = useState('');
+  const [emailValue, setEmailValue] = useState('');
+  const [body, setBody] = useState('');
+  const [saved, setSaved] = useState(false);
+
+  function SubmitTheForm(newValue, template, financeId) {
+    if (template === "justPayments" || template === "fullBreakdown" || template === "FullBreakdownWOptions") {
+      console.log(newValue, template, 'reg emails')
+      const formData = new FormData();
+      formData.append("value", newValue);
+      formData.append("modelData", modelData);
+      formData.append("template", template);
+      formData.append("financeId", financeId);
+      formData.append("intent", 'email');
+      submit(formData, { method: "post" });
+    } else if (template === "justPaymentsCustom" || template === "fullBreakdownCustom" || template === "FullBreakdownWOptionsCustom") {
+      console.log(newValue, template, 'custom emails')
+
+      setOpenEmail(true);
+    } else if (template === 'Custom-Templated-Emails') {
+      return null
+    } else {
+      console.log('hit id form')
+      const formData = new FormData();
+      formData.append("value", newValue);
+      formData.append("modelData", modelData);
+      formData.append("template", template);
+      formData.append("financeId", financeId);
+      formData.append("intent", 'email');
+      submit(formData, { method: "post" });
+    }
+  }
+  const newBody = formData.body
+
+  const [openTemplate, setOpenTemplate] = useState(false);
+
+  function SubmitTheSecondForm() {
+    const formData = new FormData();
+    formData.append("value", emailValue);
+    // formData.append("modelData", modelData);
+    formData.append("template", emailTemplate);
+    formData.append("financeId", finance.id);
+    formData.append("body", newBody);
+    formData.append("intent", 'email');
+    submit(formData, { method: "post" });
+  }
+
+  const [firstOpen, setFirstOpen] = useState(false);
+  const [salesOpen, setSalesOpen] = useState(false)
   return (
-    <Dialog>
+    <Dialog open={firstOpen} onOpenChange={setFirstOpen} >
       <DialogTrigger asChild>
         <Button variant="outline"><Landmark color="#fcfcfc" /></Button>
       </DialogTrigger>
@@ -1898,7 +1950,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
         {/*customer card*/}
         <Tabs defaultValue="Sales">
 
-          <Card className="w-[95%]  bg-background text-foreground rounded-lg  max-h-[73vh] h-[73vh] " x-chunk="dashboard-05-chunk-0"  >
+          <Card className="w-[95%]  bg-background text-foreground rounded-lg  max-h-[750px] h-[750px] " x-chunk="dashboard-05-chunk-0"  >
             <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
               <CardTitle className="group flex items-center text-sm">
                 <TabsList >
@@ -1907,7 +1959,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
                 </TabsList>
               </CardTitle>
             </CardHeader>
-            <CardContent className='flex-grow !grow h-[58.5vh] overflow-y-scroll'>
+            <CardContent className='flex-grow !grow max-h-[600px] h-[600px] overflow-y-auto'>
               <TabsContent value="Sales" className="  text-foreground rounded-lg">
                 <ul className="grid gap-3 text-sm mt-2">
                   {customerCard.map((customer, index) => (
@@ -1927,87 +1979,56 @@ export function FinanceDialog({ data, user, deFees, products }) {
                         </Button>
                         {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
                       </div>
-                      <span>{customer.value}</span>
+                      <EditableTextManual
+                        value={customer.value}
+                        fieldName={customer.name}
+                        inputClassName=" py-1 px-2 "
+                        buttonClassName="   py-1 px-2 "
+                        buttonLabel={`Edit board "${customer.name}" name`}
+                        inputLabel="Edit board name"
+                      >
+                        <input type="hidden" name="intent" value='updateClientInfoFinance' />
+                        <input type="hidden" name="financeId" value={finance.id} />
+                      </EditableTextManual>
                     </li>
                   ))}
                 </ul>
               </TabsContent>
               <TabsContent value="Finance">
                 <ul className="grid gap-3 text-sm mt-[9px]">
-                  {financeAppData ? (
-                    <>
-                      {financeApp.map((customer, index) => (
-                        <li key={index} className="group flex items-center justify-between">
-                          <div className='flex'>
-                            <span className="text-muted-foreground">
-                              {customer.label}
-                            </span>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              onClick={() => copyText(customer.value)}
-                              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                            >
-                              <Copy className="h-3 w-3" />
-                              <span className="sr-only">Copy</span>
-                            </Button>
-                            {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
-                          </div>
-                          <span>{customer.value}</span>
-                        </li>
-                      ))}
-                    </>
-                  ) : (
-                    <>
-                      <Form method='post'>
-                        <ul className="grid gap-3 text-sm mt-2">
-                          {financeApp.map((customer, index) => (
-                            <div className="grid gap-3 mx-3 mb-3">
-                              <div className="relative mt-3" key={index} >
-                                <Input
-                                  defaultValue={customer.value}
-                                  name={customer.name}
-                                  type="text"
-                                  className="w-full bg-background border-border "
-                                />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{customer.label}</label>
-                              </div>
-                            </div>
-                          ))}
-                        </ul>
-                        <div className='flex justify-center' >
-                          <ButtonLoading
-                            size="sm"
-                            value="updateClientInfoFinance"
-                            className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
-                            name="intent"
-                            type="submit"
-                            isSubmitting={isSubmitting}
-                            onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
-                            loadingText={`${data.firstName}'s customer file is updated...`}
-                          >
-                            Save
-                            <PaperPlaneIcon className="h-4 w-4 ml-2" />
-                          </ButtonLoading>
-                        </div>
-                      </Form>
-                    </>
-                  )}
-
+                  {financeApp.map((customer, index) => (
+                    <li key={index} className="group flex items-center justify-between">
+                      <div className='flex'>
+                        <span className="text-muted-foreground">
+                          {customer.label}
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => copyText(customer.value)}
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Copy</span>
+                        </Button>
+                        {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
+                      </div>
+                      <p>{customer.value}</p>
+                    </li>
+                  ))}
                 </ul>
               </TabsContent>
-
             </CardContent>
             <CardFooter className="mt-[7px] grid grid-cols-2 justify-between items-center border-t border-border bg-muted/50 px-6 py-3">
               <div>
                 <Badge className="h-8 gap-1">{finance.customerState}</Badge>
               </div>
-              <Dialog  >
+              <Dialog >
                 <DialogTrigger asChild>
                   <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
                     <CiEdit className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                      Edit Customer Info
+                      Edit
                     </span>
                   </Button>
                 </DialogTrigger>
@@ -2018,7 +2039,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
                       <TabsTrigger value="Finance">Finance App</TabsTrigger>
                     </TabsList>
                     <TabsContent value="Sales" className="  text-foreground rounded-lg">
-                      <Form method='post'>
+                      <fetcher.Form method='post'>
                         <DialogHeader className="px-4 pb-4 pt-5">
                           <DialogTitle>Edit Customer Info</DialogTitle>
                           <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
@@ -2052,7 +2073,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
                         <input type='hidden' name='min' defaultValue={minForm} />
                         <input type='hidden' name='hour' defaultValue={hourForm} />
                         <input type='hidden' name="dashboardId" defaultValue={finance.dashboardId} />
-                        <input type='hidden' name="clientId" defaultValue={finance.id} />
+                        <input type='hidden' name="financeId" defaultValue={finance.id} />
                         <input type='hidden' name="clientfileId" defaultValue={data.clientfileId} />
 
                         <div className='flex justify-center' >
@@ -2070,14 +2091,15 @@ export function FinanceDialog({ data, user, deFees, products }) {
                             <PaperPlaneIcon className="h-4 w-4 ml-2" />
                           </ButtonLoading>
                         </div>
-                      </Form>
+                      </fetcher.Form>
                     </TabsContent>
                     <TabsContent value="Finance">
-                      <Form method='post'>
+                      <fetcher.Form method='post'>
                         <DialogHeader className="px-4 pb-4 pt-5">
-                          <DialogTitle>Finance App Info</DialogTitle>
+                          <DialogTitle>Finance Application Info</DialogTitle>
                           <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                         </DialogHeader>
+
                         <ul className="grid gap-3 text-sm mt-2">
                           {financeApp.map((customer, index) => (
                             <div className="grid gap-3 mx-3 mb-3">
@@ -2090,13 +2112,14 @@ export function FinanceDialog({ data, user, deFees, products }) {
                                 />
                                 <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{customer.label}</label>
                               </div>
+                              <input type='hidden' name='financeAppId' value={customer.id} />
                             </div>
                           ))}
                         </ul>
                         <div className='flex justify-center' >
                           <ButtonLoading
                             size="sm"
-                            value="updateClientInfoFinance"
+                            value="updateFinanceApp"
                             className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
                             name="intent"
                             type="submit"
@@ -2108,11 +2131,10 @@ export function FinanceDialog({ data, user, deFees, products }) {
                             <PaperPlaneIcon className="h-4 w-4 ml-2" />
                           </ButtonLoading>
                         </div>
-                      </Form>
+                      </fetcher.Form>
                     </TabsContent>
 
                   </Tabs>
-
 
                 </DialogContent>
               </Dialog>
@@ -2122,7 +2144,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
         </Tabs>
 
         {/*deal card*/}
-        <Card className=" w-[95%] rounded-lg text-foreground mx-auto  max-h-[73vh] h-[73vh] ">
+        <Card className=" w-[95%] rounded-lg text-foreground mx-auto  max-h-[750px] h-[750px] ">
           <CardHeader className=" bg-muted/50  flex flex-row items-start t-rounded-lg">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-sm my-2">
@@ -2132,7 +2154,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
           </CardHeader>
           {secPage && (
             <>
-              <CardContent className="p-6 text-sm bg-background  max-h-[58.5vh] h-[58.5vh]overflow-y-scroll">
+              <CardContent className="p-6 text-sm bg-background  max-h-[600px] h-[600px] overflow-y-auto">
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment Details</div>
                   <li className="flex items-center justify-between">
@@ -2846,7 +2868,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
           )}
           {firstPage && (
             <>
-              <CardContent className="p-6 text-sm  bg-background max-h-[58.5vh] h-[58.5vh] overflow-y-scroll">
+              <CardContent className="p-6 text-sm  bg-background  max-h-[600px] h-[600px] overflow-y-auto">
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment Details</div>
                   <ul className="grid gap-3">
@@ -3429,70 +3451,112 @@ export function FinanceDialog({ data, user, deFees, products }) {
             </>
           )}
           <CardFooter className="mt-[7px]  bg-muted/50   flex flex-row items-center border-t px-6 py-3  b-rounded-lg">
-            <Button size="sm" variant="outline" className="h-8 gap-1">
-              <CiEdit className="h-3.5 w-3.5" />
-              <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                Emails
-              </span>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="outline" className="h-8 w-8">
-                  <MoreVertical className="h-3.5 w-3.5" />
-                  <span className="sr-only">More</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className='bg-background'>
-                <a
-                  className="mx-auto w-full"
-                  href="/dealer/leads/sales"
-                  target="_blank"
-                >
-                  <DropdownMenuItem>Dashboard</DropdownMenuItem>
-                </a>
-                <a
-                  className="mx-auto w-full"
-                  href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
-                  target="_blank"
-                >
-                  <DropdownMenuItem>Client File</DropdownMenuItem>
-                </a>
+            <div className="mr-auto flex items-center gap-1">
+              <Select
+                onValueChange={(value) => {
+                  setOpen(false);
+                  console.log("click");
+                  const selectedFramework = updatedEmailArray.find((framework) => framework.value === value);
 
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <PrintSpec />
-                </DropdownMenuItem>
-                <Form method="post">
-                  <DropdownMenuItem>
-                    <input
-                      type="hidden"
-                      name="intent"
-                      value="financeTurnover"
-                    />
-                    <input type="hidden" name="locked" value={lockedValue} />
-                    <input
-                      type="hidden"
-                      name="financeId"
-                      value={finance.id}
-                    />
-                    <ButtonLoading
-                      size="lg"
-                      className="ml-auto w-full cursor-pointer p-5 hover:text-primary"
-                      type="submit"
-                      isSubmitting={isSubmitting}
-                      onClick={() =>
+                  const newValue = value
+                  const financeId = finance.id
+                  const template = selectedFramework.template
+                  setEmailValue(value);
+                  setEmailDesiredPayments(finance.desiredPayments);
+                  setEmailTemplate(selectedFramework.template);
+                  setEmailFinanceId(finance.financeId);
+                  setEmailLabel(selectedFramework.label);
+
+                  if (selectedFramework.template === "justPayments" || selectedFramework.template === "fullBreakdown" || selectedFramework.template === "justPaymentsCustom") {
+                    console.log(selectedFramework, 'selectedFramework')
+                    SubmitTheForm(newValue, template, financeId);
+                  } else
+                    if (selectedFramework.template === "justPaymentsCustom" || selectedFramework.template === "fullBreakdownCustom" || selectedFramework.template === "FullBreakdownWOptionsCustom") {
+                      console.log(selectedFramework, 'customEmail')
+                      setOpenEmail(true);
+                    } else {
+                      SubmitTheForm(newValue, template, financeId);
+                    }
+                }}
+              >
+                <SelectTrigger className="w-[180px] bg-background">
+                  <SelectValue className='bg-background' placeholder="Select email..." />
+                </SelectTrigger>
+                <SelectContent className='bg-background text-foreground border-border'>
+                  <SelectGroup>
+                    <SelectLabel>Emails</SelectLabel>
+                    {updatedEmailArray.map((framework) => (
+                      <SelectItem className="cursor-pointer   rounded-md  hover:bg-muted/50" key={framework.value} value={framework.value}>
+                        {framework.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+
+                </SelectContent>
+              </Select>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="outline" className="h-8 w-8">
+                    <MoreVertical className="h-3.5 w-3.5" />
+                    <span className="sr-only">More</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="   w-[200px] rounded-md bg-background text-foreground border-border"                >
+                  <DropdownMenuItem onClick={() => setOpenTemplate(true)} className=" w-[100%] cursor-pointer rounded-md  text-foreground hover:bg-muted/50">
+                    Inspect Templated Emails
+                  </DropdownMenuItem>
+                  <a
+                    className="mx-auto w-[100%]"
+                    href="/dealer/leads/sales/dashboard"
+                    target="_blank"
+                  >
+                    <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
+                      Dashboard
+                    </DropdownMenuItem>
+                  </a>
+                  <a
+                    className="mx-auto w-[100%]"
+                    href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
+                    target="_blank"
+                  >
+                    <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
+                      Client File
+                    </DropdownMenuItem>
+                  </a>
+                  <DropdownMenuSeparator />
+                  <Form method="post">
+                    <DropdownMenuItem
+                      className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50"
+                      onClick={() => {
                         toast.success(
                           `Informing finance managers of requested turnover...`
-                        )
-                      }
-                      loadingText="Notifying finance managers..."
+                        );
+                        submit;
+                      }}
                     >
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="financeTurnover"
+                      />
+                      <input type="hidden" name="locked" value={lockedValue} />
+                      <input
+                        type="hidden"
+                        name="financeId"
+                        value={finance.id}
+                      />
                       Finance Turnover
-                    </ButtonLoading>
+                    </DropdownMenuItem>
+                  </Form>
+                  <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
+                    <PrintSpec />
                   </DropdownMenuItem>
-                </Form>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
+                    <ModelPage />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
             <Pagination className="ml-auto mr-0 w-auto">
               <PaginationContent>
                 <PaginationItem>
@@ -3524,7 +3588,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
 
         {/*finance card*/}
         <Tabs defaultValue="Sales">
-          <Card className="w-[95%]  bg-background text-foreground rounded-lg  max-h-[73vh] h-[73vh] " x-chunk="dashboard-05-chunk-0"  >
+          <Card className="w-[95%]  bg-background text-foreground rounded-lg   max-h-[750px] h-[750px] " x-chunk="dashboard-05-chunk-0"  >
             <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
               <CardTitle className="group flex items-center text-sm">
                 <TabsList >
@@ -3534,10 +3598,10 @@ export function FinanceDialog({ data, user, deFees, products }) {
                 </TabsList>
               </CardTitle>
             </CardHeader>
-            <CardContent className='flex-grow !grow h-[58.5vh] overflow-y-scroll'>
+            <CardContent className='flex-grow !grow  max-h-[600px] h-[600px] overflow-y-auto'>
               <TabsContent value="Sales" className="  text-foreground rounded-lg">
                 <ul className="grid gap-3 text-sm mt-2">
-                  {customerCard.map((customer, index) => (
+                  {bankingInformation.map((customer, index) => (
                     <li key={index} className="group flex items-center justify-between">
                       <div className='flex'>
                         <span className="text-muted-foreground">
@@ -3554,7 +3618,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
                         </Button>
                         {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
                       </div>
-                      <span>{customer.value}</span>
+                      <p>{customer.value}</p>
                     </li>
                   ))}
                 </ul>
@@ -3604,25 +3668,25 @@ export function FinanceDialog({ data, user, deFees, products }) {
                   <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
                     <CiEdit className="h-3.5 w-3.5" />
                     <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                      Edit Customer Info
+                      Edit
                     </span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="gap-0 p-0 outline-none border-border text-foreground   max-h-[750px] h-[750px]  overflow-y-scroll">
                   <Tabs defaultValue="Sales" className='m-3 p-3'>
                     <TabsList >
-                      <TabsTrigger value="Sales">Customer Info</TabsTrigger>
+                      <TabsTrigger value="Sales">Bank Info</TabsTrigger>
                       <TabsTrigger value="Finance">Finance App</TabsTrigger>
                     </TabsList>
                     <TabsContent value="Sales" className="  text-foreground rounded-lg">
-                      <Form method='post'>
+                      <fetcher.Form method='post'>
                         <DialogHeader className="px-4 pb-4 pt-5">
                           <DialogTitle>Edit Customer Info</DialogTitle>
                           <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                         </DialogHeader>
                         <ul className="grid gap-3 text-sm mt-2">
 
-                          {customerCard.map((customer, index) => (
+                          {bankingInformation.map((customer, index) => (
                             <div className="grid gap-3 mx-3 mb-3">
                               <div className="relative mt-3" key={index} >
                                 <Input
@@ -3667,10 +3731,10 @@ export function FinanceDialog({ data, user, deFees, products }) {
                             <PaperPlaneIcon className="h-4 w-4 ml-2" />
                           </ButtonLoading>
                         </div>
-                      </Form>
+                      </fetcher.Form>
                     </TabsContent>
                     <TabsContent value="Finance">
-                      <Form method='post'>
+                      <fetcher.Form method='post'>
                         <DialogHeader className="px-4 pb-4 pt-5">
                           <DialogTitle>Finance App Info</DialogTitle>
                           <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
@@ -3705,7 +3769,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
                             <PaperPlaneIcon className="h-4 w-4 ml-2" />
                           </ButtonLoading>
                         </div>
-                      </Form>
+                      </fetcher.Form>
                     </TabsContent>
 
                   </Tabs>
@@ -3717,6 +3781,7 @@ export function FinanceDialog({ data, user, deFees, products }) {
             </CardFooter>
           </Card>
         </Tabs>
+        <Button onClick={() => setFirstOpen(false)} variant='outline'  >close</Button>
 
       </DialogContent>
     </Dialog >

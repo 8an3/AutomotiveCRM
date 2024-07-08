@@ -50,7 +50,7 @@ import {
 import { toast } from "sonner"
 import EditWishList from '~/components/dashboard/wishlist/WishListEdit';
 import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
-import { type LinksFunction } from '@remix-run/node';
+import { json, type LinksFunction } from '@remix-run/node';
 import { compareItems, type RankingInfo, rankItem, } from '@tanstack/match-sorter-utils'
 import { type dashBoardType } from "~/components/dashboard/schema";
 import { DataTableColumnHeader } from "~/components/dashboard/calls/header"
@@ -61,7 +61,7 @@ import ClientStatusCard from '~/components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '~/components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '~/components/dashboard/calls/2DaysFromNow';
 import { dashboardAction, dashboardLoader } from "~/components/actions/financeCalls";
-import { CalendarCheck } from "lucide-react";
+import { CalendarCheck, Landmark } from "lucide-react";
 import AttemptedOrReached from "~/components/dashboard/calls/setAttOrReached";
 import ContactTimesByType from "~/components/dashboard/calls/ContactTimesByType";
 import LogCall from "~/components/dashboard/calls/logCall";
@@ -80,7 +80,6 @@ import {
 import AddCustomer from '~/components/dashboard/calls/addCustomer';
 import { DataTablePagination } from '~/components/dashboard/calls/pagination';
 import { FinanceModal } from '~/components/dashboard/calls/financeModal';
-import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { ButtonLoading } from "~/components/ui/button-loading";
 import useSWR from 'swr';
 import LastNote from '~/components/dashboard/calls/lastNote';
@@ -93,6 +92,18 @@ import { Mail, MessageSquare } from 'lucide-react';
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 import { FinanceDialog } from '~/components/dashboard/calls/finance';
 import { prisma } from '~/libs';
+import axios from 'axios'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "~/components/ui/alert-dialog"
 
 export let loader = dashboardLoader
 
@@ -105,110 +116,15 @@ export const links: LinksFunction = () => [
 let url = '/dealer/api/finance'
 
 export default function Mainboard() {
+    const { user } = useLoaderData()
     const submit = useSubmit();
     const navigate = useNavigate();
-    const [selectedTab, setSelectedTab] = useState("dashboard");
-    const [lockData, setLockData] = useState();
-
-    useEffect(() => {
-        let interval;
-        async function getLockedData() {
-            try {
-                const Locked = await prisma.lockFinanceTerminals.findUnique({ where: { id: 1 } });
-                const lockedData = Locked.locked;
-                const financeId = Locked.financeId;
-                const finance = await prisma.finance.findUnique({ where: { id: financeId } });
-                const data = { lockedData, ...finance };
-                return data;
-            } catch (error) {
-                console.error('Failed to fetch locked data:', error);
-                return null;
-            }
-        }
-
-        async function fetchData() {
-            const data = await getLockedData();
-            if (data) {
-                setLockData(data);
-            }
-        }
-        fetchData();
-        interval = setInterval(fetchData, 60000);
-
-        return () => clearInterval(interval);
-    }, []);
-
-
-    // const { data: lockData, mutate, error } = useSWR(url, (url) => fetch(url).then((res) => res.json()), { refreshInterval: 60000 });
-    const [open, setOpen] = useState(false);
-    const [key, setKey] = useState(0);
-    const [financeData, setFinanceData] = useState({});
-
-    useEffect(() => {
-        try {
-            console.log(lockData, 'Before SetValues'); // Log before SetValues is called
-
-            function SetValues() {
-                console.log(lockData, 'Inside SetValues'); // Log inside SetValues
-                if (lockData.lockedData !== undefined) {
-                    setOpen(lockData.lockedData); // Assuming 'locked' is the property you want to use
-                    setKey((prevKey) => prevKey + 1);
-                    setFinanceData(lockData)
-                }
-            }
-
-            console.log(open, 'Before SetValues'); // Log before SetValues is called
-            console.log(lockData, 'Before SetValues'); // Log before SetValues is called
-
-            SetValues();
-
-            console.log(open, 'After SetValues'); // Log after SetValues is called
-            console.log(lockData, 'After SetValues'); // Log after SetValues is called
-        } catch (error) {
-            console.error('Fetch error:', error);
-        }
-    }, [lockData]);
-
-
-    const updateDatabaseState = async () => {
-        try {
-            console.log('formData.financeId:', lockData);
-            const formData = new FormData();
-            formData.append("intent", "claimTurnover");
-            submit(formData, { method: "post" });
-
-
-            console.log('Updated lock:', update);
-            await mutate();
-            return update;
-
-        } catch (error) {
-            console.error('Database update error:', error);
-        }
-    };
-
-    const lockedValue = false;
-
-    const HandleButtonClick = async () => {
-        await updateDatabaseState();
-
-        const newOpen = await fetch(url).then(response => response.json()).then(data => console.log(data)).catch(error => console.error('Error fetching data:', error));
-        setOpen(newOpen)
-        await mutate();
-        //   revalidator.revalidate();
-    };
-
-    const HandleButtonClickAndNavigate = async () => {
-        await updateDatabaseState();
-
-        const newOpen = await fetch(url).then(response => response.json()).then(data => console.log(data)).catch(error => console.error('Error fetching data:', error));
-        setOpen(newOpen)
-        await mutate();
-        return navigate(`/customer/${financeData.clientfileId}/${financeData.id}`)
-    };
-
     const navigation = useNavigation();
     const isSubmitting = navigation.state === "submitting";
+    const [selectedTab, setSelectedTab] = useState("dashboard");
+
+
+
 
     return (
         <>
@@ -240,70 +156,10 @@ export default function Mainboard() {
             </Tabs>
 
 
-            <AlertDialog.Root key={key} open={open} onOpenChange={() => setOpen(false)}>
-
-
-                <AlertDialog.Portal>
-                    <AlertDialog.Overlay
-                        className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-                    <AlertDialog.Content
-                        className=" z-50 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-                        <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
-                            {financeData.firstName} {financeData?.lastName} is waiting to apply for financing...
-
-                        </AlertDialog.Title>
-                        <AlertDialog.Description className="text-mauve11 mt-4 mb-5 text-[15px] leading-normal">
-                            {financeData.year !== undefined && financeData.year && (
-                                <p>Year: {financeData.year}</p>
-                            )}
-                            {financeData.model1 !== undefined && financeData.model && (
-                                <p>Unit: {financeData.model1 ? financeData.model1 : financeData.model}</p>
-                            )}
-
-                            {financeData.userEmail !== undefined && financeData.userEmail && (
-                                <p>Sales person: {financeData.userEmail}</p>
-                            )}
-
-                            {financeData.options !== undefined && financeData.options && (
-                                <p>Notes:</p>
-                            )}
-
-                        </AlertDialog.Description>
-                        <div className="flex justify-end gap-[25px]">
-                            <ButtonLoading
-                                size="lg"
-                                className="w-auto cursor-pointer mr-auto mt-5 hover:text-primary  "
-                                type="submit"
-                                isSubmitting={isSubmitting}
-                                onClick={() => {
-                                    HandleButtonClickAndNavigate()
-                                    toast.success(`Navigating to customer's file...`)
-                                }}
-                                loadingText="Updating client info..."
-                            >
-                                Customer File
-                            </ButtonLoading>
-                            <ButtonLoading
-                                size="lg"
-                                className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
-                                type="submit"
-                                isSubmitting={isSubmitting}
-                                onClick={() => {
-                                    HandleButtonClick()
-                                    toast.success(`Claimed next customer...`)
-                                }}
-                                loadingText="Updating client info..."
-                            >
-                                Claim
-                            </ButtonLoading>
-
-                        </div>
-                    </AlertDialog.Content>
-                </AlertDialog.Portal>
-            </AlertDialog.Root>
         </>
     )
 }
+
 
 declare module '@tanstack/table-core' {
     interface FilterFns {
@@ -820,14 +676,23 @@ export function SearchTable() {
 // web leads table
 export function WebleadsTable() {
     const { financeNewLead, user } = useLoaderData();
-    const filteredDashboards = financeNewLead
-        .map((dashboard) => {
-            if (dashboard.customerState === 'turnOver') {
-                return dashboard
-            }
-        })
-        .filter(Boolean)
-    const data = filteredDashboards
+    const [data, setData] = useState([])
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await prisma.finance.findMany({
+                where: { customerState: 'turnOver' }
+            })
+            setData(data)
+        };
+        fetchData();
+        // Set interval to call fetchData every 120 seconds (120000 milliseconds)
+        const intervalId = setInterval(fetchData, 120000);
+
+        // Clean up the interval on component unmount
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, []);
     const [sorting, setSorting] = React.useState<SortingState>([])
 
     type newLead = {
@@ -1278,15 +1143,7 @@ export function WebleadsTable() {
     )
 }
 
-// leads dashboard
-async function getData(): Promise<dashBoardType[]> {
-    //turn into dynamic route and have them call the right loader like q  uote qand overview
-    const res = await fetch('/dashboard/calls/loader/finance')
-    if (!res.ok) {
-        throw new Error("Failed to fetch data");
-    }
-    return res.json();
-}
+
 
 export type Payment = {
     id: string
@@ -1436,7 +1293,7 @@ export function FinanceBoard() {
     //const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
     const proxyPhone = '+12176347250'
 
-    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken, deFees, products } = useLoaderData();
+    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken, deFees, products, emailTemplatesDropdown } = useLoaderData();
     const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
     const [messagesConvo, setMessagesConvo] = useState([]);
     const [selectedChannelSid, setSelectedChannelSid] = useState([]);
@@ -1484,8 +1341,8 @@ export function FinanceBoard() {
     const [customer, setCustomer] = useState()
 
     const [convos, setConvos] = useState([])
-
-
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === "submitting";
 
 
     useEffect(() => {
@@ -1495,8 +1352,7 @@ export function FinanceBoard() {
         };
         data()
     }, []);
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === "submitting";
+
     const dataFetcher = (url) => fetch(url).then(res => res.json());
     const { data: swrData } = useSWR(isSubmitting ? 'http://localhost:3000/dealer/dashboard/calls/loader' : null, dataFetcher, {})
 
@@ -1706,8 +1562,13 @@ export function FinanceBoard() {
             },
             cell: ({ row }) => {
                 const data = row.original
+                //<FinanceDialog data={data} user={user} deFees={deFees} products={products} emailTemplatesDropdown={emailTemplatesDropdown} />
                 return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
-                    <FinanceDialog data={data} user={user} deFees={deFees} products={products} />
+                    <a href={`/dealer/leads/finance/${data.id}`} target="_blank">
+                        <Button variant="outline"><Landmark color="#fcfcfc" /></Button>
+                    </a>
+
+
                 </div>
             },
         },
@@ -3404,6 +3265,74 @@ export function FinanceBoard() {
 
     ]
 
+    const submit = useSubmit();
+    const navigate = useNavigate();
+
+    const updateDatabaseState = async () => {
+        try {
+            console.log('formData.financeId:', lockData);
+            const formData = new FormData();
+            formData.append("intent", "claimTurnover");
+            submit(formData, { method: "post" });
+
+        } catch (error) {
+            console.error('Database update error:', error);
+        }
+    };
+
+    //  const [open, setOpen] = useState(false);
+    const [key, setKey] = useState(0);
+
+    const fetcher = async url => await axios.get(url).then(res => res.data)
+
+    const { data: locked, error } = useSWR('/dealer/api/checkLocked', fetcher, {
+        refreshInterval: 60000,
+        revalidateOnMount: true,
+        revalidateOnReconnect: true
+    });
+    const [lockData, setLockData] = useState();
+    const [financeData, setFinanceData] = useState();
+
+
+    useEffect(() => {
+        if (locked) {
+            setLockData(locked.locked)
+            setFinanceData(locked.locked)
+            setOpen(true);
+            console.log(lockData, financeData, 'data')
+            console.log(lockData, financeData, 'data')
+
+            setOpen(true);
+
+        }
+    }, [locked]);
+    if (error) {
+        console.log('SWR error:', error);
+    }
+    const lockedValue = false;
+
+    const HandleButtonClick = async () => {
+        const formData = new FormData();
+        formData.append("locked", false);
+        formData.append("financeEmail", user.email);
+        formData.append("financeId", financeData.financeId);
+        formData.append("claimId", financeData.lockedId);
+        formData.append("intent", 'claimClientTurnover');
+        submit(formData, { method: "post" });
+        setOpen(false)
+        return json({ update })
+    };
+
+    const HandleButtonClickAndNavigate = async () => {
+        await updateDatabaseState();
+
+        const newOpen = await fetch(url).then(response => response.json()).then(data => console.log(data)).catch(error => console.error('Error fetching data:', error));
+        setOpen(newOpen)
+        await mutate();
+        return navigate(`/customer/${financeData.clientfileId}/${financeData.id}`)
+    };
+
+
 
     return (
         <div>
@@ -3413,6 +3342,54 @@ export function FinanceBoard() {
             <div className="hidden md:block">
                 <DataTable columns={columns} data={data} />
             </div>
+            {lockData && (
+                <AlertDialog open={open} onOpenChange={setOpen}>
+                    <AlertDialogContent className='border border-border bg-background text-foreground'>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Client Turnover</AlertDialogTitle>
+                            <AlertDialogDescription className='grid grid-cols-1'>
+                                <p>{lockData.customerName}</p>
+                                <p>{lockData.unit}</p>
+                                <p>{lockData.note}</p>
+                                <p>Sales: {lockData.salesEmail} - Finance: {lockData.financeEmail}</p>
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <div className="flex justify-end gap-[25px]">
+                                <ButtonLoading
+                                    size="sm"
+                                    className="w-auto cursor-pointer mr-auto mt-5 hover:text-primary  "
+                                    type="submit"
+                                    isSubmitting={isSubmitting}
+                                    onClick={() => {
+                                        HandleButtonClickAndNavigate()
+                                        toast.success(`Navigating to customer's file...`)
+                                    }}
+                                    loadingText="Updating client info..."
+                                >
+                                    Customer File
+                                </ButtonLoading>
+                                <ButtonLoading
+                                    size="sm"
+                                    className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
+                                    type="submit"
+                                    isSubmitting={isSubmitting}
+                                    onClick={() => {
+                                        HandleButtonClick()
+                                        toast.success(`Claimed next customer...`)
+                                    }}
+                                    loadingText="Updating client info..."
+                                >
+                                    Claim
+                                </ButtonLoading>
+
+                            </div>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
+
+
         </div>
     )
 }

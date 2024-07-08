@@ -8,7 +8,7 @@ import {
 } from "~/components/ui/hover-card"
 
 import { ItemMutation, INTENTS, CONTENT_TYPES } from "./types";
-import { Trash } from "lucide-react";
+import { Trash, TrashIcon } from "lucide-react";
 import { Button } from "~/components/ui";
 
 interface CardProps {
@@ -80,7 +80,7 @@ export function Card({
         setAcceptDrop("none");
       }}
       className={
-        " -mb-[2px] last:mb-0 cursor-grab active:cursor-grabbing px-2 py-1 border-border" +
+        " -mb-[2px] last:mb-0 cursor-grab active:cursor-grabbing px-2 py-1 border-border w-[225px] " +
         (acceptDrop === "top"
           ? "border-t-brand-red border-b-transparent"
           : acceptDrop === "bottom"
@@ -88,45 +88,54 @@ export function Card({
             : "border-t-transparent border-b-transparent")
       }
     >
-      <HoverCard>
-        <HoverCardTrigger asChild>
-          <div
-            draggable
-            className="text-left bg-background text-foreground shadow shadow-muted-background border border-border text-sm rounded-[6px] w-full py-1 px-2 relative"
-            onDragStart={(event) => {
-              event.dataTransfer.effectAllowed = "move";
-              event.dataTransfer.setData(
-                CONTENT_TYPES.card,
-                JSON.stringify({ id, title }),
-              );
-            }}
-          >
-            <div>
-              <h3 className='text-left'>{title}</h3>
-              <div className="mt-2 text-left">{content || <>&nbsp;</>}</div>
-            </div>
 
-          </div>
-        </HoverCardTrigger>
-        <HoverCardContent className="w-[100px] h-[100px] bg-background border border-border">
-          <deleteFetcher.Form method="post">
-            <input type="hidden" name="intent" value={INTENTS.deleteCard} />
-            <input type="hidden" name="itemId" value={id} />
-            <Button
-              size='icon'
-              variant='ghost'
-              aria-label="Delete card"
-              className="absolute mx-auto my-auto bg-background hover:text-brand-red"
-              type="submit"
-              onClick={(event) => {
-                event.stopPropagation();
-              }}
-            >
-              <Trash color="#fcfcfc" />
-            </Button>
-          </deleteFetcher.Form>
-        </HoverCardContent>
-      </HoverCard>
+      <div
+        draggable
+        className="flex text-left bg-primary text-foreground shadow shadow-muted-background border border-border text-sm rounded-[6px] w-[225px] py-1 px-2 relative group "
+        onDragStart={(event) => {
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData(
+            CONTENT_TYPES.card,
+            JSON.stringify({ id, title }),
+          );
+        }}
+      >
+        <div className=''>
+          <h3 className='text-left w-full my-1 mx-2'>{title}</h3>
+          <p className="mt-2 text-left  my-1 mx-2">{content || <>&nbsp;</>}</p>
+        </div>
+
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={() => deleteCard(id)}
+          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+        >
+          <TrashIcon className="h-3 w-3" />
+          <span className="sr-only">Delete</span>
+        </Button>
+      </div>
+
+
+      <deleteFetcher.Form method="post">
+        <input type="hidden" name="intent" value={INTENTS.deleteCard} />
+        <input type="hidden" name="itemId" value={id} />
+        <Button
+          size="icon"
+          variant="outline"
+          type="submit"
+
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+        >
+          <TrashIcon className="h-3 w-3" />
+          <span className="sr-only">Delete</span>
+        </Button>
+
+      </deleteFetcher.Form>
+
     </li>
   );
 }

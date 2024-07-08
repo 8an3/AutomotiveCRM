@@ -9,14 +9,11 @@ import { dataUserRoles } from "~/data";
 import { prisma } from "~/libs";
 
 async function seed() {
-  /*
-   */
   await seedTemplates();
   await seedmy24Canam();
   await seedTriumph();
   await seedKawasaki();
-  await seedBMW(); // only one left
-  ///await seedScript();
+  await seedBMW();
   await seedHarley();
   await seedManitou();
   await seedCanam();
@@ -25,6 +22,8 @@ async function seed() {
   await DealerFees()
   await SeedLockFinanceTerminals()
   await FirstCustomer()
+  await FinanceBoard()
+  await Board()
 }
 
 /**
@@ -181,7 +180,7 @@ export async function seedNotes() {
   invariant(user, "User with role symbol ADMIN is not found");
 
   const note1 = {
-    title: "The first note",
+    subject: "The first note",
     description: "Description about the note",
     content: "This is the first note content that is for a demo.",
   };
@@ -375,6 +374,193 @@ export async function FirstCustomer() {
   return json({ user, finance, clientfile, })
 }
 
+export async function Board() {
+  const doneneedstesting = [
+    { board: "dev", column: "Done Needs Testing", item: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
+    { board: "dev", column: "done needs testing", item: "webhook for incoming emails, save notifiation and messeages" },
+    { board: "dev", column: "done needs testing", item: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
+  ]
+  const WIP = [
+    { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers" },
+    { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
+    { board: "dev", column: "WIP", item: "mass email/sms - wip" },
+    { board: "dev", column: "WIP", item: "manager Dashboard" },
+    { board: "dev", column: "WIP", item: "sales manager dash" },
+    { board: "dev", column: "WIP", item: "dev control panel needs to send email to new dealers with sign in info" },
+  ]
+  const issue = [
+    { board: "dev", column: "issue", item: "export in managers section - export csv files of customers, inventory etc" },
+    { board: "dev", column: "issue", item: "sms" },
+    { board: "dev", column: "issue", item: "email" },
+  ]
+  const ideas = [
+    { board: "dev", column: "ideas", item: "saveform to local storage, never loose data for a internet hiccup or outage" },
+    { board: "dev", column: "ideas", item: "trllo board for users" },
+    { board: "dev", column: "ideas", item: "teleprompter" },
+    { board: "dev", column: "ideas", item: "employee to employee messaging using the emitter and alert dialog so its an important message that they have to read rght away, like next client here etc" },
+
+  ]
+  const sales = [
+    { board: "dev", column: "sales", item: "Call center Section" },
+    { board: "dev", column: "sales", item: "Trade in pricing from the kelley blue book integrated right into our quoting system." },
+    { board: "dev", column: "sales", item: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
+    { board: "dev", column: "sales", item: "sales bot 2 - customer onboarding" },
+    { board: "dev", column: "sales", item: "sales bot 3 - after sales" },
+    { board: "dev", column: "sales", item: "Add trello board to user section so they can use it if they want to" },
+    { board: "dev", column: "sales", item: "finance dash neeed to add up totals from new package area" },
+  ]
+  const automation = [
+    { board: "dev", column: "Automation", item: "for lead rotation, if customer pending after an hour it goes up onto a free for all board so anyone can respond to him" },
+    { board: "dev", column: "Automation", item: "customer set time before delivery of what to bring" },
+    { board: "dev", column: "Automation", item: "auto email at 5, 2.5 months and 30, 7 days before consent expires, 2 years if bought, 6 months if not" },
+    { board: "dev", column: "Automation", item: "customer 2 months after pick up to make sure everything is still good" },
+  ]
+  const service = [
+    { board: "dev", column: "service", item: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
+    { board: "dev", column: "service", item: "service writer dash" },
+    { board: "dev", column: "service", item: "tech dash" },
+  ]
+  const docs = [
+    { board: "dev", column: "docs", item: "Videos for docs" },
+    { board: "dev", column: "docs", item: "scripts / templates" },
+    { board: "dev", column: "docs", item: "whole overview" },
+    { board: "dev", column: "docs", item: "quotes" },
+    { board: "dev", column: "docs", item: "dashboard" },
+    { board: "dev", column: "docs", item: "finance dashboard" },
+    { board: "dev", column: "docs", item: "user settings" },
+    { board: "dev", column: "docs", item: "document builder" },
+  ]
+  const owner = [
+    { board: "dev", column: "owner", item: "Owners dashboard" },
+    { board: "dev", column: "owner", item: "Owner Section" },
+  ]
+  const quote = [
+    { board: "dev", column: "quote", item: "set up more parts pages - started - Manitou done - switch started" },
+  ]
+  const parts = [
+    { board: "dev", column: "parts", item: "parts dash" },
+    { board: "dev", column: "parts", item: "shpping and receiving dash" },
+    { board: "dev", column: "parts", item: "parts specfic page to print label, make changes etc, have search table that switch from table to part view using use state like the one in newleads" },
+  ]
+  const accessories = [
+    { board: "dev", column: "accessories", item: "acc dash" },
+  ]
+  const manager = [
+    { board: "dev", column: "manager", item: "cross platform ad manager, post it once here and push it to different providors" },
+  ]
+  const admin = [
+    { board: "dev", column: "admin", item: "have it populate api keys so managers can hand them out" },
+
+  ]
+  const dealerOnboarding = [
+    { board: "dev", column: "dealer onboarding", item: "invite user section where it send an email with links to the crm and" },
+    { board: "dev", column: "dealer onboarding", item: "role specific invites, for example when invitiing a tech only show him what hes going to be using maybe even see if you can book mark for them to make it super easy" },
+    { board: "dev", column: "dealer onboarding", item: "free simple install with insructions, fee for total install - for dealer that already have an it team it would save them money" },
+  ]
+  const infastructure = [
+    { board: "dev", column: "infastructure", item: "have a second non-cloud option, either as a rack for a server or tower for a non tech orientated dealer to be hosted on site but would need a license key that needs a new token every 30 days/6 months/12 months to operate based on payment plan, hardware to be paid upfront before build, payments start once activated at dealer" },
+  ]
+  const dash = [
+    { board: "dev", column: "dash", item: "dynamic dashboard widgets" },
+
+  ]
+  const communications = [
+    { board: "dev", column: "communications", item: "email / sms campaigns" },
+    { board: "dev", column: "communications", item: "fb msgr integration" },
+  ]
+  const paidfeature = [
+    { board: "dev", column: "paid feature - ai", item: "predictive analysis of sales trends" },
+    { board: "dev", column: "paid feature - ai", item: "customter analysis, retention, customer $ worth, visits, and more" },
+    { board: "dev", column: "paid feature - ai", item: "Predictive Customer Behavior Modeling, Utilize advanced machine learning models to predict future customer behaviors and preferences based on historical data. ie percentages on how liuekly the customer can be closed if asked at that time" },
+    { board: "dev", column: "paid feature - ai", item: "*** currently working - need to attach to components and find a way to turn on or off pending payment by customer ***" },
+    { board: "dev", column: "paid feature - ai", item: "speech to text for quicker input - done in components folder" },
+    { board: "dev", column: "paid feature - ai", item: "AI writing partner for emails, templates and scripts - done in components folder" },
+    { board: "dev", column: 'paid feature - ai', item: 'have ai take in last 5 emails with customer and suggest your next communication/script - not done yet but easy enough to complete in components folder' },
+    { board: "dev", column: 'paid feature - ai', item: 'vercel has a nice write up on this to do in their platform - ai - wip - https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts' },
+    { board: "dev", column: "paid feature - ai", item: "Ai assistant to book apointments, complete and etc like gowrench or just a work flow to customers to guide themselves" },
+  ]
+
+  console.log(chalk.yellow("Creating dev board..."));
+
+
+  const board = await prisma.board.create({
+    data: {
+      name: 'Dev',
+      userEmail: 'skylerzanth@outlook.com',
+    },
+  });
+  const columnsWithItems = [
+    { name: 'DONE NEEDS TESTING', items: doneneedstesting },
+    { name: 'WIP', items: WIP },
+    { name: 'SALES', items: sales },
+    { name: 'AUTOMATION', items: automation },
+    { name: 'SERVICE', items: service },
+    { name: 'DOCS', items: docs },
+    { name: 'OWNER', items: owner },
+    { name: 'QUOTE', items: quote },
+    { name: 'PARTS', items: parts },
+    { name: 'ACCESSORIES', items: accessories },
+    { name: 'MANAGER', items: manager },
+    { name: 'ADMIN', items: admin },
+    { name: 'DEALER ONBOARDING', items: dealerOnboarding },
+    { name: 'INFASTRUCTURE', items: infastructure },
+    { name: 'DASH', items: dash },
+    { name: 'COMMUNICATIONS', items: communications },
+    { name: 'PAID FEATURE', items: paidfeature },
+    { name: 'IDEAS', items: ideas },
+    { name: 'ISSUE', items: issue },
+  ];
+
+  const createColumnsAndItems = async (board) => {
+    for (const columnWithItems of columnsWithItems) {
+      const column = await prisma.column.create({
+        data: {
+          boardId: board.id,
+          name: columnWithItems.name,
+        },
+      });
+
+      console.log(chalk.green(`Adding ${columnWithItems.name}`));
+
+      for (const item of columnWithItems.items) {
+        await prisma.item.create({
+          data: {
+            columnId: column.id,
+            boardId: board.id,
+            title: item.item,
+          },
+        });
+      }
+    }
+  };
+  createColumnsAndItems(board)
+    .then(() => {
+      console.log(chalk.green('All columns and items created successfully'));
+    })
+    .catch((error) => {
+      console.error(chalk.red('Error creating columns and items:', error));
+    });
+
+}
+export async function FinanceBoard() {
+  const board = await prisma.board.create({
+    data: { name: 'Finance Product Board', },
+  });
+  const column = await prisma.column.create({
+    data: {
+      boardId: board.id,
+      name: 'Warranty',
+    },
+  });
+  await prisma.item.create({
+    data: {
+      columnId: column.id,
+      boardId: board.id,
+      title: '1 Year',
+      content: '1250',
+    },
+  });
+}
 
 export async function FirstMsgNotification() {
   console.log(chalk.yellow("Seeding notifications ..."));
@@ -382,7 +568,7 @@ export async function FirstMsgNotification() {
   const user = await prisma.user.findFirst({ where: { role: { symbol: "ADMIN" } }, });
   const data = await prisma.notificationsUser.create({
     data: {
-      title: 'Welcome new user! UPDATES',
+      subject: 'Welcome new user! UPDATES',
       content: 'Welcome new user! UPDATES',
       read: 'false',
       dimiss: '',
@@ -396,7 +582,7 @@ export async function FirstMsgNotification() {
   })
   const data2 = await prisma.notificationsUser.create({
     data: {
-      title: 'Welcome new user! MESSAGES',
+      subject: 'Welcome new user! MESSAGES',
       content: 'Welcome new user! MESSAGES',
       read: 'false',
       dimiss: '',
@@ -410,7 +596,7 @@ export async function FirstMsgNotification() {
   })
   const data3 = await prisma.notificationsUser.create({
     data: {
-      title: 'Welcome new user! NEW LEAD',
+      subject: 'Welcome new user! NEW LEAD',
       content: 'Welcome new user! NEW LEAD',
       read: 'false',
       dimiss: '',
@@ -432,7 +618,7 @@ export async function ClientApts() {
 
   const aptsData = [
     {
-      title: 'Welcome new user! NEW LEAD',
+      subject: 'Welcome new user! NEW LEAD',
       content: 'Welcome new user! NEW LEAD',
       read: 'false',
       dimiss: '',
@@ -444,7 +630,7 @@ export async function ClientApts() {
       userId: user?.id,
     },
     {
-      title: 'Welcome new user! MESSAGES',
+      subject: 'Welcome new user! MESSAGES',
       content: 'Welcome new user! MESSAGES',
       read: 'false',
       dimiss: '',
@@ -456,7 +642,7 @@ export async function ClientApts() {
       userId: user?.id,
     },
     {
-      title: 'Welcome new user! UPDATES',
+      subject: 'Welcome new user! UPDATES',
       content: 'Welcome new user! UPDATES',
       read: 'false',
       dimiss: '',
@@ -9559,425 +9745,389 @@ export async function seedTemplates() {
       category: "Information Gathering",
       type: "email",
       subject: "Insurance Broker",
-      title: "Insurance",
       dept: "sales",
       subCat: "Information Gathering",
-      review:
-        "For insurance, whether it's bikes or any motorcycle, call David Bodnar. I've been with him now for 8 years and he's with...",
-      fromEmail: "skylerzanth@outlook.com",
     },
     {
       body: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our ${model}, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the ${model}. Let me know what you need and I'll be happy to help you.",
       userEmail: "skylerzanth@outlook.com",
       category: "Overcome",
       type: "email",
-      subject: "",
-      title: "overcome - comparing models",
+
       dept: "sales",
       subCat: "comparing models",
-      review:
-        "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recomm...",
-      fromEmail: "skylerzanth@outlook.com",
     },
-
     {
       body: "The finance person didn't give me an exact rate, when you sit down with the finance manager we check your credit and match you with an institution that will give you the best rate. Every institution has different thresholds on how they evaluate credit, investments and so on but because of our working relationships with the bank managers we know each bank is looking for in a customer and they evaluate each customer and assign rates.",
       userEmail: "skylerzanth@outlook.com",
       category: "Overcome",
       type: "text",
       subject: "Current Rates",
-      title: "overcome - Current Rates",
       dept: "sales",
       subCat: "",
-      review:
-        "The finance person didn't give me an exact rate, when you sit down with the financ...",
-      fromEmail: "skylerzanth@outlook.com",
     },
     {
       body: "It's hard to answer that because everyones rate is going to be different. We deal with several institutions so when we get your information and run your credit we can match you with the best bank.  As you know not all banks treat investments and current customer loans the same. Were not here to just sell you one thing were here to sell you multiple of units down the road when you want to upgrade so we will do our best to get the rate you deserve. ",
       userEmail: "skylerzanth@outlook.com",
       category: "Overcome",
       type: "text",
-      subject: "Current Rates",
-      title: "overcome - Current Rates 2",
+      subject: "overcome - Current Rates 2",
       dept: "sales",
       subCat: "Current Rates 2",
-      review:
-        "It's hard to answer that because everyones rate is going to be different. We deal with se...",
-      fromEmail: "skylerzanth@outlook.com",
     },
     {
       body: "Hey just wanted to follow up to our conversations, if your not ready to buy right now when do you want me to follow up with you? I want to respect your time, that way im not wasting your it and bugging you every couple of days.",
       userEmail: "skylerzanth@outlook.com",
       category: "Overcome",
       type: "text",
-      subject: "",
-      title: "overcome - let me see what I can do",
+      subject: "overcome - let me see what I can do",
       dept: "sales",
       subCat: "let me see what I can do",
-      review:
-        "It seems like you might not be completely satisfied with the deal we're working on.e...",
-      fromEmail: "skylerzanth@outlook.com",
     },
     {
       body: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
       userEmail: "skylerzanth@outlook.com",
       category: "Overcome",
       type: "text",
-      subject: "",
-      title: "overcome - what can we do to make it happen",
+      subject: "overcome - what can we do to make it happen",
       dept: "sales",
       subCat: "what can we do to make it happen",
-      review:
-        "I've noticed that you may have some concerns about the current deal we're discus...",
-      fromEmail: "skylerzanth@outlook.com",
     },
     {
       body: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
       userEmail: "skylerzanth@outlook.com",
       category: "follow-up ",
       type: "text",
-      subject: "",
-      title: "follow-up  - when do you want me to call u",
+      subject: "follow-up  - when do you want me to call u",
       dept: "sales",
       subCat: "when do you want me to call u",
-      review:
-        "I've noticed that you may have some concerns about the current deal we're discus...",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I want to express my gratitude once more for choosing us, ${firstName}. I hope you find great joy in your ${model} for the years ahead. If you ever have questions, encounter any issues, or anything else comes to mind, please don't hesitate to reach out. I'm here and more than willing to assist. Even if you believe it's something minor, I value your feedback to ensure your purchase was absolutely perfect.",
       userEmail: "skylerzanth@outlook.com",
       category: "Automation",
       type: "text",
-      subject: "",
-      title: "Automation - 1 day after pick up",
+
+      subject: "Automation - 1 day after pick up",
       dept: "sales",
       subCat: "1 day after pick up",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey ${firstName} It was great talking to you about the {Wanted vehicle - Model} you are interested in.  If any questions or concerns come up let me know and I will be more than happy to address them. I'll follow up with you in a couple of days to give you time to consider any parts or accessories you would like to add. If you want to move forward before I follow up, text or call me and we can lock it in for you.",
       userEmail: "skylerzanth@outlook.com",
       category: "Automation",
       type: "text",
-      subject: "",
-      title: "Automation - After first visit no phone # provided",
+
+      subject: "Automation - After first visit no phone # provided",
       dept: "sales",
       subCat: "After first visit no phone # provided",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey ${firstName} It was great talking to you about the { Wanted Vehicle - Model }. If any questions come up let me know and I will be more than happy to address them.",
       userEmail: "skylerzanth@outlook.com",
       category: "Automation",
       type: "text",
-      subject: "",
-      title: "Automation - After first visit - set up time for a call",
+
+      subject: "Automation - After first visit - set up time for a call",
       dept: "sales",
       subCat: "After first visit - set up time for a call",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey ${firstName} its ${userFname} from ${dealerName}, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       userEmail: "skylerzanth@outlook.com",
       category: "Automation",
       type: "text",
-      subject: "",
-      title: "Automation - After hours invalid email",
+
+      subject: "Automation - After hours invalid email",
       dept: "sales",
       subCat: "After hours invalid email",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey ${firstName} it's me from ${dealerName}, you requested that rep get in contact with you about the ${model} you were looking at online. When is a good time for me to call you back, would later on today work or tomorrow?",
       userEmail: "skylerzanth@outlook.com",
       category: "Automation",
       type: "text",
-      subject: "",
-      title: "Automation - First text message",
+
+      subject: "Automation - First text message",
       dept: "sales",
       subCat: "First text message",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey ${firstName} it's me from ${dealerName}, I just called but your probably tied up. When is a good time for us to talk about the ${model}, would later this afternoon work, or is tomorrow better?",
       userEmail: "skylerzanth@outlook.com",
       category: "Automation",
       type: "text",
-      subject: "",
-      title: "Automation - Call/text combo",
+
+      subject: "Automation - Call/text combo",
       dept: "sales",
       subCat: "Call/text combo",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information you need before buying so you make an informed buying decision, I'm hear to help make the process easy for you.",
       userEmail: "skylerzanth@outlook.com",
       category: "Automation",
       type: "text",
-      subject: "",
-      title: "Automation - Asking for objections",
+
+      subject: "Automation - Asking for objections",
       dept: "sales",
       subCat: "Asking for objections",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the ${model}. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "Follow-Up",
-      title: "wanted to check in and see if you had any further questions or concerns about the ${model}",
+      subject: "wanted to check in and see if you had any further questions or concerns about the ${model}",
       dept: "sales",
       subCat: "any further questions or concerns",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the ${model}. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let me know if you're interested and we can discuss next steps.",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "noticed you haven't responded to my previous email",
+      subject: "noticed you haven't responded to my previous email",
       dept: "sales",
       subCat: "haven't responded to my previous email",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the ${model} is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
       userEmail: "skylerzanth@outlook.com",
       category: "Close",
       type: "text",
-      subject: "",
-      title: "purchasing a motorcycle can be a big decision",
+      subject: "purchasing a motorcycle can be a big decision",
       dept: "sales",
       subCat: "purchasing a motorcycle can be a big decision",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "To ensure that you have the opportunity to view and secure the unit, I recommend placing a deposit to reserve it until it arrives. This way, you'll prevent anyone else from purchasing it before you've had a chance to see it. The best part is, if you don't like it when you see it, you'll receive a full deposit refund. On the other hand, if you fall in love with it, you won't miss the opportunity to make it yours.",
       userEmail: "skylerzanth@outlook.com",
       category: "Close",
       type: "text",
-      subject: "",
-      title: "To ensure that you have the opportunity to view and secure the unit",
+      subject: "To ensure that you have the opportunity to view and secure the unit",
       dept: "sales",
       subCat: "To ensure that you have the opportunity to view and secure the unit",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible. It's clear that you may have some reservations about the current deal. If you don't mind sharing, I'd love to know what we can adjust or improve to make it a more attractive offer for you. Your feedback is invaluable, and I'm here to work together on a solution that meets your needs and expectations.",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible",
+      subject: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible",
       dept: "sales",
       subCat: "I take pride in being the best salesperson",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the ${model} is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "I understand that deciding on a motorcycle purchase is a significant decision. However,",
+      subject: "I understand that deciding on a motorcycle purchase is a significant decision. However,",
       dept: "sales",
       subCat: "I understand that deciding on a motorcycle purchase is a significant decision",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the ${model} as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the ${model}, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
       userEmail: "skylerzanth@outlook.com",
       category: "Close",
       type: "text",
-      subject: "",
-      title: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life.",
+      subject: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life.",
       dept: "sales",
       subCat: "I understand that choosing the perfect motorcycle is a significant decision",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the ${model} have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the ${model} for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the ${model} can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "I completely understand that making a decision like this can be a significant step.",
+      subject: "I completely understand that making a decision like this can be a significant step.",
       dept: "sales",
       subCat: "this can be a significant step",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the ${model} is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The ${model} is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the ${model} is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "I understand that you might have some concerns,",
+      subject: "I understand that you might have some concerns,",
       dept: "sales",
       subCat: "I understand that you might have some concerns",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license. This will allow us to initiate the process for our finance manager to go over the application with you.  We understand that making a financial commitment is an important step, and we want you to feel comfortable. If you're hesitant about putting money down for financing, please know that it's perfectly okay. In fact, we have a flexible approach, and we'll refund the deposit when you come to pick up your new bike.  We genuinely want to make this process as smooth and convenient for you as possible. Could you please let us know which payment option you're most comfortable with?",
       userEmail: "skylerzanth@outlook.com",
       category: "Close",
       type: "text",
-      subject: "",
-      title: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license.",
+
+      subject: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license.",
       dept: "sales",
       subCat: "o move forward with your purchase, we would need a $500 deposit and a picture of your driver's license",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
       userEmail: "skylerzanth@outlook.com",
       category: "Close",
       type: "text",
-      subject: "",
-      title: "It seems like you might have some concerns about the deal we're working on,",
+
+      subject: "It seems like you might have some concerns about the deal we're working on,",
       dept: "sales",
       subCat: "It seems like you might have some concerns about the deal we're working on",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
       userEmail: "skylerzanth@outlook.com",
       category: "Close",
       type: "text",
-      subject: "",
-      title: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit",
+
+      subject: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit",
       dept: "sales",
       subCat: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
       userEmail: "skylerzanth@outlook.com",
       category: "Close",
       type: "text",
-      subject: "",
-      title: "If your worried about the finance numbers we can sit you down with our finance manager",
+
+      subject: "If your worried about the finance numbers we can sit you down with our finance manager",
       dept: "sales",
       subCat: "If your worried about the finance numbers we can sit you down with our finance manager",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: `Hey it's $ {userFname} from $  {dealerName}, you requested to have a rep contact you about the $ {model} on facebook. When is a good time for me to call you back, would later on today work or tomorrow? If text is the only way of contact, that would be good as well.`,
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "Client - bdc - source FB - coms - text",
+
+      subject: "Client - bdc - source FB - coms - text",
       dept: "sales",
       subCat: " bdc - source FB - coms - text",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I wanted to remind you about our appointment tomorrow. If, for any reason, you can't make it, please let me know, and we can reschedule. Otherwise, I'm looking forward to seeing you tomorrow!",
       userEmail: "skylerzanth@outlook.com",
       category: "Appt Reminder",
       type: "text",
-      subject: "",
-      title: "Client - 24 hour reminder for in store appt",
+
+      subject: "Client - 24 hour reminder for in store appt",
       dept: "sales",
       subCat: "24 hour reminder for in store appt",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "I wanted to remind you about your motorcycle pick-up tomorrow. If, for any reason, you can't make it, please let me know, and we can reschedule. Otherwise, I'm looking handing off your new bike to you so you can hit the open road.",
       userEmail: "skylerzanth@outlook.com",
       category: "Appt Reminder",
       type: "text",
-      subject: "",
-      title: "Client - 24 hour reminder for bike pu",
+
+      subject: "Client - 24 hour reminder for bike pu",
       dept: "sales",
       subCat: "24 hour reminder for bike pu",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey ${firstName}, it's ${userFname} from ${dealerName}. It was nice meeting you today. Do not hesitate if you have any questions. Have a great day!",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "After meeting",
+
+      subject: "After meeting",
       dept: "sales",
       subCat: "After meeting",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Were there any questions or concerns you had that was stopping you from moving forward?",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "Asking for objections",
+
+      subject: "Asking for objections",
       dept: "sales",
       subCat: "Asking for objections",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey its ${userFname} from ${dealerName} you put in a request on line to take advantage of the current promotions, which unit were you looking for?",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "you put in a request on line to take advantage",
+
+      subject: "you put in a request on line to take advantage",
       dept: "sales",
       subCat: "you put in a request on line to take advantage",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey its ${userFname} from ${dealerName} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "you requested that rep get in contact with you about the unit",
+
+      subject: "you requested that rep get in contact with you about the unit",
       dept: "sales",
       subCat: "you requested that rep get in contact with you about the unit",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey its ${userFname} from ${dealerName} I just called but your probably tied up give me a call or text when you can and we can go over that unit you were looking for",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "Call/text combo - auto",
+
+      subject: "Call/text combo - auto",
       dept: "sales",
       subCat: "Call/text combo - auto",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "Hey ${firstName} its ${userFname} from ${dealerName}, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "text",
-      subject: "",
-      title: "After hours invalid email",
+
+      subject: "After hours invalid email",
       dept: "sales",
       subCat: "After hours invalid email",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       body: "As the holidays approach, I understand that many folks might be considering waiting until after Christmas to make a move on their new bike purchase. While I'm more than happy to assist you ${firstName} whenever you decide, I wanted to ensure you're aware of the incredible promotions currently available. Our used bikes are now priced at what we paid for them on trade, presenting an unbeatable opportunity for savvy buyers. For new bikes, we're offering promotional rates as low as 1.99%, coupled with generous discounts. These rates are so remarkable that I don't foresee them being this low until next winter. If you choose to wait until after Christmas, I'll be ready to assist you. However, given the exceptional nature of these deals, waiting might mean missing out on substantial savings.  Feel free to reach out if you have any questions or if you'd like to discuss these promotions further. Looking forward to helping you make the best decision for your bike purchase! If I don't see or talk to you again before the Holidays, Merry Christmas ${firstName}.",
       userEmail: "skylerzanth@outlook.com",
       category: "Follow-Up",
       type: "email",
-      subject: "",
-      title: "follow up discussing promos - winter themed",
+
+      subject: "follow up discussing promos - winter themed",
       dept: "sales",
       subCat: "follow up discussing promos - winter themed",
-      fromEmail: "skylerzanth@outlook.com",
+
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Before we proceed with pricing",
+      dept: "sales",
+      subject: "Before we proceed with pricing",
       body:
         "Before we proceed with pricing, I wanted to ask a few questions. Firstly, are you looking to purchase the GTI 130 outright or finance it? If financing, what is your monthly budget that would make you feel comfortable? Additionally, there are a variety of accessories that can be included in the financing, what specific accessories were you interested in adding to to it? I'm here to help you every step of the  way and ensure that you get the perfect bike to fit your needs and budget. I look forward to hearing back from you and assisting you in any  way I can.",
       category: "qualifying",
@@ -9985,84 +10135,96 @@ export async function seedTemplates() {
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: `We wouldn't sell it for that amount, whatever we take it in on trade`,
+      subject: "We wouldn't sell it for that amount, whatever we take it in on trade",
+      dept: "sales",
       body: `We wouldn't sell it for that amount, whatever we take it in on trade, we ad 15%. That way there's really only aa 2% difference between what ur getting after the tax savings and what we sell it for. Any dealer that over prices their inventory, is putting a lot more risk on them selves. Almost all dealers rely on a line of credit in order to have bikes on their floor so any inventory that just sits, is eating away at their profit. The blue book takes the statistical data from the license bureau and bases the values off of what they sell privately and theres enough data to support the pricing. When their isn't, their is some math invloved where you can compare it to previous or ealier model years and get the value that way. Any dealer that sells or takes in on trade above the blue book is gambling at that point and they shouldnt be taking that risk. Like I have the perfect example, I have a road glide here in our used inventory, the last sales manager over paid for it by such a huge amount we almost can't even sell it and we will have to end up loosing thousands on it. Top clean for your bike is 7500 but as I said I can go above it up to $500 more but that would be the limit because any more than that and then the bike will be competing with bikes that are newer. I have to see your bike before I can confirm the increase, I trust what you say about your bike, I just have to confirm it. I'm always very transparent because in the end you will know what we will sell your bike for becuse you can just see it online when we post it anyways. The blue book says to sell your bike for 9100 so that what we would sell it for, unless we gave you the increase then we would sell it for 500 more.`,
       category: "Overcome",
       subCat: `Complaints about trade in value.`,
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: `We wouldn't sell it for that amount, whatever we take it in on trade`,
+      subject: "We wouldn't sell it for that amount, whatever we take it in on trade",
+      dept: "sales",
       body: `We wouldn't sell it for that amount, whatever we take it in on trade, we ad 15%. That way there's really only aa 2% difference between what ur getting after the tax savings and what we sell it for. Any dealer that over prices their inventory, is putting a lot more risk on them selves. Almost all dealers rely on a line of credit in order to have bikes on their floor so any inventory that just sits, is eating away at their profit. The blue book takes the statistical data from the license bureau and bases the values off of what they sell privately and theres enough data to support the pricing. When their isn't, their is some math invloved where you can compare it to previous or ealier model years and get the value that way. Any dealer that sells or takes in on trade above the blue book is gambling at that point and they shouldnt be taking that risk. Like I have the perfect example, I have a road glide here in our used inventory, the last sales manager over paid for it by such a huge amount we almost can't even sell it and we will have to end up loosing thousands on it. Top clean for your bike is 7500 but as I said I can go above it up to $500 more but that would be the limit because any more than that and then the bike will be competing with bikes that are newer. I have to see your bike before I can confirm the increase, I trust what you say about your bike, I just have to confirm it. I'm always very transparent because in the end you will know what we will sell your bike for becuse you can just see it online when we post it anyways. The blue book says to sell your bike for 9100 so that what we would sell it for, unless we gave you the increase then we would sell it for 500 more.`,
       category: "Overcome",
       subCat: `Complaints about trade in value.`,
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: `interested in? If not, that's ok we can pick one together for you, that you would enjoy for thousands of miles on the open road`,
+      subject: `interested in? If not, that's ok we can pick one together for you, that you would enjoy for thousands of miles on the open road`,
       body: `Good morning Linda You had put in a online request for a H-D rep to get in contact with you about the full lineup. We have some phenomenal bikes to offer, was their a model in particular you were interested in? If not, that's ok we can pick one together for you, that you would enjoy for thousands of miles on the open road.`,
+      dept: "sales",
+
       category: "First contact",
       subCat: `interested in? If not, that's ok we can pick one together for you, that you would enjoy for thousands of miles on the open road`,
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "From the moment we select the right vehicle",
+      subject: "From the moment we select the right vehicle",
       body: "From the moment we select the right vehicle, and we have a mutal agreement, do you want your new vehicle by the end of the week or the begining of next month?",
+      dept: "sales",
+
       category: "Information Gathering",
       subCat: 'From the moment we select the right vehicle',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Concerning the purchase of the vehicle",
+      subject: "Concerning the purchase of the vehicle",
       body: "Concerning the purchase of the vehicle, are you making the final decision today? ",
+      dept: "sales",
+
       category: "Information Gathering",
       subCat: 'Concerning the purchase of the vehicle',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Did anyone explain to you the different programs",
+      subject: "Did anyone explain to you the different programs",
       body: "Did anyone explain to you the different programs that are avialabe on the market today? First we are going to choose the right vehicle for you and then we will select the right program to fit your budget.",
       category: "Information Gathering",
+      dept: "sales",
+
       subCat: 'Did anyone explain to you the different programs',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Overcome 4",
+      subject: "Overcome 4",
       body: "To be in a comfortable situation, would you invest 25 or 50 more per week on your vehicle? Again to be in a comfrotable situation, would you like to invest 500 or 1000 cash down on your bank loan?",
       category: "Information Gathering",
+      dept: "sales",
+
       subCat: 'To be in a comfortable situation',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Has anything changed since you bought that vehicle last time?",
+      subject: "Has anything changed since you bought that vehicle last time?",
       body: "What vehicle do you drive now? How much cash did you want to invest?  What were the advatages for you to purchase on your last purchase? Has anything changed since you bought that vehicle last time? More family members, different riding/driving circumstances, etc",
       category: "Information Gathering",
       subCat: 'Has anything changed since you bought that vehicle last time?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Overcome 6",
+      subject: "Overcome 6",
       body: "I may have a buyer for your vehicle, are you loooking to sell it?",
       category: "Information Gathering",
       subCat: 'I may have a buyer for your vehicle',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "How many monthly payments",
+      subject: "How many monthly payments",
       body: "How many monthly payments do you have left?",
       category: "Information Gathering",
       subCat: 'How many monthly payments',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Overcome 9",
+      subject: "Overcome 9",
       body: "At this time, how much are you paying every month? Did you finance or purchase out right?",
       category: "Information Gathering",
       subCat: 'How much are you paying every month',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Overcome 10",
+      subject: "Overcome 10",
       body: "Besides the equipemnt, what else is important to you in your next vehicle?  ",
       category: "Information Gathering",
       subCat: 'Besides the equipemnt',
@@ -10070,623 +10232,623 @@ export async function seedTemplates() {
 
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "What made you choose this?",
+      subject: "What made you choose this?",
       body: "What made you choose this? What would be the advantages for you to drive this?",
       category: "Information Gathering",
       subCat: 'What made you choose this?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Overcome 12",
+      subject: "Overcome 12",
       body: "How many kms do you typically put on in a year?",
       category: "Information Gathering",
       subCat: 'Mileage',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Overcome 13",
+      subject: "Overcome 13",
       body: "Is this bike going to be used mostly in the city or on the highway?",
       category: "Information Gathering",
       subCat: 'Used mostly in the city or on the highway?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Overcome 14",
+      subject: "Overcome 14",
       body: "Now who will be the primary driver?",
       category: "Information Gathering",
       subCat: 'Primary driver',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Overcome 15",
+      subject: "Overcome 15",
       body: "What basic features/equipment are important to you? Would this unit meet those requirements?",
       category: "Information Gathering",
       subCat: '"What basic features/equipment',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Overcome 16",
+      subject: "Overcome 16",
       body: "What are we looking at today?",
       category: "Information Gathering",
       subCat: 'What are we looking at today?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "No answer - asking when would they be ready",
+      subject: "No answer - asking when would they be ready",
       body: "Hey just wanted to follow up to our conversations, if your not ready to buy right now when do you want me to follow up with you? I want to respect your time, that way im not wasting your it and bugging you every couple of days.",
       category: "Follow-ups",
       subCat: 'No answer - asking when would they be ready',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "No answer - respect decision to wait",
+      subject: "No answer - respect decision to wait",
       body: "While I respect your decision to wait, if this is the unit you want. We can button up the deal now, and you can store it here for free till your ready to pick up. Because if we were to order one we wouldn't get till after June, maybe longer.",
       category: "Follow-Up",
       subCat: 'No answer - respect decision to wait',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Create Urgency",
+      subject: "Create Urgency",
       body: "If the season is winding down or coming to a close, it's essential to act swiftly. Our stock levels are depleting rapidly, and it's likely to worsen. Every day, we receive numerous requests online and via email, and it's only a matter of time before we're completely sold out.  We're committed to providing excellent service to the customers within our territory, and that's why we try not to sell outside of it. If we did, we'd already be sold out given the high demand. Considering the wide range of trim levels, colors, and more, our ability to order from BRP is limited. Therefore, it's crucial to act quickly if we have what you need right now. Whenever you have a moment, please give me a call to secure your purchase.",
       category: "Follow-ups",
       subCat: 'Create Urgency',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "First Contact",
+      subject: "First Contact",
       body: "You had put an inquiry online for one of our representatives to get in touch with you. Do you already have a specific idea of what you're looking for, or would you like some guidance in finding the right fit for you?  We currently have a model on our sales floor, which is a great opportunity to experience firsthand the exceptional quality H-D has to offer. You're more than welcome to visit us in person for a closer look. Alternatively, we can have a phone conversation to discuss your preferences and options. When would be a convenient time for you to visit or have a phone call? Would later today work for you, or would tomorrow better suit your schedule?",
       category: 'First Contact',
       subCat: 'Didnt pick a model',
     },
     {
       email: "Follow-up 5",
-      name: "No answer for a while - havent forgotten them",
+      subject: "No answer for a while - havent forgotten them",
       body: "Just reaching out to ensure you know that I'm here whenever you're ready to move forward with the purchase. I completely understand that life can sometimes get in the way of making decisions like this, and I want to emphasize that I haven't abandoned you as your salesperson. Whether it's in a week, a month, or even six months, I'm here to assist you.  If I don't receive a response, I'll follow up with you at the beginning of the season to ensure you don't miss out on any opportunities. Your satisfaction is my priority, and I'm committed to providing the support you need when you're ready.",
       category: "Follow-ups",
       subCat: 'No answer for a while - havent forgotten them',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Life can sometimes get in the way of these decisions",
+      subject: "Life can sometimes get in the way of these decisions",
       body: "Just a quick follow-up to let you know that I'm here for you whenever you're ready to move forward with the purchase. Life can sometimes get in the way of these decisions, and I want you to know that I haven't forgotten about you as your salesperson. Whether it's in a week, a month, or even six months, I'm here to assist you.  It's worth noting that our Spring check promotion is coming to a close this week, which includes a fantastic warranty promo. If that's of interest to you, now would be an ideal time to take advantage of it. Additionally, if you're looking for an in-stock unit, we currently have promotions offering up to $750 off, along with any other promotions offered by BRP at the time of purchase.  Even if I don't hear back from you, I'll give you a call in October, right before the start of the next season, to see if you're ready to explore your options further. Your satisfaction is my priority, and I'm here to make the process as smooth as possible for you.",
       category: "Follow-ups",
       subCat: 'Life can sometimes get in the way of these decisions',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "No answer for a while - life gets in the way",
+      subject: "No answer for a while - life gets in the way",
       body: "Just a quick follow-up to let you know that I'm here for you whenever you're ready to move forward with the purchase. Life can sometimes get in the way of these decisions, and I want you to know that I haven't forgotten about you as your salesperson. Whether it's in a week, a month, or even six months, I'm here to assist you.  It's worth noting that we currently have promotional finance rates to help clients get on their dream bikes today. If that's of interest to you, now would be an ideal time to take advantage of it. Even if I don't hear back from you, I'll give you a call in March, right before the start of the next season, to see if you're ready to explore your options further. Your satisfaction is my priority, and I'm here to make the process as smooth as possible for you.",
       category: "Follow-ups",
       subCat: 'No answer for a while - life gets in the way',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Whats holding you back?",
+      subject: "Whats holding you back?",
       body: "Hello! I hope you're having a fantastic day. I wanted to check in and see if you have any additional questions or concerns about the Outlander. We've received significant interest in this model, and I want to ensure you don't miss the opportunity to own one at the price we discussed. If you're ready to proceed, please let me know, and I'll be delighted to assist you with the purchase process.  If there's something holding you back, such as the price or if this isn't the right unit, please don't hesitate to share your thoughts. I'm here to help. Whether it's working with my manager to find a better price or exploring other unit options, I'm committed to finding a solution that aligns with your needs.",
       category: "Follow-ups",
       subCat: 'Whats holding you back?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Instead of wasting your time, when do you feel you would be ready to buy?",
+      subject: "Instead of wasting your time, when do you feel you would be ready to buy?",
       body: "Instead of reaching out to you every few days and potentially taking up your valuable time, I'd like to work on your schedule. When do you think you'll be ready to move forward with the purchase? I'll make a note of it in my calendar and follow up with you at the time that's most convenient for you.",
       category: "Follow-ups",
       subCat: "Instead of wasting your time, when do you feel you would be ready to buy?",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Create urgency with stock levels",
+      subject: "Create urgency with stock levels",
       body: "Just came out of a meeting where we discussed inventory and unit ordering, and it's clear that the power sports industry is still going strong post-pandemic, with no signs of slowing down. Unfortunately, this also means that inventory continues to be a challenge for us and other dealers. Despite promises from manufacturers, availability hasn't improved as expected.  I completely respect your decision to wait, but I wanted to present an option that might work for you. If this is the unit you truly desire, you can secure it by placing a deposit along with a signed bill of sale and opting for storage. Ordering a new one might mean waiting until after June, or possibly even longer. The choice is entirely yours, and we're here to make it as convenient as possible for you.",
       category: "Follow-ups",
       subCat: 'Create urgency with stock levels',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "If this is what you truly desire",
+      subject: "If this is what you truly desire",
       body: "While I fully understand and respect your decision to wait, I'd like to offer an alternative solution. If this is the unit you truly desire, you can secure it by placing a deposit along with a signed bill of sale. We can also arrange for storage until you're ready to pick it up. This way, you won't have to worry about missing out on this season's enjoyment, as ordering a new one might not guarantee it arrives in time. The choice is entirely yours, and I'm here to make it as convenient as possible for you.",
       category: "Follow-ups",
       subCat: 'If this is what you truly desire',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Stock levels down",
+      subject: "Stock levels down",
       body: "If the season hasn't started yet, and no phone number was provided.  Our stock levels are being depleted before the season has even started, and it's only going to get worse. Every day I get requests online and emails, so it's only a matter of time before we're sold out. With that said, we're trying not to sell outside our territory because we want to take care of the people within our territory and give them the service they deserve. If we sold outside of our territory, we would already be sold out. Give me a call when you have some time to claim it.",
       category: "Follow-ups",
       subCat: 'Stock levels down',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Simplifing the buying process",
+      subject: "Simplifing the buying process",
       body: "Which day would be most convenient for you? My priority is to simplify the buying process for our customers. If you prefer, we can handle everything over the phone, making it as hassle-free as possible. I understand the frustration when the buying process becomes cumbersome, and I aim to provide a smoother experience because, like you, I'm also a consumer.  I take pride in tailoring the buying process to individual preferences, whether it's someone's first purchase or their 100th. Your convenience matters most. If visiting the store is challenging due to a busy schedule, we can manage everything efficiently through email or phone until it's time for pickup. Your satisfaction is my commitment, and I'm here to ensure the process aligns with your needs.",
       category: "Follow-ups",
       subCat: 'Simplifing the buying process',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Questions / Concerns",
+      subject: "Questions / Concerns",
       body: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information  you need before buying because I'm hear to help make the process easy.",
       category: "Objections",
       subCat: 'Questions / Concerns',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Taking the deal to the boss on your behalf",
+      subject: "Taking the deal to the boss on your behalf",
       body: "Hello Frank, With the warm weather, many people are coming out of hibernation and making purchases. I want to ensure that my customers can enjoy the products they desire for this summer, especially since it's the first truly free COVID summer in years. While I can't make promises, I'd like to know what it would take to earn your business. Your satisfaction is my priority.",
       category: "Follow-ups",
       subCat: 'Taking the deal to the boss on your behalf',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Push the sale",
+      subject: "Push the sale",
       body: "Hello! I wanted to check in and see how you're feeling about the sales process. Is there anything specific you'd like assistance with or any questions I can address to help move things forward? While I can't promise to fulfill every request, I'm here to do my best and ensure your experience is as smooth as possible. Feel free to share any concerns or requests, and I'll be more than happy to assist you.",
       category: "Follow-ups",
       subCat: 'Push the sale',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Informed buying decision",
+      subject: "Informed buying decision",
       body: "Hello! I hope you're having a fantastic day. I wanted to follow up with you regarding the 850. Is there anything that's been holding you back from moving forward with your purchase? I'm here to assist you in making an informed buying decision and answer any questions you may have. Please feel free to let me know your thoughts or any concerns, and I'll be more than happy to address them. If there's anything specific you'd like to discuss or if you're ready to take the next steps, please don't hesitate to reach out.",
       category: "Objections",
       subCat: 'Informed buying decision',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Request on line",
+      subject: "Request on line",
       body: `Hey its $ {user.username} from $ {dFees.dealer} you put in a request on line to take advantage of the current promotions, which unit were you looking for?`,
       category: "Follow-ups",
       subCat: 'Request on line',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "When is a good time to call?",
+      subject: "When is a good time to call?",
       body: `Hey its $ {user.username} from $ {dFees.dealer} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?`,
       category: "Follow-ups",
       subCat: 'When is a good time to call?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "What's holding you back?",
+      subject: "What's holding you back?",
       body: "Hello! I hope you're having a fantastic day. I wanted to follow up with you regarding the 850. Is there anything specific that's been holding you back from moving forward? I'm here to assist you in making an informed buying decision and to promptly address any questions or concerns you may have. Please don't hesitate to let me know, and I'll be more than happy to help.",
       category: "Objections",
       subCat: `What's holding you back?`,
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "First text message",
+      subject: "First text message",
       body: "Hey its $ {user.username} from $ {dFees.dealer} I just called but your probably tied up give me a call or text when you can and we can go over that unit you were looking for",
       category: "Follow-ups",
       subCat: `First text message`,
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "First text message - fb reserve",
+      subject: "First text message - fb reserve",
       body: "Hey { Client - First name } it's me from Freedom HD, you requested to reserve the { Current Vehicle - Model } on facebook and have a rep get in contact with you. When is a good time for me to call you back, would later on today work or tomorrow?",
       category: "Follow-ups",
       subCat: `First text message - fb reserve`,
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "After hours invalid email",
+      subject: "After hours invalid email",
       body: "Hey { Client - First name } its { User - First name } from Freedom, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       category: "Follow-ups",
       subCat: `After hours invalid email`,
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Were there any other questions or concerns",
+      subject: "Were there any other questions or concerns",
       body: "I wanted to follow up on our last correspondence. Were there any other questions or concerns that were keeping you back from moving forward? I want to make sure you have all the information you need before making an informed buying decision. I'm here to make the process easy for you.",
       category: "Objections",
       subCat: 'Were there any other questions or concerns8',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Receiving significant interest",
+      subject: "Receiving significant interest",
       body: "I hope you're having a great day! I wanted to check in and see if you have any additional questions or concerns regarding the Street Glide. We've received significant interest in this model, and I want to ensure you don't miss the chance to own one at the price we discussed. If you're ready to proceed, please let me know, and I'll be delighted to assist you with the purchase process.",
       category: "Follow-ups",
       subCat: 'Receiving significant interest',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Aim to make the buying process effortless",
+      subject: "Aim to make the buying process effortless",
       body: "Which day works best for you? My aim is to make the buying process as effortless as possible for my customers. If you prefer, we can handle everything over the phone to ensure convenience on your end. I understand the importance of a hassle-free experience because I'm also a consumer, and I know how frustrating it can be when the process isn't seamless.  I take pride in tailoring the buying process to meet your unique needs, whether it's your first purchase or if you're a seasoned buyer. Even if you're too busy to visit the store, we can manage everything efficiently through email or phone until it's time for pickup. Your satisfaction is my priority, and I'm here to make it as easy as possible for you.",
       category: "Follow-ups",
       subCat: 'Aim to make the buying process effortless',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Walk through process",
+      subject: "Walk through process",
       body: "Allow me to walk you through our sales process. Since you've already visited our dealership, we can efficiently handle most of the steps over the phone or through email. To get the ball rolling, I'll need a picture of the front of your driver's license. This will help us prepare your file and move things along smoothly.  Additionally, to secure the unit while we work on your approval, a $500 deposit is required, which you can conveniently put on your credit card. You have the option to either call me with your card number or send a picture of the front and back if you're busy at work and prefer not to make a phone call.  Once we have the necessary details, our sales manager will assemble your file and forward it to our business manager, who will reach out to you to facilitate the approval process. Once you're approved, the business manager will coordinate a pickup date with you. During the pickup, I'll be there to assist you with the vehicle explanation and help you load it if needed. We have ramps available for your convenience. Please note that while we strive to ensure a smooth loading and unloading process, we cannot be held liable for any incidents during these activities. Rest assured, I've never encountered any issues before, and I'm confident in my ability to assist you with loading and securing your purchase.",
       category: "Follow-ups",
       subCat: 'Walk through process',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Create urgency with pricing - seasonal",
+      subject: "Create urgency with pricing - seasonal",
       body: "As the holidays approach, I understand that many folks might be considering waiting until after Christmas to make a move on their new bike purchase. While I'm more than happy to assist you {Client - First Name} whenever you decide, I wanted to ensure you're aware of the incredible promotions currently available. Our used bikes are now priced at what we paid for them on trade, presenting an unbeatable opportunity for savvy buyers. For new bikes, we're offering promotional rates as low as 1.99%, coupled with generous discounts. These rates are so remarkable that I don't foresee them being this low until next winter. If you choose to wait until after Christmas, I'll be ready to assist you. However, given the exceptional nature of these deals, waiting might mean missing out on substantial savings.  Feel free to reach out if you have any questions or if you'd like to discuss these promotions further. Looking forward to helping you make the best decision for your bike purchase! If I don't see or talk to you again before the Holidays, Merry Christmas {Client - First Name}.",
       category: "Follow-ups",
       subCat: 'Create urgency with pricing - seasonal',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "1 day after pick up",
+      subject: "1 day after pick up",
       body: " I want to express my gratitude once more for choosing us, { Client - First name }. I hope you find great joy in your { Current Vehicle - Model } for the years ahead. If you ever have questions, encounter any issues, or anything else comes to mind, please don't hesitate to reach out. I'm here and more than willing to assist. Even if you believe it's something minor, I value your feedback to ensure your purchase was absolutely perfect.",
       category: "Automation",
       subCat: '1 day after pick up',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "After first visit no phone # provided",
+      subject: "After first visit no phone # provided",
       body: "Hey {Client - First Name} It was great talking to you about the {Wanted vehicle - Model} you are interested in.  If any questions or concerns come up let me know and I will be more than happy to address them. I'll follow up with you in a couple of days to give you time to consider any parts or accessories you would like to add. If you want to move forward before I follow up, text or call me and we can lock it in for you.",
       category: "Automation",
       subCat: 'After first visit no phone # provided',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "After first visit - set up time for a call",
+      subject: "After first visit - set up time for a call",
       body: " Hey { Client - First name } It was great talking to you about the { Wanted Vehicle - Model }. If any questions come up let me know and I will be more than happy to address them.",
       category: "Automation",
       subCat: 'After first visit - set up time for a call',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "After hours invalid email",
+      subject: "After hours invalid email",
       body: " Hey { Client - First name } its { User - First name } from dealer, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       category: "Automation",
       subCat: 'After hours invalid email',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "First text message",
+      subject: "First text message",
       body: " Hey { Client - First name } it's me from dealer, you requested that rep get in contact with you about the { Current Vehicle - Model } you were looking at online. When is a good time for me to call you back, would later on today work or tomorrow?",
       category: "Automation",
       subCat: 'First text message',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Call/text combo",
+      subject: "Call/text combo",
       body: "Hey { Client - First name } it's me from dealer, I just called but your probably tied up. When is a good time for us to talk about the { Current Vehicle - Model }, would later this afternoon work, or is tomorrow better?",
       category: "Automation",
       subCat: 'Call/text combo',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Asking for objections",
+      subject: "Asking for objections",
       body: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information you need before buying so you make an informed buying decision, I'm hear to help make the process easy for you.",
       category: "Automation",
       subCat: 'Asking for objections',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "I can't find insurance",
+      subject: "I can't find insurance",
       body: "For insurance, whether it's bikes or any motorcycle, call David bodnar. I've been with him now for 8 years and hes with the times. If anything changes I can just text him whatever the details are, like an ownership, and he will quote/write it up immediately. He handles all of his customers like this and his rates are the best too. I switched to him because my company dropped me due to my zx-10rr, ever since switching it hasn't cost me more than $950. I've switched everything to him because of his rates, every person that calls him.... switches seriously. Office 905-364-4007 cell 289-380-3824 david.bodnar@thebig.ca. For the person reading this dont take this as a plug. But whatever market your in, get a guy for these types of overcomes. If you live in ontario, you now have one. I've been working with david for years. He has helped me and I have helped him. It's been a great relationship. If you don't live in ontario try to find someone like him. He took the approach of selling motorcycle insurance for no profit... at the time of writing this. A lot of agents wish they had someone like me. I opened a city up to him that he didn't have access to. He was so succssful in my city that I would hear about him from other people that I had never met. I was his first client in the city, this is a common objection so i pushed him hard on my clients because he helped me so much with my insurance. ",
       category: "Overcome",
       subCat: `I can't find insurance`,
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "I want to compare with other brands before making a decision.",
+      subject: "I want to compare with other brands before making a decision.",
       body: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our Street Glide, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the Street Glide. Let me know what you need and I'll be happy to help you.",
       category: "Overcome",
       subCat: 'I want to compare with other brands before making a decision.',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Price",
+      subject: "Price",
       body: "Unfortunately whatever you get at the motorcycle show will probably be more money than a 22, if we have it in stock. Due to the rising costs of the pandemic there will be a new fee on sea-doo as they have introduced to every other line up so far. I don't know what that cost will be for the new fee but it will be called a commodity fee set by brp so the dealers will have to pay for it which means so will the customer.  MSRP's will also be rising and our cost has gone up so the discounts will be smaller. I was talking to an old retired dealer owner who had brp, he was like I don't know how you guys do it, its smaller margins and costs just keep going up and the dealers cant seem to keep people. I'm not saying don't go because you never know when a dealer owner needs to pay his staff or his bills so he doesn't loose his location, but the days of cost units for sale are done. Here on out any consumer buying something at cost will be hurting that dealer horribly and it will be one step closer to shutting its doors. I wish this wasn't the case because I'm a consumer as well but ive been in 2 dealers my whole life and ive seen doors close over and over again, there's almost no more mom and pop shops in canada and they all closed in the last 5 years. It happened with cars, you have huge car groups behind the car dealers with almost no soul but own everything. Sales people come and go more than you clear the snow off youre driveway and you don't have that trusted sales person who you will beleive what they say because they have been doing it forever. I drive my brands and sell what I beleive in, you can't find that in a lot of dealers. When was the last time you bought a ford or ram truck and that sales person loved it so much he bought it with his own money. I knew more about the ram I never owned than the person that sold it to me, he had a ford.",
       category: "Overcome",
       subCat: 'Price',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Whats the rate? ",
+      subject: "Whats the rate? ",
       body: "The finance person didn't give me an exact rate, when you sit down with the finance manager we check your credit and match you with an institution that will give you the best rate. Every institution has different thresholds on how they evaluate credit, investments and so on but because of our working relationships with the bank managers we know each bank is looking for in a customer and they evaluate each customer and assign rates.",
       category: "Overcome",
       subCat: 'Whats the rate?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Whats the rate right now?",
+      subject: "Whats the rate right now?",
       body: "It's hard to answer that because everyones rate is going to be different. We deal with several institutions so when we get your information and run your credit we can match you with the best bank.  As you know not all banks treat investments and current customer loans the same. Were not here to just sell you one thing were here to sell you multiple of units down the road when you want to upgrade so we will do our best to get the rate you deserve. ",
       category: "Overcome",
       subCat: 'Whats the rate right now?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Insurance Broker",
+      subject: "Insurance Broker",
       body: "For insurance, whether it's bikes or any motorcycle, call David Bodnar. I've been with him now for 8 years and he's with the times. If anything changes I can just text him whatever the details are, like an ownership, and he will quote/write it up immediately. He handles all of his customers like this and his rates are the best too. I switched to him because my company dropped me due to my zx-10rr, ever since switching it hasn't cost me more than $950. I've switched everything to him because of his rates, every person that calls him.... switches seriously. Office 905-364-4007 cell 289-380-3824 david.bodnar@thebig.ca. For the person reading this don't take this as a plug. But whatever market your in, get a guy for these types of overcomes. If you live in Ontario, you now have one. I've been working with David for years. He has helped me and I have helped him. It's been a great relationship. If you don't live in Ontario try to find someone like him. He took the approach of selling motorcycle insurance for no profit... at the time of writing this. A lot of agents wish they had someone like me. I opened a city up to him that he didn't have access to. He was so successful in my city that I would hear about him from other people that I had never met. I was his first client in the city, this is a common objection so i pushed him hard on my clients because he helped me so much with my insurance.",
       category: "Overcome",
       subCat: 'Insurance Broker',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Comparing models",
+      subject: "Comparing models",
       body: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our Street Glide, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the Street Glide. Let me know what you need and I'll be happy to help you.",
       category: "Overcome",
       subCat: 'Comparing models',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Current Rates",
+      subject: "Current Rates",
       body: "The finance person didn't give me an exact rate, when you sit down with the finance manager we check your credit and match you with an institution that will give you the best rate. Every institution has different thresholds on how they evaluate credit, investments and so on but because of our working relationships with the bank managers we know each bank is looking for in a customer and they evaluate each customer and assign rates.",
       category: "Overcome",
       subCat: 'Current Rates',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Current Rates 2",
+      subject: "Current Rates 2",
       body: "It's hard to answer that because everyones rate is going to be different. We deal with several institutions so when we get your information and run your credit we can match you with the best bank.  As you know not all banks treat investments and current customer loans the same. Were not here to just sell you one thing were here to sell you multiple of units down the road when you want to upgrade so we will do our best to get the rate you deserve. ",
       category: "Overcome",
       subCat: 'Current Rates 2',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "let me see what I can do",
+      subject: "let me see what I can do",
       body: "Hey just wanted to follow up to our conversations, if your not ready to buy right now when do you want me to follow up with you? I want to respect your time, that way im not wasting your it and bugging you every couple of days.",
       category: "Overcome",
       subCat: 'let me see what I can do',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "What can we do to make it happen",
+      subject: "What can we do to make it happen",
       body: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
       category: "Overcome",
       subCat: 'What can we do to make it happen',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "When do you want me to call u",
+      subject: "When do you want me to call u",
       body: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
       category: "Overcome",
       subCat: 'When do you want me to call u',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Push sale at discounted price",
+      subject: "Push sale at discounted price",
       body: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed, but will be ending soon. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
       category: "Overcome",
       subCat: 'Push sale at discounted price',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Appreciate your diligence in making the right decision",
+      subject: "Appreciate your diligence in making the right decision",
       body: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
       category: "Overcome",
       subCat: 'Appreciate your diligence in making the right decision',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Let me take your offer to my boss",
+      subject: "Let me take your offer to my boss",
       body: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
       category: "Overcome",
       subCat: 'Let me take your offer to my boss',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Don't like it when you see it? heres your refund",
+      subject: "Don't like it when you see it? heres your refund",
       body: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
       category: "Closes",
       subCat: "Don't like it when you see it? heres your refund",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Worried about the finance numbers",
+      subject: "Worried about the finance numbers",
       body: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
       category: "Closes",
       subCat: "Worried about the finance numbers",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Nut up or shut up and just close him",
+      subject: "Nut up or shut up and just close him",
       body: "Were there any questions or concerns you had that was stopping you from moving forward?",
       category: "Closes",
       subCat: "Stopping you from moving forward?",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Asking for objections",
+      subject: "Asking for objections",
       body: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information you need before buying so you make an informed buying decision, I'm hear to help make the process easy for you.",
       category: "Overcome",
       subCat: 'Asking for objections',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Satisfied with the deal?",
+      subject: "Satisfied with the deal?",
       body: "It seems like you might not be completely satisfied with the deal we're working on. No worries! I can't promise to get everything you want, but I'd be more than happy to take your conditions, present them to the sales manager, and negotiate on your behalf. I'll even throw in an arm-wrestling match with him to squeeze the best possible deal for you! In all seriousness, your satisfaction is my top priority, and I'm here to work together on finding a solution that aligns better with your expectations.",
       category: "Overcome",
       subCat: 'Satisfied with the deal?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Satisfied with the deal?",
+      subject: "Satisfied with the deal?",
       body: "It seems like you might not be completely satisfied with the deal we're working on. No worries! I can't promise to get everything you want, but I'd be more than happy to take your conditions, present them to the sales manager, and negotiate on your behalf. I'll even throw in an arm-wrestling match with him to squeeze the best possible deal for you! In all seriousness, your satisfaction is my top priority, and I'm here to work together on finding a solution that aligns better with your expectations.",
       category: "Follow-ups",
       subCat: 'Satisfied with the deal?',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Concerns? let me taking them to the boss lets get them resolved",
+      subject: "Concerns? let me taking them to the boss lets get them resolved",
       body: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
       category: "Overcome",
       subCat: 'Concerns? let me taking them to the boss lets get them resolved',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "Client - bdc - source FB - coms - text",
+      subject: "Client - bdc - source FB - coms - text",
       body: `Hey it's {user.username} from {dFees.dealer}, you requested to have a rep contact you about the { Current Vehicle - Model } on facebook. When is a good time for me to call you back, would later on today work or tomorrow? If text is the only way of contact, that would be good as well.`,
       category: "Texting",
       subCat: 'Client - bdc - source FB - coms - text',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "Client - 24 hour reminder for in store appt",
+      subject: "Client - 24 hour reminder for in store appt",
       body: "I wanted to remind you about our appointment tomorrow. If, for any reason, you can't make it, please let me know, and we can reschedule. Otherwise, I'm looking forward to seeing you tomorrow!",
       category: "Texting",
       subCat: 'Client - 24 hour reminder for in store appt',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "Client - 24 hour reminder for bike pu",
+      subject: "Client - 24 hour reminder for bike pu",
       body: "I wanted to remind you about your motorcycle pick-up tomorrow. If, for any reason, you can't make it, please let me know, and we can reschedule. Otherwise, I'm looking handing off your new bike to you so you can hit the open road.",
       category: "Texting",
       subCat: 'Client - 24 hour reminder for bike pu',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "After meeting",
+      subject: "After meeting",
       body: "Hey { Client - Civility } { Client - First name }, it's { User - First name } from { Dealer - Name }. It was nice meeting you today. Do not hesitate if you have any questions. Have a great day!",
       category: "Texting",
       subCat: 'After meeting',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Close 1",
+      subject: "Close 1",
       body: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the Street Glide. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
       category: "Closes",
       subCat: 'Close 1',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "You can pocket some great savings",
+      subject: "You can pocket some great savings",
       body: "I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the Street Glide. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let's quickly apply to see where you sit, if you don't qualify no harm done but if you do, than you can pocket some great savings!",
       category: "Closes",
       subCat: 'You can pocket some great savings',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Understand its a big decision",
+      subject: "Understand its a big decision",
       body: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the Street Glide is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
       category: "Closes",
       subCat: 'Understand its a big decision',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "To ensure that you have the opportunity to view and secure the unit",
+      subject: "To ensure that you have the opportunity to view and secure the unit",
       body: "To ensure that you have the opportunity to view and secure the unit, I recommend placing a deposit to reserve it until it arrives. This way, you'll prevent anyone else from purchasing it before you've had a chance to see it. The best part is, if you don't like it when you see it, you'll receive a full deposit refund. On the other hand, if you fall in love with it, you won't miss the opportunity to make it yours.",
       category: "Closes",
       subCat: 'To ensure that you have the opportunity to view and secure the unit',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "I take pride in being the best salesperson",
+      subject: "I take pride in being the best salesperson",
       body: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible. It's clear that you may have some reservations about the current deal. If you don't mind sharing, I'd love to know what we can adjust or improve to make it a more attractive offer for you. Your feedback is invaluable, and I'm here to work together on a solution that meets your needs and expectations.",
       category: "Closes",
       subCat: 'I take pride in being the best salesperson',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Motorcycle purchase is a significant decision",
+      subject: "Motorcycle purchase is a significant decision",
       body: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
       category: "Closes",
       subCat: 'Motorcycle purchase is a significant decision',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Emotional",
+      subject: "Emotional",
       body: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the Street Glide as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the Street Glide, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
       category: "Closes",
       subCat: 'Emotional',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Felt",
+      subject: "Felt",
       body: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the Street Glide have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the Street Glide for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the Street Glide can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
       category: "Closes",
       subCat: 'Felt',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Problem",
+      subject: "Problem",
       body: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
       category: "Closes",
       subCat: 'Problem',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Alternative",
+      subject: "Alternative",
       body: "Present the customer with two options and ask them to choose. It's as simple as that.",
       category: "Closes",
       subCat: 'Alternative',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Offer to refund deposit on pickup",
+      subject: "Offer to refund deposit on pickup",
       body: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license. This will allow us to initiate the process for our finance manager to go over the application with you.  We understand that making a financial commitment is an important step, and we want you to feel comfortable. If you're hesitant about putting money down for financing, please know that it's perfectly okay. In fact, we have a flexible approach, and we'll refund the deposit when you come to pick up your new bike.  We genuinely want to make this process as smooth and convenient for you as possible. Could you please let us know which payment option you're most comfortable with?",
       category: "Closes",
       subCat: 'Offer to refund deposit on pickup',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Concerns about the deal we're working on, and I truly value your feedback",
+      subject: "Concerns about the deal we're working on, and I truly value your feedback",
       body: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
       category: "Closes",
       subCat: "Concerns about the deal we're working on, and I truly value your feedback",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Recommend placing a deposit to reserve the unit",
+      subject: "Recommend placing a deposit to reserve the unit",
       body: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
       category: "Closes",
       subCat: 'Recommend placing a deposit to reserve the unit',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Trial",
+      subject: "Trial",
       body: "Ask the customer questions to gauge their level of interest.",
       category: "Closes",
       subCat: 'Trial',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Summary",
+      subject: "Summary",
       body: "Summarize the key benefits of the product and ask for the sale.",
       category: "Closes",
       subCat: 'Summary',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "If your worried about the finance numbers",
+      subject: "If your worried about the finance numbers",
       body: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
       category: "Closes",
       subCat: 'If your worried about the finance numbers',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "Asking for objections",
+      subject: "Asking for objections",
       body: "Were there any questions or concerns you had that was stopping you from moving forward?",
       category: "Texting",
       subCat: 'Asking for objections',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "Not ready right now?",
+      subject: "Not ready right now?",
       body: "Hey Mike just wanted to follow up to our conversations, if your not ready to buy right now when do you want me to follow up with you? that way I'm not wasting your time and bugging you every couple of days. ",
       category: "Texting",
       subCat: 'Not ready right now?',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "Respone to online request?",
+      subject: "Respone to online request?",
       body: `Hey its {user.username} from {dFees.dealer} you put in a request on line to take advantage of the current promotions, which unit were you looking for?`,
       category: 'Texting',
       subCat: 'Respone to online request?',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "You requested that rep get in contact with you ",
+      subject: "You requested that rep get in contact with you ",
       body: `Hey its {user.username} from {dFees.dealer} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?`,
       category: "Texting",
       subCat: 'You requested that rep get in contact with you ',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "Call/text combo - auto",
+      subject: "Call/text combo - auto",
       body: `Hey its {user.username} from {dFees.dealer} I just called but your probably tied up give me a call or text when you can and we can go over that unit you were looking for`,
       category: "Texting",
       subCat: 'Call/text combo - auto',
     },
     {
       email: "skylerzanth@outlook.com",
-      name: "After hours invalid email",
+      subject: "After hours invalid email",
       body: "Hey { Client - First name } its { User - First name } from Freedom, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       category: "Texting",
       subCat: 'After hours invalid email',
@@ -10694,112 +10856,112 @@ export async function seedTemplates() {
 
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Check in and see if you had any further questions or concerns",
+      subject: "Check in and see if you had any further questions or concerns",
       body: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the Street Glide. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
       category: "Closes",
       subCat: 'Check in and see if you had any further questions or concerns',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "I noticed you haven't responded to my previous email",
+      subject: "I noticed you haven't responded to my previous email",
       body: "I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the Street Glide. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let me know if you're interested and we can discuss next steps.",
       category: "Closes",
       subCat: "I noticed you haven't responded to my previous email",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "I understand that purchasing a motorcycle can be a big decision",
+      subject: "I understand that purchasing a motorcycle can be a big decision",
       body: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the Street Glide is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
       category: "Closes",
       subCat: "I understand that purchasing a motorcycle can be a big decision",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "if you don't like it when you see it, you'll receive a full deposit refund",
+      subject: "if you don't like it when you see it, you'll receive a full deposit refund",
       body: "To ensure that you have the opportunity to view and secure the unit, I recommend placing a deposit to reserve it until it arrives. This way, you'll prevent anyone else from purchasing it before you've had a chance to see it. The best part is, if you don't like it when you see it, you'll receive a full deposit refund. On the other hand, if you fall in love with it, you won't miss the opportunity to make it yours.",
       category: "Closes",
       subCat: "if you don't like it when you see it, you'll receive a full deposit refund",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "It's clear that you may have some reservations about the current deal.",
+      subject: "It's clear that you may have some reservations about the current deal.",
       body: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible. It's clear that you may have some reservations about the current deal. If you don't mind sharing, I'd love to know what we can adjust or improve to make it a more attractive offer for you. Your feedback is invaluable, and I'm here to work together on a solution that meets your needs and expectations.",
       category: "Closes",
       subCat: "It's clear that you may have some reservations about the current deal.",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Test Drives",
+      subject: "Test Drives",
       body: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
       category: "Closes",
       subCat: 'Test Drives',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Investing in unforgettable memories",
+      subject: "Investing in unforgettable memories",
       body: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the Street Glide as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the Street Glide, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
       category: "Closes",
       subCat: 'Investing in unforgettable memories',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "It's stories like these that remind us",
+      subject: "It's stories like these that remind us",
       body: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the Street Glide have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the Street Glide for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the Street Glide can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
       category: "Closes",
       subCat: "It's stories like these that remind us",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "I appreciate your diligence in making the right decision",
+      subject: "I appreciate your diligence in making the right decision",
       body: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
       category: "Closes",
       subCat: 'I appreciate your diligence in making the right decision',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Alternative 3",
+      subject: "Alternative 3",
       body: "Present the customer with two options and ask them to choose. It's as simple as that.",
       category: "Closes",
       subCat: 'Alternative 3',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "We'll refund the deposit when you come to pick up your new bike",
+      subject: "We'll refund the deposit when you come to pick up your new bike",
       body: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license. This will allow us to initiate the process for our finance manager to go over the application with you.  We understand that making a financial commitment is an important step, and we want you to feel comfortable. If you're hesitant about putting money down for financing, please know that it's perfectly okay. In fact, we have a flexible approach, and we'll refund the deposit when you come to pick up your new bike.  We genuinely want to make this process as smooth and convenient for you as possible. Could you please let us know which payment option you're most comfortable with?",
       category: "Closes",
       subCat: "We'll refund the deposit when you come to pick up your new bike",
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Direct 3",
+      subject: "Direct 3",
       body: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
       category: "Closes",
       subCat: 'Direct 3',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Direct 4",
+      subject: "Direct 4",
       body: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
       category: "Closes",
       subCat: 'Direct 4',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Trial 2",
+      subject: "Trial 2",
       body: "Ask the customer questions to gauge their level of interest.",
       category: "Closes",
       subCat: 'Trial 2',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Summary 2",
+      subject: "Summary 2",
       body: "Summarize the key benefits of the product and ask for the sale.",
       category: "Closes",
       subCat: 'Summary 2',
     },
     {
       userEmail: "skylerzanth@outlook.com",
-      name: "Worried about finance figures?",
+      subject: "Worried about finance figures?",
       body: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
       category: "Closes",
       subCat: 'Worried about finance figures?',

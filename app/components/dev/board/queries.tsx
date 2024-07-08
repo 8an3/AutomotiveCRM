@@ -97,10 +97,10 @@ export async function createBoard(userId: string, name: string, color: string) {
   });
 }
 
-export async function getHomeData(userId: string) {
+export async function getHomeData(email: string) {
   return prisma.board.findMany({
     where: {
-      userId: userId,
+      userEmail: email,
     },
   });
 }

@@ -60,6 +60,10 @@ export default function SearchFunction() {
     window.addEventListener('keydown', listener)
     return () => window.removeEventListener('keydown', listener)
   }, [])
+
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
   return (
     <div>
       <TooltipProvider>
@@ -82,6 +86,7 @@ export default function SearchFunction() {
           setShow(false)
         }}
         hidden={!show}
+        className='bg-black/80'
         style={{
           position: 'fixed',
           top: 0,
@@ -89,22 +94,23 @@ export default function SearchFunction() {
           width: '100vw',
           height: '100vw',
           margin: 'auto',
-          background: 'hsla(0, 100%, 100%, 0.9)',
+          //   background: 'hsla(0, 100%, 100%, 0.9)',
           zIndex: 100,
           overflow: 'hidden',
         }}
       >
         <div
+          className='border border-border bg-background text-foreground overflow-y-auto'
           style={{
-            background: 'white',
+            //   background: 'white',
             width: 600,
-            maxHeight: '900px',
-            height: '900px',
+            maxHeight: '700px',
+            height: '700px',
             overflow: 'auto',
             margin: '20px auto',
-            border: 'solid 1px #ccc',
+            // border: 'solid 1px #ccc',
             borderRadius: 10,
-            boxShadow: '0 0 10px #ccc',
+            // boxShadow: '0 0 10px #ccc',
           }}
           onClick={(event) => {
             event.stopPropagation()
@@ -119,7 +125,7 @@ export default function SearchFunction() {
 
             <input
               ref={ref}
-              placeholder="search"
+              placeholder="Search"
               type="search"
               name="q"
               onKeyDown={(event) => {
@@ -133,15 +139,15 @@ export default function SearchFunction() {
                 }
               }}
               onChange={(event) => { search.submit(event.currentTarget.form) }}
-              className="text-[#000] bg-white"
+              className="bg-background border-border border text-foreground"
               style={{
                 width: '100%',
                 padding: '0.5rem 1rem',
-                fontSize: '1.5em',
+                // fontSize: '1.5em',
                 position: 'sticky',
                 top: 0,
-                border: 'none',
-                borderBottom: 'solid 1px #ccc',
+                //    border: 'none',
+                borderBottom: 'solid 1px #262626',
                 outline: 'none',
               }}
             />
@@ -155,10 +161,10 @@ export default function SearchFunction() {
                   >
                     <Button
                       variant='ghost'
-                      className='w-[99%] hover:bg-[#e6e7e8] rounded-[6px] my-2 h-[75px] hover:text-black mx-auto'
+                      className='w-[99%] hover:bg-background/40 rounded-[6px] my-2 h-[75px] hover:text-black'
                     >
                       <div>
-                        <p className="text-2xl text-left text-[#000]">{result.firstName} {result.lastName}</p>
+                        <p className="text-2xl text-left text-foreground"> {capitalizeFirstLetter(result.firstName)} {capitalizeFirstLetter(result.lastName)}</p>
                         <p className='text-muted-foreground text-left '>{result.phone}</p>
                         <p className='text-muted-foreground text-left '>{result.email}</p>
                       </div>

@@ -140,6 +140,18 @@ import EmailPreview, { TemplatePreviewThree, TemplatePreviewTwo, TemplatePreview
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons";
 import { Calendar } from "~/components/ui/calendar";
 import { format } from "date-fns";
+import emitter from '~/routes/__authorized/dealer/emitter';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/alert-dialog"
 
 export let action = overviewAction;
 
@@ -181,10 +193,8 @@ export async function loader({ params, request }: DataFunctionArgs) {
   session.set("financeId", financeId);
   await commitPref(session);
   const brand = finance?.brand;
-  const notifications = await prisma.notificationsUser.findMany({
-    where: {
-      userEmail: email,
-    },
+  const emailTemplatesDropdown = await prisma.emailTemplatesForDropdown.findMany({
+    where: { userEmail: email },
   });
   if (brand === "Manitou") {
     const modelData = await getDataByModelManitou(finance);
@@ -197,10 +207,10 @@ export async function loader({ params, request }: DataFunctionArgs) {
       manOptions,
       sliderWidth,
       records,
-      notifications,
       user,
       tokens,
       email,
+      emailTemplatesDropdown,
       newLook,
     });
   }
@@ -215,11 +225,11 @@ export async function loader({ params, request }: DataFunctionArgs) {
       manOptions,
       sliderWidth,
       records,
-      notifications,
       user,
       tokens,
       email,
       newLook,
+      emailTemplatesDropdown
     });
   }
   if (brand === "Kawasaki") {
@@ -231,11 +241,11 @@ export async function loader({ params, request }: DataFunctionArgs) {
       deFees,
       sliderWidth,
       records,
-      notifications,
       user,
       tokens,
       email,
       newLook,
+      emailTemplatesDropdown
     });
 
   }
@@ -253,11 +263,11 @@ export async function loader({ params, request }: DataFunctionArgs) {
       bmwMoto2,
       sliderWidth,
       records,
-      notifications,
       user,
       tokens,
       email,
       newLook,
+      emailTemplatesDropdown
     });
 
   }
@@ -270,11 +280,11 @@ export async function loader({ params, request }: DataFunctionArgs) {
       deFees,
       sliderWidth,
       records,
-      notifications,
       user,
       tokens,
       email,
       newLook,
+      emailTemplatesDropdown
     });
 
   }
@@ -288,11 +298,11 @@ export async function loader({ params, request }: DataFunctionArgs) {
       deFees,
       sliderWidth,
       records,
-      notifications,
       user,
       tokens,
       email,
       newLook,
+      emailTemplatesDropdown
     });
 
   } else {
@@ -304,11 +314,10 @@ export async function loader({ params, request }: DataFunctionArgs) {
       deFees,
       sliderWidth,
       records,
-      notifications,
       user,
       tokens,
       email,
-      newLook,
+      newLook, emailTemplatesDropdown,
     });
 
   }
@@ -328,7 +337,7 @@ export function Overview({ outletSize }) {
     bmwMoto,
     bmwMoto2,
     user,
-    notifications,
+    emailTemplatesDropdown
   } = useLoaderData();
   const toFormat = new Date();
   const today = toFormat.toISOString();
@@ -1700,29 +1709,17 @@ export function Overview({ outletSize }) {
       desiredPayments: finance.desiredPayments,
     },
   ];
-  const customEmails = [
-    {
-      value: "Send Payments Custom",
-      label: "Send Payments",
-      template: "justPaymentsCustom",
+
+  const updatedEmailArray = email.concat(
+    emailTemplatesDropdown.map(template => ({
+      value: template.id,
+      label: template.subject,
+      template: 'customEmailDropdown' + template.id,
       financeId: finance.id,
-      desiredPayments: finance.desiredPayments,
-    },
-    {
-      value: "Full Breakdown Custom",
-      label: "Full Breakdown",
-      template: "fullBreakdownCustom",
-      financeId: finance.id,
-      desiredPayments: finance.desiredPayments,
-    },
-    {
-      value: "Full Breakdown W/ Options Custom",
-      label: "Full Breakdown W/ Options",
-      template: "FullBreakdownWOptionsCustom",
-      financeId: finance.id,
-      desiredPayments: finance.desiredPayments,
-    },
-  ];
+      // Add additional properties if they exist
+      ...(template.desiredPayments && { desiredPayments: template.desiredPayments }),
+    }))
+  );
   const [openEmail, setOpenEmail] = useState(false);
   const [emailLabel, setEmailLabel] = useState('');
   const [emailDesiredPayments, setEmailDesiredPayments] = useState('');
@@ -1765,14 +1762,21 @@ export function Overview({ outletSize }) {
       formData.append("financeId", financeId);
       formData.append("intent", 'email');
       submit(formData, { method: "post" });
-    }
-    if (template === "justPaymentsCustom" || template === "fullBreakdownCustom" || template === "FullBreakdownWOptionsCustom") {
+    } else if (template === "justPaymentsCustom" || template === "fullBreakdownCustom" || template === "FullBreakdownWOptionsCustom") {
       console.log(newValue, template, 'custom emails')
 
       setOpenEmail(true);
-    }
-    if (template === 'Custom-Templated-Emails') {
+    } else if (template === 'Custom-Templated-Emails') {
       return null
+    } else {
+      console.log('hit id form')
+      const formData = new FormData();
+      formData.append("value", newValue);
+      formData.append("modelData", modelData);
+      formData.append("template", template);
+      formData.append("financeId", financeId);
+      formData.append("intent", 'email');
+      submit(formData, { method: "post" });
     }
   }
   const newBody = formData.body
@@ -1789,9 +1793,63 @@ export function Overview({ outletSize }) {
     formData.append("intent", 'email');
     submit(formData, { method: "post" });
   }
+  //const [open, setOpen] = useState(false);
+  const [key, setKey] = useState(0);
+  const [lockData, setLockData] = useState();
+  const [note, setNote] = useState()
+  let data = useActionData<typeof action>();
+
+  async function SubmitLocked() {
+    const formData = new FormData();
+    formData.append("locked", true);
+    formData.append("salesEmail", user.email);
+    formData.append("financeId", finance.id);
+    formData.append("unit", `${finance.year} ${finance.brand} ${finance.model}`);
+    formData.append("customerName", finance.firstName + ' ' + finance.lastName,);
+    formData.append("intent", 'clientTurnover');
+    submit(formData, { method: "post" });
+
+    data = {
+      ...data,
+      lockedId: data.id,
+    }
+    setLockData(data)
+  }
+
+  useEffect(() => {
+    const intervalFunction = async () => {
+      console.log('Interval fired1212');
+      const getLocked = await prisma.lockFinanceTerminals.findUnique({ where: { id: lockData.lockedId } })
+      if (getLocked.locked === false) {
+        setLockData(getLocked)
+        setOpen(true)
+      }
+    };
+    intervalFunction()
+    const intervalId = setInterval(intervalFunction, 120000); // 120000 ms = 120 seconds
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   return (
     <div className="">
+      {lockData && (
+        <AlertDialog key={key} open={open} onOpenChange={setOpen}>
+          <AlertDialogContent className='border border-border bg-background text-foreground'>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Client Turnover</AlertDialogTitle>
+              <AlertDialogDescription>
+                <p>{lockData.financeEmail} will see your client shortly.</p>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
       <div className="mx-auto mb-10 mt-10">
         <Card className=" mx-auto w-[550px] rounded-md text-foreground">
           <CardHeader className="t-rounded-md flex flex-row items-start bg-muted/50 ">
@@ -1802,12 +1860,10 @@ export function Overview({ outletSize }) {
             </div>
             <div className="ml-auto flex items-center gap-1">
               <Select
-                //disabled={saved === false}
                 onValueChange={(value) => {
                   setOpen(false);
                   console.log("click");
-                  //const customEmail = customEmails.find((email) => email.value === value);
-                  const selectedFramework = email.find((framework) => framework.value === value);
+                  const selectedFramework = updatedEmailArray.find((framework) => framework.value === value);
 
                   const newValue = value
                   const financeId = finance.id
@@ -1821,22 +1877,22 @@ export function Overview({ outletSize }) {
                   if (selectedFramework.template === "justPayments" || selectedFramework.template === "fullBreakdown" || selectedFramework.template === "justPaymentsCustom") {
                     console.log(selectedFramework, 'selectedFramework')
                     SubmitTheForm(newValue, template, financeId);
-
-                  }
-                  if (selectedFramework.template === "justPaymentsCustom" || selectedFramework.template === "fullBreakdownCustom" || selectedFramework.template === "FullBreakdownWOptionsCustom") {
-                    console.log(selectedFramework, 'customEmail')
-                    setOpenEmail(true);
-                  }
-
+                  } else
+                    if (selectedFramework.template === "justPaymentsCustom" || selectedFramework.template === "fullBreakdownCustom" || selectedFramework.template === "FullBreakdownWOptionsCustom") {
+                      console.log(selectedFramework, 'customEmail')
+                      setOpenEmail(true);
+                    } else {
+                      SubmitTheForm(newValue, template, financeId);
+                    }
                 }}
               >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select email..." />
+                <SelectTrigger className="w-[180px] bg-background">
+                  <SelectValue className='bg-background' placeholder="Select email..." />
                 </SelectTrigger>
                 <SelectContent className='bg-background text-foreground border-border'>
                   <SelectGroup>
                     <SelectLabel>Emails</SelectLabel>
-                    {email.map((framework) => (
+                    {updatedEmailArray.map((framework) => (
                       <SelectItem className="cursor-pointer   rounded-md  hover:bg-muted/50" key={framework.value} value={framework.value}>
                         {framework.label}
                       </SelectItem>
@@ -1882,20 +1938,10 @@ export function Overview({ outletSize }) {
                         toast.success(
                           `Informing finance managers of requested turnover...`
                         );
-                        submit;
+                        SubmitLocked()
                       }}
                     >
-                      <input
-                        type="hidden"
-                        name="intent"
-                        value="financeTurnover"
-                      />
-                      <input type="hidden" name="locked" value={lockedValue} />
-                      <input
-                        type="hidden"
-                        name="financeId"
-                        value={finance.id}
-                      />
+
                       Finance Turnover
                     </DropdownMenuItem>
                   </Form>

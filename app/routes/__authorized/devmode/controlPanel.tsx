@@ -762,14 +762,14 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <div className=' h-auto max-h-[65vh] overflow-y-scroll'>
-                      {Object.entries(organizedTasks).map(([type, tasks]) => (
-                        <div key={type}>
-                          <h4 className='mt-3 ml-3 text-picton-blue-50'>{type}</h4>
+                      {Object.entries(organizedTasks).map(([column, tasks]) => (
+                        <div key={column}>
+                          <h4 className='mt-3 ml-3 text-picton-blue-50'>{column}</h4>
                           <Separator />
                           {tasks.map((task) => (
-                            <div key={task.desc} className="ml-3 p-3 mr-3 flex items-center  mt-3 shadow-md border border-border text-foreground  rounded ">
+                            <div key={task.desc} className="ml-3 p-3 mr-3 flex items-center  mt-3 shadow-md border border-border text-foreground  rounded-lg">
                               <p color="my-3  ">
-                                {task.desc}
+                                {task.item}
                               </p>
                             </div>
                           ))}

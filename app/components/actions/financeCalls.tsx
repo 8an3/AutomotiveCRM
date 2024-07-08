@@ -25,6 +25,7 @@ import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions
 import { QuoteServerActivix } from '~/utils/quote/quote.server';
 import twilio from 'twilio';
 import axios from "axios";
+import emitter from '~/routes/__authorized/dealer/emitter';
 
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
@@ -43,7 +44,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session = await sixSession(request.headers.get("Cookie"));
   const sliderWidth = session.get("sliderWidth");
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user.email, }, });
-  const finance = await prisma.finance.findMany({ where: { userEmail: user?.email }, });
+  const finance = await prisma.finance.findMany({ where: { financeManager: user?.email }, });
   const brand = finance?.brand;
   const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
@@ -272,12 +273,17 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   }
   const userAgent = request.headers.get('User-Agent');
   const isMobileDevice = checkForMobileDevice(userAgent);
-  const products = await prisma.financeProduct.findMany({
+  let products = await prisma.board.findMany({
+    where: { name: 'Finance Product Board', },
     include: {
-      financeProvidor: true,
-      financePrice: true,
+      items: true,
+      columns: { orderBy: { order: "asc" } },
     }
   })
+  products = products[0]
+  const emailTemplatesDropdown = await prisma.emailTemplatesForDropdown.findMany({
+    where: { userEmail: email },
+  });
   return json({
     ok: true,
     getDemoDay,
@@ -297,7 +303,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     request,
     wishlistMatches,
     callToken,
-    convoList, username, newToken, password, getText, isMobileDevice, email, products
+    convoList, username, newToken, password, getText, isMobileDevice, email, products, emailTemplatesDropdown,
     // conversationsData
   }, { headers: { "Set-Cookie": await commitSession(session2), }, })
 }
@@ -968,6 +974,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   if (!user) {
     redirect('/login')
   }
+
   const userId = user?.id;
   const intent = formPayload.intent;
   if (intent === 'demoDayEdit') {
@@ -1353,14 +1360,30 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
     const claim = await prisma.lockFinanceTerminals.update({
       where: { id: 1 },
-      data: { locked: locked, financeId: formData.financeId }
+      data: {
+        financeId: formData.financeId,
+        locked: locked,
+      }
     })
     const finance = await prisma.finance.update({
       where: { id: formData.financeId },
-      data: { financeManager: formData.financeManager }
+      data: { customerState: 'financeTurnover' }
     })
     return json({ claim, finance })
   }
+  if (intent === 'claimClientTurnover') {
+
+    const update = await prisma.lockFinanceTerminals.update({
+      where: { id: formData.claimId },
+      data: {
+        locked: false,
+        financeEmail: user.email,
+      }
+    })
+    return json({ update })
+  }
+
+
   if (intent === 'reading') {
     const isRead = await prisma.notificationsUser.update({
       where: {
@@ -1397,6 +1420,95 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   const id = formData?.id;
 
+  switch (intent) {
+    case 'updateClientInfoFinance':
+      const finance = await prisma.finance.update({
+        where: { id: formData.financeId },
+        data: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          email: formData.email,
+          address: formData.address,
+          city: formData.city,
+          postal: formData.postal,
+          lastContact: formData.lastContact,
+          nextAppointment: formData.nextAppointment,
+          deliveryDate: formData.deliveryDate,
+          deliveredDate: formData.deliveredDate,
+          depositMade: formData.depositMade,
+          userEmail: formData.userEmail,
+          financeManager: formData.financeManager,
+        }
+      })
+      return finance
+    case 'updateFinanceApp':
+      const financeApp = await prisma.financeApplication.update({
+        where: { id: formData.id },
+        data: {
+          fullName: formData.fullName,
+          dob: formData.dob,
+          sin: formData.sin,
+          phone: formData.phone,
+          email: formData.email,
+          streetAddress: formData.streetAddress,
+          city: formData.city,
+          province: formData.province,
+          postalCode: formData.postalCode,
+          addressDuration: formData.addressDuration,
+          employer: formData.employer,
+          job: formData.job,
+          employmentStatus: formData.employmentStatus,
+          employerAddress: formData.employerAddress,
+          employerCity: formData.employerCity,
+          employerPostal: formData.employerPostal,
+          employerPhone: formData.employerPhone,
+          employmentDuration: formData.employmentDuration,
+          monthlyGrossIncome: formData.monthlyGrossIncome,
+          bankName: formData.bankName,
+          branchAddress: formData.branchAddress,
+          mortgagePayment: formData.mortgagePayment,
+          utilities: formData.utilities,
+          propertyTaxes: formData.propertyTaxes,
+          loanType: formData.loanType,
+          loanMonthlyPayment: formData.loanMonthlyPayment,
+          remainingBalance: formData.remainingBalance,
+          notes: formData.notes,
+        }
+      })
+      return financeApp;
+    case 'createFinanceProduct':
+      const financeProduct = await prisma.financeDeptProducts.create({
+        data: {
+          packageName: formData.packageName,
+          packagePrice: Number(formData.packagePrice),
+          financeId: formData.financeId,
+        }
+      })
+      return financeProduct;
+    case 'updateBankingInfo':
+      const bankingInfo = await prisma.finance.update({
+        where: { id: formData.id },
+        data: {
+          bank: formData.bank,
+          loanNumber: formData.loanNumber,
+          idVerified: formData.idVerified,
+          firstPayment: formData.firstPayment,
+          loanMaturity: formData.loanMaturity,
+          dealerCommission: formData.dealerCommission,
+          financeCommission: formData.financeCommission,
+          salesCommission: formData.salesCommission,
+          financeDeptProductsTotal: formData.financeDeptProductsTotal,
+        }
+      })
+      return bankingInfo;
+    case 'empty':
+      return null
+    case 'empty':
+      return null
+    default:
+      console.log('default reached')
+  }
 
   if (intent === 'newLead') {
     const brand = formData.brand
@@ -2344,14 +2456,12 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
     return json({ updateLocal })
   }
-  // create
   if (intent === "createQuote") {
     console.log("creating quote");
     const brand = formData.brand;
     const financeId = formData.id;
     return redirect(`/quote/${brand}/${financeId}`);
   }
-  // update
   if (intent === "updateStatus") {
     delete formData.brand;
     //console.log(formData)
@@ -2365,7 +2475,6 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     });
     return json({ dashboard });
   }
-  // navigation
   if (intent === "clientProfile") {
 
     console.log(clientfileId, financeId, 'dashboard calls')
@@ -2375,14 +2484,12 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       },
     });
   }
-
   if (intent === "returnToQuote") {
     const brand = formData.brand;
     const id = formData.id;
     //   console.log(id, 'id', `/overview/${brand}/${id}`)
     return redirect(`/overview/customer/${financeId}`);
   }
-  // appts
   if (intent === "addAppt") {
     CreateAppt(formData);
     const completeCall = CompleteLastAppt(userId, financeId);
@@ -2399,7 +2506,6 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     const updateApt = await UpdateAppt(formData, apptId);
     return json({ updateApt });
   }
-  // customer
   if (intent === "AddCustomer") {
     const create = await QuoteServer(formData)
     return create
@@ -2408,8 +2514,6 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     await DeleteCustomer({ formData, formPayload });
     return DeleteCustomer;
   }
-  // notes
-
   if (intent === "saveFinanceNote") {
     const createFinanceNotes = await prisma.financeNote.create({
       data: {

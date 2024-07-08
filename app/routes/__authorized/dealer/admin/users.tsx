@@ -185,7 +185,7 @@ export default function Route() {
   }
   return (
     <Tabs defaultValue="Users" className="m-5  ">
-      <TabsList className="grid   grid-cols-3">
+      <TabsList className="">
         <TabsTrigger value="Users">Users</TabsTrigger>
         <TabsTrigger value="Add">Add Users</TabsTrigger>
         <TabsTrigger value="UserRoles">User Roles</TabsTrigger>

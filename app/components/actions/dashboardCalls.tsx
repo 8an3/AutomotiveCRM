@@ -25,6 +25,7 @@ import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions
 import { QuoteServerActivix } from '~/utils/quote/quote.server';
 import twilio from 'twilio';
 import axios from "axios";
+import emitter from '~/routes/__authorized/dealer/emitter';
 
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
@@ -1347,17 +1348,17 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     return update
   }
   if (intent === 'financeTurnover') {
-    const locked = Boolean(true)//Boolean(formPayload.locked);
-
-    const claim = await prisma.lockFinanceTerminals.update({
-      where: { id: 1 },
-      data: { locked: locked, financeId: formData.financeId }
-    })
-    const finance = await prisma.finance.update({
-      where: { id: formData.financeId },
-      data: { financeManager: formData.financeManager }
-    })
-    return json({ claim, finance })
+    const data = { locked: true, financeId: finance.id, salesEmail: user.email };
+    console.log('Publishing data:', data);
+    emitter.emit('LOCKED_STATUS', data);
+    const claim = await prisma.lockFinanceTerminals.create({
+      data: {
+        financeId: formData.financeId,
+        salesEmail: formData.salesEmail,
+        locked: true
+      }
+    });
+    return claim;
   }
   if (intent === 'reading') {
     const isRead = await prisma.notificationsUser.update({

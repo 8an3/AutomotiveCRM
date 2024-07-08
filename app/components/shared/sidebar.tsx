@@ -32,7 +32,7 @@ export default function Sidebar(user, email) {
   const [isActive, setIsActive] = useState(false);
   const location = useLocation()
   const pathname = location.pathname
-  let quoteUrl = '/dealer/quote/'
+  let quoteUrl = '/dealer/quote/new/'
 
 
   const handleButtonClick = (e) => {
@@ -561,6 +561,10 @@ export const salesNavSidebarNav = [
     to: "/dealer/leads/sales/dashboard",
   },
   {
+    title: "Finance Dashboard",
+    to: "/dealer/leads/finance",
+  },
+  {
     title: "Calendar",
     to: "/dealer/calendar/sales",
   },
@@ -601,6 +605,10 @@ export const devSidebarNav = [
   {
     title: "Control Panel",
     to: "/devmode/controlPanel",
+  },
+  {
+    title: "Board",
+    to: "/devmode/board",
   },
   {
     title: "Clients",

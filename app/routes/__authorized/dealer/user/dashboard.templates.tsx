@@ -1,6 +1,14 @@
 /* eslint-disable no-template-curly-in-string */
 import React, { useEffect, useState, useCallback } from 'react';
-import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui";
+import {
+  Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui";
 import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card"
 import { GetUser } from "~/utils/loader.server";
@@ -35,17 +43,35 @@ import Text from '@tiptap/extension-text'
 import Highlight from "@tiptap/extension-highlight"
 import ListItem from '@tiptap/extension-list-item'
 import TaskItem from '@tiptap/extension-task-item'
-
+import { CiEdit } from 'react-icons/ci';
+import { Editor, EditorTiptapHookNewTemplates, EditorTiptapHookNewTemplatesNew } from '~/components/libs/basicEditor';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/alert-dialog"
 export const meta = () => {
   return [
-    { title: "Toolbox - Dealer Sales Assistant" },
+    { subject: "Toolbox - Dealer Sales Assistant" },
     {
       property: "og:title",
-      content: "Your very own assistant!",
+      body: "Your very own assistant!",
     },
     {
-      name: "description",
-      content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      subject: "description",
+      body: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
       keywords: 'Automotive Sales, dealership sales, automotive CRM',
 
     },
@@ -59,7 +85,6 @@ export async function loader({ request, params }: LoaderFunction) {
   if (!user) {
     redirect('/login')
   }
-  const dFees = await getDealerFeesbyEmail(user?.email)
   const templates = await prisma.emailTemplates.findMany({
     where: {
       userEmail: email,
@@ -70,7 +95,6 @@ export async function loader({ request, params }: LoaderFunction) {
     email,
     user,
     templates,
-    dFees
   })
 }
 
@@ -81,12 +105,11 @@ export const action = async ({ request }: ActionArgs) => {
   const email = session.get("email")
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
-
+  console.log(formData, 'formdata')
   const intent = formData.intent;
 
   const data = {
     body: formData.body,
-    title: formData.title,
     category: formData.category,
     userEmail: formData.userEmail,
     review: formData.review,
@@ -105,12 +128,28 @@ export const action = async ({ request }: ActionArgs) => {
     console.log('create template')
     return json({ template, user });
   }
-
+  if (intent === "addToDropdown") {
+    const template = await prisma.emailTemplatesForDropdown.create({
+      data: {
+        subCat: formData.subCat,
+        body: formData.body,
+        userEmail: formData.userEmail,
+        category: formData.category,
+        type: formData.type,
+        subject: formData.subject,
+      },
+    });
+    console.log('addToDropdown template')
+    return json({ template, user });
+  }
   if (intent === "updateTemplate") {
+    let cleanedStr = data.body.replace(/<\/?p>/g, '');
+
     const id = formData.id
     const template = await prisma.emailTemplates.update({
       data: {
         ...data,
+        body: cleanedStr,
       },
       where: {
         id: id,
@@ -134,841 +173,574 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function Shight() {
   const { user, templates } = useLoaderData();
-
   let scripts = [
-    {
-      email: "",
-      name: "Before we proceed with pricing",
-      content:
-        "Before we proceed with pricing, I wanted to ask a few questions. Firstly, are you looking to purchase the GTI 130 outright or finance it? If financing, what is your monthly budget that would make you feel comfortable? Additionally, there are a variety of accessories that can be included in the financing, what specific accessories were you interested in adding to to it? I'm here to help you every step of the  way and ensure that you get the perfect bike to fit your needs and budget. I look forward to hearing back from you and assisting you in any  way I can.",
-      category: "qualifying",
-      subCat: "qualifying",
-    },
-    {
-      email: "",
-      name: `We wouldn't sell it for that amount, whatever we take it in on trade`,
-      content: `We wouldn't sell it for that amount, whatever we take it in on trade, we ad 15%. That way there's really only aa 2% difference between what ur getting after the tax savings and what we sell it for. Any dealer that over prices their inventory, is putting a lot more risk on them selves. Almost all dealers rely on a line of credit in order to have bikes on their floor so any inventory that just sits, is eating away at their profit. The blue book takes the statistical data from the license bureau and bases the values off of what they sell privately and theres enough data to support the pricing. When their isn't, their is some math invloved where you can compare it to previous or ealier model years and get the value that way. Any dealer that sells or takes in on trade above the blue book is gambling at that point and they shouldnt be taking that risk. Like I have the perfect example, I have a road glide here in our used inventory, the last sales manager over paid for it by such a huge amount we almost can't even sell it and we will have to end up loosing thousands on it. Top clean for your bike is 7500 but as I said I can go above it up to $500 more but that would be the limit because any more than that and then the bike will be competing with bikes that are newer. I have to see your bike before I can confirm the increase, I trust what you say about your bike, I just have to confirm it. I'm always very transparent because in the end you will know what we will sell your bike for becuse you can just see it online when we post it anyways. The blue book says to sell your bike for 9100 so that what we would sell it for, unless we gave you the increase then we would sell it for 500 more.`,
-      category: "Overcome",
-      subCat: `Complaints about trade in value.`,
-    },
-    {
-      email: "",
-      name: `We wouldn't sell it for that amount, whatever we take it in on trade`,
-      content: `We wouldn't sell it for that amount, whatever we take it in on trade, we ad 15%. That way there's really only aa 2% difference between what ur getting after the tax savings and what we sell it for. Any dealer that over prices their inventory, is putting a lot more risk on them selves. Almost all dealers rely on a line of credit in order to have bikes on their floor so any inventory that just sits, is eating away at their profit. The blue book takes the statistical data from the license bureau and bases the values off of what they sell privately and theres enough data to support the pricing. When their isn't, their is some math invloved where you can compare it to previous or ealier model years and get the value that way. Any dealer that sells or takes in on trade above the blue book is gambling at that point and they shouldnt be taking that risk. Like I have the perfect example, I have a road glide here in our used inventory, the last sales manager over paid for it by such a huge amount we almost can't even sell it and we will have to end up loosing thousands on it. Top clean for your bike is 7500 but as I said I can go above it up to $500 more but that would be the limit because any more than that and then the bike will be competing with bikes that are newer. I have to see your bike before I can confirm the increase, I trust what you say about your bike, I just have to confirm it. I'm always very transparent because in the end you will know what we will sell your bike for becuse you can just see it online when we post it anyways. The blue book says to sell your bike for 9100 so that what we would sell it for, unless we gave you the increase then we would sell it for 500 more.`,
-      category: "Overcome",
-      subCat: `Complaints about trade in value.`,
-    },
-    {
-      email: "",
-      name: `interested in? If not, that's ok we can pick one together for you, that you would enjoy for thousands of miles on the open road`,
-      content: `Good morning Linda You had put in a online request for a H-D rep to get in contact with you about the full lineup. We have some phenomenal bikes to offer, was their a model in particular you were interested in? If not, that's ok we can pick one together for you, that you would enjoy for thousands of miles on the open road.`,
-      category: "First contact",
-      subCat: `interested in? If not, that's ok we can pick one together for you, that you would enjoy for thousands of miles on the open road`,
-    },
-    {
-      email: "",
-      name: "From the moment we select the right vehicle",
-      content: "From the moment we select the right vehicle, and we have a mutal agreement, do you want your new vehicle by the end of the week or the begining of next month?",
-      category: "Information Gathering",
-      subCat: 'From the moment we select the right vehicle',
-    },
-    {
-      email: "",
-      name: "Concerning the purchase of the vehicle",
-      content: "Concerning the purchase of the vehicle, are you making the final decision today? ",
-      category: "Information Gathering",
-      subCat: 'Concerning the purchase of the vehicle',
-    },
-    {
-      email: "",
-      name: "Did anyone explain to you the different programs",
-      content: "Did anyone explain to you the different programs that are avialabe on the market today? First we are going to choose the right vehicle for you and then we will select the right program to fit your budget.",
-      category: "Information Gathering",
-      subCat: 'Did anyone explain to you the different programs',
-    },
-    {
-      email: "",
-      name: "Overcome 4",
-      content: "To be in a comfortable situation, would you invest 25 or 50 more per week on your vehicle? Again to be in a comfrotable situation, would you like to invest 500 or 1000 cash down on your bank loan?",
-      category: "Information Gathering",
-      subCat: 'To be in a comfortable situation',
-    },
-    {
-      email: "",
-      name: "Has anything changed since you bought that vehicle last time?",
-      content: "What vehicle do you drive now? How much cash did you want to invest?  What were the advatages for you to purchase on your last purchase? Has anything changed since you bought that vehicle last time? More family members, different riding/driving circumstances, etc",
-      category: "Information Gathering",
-      subCat: 'Has anything changed since you bought that vehicle last time?',
-    },
-    {
-      email: "",
-      name: "Overcome 6",
-      content: "I may have a buyer for your vehicle, are you loooking to sell it?",
-      category: "Information Gathering",
-      subCat: 'I may have a buyer for your vehicle',
-    },
-    {
-      email: "",
-      name: "How many monthly payments",
-      content: "How many monthly payments do you have left?",
-      category: "Information Gathering",
-      subCat: 'How many monthly payments',
-    },
-    {
-      email: "",
-      name: "Overcome 9",
-      content: "At this time, how much are you paying every month? Did you finance or purchase out right?",
-      category: "Information Gathering",
-      subCat: 'How much are you paying every month',
-    },
-    {
-      email: "",
-      name: "Overcome 10",
-      content: "Besides the equipemnt, what else is important to you in your next vehicle?  ",
-      category: "Information Gathering",
-      subCat: 'Besides the equipemnt',
-    },
 
     {
-      email: "",
-      name: "What made you choose this?",
-      content: "What made you choose this? What would be the advantages for you to drive this?",
-      category: "Information Gathering",
-      subCat: 'What made you choose this?',
-    },
-    {
-      email: "",
-      name: "Overcome 12",
-      content: "How many kms do you typically put on in a year?",
-      category: "Information Gathering",
-      subCat: 'Mileage',
-    },
-    {
-      email: "",
-      name: "Overcome 13",
-      content: "Is this bike going to be used mostly in the city or on the highway?",
-      category: "Information Gathering",
-      subCat: 'Used mostly in the city or on the highway?',
-    },
-    {
-      email: "",
-      name: "Overcome 14",
-      content: "Now who will be the primary driver?",
-      category: "Information Gathering",
-      subCat: 'Primary driver',
-    },
-    {
-      email: "",
-      name: "Overcome 15",
-      content: "What basic features/equipment are important to you? Would this unit meet those requirements?",
-      category: "Information Gathering",
-      subCat: '"What basic features/equipment',
-    },
-    {
-      email: "",
-      name: "Overcome 16",
-      content: "What are we looking at today?",
-      category: "Information Gathering",
-      subCat: 'What are we looking at today?',
-    },
-    {
-      email: "",
-      name: "No answer - asking when would they be ready",
-      content: "Hey just wanted to follow up to our conversations, if your not ready to buy right now when do you want me to follow up with you? I want to respect your time, that way im not wasting your it and bugging you every couple of days.",
-      category: "Follow-ups",
-      subCat: 'No answer - asking when would they be ready',
-    },
-    {
-      email: "",
-      name: "No answer - respect decision to wait",
-      content: "While I respect your decision to wait, if this is the unit you want. We can button up the deal now, and you can store it here for free till your ready to pick up. Because if we were to order one we wouldn't get till after June, maybe longer.",
-      category: "Follow-ups",
-      subCat: 'No answer - respect decision to wait',
-    },
-    {
-      email: "",
-      name: "Create Urgency",
-      content: "If the season is winding down or coming to a close, it's essential to act swiftly. Our stock levels are depleting rapidly, and it's likely to worsen. Every day, we receive numerous requests online and via email, and it's only a matter of time before we're completely sold out.  We're committed to providing excellent service to the customers within our territory, and that's why we try not to sell outside of it. If we did, we'd already be sold out given the high demand. Considering the wide range of trim levels, colors, and more, our ability to order from BRP is limited. Therefore, it's crucial to act quickly if we have what you need right now. Whenever you have a moment, please give me a call to secure your purchase.",
-      category: "Follow-ups",
-      subCat: 'Create Urgency',
-    },
-    {
-      email: "",
-      name: "First Contact",
-      content: "You had put an inquiry online for one of our representatives to get in touch with you. Do you already have a specific idea of what you're looking for, or would you like some guidance in finding the right fit for you?  We currently have a model on our sales floor, which is a great opportunity to experience firsthand the exceptional quality H-D has to offer. You're more than welcome to visit us in person for a closer look. Alternatively, we can have a phone conversation to discuss your preferences and options. When would be a convenient time for you to visit or have a phone call? Would later today work for you, or would tomorrow better suit your schedule?",
-      category: 'First Contact',
-      subCat: 'Didnt pick a model',
-    },
-    {
-      email: "Follow-up 5",
-      name: "No answer for a while - havent forgotten them",
-      content: "Just reaching out to ensure you know that I'm here whenever you're ready to move forward with the purchase. I completely understand that life can sometimes get in the way of making decisions like this, and I want to emphasize that I haven't abandoned you as your salesperson. Whether it's in a week, a month, or even six months, I'm here to assist you.  If I don't receive a response, I'll follow up with you at the beginning of the season to ensure you don't miss out on any opportunities. Your satisfaction is my priority, and I'm committed to providing the support you need when you're ready.",
-      category: "Follow-ups",
-      subCat: 'No answer for a while - havent forgotten them',
-    },
-    {
-      email: "",
-      name: "Life can sometimes get in the way of these decisions",
-      content: "Just a quick follow-up to let you know that I'm here for you whenever you're ready to move forward with the purchase. Life can sometimes get in the way of these decisions, and I want you to know that I haven't forgotten about you as your salesperson. Whether it's in a week, a month, or even six months, I'm here to assist you.  It's worth noting that our Spring check promotion is coming to a close this week, which includes a fantastic warranty promo. If that's of interest to you, now would be an ideal time to take advantage of it. Additionally, if you're looking for an in-stock unit, we currently have promotions offering up to $750 off, along with any other promotions offered by BRP at the time of purchase.  Even if I don't hear back from you, I'll give you a call in October, right before the start of the next season, to see if you're ready to explore your options further. Your satisfaction is my priority, and I'm here to make the process as smooth as possible for you.",
-      category: "Follow-ups",
-      subCat: 'Life can sometimes get in the way of these decisions',
-    },
-    {
-      email: "",
-      name: "No answer for a while - life gets in the way",
-      content: "Just a quick follow-up to let you know that I'm here for you whenever you're ready to move forward with the purchase. Life can sometimes get in the way of these decisions, and I want you to know that I haven't forgotten about you as your salesperson. Whether it's in a week, a month, or even six months, I'm here to assist you.  It's worth noting that we currently have promotional finance rates to help clients get on their dream bikes today. If that's of interest to you, now would be an ideal time to take advantage of it. Even if I don't hear back from you, I'll give you a call in March, right before the start of the next season, to see if you're ready to explore your options further. Your satisfaction is my priority, and I'm here to make the process as smooth as possible for you.",
-      category: "Follow-ups",
-      subCat: 'No answer for a while - life gets in the way',
-    },
-    {
-      email: "",
-      name: "Whats holding you back?",
-      content: "Hello! I hope you're having a fantastic day. I wanted to check in and see if you have any additional questions or concerns about the Outlander. We've received significant interest in this model, and I want to ensure you don't miss the opportunity to own one at the price we discussed. If you're ready to proceed, please let me know, and I'll be delighted to assist you with the purchase process.  If there's something holding you back, such as the price or if this isn't the right unit, please don't hesitate to share your thoughts. I'm here to help. Whether it's working with my manager to find a better price or exploring other unit options, I'm committed to finding a solution that aligns with your needs.",
+      subject: "Whats holding you back?",
+      body: "Hello! I hope you're having a fantastic day. I wanted to check in and see if you have any additional questions or concerns about the Outlander. We've received significant interest in this model, and I want to ensure you don't miss the opportunity to own one at the price we discussed. If you're ready to proceed, please let me know, and I'll be delighted to assist you with the purchase process.  If there's something holding you back, such as the price or if this isn't the right unit, please don't hesitate to share your thoughts. I'm here to help. Whether it's working with my manager to find a better price or exploring other unit options, I'm committed to finding a solution that aligns with your needs.",
       category: "Follow-ups",
       subCat: 'Whats holding you back?',
     },
     {
-      email: "",
-      name: "Instead of wasting your time, when do you feel you would be ready to buy?",
-      content: "Instead of reaching out to you every few days and potentially taking up your valuable time, I'd like to work on your schedule. When do you think you'll be ready to move forward with the purchase? I'll make a note of it in my calendar and follow up with you at the time that's most convenient for you.",
+      subject: "Instead of wasting your time, when do you feel you would be ready to buy?",
+      body: "Instead of reaching out to you every few days and potentially taking up your valuable time, I'd like to work on your schedule. When do you think you'll be ready to move forward with the purchase? I'll make a note of it in my calendar and follow up with you at the time that's most convenient for you.",
       category: "Follow-ups",
       subCat: "Instead of wasting your time, when do you feel you would be ready to buy?",
     },
     {
-      email: "",
-      name: "Create urgency with stock levels",
-      content: "Just came out of a meeting where we discussed inventory and unit ordering, and it's clear that the power sports industry is still going strong post-pandemic, with no signs of slowing down. Unfortunately, this also means that inventory continues to be a challenge for us and other dealers. Despite promises from manufacturers, availability hasn't improved as expected.  I completely respect your decision to wait, but I wanted to present an option that might work for you. If this is the unit you truly desire, you can secure it by placing a deposit along with a signed bill of sale and opting for storage. Ordering a new one might mean waiting until after June, or possibly even longer. The choice is entirely yours, and we're here to make it as convenient as possible for you.",
+      subject: "Create urgency with stock levels",
+      body: "Just came out of a meeting where we discussed inventory and unit ordering, and it's clear that the power sports industry is still going strong post-pandemic, with no signs of slowing down. Unfortunately, this also means that inventory continues to be a challenge for us and other dealers. Despite promises from manufacturers, availability hasn't improved as expected.  I completely respect your decision to wait, but I wanted to present an option that might work for you. If this is the unit you truly desire, you can secure it by placing a deposit along with a signed bill of sale and opting for storage. Ordering a new one might mean waiting until after June, or possibly even longer. The choice is entirely yours, and we're here to make it as convenient as possible for you.",
       category: "Follow-ups",
       subCat: 'Create urgency with stock levels',
     },
     {
-      email: "",
-      name: "If this is what you truly desire",
-      content: "While I fully understand and respect your decision to wait, I'd like to offer an alternative solution. If this is the unit you truly desire, you can secure it by placing a deposit along with a signed bill of sale. We can also arrange for storage until you're ready to pick it up. This way, you won't have to worry about missing out on this season's enjoyment, as ordering a new one might not guarantee it arrives in time. The choice is entirely yours, and I'm here to make it as convenient as possible for you.",
+      subject: "If this is what you truly desire",
+      body: "While I fully understand and respect your decision to wait, I'd like to offer an alternative solution. If this is the unit you truly desire, you can secure it by placing a deposit along with a signed bill of sale. We can also arrange for storage until you're ready to pick it up. This way, you won't have to worry about missing out on this season's enjoyment, as ordering a new one might not guarantee it arrives in time. The choice is entirely yours, and I'm here to make it as convenient as possible for you.",
       category: "Follow-ups",
       subCat: 'If this is what you truly desire',
     },
     {
-      email: "",
-      name: "Stock levels down",
-      content: "If the season hasn't started yet, and no phone number was provided.  Our stock levels are being depleted before the season has even started, and it's only going to get worse. Every day I get requests online and emails, so it's only a matter of time before we're sold out. With that said, we're trying not to sell outside our territory because we want to take care of the people within our territory and give them the service they deserve. If we sold outside of our territory, we would already be sold out. Give me a call when you have some time to claim it.",
+      subject: "Stock levels down",
+      body: "If the season hasn't started yet, and no phone number was provided.  Our stock levels are being depleted before the season has even started, and it's only going to get worse. Every day I get requests online and emails, so it's only a matter of time before we're sold out. With that said, we're trying not to sell outside our territory because we want to take care of the people within our territory and give them the service they deserve. If we sold outside of our territory, we would already be sold out. Give me a call when you have some time to claim it.",
       category: "Follow-ups",
       subCat: 'Stock levels down',
     },
     {
-      email: "",
-      name: "Simplifing the buying process",
-      content: "Which day would be most convenient for you? My priority is to simplify the buying process for our customers. If you prefer, we can handle everything over the phone, making it as hassle-free as possible. I understand the frustration when the buying process becomes cumbersome, and I aim to provide a smoother experience because, like you, I'm also a consumer.  I take pride in tailoring the buying process to individual preferences, whether it's someone's first purchase or their 100th. Your convenience matters most. If visiting the store is challenging due to a busy schedule, we can manage everything efficiently through email or phone until it's time for pickup. Your satisfaction is my commitment, and I'm here to ensure the process aligns with your needs.",
+      subject: "Simplifing the buying process",
+      body: "Which day would be most convenient for you? My priority is to simplify the buying process for our customers. If you prefer, we can handle everything over the phone, making it as hassle-free as possible. I understand the frustration when the buying process becomes cumbersome, and I aim to provide a smoother experience because, like you, I'm also a consumer.  I take pride in tailoring the buying process to individual preferences, whether it's someone's first purchase or their 100th. Your convenience matters most. If visiting the store is challenging due to a busy schedule, we can manage everything efficiently through email or phone until it's time for pickup. Your satisfaction is my commitment, and I'm here to ensure the process aligns with your needs.",
       category: "Follow-ups",
       subCat: 'Simplifing the buying process',
     },
     {
-      email: "",
-      name: "Questions / Concerns",
-      content: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information  you need before buying because I'm hear to help make the process easy.",
+      subject: "Questions / Concerns",
+      body: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information  you need before buying because I'm hear to help make the process easy.",
       category: "Objections",
       subCat: 'Questions / Concerns',
     },
     {
-      email: "",
-      name: "Taking the deal to the boss on your behalf",
-      content: "Hello Frank, With the warm weather, many people are coming out of hibernation and making purchases. I want to ensure that my customers can enjoy the products they desire for this summer, especially since it's the first truly free COVID summer in years. While I can't make promises, I'd like to know what it would take to earn your business. Your satisfaction is my priority.",
+      subject: "Taking the deal to the boss on your behalf",
+      body: "Hello Frank, With the warm weather, many people are coming out of hibernation and making purchases. I want to ensure that my customers can enjoy the products they desire for this summer, especially since it's the first truly free COVID summer in years. While I can't make promises, I'd like to know what it would take to earn your business. Your satisfaction is my priority.",
       category: "Follow-ups",
       subCat: 'Taking the deal to the boss on your behalf',
     },
     {
-      email: "",
-      name: "Push the sale",
-      content: "Hello! I wanted to check in and see how you're feeling about the sales process. Is there anything specific you'd like assistance with or any questions I can address to help move things forward? While I can't promise to fulfill every request, I'm here to do my best and ensure your experience is as smooth as possible. Feel free to share any concerns or requests, and I'll be more than happy to assist you.",
+      subject: "Push the sale",
+      body: "Hello! I wanted to check in and see how you're feeling about the sales process. Is there anything specific you'd like assistance with or any questions I can address to help move things forward? While I can't promise to fulfill every request, I'm here to do my best and ensure your experience is as smooth as possible. Feel free to share any concerns or requests, and I'll be more than happy to assist you.",
       category: "Follow-ups",
       subCat: 'Push the sale',
     },
     {
-      email: "",
-      name: "Informed buying decision",
-      content: "Hello! I hope you're having a fantastic day. I wanted to follow up with you regarding the 850. Is there anything that's been holding you back from moving forward with your purchase? I'm here to assist you in making an informed buying decision and answer any questions you may have. Please feel free to let me know your thoughts or any concerns, and I'll be more than happy to address them. If there's anything specific you'd like to discuss or if you're ready to take the next steps, please don't hesitate to reach out.",
+      subject: "Informed buying decision",
+      body: "Hello! I hope you're having a fantastic day. I wanted to follow up with you regarding the 850. Is there anything that's been holding you back from moving forward with your purchase? I'm here to assist you in making an informed buying decision and answer any questions you may have. Please feel free to let me know your thoughts or any concerns, and I'll be more than happy to address them. If there's anything specific you'd like to discuss or if you're ready to take the next steps, please don't hesitate to reach out.",
       category: "Objections",
       subCat: 'Informed buying decision',
     },
     {
-      email: "",
-      name: "Request on line",
-      content: `Hey its $ {user.username} from $ {dFees.dealer} you put in a request on line to take advantage of the current promotions, which unit were you looking for?`,
+      subject: "Request on line",
+      body: `Hey its $ {user.username} from $ {dFees.dealer} you put in a request on line to take advantage of the current promotions, which unit were you looking for?`,
       category: "Follow-ups",
       subCat: 'Request on line',
     },
     {
-      email: "",
-      name: "When is a good time to call?",
-      content: `Hey its $ {user.username} from $ {dFees.dealer} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?`,
+      subject: "When is a good time to call?",
+      body: `Hey its $ {user.username} from $ {dFees.dealer} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?`,
       category: "Follow-ups",
       subCat: 'When is a good time to call?',
     },
     {
-      email: "",
-      name: "What's holding you back?",
-      content: "Hello! I hope you're having a fantastic day. I wanted to follow up with you regarding the 850. Is there anything specific that's been holding you back from moving forward? I'm here to assist you in making an informed buying decision and to promptly address any questions or concerns you may have. Please don't hesitate to let me know, and I'll be more than happy to help.",
+      subject: "What's holding you back?",
+      body: "Hello! I hope you're having a fantastic day. I wanted to follow up with you regarding the 850. Is there anything specific that's been holding you back from moving forward? I'm here to assist you in making an informed buying decision and to promptly address any questions or concerns you may have. Please don't hesitate to let me know, and I'll be more than happy to help.",
       category: "Objections",
       subCat: `What's holding you back?`,
     },
     {
-      email: "",
-      name: "First text message",
-      content: "Hey its $ {user.username} from $ {dFees.dealer} I just called but your probably tied up give me a call or text when you can and we can go over that unit you were looking for",
+      subject: "First text message",
+      body: "Hey its $ {user.username} from $ {dFees.dealer} I just called but your probably tied up give me a call or text when you can and we can go over that unit you were looking for",
       category: "Follow-ups",
       subCat: `First text message`,
     },
     {
-      email: "",
-      name: "First text message - fb reserve",
-      content: "Hey { Client - First name } it's me from Freedom HD, you requested to reserve the { Current Vehicle - Model } on facebook and have a rep get in contact with you. When is a good time for me to call you back, would later on today work or tomorrow?",
+      subject: "First text message - fb reserve",
+      body: "Hey { Client - First name } it's me from Freedom HD, you requested to reserve the { Current Vehicle - Model } on facebook and have a rep get in contact with you. When is a good time for me to call you back, would later on today work or tomorrow?",
       category: "Follow-ups",
       subCat: `First text message - fb reserve`,
     },
     {
-      email: "",
-      name: "After hours invalid email",
-      content: "Hey { Client - First name } its { User - First name } from Freedom, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
+      subject: "After hours invalid email",
+      body: "Hey { Client - First name } its { User - First name } from Freedom, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       category: "Follow-ups",
       subCat: `After hours invalid email`,
     },
     {
-      email: "",
-      name: "Were there any other questions or concerns",
-      content: "I wanted to follow up on our last correspondence. Were there any other questions or concerns that were keeping you back from moving forward? I want to make sure you have all the information you need before making an informed buying decision. I'm here to make the process easy for you.",
+      subject: "Were there any other questions or concerns",
+      body: "I wanted to follow up on our last correspondence. Were there any other questions or concerns that were keeping you back from moving forward? I want to make sure you have all the information you need before making an informed buying decision. I'm here to make the process easy for you.",
       category: "Objections",
       subCat: 'Were there any other questions or concerns8',
     },
     {
-      email: "",
-      name: "Receiving significant interest",
-      content: "I hope you're having a great day! I wanted to check in and see if you have any additional questions or concerns regarding the Street Glide. We've received significant interest in this model, and I want to ensure you don't miss the chance to own one at the price we discussed. If you're ready to proceed, please let me know, and I'll be delighted to assist you with the purchase process.",
+      subject: "Receiving significant interest",
+      body: "I hope you're having a great day! I wanted to check in and see if you have any additional questions or concerns regarding the Street Glide. We've received significant interest in this model, and I want to ensure you don't miss the chance to own one at the price we discussed. If you're ready to proceed, please let me know, and I'll be delighted to assist you with the purchase process.",
       category: "Follow-ups",
       subCat: 'Receiving significant interest',
     },
     {
-      email: "",
-      name: "Aim to make the buying process effortless",
-      content: "Which day works best for you? My aim is to make the buying process as effortless as possible for my customers. If you prefer, we can handle everything over the phone to ensure convenience on your end. I understand the importance of a hassle-free experience because I'm also a consumer, and I know how frustrating it can be when the process isn't seamless.  I take pride in tailoring the buying process to meet your unique needs, whether it's your first purchase or if you're a seasoned buyer. Even if you're too busy to visit the store, we can manage everything efficiently through email or phone until it's time for pickup. Your satisfaction is my priority, and I'm here to make it as easy as possible for you.",
+      subject: "Aim to make the buying process effortless",
+      body: "Which day works best for you? My aim is to make the buying process as effortless as possible for my customers. If you prefer, we can handle everything over the phone to ensure convenience on your end. I understand the importance of a hassle-free experience because I'm also a consumer, and I know how frustrating it can be when the process isn't seamless.  I take pride in tailoring the buying process to meet your unique needs, whether it's your first purchase or if you're a seasoned buyer. Even if you're too busy to visit the store, we can manage everything efficiently through email or phone until it's time for pickup. Your satisfaction is my priority, and I'm here to make it as easy as possible for you.",
       category: "Follow-ups",
       subCat: 'Aim to make the buying process effortless',
     },
     {
-      email: "",
-      name: "Walk through process",
-      content: "Allow me to walk you through our sales process. Since you've already visited our dealership, we can efficiently handle most of the steps over the phone or through email. To get the ball rolling, I'll need a picture of the front of your driver's license. This will help us prepare your file and move things along smoothly.  Additionally, to secure the unit while we work on your approval, a $500 deposit is required, which you can conveniently put on your credit card. You have the option to either call me with your card number or send a picture of the front and back if you're busy at work and prefer not to make a phone call.  Once we have the necessary details, our sales manager will assemble your file and forward it to our business manager, who will reach out to you to facilitate the approval process. Once you're approved, the business manager will coordinate a pickup date with you. During the pickup, I'll be there to assist you with the vehicle explanation and help you load it if needed. We have ramps available for your convenience. Please note that while we strive to ensure a smooth loading and unloading process, we cannot be held liable for any incidents during these activities. Rest assured, I've never encountered any issues before, and I'm confident in my ability to assist you with loading and securing your purchase.",
+      subject: "Walk through process",
+      body: "Allow me to walk you through our sales process. Since you've already visited our dealership, we can efficiently handle most of the steps over the phone or through email. To get the ball rolling, I'll need a picture of the front of your driver's license. This will help us prepare your file and move things along smoothly.  Additionally, to secure the unit while we work on your approval, a $500 deposit is required, which you can conveniently put on your credit card. You have the option to either call me with your card number or send a picture of the front and back if you're busy at work and prefer not to make a phone call.  Once we have the necessary details, our sales manager will assemble your file and forward it to our business manager, who will reach out to you to facilitate the approval process. Once you're approved, the business manager will coordinate a pickup date with you. During the pickup, I'll be there to assist you with the vehicle explanation and help you load it if needed. We have ramps available for your convenience. Please note that while we strive to ensure a smooth loading and unloading process, we cannot be held liable for any incidents during these activities. Rest assured, I've never encountered any issues before, and I'm confident in my ability to assist you with loading and securing your purchase.",
       category: "Follow-ups",
       subCat: 'Walk through process',
     },
     {
-      email: "",
-      name: "Create urgency with pricing - seasonal",
-      content: "As the holidays approach, I understand that many folks might be considering waiting until after Christmas to make a move on their new bike purchase. While I'm more than happy to assist you {Client - First Name} whenever you decide, I wanted to ensure you're aware of the incredible promotions currently available. Our used bikes are now priced at what we paid for them on trade, presenting an unbeatable opportunity for savvy buyers. For new bikes, we're offering promotional rates as low as 1.99%, coupled with generous discounts. These rates are so remarkable that I don't foresee them being this low until next winter. If you choose to wait until after Christmas, I'll be ready to assist you. However, given the exceptional nature of these deals, waiting might mean missing out on substantial savings.  Feel free to reach out if you have any questions or if you'd like to discuss these promotions further. Looking forward to helping you make the best decision for your bike purchase! If I don't see or talk to you again before the Holidays, Merry Christmas {Client - First Name}.",
+      subject: "Create urgency with pricing - seasonal",
+      body: "As the holidays approach, I understand that many folks might be considering waiting until after Christmas to make a move on their new bike purchase. While I'm more than happy to assist you {Client - First Name} whenever you decide, I wanted to ensure you're aware of the incredible promotions currently available. Our used bikes are now priced at what we paid for them on trade, presenting an unbeatable opportunity for savvy buyers. For new bikes, we're offering promotional rates as low as 1.99%, coupled with generous discounts. These rates are so remarkable that I don't foresee them being this low until next winter. If you choose to wait until after Christmas, I'll be ready to assist you. However, given the exceptional nature of these deals, waiting might mean missing out on substantial savings.  Feel free to reach out if you have any questions or if you'd like to discuss these promotions further. Looking forward to helping you make the best decision for your bike purchase! If I don't see or talk to you again before the Holidays, Merry Christmas {Client - First Name}.",
       category: "Follow-ups",
       subCat: 'Create urgency with pricing - seasonal',
     },
     {
-      email: "",
-      name: "1 day after pick up",
-      content: " I want to express my gratitude once more for choosing us, { Client - First name }. I hope you find great joy in your { Current Vehicle - Model } for the years ahead. If you ever have questions, encounter any issues, or anything else comes to mind, please don't hesitate to reach out. I'm here and more than willing to assist. Even if you believe it's something minor, I value your feedback to ensure your purchase was absolutely perfect.",
+      subject: "1 day after pick up",
+      body: " I want to express my gratitude once more for choosing us, { Client - First name }. I hope you find great joy in your { Current Vehicle - Model } for the years ahead. If you ever have questions, encounter any issues, or anything else comes to mind, please don't hesitate to reach out. I'm here and more than willing to assist. Even if you believe it's something minor, I value your feedback to ensure your purchase was absolutely perfect.",
       category: "Automation",
       subCat: '1 day after pick up',
     },
     {
-      email: "",
-      name: "After first visit no phone # provided",
-      content: "Hey {Client - First Name} It was great talking to you about the {Wanted vehicle - Model} you are interested in.  If any questions or concerns come up let me know and I will be more than happy to address them. I'll follow up with you in a couple of days to give you time to consider any parts or accessories you would like to add. If you want to move forward before I follow up, text or call me and we can lock it in for you.",
+      subject: "After first visit no phone # provided",
+      body: "Hey {Client - First Name} It was great talking to you about the {Wanted vehicle - Model} you are interested in.  If any questions or concerns come up let me know and I will be more than happy to address them. I'll follow up with you in a couple of days to give you time to consider any parts or accessories you would like to add. If you want to move forward before I follow up, text or call me and we can lock it in for you.",
       category: "Automation",
       subCat: 'After first visit no phone # provided',
     },
     {
-      email: "",
-      name: "After first visit - set up time for a call",
-      content: " Hey { Client - First name } It was great talking to you about the { Wanted Vehicle - Model }. If any questions come up let me know and I will be more than happy to address them.",
+      subject: "After first visit - set up time for a call",
+      body: " Hey { Client - First name } It was great talking to you about the { Wanted Vehicle - Model }. If any questions come up let me know and I will be more than happy to address them.",
       category: "Automation",
       subCat: 'After first visit - set up time for a call',
     },
     {
-      email: "",
-      name: "After hours invalid email",
-      content: " Hey { Client - First name } its { User - First name } from dealer, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
+      subject: "After hours invalid email",
+      body: " Hey { Client - First name } its { User - First name } from dealer, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       category: "Automation",
       subCat: 'After hours invalid email',
     },
     {
-      email: "",
-      name: "First text message",
-      content: " Hey { Client - First name } it's me from dealer, you requested that rep get in contact with you about the { Current Vehicle - Model } you were looking at online. When is a good time for me to call you back, would later on today work or tomorrow?",
+      subject: "First text message",
+      body: " Hey { Client - First name } it's me from dealer, you requested that rep get in contact with you about the { Current Vehicle - Model } you were looking at online. When is a good time for me to call you back, would later on today work or tomorrow?",
       category: "Automation",
       subCat: 'First text message',
     },
     {
-      email: "",
-      name: "Call/text combo",
-      content: "Hey { Client - First name } it's me from dealer, I just called but your probably tied up. When is a good time for us to talk about the { Current Vehicle - Model }, would later this afternoon work, or is tomorrow better?",
+      subject: "Call/text combo",
+      body: "Hey { Client - First name } it's me from dealer, I just called but your probably tied up. When is a good time for us to talk about the { Current Vehicle - Model }, would later this afternoon work, or is tomorrow better?",
       category: "Automation",
       subCat: 'Call/text combo',
     },
     {
-      email: "",
-      name: "Asking for objections",
-      content: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information you need before buying so you make an informed buying decision, I'm hear to help make the process easy for you.",
+      subject: "Asking for objections",
+      body: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information you need before buying so you make an informed buying decision, I'm hear to help make the process easy for you.",
       category: "Automation",
       subCat: 'Asking for objections',
     },
     {
-      email: "",
-      name: "I can't find insurance",
-      content: "For insurance, whether it's bikes or any motorcycle, call David bodnar. I've been with him now for 8 years and hes with the times. If anything changes I can just text him whatever the details are, like an ownership, and he will quote/write it up immediately. He handles all of his customers like this and his rates are the best too. I switched to him because my company dropped me due to my zx-10rr, ever since switching it hasn't cost me more than $950. I've switched everything to him because of his rates, every person that calls him.... switches seriously. Office 905-364-4007 cell 289-380-3824 david.bodnar@thebig.ca. For the person reading this dont take this as a plug. But whatever market your in, get a guy for these types of overcomes. If you live in ontario, you now have one. I've been working with david for years. He has helped me and I have helped him. It's been a great relationship. If you don't live in ontario try to find someone like him. He took the approach of selling motorcycle insurance for no profit... at the time of writing this. A lot of agents wish they had someone like me. I opened a city up to him that he didn't have access to. He was so succssful in my city that I would hear about him from other people that I had never met. I was his first client in the city, this is a common objection so i pushed him hard on my clients because he helped me so much with my insurance. ",
+      subject: "I can't find insurance",
+      body: "For insurance, whether it's bikes or any motorcycle, call David bodnar. I've been with him now for 8 years and hes with the times. If anything changes I can just text him whatever the details are, like an ownership, and he will quote/write it up immediately. He handles all of his customers like this and his rates are the best too. I switched to him because my company dropped me due to my zx-10rr, ever since switching it hasn't cost me more than $950. I've switched everything to him because of his rates, every person that calls him.... switches seriously. Office 905-364-4007 cell 289-380-3824 david.bodnar@thebig.ca. For the person reading this dont take this as a plug. But whatever market your in, get a guy for these types of overcomes. If you live in ontario, you now have one. I've been working with david for years. He has helped me and I have helped him. It's been a great relationship. If you don't live in ontario try to find someone like him. He took the approach of selling motorcycle insurance for no profit... at the time of writing this. A lot of agents wish they had someone like me. I opened a city up to him that he didn't have access to. He was so succssful in my city that I would hear about him from other people that I had never met. I was his first client in the city, this is a common objection so i pushed him hard on my clients because he helped me so much with my insurance. ",
       category: "Overcome",
       subCat: `I can't find insurance`,
     },
     {
-      email: "",
-      name: "I want to compare with other brands before making a decision.",
-      content: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our Street Glide, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the Street Glide. Let me know what you need and I'll be happy to help you.",
+      subject: "I want to compare with other brands before making a decision.",
+      body: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our Street Glide, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the Street Glide. Let me know what you need and I'll be happy to help you.",
       category: "Overcome",
       subCat: 'I want to compare with other brands before making a decision.',
     },
     {
-      email: "",
-      name: "Price",
-      content: "Unfortunately whatever you get at the motorcycle show will probably be more money than a 22, if we have it in stock. Due to the rising costs of the pandemic there will be a new fee on sea-doo as they have introduced to every other line up so far. I don't know what that cost will be for the new fee but it will be called a commodity fee set by brp so the dealers will have to pay for it which means so will the customer.  MSRP's will also be rising and our cost has gone up so the discounts will be smaller. I was talking to an old retired dealer owner who had brp, he was like I don't know how you guys do it, its smaller margins and costs just keep going up and the dealers cant seem to keep people. I'm not saying don't go because you never know when a dealer owner needs to pay his staff or his bills so he doesn't loose his location, but the days of cost units for sale are done. Here on out any consumer buying something at cost will be hurting that dealer horribly and it will be one step closer to shutting its doors. I wish this wasn't the case because I'm a consumer as well but ive been in 2 dealers my whole life and ive seen doors close over and over again, there's almost no more mom and pop shops in canada and they all closed in the last 5 years. It happened with cars, you have huge car groups behind the car dealers with almost no soul but own everything. Sales people come and go more than you clear the snow off youre driveway and you don't have that trusted sales person who you will beleive what they say because they have been doing it forever. I drive my brands and sell what I beleive in, you can't find that in a lot of dealers. When was the last time you bought a ford or ram truck and that sales person loved it so much he bought it with his own money. I knew more about the ram I never owned than the person that sold it to me, he had a ford.",
+      subject: "Price",
+      body: "Unfortunately whatever you get at the motorcycle show will probably be more money than a 22, if we have it in stock. Due to the rising costs of the pandemic there will be a new fee on sea-doo as they have introduced to every other line up so far. I don't know what that cost will be for the new fee but it will be called a commodity fee set by brp so the dealers will have to pay for it which means so will the customer.  MSRP's will also be rising and our cost has gone up so the discounts will be smaller. I was talking to an old retired dealer owner who had brp, he was like I don't know how you guys do it, its smaller margins and costs just keep going up and the dealers cant seem to keep people. I'm not saying don't go because you never know when a dealer owner needs to pay his staff or his bills so he doesn't loose his location, but the days of cost units for sale are done. Here on out any consumer buying something at cost will be hurting that dealer horribly and it will be one step closer to shutting its doors. I wish this wasn't the case because I'm a consumer as well but ive been in 2 dealers my whole life and ive seen doors close over and over again, there's almost no more mom and pop shops in canada and they all closed in the last 5 years. It happened with cars, you have huge car groups behind the car dealers with almost no soul but own everything. Sales people come and go more than you clear the snow off youre driveway and you don't have that trusted sales person who you will beleive what they say because they have been doing it forever. I drive my brands and sell what I beleive in, you can't find that in a lot of dealers. When was the last time you bought a ford or ram truck and that sales person loved it so much he bought it with his own money. I knew more about the ram I never owned than the person that sold it to me, he had a ford.",
       category: "Overcome",
       subCat: 'Price',
     },
     {
-      email: "",
-      name: "Whats the rate? ",
-      content: "The finance person didn't give me an exact rate, when you sit down with the finance manager we check your credit and match you with an institution that will give you the best rate. Every institution has different thresholds on how they evaluate credit, investments and so on but because of our working relationships with the bank managers we know each bank is looking for in a customer and they evaluate each customer and assign rates.",
+      subject: "Whats the rate? ",
+      body: "The finance person didn't give me an exact rate, when you sit down with the finance manager we check your credit and match you with an institution that will give you the best rate. Every institution has different thresholds on how they evaluate credit, investments and so on but because of our working relationships with the bank managers we know each bank is looking for in a customer and they evaluate each customer and assign rates.",
       category: "Overcome",
       subCat: 'Whats the rate?',
     },
     {
-      email: "",
-      name: "Whats the rate right now?",
-      content: "It's hard to answer that because everyones rate is going to be different. We deal with several institutions so when we get your information and run your credit we can match you with the best bank.  As you know not all banks treat investments and current customer loans the same. Were not here to just sell you one thing were here to sell you multiple of units down the road when you want to upgrade so we will do our best to get the rate you deserve. ",
+      subject: "Whats the rate right now?",
+      body: "It's hard to answer that because everyones rate is going to be different. We deal with several institutions so when we get your information and run your credit we can match you with the best bank.  As you know not all banks treat investments and current customer loans the same. Were not here to just sell you one thing were here to sell you multiple of units down the road when you want to upgrade so we will do our best to get the rate you deserve. ",
       category: "Overcome",
       subCat: 'Whats the rate right now?',
     },
     {
-      email: "",
-      name: "Insurance Broker",
-      content: "For insurance, whether it's bikes or any motorcycle, call David Bodnar. I've been with him now for 8 years and he's with the times. If anything changes I can just text him whatever the details are, like an ownership, and he will quote/write it up immediately. He handles all of his customers like this and his rates are the best too. I switched to him because my company dropped me due to my zx-10rr, ever since switching it hasn't cost me more than $950. I've switched everything to him because of his rates, every person that calls him.... switches seriously. Office 905-364-4007 cell 289-380-3824 david.bodnar@thebig.ca. For the person reading this don't take this as a plug. But whatever market your in, get a guy for these types of overcomes. If you live in Ontario, you now have one. I've been working with David for years. He has helped me and I have helped him. It's been a great relationship. If you don't live in Ontario try to find someone like him. He took the approach of selling motorcycle insurance for no profit... at the time of writing this. A lot of agents wish they had someone like me. I opened a city up to him that he didn't have access to. He was so successful in my city that I would hear about him from other people that I had never met. I was his first client in the city, this is a common objection so i pushed him hard on my clients because he helped me so much with my insurance.",
+      subject: "Insurance Broker",
+      body: "For insurance, whether it's bikes or any motorcycle, call David Bodnar. I've been with him now for 8 years and he's with the times. If anything changes I can just text him whatever the details are, like an ownership, and he will quote/write it up immediately. He handles all of his customers like this and his rates are the best too. I switched to him because my company dropped me due to my zx-10rr, ever since switching it hasn't cost me more than $950. I've switched everything to him because of his rates, every person that calls him.... switches seriously. Office 905-364-4007 cell 289-380-3824 david.bodnar@thebig.ca. For the person reading this don't take this as a plug. But whatever market your in, get a guy for these types of overcomes. If you live in Ontario, you now have one. I've been working with David for years. He has helped me and I have helped him. It's been a great relationship. If you don't live in Ontario try to find someone like him. He took the approach of selling motorcycle insurance for no profit... at the time of writing this. A lot of agents wish they had someone like me. I opened a city up to him that he didn't have access to. He was so successful in my city that I would hear about him from other people that I had never met. I was his first client in the city, this is a common objection so i pushed him hard on my clients because he helped me so much with my insurance.",
       category: "Overcome",
       subCat: 'Insurance Broker',
     },
     {
-      email: "",
-      name: "Comparing models",
-      content: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our Street Glide, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the Street Glide. Let me know what you need and I'll be happy to help you.",
+      subject: "Comparing models",
+      body: "I completely understand, it's important to make an informed decision when purchasing a motorcycle. I would recommend taking a look at our Street Glide, it offers advanced features and performance that are unmatched by other brands in its class. But if you still want to compare, I would be happy to provide you with information on other brands and models so you can make a comparison. I'll also be happy to answer any questions you might have about the features and benefits of the Street Glide. Let me know what you need and I'll be happy to help you.",
       category: "Overcome",
       subCat: 'Comparing models',
     },
     {
-      email: "",
-      name: "Current Rates",
-      content: "The finance person didn't give me an exact rate, when you sit down with the finance manager we check your credit and match you with an institution that will give you the best rate. Every institution has different thresholds on how they evaluate credit, investments and so on but because of our working relationships with the bank managers we know each bank is looking for in a customer and they evaluate each customer and assign rates.",
+      subject: "Current Rates",
+      body: "The finance person didn't give me an exact rate, when you sit down with the finance manager we check your credit and match you with an institution that will give you the best rate. Every institution has different thresholds on how they evaluate credit, investments and so on but because of our working relationships with the bank managers we know each bank is looking for in a customer and they evaluate each customer and assign rates.",
       category: "Overcome",
       subCat: 'Current Rates',
     },
     {
-      email: "",
-      name: "Current Rates 2",
-      content: "It's hard to answer that because everyones rate is going to be different. We deal with several institutions so when we get your information and run your credit we can match you with the best bank.  As you know not all banks treat investments and current customer loans the same. Were not here to just sell you one thing were here to sell you multiple of units down the road when you want to upgrade so we will do our best to get the rate you deserve. ",
+      subject: "Current Rates 2",
+      body: "It's hard to answer that because everyones rate is going to be different. We deal with several institutions so when we get your information and run your credit we can match you with the best bank.  As you know not all banks treat investments and current customer loans the same. Were not here to just sell you one thing were here to sell you multiple of units down the road when you want to upgrade so we will do our best to get the rate you deserve. ",
       category: "Overcome",
       subCat: 'Current Rates 2',
     },
     {
-      email: "",
-      name: "let me see what I can do",
-      content: "Hey just wanted to follow up to our conversations, if your not ready to buy right now when do you want me to follow up with you? I want to respect your time, that way im not wasting your it and bugging you every couple of days.",
+      subject: "let me see what I can do",
+      body: "Hey just wanted to follow up to our conversations, if your not ready to buy right now when do you want me to follow up with you? I want to respect your time, that way im not wasting your it and bugging you every couple of days.",
       category: "Overcome",
       subCat: 'let me see what I can do',
     },
     {
-      email: "",
-      name: "What can we do to make it happen",
-      content: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
+      subject: "What can we do to make it happen",
+      body: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
       category: "Overcome",
       subCat: 'What can we do to make it happen',
     },
     {
-      email: "",
-      name: "When do you want me to call u",
-      content: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
+      subject: "When do you want me to call u",
+      body: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
       category: "Overcome",
       subCat: 'When do you want me to call u',
     },
     {
-      email: "",
-      name: "Push sale at discounted price",
-      content: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed, but will be ending soon. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
+      subject: "Push sale at discounted price",
+      body: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed, but will be ending soon. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
       category: "Overcome",
       subCat: 'Push sale at discounted price',
     },
     {
-      email: "",
-      name: "Appreciate your diligence in making the right decision",
-      content: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
+      subject: "Appreciate your diligence in making the right decision",
+      body: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
       category: "Overcome",
       subCat: 'Appreciate your diligence in making the right decision',
     },
     {
-      email: "",
-      name: "Let me take your offer to my boss",
-      content: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
+      subject: "Let me take your offer to my boss",
+      body: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
       category: "Overcome",
       subCat: 'Let me take your offer to my boss',
     },
     {
-      email: "",
-      name: "Don't like it when you see it? heres your refund",
-      content: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
+      subject: "Don't like it when you see it? heres your refund",
+      body: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
       category: "Closes",
       subCat: "Don't like it when you see it? heres your refund",
     },
     {
-      email: "",
-      name: "Worried about the finance numbers",
-      content: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
+      subject: "Worried about the finance numbers",
+      body: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
       category: "Closes",
       subCat: "Worried about the finance numbers",
     },
     {
-      email: "",
-      name: "Nut up or shut up and just close him",
-      content: "Were there any questions or concerns you had that was stopping you from moving forward?",
+      subject: "Nut up or shut up and just close him",
+      body: "Were there any questions or concerns you had that was stopping you from moving forward?",
       category: "Closes",
       subCat: "Stopping you from moving forward?",
     },
     {
-      email: "",
-      name: "Asking for objections",
-      content: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information you need before buying so you make an informed buying decision, I'm hear to help make the process easy for you.",
+      subject: "Asking for objections",
+      body: "Were there any other questions or concerns that was keeping you back from moving forward? I want to make sure you have all the information you need before buying so you make an informed buying decision, I'm hear to help make the process easy for you.",
       category: "Overcome",
       subCat: 'Asking for objections',
     },
     {
-      email: "",
-      name: "Satisfied with the deal?",
-      content: "It seems like you might not be completely satisfied with the deal we're working on. No worries! I can't promise to get everything you want, but I'd be more than happy to take your conditions, present them to the sales manager, and negotiate on your behalf. I'll even throw in an arm-wrestling match with him to squeeze the best possible deal for you! In all seriousness, your satisfaction is my top priority, and I'm here to work together on finding a solution that aligns better with your expectations.",
+      subject: "Satisfied with the deal?",
+      body: "It seems like you might not be completely satisfied with the deal we're working on. No worries! I can't promise to get everything you want, but I'd be more than happy to take your conditions, present them to the sales manager, and negotiate on your behalf. I'll even throw in an arm-wrestling match with him to squeeze the best possible deal for you! In all seriousness, your satisfaction is my top priority, and I'm here to work together on finding a solution that aligns better with your expectations.",
       category: "Overcome",
       subCat: 'Satisfied with the deal?',
     },
     {
-      email: "",
-      name: "Satisfied with the deal?",
-      content: "It seems like you might not be completely satisfied with the deal we're working on. No worries! I can't promise to get everything you want, but I'd be more than happy to take your conditions, present them to the sales manager, and negotiate on your behalf. I'll even throw in an arm-wrestling match with him to squeeze the best possible deal for you! In all seriousness, your satisfaction is my top priority, and I'm here to work together on finding a solution that aligns better with your expectations.",
+      subject: "Satisfied with the deal?",
+      body: "It seems like you might not be completely satisfied with the deal we're working on. No worries! I can't promise to get everything you want, but I'd be more than happy to take your conditions, present them to the sales manager, and negotiate on your behalf. I'll even throw in an arm-wrestling match with him to squeeze the best possible deal for you! In all seriousness, your satisfaction is my top priority, and I'm here to work together on finding a solution that aligns better with your expectations.",
       category: "Follow-ups",
       subCat: 'Satisfied with the deal?',
     },
     {
-      email: "",
-      name: "Concerns? let me taking them to the boss lets get them resolved",
-      content: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
+      subject: "Concerns? let me taking them to the boss lets get them resolved",
+      body: "I've noticed that you may have some concerns about the current deal we're discussing. What would it take to make it more appealing to you? While I can't guarantee that we can fulfill every request, I'm more than willing to take your conditions and present them to my manager. I've been collaborating with him for several years now, so I have a good understanding of how and when to negotiate to get favorable terms into deals, always within reasonable boundaries, of course. Your satisfaction is our priority, and I'm here to work with you to find a solution that suits your needs.",
       category: "Overcome",
       subCat: 'Concerns? let me taking them to the boss lets get them resolved',
     },
     {
       email: "10",
-      name: "Client - bdc - source FB - coms - text",
-      content: `Hey it's {user.username} from {dFees.dealer}, you requested to have a rep contact you about the { Current Vehicle - Model } on facebook. When is a good time for me to call you back, would later on today work or tomorrow? If text is the only way of contact, that would be good as well.`,
+      subject: "Client - bdc - source FB - coms - text",
+      body: `Hey it's {user.username} from {dFees.dealer}, you requested to have a rep contact you about the { Current Vehicle - Model } on facebook. When is a good time for me to call you back, would later on today work or tomorrow? If text is the only way of contact, that would be good as well.`,
       category: "Texting",
       subCat: 'Client - bdc - source FB - coms - text',
     },
     {
       email: "9",
-      name: "Client - 24 hour reminder for in store appt",
-      content: "I wanted to remind you about our appointment tomorrow. If, for any reason, you can't make it, please let me know, and we can reschedule. Otherwise, I'm looking forward to seeing you tomorrow!",
+      subject: "Client - 24 hour reminder for in store appt",
+      body: "I wanted to remind you about our appointment tomorrow. If, for any reason, you can't make it, please let me know, and we can reschedule. Otherwise, I'm looking forward to seeing you tomorrow!",
       category: "Texting",
       subCat: 'Client - 24 hour reminder for in store appt',
     },
     {
       email: "8",
-      name: "Client - 24 hour reminder for bike pu",
-      content: "I wanted to remind you about your motorcycle pick-up tomorrow. If, for any reason, you can't make it, please let me know, and we can reschedule. Otherwise, I'm looking handing off your new bike to you so you can hit the open road.",
+      subject: "Client - 24 hour reminder for bike pu",
+      body: "I wanted to remind you about your motorcycle pick-up tomorrow. If, for any reason, you can't make it, please let me know, and we can reschedule. Otherwise, I'm looking handing off your new bike to you so you can hit the open road.",
       category: "Texting",
       subCat: 'Client - 24 hour reminder for bike pu',
     },
     {
       email: "7",
-      name: "After meeting",
-      content: "Hey { Client - Civility } { Client - First name }, it's { User - First name } from { Dealer - Name }. It was nice meeting you today. Do not hesitate if you have any questions. Have a great day!",
+      subject: "After meeting",
+      body: "Hey { Client - Civility } { Client - First name }, it's { User - First name } from { Dealer - Name }. It was nice meeting you today. Do not hesitate if you have any questions. Have a great day!",
       category: "Texting",
       subCat: 'After meeting',
     },
     {
-      email: "",
-      name: "Close 1",
-      content: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the Street Glide. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
+      subject: "Close 1",
+      body: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the Street Glide. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
       category: "Closes",
       subCat: 'Close 1',
     },
     {
-      email: "",
-      name: "You can pocket some great savings",
-      content: "I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the Street Glide. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let's quickly apply to see where you sit, if you don't qualify no harm done but if you do, than you can pocket some great savings!",
+      subject: "You can pocket some great savings",
+      body: "I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the Street Glide. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let's quickly apply to see where you sit, if you don't qualify no harm done but if you do, than you can pocket some great savings!",
       category: "Closes",
       subCat: 'You can pocket some great savings',
     },
     {
-      email: "",
-      name: "Understand its a big decision",
-      content: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the Street Glide is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
+      subject: "Understand its a big decision",
+      body: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the Street Glide is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
       category: "Closes",
       subCat: 'Understand its a big decision',
     },
     {
-      email: "",
-      name: "To ensure that you have the opportunity to view and secure the unit",
-      content: "To ensure that you have the opportunity to view and secure the unit, I recommend placing a deposit to reserve it until it arrives. This way, you'll prevent anyone else from purchasing it before you've had a chance to see it. The best part is, if you don't like it when you see it, you'll receive a full deposit refund. On the other hand, if you fall in love with it, you won't miss the opportunity to make it yours.",
+      subject: "To ensure that you have the opportunity to view and secure the unit",
+      body: "To ensure that you have the opportunity to view and secure the unit, I recommend placing a deposit to reserve it until it arrives. This way, you'll prevent anyone else from purchasing it before you've had a chance to see it. The best part is, if you don't like it when you see it, you'll receive a full deposit refund. On the other hand, if you fall in love with it, you won't miss the opportunity to make it yours.",
       category: "Closes",
       subCat: 'To ensure that you have the opportunity to view and secure the unit',
     },
     {
-      email: "",
-      name: "I take pride in being the best salesperson",
-      content: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible. It's clear that you may have some reservations about the current deal. If you don't mind sharing, I'd love to know what we can adjust or improve to make it a more attractive offer for you. Your feedback is invaluable, and I'm here to work together on a solution that meets your needs and expectations.",
+      subject: "I take pride in being the best salesperson",
+      body: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible. It's clear that you may have some reservations about the current deal. If you don't mind sharing, I'd love to know what we can adjust or improve to make it a more attractive offer for you. Your feedback is invaluable, and I'm here to work together on a solution that meets your needs and expectations.",
       category: "Closes",
       subCat: 'I take pride in being the best salesperson',
     },
     {
-      email: "",
-      name: "Motorcycle purchase is a significant decision",
-      content: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
+      subject: "Motorcycle purchase is a significant decision",
+      body: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
       category: "Closes",
       subCat: 'Motorcycle purchase is a significant decision',
     },
     {
-      email: "",
-      name: "Emotional",
-      content: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the Street Glide as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the Street Glide, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
+      subject: "Emotional",
+      body: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the Street Glide as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the Street Glide, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
       category: "Closes",
       subCat: 'Emotional',
     },
     {
-      email: "",
-      name: "Felt",
-      content: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the Street Glide have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the Street Glide for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the Street Glide can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
+      subject: "Felt",
+      body: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the Street Glide have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the Street Glide for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the Street Glide can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
       category: "Closes",
       subCat: 'Felt',
     },
     {
-      email: "",
-      name: "Problem",
-      content: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
+      subject: "Problem",
+      body: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
       category: "Closes",
       subCat: 'Problem',
     },
     {
-      email: "",
-      name: "Alternative",
-      content: "Present the customer with two options and ask them to choose. It's as simple as that.",
+      subject: "Alternative",
+      body: "Present the customer with two options and ask them to choose. It's as simple as that.",
       category: "Closes",
       subCat: 'Alternative',
     },
     {
-      email: "",
-      name: "Offer to refund deposit on pickup",
-      content: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license. This will allow us to initiate the process for our finance manager to go over the application with you.  We understand that making a financial commitment is an important step, and we want you to feel comfortable. If you're hesitant about putting money down for financing, please know that it's perfectly okay. In fact, we have a flexible approach, and we'll refund the deposit when you come to pick up your new bike.  We genuinely want to make this process as smooth and convenient for you as possible. Could you please let us know which payment option you're most comfortable with?",
+      subject: "Offer to refund deposit on pickup",
+      body: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license. This will allow us to initiate the process for our finance manager to go over the application with you.  We understand that making a financial commitment is an important step, and we want you to feel comfortable. If you're hesitant about putting money down for financing, please know that it's perfectly okay. In fact, we have a flexible approach, and we'll refund the deposit when you come to pick up your new bike.  We genuinely want to make this process as smooth and convenient for you as possible. Could you please let us know which payment option you're most comfortable with?",
       category: "Closes",
       subCat: 'Offer to refund deposit on pickup',
     },
     {
-      email: "",
-      name: "Concerns about the deal we're working on, and I truly value your feedback",
-      content: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
+      subject: "Concerns about the deal we're working on, and I truly value your feedback",
+      body: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
       category: "Closes",
       subCat: "Concerns about the deal we're working on, and I truly value your feedback",
     },
     {
-      email: "",
-      name: "Recommend placing a deposit to reserve the unit",
-      content: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
+      subject: "Recommend placing a deposit to reserve the unit",
+      body: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
       category: "Closes",
       subCat: 'Recommend placing a deposit to reserve the unit',
     },
     {
-      email: "",
-      name: "Trial",
-      content: "Ask the customer questions to gauge their level of interest.",
+      subject: "Trial",
+      body: "Ask the customer questions to gauge their level of interest.",
       category: "Closes",
       subCat: 'Trial',
     },
     {
-      email: "",
-      name: "Summary",
-      content: "Summarize the key benefits of the product and ask for the sale.",
+      subject: "Summary",
+      body: "Summarize the key benefits of the product and ask for the sale.",
       category: "Closes",
       subCat: 'Summary',
     },
     {
-      email: "",
-      name: "If your worried about the finance numbers",
-      content: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
+      subject: "If your worried about the finance numbers",
+      body: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
       category: "Closes",
       subCat: 'If your worried about the finance numbers',
     },
     {
       email: "6",
-      name: "Asking for objections",
-      content: "Were there any questions or concerns you had that was stopping you from moving forward?",
+      subject: "Asking for objections",
+      body: "Were there any questions or concerns you had that was stopping you from moving forward?",
       category: "Texting",
       subCat: 'Asking for objections',
     },
     {
       email: "5",
-      name: "Not ready right now?",
-      content: "Hey Mike just wanted to follow up to our conversations, if your not ready to buy right now when do you want me to follow up with you? that way I'm not wasting your time and bugging you every couple of days. ",
+      subject: "Not ready right now?",
+      body: "Hey Mike just wanted to follow up to our conversations, if your not ready to buy right now when do you want me to follow up with you? that way I'm not wasting your time and bugging you every couple of days. ",
       category: "Texting",
       subCat: 'Not ready right now?',
     },
     {
       email: "4",
-      name: "Respone to online request?",
-      content: `Hey its {user.username} from {dFees.dealer} you put in a request on line to take advantage of the current promotions, which unit were you looking for?`,
+      subject: "Respone to online request?",
+      body: `Hey its {user.username} from {dFees.dealer} you put in a request on line to take advantage of the current promotions, which unit were you looking for?`,
       category: 'Texting',
       subCat: 'Respone to online request?',
     },
     {
       email: "3",
-      name: "You requested that rep get in contact with you ",
-      content: `Hey its {user.username} from {dFees.dealer} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?`,
+      subject: "You requested that rep get in contact with you ",
+      body: `Hey its {user.username} from {dFees.dealer} you requested that rep get in contact with you about the unit you were looking at online when is a good time for me to call you back, would later on today work or tomorrow?`,
       category: "Texting",
       subCat: 'You requested that rep get in contact with you ',
     },
     {
       email: "2",
-      name: "Call/text combo - auto",
-      content: `Hey its {user.username} from {dFees.dealer} I just called but your probably tied up give me a call or text when you can and we can go over that unit you were looking for`,
+      subject: "Call/text combo - auto",
+      body: `Hey its {user.username} from {dFees.dealer} I just called but your probably tied up give me a call or text when you can and we can go over that unit you were looking for`,
       category: "Texting",
       subCat: 'Call/text combo - auto',
     },
     {
       email: "1",
-      name: "After hours invalid email",
-      content: "Hey { Client - First name } its { User - First name } from Freedom, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
+      subject: "After hours invalid email",
+      body: "Hey { Client - First name } its { User - First name } from Freedom, were currently closed so I may not be able to answers all your questions till we open, but I'll try my best to help you now.",
       category: "Texting",
       subCat: 'After hours invalid email',
     },
 
     {
-      email: "",
-      name: "Check in and see if you had any further questions or concerns",
-      content: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the Street Glide. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
+      subject: "Check in and see if you had any further questions or concerns",
+      body: "I hope you're having a great day! I wanted to check in and see if you had any further questions or concerns about the Street Glide. We've had a lot of interest in this model and I want to make sure you don't miss out on the opportunity to own one at the price we discussed. If you're ready to move forward, please let me know and I'll be happy to assist you with the purchase process.",
       category: "Closes",
       subCatLisst: 'Check in and see if you had any further questions or concerns',
     },
     {
-      email: "",
-      name: "I noticed you haven't responded to my previous email",
-      content: "I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the Street Glide. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let me know if you're interested and we can discuss next steps.",
+      subject: "I noticed you haven't responded to my previous email",
+      body: "I noticed you haven't responded to my previous email, and I wanted to check in and see if you have any further questions about the Street Glide. When you're ready to move forward with your purchase, we're offering a limited-time promotional rate for people that qualify. Let me know if you're interested and we can discuss next steps.",
       category: "Closes",
       subCatLisst: "I noticed you haven't responded to my previous email",
     },
     {
-      email: "",
-      name: "I understand that purchasing a motorcycle can be a big decision",
-      content: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the Street Glide is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
+      subject: "I understand that purchasing a motorcycle can be a big decision",
+      body: "I understand that purchasing a motorcycle can be a big decision, but I want to remind you that the Street Glide is currently available at the price we discussed. I would be happy to go over all te features it has again with you. Would this afternoon work for you or would tomorrow fit your schedule better?",
       category: "Closes",
       subCatLisst: "I understand that purchasing a motorcycle can be a big decision",
     },
     {
-      email: "",
-      name: "if you don't like it when you see it, you'll receive a full deposit refund",
-      content: "To ensure that you have the opportunity to view and secure the unit, I recommend placing a deposit to reserve it until it arrives. This way, you'll prevent anyone else from purchasing it before you've had a chance to see it. The best part is, if you don't like it when you see it, you'll receive a full deposit refund. On the other hand, if you fall in love with it, you won't miss the opportunity to make it yours.",
+      subject: "if you don't like it when you see it, you'll receive a full deposit refund",
+      body: "To ensure that you have the opportunity to view and secure the unit, I recommend placing a deposit to reserve it until it arrives. This way, you'll prevent anyone else from purchasing it before you've had a chance to see it. The best part is, if you don't like it when you see it, you'll receive a full deposit refund. On the other hand, if you fall in love with it, you won't miss the opportunity to make it yours.",
       category: "Closes",
       subCatLisst: "if you don't like it when you see it, you'll receive a full deposit refund",
     },
     {
-      email: "",
-      name: "It's clear that you may have some reservations about the current deal.",
-      content: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible. It's clear that you may have some reservations about the current deal. If you don't mind sharing, I'd love to know what we can adjust or improve to make it a more attractive offer for you. Your feedback is invaluable, and I'm here to work together on a solution that meets your needs and expectations.",
+      subject: "It's clear that you may have some reservations about the current deal.",
+      body: "I take pride in being the best salesperson I can be and assisting as many people in my community as possible. It's clear that you may have some reservations about the current deal. If you don't mind sharing, I'd love to know what we can adjust or improve to make it a more attractive offer for you. Your feedback is invaluable, and I'm here to work together on a solution that meets your needs and expectations.",
       category: "Closes",
       subCatLisst: "It's clear that you may have some reservations about the current deal.",
     },
     {
-      email: "",
-      name: "Test Drives",
-      content: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
+      subject: "Test Drives",
+      body: "I understand that deciding on a motorcycle purchase is a significant decision. However, I'd like to emphasize that the Street Glide is currently available at the agreed-upon price we discussed. To help you make an informed decision, I'm thrilled to offer you the opportunity for a test drive. This will allow you to personally experience the motorcycle's exceptional features and performance. Could we arrange a test drive for you this afternoon? Alternatively, if your schedule is more accommodating, tomorrow would also work perfectly. Your comfort and satisfaction are our top priorities, and I'm here to assist you in making the right choice for your needs.",
       category: "Closes",
       subCatLisst: 'Test Drives',
     },
     {
-      email: "",
-      name: "Investing in unforgettable memories",
-      content: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the Street Glide as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the Street Glide, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
+      subject: "Investing in unforgettable memories",
+      body: "I understand that choosing the perfect motorcycle is a significant decision, one that can truly enhance your life. Imagine the Street Glide as more than just a motorcycle; it's your ticket to unforgettable adventures and cherished moments with family and friends.  Picture yourself cruising the curvy roads. With the Street Glide, you're not just buying a motorcycle; you're investing in unforgettable memories and quality time with loved ones. The price we discussed today is an incredible opportunity to bring these dreams to life. I'd love to arrange a test drive, so you can personally experience the excitement and freedom this motorcycle offers. Would this afternoon or tomorrow be a better time for you? Your happiness and the enrichment of your life are our utmost priorities, and I'm here to make that happen.",
       category: "Closes",
       subCatLisst: 'Investing in unforgettable memories',
     },
     {
-      email: "",
-      name: "It's stories like these that remind us",
-      content: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the Street Glide have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the Street Glide for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the Street Glide can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
+      subject: "It's stories like these that remind us",
+      body: "I completely understand that making a decision like this can be a significant step. Many of our customers have been in the same position, and they've shared some incredible stories with us.  Customers who purchased the Street Glide have told us how it transformed their weekends and vacations. They found that it added a new dimension to their family time, creating memories that they'll cherish forever.  One of our recent customers, John, initially had similar reservations. However, after taking the Street Glide for a test drive, he couldn't resist its appeal. He mentioned how it rekindled his love for the open road and brought his family closer together.  Another customer, Sarah, told us how she discovered hidden backcountry roads and beautiful spots she never knew existed before owning this motorcycle.  It's stories like these that remind us how life-changing the Street Glide can be. We'd love to help you create your own memorable experiences. If you're open to it, I can schedule a test drive for you. Would this afternoon or tomorrow work better for you?",
       category: "Closes",
       subCatLisst: "It's stories like these that remind us",
     },
     {
-      email: "",
-      name: "I appreciate your diligence in making the right decision",
-      content: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
+      subject: "I appreciate your diligence in making the right decision",
+      body: "I understand that you might have some concerns, and I appreciate your diligence in making the right decision. Let me address a few common questions and concerns that customers often have:  Price: Some customers worry about the cost. However, the Street Glide is not just an expense; it's an investment in your lifestyle and enjoyment. Plus, the price we've discussed today is a fantastic offer.  Maintenance: Maintenance can be a concern. Rest assured that H-D is known for its reliability, and we offer maintenance plans that will keep your motorcycle in top condition without any hassle.  Safety: Safety is paramount. The Street Glide is equipped with state-of-the-art safety features.  Resale Value: Some wonder about the resale value. H-D tend to hold their value well over time, and we can provide you with insights on how to maintain that value.  Time Commitment: You might be concerned about the time needed to enjoy your motorcycle. Remember, the Street Glide is designed to enhance your free time, allowing you to create wonderful memories without extensive commitments.  I'm here to address any specific concerns you may have. Your comfort and confidence in your decision are of utmost importance to us. Is there a particular concern you'd like to discuss or any additional information you need before moving forward?",
       category: "Closes",
       subCatLisst: 'I appreciate your diligence in making the right decision',
     },
     {
-      email: "",
-      name: "Alternative 3",
-      content: "Present the customer with two options and ask them to choose. It's as simple as that.",
+      subject: "Alternative 3",
+      body: "Present the customer with two options and ask them to choose. It's as simple as that.",
       category: "Closes",
       subCatLisst: 'Alternative 3',
     },
     {
-      email: "",
-      name: "We'll refund the deposit when you come to pick up your new bike",
-      content: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license. This will allow us to initiate the process for our finance manager to go over the application with you.  We understand that making a financial commitment is an important step, and we want you to feel comfortable. If you're hesitant about putting money down for financing, please know that it's perfectly okay. In fact, we have a flexible approach, and we'll refund the deposit when you come to pick up your new bike.  We genuinely want to make this process as smooth and convenient for you as possible. Could you please let us know which payment option you're most comfortable with?",
+      subject: "We'll refund the deposit when you come to pick up your new bike",
+      body: "To move forward with your purchase, we would need a $500 deposit and a picture of your driver's license. This will allow us to initiate the process for our finance manager to go over the application with you.  We understand that making a financial commitment is an important step, and we want you to feel comfortable. If you're hesitant about putting money down for financing, please know that it's perfectly okay. In fact, we have a flexible approach, and we'll refund the deposit when you come to pick up your new bike.  We genuinely want to make this process as smooth and convenient for you as possible. Could you please let us know which payment option you're most comfortable with?",
       category: "Closes",
       subCatLisst: "We'll refund the deposit when you come to pick up your new bike",
     },
     {
-      email: "",
-      name: "Direct 3",
-      content: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
+      subject: "Direct 3",
+      body: "It seems like you might have some concerns about the deal we're working on, and I truly value your feedback. My goal is to ensure that you're completely satisfied with your purchase. I can't make guarantees, but I'm more than willing to take your conditions and present them to my manager. I've had a long-standing working relationship with him, and I know how and when to approach him to explore options that can meet your needs, within reasonable boundaries, of course.  Your satisfaction is of the utmost importance to us, and we're committed to finding a solution that works for you. What would it take to make this deal align better with your expectations? Please share your conditions, and I'll do my best to advocate for you",
       category: "Closes",
       subCatLisst: 'Direct 3',
     },
     {
-      email: "",
-      name: "Direct 4",
-      content: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
+      subject: "Direct 4",
+      body: "To ensure you have the opportunity to see and buy it, I recommend placing a deposit to reserve the unit until it arrives. This way, you'll have peace of mind knowing that no one else can purchase it before you have a chance to make a decision. The best part is, if you happen to dislike it when you see it, you'll receive a full refund of your deposit. On the other hand, if you fall in love with it, you won't miss out on the chance to make it yours. It's a win-win scenario that allows you the time and flexibility to make an informed choice. Would you like to go ahead and place a deposit to secure the unit?",
       category: "Closes",
       subCatLisst: 'Direct 4',
     },
     {
-      email: "",
-      name: "Trial 2",
-      content: "Ask the customer questions to gauge their level of interest.",
+      subject: "Trial 2",
+      body: "Ask the customer questions to gauge their level of interest.",
       category: "Closes",
       subCatLisst: 'Trial 2',
     },
     {
-      email: "",
-      name: "Summary 2",
-      content: "Summarize the key benefits of the product and ask for the sale.",
+      subject: "Summary 2",
+      body: "Summarize the key benefits of the product and ask for the sale.",
       category: "Closes",
       subCatLisst: 'Summary 2',
     },
     {
-      email: "",
-      name: "Worried about finance figures?",
-      content: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
+      subject: "Worried about finance figures?",
+      body: "If your worried about the finance numbers we can sit you down with our finance manager and he can go over the deal with you and see what rate we can go for before you fully commit. That way you have all the information to make an informed decision.",
       category: "Closes",
       subCatLisst: 'Worried about finance figures?',
     },
     {
-      email: "",
-      name: "Entire dealers fall prey to this.",
-      content: <div className='grid w-full items-center bg-background1  text-slate3 ' >
+      subject: "Entire dealers fall prey to this.",
+      body: <div className='grid w-full items-center bg-background1  text-slate3 ' >
         <p>
           Do not order/promise parts to a customer who has not signed a bill of sale.
         </p>
@@ -998,9 +770,8 @@ export default function Shight() {
       subCat: 'Parts and Accessories',
     },
     {
-      email: "",
-      name: "Again entire dealers fall prey to this",
-      content: <div className='mt-3 grid w-full items-center' >
+      subject: "Again entire dealers fall prey to this",
+      body: <div className='mt-3 grid w-full items-center' >
         <p>
           Do not order/promise a unit to a customer who has not signed a bill of sale.
         </p>
@@ -1034,9 +805,8 @@ export default function Shight() {
       subCat: 'Ordering Units / Contracts',
     },
     {
-      email: "",
-      name: "Your not going to make every sale.",
-      content: <div className='mt-3 grid w-full items-center' >
+      subject: "Your not going to make every sale.",
+      body: <div className='mt-3 grid w-full items-center' >
         <p>
           In the world of sales, no one can close every deal in a dealership. While I've seen it happen in other industries, the automotive sector presents a different reality.
         </p>
@@ -1060,9 +830,8 @@ export default function Shight() {
       subCat: 'Taking the lose professionally',
     },
     {
-      email: "",
-      name: "Does this take skill, no. Does it take confidence, yes.",
-      content: <div className='mt-3 grid w-full items-center' >
+      subject: "Does this take skill, no. Does it take confidence, yes.",
+      body: <div className='mt-3 grid w-full items-center' >
         <p>
           Nothing that we provide here takes skill. It takes confidence. Confidence in your self, your product, your dealer and your industry.
         </p>
@@ -1086,9 +855,8 @@ export default function Shight() {
       subCat: `Asking the questions other sales people won't`,
     },
     {
-      email: "",
-      name: `"You people are no better than the furniture your sitting on for the whole day doing nothing."`,
-      content: <div className='mt-3 grid w-full items-center' >
+      subject: `"You people are no better than the furniture your sitting on for the whole day doing nothing."`,
+      body: <div className='mt-3 grid w-full items-center' >
         <p>
           Glengarry Glen Ross, the amount of times I see this in real life. Blows my mind. Never really experinced it in my own dealer till recently. Everyone just wanted to be on coffee breaks. It was insane. 2-3 hour long coffee breaks.
         </p>
@@ -1118,9 +886,8 @@ export default function Shight() {
       subCat: `Want to be better than the rest of the dealer?`,
     },
     {
-      email: "",
-      name: `Stand your ground with pricing.`,
-      content: <div className='mt-3 grid w-full items-center' >
+      subject: `Stand your ground with pricing.`,
+      body: <div className='mt-3 grid w-full items-center' >
         <p>
           A lot of sales places you won't benefit from this as much as others. Start practicing this now, and you will see the benefits later.
         </p>
@@ -1180,9 +947,8 @@ export default function Shight() {
       subCat: `Stand your ground with pricing`,
     },
     {
-      email: "",
-      name: `Deliver every unit 7 days or later.`,
-      content: <div className='mt-3 grid w-full items-center' >
+      subject: `Deliver every unit 7 days or later.`,
+      body: <div className='mt-3 grid w-full items-center' >
         <p className='mt-3'>
           I'v found that sticking to a 7-day delivery rule for all our sales can really change the game in tire sales. You know, opting for next-day deliveries or anything less than 7 days can cause more headaches than you'd think.
         </p>
@@ -1203,9 +969,8 @@ export default function Shight() {
       subCat: `Deliver every unit 7 days or later.`,
     },
     {
-      email: "",
-      name: `Zero salesmanship involved.`,
-      content: <div className='mt-3 grid w-full items-center' >
+      subject: `Zero salesmanship involved.`,
+      body: <div className='mt-3 grid w-full items-center' >
         <p className='mt-3'>
           dealing with contracts can seem daunting, but let me break it down. Getting that bill of sale signed right after the customer says "yes" is key. It outlines exactly what they're expecting and what we promise to deliver. Plus, it secures their commitment and prevents tying up our funds unnecessarily.
         </p>
@@ -1224,9 +989,8 @@ export default function Shight() {
       subCat: `Become the best with contracts.`,
     },
     {
-      email: "",
-      name: `Maybe your not closing it because, for the money on that paticular model/trim the customer doesn't see the value. Why not move up to a more expensive unit? It's just a payment. If they can afford $300 a month, they can afford $350 or $400. I've double and tripled customers bills, and they were happy! Because they bought something where they saw the value in it. Some of the lower trim levels are just too cheap as far as features go compared to the top trim levels.`,
-      content: <div className='mt-3 grid w-full items-center' >
+      subject: `Maybe your not closing it because, for the money on that paticular model/trim the customer doesn't see the value. Why not move up to a more expensive unit? It's just a payment. If they can afford $300 a month, they can afford $350 or $400. I've double and tripled customers bills, and they were happy! Because they bought something where they saw the value in it. Some of the lower trim levels are just too cheap as far as features go compared to the top trim levels.`,
+      body: <div className='mt-3 grid w-full items-center' >
         <p>
           The font may seem extreme but a lot of sales people have a hard time getting over this one. Related to this is discounting, so many sales people just discount right away. FUCK THAT, why are you devaluing the product you are selling. The MSRP or product price is set by the manufacturer for reason, because that's what it is worth.
         </p>
@@ -1254,9 +1018,8 @@ export default function Shight() {
       subCat: `The Up-Sell`,
     },
     {
-      email: "",
-      name: "Dealer closed - com/task - text",
-      content: <>
+      subject: "Dealer closed - com/task - text",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Valid Phone</p>
@@ -1283,9 +1046,8 @@ export default function Shight() {
       subCat: 'Dealer closed - com/task - text',
     },
     {
-      email: "",
-      name: "Client - no f/u or task scheduled  - task me",
-      content: <>
+      subject: "Client - no f/u or task scheduled  - task me",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1310,9 +1072,8 @@ export default function Shight() {
       subCat: 'Client - no f/u or task scheduled  - task me',
     },
     {
-      email: "",
-      name: "Client - delivered - thank you / ask for referral - me",
-      content: <>
+      subject: "Client - delivered - thank you / ask for referral - me",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Sale date - is defined</p>
@@ -1338,9 +1099,8 @@ export default function Shight() {
       subCat: 'Client - delivered - thank you / ask for referral - me',
     },
     {
-      email: "",
-      name: "Dealer closed - com/task - email",
-      content: <>
+      subject: "Dealer closed - com/task - email",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Lead type - is - weblead</p>
@@ -1365,9 +1125,8 @@ export default function Shight() {
       subCat: 'Dealer closed - com/task - email',
     },
     {
-      email: "",
-      name: "Consent - bought a bike - Last 7 days - communication",
-      content: <>
+      subject: "Consent - bought a bike - Last 7 days - communication",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1389,9 +1148,8 @@ export default function Shight() {
     },
 
     {
-      email: "",
-      name: "Consent - 6 months before consent end or sales person no longer here - task",
-      content: <>
+      subject: "Consent - 6 months before consent end or sales person no longer here - task",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1412,9 +1170,8 @@ export default function Shight() {
       subCat: 'Consent - 6 months before consent end or sales person no longer here - task',
     },
     {
-      email: "",
-      name: "Consent - 3 months before - before consent ends - coms",
-      content: <>
+      subject: "Consent - 3 months before - before consent ends - coms",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1435,9 +1192,8 @@ export default function Shight() {
       subCat: 'Consent - 3 months before - before consent ends - coms',
     },
     {
-      email: "",
-      name: "Client - delivered - 1 year anni ",
-      content: <>
+      subject: "Client - delivered - 1 year anni ",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1460,9 +1216,8 @@ export default function Shight() {
       subCat: 'Client - delivered - 1 year anni ',
     },
     {
-      email: "",
-      name: "Client - delivered - 1 year anni ",
-      content: <>
+      subject: "Client - delivered - 1 year anni ",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1485,9 +1240,8 @@ export default function Shight() {
       subCat: 'Client - delivered - 1 year anni ',
     },
     {
-      email: "",
-      name: "Client - After First Visit - thank you / no phone #",
-      content: <>
+      subject: "Client - After First Visit - thank you / no phone #",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1510,9 +1264,8 @@ export default function Shight() {
       subCat: 'Client - After First Visit - thank you / no phone #',
     },
     {
-      email: "",
-      name: "Client - After First Visit - thank you text",
-      content: <>
+      subject: "Client - After First Visit - thank you text",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1535,9 +1288,8 @@ export default function Shight() {
       subCat: 'Client - After First Visit - thank you / no phone #',
     },
     {
-      email: "",
-      name: "Client - delivered - thank you / ask for referral ",
-      content: <>
+      subject: "Client - delivered - thank you / ask for referral ",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1564,9 +1316,8 @@ export default function Shight() {
       subCat: 'Client - delivered - thank you / ask for referral ',
     },
     {
-      email: "",
-      name: "Client - 24 hour in store appt reminder - ",
-      content: <>
+      subject: "Client - 24 hour in store appt reminder - ",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1595,9 +1346,8 @@ export default function Shight() {
       subCat: 'Client - 24 hour in store appt reminder - ',
     },
     {
-      email: "",
-      name: "Client - 24 hour delivery reminder",
-      content: <>
+      subject: "Client - 24 hour delivery reminder",
+      body: <>
         <p className=''>Criteria</p>
         <hr />
         <p className=''>Associate - is - me</p>
@@ -1624,6 +1374,7 @@ export default function Shight() {
       subCat: 'Client - 24 hour delivery reminder',
     },
   ]
+  let mergedArray = scripts.concat(templates);
 
   const copyText = (text) => {
     navigator.clipboard.writeText(text)
@@ -1662,8 +1413,8 @@ export default function Shight() {
   }
   function handleSubCatLisstClick(mail) {
     setSelectedRecord(mail);
-    setText(mail.content)
-    console.log(mail, mail.content, 'mail')
+    setText(mail.body)
+    console.log(mail, 'mail')
   }
 
   const navigation = useNavigation();
@@ -1690,13 +1441,13 @@ export default function Shight() {
     setSelectedSubcategory(false);
     setSelectedScript(true);
   };
-  const [text, setText] = React.useState('');
+  const [text, setText] = useState('');
   const [content, setContent] = useState('')
-  const [finalText, setFinalText] = React.useState('');
+  const [finalText, setFinalText] = useState('');
   const [id, setId] = useState('')
 
   useEffect(() => {
-    if (text) {
+    if (selectedRecord) {
       setContent(text)
       editor?.commands.setContent({
         "type": "doc",
@@ -1706,20 +1457,21 @@ export default function Shight() {
             "content": [
               {
                 "type": "text",
-                "text": text
+                "text": selectedRecord.body
               }
             ]
           }
         ]
       })
     }
-  }, [text])
+  }, [selectedRecord])
 
   let handleUpdate;
-  const CustomDocument = Document.extend({ content: 'taskList', })
-  const CustomTaskItem = TaskItem.extend({ content: 'inline*', })
-  const editor = useEditor({
-    content,
+  const CustomDocument = Document.extend({ body: 'taskList', })
+  const CustomTaskItem = TaskItem.extend({ body: 'inline*', })
+  const editor = Editor(content, setText)
+
+  const editorNewTemplates = useEditor({
     extensions: [
       Document,
       Paragraph,
@@ -1768,491 +1520,6 @@ export default function Shight() {
   })
 
 
-  const clientAtr =
-    [
-      { title: "Mr/Mrs", attribute: "${clientTitle}" },
-      { title: "First Name", attribute: "${firstName}" },
-      { title: "Last Name", attribute: "${lastName}" },
-      { title: "Full Name", attribute: "${name}" },
-      { title: "Phone", attribute: "${phone}" },
-      { title: 'Email', attribute: '${email}' },
-      { title: 'Company Name', attribute: '${clientCompanyName}' },
-      { title: 'Address', attribute: '${address}' },
-      { title: 'City', attribute: '${city}' },
-      { title: 'Province', attribute: '${province}' },
-      { title: 'Postal Code', attribute: '${postal}' },
-    ]
-  const wantedVehAttr = [
-    { title: 'Year', attribute: "${year}" },
-    { title: "Brand", attribute: "${brand}" },
-    { title: "Model", attribute: "${model}" },
-    { title: "Trim", attribute: "${trim}" },
-    { title: "Stock Number", attribute: "${stockNumber}" },
-    { title: "VIN", attribute: "${vin}" },
-    { title: 'Color', attribute: '${color}' },
-    { title: 'Balance', attribute: '${balance}' },
-    { title: 'packageNumber', attribute: '${packageNumber}' },
-    { title: 'packagePrice', attribute: '${packagePrice}' },
-    { title: 'stockNumber', attribute: '${stockNumber}' },
-    { title: 'type', attribute: '${type}' },
-    { title: 'class', attribute: '${class}' },
-    { title: 'year', attribute: '${year}' },
-    { title: 'make', attribute: '${make}' },
-    { title: 'model', attribute: '${model}' },
-    { title: 'modelName', attribute: '${modelName}' },
-    { title: 'submodel', attribute: '${submodel}' },
-    { title: 'subSubmodel', attribute: '${subSubmodel}' },
-    { title: 'price', attribute: '${price}' },
-    { title: 'exteriorColor', attribute: '${exteriorColor}' },
-    { title: 'mileage', attribute: '${mileage}' },
-    { title: 'consignment', attribute: '${consignment}' },
-    { title: 'onOrder', attribute: '${onOrder}' },
-    { title: 'expectedOn', attribute: '${expectedOn}' },
-    { title: 'status', attribute: '${status}' },
-    { title: 'orderStatus', attribute: '${orderStatus}' },
-    { title: 'hdcFONumber', attribute: '${hdcFONumber}' },
-    { title: 'hdmcFONumber', attribute: '${hdmcFONumber}' },
-    { title: 'vin', attribute: '${vin}' },
-    { title: 'age', attribute: '${age}' },
-    { title: 'floorPlanDueDate', attribute: '${floorPlanDueDate}' },
-    { title: 'location', attribute: '${location}' },
-    { title: 'stocked', attribute: '${stocked}' },
-    { title: 'stockedDate', attribute: '${stockedDate}' },
-    { title: 'isNew', attribute: '${isNew}' },
-    { title: 'actualCost', attribute: '${actualCost}' },
-    { title: 'mfgSerialNumber', attribute: '${mfgSerialNumber}' },
-    { title: 'engineNumber', attribute: '${engineNumber}' },
-    { title: 'plates', attribute: '${plates}' },
-    { title: 'keyNumber', attribute: '${keyNumber}' },
-    { title: 'length', attribute: '${length}' },
-    { title: 'width', attribute: '${width}' },
-    { title: 'engine', attribute: '${engine}' },
-    { title: 'fuelType', attribute: '${fuelType}' },
-    { title: 'power', attribute: '${power}' },
-    { title: 'chassisNumber', attribute: '${chassisNumber}' },
-    { title: 'chassisYear', attribute: '${chassisYear}' },
-    { title: 'chassisMake', attribute: '${chassisMake}' },
-    { title: 'chassisModel', attribute: '${chassisModel}' },
-    { title: 'chassisType', attribute: '${chassisType}' },
-    { title: 'registrationState', attribute: '${registrationState}' },
-    { title: 'registrationExpiry', attribute: '${registrationExpiry}' },
-    { title: 'grossWeight', attribute: '${grossWeight}' },
-    { title: 'netWeight', attribute: '${netWeight}' },
-    { title: 'insuranceCompany', attribute: '${insuranceCompany}' },
-    { title: 'policyNumber', attribute: '${policyNumber}' },
-    { title: 'insuranceAgent', attribute: '${insuranceAgent}' },
-    { title: 'insuranceStartDate', attribute: '${insuranceStartDate}' },
-    { title: 'insuranceEndDate', attribute: '${insuranceEndDate}' },
-    { title: 'sold', attribute: '${sold}' },
-  ]
-  const tradeVehAttr = [
-    { title: 'Year', attribute: "${tradeYear}" },
-    { title: "Brand", attribute: "${tradeMake}" },
-    { title: "Model", attribute: "${tradeDesc}" },
-    { title: "Trim", attribute: "${tradeTrim}" },
-    { title: "VIN", attribute: "${tradeVin}" },
-    { title: 'Color', attribute: "${tradeColor}" },
-    { title: 'Trade Value', attribute: "${tradeValue}" },
-    { title: 'Mileage', attribute: '${tradeMileage}' },
-  ]
-  const salesPersonAttr = [
-    { title: 'First Name', attribute: "${userFname}" },
-    { title: "Full Name", attribute: "${userFullName}" },
-    { title: "Phone or EXT", attribute: "${userPhone}" },
-    { title: 'Email', attribute: "${userEmail}" },
-    { title: 'Cell #', attribute: "${userCell}" },
-  ]
-  const FandIAttr = [
-    { title: 'Institution', attribute: "${fAndIInstitution}" },
-    { title: "Assigned Manager", attribute: "${fAndIFullName}" },
-    { title: "Email", attribute: "${fAndIEmail}" },
-    { title: "Name", attribute: "${fAndIFullName}" },
-    { title: 'Phone # or EXT', attribute: "${fAndIPhone}" },
-    { title: 'Cell #', attribute: "${fAndICell}" },
-  ]
-  const dealerInfo = [
-    { title: 'dealerName', attribute: '${dealerName}' },
-    { title: 'dealerAddress', attribute: '${dealerAddress}' },
-    { title: 'dealerCity', attribute: '${dealerCity}' },
-    { title: 'dealerProv', attribute: '${dealerProv}' },
-    { title: 'dealerPostal', attribute: '${dealerPostal}' },
-    { title: 'dealerPhone', attribute: '${dealerPhone}' },
-    { title: 'userLoanProt', attribute: '${userLoanProt}' },
-    { title: 'userTireandRim', attribute: '${userTireandRim}' },
-    { title: 'userGap', attribute: '${userGap}' },
-    { title: 'userExtWarr', attribute: '${userExtWarr}' },
-    { title: 'userServicespkg', attribute: '${userServicespkg}' },
-    { title: 'vinE', attribute: '${vinE}' },
-    { title: 'lifeDisability', attribute: '${lifeDisability}' },
-    { title: 'rustProofing', attribute: '${rustProofing}' },
-    { title: 'userLicensing', attribute: '${userLicensing}' },
-    { title: 'userFinance', attribute: '${userFinance}' },
-    { title: 'userDemo', attribute: '${userDemo}' },
-    { title: 'userGasOnDel', attribute: '${userGasOnDel}' },
-    { title: 'userOMVIC', attribute: '${userOMVIC}' },
-    { title: 'userOther', attribute: '${userOther}' },
-    { title: 'userTax', attribute: '${userTax}' },
-    { title: 'userAirTax', attribute: '${userAirTax}' },
-    { title: 'userTireTax', attribute: '${userTireTax}' },
-    { title: 'userGovern', attribute: '${userGovern}' },
-    { title: 'userPDI', attribute: '${userPDI}' },
-    { title: 'userLabour', attribute: '${userLabour}' },
-    { title: 'userMarketAdj', attribute: '${userMarketAdj}' },
-    { title: 'userCommodity', attribute: '${userCommodity}' },
-    { title: 'destinationCharge', attribute: '${destinationCharge}' },
-    { title: 'userFreight', attribute: '${userFreight}' },
-    { title: 'userAdmin', attribute: '${userAdmin}' },
-  ]
-  const financeInfo = [
-    {
-      title: "financeManager",
-      attribute: "${financeManager}"
-    },
-    {
-      title: 'email',
-      attribute: '${email}'
-    },
-    {
-      title: 'firstName',
-      attribute: '${firstName}'
-    },
-    {
-      title: 'mileage',
-      attribute: '${mileage}'
-    },
-    {
-      title: 'lastName',
-      attribute: '${lastName}'
-    },
-    {
-      title: 'phone',
-      attribute: '${phone}'
-    },
-    {
-      title: 'name',
-      attribute: '${name}'
-    },
-    {
-      title: 'address',
-      attribute: '${address}'
-    },
-    {
-      title: 'city',
-      attribute: '${city}'
-    },
-    {
-      title: 'postal',
-      attribute: '${postal}'
-    },
-    {
-      title: 'province',
-      attribute: '${province}'
-    },
-    {
-      title: 'dl',
-      attribute: '${dl}'
-    },
-    {
-      title: 'typeOfContact',
-      attribute: '${typeOfContact}'
-    },
-    {
-      title: 'timeToContact',
-      attribute: '${timeToContact}'
-    },
-    {
-      title: 'iRate',
-      attribute: '${iRate}'
-    },
-    {
-      title: 'months',
-      attribute: '${months}'
-    },
-    {
-      title: 'discount',
-      attribute: '${discount}'
-    },
-    {
-      title: 'total',
-      attribute: '${total}'
-    },
-    {
-      title: 'onTax',
-      attribute: '${onTax}'
-    },
-    {
-      title: 'on60',
-      attribute: '${on60}'
-    },
-    {
-      title: 'biweekly',
-      attribute: '${biweekly}'
-    },
-    {
-      title: 'weekly',
-      attribute: '${weekly}'
-    },
-    {
-      title: 'weeklyOth',
-      attribute: '${weeklyOth}'
-    },
-    {
-      title: 'biweekOth',
-      attribute: '${biweekOth}'
-    },
-    {
-      title: 'oth60',
-      attribute: '${oth60}'
-    },
-    {
-      title: 'weeklyqc',
-      attribute: '${weeklyqc}'
-    },
-    {
-      title: 'biweeklyqc',
-      attribute: '${biweeklyqc}'
-    },
-    {
-      title: 'qc60',
-      attribute: '${qc60}'
-    },
-    {
-      title: 'deposit',
-      attribute: '${deposit}'
-    },
-    {
-      title: 'biweeklNatWOptions',
-      attribute: '${biweeklNatWOptions}'
-    },
-    {
-      title: 'weeklylNatWOptions',
-      attribute: '${weeklylNatWOptions}'
-    },
-    {
-      title: 'nat60WOptions',
-      attribute: '${nat60WOptions}'
-    },
-    {
-      title: 'weeklyOthWOptions',
-      attribute: '${weeklyOthWOptions}'
-    },
-    {
-      title: 'biweekOthWOptions',
-      attribute: '${biweekOthWOptions}'
-    },
-    {
-      title: 'oth60WOptions',
-      attribute: '${oth60WOptions}'
-    },
-    {
-      title: 'biweeklNat',
-      attribute: '${biweeklNat}'
-    },
-    {
-      title: 'weeklylNat',
-      attribute: '${weeklylNat}'
-    },
-    {
-      title: 'nat60',
-      attribute: '${nat60}'
-    },
-    {
-      title: 'qcTax',
-      attribute: '${qcTax}'
-    },
-    {
-      title: 'otherTax',
-      attribute: '${otherTax}'
-    },
-    {
-      title: 'totalWithOptions',
-      attribute: '${totalWithOptions}'
-    },
-    {
-      title: 'otherTaxWithOptions',
-      attribute: '${otherTaxWithOptions}'
-    },
-    {
-      title: 'desiredPayments',
-      attribute: '${desiredPayments}'
-    },
-    {
-      title: 'freight',
-      attribute: '${freight}'
-    },
-    {
-      title: 'admin',
-      attribute: '${admin}'
-    },
-    {
-      title: 'commodity',
-      attribute: '${commodity}'
-    },
-    {
-      title: 'pdi',
-      attribute: '${pdi}'
-    },
-    {
-      title: 'discountPer',
-      attribute: '${discountPer}'
-    },
-    {
-      title: 'userLoanProt',
-      attribute: '${userLoanProt}'
-    },
-    {
-      title: 'userTireandRim',
-      attribute: '${userTireandRim}'
-    },
-    {
-      title: 'userGap',
-      attribute: '${userGap}'
-    },
-    {
-      title: 'userExtWarr',
-      attribute: '${userExtWarr}'
-    },
-    {
-      title: 'userServicespkg',
-      attribute: '${userServicespkg}'
-    },
-    {
-      title: 'deliveryCharge',
-      attribute: '${deliveryCharge}'
-    },
-    {
-      title: 'vinE',
-      attribute: '${vinE}'
-    },
-    {
-      title: 'lifeDisability',
-      attribute: '${lifeDisability}'
-    },
-    {
-      title: 'rustProofing',
-      attribute: '${rustProofing}'
-    },
-    {
-      title: 'userOther',
-      attribute: '${userOther}'
-    },
-    {
-      title: 'paintPrem',
-      attribute: '${paintPrem}'
-    },
-    {
-      title: 'licensing',
-      attribute: '${licensing}'
-    },
-    {
-      title: 'stockNum',
-      attribute: '${stockNum}'
-    },
-    {
-      title: 'options',
-      attribute: '${options}'
-    },
-    {
-      title: 'accessories',
-      attribute: '${accessories}'
-    },
-    {
-      title: 'labour',
-      attribute: '${labour}'
-    },
-    {
-      title: 'year',
-      attribute: '${year}'
-    },
-    {
-      title: 'brand',
-      attribute: '${brand}'
-    },
-    {
-      title: 'model',
-      attribute: '${model}'
-    },
-    {
-      title: 'model1',
-      attribute: '${model1}'
-    },
-    {
-      title: 'color',
-      attribute: '${color}'
-    },
-    {
-      title: 'modelCode',
-      attribute: '${modelCode}'
-    },
-    {
-      title: 'msrp',
-      attribute: '${msrp}'
-    },
-    {
-      title: 'userEmail',
-      attribute: '${userEmail}'
-    },
-    {
-      title: 'tradeValue',
-      attribute: '${tradeValue}'
-    },
-    {
-      title: 'tradeDesc',
-      attribute: '${tradeDesc}'
-    },
-    {
-      title: 'tradeColor',
-      attribute: '${tradeColor}'
-    },
-    {
-      title: 'tradeYear',
-      attribute: '${tradeYear}'
-    },
-    {
-      title: 'tradeMake',
-      attribute: '${tradeMake}'
-    },
-    {
-      title: 'tradeVin',
-      attribute: '${tradeVin}'
-    },
-    {
-      title: 'tradeTrim',
-      attribute: '${tradeTrim}'
-    },
-    {
-      title: 'tradeMileage',
-      attribute: '${tradeMileage}'
-    },
-    {
-      title: 'trim',
-      attribute: '${trim}'
-    },
-    {
-      title: 'vin',
-      attribute: '${vin}'
-    },
-    {
-      title: 'leadNote',
-      attribute: '${leadNote}'
-    },
-    {
-      title: 'sendToFinanceNow',
-      attribute: '${sendToFinanceNow}'
-    },
-    {
-      title: 'dealNumber',
-      attribute: '${dealNumber}'
-    },
-    {
-      title: 'bikeStatus',
-      attribute: '${bikeStatus}'
-    },
-    {
-      title: 'lien',
-      attribute: '${lien}'
-    },
-  ]
 
   const [attribute, setAttribute] = useState('')
   function AttributeClick(item) {
@@ -2291,18 +1558,33 @@ export default function Shight() {
       </nav>
     )
   }
-
+  const contentNewTemplate = ''
+  const [editTemplate, setEditTemplate] = useState(false)
   return (
     <>
+
       <div className=" mx-auto flex h-[80vh] text-foreground  ">
         <Card className={` mx-2 transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'grow' : 'w-[15%]'} `}        >
-          <CardHeader onClick={handleCategoryClick} className='cursor-pointer'>
-            <CardTitle>Category</CardTitle>
-          </CardHeader>
+          <div className='flex justify-between items-center mt-5 mx-6 mb-5'>
+            <p>Category</p>
+            <Dialog  >
+              <DialogTrigger asChild>
+                <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
+                  Add Template
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="gap-0 p-0 outline-none border-border text-foreground   max-h-[750px] h-[750px] w-[500px] ">
+                <div className='grid grid-cols-1 my-8 mx-auto w-full overflow-y-auto' >
+                  <EditorTiptapHookNewTemplates user={user} content={contentNewTemplate} />
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+
           {selectedCategorySize && (
             <>
               <CardContent className="space-y-2 ">
-                <div className="h-auto max-h-[700px] space-y-1 overflow-y-auto  ">
+                <div className="space-y-1  h-auto max-h-[60vh] overflow-y-auto overflow-clip ">
                   {templates.reduce((unique, mail) => {
                     if (!unique.some(item => item.category === mail.category)) {
                       unique.push(mail);
@@ -2318,6 +1600,7 @@ export default function Shight() {
                       </div>
                     </div>
                   ))}
+
                 </div>
               </CardContent>
               <CardFooter>
@@ -2325,7 +1608,7 @@ export default function Shight() {
               </CardFooter>
             </>
           )}
-        </Card>
+        </Card >
 
         <Card
           className={`mx-2 transition delay-300 duration-1000  ease-in-out ${selectedSubcategory ? 'grow' : 'w-[15%]'} `}
@@ -2342,9 +1625,8 @@ export default function Shight() {
                       key={index}
                       className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary"
                       onClick={() => {
-                        handleSubCatLisstClick(scripts.find((mail) => mail.subCat === subCat));
+                        handleSubCatLisstClick(templates.find((mail) => mail.subCat === subCat));
                         handleScriptClick();
-
                       }}
                     >
                       <div className="m-2 flex items-center justify-between">
@@ -2361,312 +1643,1066 @@ export default function Shight() {
 
         <Card className={`mx-2  transition delay-300 duration-1000 ease-in-out ${selectedScript ? 'grow' : 'w-[15%]'} `}        >
           <CardHeader onClick={handleScriptClick} className='cursor-pointer'>
-            <CardTitle>Template</CardTitle>
+            <CardTitle>Script</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 ">
+          <CardContent className="space-y-2 h-auto max-h-[70vh] overflow-y-auto">
             {selectedScript && (
-              <div className="h-auto max-h-[70vh] overflow-y-auto">
+              <div className="">
                 {selectedRecord && (
                   <div className="">
                     <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
-                      <div className="flex m-2  items-center justify-between p-2 text-foreground">
+                      <div className="m-2  items-center justify-between p-2 text-foreground">
                         <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
-                        <Button variant='outline' className="cursor-pointer bg-transparent text-foreground  hover:border-primary hover:bg-transparent hover:text-primary" onClick={() => copyText(selectedRecord.content)} >
-                          {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-primary" />}
-                          {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-primary" />}
-                        </Button>
+                        <div className='flex justify-between text-[16px]  text-[#fff]'>
+                          <p className='text-[20px]'>{selectedRecord.subject}</p>
+                        </div>
+                        <p className='mt-5'>{selectedRecord.body}</p>
+                        <div className='mt-5 flex  items-center justify-between text-[#fff]'>
+                          <div className='flex' >
+                            <Button variant='outline' className="cursor-pointer bg-transparent text-foreground  hover:border-primary hover:bg-transparent hover:text-primary" onClick={() => copyText(selectedRecord.body)} >
+                              {copiedText !== selectedRecord.body && <Copy strokeWidth={1.5} className="text-lg hover:text-primary" />}
+                              {copiedText === selectedRecord.body && <FaCheck strokeWidth={1.5} className="text-lg hover:text-primary" />}
+                            </Button>
+                          </div>
+                          <div className='flex' >
+                            <ButtonLoading
+                              size="sm"
+                              type='submit'
+                              isSubmitting={isSubmitting}
+                              onClick={() => {
+                                setEditTemplate(true)
+                              }}
+                              loadingText="Loading..."
+                              className="w-auto mr-3 cursor-pointer border-white bg-primary text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
+                            >
+                              Edit Template
+                            </ButtonLoading>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="outline"
+                                  className="w-auto cursor-pointer border border-border bg-primary text-foreground hover:bg-transparent hover:text-white"
+                                  size="sm"> Add To Template Dropdowns</Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This will add this template to your dropdowns.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <div className='flex items-center justify-between mx-3' >
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <Form method='post'>
+                                    <input type='hidden' name='body' value={selectedRecord.body} />
+                                    <input type='hidden' name='category' value={selectedRecord.category} />
+                                    <input type='hidden' name='userEmail' value={user.email} />
+                                    <input type='hidden' name='subject' value={selectedRecord.subject} />
+                                    <AlertDialogCancel className='border border-transparent'>
+                                      <ButtonLoading
+                                        size="sm"
+                                        name='intent'
+                                        value='addToDropdown'
+                                        type='submit'
+                                        isSubmitting={isSubmitting}
+                                        onClick={() => {
+                                          toast.message('Helping you become the hulk of sales...')
+                                        }}
+                                        loadingText="Loading..."
+                                        className="w-auto cursor-pointer border border-border bg-primary text-foreground hover:bg-transparent hover:text-white"
+                                      >
+                                        Add
+                                      </ButtonLoading>
+                                    </AlertDialogCancel>
+                                  </Form>
+                                </div>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className='grid grid-cols-1' >
-                      <div className='flex mx-auto' >
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <Button
-                              className='mx-2'
-                              variant="link" >
-                              Client
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
-                            <div className=''>
-                              <ClientAttributes items={clientAtr} />
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <Button
-                              className='mx-2'
-                              variant="link" >
-                              Wanted Veh.
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
-                            <div className=''>
-                              <ClientAttributes items={wantedVehAttr} />
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <Button
-                              className='mx-2'
-                              variant="link" >
-                              Trade Veh
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
-                            <div className=''>
-                              <ClientAttributes items={tradeVehAttr} />
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <Button
-                              className='mx-2'
-                              variant="link" >
-                              Sales Person
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
-                            <div className=''>
-                              <ClientAttributes items={salesPersonAttr} />
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <Button
-                              className='mx-2'
-                              variant="link" >
-                              F & I
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
-                            <div className=''>
-                              <ClientAttributes items={FandIAttr} />
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <Button
-                              className='mx-2'
-                              variant="link" >
-                              Dealer Info
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
-                            <div className=''>
-                              <ClientAttributes items={dealerInfo} />
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <Button
-                              className='mx-2'
-                              variant="link" >
-                              Finance Info
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-[#1c2024]">
-                            <ClientAttributes items={financeInfo} />
-                          </HoverCardContent>
-                        </HoverCard>
-                      </div>
-                      <div
-                        className={cn(
-                          "z-10 mb-1 w-[95%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-                          "bg-background text-foreground transition-all justify-center",
-                          // "sm:sticky sm:top-[80px]",
-                        )}
-                      >
-                        <button
-                          onClick={() => editor.chain().focus().toggleBold().run()}
-                          className={editor.isActive("bold") ? buttonActive : buttonInactive}
-                        >
-                          <FaBold className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().toggleItalic().run()}
-                          className={editor.isActive("italic") ? buttonActive : buttonInactive}
-                        >
-                          <FaItalic className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().toggleStrike().run()}
-                          className={editor.isActive("strike") ? buttonActive : buttonInactive}
-                        >
-                          <FaStrikethrough className="text-xl hover:text-primary" />
-                        </button>
-
-                        <Minus color="#09090b" strokeWidth={1.5} />
-                        <button
-                          onClick={handleSetLink}
-                          className={editor.isActive("link") ? buttonActive : buttonInactive}
-                        >
-                          <FaLink className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().unsetLink().run()}
-                          disabled={!editor.isActive("link")}
-                          className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
-                        >
-                          <FaUnlink className="text-xl hover:text-primary" />
-                        </button>
-                        <Minus color="#000" strokeWidth={1.5} />
-                        <button
-                          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                          className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
-                        >
-                          <FaQuoteLeft className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().toggleCode().run()}
-                          className={editor.isActive('code') ? buttonActive : buttonInactive}
-                          disabled={!editor.can().chain().focus().toggleCode().run()}
-                        >
-                          <FaFileCode className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                          className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
-                        >
-                          <BiCodeBlock className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().toggleBulletList().run()}
-                          className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
-                        >
-                          <FaList className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                          className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
-                        >
-                          <FaListOl className="text-xl hover:text-primary" />
-                        </button>
-
-                        <Minus color="#000" strokeWidth={1.5} />
-                        <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                          <MdHorizontalRule className="text-xl hover:text-primary" />
-                        </button>
-                        <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-                          <IoMdReturnLeft className="text-xl hover:text-primary" />
-                        </button>
-                        <Minus color="#000" strokeWidth={1.5} />
-                        <button
-                          onClick={() => editor.chain().focus().undo().run()}
-                          disabled={!editor.can().chain().focus().undo().run()}
-                        >
-                          <FaUndo className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().redo().run()}
-                          disabled={!editor.can().chain().focus().redo().run()}
-                        >
-                          <FaRedo className="text-xl hover:text-primary" />
-                        </button>
-                        <Minus color="#000" strokeWidth={1.5} />
-                        <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
-                          className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
-                        >
-                          <FaAlignLeft className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().setTextAlign('center').run()}
-                          className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
-                        >
-                          <FaAlignCenter className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().setTextAlign('right').run()}
-                          className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
-                        >
-                          <FaAlignRight className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-                          className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
-                        >
-                          <FaAlignJustify className="text-xl hover:text-primary" />
-                        </button>
-                        <Minus color="#000" strokeWidth={1.5} />
-                        <button
-                          onClick={() => editor.chain().focus().toggleHighlight().run()}
-                          className={editor.isActive('highlight') ? buttonActive : buttonInactive}
-                        >
-                          <FaHighlighter className="text-xl hover:text-primary" />
-                        </button>
-                        <input
-                          type="color"
-                          onInput={event => editor.chain().focus().setColor(event.target.value).run()}
-                          value={editor.getAttributes('textStyle').color}
-                          data-testid="setColor"
-                        />
-                        <button
-                          onClick={() => editor.chain().focus().unsetColor().run()}
-                          className={editor.isActive('highlight') ? buttonActive : buttonInactive}
-                        >
-                          <FaEraser className="text-xl hover:text-primary" />
-                        </button>
-                        <Minus color="#000" strokeWidth={1.5} />
-                        <button
-                          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                          className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
-                        >
-                          <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                          className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
-
-                        >
-                          <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
-                        </button>
-                        <button
-                          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                          className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
-
-                        >
-                          <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
-                        </button>
-                      </div>
-                      <EditorContent editor={editor} className=" p-3 mb-2 mt-auto cursor-text   bg-white mx-auto w-[95%] rounded-md text-black place-self-end self-end" />
-                      <Form method='post'>
-                        <input type='hidden' defaultValue={id} name='id' />
-                        <input type='hidden' defaultValue={user?.email} name='userEmail' />
-                        <input type='hidden' defaultValue='updateTemplate' name='intent' />
-                        <input type='hidden' defaultValue={finalText} name='body' />
-
-                        <ButtonLoading
-                          size="lg"
-                          name='intent'
-                          value='createTemplate'
-                          type='submit'
-                          isSubmitting={isSubmitting}
-                          onClick={() => {
-                            toast.message('Helping you become the hulk of sales...')
-                          }}
-                          loadingText="Loading..."
-                          className="w-auto cursor-pointer border-white bg-transparent text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
-                        >
-                          Save As Template
-                        </ButtonLoading>
-                      </Form>
-
                     </div>
                   </div>
                 )}
               </div>
             )}
+            {editTemplate === true && (
+              <>
+                <div className="p-1">
+                  <Form method='post' action='/dealer/user/dashboard/templates'>
+                    <div className="mr-auto px-2   mt-auto grid grid-cols-1">
+                      <div className="grid gap-3 mx-3 mb-3">
+                        <div className="relative mt-3">
+                          <Input
+                            name='category'
+                            type="text"
+                            className="w-full bg-background border-border "
+                            defaultValue={selectedRecord.category}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Category</label>
+                        </div>
+                        <div className="relative mt-3">
+                          <Input
+                            name='subCat'
+                            type="text"
+                            className="w-full bg-background border-border "
+                            defaultValue={selectedRecord.subCat}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sub-category</label>
+                        </div>
+                        <div className="relative mt-3">
+                          <Input
+                            name='subject'
+                            type="text"
+                            className="w-full bg-background border-border "
+                            defaultValue={selectedRecord.subject}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Subject</label>
+                        </div>
+                      </div>
+
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1">
+                          <AccordionTrigger>Formatting Options</AccordionTrigger>
+                          <AccordionContent>
+                            <div
+                              className={cn(
+                                "z-10 mb-1 w-[99%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
+                                "bg-background text-foreground transition-all justify-center",
+                                // "sm:sticky sm:top-[80px]",
+                              )}
+                            >
+                              <button
+                                onClick={() => editor.chain().focus().toggleBold().run()}
+                                className={editor.isActive("bold") ? buttonActive : buttonInactive}
+                              >
+                                <FaBold className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().toggleItalic().run()}
+                                className={editor.isActive("italic") ? buttonActive : buttonInactive}
+                              >
+                                <FaItalic className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().toggleStrike().run()}
+                                className={editor.isActive("strike") ? buttonActive : buttonInactive}
+                              >
+                                <FaStrikethrough className="text-xl hover:text-primary" />
+                              </button>
+
+                              <Minus color="#09090b" strokeWidth={1.5} />
+                              <button
+                                onClick={handleSetLink}
+                                className={editor.isActive("link") ? buttonActive : buttonInactive}
+                              >
+                                <FaLink className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().unsetLink().run()}
+                                disabled={!editor.isActive("link")}
+                                className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
+                              >
+                                <FaUnlink className="text-xl hover:text-primary" />
+                              </button>
+                              <Minus color="#000" strokeWidth={1.5} />
+                              <button
+                                onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                                className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
+                              >
+                                <FaQuoteLeft className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().toggleCode().run()}
+                                className={editor.isActive('code') ? buttonActive : buttonInactive}
+                                disabled={!editor.can().chain().focus().toggleCode().run()}
+                              >
+                                <FaFileCode className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                                className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
+                              >
+                                <BiCodeBlock className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().toggleBulletList().run()}
+                                className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
+                              >
+                                <FaList className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                                className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
+                              >
+                                <FaListOl className="text-xl hover:text-primary" />
+                              </button>
+
+                              <Minus color="#000" strokeWidth={1.5} />
+                              <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                                <MdHorizontalRule className="text-xl hover:text-primary" />
+                              </button>
+                              <button onClick={() => editor.chain().focus().setHardBreak().run()}>
+                                <IoMdReturnLeft className="text-xl hover:text-primary" />
+                              </button>
+                              <Minus color="#000" strokeWidth={1.5} />
+                              <button
+                                onClick={() => editor.chain().focus().undo().run()}
+                                disabled={!editor.can().chain().focus().undo().run()}
+                              >
+                                <FaUndo className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().redo().run()}
+                                disabled={!editor.can().chain().focus().redo().run()}
+                              >
+                                <FaRedo className="text-xl hover:text-primary" />
+                              </button>
+                              <Minus color="#000" strokeWidth={1.5} />
+                              <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                                className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
+                              >
+                                <FaAlignLeft className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                                className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
+                              >
+                                <FaAlignCenter className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                                className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
+                              >
+                                <FaAlignRight className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+                                className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
+                              >
+                                <FaAlignJustify className="text-xl hover:text-primary" />
+                              </button>
+                              <Minus color="#000" strokeWidth={1.5} />
+                              <button
+                                onClick={() => editor.chain().focus().toggleHighlight().run()}
+                                className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+                              >
+                                <FaHighlighter className="text-xl hover:text-primary" />
+                              </button>
+                              <input
+                                type="color"
+                                onInput={event => editor.chain().focus().setColor(event.target.value).run()}
+                                value={editor.getAttributes('textStyle').color}
+                                data-testid="setColor"
+                              />
+                              <button
+                                onClick={() => editor.chain().focus().unsetColor().run()}
+                                className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+                              >
+                                <FaEraser className="text-xl hover:text-primary" />
+                              </button>
+                              <Minus color="#000" strokeWidth={1.5} />
+                              <button
+                                onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                                className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
+                              >
+                                <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                                className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
+
+                              >
+                                <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                              </button>
+                              <button
+                                onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                                className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
+
+                              >
+                                <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                              </button>
+                            </div>
+                            <div>
+                              <BubbleMenu
+                                editor={editor}
+                                tippyOptions={{ duration: 100 }}
+                                className={cn(
+                                  "flex items-center gap-1 rounded-md p-1 bg-white",
+                                  "  text-black shadow dark:bg-background0",
+                                )}
+                              >
+                                <button
+
+                                  type="button"
+                                  onClick={() => editor.chain().focus().toggleBold().run()}
+                                  className={editor.isActive("bold") ? buttonActive : buttonInactive}
+                                >
+                                  <FaBold className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => editor.chain().focus().toggleItalic().run()}
+                                  className={editor.isActive("italic") ? buttonActive : buttonInactive}
+                                >
+                                  <FaItalic className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => editor.chain().focus().toggleStrike().run()}
+                                  className={editor.isActive("strike") ? buttonActive : buttonInactive}
+                                >
+                                  <FaStrikethrough className="text-xl hover:text-primary" />
+                                </button>
+
+                                <Minus color="#09090b" strokeWidth={1.5} />
+                                <button
+                                  type="button"
+                                  onClick={handleSetLink}
+                                  className={editor.isActive("link") ? buttonActive : buttonInactive}
+                                >
+                                  <FaLink className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => editor.chain().focus().unsetLink().run()}
+                                  disabled={!editor.isActive("link")}
+                                  className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
+                                >
+                                  <FaUnlink className="text-xl hover:text-primary" />
+                                </button>
+                                <Minus color="#000" strokeWidth={1.5} />
+                                <button
+                                  onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                                  className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
+                                >
+                                  <FaQuoteLeft className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().toggleCode().run()}
+                                  className={editor.isActive('code') ? buttonActive : buttonInactive}
+                                  disabled={!editor.can().chain().focus().toggleCode().run()}
+                                >
+                                  <FaFileCode className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                                  className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
+                                >
+                                  <BiCodeBlock className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().toggleBulletList().run()}
+                                  className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
+                                >
+                                  <FaList className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                                  className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
+                                >
+                                  <FaListOl className="text-xl hover:text-primary" />
+                                </button>
+
+                                <Minus color="#000" strokeWidth={1.5} />
+                                <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                                  <MdHorizontalRule className="text-xl hover:text-primary" />
+                                </button>
+                                <button onClick={() => editor.chain().focus().setHardBreak().run()}>
+                                  <IoMdReturnLeft className="text-xl hover:text-primary" />
+                                </button>
+                                <Minus color="#000" strokeWidth={1.5} />
+                                <button
+                                  onClick={() => editor.chain().focus().undo().run()}
+                                  disabled={!editor.can().chain().focus().undo().run()}
+                                >
+                                  <FaUndo className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().redo().run()}
+                                  disabled={!editor.can().chain().focus().redo().run()}
+                                >
+                                  <FaRedo className="text-xl hover:text-primary" />
+                                </button>
+                                <Minus color="#000" strokeWidth={1.5} />
+                                <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                                  className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
+                                >
+                                  <FaAlignLeft className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                                  className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
+                                >
+                                  <FaAlignCenter className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                                  className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
+                                >
+                                  <FaAlignRight className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+                                  className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
+                                >
+                                  <FaAlignJustify className="text-xl hover:text-primary" />
+                                </button>
+                                <Minus color="#000" strokeWidth={1.5} />
+                                <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
+                                  <FaHighlighter className="text-xl hover:text-primary" />
+                                </button>
+                                <Minus color="#000" strokeWidth={1.5} />
+                                <button
+                                  onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                                  className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
+                                >
+                                  <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                                  className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
+
+                                >
+                                  <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                                </button>
+                                <button
+                                  onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                                  className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
+
+                                >
+                                  <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                                </button>
+
+                              </BubbleMenu>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-2">
+                          <AccordionTrigger>Inserting Options</AccordionTrigger>
+                          <AccordionContent>
+                            <div className='flex mx-auto overflow-x-auto' >
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Button
+                                    className='mx-2'
+                                    variant="link" >
+                                    Client
+                                  </Button>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                  <div className=''>
+                                    <ClientAttributes items={clientAtr} />
+                                  </div>
+                                </HoverCardContent>
+                              </HoverCard>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Button
+                                    className='mx-2'
+                                    variant="link" >
+                                    Wanted Veh.
+                                  </Button>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                  <div className=''>
+                                    <ClientAttributes items={wantedVehAttr} />
+                                  </div>
+                                </HoverCardContent>
+                              </HoverCard>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Button
+                                    className='mx-2'
+                                    variant="link" >
+                                    Trade Veh
+                                  </Button>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                  <div className=''>
+                                    <ClientAttributes items={tradeVehAttr} />
+                                  </div>
+                                </HoverCardContent>
+                              </HoverCard>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Button
+                                    className='mx-2'
+                                    variant="link" >
+                                    Sales Person
+                                  </Button>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                  <div className=''>
+                                    <ClientAttributes items={salesPersonAttr} />
+                                  </div>
+                                </HoverCardContent>
+                              </HoverCard>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Button
+                                    className='mx-2'
+                                    variant="link" >
+                                    F & I
+                                  </Button>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                  <div className=''>
+                                    <ClientAttributes items={FandIAttr} />
+                                  </div>
+                                </HoverCardContent>
+                              </HoverCard>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Button
+                                    className='mx-2'
+                                    variant="link" >
+                                    Dealer Info
+                                  </Button>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                  <div className=''>
+                                    <ClientAttributes items={dealerInfo} />
+                                  </div>
+                                </HoverCardContent>
+                              </HoverCard>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Button
+                                    className='mx-2'
+                                    variant="link" >
+                                    Finance Info
+                                  </Button>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                  <ClientAttributes items={financeInfo} />
+                                </HoverCardContent>
+                              </HoverCard>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+
+                      </Accordion>
+
+                      <br />
+                      <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text text-foreground bg-background mx-auto w-[95%] rounded-md" />
+                      <br />
+                      <input type='hidden' defaultValue={user?.email} name='userEmail' />
+                      <input type='hidden' defaultValue={text} name='body' />
+                      <input type='hidden' defaultValue={selectedRecord.id} name='id' />
+                      <div className='flex justify-between w-[98%]'>
+                        <div>
+                        </div>
+                        <Button
+                          onClick={() => {
+                            //  SaveDraft();
+                            toast.success(`Template saved!`)
+                          }}
+                          type='submit'
+                          value='updateTemplate'
+                          name='intent'
+                          size='sm'
+                          className={`border-border text-foreground bg-primary rounded-lg ml-2 cursor-pointer rounded border  p-3 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}>
+                          Save Template
+                        </Button>
+
+                      </div>
+                      <br />
+                    </div >
+                  </Form>
+                </div >
+
+
+              </>
+            )}
           </CardContent>
         </Card>
-
-      </div>
+      </div >
     </>
   )
 }
 
+export const clientAtr =
+  [
+    { subject: "Mr/Mrs", attribute: "${clientTitle}" },
+    { subject: "First Name", attribute: "${firstName}" },
+    { subject: "Last Name", attribute: "${lastName}" },
+    { subject: "Full Name", attribute: "${name}" },
+    { subject: "Phone", attribute: "${phone}" },
+    { subject: 'Email', attribute: '${email}' },
+    { subject: 'Company Name', attribute: '${clientCompanyName}' },
+    { subject: 'Address', attribute: '${address}' },
+    { subject: 'City', attribute: '${city}' },
+    { subject: 'Province', attribute: '${province}' },
+    { subject: 'Postal Code', attribute: '${postal}' },
+  ]
+export const wantedVehAttr = [
+  { subject: 'Year', attribute: "${year}" },
+  { subject: "Brand", attribute: "${brand}" },
+  { subject: "Model", attribute: "${model}" },
+  { subject: "Trim", attribute: "${trim}" },
+  { subject: "Stock Number", attribute: "${stockNumber}" },
+  { subject: "VIN", attribute: "${vin}" },
+  { subject: 'Color', attribute: '${color}' },
+  { subject: 'Balance', attribute: '${balance}' },
+  { subject: 'packageNumber', attribute: '${packageNumber}' },
+  { subject: 'packagePrice', attribute: '${packagePrice}' },
+  { subject: 'stockNumber', attribute: '${stockNumber}' },
+  { subject: 'type', attribute: '${type}' },
+  { subject: 'class', attribute: '${class}' },
+  { subject: 'year', attribute: '${year}' },
+  { subject: 'make', attribute: '${make}' },
+  { subject: 'model', attribute: '${model}' },
+  { subject: 'modelName', attribute: '${modelName}' },
+  { subject: 'submodel', attribute: '${submodel}' },
+  { subject: 'subSubmodel', attribute: '${subSubmodel}' },
+  { subject: 'price', attribute: '${price}' },
+  { subject: 'exteriorColor', attribute: '${exteriorColor}' },
+  { subject: 'mileage', attribute: '${mileage}' },
+  { subject: 'consignment', attribute: '${consignment}' },
+  { subject: 'onOrder', attribute: '${onOrder}' },
+  { subject: 'expectedOn', attribute: '${expectedOn}' },
+  { subject: 'status', attribute: '${status}' },
+  { subject: 'orderStatus', attribute: '${orderStatus}' },
+  { subject: 'hdcFONumber', attribute: '${hdcFONumber}' },
+  { subject: 'hdmcFONumber', attribute: '${hdmcFONumber}' },
+  { subject: 'vin', attribute: '${vin}' },
+  { subject: 'age', attribute: '${age}' },
+  { subject: 'floorPlanDueDate', attribute: '${floorPlanDueDate}' },
+  { subject: 'location', attribute: '${location}' },
+  { subject: 'stocked', attribute: '${stocked}' },
+  { subject: 'stockedDate', attribute: '${stockedDate}' },
+  { subject: 'isNew', attribute: '${isNew}' },
+  { subject: 'actualCost', attribute: '${actualCost}' },
+  { subject: 'mfgSerialNumber', attribute: '${mfgSerialNumber}' },
+  { subject: 'engineNumber', attribute: '${engineNumber}' },
+  { subject: 'plates', attribute: '${plates}' },
+  { subject: 'keyNumber', attribute: '${keyNumber}' },
+  { subject: 'length', attribute: '${length}' },
+  { subject: 'width', attribute: '${width}' },
+  { subject: 'engine', attribute: '${engine}' },
+  { subject: 'fuelType', attribute: '${fuelType}' },
+  { subject: 'power', attribute: '${power}' },
+  { subject: 'chassisNumber', attribute: '${chassisNumber}' },
+  { subject: 'chassisYear', attribute: '${chassisYear}' },
+  { subject: 'chassisMake', attribute: '${chassisMake}' },
+  { subject: 'chassisModel', attribute: '${chassisModel}' },
+  { subject: 'chassisType', attribute: '${chassisType}' },
+  { subject: 'registrationState', attribute: '${registrationState}' },
+  { subject: 'registrationExpiry', attribute: '${registrationExpiry}' },
+  { subject: 'grossWeight', attribute: '${grossWeight}' },
+  { subject: 'netWeight', attribute: '${netWeight}' },
+  { subject: 'insuranceCompany', attribute: '${insuranceCompany}' },
+  { subject: 'policyNumber', attribute: '${policyNumber}' },
+  { subject: 'insuranceAgent', attribute: '${insuranceAgent}' },
+  { subject: 'insuranceStartDate', attribute: '${insuranceStartDate}' },
+  { subject: 'insuranceEndDate', attribute: '${insuranceEndDate}' },
+  { subject: 'sold', attribute: '${sold}' },
+]
+export const tradeVehAttr = [
+  { subject: 'Year', attribute: "${tradeYear}" },
+  { subject: "Brand", attribute: "${tradeMake}" },
+  { subject: "Model", attribute: "${tradeDesc}" },
+  { subject: "Trim", attribute: "${tradeTrim}" },
+  { subject: "VIN", attribute: "${tradeVin}" },
+  { subject: 'Color', attribute: "${tradeColor}" },
+  { subject: 'Trade Value', attribute: "${tradeValue}" },
+  { subject: 'Mileage', attribute: '${tradeMileage}' },
+]
+export const salesPersonAttr = [
+  { subject: 'First Name', attribute: "${userFname}" },
+  { subject: "Full Name", attribute: "${userFullName}" },
+  { subject: "Phone or EXT", attribute: "${userPhone}" },
+  { subject: 'Email', attribute: "${userEmail}" },
+  { subject: 'Cell #', attribute: "${userCell}" },
+]
+export const FandIAttr = [
+  { subject: 'Institution', attribute: "${fAndIInstitution}" },
+  { subject: "Assigned Manager", attribute: "${fAndIFullName}" },
+  { subject: "Email", attribute: "${fAndIEmail}" },
+  { subject: "Name", attribute: "${fAndIFullName}" },
+  { subject: 'Phone # or EXT', attribute: "${fAndIPhone}" },
+  { subject: 'Cell #', attribute: "${fAndICell}" },
+]
+export const dealerInfo = [
+  { subject: 'dealerName', attribute: '${dealerName}' },
+  { subject: 'dealerAddress', attribute: '${dealerAddress}' },
+  { subject: 'dealerCity', attribute: '${dealerCity}' },
+  { subject: 'dealerProv', attribute: '${dealerProv}' },
+  { subject: 'dealerPostal', attribute: '${dealerPostal}' },
+  { subject: 'dealerPhone', attribute: '${dealerPhone}' },
+  { subject: 'userLoanProt', attribute: '${userLoanProt}' },
+  { subject: 'userTireandRim', attribute: '${userTireandRim}' },
+  { subject: 'userGap', attribute: '${userGap}' },
+  { subject: 'userExtWarr', attribute: '${userExtWarr}' },
+  { subject: 'userServicespkg', attribute: '${userServicespkg}' },
+  { subject: 'vinE', attribute: '${vinE}' },
+  { subject: 'lifeDisability', attribute: '${lifeDisability}' },
+  { subject: 'rustProofing', attribute: '${rustProofing}' },
+  { subject: 'userLicensing', attribute: '${userLicensing}' },
+  { subject: 'userFinance', attribute: '${userFinance}' },
+  { subject: 'userDemo', attribute: '${userDemo}' },
+  { subject: 'userGasOnDel', attribute: '${userGasOnDel}' },
+  { subject: 'userOMVIC', attribute: '${userOMVIC}' },
+  { subject: 'userOther', attribute: '${userOther}' },
+  { subject: 'userTax', attribute: '${userTax}' },
+  { subject: 'userAirTax', attribute: '${userAirTax}' },
+  { subject: 'userTireTax', attribute: '${userTireTax}' },
+  { subject: 'userGovern', attribute: '${userGovern}' },
+  { subject: 'userPDI', attribute: '${userPDI}' },
+  { subject: 'userLabour', attribute: '${userLabour}' },
+  { subject: 'userMarketAdj', attribute: '${userMarketAdj}' },
+  { subject: 'userCommodity', attribute: '${userCommodity}' },
+  { subject: 'destinationCharge', attribute: '${destinationCharge}' },
+  { subject: 'userFreight', attribute: '${userFreight}' },
+  { subject: 'userAdmin', attribute: '${userAdmin}' },
+]
+export const financeInfo = [
+  {
+    subject: "financeManager",
+    attribute: "${financeManager}"
+  },
+  {
+    subject: 'email',
+    attribute: '${email}'
+  },
+  {
+    subject: 'firstName',
+    attribute: '${firstName}'
+  },
+  {
+    subject: 'mileage',
+    attribute: '${mileage}'
+  },
+  {
+    subject: 'lastName',
+    attribute: '${lastName}'
+  },
+  {
+    subject: 'phone',
+    attribute: '${phone}'
+  },
+  {
+    subject: 'name',
+    attribute: '${name}'
+  },
+  {
+    subject: 'address',
+    attribute: '${address}'
+  },
+  {
+    subject: 'city',
+    attribute: '${city}'
+  },
+  {
+    subject: 'postal',
+    attribute: '${postal}'
+  },
+  {
+    subject: 'province',
+    attribute: '${province}'
+  },
+  {
+    subject: 'dl',
+    attribute: '${dl}'
+  },
+  {
+    subject: 'typeOfContact',
+    attribute: '${typeOfContact}'
+  },
+  {
+    subject: 'timeToContact',
+    attribute: '${timeToContact}'
+  },
+  {
+    subject: 'iRate',
+    attribute: '${iRate}'
+  },
+  {
+    subject: 'months',
+    attribute: '${months}'
+  },
+  {
+    subject: 'discount',
+    attribute: '${discount}'
+  },
+  {
+    subject: 'total',
+    attribute: '${total}'
+  },
+  {
+    subject: 'onTax',
+    attribute: '${onTax}'
+  },
+  {
+    subject: 'on60',
+    attribute: '${on60}'
+  },
+  {
+    subject: 'biweekly',
+    attribute: '${biweekly}'
+  },
+  {
+    subject: 'weekly',
+    attribute: '${weekly}'
+  },
+  {
+    subject: 'weeklyOth',
+    attribute: '${weeklyOth}'
+  },
+  {
+    subject: 'biweekOth',
+    attribute: '${biweekOth}'
+  },
+  {
+    subject: 'oth60',
+    attribute: '${oth60}'
+  },
+  {
+    subject: 'weeklyqc',
+    attribute: '${weeklyqc}'
+  },
+  {
+    subject: 'biweeklyqc',
+    attribute: '${biweeklyqc}'
+  },
+  {
+    subject: 'qc60',
+    attribute: '${qc60}'
+  },
+  {
+    subject: 'deposit',
+    attribute: '${deposit}'
+  },
+  {
+    subject: 'biweeklNatWOptions',
+    attribute: '${biweeklNatWOptions}'
+  },
+  {
+    subject: 'weeklylNatWOptions',
+    attribute: '${weeklylNatWOptions}'
+  },
+  {
+    subject: 'nat60WOptions',
+    attribute: '${nat60WOptions}'
+  },
+  {
+    subject: 'weeklyOthWOptions',
+    attribute: '${weeklyOthWOptions}'
+  },
+  {
+    subject: 'biweekOthWOptions',
+    attribute: '${biweekOthWOptions}'
+  },
+  {
+    subject: 'oth60WOptions',
+    attribute: '${oth60WOptions}'
+  },
+  {
+    subject: 'biweeklNat',
+    attribute: '${biweeklNat}'
+  },
+  {
+    subject: 'weeklylNat',
+    attribute: '${weeklylNat}'
+  },
+  {
+    subject: 'nat60',
+    attribute: '${nat60}'
+  },
+  {
+    subject: 'qcTax',
+    attribute: '${qcTax}'
+  },
+  {
+    subject: 'otherTax',
+    attribute: '${otherTax}'
+  },
+  {
+    subject: 'totalWithOptions',
+    attribute: '${totalWithOptions}'
+  },
+  {
+    subject: 'otherTaxWithOptions',
+    attribute: '${otherTaxWithOptions}'
+  },
+  {
+    subject: 'desiredPayments',
+    attribute: '${desiredPayments}'
+  },
+  {
+    subject: 'freight',
+    attribute: '${freight}'
+  },
+  {
+    subject: 'admin',
+    attribute: '${admin}'
+  },
+  {
+    subject: 'commodity',
+    attribute: '${commodity}'
+  },
+  {
+    subject: 'pdi',
+    attribute: '${pdi}'
+  },
+  {
+    subject: 'discountPer',
+    attribute: '${discountPer}'
+  },
+  {
+    subject: 'userLoanProt',
+    attribute: '${userLoanProt}'
+  },
+  {
+    subject: 'userTireandRim',
+    attribute: '${userTireandRim}'
+  },
+  {
+    subject: 'userGap',
+    attribute: '${userGap}'
+  },
+  {
+    subject: 'userExtWarr',
+    attribute: '${userExtWarr}'
+  },
+  {
+    subject: 'userServicespkg',
+    attribute: '${userServicespkg}'
+  },
+  {
+    subject: 'deliveryCharge',
+    attribute: '${deliveryCharge}'
+  },
+  {
+    subject: 'vinE',
+    attribute: '${vinE}'
+  },
+  {
+    subject: 'lifeDisability',
+    attribute: '${lifeDisability}'
+  },
+  {
+    subject: 'rustProofing',
+    attribute: '${rustProofing}'
+  },
+  {
+    subject: 'userOther',
+    attribute: '${userOther}'
+  },
+  {
+    subject: 'paintPrem',
+    attribute: '${paintPrem}'
+  },
+  {
+    subject: 'licensing',
+    attribute: '${licensing}'
+  },
+  {
+    subject: 'stockNum',
+    attribute: '${stockNum}'
+  },
+  {
+    subject: 'options',
+    attribute: '${options}'
+  },
+  {
+    subject: 'accessories',
+    attribute: '${accessories}'
+  },
+  {
+    subject: 'labour',
+    attribute: '${labour}'
+  },
+  {
+    subject: 'year',
+    attribute: '${year}'
+  },
+  {
+    subject: 'brand',
+    attribute: '${brand}'
+  },
+  {
+    subject: 'model',
+    attribute: '${model}'
+  },
+  {
+    subject: 'model1',
+    attribute: '${model1}'
+  },
+  {
+    subject: 'color',
+    attribute: '${color}'
+  },
+  {
+    subject: 'modelCode',
+    attribute: '${modelCode}'
+  },
+  {
+    subject: 'msrp',
+    attribute: '${msrp}'
+  },
+  {
+    subject: 'userEmail',
+    attribute: '${userEmail}'
+  },
+  {
+    subject: 'tradeValue',
+    attribute: '${tradeValue}'
+  },
+  {
+    subject: 'tradeDesc',
+    attribute: '${tradeDesc}'
+  },
+  {
+    subject: 'tradeColor',
+    attribute: '${tradeColor}'
+  },
+  {
+    subject: 'tradeYear',
+    attribute: '${tradeYear}'
+  },
+  {
+    subject: 'tradeMake',
+    attribute: '${tradeMake}'
+  },
+  {
+    subject: 'tradeVin',
+    attribute: '${tradeVin}'
+  },
+  {
+    subject: 'tradeTrim',
+    attribute: '${tradeTrim}'
+  },
+  {
+    subject: 'tradeMileage',
+    attribute: '${tradeMileage}'
+  },
+  {
+    subject: 'trim',
+    attribute: '${trim}'
+  },
+  {
+    subject: 'vin',
+    attribute: '${vin}'
+  },
+  {
+    subject: 'leadNote',
+    attribute: '${leadNote}'
+  },
+  {
+    subject: 'sendToFinanceNow',
+    attribute: '${sendToFinanceNow}'
+  },
+  {
+    subject: 'dealNumber',
+    attribute: '${dealNumber}'
+  },
+  {
+    subject: 'bikeStatus',
+    attribute: '${bikeStatus}'
+  },
+  {
+    subject: 'lien',
+    attribute: '${lien}'
+  },
+]

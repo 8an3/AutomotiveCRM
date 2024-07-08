@@ -5,7 +5,7 @@ import { Form, useSubmit } from "@remix-run/react";
 
 import { INTENTS } from "./types";
 import { CancelButton, SaveButton } from "./components";
-import { Button } from "~/components/ui";
+import { Button, Input } from "~/components/ui";
 import { Plus } from "lucide-react";
 
 export function NewColumn({
@@ -47,17 +47,24 @@ export function NewColumn({
     >
       <input type="hidden" name="intent" value={INTENTS.createColumn} />
       <input type="hidden" name="boardId" value={boardId} />
-      <input
-        autoFocus
-        required
-        ref={inputRef}
-        type="text"
-        name="name"
-        className="border border-slate-400 w-full rounded-lg py-1 px-2 font-medium text-white"
-      />
+
+      <div className="grid gap-3 mx-3 mb-3">
+        <div className="relative mt-3">
+          <Input
+            autoFocus
+            required
+            ref={inputRef}
+            type="text"
+            name="name"
+            className="w-full bg-background border-border "
+          />
+          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Column Name</label>
+        </div>
+      </div>
       <div className="flex justify-between">
-        <SaveButton>Save Column</SaveButton>
         <CancelButton onClick={() => setEditing(false)}>Cancel</CancelButton>
+        <SaveButton>Save Column</SaveButton>
+
       </div>
     </Form>
   ) : (

@@ -225,7 +225,7 @@ export default function Shight() {
           <TabsTrigger value="password">Teleprompter</TabsTrigger>
         </TabsList>
         <TabsContent value="account">
-          <div className=" mx-auto flex h-[700vh] text-foreground  ">
+          <div className=" mx-auto flex h-[70vh] text-foreground  ">
             <Card className={` mx-2 transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'grow' : 'w-[15%]'} `}        >
               <CardHeader onClick={handleCategoryClick} className='cursor-pointer'>
                 <CardTitle>Category</CardTitle>

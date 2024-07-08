@@ -6,10 +6,15 @@ import { INTENTS, type RenderedItem } from "./types";
 import { Column } from "./column";
 import { NewColumn } from "./new-column";
 import { EditableText } from "./components";
+import { prisma } from "~/libs";
+import { todoRoadmap } from "~/routes/__authorized/dealer/user/dashboard.roadmap";
+import { Button } from "~/components/ui";
+import { TrashIcon } from "lucide-react";
+import { deleteBoard } from "./queries";
 
 export function Board() {
   let { board, id } = useLoaderData();
-
+  console.log(board, 'board')
   let itemsById = new Map(board.items.map((item) => [item.id, item]));
 
   let pendingItems = usePendingItems();
@@ -49,25 +54,32 @@ export function Board() {
     scrollContainerRef.current.scrollLeft =
       scrollContainerRef.current.scrollWidth;
   }
-
   return (
     <div
-      className="max-h-[900px] h-[900px]  min-h-0 flex flex-col overflow-x-scroll mt-[50px] mx-auto rounded-[6px] border-border bg-background"
+      className="max-h-[900px] h-[900px]  min-h-0 flex flex-col overflow-x-scroll mt-[50px]  bg-background items-start"
       ref={scrollContainerRef}
-
     >
-      <h1>
+      <h1 className='group items-center'>
         <EditableText
           value={board.name}
           fieldName="name"
-          inputClassName="mx-8 my-4 text-2xl font-medium border border-slate-400 rounded-lg py-1 px-2 text-foreground"
-          buttonClassName="mx-8 my-4 text-2xl font-medium block rounded-lg text-left border border-transparent py-1 px-2 text-slate-800"
+          inputClassName="mx-8 my-4 border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
+          buttonClassName="mx-8 my-4   rounded-lg text-left   py-1 px-2 text-slate-800"
           buttonLabel={`Edit board "${board.name}" name`}
           inputLabel="Edit board name"
         >
           <input type="hidden" name="intent" value={INTENTS.updateBoardName} />
           <input type="hidden" name="id" value={board.id} />
         </EditableText>
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={() => deleteBoard(product.id)}
+          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+        >
+          <TrashIcon className="h-3 w-3" />
+          <span className="sr-only">Delete</span>
+        </Button>
       </h1>
 
       <div className="flex flex-grow min-h-0 h-full items-start gap-4 px-8 pb-4">

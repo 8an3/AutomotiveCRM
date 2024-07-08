@@ -78,6 +78,14 @@ export default function Quote() {
       to: "/dealer/document/builder",
     },
     {
+      title: "Finance Products",
+      to: "/dealer/user/dashboard/finance/board",
+    },
+    {
+      title: "Board",
+      to: "/dealer/user/dashboard/baord",
+    },
+    {
       title: "Log out",
       to: "/auth/logout",
     },

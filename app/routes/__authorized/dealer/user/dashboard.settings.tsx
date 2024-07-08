@@ -29,7 +29,7 @@ import { INTENTS, type RenderedItem, ItemMutationFields, ItemMutation, CONTENT_T
 import { badRequest } from "~/utils/http";
 import invariant from "tiny-invariant";
 import { SaveButton, CancelButton, EditableText } from '~/components/user/finance/components'
-import { Plus } from 'lucide-react'
+import { Plus, TrashIcon } from 'lucide-react'
 import { flushSync } from "react-dom";
 import {
   HoverCard,
@@ -38,8 +38,21 @@ import {
 } from "~/components/ui/hover-card"
 import { Trash } from "lucide-react";
 import { parseItemMutation } from '~/components/user/finance/utils'
-
+import { todoRoadmap } from './dashboard.roadmap'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer"
 // dontergeasdf
+import { DownloadIcon, PaperPlaneIcon, UploadIcon } from '@radix-ui/react-icons';
+import Products from './dashboard.board'
+
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -80,7 +93,9 @@ export async function loader({ request, params }: LoaderFunction) {
       const getNewLook = user.newLook
       console.log(getNewLook, 'checking appearance')
       let financeProducts = await getHomeData();
-      return ({ user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations, financeProducts })
+      let boards = await getHomeData();
+
+      return ({ user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations, financeProducts, boards })
     } else {
       return redirect('/subscribe');
     }
@@ -438,12 +453,12 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
       [name]: checked ? 'yes' : 'no',
     }));
   };
-
+  const { boards } = useLoaderData()
   return (
-    <Tabs defaultValue="dealerFees" className="w-[75%] ml-5 mr-auto" >
+    <Tabs defaultValue="account" className="w-[75%] ml-5 mr-auto" >
       <TabsList className="rounded-md ">
-        <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
         <TabsTrigger className='rounded-md' value="account">Account</TabsTrigger>
+        <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
         <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>
         <TabsTrigger className='rounded-md' value="Automations">Automations</TabsTrigger>
         {user.position === 'Finance Manager' && (
@@ -713,10 +728,10 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
               </div>
 
             </CardContent>
-            <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
+            <CardFooter className="grid grid-cols-2 justify-between items-center  bg-muted-background px-6 py-3">
               <ButtonLoading
                 size="sm"
-                className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
+                className="w-[250px] mr-auto cursor-pointer mb-5 mt-5 bg-primary"
                 type="submit"
                 name='intent'
                 value='updateFees'
@@ -729,135 +744,213 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
             </CardFooter>
           </Form>
         </Card>
-        <div className='grid grid-cols-1'>
-          <Card className='text-foreground bg-background ml-2 mb-4'>
-            <Form method="post" className="">
-              <CardHeader className=" grid grid-cols-1 bg-muted-background rounded-md">
-                <CardTitle className="group flex items-center text-sm">
-                  Integration Settings
-                </CardTitle>
-                <CardDescription>
-                  Will unlock featues and functions that will only benefit users who currently use other CRMs. Essentially replacing your current crm dashboard and processes, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers. If you do not see your CRM here let us know and we will integrate with them.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className=' '>
-                <ul className="grid gap-3 text-sm mt-3">
-                  <li className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      Activix
-                    </span>
-                    <span>
-                      <input
-                        className='scale-150 p-3'
-                        type='checkbox'
-                        id='necessary'
-                        name='activixActivated'
-                        checked={activixActivated}
-                        onChange={handleCheckboxChange}
-                      />
-                    </span>
-                    <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
-                  </li>
-                </ul>
+        <Card className='text-foreground bg-background mr-2 mb-4 w-[250px]'>
+          <CardHeader className="   bg-muted-background rounded-md">
+            <CardTitle className="group flex items-center text-sm">
+              ACCOUNT
+            </CardTitle>
+            <CardDescription>
+              Extras
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className='flex flex-col'>
 
-                {user.activixActivated === 'yes' && (
-                  <div className="flex flex-col ">
-                    <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                    <div className="font-semibold ml-[50px]">Activx</div>
-                    <div className="relative mt-3">
-                      <Input
-                        className="border-border bg-background  "
-                        type="email"
-                        name="activixEmail"
-                        defaultValue={user.activixEmail}
-                      />
-                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Activix Email</label>
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    size='sm'
+                    className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
+                  >
+                    Downloads
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-sm">
+                    <DrawerHeader>
+                      <DrawerTitle>Downloads</DrawerTitle>
+                      <DrawerDescription>Download your data whenever you need it.</DrawerDescription>
+                    </DrawerHeader>
+                    <div className='grid grid-cols-1 '>
+                      <div className='flex justify-between items-center'>
+                        <p>Templates/Scripts</p>
+                        <a href={`/dealer/user/download/templates`} target='_blank'>
+                          <Button
+                            type="submit"
+                            size="icon"
+                            onClick={() => {
+                              toast.success(`Downloading data....`)
+                            }}
+                            className='bg-primary ml-auto '>
+                            <DownloadIcon className="h-4 w-4" />
+                            <span className="sr-only">Download</span>
+                          </Button>
+                        </a>
+                      </div>
+
                     </div>
-                    <div className="relative mt-3">
-                      <Input
-                        className="border-border bg-background  "
-                        type="email"
-                        name="activixEmail"
-                        defaultValue={user.activixEmail}
-                      />
-                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Account Id</label>
-                    </div>
+                    <DrawerFooter>
+                      <DrawerClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DrawerClose>
+                    </DrawerFooter>
                   </div>
-                )}
-                <Input type='hidden' name="email" defaultValue={user.email} />
-                <Input type='hidden' name="userEmail" defaultValue={user.email} />
-              </CardContent>
-              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
-                <ButtonLoading
-                  size="sm"
-                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
-                  type="submit"
-                  name='intent'
-                  value='activixActivated'
-                  isSubmitting={isSubmitting}
-                  onClick={() => toast.success(`Update complete.`)}
-                  loadingText="Updating information..."
-                >
-                  Update
-                </ButtonLoading>
-              </CardFooter>
-            </Form>
-          </Card>
-          <Card className='text-foreground bg-background ml-2 mb-4 mt-4'>
-            <Form method="post" className="">
-              <CardHeader className=" grid grid-cols-1 bg-muted-background rounded-md">
-                <CardTitle className="group flex items-center text-sm">
-                  New Quote and Overview Appearance {newLook}
-                </CardTitle>
-                <CardDescription>
-                  Changes the look of the quote and overview pages.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className=' '>
-                <Input type='hidden' name="userEmail" defaultValue={user.email} />
+                </DrawerContent>
+              </Drawer>
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    size='sm'
+                    className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
+                  >
+                    Integration Settings
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-sm">
+                    <DrawerHeader>
+                      <DrawerTitle>Integration Settings</DrawerTitle>
+                      <DrawerDescription> Will unlock featues and functions that will only benefit users who currently use other CRMs. Essentially replacing your current crm dashboard and processes, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers. If you do not see your CRM here let us know and we will integrate with them.</DrawerDescription>
+                    </DrawerHeader>
+                    <Form method="post" className="w-[95%]">
 
-                <ul className="grid gap-3 text-sm mt-3">
-                  <li className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      Change looks?
-                    </span>
-                    <span>
-                      <IndeterminateCheckbox
-                        className='  border-[#ff0202]'
-                        id='necessary'
-                        name='newLook'
-                        checked={newLook === 'on'}
-                        onChange={() => {
-                          if (newLook === 'off') {
-                            setNewLook('on')
-                          } else {
-                            setNewLook('off')
-                          }
-                        }}
-                      />
-                    </span>
-                  </li>
-                </ul>
-              </CardContent>
-              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted-background px-6 py-3">
-                <ButtonLoading
-                  size="sm"
-                  className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
-                  type="submit"
-                  name='intent'
-                  value='appearance'
-                  isSubmitting={isSubmitting}
-                  onClick={() => {
-                    toast.success(`Update complete.`)
-                  }}
-                  loadingText="Updating information..."
-                >
-                  Update
-                </ButtonLoading>
-              </CardFooter>
-            </Form>
-          </Card>
-        </div>
+                      <ul className="grid gap-3 text-sm mt-3">
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">
+                            Activix
+                          </span>
+                          <span>
+                            <input
+                              className='scale-150 p-3'
+                              type='checkbox'
+                              id='necessary'
+                              name='activixActivated'
+                              checked={activixActivated}
+                              onChange={handleCheckboxChange}
+                            />
+                          </span>
+                          <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
+                        </li>
+                      </ul>
+
+                      {user.activixActivated === 'yes' && (
+                        <div className="flex flex-col ">
+                          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                          <div className="font-semibold ">Activx</div>
+                          <div className="relative mt-3">
+                            <Input
+                              className="border-border bg-background  "
+                              type="email"
+                              name="activixEmail"
+                              defaultValue={user.activixEmail}
+                            />
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Activix Email</label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Input
+                              className="border-border bg-background  "
+                              type="email"
+                              name="activixEmail"
+                              defaultValue={user.activixEmail}
+                            />
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Account Id</label>
+                          </div>
+                        </div>
+                      )}
+                      <Input type='hidden' name="email" defaultValue={user.email} />
+                      <Input type='hidden' name="userEmail" defaultValue={user.email} />
+                      <div className='flex justify-between items-center mt-5 mb-5' >
+                        <DrawerClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DrawerClose>
+                        <ButtonLoading
+                          size="sm"
+                          className="w-auto cursor-pointer  bg-primary"
+                          type="submit"
+                          name='intent'
+                          value='activixActivated'
+                          isSubmitting={isSubmitting}
+                          onClick={() => toast.success(`Update complete.`)}
+                          loadingText="Updating information..."
+                        >
+                          Update
+                        </ButtonLoading>
+
+                      </div>
+
+                    </Form>
+
+                  </div>
+                </DrawerContent>
+              </Drawer>
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    size='sm'
+                    className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
+                  >
+                    Appearance
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-sm">
+                    <DrawerHeader>
+                      <DrawerTitle>New Quote and Overview Appearance</DrawerTitle>
+                      <DrawerDescription> Changes the look of the quote and overview pages.</DrawerDescription>
+                    </DrawerHeader>
+                    <Form method="post" className="">
+
+                      <Input type='hidden' name="userEmail" defaultValue={user.email} />
+
+                      <ul className="grid gap-3 text-sm mt-3">
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">
+                            Change looks?
+                          </span>
+                          <IndeterminateCheckbox
+                            className='  border-[#ff0202]'
+                            id='necessary'
+                            name='newLook'
+                            checked={newLook === 'on'}
+                            onChange={() => {
+                              if (newLook === 'off') {
+                                setNewLook('on')
+                              } else {
+                                setNewLook('off')
+                              }
+                            }}
+                          />
+                        </li>
+                      </ul>
+                      <div className='flex justify-between items-center mt-5 mb-5' >
+                        <DrawerClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DrawerClose>
+                        <ButtonLoading
+                          size="sm"
+                          className="w-auto cursor-pointer mb-5 mt-5 bg-primary"
+                          type="submit"
+                          name='intent'
+                          value='appearance'
+                          isSubmitting={isSubmitting}
+                          onClick={() => {
+                            toast.success(`Update complete.`)
+                          }}
+                          loadingText="Updating information..."
+                        >
+                          Update
+                        </ButtonLoading>
+                      </div>
+                    </Form>
+                  </div>
+                </DrawerContent>
+              </Drawer>
+
+            </div>
+          </CardContent>
+
+        </Card>
+
       </TabsContent>
       <TabsContent value="Automations" className='rounded-md  grid grid-cols-2'>
         <Card className='rounded-md text-foreground border-border border bg-muted-background'>
@@ -926,7 +1019,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
             </CardTitle>
           </CardHeader>
           <CardContent className="text-foreground">
-            <Products />
+            <Products boards={boards} />
           </CardContent>
         </Card>
       </TabsContent>
@@ -1150,16 +1243,9 @@ export const action: ActionFunction = async ({ request }) => {
         data: {
           packageName: packageName,
           packagePrice: Number(packagePrice),
-          financeProduct: {
-            connect: {
-              id: productId
-            }
-          },
-          financeProvidor: {
-            connect: {
-              id: providorId
-            }
-          }
+          financeProductId: productId,
+          FinanceProvidorId: providorId
+
         }
       })
       return { ok: true };
@@ -1220,7 +1306,7 @@ export default function Mainbody() {
     </>
   )
 }
-
+/**
 function Products() {
   let { financeProducts } = useLoaderData<typeof loader>();
   const [financeProductsList, setFinanceProductsList] = useState(financeProducts);
@@ -1241,6 +1327,10 @@ function Products() {
     updatedProducts[index] = newProduct;
     setFinanceProductsList(updatedProducts);
   };
+
+
+
+
 
   return (
     <div className="p-4">
@@ -1267,9 +1357,14 @@ function Products() {
           Create
         </ButtonLoading>
       </fetcher.Form>
-      <h3 className="text-xl font-thin uppercase text-foreground">
-        Products
-      </h3>
+      <div className='flex items-center'>
+        <h3 className="text-xl font-thin uppercase text-foreground mr-3">
+          Products
+        </h3>
+        <Button onClick={() => processTodoRoadmap(todoRoadmap)} variant='outline' >
+          Merge
+        </Button>
+      </div>
       {financeProductsList.map((product, index) => {
         const [providors, setProvidors] = useState([]);
 
@@ -1310,11 +1405,11 @@ function FinanceProduct({ product, onUpdate }) {
   return (
     <div className="grid grid-cols-1overflow-x-auto">
       <div className='flex items-center'>
-        <h1>
+        <h1 className='group items-center'>
           <EditableText
             value={product.name}
             fieldName="name"
-            inputClassName="border border-slate-400 wrounded-lg  text-foreground"
+            inputClassName="border border-border rounded-lg  text-foreground bg-background"
             buttonClassName="w-auto  mx-3 my-4 block rounded-lg text-center  border border-transparent  px-2 py-1 text-foreground"
             buttonLabel={`Edit product "${product.name}" name`}
             inputLabel="Edit product name"
@@ -1322,6 +1417,15 @@ function FinanceProduct({ product, onUpdate }) {
             <input type="hidden" name="intent" value={INTENTS.updateProductName} />
             <input type="hidden" name="productId" value={product.id} />
           </EditableText>
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => deleteProduct(product.id)}
+            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+          >
+            <TrashIcon className="h-3 w-3" />
+            <span className="sr-only">Delete</span>
+          </Button>
         </h1>
         {editing ? (
           <Form
@@ -1418,8 +1522,7 @@ function FinanceProvidor({ providor, onUpdate, product }) {
   }
   return (
     <div className="mb-4 p-4 border rounded-lg mx-2">
-      {/**repalce with new price */}
-      <div className="p-2">
+      <div className="p-2 group items-center">
         <EditableText
           fieldName="name"
           value={providor.name}
@@ -1431,12 +1534,23 @@ function FinanceProvidor({ providor, onUpdate, product }) {
           <input type="hidden" name="intent" value={INTENTS.updateProvidor} />
           <input type="hidden" name="id" value={providor.id} />
         </EditableText>
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={() => deleteProvidor(product.id)}
+          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+        >
+          <TrashIcon className="h-3 w-3" />
+          <span className="sr-only">Delete</span>
+        </Button>
       </div>
 
       {prices.map((price, index) => (
         <FinancePrice
-          key={price.id}
+          key={index}
           price={price}
+          providor={providor}
+          product={product}
           onUpdate={(newPrice) => updatePrice(index, newPrice)}
         />
       ))}
@@ -1468,6 +1582,167 @@ function FinanceProvidor({ providor, onUpdate, product }) {
     </div>
   );
 }
+
+function FinancePrice({ price, onUpdate, product, providor }) {
+  if (price.FinanceProvidorId !== providor.id) {
+    return null; // Skip rendering if provider ID doesn't match
+  }
+  let textAreaRef = useRef<HTMLTextAreaElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+  let submit = useSubmit();
+  let fetcher = useFetcher();
+  let deleteFetcher = useFetcher();
+  console.log(price, 'prioce', providor, 'providor')
+  return (
+    <div className="mb-2 p-2 ">
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <div
+            draggable
+            className="text-left bg-background text-foreground shadow shadow-muted-background border border-border text-sm rounded-[6px] w-full py-1 px-2 relative"
+          >
+            <div>
+              <EditableText
+                fieldName="packageName"
+                value={price.packageName}
+                inputLabel="Edit package name"
+                buttonLabel={`Edit Package Name "${price.packageName}" name`}
+                inputClassName="border border-slate-400 wrounded-lg  text-foreground"
+                buttonClassName="mx-3 my-4 w-auto  block text-center py-3 px-2 text-slate-800 "
+              >
+                <input type="hidden" name="intent" value='updatePackageName' />
+                <input type="hidden" name="priceId" value={price.id} />
+              </EditableText>
+              <EditableText
+                fieldName="packagePrice"
+                value={price.packagePrice}
+                inputLabel="Edit package price"
+                buttonLabel={`Edit package price "${price.packagePrice}" name`}
+                inputClassName="border border-slate-400 wrounded-lg  text-foreground"
+                buttonClassName="mx-3 my-4 w-auto   block text-center  py-1 px-2 text-slate-800 "
+              >
+                <input type="hidden" name="intent" value='updatePackagePrice' />
+                <input type="hidden" name="priceId" value={price.id} />
+              </EditableText>
+            </div>
+
+          </div>
+        </HoverCardTrigger>
+        <HoverCardContent className="w-[100px] h-[100px] bg-background border border-border">
+          <deleteFetcher.Form method="post">
+            <input type="hidden" name="intent" value={INTENTS.deletePrice} />
+            <input type="hidden" name="priceId" value={price.id} />
+            <Button
+              size='icon'
+              variant='ghost'
+              aria-label="Delete card"
+              className="absolute mx-auto my-auto bg-background hover:text-brand-red"
+              type="submit"
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
+            >
+              <Trash color="#fcfcfc" />
+            </Button>
+          </deleteFetcher.Form>
+        </HoverCardContent>
+      </HoverCard>
+    </div>
+  );
+}
+
+
+function NewPrice({ productId, providorId, onAddPrice, onComplete, nextOrder }) {
+  let textAreaRef = useRef<HTMLTextAreaElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+  let submit = useSubmit();
+  let fetcher = useFetcher();
+
+  return (
+    <fetcher.Form
+      method="post"
+      className="p-2 flex-shrink-0 flex flex-col gap-3 overflow-hidden max-h-full w-[250px] border rounded-[6px] shadow bg-background"
+      onSubmit={(event) => {
+        event.preventDefault();
+
+        let formData = new FormData(event.currentTarget);
+        let id = crypto.randomUUID();
+        formData.set(ItemMutationFields.id.name, id);
+
+        submit(formData, {
+          method: "post",
+          fetcherKey: `price:${id}`,
+          navigate: false,
+          unstable_flushSync: true,
+        });
+
+        invariant(textAreaRef.current);
+        textAreaRef.current.value = "";
+        onAddPrice();
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          onComplete();
+        }
+      }}
+    >
+      <input type="hidden" name="intent" value={INTENTS.createPrice} />
+      <input type="hidden" name='providorId' value={providorId} />
+      <input type="hidden" name='productId' value={productId} />
+      <input type="hidden" name={ItemMutationFields.order.name} value={nextOrder} />
+      <Input
+        autoFocus
+        required
+        ref={textAreaRef}
+        name='packageName'
+        placeholder="Enter a package name"
+        className="border border-border bg-background w-full rounded-lg py-1 px-2 text-foreground"
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            invariant(buttonRef.current, "expected button ref");
+            buttonRef.current.click();
+          }
+          if (event.key === "Escape") {
+            onComplete();
+          }
+        }}
+        onChange={(event) => {
+          let el = event.currentTarget;
+          el.style.height = el.scrollHeight + "px";
+        }}
+      />
+      <Input
+        autoFocus
+        required
+        ref={textAreaRef}
+        name='packagePrice'
+        placeholder="Enter a package name"
+        className="border border-border bg-background w-full rounded-lg py-1 px-2 text-foreground"
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            invariant(buttonRef.current, "expected button ref");
+            buttonRef.current.click();
+          }
+          if (event.key === "Escape") {
+            onComplete();
+          }
+        }}
+        onChange={(event) => {
+          let el = event.currentTarget;
+          el.style.height = el.scrollHeight + "px";
+        }}
+      />
+
+      <div className="flex justify-between">
+        <SaveButton ref={buttonRef}>Save Price</SaveButton>
+        <CancelButton onClick={onComplete}>Cancel</CancelButton>
+      </div>
+    </fetcher.Form>
+  )
+}
+
 /**function NewPrice({ providorId, onAddPrice, onComplete, nextOrder }) {
   let textAreaRef = useRef<HTMLTextAreaElement>(null);
   let buttonRef = useRef<HTMLButtonElement>(null);
@@ -1631,161 +1906,3 @@ function FinanceProvidor({ providor, onUpdate, product }) {
   )
 }
  */
-
-function FinancePrice({ price, onUpdate }) {
-  let textAreaRef = useRef<HTMLTextAreaElement>(null);
-  let buttonRef = useRef<HTMLButtonElement>(null);
-  let submit = useSubmit();
-  let fetcher = useFetcher();
-  let deleteFetcher = useFetcher();
-  console.log(price, 'prioce')
-  return (
-    <div className="mb-2 p-2 ">
-      <HoverCard>
-        <HoverCardTrigger asChild>
-          <div
-            draggable
-            className="text-left bg-background text-foreground shadow shadow-muted-background border border-border text-sm rounded-[6px] w-full py-1 px-2 relative"
-          >
-            <div>
-              <EditableText
-                fieldName="packageName"
-                value={price.packageName}
-                inputLabel="Edit package name"
-                buttonLabel={`Edit Package Name "${price.packageName}" name`}
-                inputClassName="border border-slate-400 wrounded-lg  text-foreground"
-                buttonClassName="mx-3 my-4 w-auto  block text-center py-3 px-2 text-slate-800 "
-              >
-                <input type="hidden" name="intent" value='updatePackageName' />
-                <input type="hidden" name="priceId" value={price.id} />
-              </EditableText>
-              <EditableText
-                fieldName="packagePrice"
-                value={price.packagePrice}
-                inputLabel="Edit package price"
-                buttonLabel={`Edit package price "${price.packagePrice}" name`}
-                inputClassName="border border-slate-400 wrounded-lg  text-foreground"
-                buttonClassName="mx-3 my-4 w-auto   block text-center  py-1 px-2 text-slate-800 "
-              >
-                <input type="hidden" name="intent" value='updatePackagePrice' />
-                <input type="hidden" name="priceId" value={price.id} />
-              </EditableText>
-            </div>
-
-          </div>
-        </HoverCardTrigger>
-        <HoverCardContent className="w-[100px] h-[100px] bg-background border border-border">
-          <deleteFetcher.Form method="post">
-            <input type="hidden" name="intent" value={INTENTS.deletePrice} />
-            <input type="hidden" name="priceId" value={price.id} />
-            <Button
-              size='icon'
-              variant='ghost'
-              aria-label="Delete card"
-              className="absolute mx-auto my-auto bg-background hover:text-brand-red"
-              type="submit"
-              onClick={(event) => {
-                event.stopPropagation();
-              }}
-            >
-              <Trash color="#fcfcfc" />
-            </Button>
-          </deleteFetcher.Form>
-        </HoverCardContent>
-      </HoverCard>
-
-    </div>
-  );
-}
-
-
-function NewPrice({ productId, providorId, onAddPrice, onComplete, nextOrder }) {
-  let textAreaRef = useRef<HTMLTextAreaElement>(null);
-  let buttonRef = useRef<HTMLButtonElement>(null);
-  let submit = useSubmit();
-  let fetcher = useFetcher();
-
-  return (
-    <fetcher.Form
-      method="post"
-      className="p-2 flex-shrink-0 flex flex-col gap-3 overflow-hidden max-h-full w-[250px] border rounded-[6px] shadow bg-background"
-      onSubmit={(event) => {
-        event.preventDefault();
-
-        let formData = new FormData(event.currentTarget);
-        let id = crypto.randomUUID();
-        formData.set(ItemMutationFields.id.name, id);
-
-        submit(formData, {
-          method: "post",
-          fetcherKey: `price:${id}`,
-          navigate: false,
-          unstable_flushSync: true,
-        });
-
-        invariant(textAreaRef.current);
-        textAreaRef.current.value = "";
-        onAddPrice();
-      }}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-          onComplete();
-        }
-      }}
-    >
-      <input type="hidden" name="intent" value={INTENTS.createPrice} />
-      <input type="hidden" name='providorId' value={providorId} />
-      <input type="hidden" name='productId' value={productId} />
-      <input type="hidden" name={ItemMutationFields.order.name} value={nextOrder} />
-      <Input
-        autoFocus
-        required
-        ref={textAreaRef}
-        name='packageName'
-        placeholder="Enter a package name"
-        className="border border-border bg-background w-full rounded-lg py-1 px-2 text-foreground"
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            invariant(buttonRef.current, "expected button ref");
-            buttonRef.current.click();
-          }
-          if (event.key === "Escape") {
-            onComplete();
-          }
-        }}
-        onChange={(event) => {
-          let el = event.currentTarget;
-          el.style.height = el.scrollHeight + "px";
-        }}
-      />
-      <Input
-        autoFocus
-        required
-        ref={textAreaRef}
-        name='packagePrice'
-        placeholder="Enter a package name"
-        className="border border-border bg-background w-full rounded-lg py-1 px-2 text-foreground"
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            invariant(buttonRef.current, "expected button ref");
-            buttonRef.current.click();
-          }
-          if (event.key === "Escape") {
-            onComplete();
-          }
-        }}
-        onChange={(event) => {
-          let el = event.currentTarget;
-          el.style.height = el.scrollHeight + "px";
-        }}
-      />
-
-      <div className="flex justify-between">
-        <SaveButton ref={buttonRef}>Save Price</SaveButton>
-        <CancelButton onClick={onComplete}>Cancel</CancelButton>
-      </div>
-    </fetcher.Form>
-  )
-}

@@ -210,7 +210,7 @@ export default function Route() {
   return (
     <>
       <Tabs defaultValue="dealerFees" className="w-auto mx-auto " >
-        <TabsList className="grid   grid-cols-4 rounded-md">
+        <TabsList className="">
           <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
           <TabsTrigger className='rounded-md' value="account">Account Variables</TabsTrigger>
           <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>

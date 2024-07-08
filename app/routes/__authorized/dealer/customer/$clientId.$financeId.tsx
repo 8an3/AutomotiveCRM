@@ -2293,7 +2293,22 @@ export default function Dashboard() {
       </>
     );
   };
-
+  let customerCard = [
+    { name: 'firstName', value: finance.firstName, label: 'First Name', },
+    { name: 'lastName', value: finance.lastName, label: 'Last Name', },
+    { name: 'phone', value: finance.phone, label: 'Phone', },
+    { name: 'email', value: finance.email, label: 'Email', },
+    { name: 'address', value: finance.address, label: 'Address', },
+    { name: 'city', value: finance.city, label: 'City', },
+    { name: 'postal', value: finance.postal, label: 'Postal', },
+    { name: 'lastContact', value: finance.lastContact, label: 'Last Contact', },
+    { name: 'nextAppointment', value: finance.nextAppointment, label: 'Next Appointment', },
+    { name: 'deliveryDate', value: finance.deliveryDate, label: 'Delivery Date', },
+    { name: 'deliveredDate', value: finance.deliveredDate, label: 'Delivered Date', },
+    { name: 'depositMade', value: finance.depositMade, label: 'Deposit Made', },
+    { name: 'userEmail', value: finance.userEmail, label: 'Sales person', },
+    { name: 'financeManager', value: finance.financeManager, label: 'Finance manager', },
+  ];
 
   // -----------------------------email ---------------------------------//
 
@@ -2448,73 +2463,28 @@ export default function Dashboard() {
                           <DialogTitle>Edit Customer Profile Info</DialogTitle>
                         </DialogHeader>
                         <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
-                        <div className="grid gap-3 mx-3 mb-3">
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={clientFile.firstName} name='firstName'
-                              type="text"
-                              className="w-full bg-background border-border "
-                            />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={clientFile.lastName} name='lastName'
-                              type="text"
-                              className="w-full bg-background border-border "
-                            />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={clientFile.phone} name='phone'
-                              type="text"
-                              className="w-full bg-background border-border "
-                            />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={clientFile.email} name='email'
-                              type="text"
-                              className="w-full bg-background border-border "
-                            />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={clientFile.address} name='address'
-                              type="text"
-                              className="w-full bg-background border-border "
-                            />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={clientFile.city} name='city'
-                              type="text"
-                              className="w-full bg-background border-border "
-                            />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">City</label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={clientFile.postal} name='postal'
-                              type="text"
-                              className="w-full bg-background border-border "
-                            />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Postal Code</label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={clientFile.dl} name='dl'
-                              type="text"
-                              className="w-full bg-background border-border "
-                            />
-                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Drivers Lic.</label>
-                          </div>
-
-                        </div>
+                        <ul className="grid gap-3 text-sm mt-2">
+                          {customerCard.map((customer, index) => (
+                            <li key={index} className="group flex items-center justify-between">
+                              <div className='flex'>
+                                <span className="text-muted-foreground">
+                                  {customer.label}
+                                </span>
+                                <Button
+                                  size="icon"
+                                  variant="outline"
+                                  onClick={() => copyText(customer.value)}
+                                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                                >
+                                  <Copy className="h-3 w-3" />
+                                  <span className="sr-only">Copy</span>
+                                </Button>
+                                {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
+                              </div>
+                              <span>{customer.value}</span>
+                            </li>
+                          ))}
+                        </ul>
                         <input type='hidden' name='phone' defaultValue={finance.phone} />
                         <input type='hidden' name='email' defaultValue={finance.email} />
                         <input type='hidden' name='lastName' defaultValue={finance.lastName} />

@@ -61,6 +61,18 @@ import {
 import WebLeads from '~/components/dashboard/demoDay/webLeads';
 import { Mail, MessageSquare } from 'lucide-react';
 import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
+import emitter from '~/routes/__authorized/dealer/emitter';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "~/components/ui/alert-dialog"
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
@@ -102,8 +114,21 @@ export default function Mainboard() {
         }
     };
 
-    //
+    const [open, setOpen] = useState(false);
+    const [key, setKey] = useState(0);
+    const [lockData, setLockData] = useState();
 
+    useEffect(() => {
+        const handleData = (msg, data) => {
+            console.log('Received data:', data);
+            setOpen(true)
+            setLockData(data)
+        };
+        emitter.on('LOCKED_STATUS_RESPONSE', handleData);
+        return () => {
+            emitter.off('LOCKED_STATUS_RESPONSE', handleData);
+        };
+    }, []);
     return (
         <div className='bg-background'>
 
@@ -146,6 +171,22 @@ export default function Mainboard() {
                 )}
             </Tabs>
 
+
+            <AlertDialog key={key} open={open} onOpenChange={setOpen}>
+
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle></AlertDialogTitle>
+                        <AlertDialogDescription>
+                            <p>{lockData.financeEmail} will see your client shortly.</p>
+
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }

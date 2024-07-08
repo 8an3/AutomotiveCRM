@@ -57,7 +57,7 @@ export function Board({ name, id, onUpdate, product, }) {
   }
   return (
     <div
-      className=" grid grid-cols-1 min-h-0 mt-[50px] mx-auto rounded-[6px] border-border bg-background"
+      className=" grid grid-cols-1 min-h-0 mt-[50px] mx-auto rounded-[6px] border-border bg-muted-background"
       ref={scrollContainerRef}
     >
       <h1>
@@ -134,7 +134,7 @@ function Providor({ providor, name, providorId, prices, onUpdate }) {
           value={name}
           inputLabel="Edit providor name"
           buttonLabel={`Edit providor "${name}" name`}
-          inputClassName="border border-slate-400 wrounded-lg  text-foreground"
+          inputClassName="border border-slate-400 rounded-lg  text-foreground"
           buttonClassName="block rounded-lg text-left w-full border border-transparent py-1 px-2 text-foreground"
         >
           <input type="hidden" name="intent" value={INTENTS.updateProvidor} />

@@ -3,6 +3,7 @@ import {
   type LoaderFunction,
   redirect,
   broadcastDevReady,
+  json,
 } from "@remix-run/node";
 import {
   Form,
@@ -21,12 +22,16 @@ import { badRequest } from "~/utils/http";
 import { getHomeData, createBoard, deleteBoard } from "~/components/dev/board/queries";
 import { INTENTS } from "~/components/dev/board/types";
 import { Input } from "~/components";
+import { todoRoadmap } from "../dealer/user/dashboard.roadmap";
+import { prisma } from "~/libs";
+import { Trash } from "lucide-react";
+import { useState } from "react";
 
 export const meta = () => {
   return [{ title: "Boards" }];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   const user = await GetUser(email)
@@ -34,7 +39,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return { boards };
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: ActionFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   const user = await GetUser(email)
@@ -71,9 +76,56 @@ export default function Projects() {
 
 function Boards() {
   let { boards } = useLoaderData<typeof loader>();
+
+  const processTodoRoadmap = async (todoRoadmap) => {
+    for (const item of todoRoadmap) {
+
+      let column = await prisma.column.findFirst({
+        where: { name: item.column, boardId: boards[0].id },
+      });
+
+      if (!column) {
+        column = await prisma.column.create({
+          data: { name: item.column, boardId: boards[0].id },
+        });
+      }
+      console.log(boards[0], column, 'column')
+
+      const saveItem = await prisma.item.upsert({
+        where: { id: item.id }, // Assuming title is unique
+        update: {
+          title: item.item,
+          boardId: boards[0]?.id,
+          columnId: column.id,
+        },
+        create: {
+          title: item.item,
+          boardId: boards[0]?.id,
+          columnId: column.id,
+        },
+      });
+      console.log(item, 'item')
+      return json({ saveItem, column, boards })
+
+    }
+  }
+
+
   return (
     <div className="p-8">
-      <h2 className="font-bold mb-2 text-xl">Boards</h2>
+      <div className='flex items-center'>
+        <h3 className="text-xl font-thin uppercase text-foreground mr-3">
+          Boards
+        </h3>
+        <Button
+          onClick={() => {
+            console.log('click123123')
+            processTodoRoadmap(todoRoadmap)
+          }}
+          variant='outline' >
+          Merge
+        </Button>
+      </div>
       <nav className="flex flex-wrap gap-8">
         {boards.map((board) => (
           <Board
@@ -102,25 +154,26 @@ function Board({
   return isDeleting ? null : (
     <Link
       to={`/devmode/board/${id}`}
-      className="w-60 h-40 p-4 block border-b-8 shadow rounded hover:shadow-lg bg-white relative"
-      style={{ borderColor: color }}
+      className="w-[250px] h-8 p-4 px-4 py-3 block border-b-8 shadow border border-border rounded-lg hover:shadow-lg bg-background relative items-center group"
     >
-      <div className="font-bold">{name}</div>
-      <fetcher.Form method="post">
+      <div className="font-bold text-center mx-auto my-auto" >{name}</div>
+      <fetcher.Form method="post" className=''>
         <input type="hidden" name="intent" value={INTENTS.deleteBoard} />
         <input type="hidden" name="boardId" value={id} />
-        <button
-          aria-label="Delete board"
-          className="absolute top-4 right-4 hover:text-brand-red"
-          type="submit"
+        <Button
+          size="icon"
+          variant="outline"
+          type='submit' className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
           onClick={(event) => {
             event.stopPropagation();
           }}
         >
-          tarsh
-        </button>
+          <Trash className="h-3 w-3" />
+          <span className="sr-only">Copy</span>
+        </Button>
+
       </fetcher.Form>
-    </Link>
+    </Link >
   );
 }
 
@@ -131,23 +184,19 @@ function NewBoard() {
   return (
     <Form method="post" className="p-8 max-w-md">
       <input type="hidden" name="intent" value="createBoard" />
-      <div>
-        <h2 className="font-bold mb-2 text-xl">New Board</h2>
-        <Input label="Name" name="name" type="text" required />
-      </div>
-
-      <div className="mt-4 flex items-center gap-4">
-        <div className="flex items-center gap-1">
-          <Label htmlFor="board-color">Color</Label>
-          <input
-            id="board-color"
-            name="color"
-            type="color"
-            defaultValue="#cbd5e1"
-            className="bg-transparent"
-          />
+      <div className='flex items-center '>
+        <div className="grid gap-3 mx-3 mb-3">
+          <div className="relative mt-3">
+            <Input
+              required
+              name='name'
+              type="text"
+              className="w-full bg-background border-border "
+            />
+            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">New Board</label>
+          </div>
         </div>
-        <Button type="submit">{isCreating ? "Creating..." : "Create"}</Button>
+        <Button size='sm' type="submit">{isCreating ? "Creating..." : "Create"}</Button>
       </div>
     </Form>
   );
