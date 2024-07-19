@@ -144,6 +144,10 @@ export async function getAuthErrorSession(request: Request) {
 
 export function getUserIsAllowed(user?: UserData, expectedRoleSymbols?: UserRole["symbol"][]) {
   if (!user) { return false; }
-  const userIsAllowed = expectedRoleSymbols?.find((symbol) => user?.role?.symbol === symbol);
+  const userIsAllowed = expectedRoleSymbols?.find((symbol) =>
+    user?.role?.symbol === symbol ||
+    user?.role?.symbol === 'ADMINISTRATION' ||
+    user?.role?.symbol === 'DEV'
+  );
   return userIsAllowed ? true : false;
 }

@@ -1,5 +1,4 @@
 import { BellPlus } from 'lucide-react';
-import { Button } from '../ui';
 import { useFetcher, useLocation, useSubmit } from '@remix-run/react';
 import { json, type ActionFunction, type LoaderFunction } from '@remix-run/node';
 import { getSession, commitSession } from '~/sessions/auth-session.server';
@@ -13,6 +12,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip"
+import { useEffect } from 'react';
+import { Button, DropdownMenuItem, DropdownMenuShortcut } from '~/components';
+
 
 export async function action({ request, params }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData())
@@ -30,21 +32,41 @@ export default function Interruptions(user, email) {
   const submit = useSubmit()
   const location = useLocation();
   const pathname = location.pathname
+
+  // bind command + i
+  useEffect(() => {
+    let listener = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'i') {
+        event.preventDefault()
+        const formData = new FormData();
+        formData.append("userEmail", email);
+        formData.append("intent", 'createInterruption');
+        formData.append("pathname", pathname);
+        submit(formData, { method: "post" });
+      }
+    }
+    window.addEventListener('keydown', listener)
+    return () => window.removeEventListener('keydown', listener)
+  }, [])
+
   return (
-    <div>
-      <fetcher.Form method='post' >
+    <fetcher.Form method='post' >
+      <DropdownMenuItem
+        className='w-[95%] rounded-[4px]'
+        onSelect={(e) => {
+          e.preventDefault()
+          submit
+          toast.success('Reminder saved!')
+        }}>
         <input type='hidden' name='userEmail' value={email} />
         <input type='hidden' name='intent' value='createInterruption' />
         <input type='hidden' name='pathname' value={pathname} />
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button type='submit' size='icon' variant='ghost' className="right-[125px] top-[25px] border-none fixed hover:bg-transparent bg-transparent hover:text-primary" onClick={() => {
-                submit
-                toast.success('Reminder saved!')
-              }}>
-                <BellPlus color="#fdfcfc" />
-              </Button>
+            <TooltipTrigger className='flex justify-between items-center'>
+
+              <BellPlus color="#fdfcfc" size={16} />
+              <DropdownMenuShortcut className='justify-end'> ctrl + i</DropdownMenuShortcut>
             </TooltipTrigger>
             <TooltipContent className='w-[250px]'>
               <div>
@@ -54,7 +76,7 @@ export default function Interruptions(user, email) {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </fetcher.Form>
-    </div>
+      </DropdownMenuItem>
+    </fetcher.Form>
   )
 }

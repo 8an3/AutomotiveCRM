@@ -39,7 +39,7 @@ type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-const CompleteCall = ({ data, contactMethod }) => {
+const CompleteCall = ({ data, user }) => {
   const [value, onChange] = useState<Value>(new Date());
   const [open, setOpen] = React.useState(false);
   const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
@@ -280,11 +280,14 @@ const CompleteCall = ({ data, contactMethod }) => {
           <Input type='hidden' value={value} name='dateModal' />
           <Input type='hidden' value={value} name='followUpDay' />
           <input type='hidden' value={data.firstName} name='firstName' />
+          <input type='hidden' value={data.address} name='address' />
           <input type='hidden' value={data.lastName} name='lastName' />
           <input type='hidden' value={data.phone} name='phone' />
           <input type='hidden' value={data.email} name='email' />
           <input type='hidden' value='scheduleFUp' name='intent' />
           <Input type="hidden" defaultValue={data.userEmail} name="userEmail" />
+          <Input type="hidden" defaultValue={user.name} name="userName" />
+          <Input type="hidden" defaultValue={user.id} name="userId" />
           <Input type="hidden" defaultValue={data.id} name="financeId" />
           <Input type="hidden" defaultValue={id} name="id" />
           <Input type="hidden" defaultValue={data.brand} name="brand" />
@@ -292,6 +295,7 @@ const CompleteCall = ({ data, contactMethod }) => {
           <Input type="hidden" defaultValue={data.model} name="unit" />
           <Input type="hidden" defaultValue='no' name="completed" />
           <Input type="hidden" defaultValue='Sales' name="apptType" />
+          <Input type="hidden" defaultValue='Outgoing' name="direction" />
           <input type="hidden" defaultValue={data.vin} name="vin" />
           <input type="hidden" defaultValue={data.stockNum} name="stockNum" />
           <input type='hidden' name='activixId' value={data.activixId} />

@@ -229,14 +229,7 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
         return json({ data })
     }
     if (formPayload.intent === 'clientTurnover') {
-        let data = {
-            locked: true,
-            financeId: formData.financeId,
-            salesEmail: user.email,
-            customerName: formData.customerName,
-            unit: formData.unit,
-            //note: 'financeNote' ?? ''
-        }
+
         const create = await prisma.lockFinanceTerminals.create({
             data: {
                 locked: true,
@@ -244,9 +237,21 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 salesEmail: user.email,
                 customerName: formData.customerName,
                 unit: formData.unit,
+                response: false,
+
             }
         })
         return json({ create })
+    }
+    if (formPayload.intent === 'responseClientTurnover') {
+
+        const update = await prisma.lockFinanceTerminals.update({
+            where: { id: formData.claimId, },
+            data: {
+                response: true,
+            },
+        });
+        return update
     }
     if (formPayload.intent === 'updateFinance') {
         let dateModal = new Date(formData.pickedDate);

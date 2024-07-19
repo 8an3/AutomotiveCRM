@@ -151,7 +151,37 @@ export default function EventInfoModal({ user, open, handleClose, currentEvent, 
   const newDate = new Date()
   const currentTime = `${hour}:${min}:${currentSecond}`
   const [valueSelected, setValueSelected] = useState(false)
-
+  /** <Popover>
+                                <PopoverTrigger>
+                                  <div className="relative mt-3">
+                                    <Button
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-full justify-start  text-center  font-normal",
+                                        !date && "text-muted-foreground"
+                                      )}
+                                    >
+                                      <CalendarIcon className="mr-2 h-4 w-4 " />
+                                      {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                                    </Button>
+                                    <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                      Pick A Date
+                                    </label>
+                                  </div>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto bg-background p-0 text-foreground"
+                                  align="start"
+                                >
+                                  <Calendar
+                                    className="bg-background text-foreground"
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={setDate}
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover> */
   return (
     <>
       <Dialog open={open} onOpenChange={handleClose}>
@@ -528,113 +558,69 @@ export default function EventInfoModal({ user, open, handleClose, currentEvent, 
                               <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Contact Method</label>
                             </div>
 
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <div className="relative mt-3">
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full justify-start  text-center  font-normal",
-                                      !date && "text-muted-foreground"
-                                    )}
-                                  >
-                                    <CalendarIcon className="mr-2 h-4 w-4 " />
-                                    {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
-                                  </Button>
-                                  <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                    Pick A Date
-                                  </label>
-                                </div>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto bg-background p-0 text-foreground"
-                                align="start"
-                              >
-                                <Calendar
-                                  className="bg-background text-foreground"
-                                  mode="single"
-                                  selected={date}
-                                  onSelect={setDate}
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
+
+                            <Calendar
+                              className="bg-background text-foreground mx-auto"
+                              mode="single"
+                              selected={date}
+                              onSelect={setDate}
+                              initialFocus
+                            />
+
                             <input
                               type="hidden"
                               value={String(date)}
                               name="pickedDate"
                             />
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <div className="relative mt-3">
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full justify-start text-right font-normal",
-                                      !currentTime && "text-muted-foreground"
-                                    )}
-                                  >
-                                    <ClockIcon className="mr-2 h-4 w-4 " />
-                                    {currentTime ? time : <span>Pick a Time</span>}
-                                  </Button>
-                                  <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                    Pick A Time
-                                  </label>
-                                </div>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto bg-background p-0 text-foreground"
-                                align="start"
-                              >
-                                <div className="flex items-center">
-                                  <Select
-                                    name="pickHour"
-                                    value={hour}
-                                    onValueChange={setHour}
-                                  >
-                                    <SelectTrigger className="m-3 w-auto">
-                                      <SelectValue placeholder="hour" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-background text-foreground">
-                                      <SelectGroup>
-                                        <SelectLabel>Hour</SelectLabel>
-                                        <SelectItem value="09">09</SelectItem>
-                                        <SelectItem value="10">10</SelectItem>
-                                        <SelectItem value="11">11</SelectItem>
-                                        <SelectItem value="12">12</SelectItem>
-                                        <SelectItem value="13">13</SelectItem>
-                                        <SelectItem value="14">14</SelectItem>
-                                        <SelectItem value="15">15</SelectItem>
-                                        <SelectItem value="16">16</SelectItem>
-                                        <SelectItem value="17">17</SelectItem>
-                                        <SelectItem value="18">18</SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
 
-                                  <Select
-                                    name="pickMin"
-                                    value={min}
-                                    onValueChange={setMin}
-                                  >
-                                    <SelectTrigger className="m-3 w-auto">
-                                      <SelectValue placeholder="min" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-background text-foreground">
-                                      <SelectGroup>
-                                        <SelectLabel>Minute</SelectLabel>
-                                        <SelectItem value="00">00</SelectItem>
-                                        <SelectItem value="10">10</SelectItem>
-                                        <SelectItem value="20">20</SelectItem>
-                                        <SelectItem value="30">30</SelectItem>
-                                        <SelectItem value="40">40</SelectItem>
-                                        <SelectItem value="50">50</SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </PopoverContent>
-                            </Popover>
+                            <div className="flex items-center">
+                              <Select
+                                name="pickHour"
+                                value={hour}
+                                onValueChange={setHour}
+                              >
+                                <SelectTrigger className="m-3 w-auto">
+                                  <SelectValue placeholder="hour" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-background text-foreground">
+                                  <SelectGroup>
+                                    <SelectLabel>Hour</SelectLabel>
+                                    <SelectItem value="09">09</SelectItem>
+                                    <SelectItem value="10">10</SelectItem>
+                                    <SelectItem value="11">11</SelectItem>
+                                    <SelectItem value="12">12</SelectItem>
+                                    <SelectItem value="13">13</SelectItem>
+                                    <SelectItem value="14">14</SelectItem>
+                                    <SelectItem value="15">15</SelectItem>
+                                    <SelectItem value="16">16</SelectItem>
+                                    <SelectItem value="17">17</SelectItem>
+                                    <SelectItem value="18">18</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+
+                              <Select
+                                name="pickMin"
+                                value={min}
+                                onValueChange={setMin}
+                              >
+                                <SelectTrigger className="m-3 w-auto">
+                                  <SelectValue placeholder="min" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-background text-foreground">
+                                  <SelectGroup>
+                                    <SelectLabel>Minute</SelectLabel>
+                                    <SelectItem value="00">00</SelectItem>
+                                    <SelectItem value="10">10</SelectItem>
+                                    <SelectItem value="20">20</SelectItem>
+                                    <SelectItem value="30">30</SelectItem>
+                                    <SelectItem value="40">40</SelectItem>
+                                    <SelectItem value="50">50</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
                             <input type='hidden' value={String(date)} name='value' />
                             <div className="relative mt-3">
                               <Select name="resourceId" defaultValue="1">

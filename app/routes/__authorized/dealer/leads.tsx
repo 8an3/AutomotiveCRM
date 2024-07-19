@@ -107,7 +107,7 @@ export default function Quote() {
   }*/
   return (
     <>
-      <div className="w-screen h-screen     bg-background border-gray-300 font-bold uppercase  ">
+      <div className="w-screen h-screen overflow-x-hidden overflow-y-hidden    bg-background border-gray-300 font-bold uppercase  ">
         <Outlet />
       </div>
     </>

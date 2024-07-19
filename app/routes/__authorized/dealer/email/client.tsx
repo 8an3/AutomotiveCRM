@@ -280,9 +280,9 @@ export default function ClientEmail() {
   }, [selectedTemplate, text]);
   let content = text;
   let handleUpdate;
-  const editor = Editor(content, handleUpdate);
 
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
+
   const MyIFrameComponent = () => {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {

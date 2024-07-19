@@ -24,6 +24,7 @@ async function seed() {
   await FirstCustomer()
   await FinanceBoard()
   await Board()
+  await DeptSalesAchieved()
 }
 
 /**
@@ -42,7 +43,7 @@ export async function seedUsers() {
   });
 
   const adminUserRole = await prisma.userRole.findFirst({
-    where: { symbol: "ADMIN" },
+    where: { symbol: "Administrator" },
   });
   const devUserRole = await prisma.userRole.findFirst({
     where: { symbol: "DEV" },
@@ -64,7 +65,6 @@ export async function seedUsers() {
       name: "Skyler Zanth",
       username: "Skyler",
       phone: "+16138980992",
-      position: 'Admin',
       dealer: "Freedom H-D",
       role: { connect: { id: adminUserRole.id } },
       profile: {
@@ -76,6 +76,18 @@ export async function seedUsers() {
 
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: admin.id,
+      position: adminUserRole.name
+    }
+  })
+  await prisma.userGoals.create({
+    data: { userEmail: admin.email, year: '2024' },
+  });
+
+
+
   console.log(chalk.green("Admin user seeded!"));
   const autoAdmin = await prisma.automations.create({
     data: {
@@ -90,13 +102,13 @@ export async function seedUsers() {
       afterHoursClosed: 'no',
     }
   })
+
   const dev = await prisma.user.create({
     data: {
       email: 'skylerzanth@gmail.com',
       name: "Justin Zanth",
       username: "Justin",
       phone: "+16138980991",
-      position: 'Dev',
       dealer: "Freedom H-D",
       role: { connect: { id: devUserRole?.id } },
       profile: {
@@ -107,6 +119,15 @@ export async function seedUsers() {
       },
 
     },
+  });
+  await prisma.position.create({
+    data: {
+      userId: dev.id,
+      position: devUserRole.name
+    }
+  })
+  await prisma.userGoals.create({
+    data: { userEmail: dev.email, year: '2024' },
   });
   console.log(chalk.green("Dev user seeded!"));
 
@@ -215,7 +236,7 @@ export async function FirstCustomer() {
       postal: 'k1j23V2',
       province: 'ON',
       dl: 'HS02QI3J0DF',
-      userId: user.email
+      userId: process.env.REMIX_ADMIN_EMAIL
     }
   })
   const finance = await prisma.finance.create({
@@ -375,30 +396,36 @@ export async function FirstCustomer() {
 }
 
 export async function Board() {
+  const completed = [
+    { board: "dev", column: "ideas", item: "trllo board for users" },
+    { board: "dev", column: "ideas", item: "teleprompter" },
+    { board: "dev", column: "ideas", item: "client turnover list? and sales rotation on same tab?" },
+    { board: "dev", column: "done needs testing", item: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
+    { board: "dev", column: "sales", item: "Add trello board to user section so they can use it if they want to" },
+    { board: "dev", column: "WIP", item: "mass email/sms - wip" },
+    { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers" },
+    { board: "dev", column: "issue", item: "export in managers section - export csv files of customers, inventory etc" },
+    { board: "dev", column: "WIP", item: "dev control panel needs to send email to new dealers with sign in info" },
+
+  ]
   const doneneedstesting = [
     { board: "dev", column: "Done Needs Testing", item: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
     { board: "dev", column: "done needs testing", item: "webhook for incoming emails, save notifiation and messeages" },
-    { board: "dev", column: "done needs testing", item: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
+    { board: "dev", column: "done needs testing", item: "mass sms - wip" },
+    { board: "dev", column: "done needs testing", item: "need to test all functions due to database changes" },
+    { board: "dev", column: "issue", item: "email" },
+    { board: "dev", column: "issue", item: "sms" },
   ]
   const WIP = [
-    { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers" },
     { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
-    { board: "dev", column: "WIP", item: "mass email/sms - wip" },
     { board: "dev", column: "WIP", item: "manager Dashboard" },
     { board: "dev", column: "WIP", item: "sales manager dash" },
-    { board: "dev", column: "WIP", item: "dev control panel needs to send email to new dealers with sign in info" },
   ]
   const issue = [
-    { board: "dev", column: "issue", item: "export in managers section - export csv files of customers, inventory etc" },
-    { board: "dev", column: "issue", item: "sms" },
-    { board: "dev", column: "issue", item: "email" },
   ]
   const ideas = [
     { board: "dev", column: "ideas", item: "saveform to local storage, never loose data for a internet hiccup or outage" },
-    { board: "dev", column: "ideas", item: "trllo board for users" },
-    { board: "dev", column: "ideas", item: "teleprompter" },
     { board: "dev", column: "ideas", item: "employee to employee messaging using the emitter and alert dialog so its an important message that they have to read rght away, like next client here etc" },
-
   ]
   const sales = [
     { board: "dev", column: "sales", item: "Call center Section" },
@@ -406,7 +433,6 @@ export async function Board() {
     { board: "dev", column: "sales", item: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
     { board: "dev", column: "sales", item: "sales bot 2 - customer onboarding" },
     { board: "dev", column: "sales", item: "sales bot 3 - after sales" },
-    { board: "dev", column: "sales", item: "Add trello board to user section so they can use it if they want to" },
     { board: "dev", column: "sales", item: "finance dash neeed to add up totals from new package area" },
   ]
   const automation = [
@@ -450,7 +476,6 @@ export async function Board() {
   ]
   const admin = [
     { board: "dev", column: "admin", item: "have it populate api keys so managers can hand them out" },
-
   ]
   const dealerOnboarding = [
     { board: "dev", column: "dealer onboarding", item: "invite user section where it send an email with links to the crm and" },
@@ -462,7 +487,6 @@ export async function Board() {
   ]
   const dash = [
     { board: "dev", column: "dash", item: "dynamic dashboard widgets" },
-
   ]
   const communications = [
     { board: "dev", column: "communications", item: "email / sms campaigns" },
@@ -509,6 +533,7 @@ export async function Board() {
     { name: 'PAID FEATURE', items: paidfeature },
     { name: 'IDEAS', items: ideas },
     { name: 'ISSUE', items: issue },
+    { name: 'COMPLETED', items: completed },
   ];
 
   const createColumnsAndItems = async (board) => {
@@ -561,6 +586,23 @@ export async function FinanceBoard() {
     },
   });
 }
+export async function DeptSalesAchieved() {
+  console.log(chalk.yellow("Creating dept sales achieved..."));
+  await prisma.deptGoals.create({
+    data: { dept: 'Sales', year: '2024' },
+  });
+  await prisma.deptGoals.create({
+    data: { dept: 'Parts', year: '2024' },
+  });
+  await prisma.deptGoals.create({
+    data: { dept: 'Accessories', year: '2024' },
+  });
+  await prisma.deptGoals.create({
+    data: { dept: 'Service', year: '2024' },
+  });
+  console.log(chalk.green('Completed!'));
+}
+
 
 export async function FirstMsgNotification() {
   console.log(chalk.yellow("Seeding notifications ..."));

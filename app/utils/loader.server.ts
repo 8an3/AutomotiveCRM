@@ -17,7 +17,7 @@ export async function GetUser(email) {
       customerId: true,
       returning: true,
       phone: true,
-      position: true,
+      positions: { select: { position: true } },
       roleId: true,
       profileId: true,
       omvicNumber: true,

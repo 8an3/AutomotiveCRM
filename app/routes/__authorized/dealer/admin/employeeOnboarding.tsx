@@ -24,7 +24,7 @@ export const EmployEmail = (dealer, userAdd) => {
   let DeptSect;
   switch (userAdd.dept) {
     case 'Sales':
-      DeptSect = <SalesSection dealer={dealer} />;
+      DeptSect = <SalesSection />;
       break;
     case 'Service':
       DeptSect = <ServiceSection dealer={dealer} />;
@@ -146,10 +146,9 @@ const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "";
 
-function SalesSection(dealer) {
+function SalesSection() {
   return (
     <>
-
       <div className="relative mt-3">
         <Hr className="border-b text-[#eaeaea] border-[#eaeaea]" />
         <label className="flex text-[16px] absolute left-3 bg-[#ffffff] rounded-full -top-3 px-2 transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">

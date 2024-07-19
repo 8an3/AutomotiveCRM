@@ -53,7 +53,7 @@ export async function loader({ request, params }: ActionFunction) {
       if (user?.returning === true) {
         if (subscriptionId === "trialing" || subscriptionId === "active") {
           console.log("subscription valid1");
-          return redirect("/dealer/quote/Harley-Davidson", {
+          return redirect("/dealer/quote/new/Harley-Davidson", {
             headers: { "Set-Cookie": await commitSession(session) },
           });
         } else {

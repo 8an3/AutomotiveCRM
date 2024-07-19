@@ -5,7 +5,7 @@ import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { Form, Link, useLoaderData, useLocation, Await, useFetcher, useSubmit, useNavigate } from '@remix-run/react';
 import { prisma } from '~/libs';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '~/components';
+import { Button, DropdownMenuItem, DropdownMenuShortcut } from '~/components';
 import { Search } from 'lucide-react';
 import {
   Tooltip,
@@ -69,11 +69,20 @@ export default function SearchFunction() {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant='ghost' size='icon' className="right-[175px] top-[25px] border-none fixed " onClick={() => {
-              setShow(true)
-            }}>
-              <Search color="#ffffff" />
-            </Button>
+            <>
+              <Button
+              variant='ghost'
+              size='icon'
+                className=' fixed top-[25px] right-[75px]'
+                onClick={(e) => {
+                  e.preventDefault()
+                  setShow(true)
+                }}>
+                <Search color='#ffffff' />
+
+              </Button>
+            </>
+
           </TooltipTrigger>
           <TooltipContent>
             <p>Customer Search</p>

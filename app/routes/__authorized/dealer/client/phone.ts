@@ -7,12 +7,11 @@ import {
   CompleteLastAppt,
   TwoDays,
   FollowUpApt,
-} from "~/components/actions/dashboardCalls";
+} from "~/components/actions/shared";
 
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getLastAppointmentForFinance } from "~/utils/client/getLastApt.server";
 import { GetUser } from "~/utils/loader.server";
-import { prisma } from "~/libs";
 import { prisma } from "~/libs";
 import { getSession as sessionGet, getUserByEmail } from '~/utils/user/get'
 

@@ -47,8 +47,8 @@ model User {
   // dealer
   omvicNumber String?
   dealer      String?
-  position    String?
   dept        String?
+  order       Int?
 
   // activix
   activixActivated String?
@@ -64,18 +64,138 @@ model User {
   familyName       String?
   identityProvider String?
 
-  role        UserRole    @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
-  profile     UserProfile @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  // password      UserPassword?      @relation("UserPassword")
-  images      Image[]     @relation("Images")
+  role           UserRole        @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
+  profile        UserProfile     @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  images         Image[]         @relation("Images")
   //notifications NotificationsUser[] @relation("NotificationsUser")
-  notes       Note[]      @relation("UserNotes")
-  //UserPassword  UserPassword?
-  timeEntries TimeEntry[]
-  workorders  Workorder[]
+  notes          Note[]          @relation("UserNotes")
+  timeEntries    TimeEntry[]
+  workorders     Workorder[]
+  positions      Position[]
+  userGoals      UserGoals[]
+  thirtyDayGoals ThirtyDayGoal[]
+  sevenDayGoals  SevenDayGoal[]
 
-  @@index([roleId])
   @@index([profileId])
+  @@index([roleId])
+}
+
+model SevenDayGoal {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userEmail  String
+  year       String? @default("2024")
+  date       String?
+  title      String?
+  goal       String?
+  actualSold String?
+  expired    String?
+
+  User User @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+
+  @@index([userEmail])
+}
+
+model ThirtyDayGoal {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userEmail  String
+  year       String? @default("2024")
+  date       String?
+  title      String?
+  goal       String?
+  expired    String?
+  actualSold String?
+
+  User User @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+
+  @@index([userEmail])
+}
+
+model UserGoals {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userEmail String
+  year      String? @default("2024")
+  janGoal   Int?    @default(0)
+  febGoal   Int?    @default(0)
+  marGoal   Int?    @default(0)
+  aprGoal   Int?    @default(0)
+  mayGoal   Int?    @default(0)
+  junGoal   Int?    @default(0)
+  julGoal   Int?    @default(0)
+  augGoal   Int?    @default(0)
+  sepGoal   Int?    @default(0)
+  octGoal   Int?    @default(0)
+  novGoal   Int?    @default(0)
+  decGoal   Int?    @default(0)
+  janAch    Int?    @default(0)
+  febAch    Int?    @default(0)
+  marAch    Int?    @default(0)
+  aprAch    Int?    @default(0)
+  mayAch    Int?    @default(0)
+  junAch    Int?    @default(0)
+  julAch    Int?    @default(0)
+  augAch    Int?    @default(0)
+  sepAch    Int?    @default(0)
+  octAch    Int?    @default(0)
+  novAch    Int?    @default(0)
+  decAch    Int?    @default(0)
+
+  User User @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+
+  @@index([userEmail])
+}
+
+model DeptGoals {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dept    String
+  year    String? @default("2024")
+  janGoal Int?    @default(0)
+  febGoal Int?    @default(0)
+  marGoal Int?    @default(0)
+  aprGoal Int?    @default(0)
+  mayGoal Int?    @default(0)
+  junGoal Int?    @default(0)
+  julGoal Int?    @default(0)
+  augGoal Int?    @default(0)
+  sepGoal Int?    @default(0)
+  octGoal Int?    @default(0)
+  novGoal Int?    @default(0)
+  decGoal Int?    @default(0)
+
+  janAch Int? @default(0)
+  febAch Int? @default(0)
+  marAch Int? @default(0)
+  aprAch Int? @default(0)
+  mayAch Int? @default(0)
+  junAch Int? @default(0)
+  julAch Int? @default(0)
+  augAch Int? @default(0)
+  sepAch Int? @default(0)
+  octAch Int? @default(0)
+  novAch Int? @default(0)
+  decAch Int? @default(0)
+}
+
+model Position {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  position  String?
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@index([userId])
 }
 
 model Dealer {
@@ -350,6 +470,77 @@ model Item {
   @@index([columnId])
 }
 
+model Csi {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userEmail String?
+  csiId     String?
+  color     String?
+  name      String   @unique
+
+  questions   Question[]
+  answers     Answer[]
+  answersData AnswerData[]
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @unique
+  order     Float    @default(0)
+
+  Csi   Csi    @relation(fields: [csiId], references: [id], onDelete: Cascade)
+  csiId String
+
+  answers     Answer[]
+  answersData AnswerData[]
+
+  @@index([csiId])
+}
+
+model Answer {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  content   String?
+  order     Float?
+
+  Csi   Csi    @relation(fields: [csiId], references: [id], onDelete: Cascade)
+  csiId String
+
+  Question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+
+  answersData AnswerData[]
+
+  @@index([csiId])
+  @@index([questionId])
+}
+
+model AnswerData {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  order     Float?
+
+  Csi   Csi    @relation(fields: [csiId], references: [id], onDelete: Cascade)
+  csiId String
+
+  Question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+
+  Answer   Answer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  answerId String
+
+  @@index([answerId])
+  @@index([csiId])
+  @@index([questionId])
+}
+
 // ----------------------------------------------------------------------------
 // -------------------------------dev-----------------------------------------
 // -----------------------------------------------------------------------------
@@ -406,6 +597,17 @@ model StaffChat {
   dept      String
   reaction  String?
   reactions Reactions[]
+}
+
+model StaffMessages {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  body      String
+  from      String
+  username  String
+  to        String
+  userEmail String
 }
 
 model Reactions {
@@ -1117,6 +1319,7 @@ model LockFinanceTerminals {
   customerName String?
   unit         String?
   note         String?
+  response     Boolean? @default(false)
 }
 
 // dashboardId         String? @unique
@@ -1124,162 +1327,161 @@ model LockFinanceTerminals {
 model Finance {
   id String @id @default(cuid())
 
-  clientfileId        String?
-  activixId           String? @unique
-  theRealActId        String?
-  financeManager      String?
-  email               String?
-  firstName           String?
-  mileage             String?
-  lastName            String?
-  phone               String?
-  name                String?
-  address             String?
-  city                String?
-  postal              String?
-  province            String?
-  dl                  String?
-  typeOfContact       String?
-  timeToContact       String?
-  iRate               String?
-  months              String?
-  discount            String?
-  total               String?
-  onTax               String?
-  on60                String?
-  biweekly            String?
-  weekly              String?
-  weeklyOth           String?
-  biweekOth           String?
-  oth60               String?
-  weeklyqc            String?
-  biweeklyqc          String?
-  qc60                String?
-  deposit             String?
-  biweeklNatWOptions  String?
-  weeklylNatWOptions  String?
-  nat60WOptions       String?
-  weeklyOthWOptions   String?
-  biweekOthWOptions   String?
-  oth60WOptions       String?
-  biweeklNat          String?
-  weeklylNat          String?
-  nat60               String?
-  qcTax               String?
-  otherTax            String?
-  totalWithOptions    String?
-  otherTaxWithOptions String?
-  desiredPayments     String?
-  freight             String?
-  admin               String?
-  commodity           String?
-  pdi                 String?
-  discountPer         String?
-  userLoanProt        Int?
-  userTireandRim      String?
-  userGap             Int?
-  userExtWarr         String?
-  userServicespkg     Int?
-  deliveryCharge      Int?
-  vinE                Int?
-  lifeDisability      Int?
-  rustProofing        Int?
-  userOther           Int?
-  paintPrem           String?
-  licensing           String?
-  stockNum            String?
-  options             String?
-  accessories         Int?
-  labour              String?
-  year                String?
-  brand               String?
-  model               String?
-  model1              String?
-  color               String?
-  modelCode           String?
-  msrp                String?
-  userEmail           String?
-  tradeValue          String?
-  tradeDesc           String?
-  tradeColor          String?
-  tradeYear           String?
-  tradeMake           String?
-  tradeVin            String?
-  tradeTrim           String?
-  tradeMileage        String?
-  tradeLocation       String?
-  trim                String?
-  vin                 String?
-  leadNote            String?
-  sendToFinanceNow    String?
-  dealNumber          String?
-  bikeStatus          String?
-  lien                String?
-  dob                 String?
-  othTax              String?
-  optionsTotal        String?
-  lienPayout          String?
-  referral            String?
-  visited             String?
-  bookedApt           String?
-  aptShowed           String?
-  aptNoShowed         String?
-  testDrive           String?
-  metService          String?
-  metManager          String?
-  metParts            String?
-  sold                String?
-  depositMade         String?
-  refund              String?
-  turnOver            String?
-  financeApp          String?
-  approved            String?
-  signed              String?
-  pickUpSet           String?
-  demoed              String?
-  delivered           String?
-  lastContact         String?
-  status              String?
-  customerState       String?
-  result              String?
-  timesContacted      String?
-  nextAppointment     String?
-  followUpDay         String?
-  deliveryDate        String?
-  deliveredDate       String?
-  notes               String?
-  visits              String?
-  progress            String?
-  metSalesperson      String?
-  metFinance          String?
-  financeApplication  String?
-  pickUpDate          String?
-  pickUpTime          String?
-  depositTakenDate    String?
-  docsSigned          String?
-  tradeRepairs        String?
-  seenTrade           String?
-  lastNote            String?
-  applicationDone     String?
-  licensingSent       String?
-  liceningDone        String?
-  refunded            String?
-  cancelled           String?
-  lost                String?
-  dLCopy              String?
-  insCopy             String?
-  testDrForm          String?
-  voidChq             String?
-  loanOther           String?
-  signBill            String?
-  ucda                String?
-  tradeInsp           String?
-  customerWS          String?
-  otherDocs           String?
-  urgentFinanceNote   String?
-  funded              String?
-  leadSource          String?
-
+  clientfileId             String?
+  activixId                String? @unique
+  theRealActId             String?
+  financeManager           String?
+  email                    String?
+  firstName                String?
+  mileage                  String?
+  lastName                 String?
+  phone                    String?
+  name                     String?
+  address                  String?
+  city                     String?
+  postal                   String?
+  province                 String?
+  dl                       String?
+  typeOfContact            String?
+  timeToContact            String?
+  iRate                    String?
+  months                   String?
+  discount                 String?
+  total                    String?
+  onTax                    String?
+  on60                     String?
+  biweekly                 String?
+  weekly                   String?
+  weeklyOth                String?
+  biweekOth                String?
+  oth60                    String?
+  weeklyqc                 String?
+  biweeklyqc               String?
+  qc60                     String?
+  deposit                  String?
+  biweeklNatWOptions       String?
+  weeklylNatWOptions       String?
+  nat60WOptions            String?
+  weeklyOthWOptions        String?
+  biweekOthWOptions        String?
+  oth60WOptions            String?
+  biweeklNat               String?
+  weeklylNat               String?
+  nat60                    String?
+  qcTax                    String?
+  otherTax                 String?
+  totalWithOptions         String?
+  otherTaxWithOptions      String?
+  desiredPayments          String?
+  freight                  String?
+  admin                    String?
+  commodity                String?
+  pdi                      String?
+  discountPer              String?
+  userLoanProt             Int?
+  userTireandRim           String?
+  userGap                  Int?
+  userExtWarr              String?
+  userServicespkg          Int?
+  deliveryCharge           Int?
+  vinE                     Int?
+  lifeDisability           Int?
+  rustProofing             Int?
+  userOther                Int?
+  paintPrem                String?
+  licensing                String?
+  stockNum                 String?
+  options                  String?
+  accessories              Int?
+  labour                   String?
+  year                     String?
+  brand                    String?
+  model                    String?
+  model1                   String?
+  color                    String?
+  modelCode                String?
+  msrp                     String?
+  userEmail                String?
+  tradeValue               String?
+  tradeDesc                String?
+  tradeColor               String?
+  tradeYear                String?
+  tradeMake                String?
+  tradeVin                 String?
+  tradeTrim                String?
+  tradeMileage             String?
+  tradeLocation            String?
+  trim                     String?
+  vin                      String?
+  leadNote                 String?
+  sendToFinanceNow         String?
+  dealNumber               String?
+  bikeStatus               String?
+  lien                     String?
+  dob                      String?
+  othTax                   String?
+  optionsTotal             String?
+  lienPayout               String?
+  referral                 String?
+  visited                  String?
+  bookedApt                String?
+  aptShowed                String?
+  aptNoShowed              String?
+  testDrive                String?
+  metService               String?
+  metManager               String?
+  metParts                 String?
+  sold                     String?
+  depositMade              String?
+  refund                   String?
+  turnOver                 String?
+  financeApp               String?
+  approved                 String?
+  signed                   String?
+  pickUpSet                String?
+  demoed                   String?
+  delivered                String?
+  lastContact              String?
+  status                   String?
+  customerState            String?
+  result                   String?
+  timesContacted           String?
+  nextAppointment          String?
+  followUpDay              String?
+  deliveryDate             String?
+  deliveredDate            String?
+  notes                    String?
+  visits                   String?
+  progress                 String?
+  metSalesperson           String?
+  metFinance               String?
+  financeApplication       String?
+  pickUpDate               String?
+  pickUpTime               String?
+  depositTakenDate         String?
+  docsSigned               String?
+  tradeRepairs             String?
+  seenTrade                String?
+  lastNote                 String?
+  applicationDone          String?
+  licensingSent            String?
+  liceningDone             String?
+  refunded                 String?
+  cancelled                String?
+  lost                     String?
+  dLCopy                   String?
+  insCopy                  String?
+  testDrForm               String?
+  voidChq                  String?
+  loanOther                String?
+  signBill                 String?
+  ucda                     String?
+  tradeInsp                String?
+  customerWS               String?
+  otherDocs                String?
+  urgentFinanceNote        String?
+  funded                   String?
+  leadSource               String?
   financeDeptProductsTotal String?
   bank                     String?
   loanNumber               String?
@@ -1289,13 +1491,12 @@ model Finance {
   salesCommission          String?
   firstPayment             String?
   loanMaturity             String?
-
   // coms
-  InPerson Int?
-  Phone    Int?
-  SMS      Int?
-  Email    Int?
-  Other    Int?
+  InPerson                 Int?    @default(0)
+  Phone                    Int?    @default(0)
+  SMS                      Int?    @default(0)
+  Email                    Int?    @default(0)
+  Other                    Int?    @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

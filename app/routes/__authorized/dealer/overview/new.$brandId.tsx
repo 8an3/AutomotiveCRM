@@ -1782,6 +1782,7 @@ export function Overview({ outletSize }) {
   const newBody = formData.body
 
   const [openTemplate, setOpenTemplate] = useState(false);
+  const [openResponse, setOpenResponse] = useState(false);
 
   function SubmitTheSecondForm() {
     const formData = new FormData();
@@ -1793,7 +1794,6 @@ export function Overview({ outletSize }) {
     formData.append("intent", 'email');
     submit(formData, { method: "post" });
   }
-  //const [open, setOpen] = useState(false);
   const [key, setKey] = useState(0);
   const [lockData, setLockData] = useState();
   const [note, setNote] = useState()
@@ -1819,10 +1819,10 @@ export function Overview({ outletSize }) {
   useEffect(() => {
     const intervalFunction = async () => {
       console.log('Interval fired1212');
-      const getLocked = await prisma.lockFinanceTerminals.findUnique({ where: { id: lockData.lockedId } })
-      if (getLocked.locked === false) {
+      const getLocked = await prisma.lockFinanceTerminals.findFirst({ where: { salesEmail: user.email, locked: false, response: false } })
+      if (getLocked.response === false) {
         setLockData(getLocked)
-        setOpen(true)
+        setOpenResponse(true)
       }
     };
     intervalFunction()
@@ -1832,10 +1832,19 @@ export function Overview({ outletSize }) {
     };
   }, []);
 
+  const HandleButtonClick = async () => {
+    const formData = new FormData();
+    formData.append("claimId", lockData.lockedId);
+    formData.append("intent", 'responseClientTurnover');
+    const update = submit(formData, { method: "post" });
+    setOpenResponse(false)
+    return json({ update })
+  };
+
   return (
     <div className="">
       {lockData && (
-        <AlertDialog key={key} open={open} onOpenChange={setOpen}>
+        <AlertDialog key={key} open={openResponse} onOpenChange={setOpenResponse}>
           <AlertDialogContent className='border border-border bg-background text-foreground'>
             <AlertDialogHeader>
               <AlertDialogTitle>Client Turnover</AlertDialogTitle>
@@ -1844,7 +1853,23 @@ export function Overview({ outletSize }) {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogAction>Continue</AlertDialogAction>
+              <div className="flex justify-end gap-[25px]">
+
+                <ButtonLoading
+                  size="sm"
+                  className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
+                  type="submit"
+                  isSubmitting={isSubmitting}
+                  onClick={() => {
+                    HandleButtonClick()
+                    toast.success(`Claimed next customer...`)
+                  }}
+                  loadingText="Updating client info..."
+                >
+                  Claim
+                </ButtonLoading>
+
+              </div>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -1958,7 +1983,7 @@ export function Overview({ outletSize }) {
           <Form method="post">
             {secPage && (
               <>
-                <CardContent className="bg-background p-6 text-sm">
+                <CardContent className="bg-background p-6 text-sm max-h-[700px] overflow-y-auto h-[700px]">
                   <div className="grid gap-3">
                     <div className="font-semibold">Payment Details</div>
                     <li className="flex items-center justify-between">
@@ -2974,7 +2999,7 @@ export function Overview({ outletSize }) {
             )}
             {firstPage && (
               <>
-                <CardContent className="bg-background p-6  text-sm">
+                <CardContent className="bg-background p-6  text-sm  max-h-[700px] overflow-y-auto h-[700px]">
                   <div className="grid gap-3">
                     <div className="font-semibold">Payment Details</div>
                     <ul className="grid gap-3">

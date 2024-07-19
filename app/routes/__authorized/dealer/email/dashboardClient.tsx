@@ -1,131 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  Input,
-  Button,
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuTrigger,
-  Dialog as Dialog1,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-  Label,
-} from "~/components";
+import { Input, Dialog as Dialog1, } from "~/components";
 import ProvideAppContext, {
   useAppContext,
 } from "~/components/microsoft/AppContext";
-import {
-  deleteMessage,
-  getDrafts,
-  getDraftsList,
-  getInbox,
-  getInboxList,
-  getJunk,
-  getList,
-  getSent,
-  getTrash,
-  messageRead,
-  messageUnRead,
-  getUser,
-  testInbox,
-  getFolders,
-  getAllFolders,
-  getEmailById,
-  MoveEmail,
-  createReplyDraft,
-  ComposeEmail,
-  SendNewEmail,
-} from "~/components/microsoft/GraphService";
+
 import {
   EditorTiptapHook,
   Editor,
   EditorTiptapHookCompose,
   EditorTiptapHookComposeDashboardEmailClient,
 } from "~/components/libs/basicEditor";
-import { useMsal } from "@azure/msal-react";
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { toast } from "sonner";
-import { Form, useNavigation } from "@remix-run/react";
-import { Forward, User, Reply } from "iconoir-react";
-import {
-  FaReply,
-  FaReplyAll,
-  FaForward,
-  FaTrash,
-  FaArchive,
-  FaHistory,
-  FaStar,
-  FaCommentDollar,
-} from "react-icons/fa";
-import {
-  IoIosMailUnread,
-  IoIosMail,
-  IoMdAlert,
-  IoIosArrowForward,
-  IoIosArrowBack,
-} from "react-icons/io";
-import { IoSend } from "react-icons/io5";
-import {
-  MdSms,
-  MdDrafts,
-  MdForum,
-  MdSecurityUpdateGood,
-  MdOutlineSocialDistance,
-  MdOutlineKeyboardDoubleArrowRight,
-  MdOutlineKeyboardDoubleArrowLeft,
-  MdMarkunreadMailbox,
-} from "react-icons/md";
-import { RiSpam3Fill, RiContractLeftRightLine } from "react-icons/ri";
-import { ImCross } from "react-icons/im";
-import { BsThreeDotsVertical, BsArrowsExpandVertical } from "react-icons/bs";
-import { FaPencil } from "react-icons/fa6";
-import {
-  Client,
-  type GraphRequestOptions,
-  type PageCollection,
-  PageIterator,
-  type ClientOptions,
-} from "@microsoft/microsoft-graph-client";
-import { type AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import { GoArrowSwitch } from "react-icons/go";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 
-import secondary from "~/styles/secondary.css";
-import { SaveDraft, SendEmail } from "./notificationsClient";
 
 
 
@@ -170,19 +55,21 @@ export default function DashboardClient() {
   return (
     <>
       <div className="email flex   flex-col  ">
-        <div className="flex justify-center  ">
+        <div className="flex justify-center  mt-4">
           <Input
             type='hidden'
             defaultValue={to}
             name="to"
             className="m-2 mx-auto mr-2 w-[98%] bg-background text-foreground   border-border"
           />
-          <Input
-            name="subject"
-            placeholder="Subject"
-            className="m-2 mx-auto ml-2 w-[98%] bg-background border-border text-foreground"
-            onChange={(e) => setSubject(e.target.value)}
-          />
+          <div className="relative w-full">
+            <Input
+              name="subject"
+              className=" bg-background border-border text-foreground"
+              onChange={(e) => setSubject(e.target.value)}
+            />
+            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Subject</label>
+          </div>
         </div>
         <div className=" grid grid-cols-1">
           <div className="w-full mx-auto mb-2 mt-auto    ">

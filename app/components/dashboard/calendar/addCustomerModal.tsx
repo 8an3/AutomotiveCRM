@@ -65,7 +65,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
 
   useEffect(() => {
     async function getData() {
-      const res = await fetch(`/api/modelList/${brandId}`);
+      const res = await fetch(`/dealer/api/modelList/${brandId}`);
       if (!res.ok) {
         throw new Error("Failed to fetch data");
       }
@@ -148,7 +148,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
           <Form method='post'>
             <Dialog.Overlay className="z-50 bg-background/80 backdrop-blur-sm currentEvent-[state=open]:animate-overlayShow fixed inset-0" />
             <Dialog.Content className="z-50  currentEvent-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-auto overflow-y-
-             md:w-[350px] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px]   p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border-border bg-background text-foreground ">
+             md:w-[350px] w-[100%] translate-x-[-50%] translate-y-[-50%] rounded-[6px]   p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-border bg-background text-foreground ">
               <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
                 Add Client
               </Dialog.Title>
@@ -265,7 +265,8 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                       className={`input border-border bg-background
 
                      `}
-                      onChange={(e) => handleChange('firstName', e.target.value)}
+                      onChange={handleBrand}
+
                       type="text"
                       list="ListOptions1"
                       name="brand"
@@ -288,6 +289,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                     <option value="Triumph" />
                     <option value="Spyder" />
                     <option value="Yamaha" />
+                    <option value="Used" />
                   </datalist>
                   {modelList && (
                     <>

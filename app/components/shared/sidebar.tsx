@@ -1,7 +1,7 @@
 /* eslint-disable tailwindcss/no-custom-classname */
 /* eslint-disable tailwindcss/classnames-order */
 /* eslint-disable jsx-a11y/alt-text */
-import { Form, Link, useLoaderData, useLocation, useFetcher } from '@remix-run/react';
+import { Form, Link, useLoaderData, useLocation, useFetcher, useSubmit } from '@remix-run/react';
 import {
   RemixNavLink, Input, Separator, Button, buttonVariants, Tabs, TabsContent, TabsList, TabsTrigger, Accordion,
   AccordionContent,
@@ -15,9 +15,11 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Textarea } from '~/components/ui/textarea';
 import { toast } from 'sonner';
 import { Menu } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, } from 'react';
 import { prisma } from "~/libs";
 import { cn } from "~/components/ui/utils"
+import { json } from '@remix-run/node';
+import useSWR from 'swr';
 
 interface SidebarNavProps extends HTMLAttributes<HTMLElement> {
   items: {
@@ -193,6 +195,8 @@ export default function Sidebar(user, email) {
       to: quoteUrl + "Triumph",
     },
   ]
+
+
 
   return (
     <>
@@ -502,8 +506,8 @@ export default function Sidebar(user, email) {
 
               </>
             </TabsContent>
-          </Tabs>
 
+          </Tabs>
         </SheetContent>
       </Sheet >
     </>

@@ -559,6 +559,46 @@ export async function ComposeEmailTwo(
   console.log(email, 'email2')
   return email;
 }
+
+export async function MassEmail(
+  authProvider,
+  subject,
+  body,
+  to
+) {
+  ensureClient(authProvider);
+
+  for (const customer of to) {
+    console.log(customer.email, 'inside maxx email')
+    const sendMail = {
+      message: {
+        subject: subject,
+        body: {
+          contentType: 'HTML',
+          content: body
+        },
+        toRecipients: [
+          {
+            emailAddress: {
+              address: customer.email
+            }
+          }
+        ]
+      },
+      saveToSentItems: 'false'
+    };
+    console.log(sendMail, 'email1');
+
+    const email = await graphClient!.api('/me/sendMail')
+      .post(sendMail);
+
+    console.log(email, 'email2');
+  }
+
+  // Optional: If you want to return the status of all emails
+  return 'All emails sent';
+}
+
 // this one works
 export async function UploadFile(authProvider, fileName, fileContent) {
   await ensureClient(authProvider);

@@ -85,12 +85,14 @@ export default function ClientVehicleCard({ data, }) {
   useEffect(() => {
     async function fetchUnit() {
       try {
-        const unit = await prisma.inventoryMotorcycle.findFirst({
-          where: {
-            stockNumber: data.stockNum
-          }
-        });
-        setClientUnit(unit);
+        if (data.stockNum) {
+          const unit = await prisma.inventoryMotorcycle.findFirst({
+            where: {
+              stockNumber: data.stockNum
+            }
+          });
+          setClientUnit(unit);
+        }
       } catch (error) {
         console.error('Error fetching unit:', error);
       }

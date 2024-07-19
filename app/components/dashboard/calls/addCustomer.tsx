@@ -90,19 +90,17 @@ export default function AddCustomer() {
   return (
     <Dialog>
       <DialogTrigger>
-        <button className='hidden md:block p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' >
+        <div className=' w-full flex justify-between items-center' >
+          <p>Add Customer</p>
           <UserPlus size={20} strokeWidth={1.5} color="#cbd0d4" />
-        </button>
-        <p className='block md:hidden  cursor-pointer  ' >
-          Add Customer
-        </p>
+        </div>
+
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] border-border bg-background text-foreground ">
         <DialogHeader>
           <DialogTitle>
             Add Client
           </DialogTitle>
-
         </DialogHeader>
         <p>{brandId}</p>
         <fetcher.Form method="post">

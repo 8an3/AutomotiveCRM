@@ -138,79 +138,49 @@ export default function DnDResource() {
     },
     []
   )
-
-  const DragAndDrop = useCallback(
-    ({ start, end, allDay: isAllDay }) => {
-
-      const startDate = new Date(start);
-      startDate.setHours(startDate.getHours() + 8);
-      const eightHourShift = new Date(start.getTime() + 480 * 60000)
-
-      const { id, name, userId, resourceId, resourceTitle, salespersonEmail, title, userEmail, userName } = draggedEvent
-      console.log(draggedEvent, 'draggedEvent')
-      const formData = new FormData();
-      formData.append("intent", 'newEvent');
-      formData.append("userEmail", email);
-      formData.append("id", id);
-      formData.append("resourceId", resourceId);
-      // formData.append("name", name);
-      ///  formData.append("userId", userId);
-      formData.append("resourceTitle", resourceTitle);
-      formData.append("userName", userName);
-      formData.append("userEmail", userEmail);
-      formData.append("title", title);
-      formData.append("salespersonEmail", salespersonEmail);
-      formData.append("start", start);
-      formData.append("end", eightHourShift);
-      submit(formData, { method: "post" });
-      const event = {
-        draggedEvent,
-        start,
-        end,
+  const moveEvent = useCallback(
+    ({ event, start, end, isAllDay: droppedOnAllDaySlot = false }) => {
+      const { allDay } = event
+      if (!allDay && droppedOnAllDaySlot) {
+        event.allDay = true
       }
-
-      setDraggedEvent(null)
-      newEvent(event)
-    },
-    [draggedEvent, counters, setDraggedEvent, setCounters, newEvent]
-  )
-  const resizeEventMine = useCallback(
-    ({ start, end, allDay: isAllDay }) => {
-      const startDate = new Date(start);
-      startDate.setHours(startDate.getHours() + 8);
-      const eightHourShift = new Date(start.getTime() + 480 * 60000)
-
-
-      const { id, name, userId, resourceId, resourceTitle, salespersonEmail, title, userEmail, userName } = draggedEvent
-      console.log(draggedEvent, 'draggedEvent')
-      const formData = new FormData();
-      formData.append("intent", 'newEvent');
-      formData.append("userEmail", user.email);
-      formData.append("id", id);
-      formData.append("resourceId", resourceId);
-      // formData.append("name", name);
-      ///  formData.append("userId", userId);
-      formData.append("resourceTitle", resourceTitle);
-      formData.append("userName", userName);
-      formData.append("userEmail", userEmail);
-      formData.append("title", title);
-      formData.append("salespersonEmail", salespersonEmail);
-      formData.append("start", start);
-      formData.append("end", eightHourShift);
-      submit(formData, { method: "post" });
-      const event = {
-        draggedEvent,
-        start,
-        end,
-      }
-
       setMyEvents((prev) => {
-        const idList = prev.map((item) => item.id)
-        const newId = Math.max(...idList) + 1
-        return [...prev, { ...event, id: newId, }]
+        const existing = prev.find((ev) => ev.id === event.id) ?? {}
+        const filtered = prev.filter((ev) => ev.id !== event.id)
+        return [...filtered, { ...existing, start, end, allDay, }]
       })
+      console.log('move event')
+      const formData = new FormData();
+      formData.append("start", start);
+      formData.append("end", end);
+      formData.append("userEmail", user.email);
+      formData.append("id", event.id);
+      formData.append("intent", 'dragAndDrop');
+      console.log(event, 'submitting')
+      submit(formData, { method: "post" });
+
     },
-    [draggedEvent, counters, setDraggedEvent, setCounters, newEvent]
+    []
+  )
+
+  const resizeEvent = useCallback(
+    ({ event, start, end }) => {
+      setMyEvents((prev) => {
+        const existing = prev.find((ev) => ev.id === event.id) ?? {}
+        const filtered = prev.filter((ev) => ev.id !== event.id)
+        return [...filtered, { ...existing, start, end }]
+      })
+      const formData = new FormData();
+      formData.append("start", start);
+      formData.append("end", end);
+      formData.append("intent", 'dragAndDrop');
+      formData.append("userEmail", user.email);
+      formData.append("id", event.id);
+      console.log(event, 'submitting')
+      submit(formData, { method: "post" });
+
+    },
+    []
   )
   async function onEventTriggered(data, apptId) {
     const finance = await prisma.clientApts.update({
@@ -226,20 +196,6 @@ export default function DnDResource() {
     return finance;
   }
 
-  const resizeEvent = useCallback(
-    ({ event, start, end }) => {
-      setMyEvents(async (prev) => {
-        const existing = prev.find((ev) => ev.id === event.id) ?? {}
-        const filtered = prev.filter((ev) => ev.id !== event.id)
-        const data = { start, end };
-        const apptId = event.id;
-        await onEventTriggered(data, apptId);
-        return [...filtered, { ...existing, start, end }]
-      })
-
-    },
-    [setMyEvents]
-  )
 
   // min and max times
   const minTime = new Date();
@@ -494,6 +450,30 @@ export default function DnDResource() {
 
   console.log(currentEvent, 'myevents',)
 
+  const eventPropGetter = (event) => {
+    let newStyle = {
+      backgroundColor: 'lightgrey',
+      color: 'white',
+      borderRadius: '6px',
+    };
+
+    const now = new Date();
+
+    if (event.completed === 'yes') {
+      newStyle.backgroundColor = 'green';
+    } else if (new Date(event.start) < now) {
+      newStyle.backgroundColor = 'red';
+    } else {
+      newStyle.backgroundColor = 'yellow'
+      newStyle.color = 'black';
+    }
+
+    return {
+      className: "border border-border",
+      style: newStyle
+    };
+  };
+
   const LargeScreenUI = () => {
     return (
       <div className="large-screen-ui">
@@ -523,19 +503,7 @@ export default function DnDResource() {
                 </div>
                 <div className=' mt-2 grid grid-cols-1  justify-center mx-auto'>
                   <input type='hidden' value={String(date)} name='value' />
-                  <Button
-                    variant={"ghost"}
-                    className={cn(
-                      "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary  hover:border-transparent",
-                      !date && " text-foreground"
-                    )}
-                  >
-                    <div className=' text-foreground  mx-auto flex justify-center my-auto '>
-                      <ClockIcon className="mr-2 size-8 " />
-                      {currentTime ? (time) : <span>Pick a Time</span>}
-                      <p className='my-auto'></p>
-                    </div>
-                  </Button>
+
                   <div className='mt-5 grow justify-center'>
                     <div className=' grid grid-cols-1 ' >
                       <Accordion type="single" collapsible className="w-[240px] text-foreground mx-auto">
@@ -637,7 +605,7 @@ export default function DnDResource() {
                       <Button
                         variant='outline'
                         onClick={() => (
-                          navigate('/dealer/leads/sales')
+                          navigate('/dealer/leads/sales/dashboard')
                         )}
                         className=' w-[240px] mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center  mx-auto  border-border hover:border-primary bg-transparent hover:bg-transparent   '  >
                         <>
@@ -658,7 +626,7 @@ export default function DnDResource() {
                           </p>
                         </>
                       </Button>
-                      <SearchCustomerModal />
+
                     </div>
                   </div>
                 </div>
@@ -699,8 +667,8 @@ export default function DnDResource() {
                       toolbar: CustomToolbar,
                       event: EventInfo,
                     }}
-                    onEventDrop={DragAndDrop}
-                    onEventResize={resizeEventMine}
+                    onEventDrop={moveEvent}
+                    onEventResize={resizeEvent}
                     onSelectEvent={(e) => HandleSelectEvent(e)}
                     onSelectSlot={handleSelectSlot}
                     //onClick={() => setOpenDatepickerModal(true)}
@@ -708,6 +676,8 @@ export default function DnDResource() {
                     resourceIdAccessor="resourceId"
                     resources={resourceMap}
                     resourceTitleAccessor="resourceTitle"
+                    eventPropGetter={eventPropGetter}
+
                   />
                 ) : (
                   <DragAndDropCalendar
@@ -736,10 +706,12 @@ export default function DnDResource() {
                     }}
                     resizable
                     selectable
-                    onEventDrop={DragAndDrop}
-                    onEventResize={resizeEventMine}
+                    onEventDrop={moveEvent}
+                    onEventResize={resizeEvent}
                     onSelectEvent={HandleSelectEvent}
                     onSelectSlot={handleSelectSlot}
+                    eventPropGetter={eventPropGetter}
+
                   // onClick={() => setOpenDatepickerModal(true)}
                   />
                 )}
@@ -1059,6 +1031,17 @@ export async function action({ request }: ActionFunction) {
   const financeId = formData.financeId
   //  console.log('formData:', formData, 'formData131331331');  //
 
+  if (intent === 'dragAndDrop') {
+    console.log(formData, 'formdata dragand drop')
+    const update = await prisma.clientApts.update({
+      where: { id: formData.id },
+      data: {
+        start: formData.start,
+        end: formData.end,
+      }
+    })
+    return json({ update })
+  }
   if (intent === 'compeleteApptOnly') {
     const finance = await prisma.clientApts.update({
       data: {
@@ -1491,25 +1474,16 @@ export async function action({ request }: ActionFunction) {
     });
     console.log(finance)
 
-    let dashboard = await prisma.dashboard.create({
-      data: {
-        financeId: finance.id,
-        clientfileId: clientfile.id,
-      },
-    });
-    console.log(dashboard)
-
     await prisma.finance.update({
       where: {
         id: finance.id,
       },
       data: {
         financeId: finance.id,
-        dashboardId: dashboard.id,
         clientfileId: clientfile.id,
       }
     })
-    return json({ clientfile, finance, dashboard })
+    return json({ clientfile, finance }, redirect(`/dealer/overview/new/${formData.brand}`))
   }
   const message = 'something went wrong in calendar.sales action'
   return message

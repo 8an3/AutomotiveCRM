@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Template, checkTemplate } from "@pdfme/common";
-import { Designer } from "@pdfme/ui";
+import { Form, Viewer, Designer } from "@pdfme/ui";
+
 import {
   getFontsData,
   getTemplate,
   readFile,
   cloneDeep,
   getPlugins,
-  handleLoadTemplate,
+  //handleLoadTemplate,
   generatePDF,
   GeneratePDFWInputs,
   downloadJsonFile,
+  getTemplateFromJsonFile,
 } from "~/components/document/helper";
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import { Label, Input } from "~/components";
 import levesixBack from '~/components/document/levesixBack.json'
 import levesixFront from '~/components/document/levesixFront.json'
 import fileFrontTemplate from '~/components/document/fileFront.json'
@@ -23,6 +24,15 @@ import QUEBECATTOURNEYTemplate from '~/components/document/QUEBECATTOURNEY.json'
 import yelJacket from '~/components/document/yellowJacket.json'
 import workOrder from '~/components/document/workOrderTemplate.json'
 import ucdasheet from '~/components/document/ucda.json'
+import {
+  AvatarAuto, Badge, Debug, RemixLink, Button,
+  ButtonLink,
+  PageAdminHeader,
+  RemixForm, Card, CardContent, Input, Label, Avatar, AvatarFallback, AvatarImage, PopoverTrigger, PopoverContent, Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, Popover, CardHeader, CardTitle, CardDescription,
+  SelectContent, SelectLabel, SelectGroup,
+  SelectValue, Select, SelectTrigger, SelectItem,
+} from "~/components";
+
 const headerHeight = 65;
 
 
@@ -109,8 +119,8 @@ export default function DesignerApp() {
       console.error('Failed to fetch templates:', error);
     }
   };
-  const onLoadTemplate = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const templateName = event.target.value;
+  const onLoadTemplate = async (value) => {
+    const templateName = value;
     if (!templateName) return;
     try {
       let template;
@@ -457,59 +467,147 @@ export default function DesignerApp() {
     console.log('merged2', merged, 'userid', userId, 'id',);
     // Perform other side effects here
   }
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile2, setSelectedFile2] = useState<File | null>(null);
+  const [isFile, setIsfile] = useState(false)
+  const [isFile2, setIsfile2] = useState(false)
 
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+    setIsfile(true)
+    if (event.target && event.target.files) {
+      readFile(event.target.files[0], "dataURL").then(async (basePdf) => {
+        if (designer.current) {
+          designer.current.updateTemplate(
+            Object.assign(cloneDeep(designer.current.getTemplate()), {
+              basePdf,
+            })
+          );
+        }
+      });
+    }
+  };
+  const handleLoadTemplate = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    currentRef: Designer | Form | Viewer | null
+  ) => {
+    setSelectedFile2(e.target.files[0]);
+    setIsfile2(true)
+    if (e.target && e.target.files) {
+      getTemplateFromJsonFile(e.target.files[0])
+        .then((t) => {
+          if (!currentRef) return;
+          currentRef.updateTemplate(t);
+        })
+        .catch((e) => {
+          alert(`Invalid template file.
+  --------------------------
+  ${e}`);
+        });
+    }
+  };
 
-  return (
-    <div>
-      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginRight: 120, marginLeft: 50 }}>
-        <div className="grid w-full max-w-xs items-center gap-1.5">
-          <Label className="text-foreground"  >Change BasePDF</Label>
-          <Input className="text-foreground border-white" type="file" accept="application/pdf" onChange={onChangeBasePDF} />
-        </div>
-        <div className="grid w-full max-w-xs items-center gap-1.5">
+  /** <div className="grid w-full max-w-xs items-center gap-1.5">
+            <Label className="text-foreground"  >Change BasePDF</Label>
+            <Input className="text-foreground border-white" type="file" accept="application/pdf" onChange={onChangeBasePDF} />
+          </div>
+               <div className="grid w-full max-w-xs items-center gap-1.5">
           <Label className="text-foreground" > Load Template</Label>
           <Input className="text-foreground border-white" type="file" accept="application/json" onChange={(e) => handleLoadTemplate(e, designer.current)} />
         </div>
+         */
+  return (
+    <div className='mt-[35px]'>
+      <header className='mb-3 items-center' style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginRight: 120, marginLeft: 50 }}>
+        <div className="relative ml-2 mt-4">
+          <Input id="file" type="file" className='hidden' name='file' onChange={handleFileChange} />
+          <label htmlFor="file" className={`h-[37px] cursor-pointer border border-border rounded-md text-foreground bg-background px-4 py-2 inline-block w-[250px]
+                    ${isFile2 === false ? 'border-primary' : 'border-[#3dff3d]'}`}  >
+            <span className="mr-4">
+              {isFile2 === false ? <p>Choose File</p> : <p>{selectedFile}</p>}
+            </span>
+          </label>
+          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+            Change BasePDF
+          </label>
+        </div>
+        <div className="relative ml-2 mt-4">
+          <Input id="file" type="file" className='hidden' name='file' onChange={(e) => handleLoadTemplate(e, designer.current)} />
+          <label htmlFor="file" className={`h-[37px] cursor-pointer border border-border rounded-md text-foreground bg-background px-4 py-2 inline-block w-[250px]
+                    ${isFile === false ? 'border-primary' : 'border-[#3dff3d]'}`}  >
+            <span className="mr-4">
+              {isFile === false ? <p>Choose File</p> : <p>{selectedFile2}</p>}
+            </span>
+          </label>
+          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+            Load Template
+          </label>
+        </div>
 
 
 
-        <select
-          style={{ borderRadius: "8px", padding: "4px", color: "#fff", backgroundColor: "#1c2024", margin: "0 1rem", cursor: "pointer" }}
-          onChange={onLoadTemplate}
-        >
-          <option value="">Select a template</option>
-          <option value="LV6 Front">LV6 Front</option>
-          <option value="LV6 Back">LV6 Back</option>
-          <option value="Yellow Jacket">Yellow Jacket</option>
-          <option value="Work Order">Work Order</option>
-          <option value="UCDA">UCDA</option>
-          <option value="Sticky Back">Sticky Back</option>
-          <option value="File Front">File Front</option>
-          <option value="Quebec - Power of Attourney">Quebec - Power of Attourney</option>
-          {templateList.map((template: any, index) => (
-            template && 'fileName' in template ? (
-              <option key={index} value={template.fileName}>{template.fileName}</option>
-            ) : null
-          ))}
-        </select>
-        <button
-          style={{ borderRadius: "8px", padding: "4px", color: "#fff", backgroundColor: "#1c2024", margin: "1rem 1rem", cursor: "pointer" }}
-          className='rounded p-2' onClick={onDownloadTemplate}>
+        <div className="relative ">
+          <Select name='userRole' onValueChange={onLoadTemplate} >
+            <SelectTrigger className="w-[250px] mx-2 bg-background text-foreground border border-border">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border border-border '>
+              <SelectGroup>
+                <SelectLabel>Templates</SelectLabel>
+                <SelectItem value='LV6 Front' className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                  LV6 Front
+                </SelectItem>
+                <SelectItem value='LV6 Back' className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                  LV6 Back
+                </SelectItem>
+                <SelectItem value='Yellow Jacket' className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                  Yellow Jacket
+                </SelectItem>
+                <SelectItem value='Work Order' className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                  Work Order
+                </SelectItem>
+                <SelectItem value='UCDA' className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                  UCDA
+                </SelectItem>
+                <SelectItem value='Sticky Back' className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                  Sticky Back
+                </SelectItem>
+                <SelectItem value='UCFile FrontDA' className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                  File Front
+                </SelectItem>
+                <SelectItem value='Quebec - Power of Attourney' className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                  Quebec - Power of Attourney
+                </SelectItem>
+                {templateList.map((template, index) => (
+                  template && 'fileName' in template ? (
+                    <SelectItem key={index} value={template.fileName} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                      {template.fileName}
+                    </SelectItem>
+                  ) : null
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Templates</label>
+        </div>
+
+        <Button
+          className='mx-2' onClick={onDownloadTemplate}>
           Download Template
-        </button>
-        <button
-          style={{ borderRadius: "8px", padding: "4px", color: "#fff", backgroundColor: "#1c2024", margin: "0 1rem", cursor: "pointer" }}
+        </Button>
+        <Button
+          className='mx-2'
           onClick={() => onSaveTemplate(templates[0], financeId)}>
           Save Template
-        </button>
-        <button
-          style={{ borderRadius: "8px", padding: "4px", color: "#fff", backgroundColor: "#1c2024", margin: "0 1rem", cursor: "pointer" }}
+        </Button>
+        <Button
+          className='mx-2'
           onClick={() => {
             GeneratePDFWInputs(inputs, designer.current);
             console.log(merged, 'inputs')
           }}>
           Generate PDF w inputs
-        </button>
+        </Button>
 
       </header>
       <div ref={designerRef} style={{ width: '100%', height: `calc(100vh - ${headerHeight}px)` }} />

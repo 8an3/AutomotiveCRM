@@ -406,7 +406,7 @@ export default function DemoDay() {
               <input type='hidden' name='leadNote' defaultValue={leadNote || data.leadNote} />
               <input type='hidden' name='name' defaultValue={firstName + ' ' + lastName || data.firstName + ' ' + data.lastName} />
               <input type='hidden' name='intent' defaultValue='demoDayEdit' />
-              <Button onClick={() => submit} size='icon' className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md mx-auto' >
+              <Button onClick={() => submit} size='icon' className='hover:bg-muted/50  cursor-pointer rounded-md mx-auto' >
                 <Save color="#ededed" className="mx-auto" />
               </Button>
             </Form>
@@ -431,7 +431,7 @@ export default function DemoDay() {
               <input type='hidden' name='brand' defaultValue={data.brand} />
               <input type='hidden' name='model' defaultValue={data.model} />
               <input type='hidden' name='intent' defaultValue='demoDayConvert' />
-              <Button onClick={() => submit} size='icon' className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md mx-auto' >
+              <Button onClick={() => submit} size='icon' className='hover:bg-muted/50  cursor-pointer rounded-md mx-auto' >
                 <FilePlus color="#ededed" className="mx-auto" />
 
               </Button>
@@ -451,7 +451,7 @@ export default function DemoDay() {
               <input type='hidden' name='userEmail' defaultValue={user.email} />
               <input type='hidden' name='id' defaultValue={data.id} />
               <input type='hidden' name='intent' defaultValue='demoDayDelete' />
-              <Button onClick={() => submit} size='icon' className='hover:bg-muted/50 w-[90%] cursor-pointer rounded-md mx-auto' >
+              <Button onClick={() => submit} size='icon' className='hover:bg-muted/50  cursor-pointer rounded-md mx-auto' >
                 <Trash2 color="#ededed" className="mx-auto" />
               </Button>
             </Form>
@@ -621,24 +621,33 @@ export default function DemoDay() {
             />
             <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Search phone #</label>
           </div>
-          <select value={filterBy} onChange={handleDropdownChange}
-            className={`border-border bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
-          >
-            <option value='' >Search By Model</option>
-            {models.map((model, index) => (
-              <option key={index} value={model}>
-                {model}
-              </option>
-            ))}
-          </select>
-          <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-border bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded border   px-2 text-xs  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
+          <div className="relative mt-3 ml-2">
+
+            <Select name='userRole' defaultValue={filterBy} onValueChange={handleDropdownChange}>
+              <SelectTrigger className="w-[300px]  bg-background text-foreground border border-border">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className='bg-background text-foreground border border-border '>
+                <SelectGroup>
+                  <SelectLabel>Positions</SelectLabel>
+                  {models.map((model, index) => (
+                    <SelectItem key={index} value={model} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                      {model}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Search By Model</label>
+          </div>
+          <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className={`border-border bg-background p-2 text-foreground placeholder:text-blue-300  mx-auto ml-2  h-8 cursor-pointer rounded-[6px] mt-3 border   px-2 text-xs  shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
           >
             Clear
           </Button>
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant='outline' className="active:bg-background  mx-2 my-auto h-7  cursor-pointer rounded bg-background border border-border px-3 py-2  text-center text-xs  font-bold  text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
+            <Button variant='outline' className="active:bg-background  mx-2 my-auto h-7  cursor-pointer rounded-[6px] bg-background border border-border px-3 py-2  text-center text-xs  font-bold  text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
             >
               Add
             </Button>

@@ -61,12 +61,6 @@ async function login(username, password, setToken,) {
 export default function SmsClientDash({ data, searchData, openSMS, setOpenSMS, smsDetails, conversationsData, text, setText, messagesConvo }) {
   const { user, conversations, financeNotes, latestNotes, } = useLoaderData();
 
-  console.log(
-    'messagesConvo', messagesConvo,
-    'smsDetails', smsDetails,
-    'conversationsData', conversationsData,
-    // 'conversations', conversations,
-  )
   const [financeNotesList, setFinanceNoteList] = useState([])
   const [conversationsList, setConversationsList] = useState([])
   const [customer, setCustomer] = useState()
@@ -429,6 +423,7 @@ export function TextFunction({ customerMessages, customer, data, user, smsDetail
           <input className='w-full p-2' type="hidden" name='conversationSid' defaultValue={smsDetails.conversationId} />
 
           <input type='hidden' name='financeId' defaultValue={data.id} />
+          <input type='hidden' name='SMS' defaultValue={data.SMS} />
           <input type='hidden' name='userEmail' defaultValue={user.email} />
           <input type='hidden' name='clientfileId' defaultValue={data.clientfileId} />
           <input type='hidden' name='userName' defaultValue={user.name} />
@@ -443,12 +438,10 @@ export function TextFunction({ customerMessages, customer, data, user, smsDetail
             name="message"
           />
           <Button
-            value="saveFinanceNote"
             type="submit"
-            name="intent"
             size="icon"
             onClick={() => {
-              toast.success(`Note saved`)
+              toast.success(`Text sent!`)
             }}
             disabled={inputLength === 0}
             className='bg-primary mr-2'>

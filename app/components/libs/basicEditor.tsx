@@ -43,7 +43,10 @@ import { Form } from "@remix-run/react"
 import { toast } from "sonner"
 import { prisma } from "~/libs/prisma.server"
 import { ComposeEmail, ComposeEmailTwo, SendNewEmail } from "../microsoft/GraphService"
-import { SendNewEmails } from "~/routes/__authorized/dealer/email/client"
+import {
+  SelectContent, SelectLabel, SelectGroup,
+  SelectValue, Select, SelectTrigger, SelectItem,
+} from "~/components"
 import clsx from "clsx"
 import { Input } from "../ui"
 import { HoverCard, HoverCardContent, HoverCardTrigger, } from "~/components/ui/hover-card"
@@ -177,9 +180,10 @@ export function EditorTiptapHook({ content, user, to, subject, app, cc, bcc }: {
     <div className="p-1">
       <div className="mr-auto px-2   mt-auto grid grid-cols-1    rounded-md">
         <div className="my-2 flex justify-between">
-          <select className={`autofill:placeholder:text-[#C2E6FF] justifty-start mx-2 h-9 max-w-md cursor-pointer rounded border border-border  bg-background px-2 text-xs uppercase text-foreground shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`} onChange={(e) => {
-            handleChange(e.target.value); // Pass the input value directly to handleChange
-          }}    >
+          <select className={`autofill:placeholder:text-[#C2E6FF] justifty-start mx-2 h-9 max-w-md cursor-pointer rounded border border-border  bg-background px-2 text-xs uppercase text-foreground shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`}
+            onChange={(e) => {
+              handleChange(e.target.value); // Pass the input value directly to handleChange
+            }}    >
             <option value="">Select a Template</option>
             {templates && templates.map((template, index) => (
               <option key={index} value={template.body}>
@@ -1076,6 +1080,44 @@ export function EditorTiptapHookComposeDashboardEmailClient({ content, subject, 
       }
       const serializedemailData = JSON.stringify(emailData);
       window.localStorage.setItem("emailData", serializedemailData);
+
+      async function UpdateFinance() {
+        const date = new Date();
+        const options = {
+          weekday: 'short',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        };
+
+        const upodateFinance = await prisma.finance.update({
+          where: { id: customer.id },
+          data: {
+            Email: customer.Email += 1,
+            lastContact: date.toLocaleDateString('en-US', options)
+          }
+        })
+        await prisma.previousComms.create({
+          data: {
+            dept: 'Sales',
+            financeId: emailData.financeId,
+            body: body,
+            userName: emailData.userName,
+            type: 'Email',
+            customerEmail: to,
+            direction: 'Outgoing',
+            subject: emailData.subject,
+            result: 'Attempted',
+            userEmail: emailData.userEmail,
+          },
+        });
+        return upodateFinance
+      }
+
+      UpdateFinance()
       console.log('serializedemailData')
     }, []);
     return compose
@@ -1084,19 +1126,31 @@ export function EditorTiptapHookComposeDashboardEmailClient({ content, subject, 
   if (!editor) return null
   return (
     <div className="p-1">
-      <div className="mr-auto px-2   mt-auto grid grid-cols-1">
-        <div className="my-2 flex justify-between w-[95%]">
-          <select className={`border-border text-foreground bg-background autofill:placeholder:text-text-[#C2E6FF] justifty-start mx-2 h-9  cursor-pointer rounded border   w-1/2   px-2 text-xs uppercase   shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary`} onChange={(e) => {
-            handleChange(e.target.value); // Pass the input value directly to handleChange
-          }}    >
-            <option value="">Select a Template</option>
-            {templates && templates.map((template, index) => (
-              <option key={index} value={template.body}>
-                {template.title}
-              </option>
-            ))}
-          </select>
-          <Button onClick={() => { SaveDraft(); toast.success(`Template saved!`) }} name='intent' className={`border-border text-foreground bg-background ml-2 cursor-pointer rounded border  p-3 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}>
+      <div className="mr-auto   mt-auto grid grid-cols-1">
+        <div className="my-2 flex justify-between  mt-3 ">
+
+          <div className="relative">
+            <Select name='userRole'
+              onValueChange={(value) => {
+                handleChange(value); // Pass the input value directly to handleChange
+              }}   >
+              <SelectTrigger className="w-[500px]  bg-background text-foreground border border-border">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className='bg-background text-foreground border border-border '>
+                <SelectGroup>
+                  <SelectLabel>Templates</SelectLabel>
+                  {templates && templates.map((template, index) => (
+                    <SelectItem key={index} value={template.body} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                      {template.subject}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Email Templates</label>
+          </div>
+          <Button onClick={() => { SaveDraft(); toast.success(`Template saved!`) }} name='intent' className={`border-border text-foreground bg-background ml-2 cursor-pointer rounded-[6px] border  p-3 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}>
             Save Template
           </Button>
 
@@ -1421,7 +1475,10 @@ export function EditorTiptapHookComposeDashboardEmailClient({ content, subject, 
         </Accordion>
 
         <br />
-        <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text border border-border text-foreground bg-background mx-auto w-[95%] rounded-md" />
+        <div className="relative ">
+          <EditorContent editor={editor} className=" p-3 mb-2  cursor-text border border-border text-foreground bg-background mx-auto rounded-md" />
+          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Body</label>
+        </div>
         <br />
         <input type='hidden' defaultValue={text} name='body' />
         <div className='flex justify-between w-[98%]'>

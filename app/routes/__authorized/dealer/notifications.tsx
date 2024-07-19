@@ -65,7 +65,6 @@ let url1 = 'http://localhost:3000/dealer/notifications/messages'
 
 export default function NotificationSystem(interruptionsData, getEmails) {
   const { messages, } = useLoaderData()
-  console.log(getEmails, 'messages')
   const { loadNewLead } = interruptionsData;
   const location = useLocation();
   const pathname = location.pathname

@@ -15,32 +15,12 @@ import { toast } from "sonner"
 
 export default function TwoDaysFromNow({ data }) {
     const [isButtonPressed, setIsButtonPressed] = React.useState(false);
-    const { user } = useRootLoaderData()
-    const id = data.id ? data.id.toString() : '';
-    const [open, setOpen] = React.useState(false);
     let followUpDay;
     if (data.followUpDay < 1) followUpDay = 1;
     const [fUpDays, setFUpDays] = React.useState(followUpDay);
-    const timerRef = React.useRef(0);
 
     const [followUpDay1, setAppointmentDate] = useState(new Date());
 
-    //  function handleDropdownChange(event) {
-    //     const followUpDay1 = Number(event.target.value);
-    //     setButtonText('F/U ' + followUpDay1 + ' days')
-    //     setAppointmentDate(getFutureDate(followUpDay1));
-    //   }
-    /**           <select defaultValue={fUpDays} name='followUpDay1' className="mx-auto  rounded border-1  mz-1 px-2 border border-slate1 bg-background h-9 text-bold uppercase text-foreground placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary"
-                        onChange={handleDropdownChange}>
-                        <option value="">Days</option>
-                        <option value="1">1 Day</option>
-                        <option value="2">2 Days</option>
-                        <option value="3">3 Days</option>
-                        <option value="4">4 Days</option>
-                        <option value="5">5 Days</option>
-                        <option value="6">6 Days</option>
-                        <option value="7">7 Days</option>
-                    </select> */
     function handleDropdownChange(value) {
         const followUpDay1 = Number(value);
         setButtonText('F/U ' + followUpDay1 + ' days')

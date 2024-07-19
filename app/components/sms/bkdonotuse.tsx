@@ -42,7 +42,6 @@ async function LetsTry(selectedChannelSid) {
   const client = require('twilio')(accountSid, authToken);
   const saveMessages = await client.conversations.v1.conversations(selectedChannelSid).messages.list({ limit: 30 });
   // .then(messages => messages.forEach(m => console.log(m.sid)));
-  console.log(saveMessages, 'messages')
   return saveMessages
 }
 

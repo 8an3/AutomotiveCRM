@@ -12,8 +12,9 @@ import {
 import { MsalProvider, AuthenticatedTemplate, useMsal, UnauthenticatedTemplate } from '@azure/msal-react';
 import { config } from '~/components/microsoft/Config';
 import secondary from "~/styles/secondary.css";
-import { json } from '@remix-run/node';
-
+import { json, LinksFunction, LoaderFunction } from '@remix-run/node';
+import { CopilotKit } from "@copilotkit/react-core";
+// https://cloud.copilotkit.ai/dashboard
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: secondary },
   { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },

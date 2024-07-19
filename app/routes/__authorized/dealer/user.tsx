@@ -66,6 +66,10 @@ export default function Quote() {
       to: "/dealer/user/dashboard/salestracker",
     },
     {
+      title: "Board",
+      to: "/dealer/user/dashboard/board",
+    },
+    {
       title: "Scripts",
       to: "/dealer/user/dashboard/scripts",
     },
@@ -80,10 +84,6 @@ export default function Quote() {
     {
       title: "Finance Products",
       to: "/dealer/user/dashboard/finance/board",
-    },
-    {
-      title: "Board",
-      to: "/dealer/user/dashboard/baord",
     },
     {
       title: "Log out",

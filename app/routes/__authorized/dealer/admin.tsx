@@ -41,10 +41,11 @@ export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   let user = await GetUser(email)
-
   if (!user) { return json({ status: 302, redirect: '/login' }); };
-  const symbol = user.role.symbol
-  if (symbol !== 'ADMIN' && symbol !== 'MANAGER' && symbol !== 'EDITOR') {
+  const symbol = user.positions[0].position
+  console.log(symbol, 'useradmin')
+
+  if (symbol !== 'Administrator' && symbol !== 'Manager' && symbol !== 'Editor') {
     return redirect(`/`);
   } else {
     return json({ user, });
@@ -53,9 +54,9 @@ export const loader = async ({ request }) => {
 
 export async function action({ request }: ActionArgs) {
   const { userIsAllowed } = await requireUserSession(request, [
-    "ADMIN",
-    "MANAGER",
-    "EDITOR",
+    "Administrator",
+    "Manager",
+    "Editor",
   ]);
   if (!userIsAllowed) {
     return redirect(`/`);
@@ -106,67 +107,3 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-
-export function ErrorBoundary() {
-  const error = useRouteError();
-
-  if (isRouteErrorResponse(error)) {
-    let message;
-    switch (error.status) {
-      case 401:
-        message = `Sorry, you can't access this page.`;
-        break;
-      case 404:
-        message = `Sorry, this page is not available.`;
-        break;
-      default:
-        throw new Error(error.data || error.statusText);
-    }
-    return (
-      <RootDocumentBoundary title={message}>
-        <AdminLayout>
-          <PageAdminHeader size="sm">
-            <h1 className='text-foreground'>Error {error.status}</h1>
-            {error.statusText && <h2>{error.statusText}</h2>}
-            <p className='text-foreground'>{message}</p>
-          </PageAdminHeader>
-          <section className="px-layout space-y-2">
-            <p className='text-foreground'>Here's the error information that can be informed to Rewinds.</p>
-            <Debug className='text-foreground' name="error.data" isAlwaysShow isCollapsibleOpen>
-              {error.data}
-            </Debug>
-          </section>
-        </AdminLayout>
-      </RootDocumentBoundary>
-    );
-  } else if (error instanceof Error) {
-    return (
-      <RootDocumentBoundary title="Sorry, unexpected error occured.">
-        <AdminLayout>
-          <PageAdminHeader size="sm">
-            <h1 className='text-foreground'>Error from {configSite.name}</h1>
-          </PageAdminHeader>
-          <section className="px-layout space-y-2">
-            <p className='text-foreground'>Here's the error information that can be informed to Rewinds.</p>
-
-            <pre className='text-foreground'>{error.message}</pre>
-            <Debug name="error" isAlwaysShow isCollapsibleOpen>
-              {error}
-            </Debug>
-
-            <p className='text-foreground'>The stack trace is:</p>
-            <Debug className='text-foreground' name="error.stack" isAlwaysShow isCollapsibleOpen>
-              {error.stack}
-            </Debug>
-          </section>
-        </AdminLayout>
-      </RootDocumentBoundary>
-    );
-  } else {
-    return (
-      <AdminLayout>
-        <h1 className='text-foreground'>Unknown Error</h1>
-      </AdminLayout>
-    );
-  }
-}

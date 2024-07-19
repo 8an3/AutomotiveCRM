@@ -186,12 +186,10 @@ export async function loader({ request, params }: LoaderFunction) {
     }
     const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user?.email, }, });
     const convosList = await client.conversations.v1.users(username).userConversations.list({ limit: 50 });
-    console.log(convosList, 'convosList is convosList');
 
     const conversationsData = [];
     for (let convo of convosList) {
         const fetchedConversation = await client.conversations.v1.conversations(convo.conversationSid).fetch();
-        console.log(fetchedConversation, 'fetchedConversation is fetchedConversation');
 
         const messages = await client.conversations.v1.conversations(convo.conversationSid).messages.list({ limit: 1, order: 'desc' });
         if (messages.length > 0) {
@@ -209,7 +207,6 @@ export async function loader({ request, params }: LoaderFunction) {
     const userAgent = request.headers.get('User-Agent');
     const isMobileDevice = checkForMobileDevice(userAgent);
 
-    console.log(conversationsData);
     return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates, conversationsData, isMobileDevice })
 }
 

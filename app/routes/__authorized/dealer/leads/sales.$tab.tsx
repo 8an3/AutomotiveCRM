@@ -8,7 +8,7 @@ import type {
 } from "@tanstack/react-table";
 import { toast } from "sonner"
 import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
-import { type LinksFunction, type DataFunctionArgs } from '@remix-run/node';
+import { type LinksFunction, type DataFunctionArgs, json } from '@remix-run/node';
 import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
 import { DataTable } from "~/components/data-table"
 import { type dashBoardType } from "~/components/dashboard/schema";
@@ -41,7 +41,6 @@ import {
     CardTitle,
 } from "~/components/ui/card"
 import SearchLeads from '~/components/dashboard/demoDay/searchLeads';
-import { prisma } from '~/libs';
 import { SmDataTable } from '~/components/smData-table';
 import SmClientCard from '~/components/dashboard/calls/smClientCard';
 import {
@@ -73,6 +72,9 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
+import axios from 'axios';
+import PresetFollowUpDay from '~/components/dashboard/calls/presetFollowUpDay';
+import { prisma } from '~/libs';
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
@@ -86,6 +88,8 @@ export let loader = dashboardLoader
 export let action = dashboardAction
 
 export default function Mainboard() {
+    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken, email } = useLoaderData();
+
     const location = useLocation()
     const pathname = location.pathname
     const routeToTabIndex = {
@@ -97,9 +101,7 @@ export default function Mainboard() {
     };
     const initialTabIndex = routeToTabIndex[location.pathname] || 0;
     const [selectedTab, setSelectedTab] = useState(initialTabIndex);
-    console.log(pathname, selectedTab, 'tagbbs')
     useEffect(() => {
-        // Update selected tab when the route changes
         const currentTabIndex = routeToTabIndex[location.pathname];
         if (currentTabIndex !== undefined) {
             setSelectedTab(currentTabIndex);
@@ -107,28 +109,12 @@ export default function Mainboard() {
     }, [location.pathname]);
 
     const handleTabChange = (index) => {
-        // Navigate to the corresponding route when a tab is selected
         const route = Object.keys(routeToTabIndex).find(key => routeToTabIndex[key] === index);
         if (route) {
             history.push(route);
         }
     };
 
-    const [open, setOpen] = useState(false);
-    const [key, setKey] = useState(0);
-    const [lockData, setLockData] = useState();
-
-    useEffect(() => {
-        const handleData = (msg, data) => {
-            console.log('Received data:', data);
-            setOpen(true)
-            setLockData(data)
-        };
-        emitter.on('LOCKED_STATUS_RESPONSE', handleData);
-        return () => {
-            emitter.off('LOCKED_STATUS_RESPONSE', handleData);
-        };
-    }, []);
     return (
         <div className='bg-background'>
 
@@ -151,7 +137,9 @@ export default function Mainboard() {
                 </div>
                 {selectedTab === "dashboard" && (
                     <TabsContent className="w-[98%] mx-auto mt-5" value="dashboard">
-                        <MainDashbaord />
+                        <MainDashbaord
+                            user={user}
+                        />
                     </TabsContent>
                 )}
                 {selectedTab === "newLeads" && (
@@ -172,21 +160,6 @@ export default function Mainboard() {
             </Tabs>
 
 
-            <AlertDialog key={key} open={open} onOpenChange={setOpen}>
-
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle></AlertDialogTitle>
-                        <AlertDialogDescription>
-                            <p>{lockData.financeEmail} will see your client shortly.</p>
-
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogAction>Continue</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
         </div>
     )
 }
@@ -1043,16 +1016,14 @@ async function login(
     }
 }
 
-export function MainDashbaord() {
+export function MainDashbaord({ user }) {
     let username = 'skylerzanth'//localStorage.getItem("username") ?? "";
     let password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
     //const username = user?.username.toLowerCase().replace(/\s/g, '');//'skylerzanth'//localStorage.getItem("username") ?? "";
     //const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
     const proxyPhone = '+12176347250'
 
-    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken, email } = useLoaderData();
-    console.log(user, email, ';user2')
-
+    const { finance, searchData, getTemplates, callToken, conversationsData, convoList, newToken, email } = useLoaderData();
     const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
     const [messagesConvo, setMessagesConvo] = useState([]);
     const [selectedChannelSid, setSelectedChannelSid] = useState([]);
@@ -1338,7 +1309,7 @@ export function MainDashbaord() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-primary hover:text-primary focus:text-primary  focus:outline-none  active:bg-primary ">
+                return <div className="bg-transparent flex w-[175px] flex-1 items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-primary hover:text-primary focus:text-primary  focus:outline-none  active:bg-primary ">
                     {(row.getValue("lastName"))}
                 </div>
             },
@@ -1571,7 +1542,7 @@ export function MainDashbaord() {
 
                     <div className='w-[125px] cursor-pointer'>
 
-                        <CompleteCall data={data} contactMethod={contactMethod} />
+                        <CompleteCall data={data} user={user} />
                     </div>
                 </>
             },
@@ -3026,6 +2997,60 @@ export function MainDashbaord() {
 
     ]
 
+    //
+    const [key, setKey] = useState(0);
+    const [lockData, setLockData] = useState();
+    const [financeData, setFinanceData] = useState();
+    const submit = useSubmit();
+    const [openResponse, setOpenResponse] = useState(false);
+
+    useEffect(() => {
+        const handleData = (msg, data) => {
+            console.log('Received data:', data);
+            setOpen(true)
+            setLockData(data)
+        };
+        emitter.on('LOCKED_STATUS_RESPONSE', handleData);
+        return () => {
+            emitter.off('LOCKED_STATUS_RESPONSE', handleData);
+        };
+    }, []);
+
+    const responseFetcher = async () => {
+        const getLocked = await prisma.lockFinanceTerminals.findFirst({ where: { salesEmail: user.email, locked: false, response: false } })
+        if (getLocked !== null) {
+            setLockData(getLocked)
+            setOpenResponse(true)
+        }
+    }
+
+    const { data: locked, error } = useSWR(responseFetcher, {
+        refreshInterval: 60000,
+        revalidateOnMount: true,
+        revalidateOnReconnect: true
+    });
+
+    useEffect(() => {
+        if (locked) {
+            setLockData(locked.locked)
+            setFinanceData(locked.locked)
+            setOpenResponse(true);
+            console.log(lockData, financeData, 'data')
+        }
+    }, [locked]);
+
+    if (error) {
+        console.log('SWR error:', error);
+    }
+
+    const HandleButtonClick = async () => {
+        const formData = new FormData();
+        formData.append("claimId", lockData.lockedId);
+        formData.append("intent", 'responseClientTurnover');
+        const update = submit(formData, { method: "post" });
+        setOpenResponse(false)
+        return json({ update })
+    };
 
     return (
         <div>
@@ -3033,8 +3058,44 @@ export function MainDashbaord() {
                 <SmDataTable columns={smColumns} data={data} />
             </div>
             <div className="hidden md:block">
-                <DataTable columns={columns} data={data} />
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    user={user}
+                />
             </div>
+            {lockData && (
+                <AlertDialog open={openResponse} onOpenChange={setOpenResponse}>
+                    <AlertDialogContent className='border border-border bg-background text-foreground'>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Client Turnover - Response</AlertDialogTitle>
+                            <AlertDialogDescription className='grid grid-cols-1'>
+                                Finance Manager will take over client shortly.
+                                Finance Manager: {lockData.financeEmail}
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <div className="flex justify-end gap-[25px]">
+
+                                <ButtonLoading
+                                    size="sm"
+                                    className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
+                                    type="submit"
+                                    isSubmitting={isSubmitting}
+                                    onClick={() => {
+                                        HandleButtonClick()
+                                        toast.success(`Claimed next customer...`)
+                                    }}
+                                    loadingText="Updating client info..."
+                                >
+                                    Claim
+                                </ButtonLoading>
+
+                            </div>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
         </div>
     )
 }

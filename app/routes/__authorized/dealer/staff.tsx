@@ -54,26 +54,9 @@ export default function Quote() {
       to: "/dealer/staff/chat",
     },
     {
-      title: "Sales Leaderboard",
-      to: "/dealer/staff/leaderboard/sales",
+      title: "Leaderboard",
+      to: "/dealer/staff/leaderboard",
     },
-    {
-      title: "Accesories Leaderboard",
-      to: "/dealer/staff/leaderboard/sales",
-    },
-    {
-      title: "Parts Leaderboard",
-      to: "/dealer/staff/leaderboard/sales",
-    },
-    {
-      title: "Service Leaderboard",
-      to: "/dealer/staff/leaderboard/sales",
-    },
-    {
-      title: "tech Leaderboard",
-      to: "/dealer/staff/leaderboard/sales",
-    },
-
   ]
   return (
     <>
@@ -83,7 +66,7 @@ export default function Quote() {
         </div>
         <div className="  my-6" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/8 text-foreground">
+          <aside className="-mx-4 lg:w-[200px] text-foreground">
             <p className='text-foreground'>Menu</p>
             <hr className="text-foreground w-[90%] mb-5" />
             <SidebarNav items={sidebarNavItems} />

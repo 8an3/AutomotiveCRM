@@ -18,7 +18,6 @@ import twilio from 'twilio';
 export default function ChatAppDashboardClient({ cust, customerPhone, searchData, customerfinanceId, customerName, customerEmail, convoId, messages, messagesRef, identity, convoList, getText, getTemplates }) {
   const { newToken, user, conversationsData, username, } = useLoaderData()
 
-  console.log(convoList, conversationsData, getText, convoId, 'isMobileDevice')
 
   const [templates, setTemplates] = useState(getTemplates);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -79,7 +78,6 @@ export default function ChatAppDashboardClient({ cust, customerPhone, searchData
 
   // -----------------------------------------------------------
 
-  console.log(messages, 'messages')
   return (
     <Card className=" z-50 text-foreground" x-chunk="dashboard-05-chunk-4" >
       <CardHeader className="flex flex-row items-start bg-muted-background">
@@ -202,7 +200,6 @@ async function getToken(
     throw new Error(`ERROR received from ${requestAddress}: ${error}\n`);
   }
 }
-//const { convoList, callToken, newToken, user, getText, getTemplates, conversationsData, username, isMobileDevice } = useLoaderData()
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -338,12 +335,10 @@ export async function loader({ request, params }: LoaderFunction) {
   }
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user?.email, }, });
   const convosList = await client.conversations.v1.users(username).userConversations.list({ limit: 50 });
-  console.log(convosList, 'convosList is convosList');
 
   const conversationsData = [];
   for (let convo of convosList) {
     const fetchedConversation = await client.conversations.v1.conversations(convo.conversationSid).fetch();
-    console.log(fetchedConversation, 'fetchedConversation is fetchedConversation');
 
     const messages = await client.conversations.v1.conversations(convo.conversationSid).messages.list({ limit: 1, order: 'desc' });
     if (messages.length > 0) {
@@ -361,7 +356,6 @@ export async function loader({ request, params }: LoaderFunction) {
   const userAgent = request.headers.get('User-Agent');
   const isMobileDevice = checkForMobileDevice(userAgent);
 
-  console.log(conversationsData);
   return json({ convoList, callToken, username, newToken, user, password, getText, getTemplates, conversationsData, isMobileDevice })
 }
 

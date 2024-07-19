@@ -8,74 +8,76 @@ export type DataUserRole = Pick<
 export const dataUserRoles: DataUserRole[] = [
   {
     sequence: 1,
-    symbol: "ADMIN",
+    symbol: "Administrator",
     name: "Administrator",
     description: "Users who can manage the entire system and data.",
   },
   {
     sequence: 2,
-    symbol: "MANAGER",
+    symbol: "Manager",
     name: "Manager",
     description: "Users who can manage systems and data.",
   },
   {
     sequence: 3,
-    symbol: "EDITOR",
+    symbol: "Editor",
     name: "Editor",
     description: "Users who can manage some data.",
   },
   {
     sequence: 4,
-    symbol: "NORMAL",
+    symbol: "Normal",
     name: "Normal",
     description: "Ordinary users who can only do the rest.",
   },
   {
     sequence: 5,
-    symbol: "SALES",
+    symbol: "Sales",
     name: "Sales",
     description: "Sales staff.",
   },
+
   {
     sequence: 6,
-    symbol: "ACCESSORIES",
+    symbol: "Accessories",
     name: "Accessories",
     description: "Accessories staff",
   },
   {
     sequence: 7,
-    symbol: "PARTS",
+    symbol: "Parts",
     name: "Parts",
     description: "Parts staff",
   },
   {
     sequence: 8,
-    symbol: "SERVICE",
+    symbol: "Service",
     name: "Service",
     description: "Service writers",
   },
   {
     sequence: 9,
-    symbol: "TECHNICIAN",
+    symbol: "Technician",
     name: "Technician",
     description: "",
   },
   {
     sequence: 10,
-    symbol: "RECIEVING",
+    symbol: "Recieving",
     name: "Recieving",
     description: "",
   },
+
   {
     sequence: 11,
-    symbol: "ADMINISTRATION",
-    name: "Administration",
-    description: "Administration Staff",
-  },
-  {
-    sequence: 12,
     symbol: "DEV",
     name: "DEV",
     description: "DEV Staff",
+  },
+  {
+    sequence: 12,
+    symbol: "Finance Manager",
+    name: "Finance Manager",
+    description: "Sales staff.",
   },
 ];

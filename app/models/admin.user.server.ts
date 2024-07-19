@@ -12,8 +12,7 @@ export const query = {
     return prisma.user.findMany({
       include: {
         role: { select: { symbol: true, name: true, description: true } },
-        notes: { select: { id: true } },
-        images: { select: { id: true } },
+        positions: { select: { position: true } },
       },
       orderBy: [{ role: { sequence: "asc" } }, { createdAt: "asc" }],
     });
@@ -24,8 +23,7 @@ export const query = {
       include: {
         role: true,
         profile: true,
-        notes: true,
-        images: true,
+        positions: true,
       },
     });
   },

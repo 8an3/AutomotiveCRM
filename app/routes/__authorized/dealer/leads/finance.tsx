@@ -1810,7 +1810,7 @@ export function FinanceBoard() {
 
                     <div className='w-[125px] cursor-pointer'>
 
-                        <CompleteCall data={data} contactMethod={contactMethod} />
+                        <CompleteCall data={data} user={user} />
                     </div>
                 </>
             },
@@ -3268,21 +3268,6 @@ export function FinanceBoard() {
     const submit = useSubmit();
     const navigate = useNavigate();
 
-    const updateDatabaseState = async () => {
-        try {
-            console.log('formData.financeId:', lockData);
-            const formData = new FormData();
-            formData.append("intent", "claimTurnover");
-            submit(formData, { method: "post" });
-
-        } catch (error) {
-            console.error('Database update error:', error);
-        }
-    };
-
-    //  const [open, setOpen] = useState(false);
-    const [key, setKey] = useState(0);
-
     const fetcher = async url => await axios.get(url).then(res => res.data)
 
     const { data: locked, error } = useSWR('/dealer/api/checkLocked', fetcher, {
@@ -3292,24 +3277,22 @@ export function FinanceBoard() {
     });
     const [lockData, setLockData] = useState();
     const [financeData, setFinanceData] = useState();
+    const [openResponse, setOpenResponse] = useState(false);
 
 
     useEffect(() => {
         if (locked) {
             setLockData(locked.locked)
             setFinanceData(locked.locked)
-            setOpen(true);
+            //  setOpen(true);
             console.log(lockData, financeData, 'data')
             console.log(lockData, financeData, 'data')
-
-            setOpen(true);
-
+            setOpenResponse(true);
         }
     }, [locked]);
     if (error) {
         console.log('SWR error:', error);
     }
-    const lockedValue = false;
 
     const HandleButtonClick = async () => {
         const formData = new FormData();
@@ -3318,17 +3301,20 @@ export function FinanceBoard() {
         formData.append("financeId", financeData.financeId);
         formData.append("claimId", financeData.lockedId);
         formData.append("intent", 'claimClientTurnover');
-        submit(formData, { method: "post" });
-        setOpen(false)
+        const update = submit(formData, { method: "post" });
+        setOpenResponse(false)
         return json({ update })
     };
 
     const HandleButtonClickAndNavigate = async () => {
-        await updateDatabaseState();
-
-        const newOpen = await fetch(url).then(response => response.json()).then(data => console.log(data)).catch(error => console.error('Error fetching data:', error));
-        setOpen(newOpen)
-        await mutate();
+        const formData = new FormData();
+        formData.append("locked", false);
+        formData.append("financeEmail", user.email);
+        formData.append("financeId", financeData.financeId);
+        formData.append("claimId", financeData.lockedId);
+        formData.append("intent", 'claimClientTurnover');
+        submit(formData, { method: "post" });
+        setOpenResponse(false)
         return navigate(`/customer/${financeData.clientfileId}/${financeData.id}`)
     };
 
@@ -3340,10 +3326,10 @@ export function FinanceBoard() {
                 <SmDataTable columns={smColumns} data={data} />
             </div>
             <div className="hidden md:block">
-                <DataTable columns={columns} data={data} />
+                <DataTable columns={columns} data={data} user={user} />
             </div>
             {lockData && (
-                <AlertDialog open={open} onOpenChange={setOpen}>
+                <AlertDialog open={openResponse} onOpenChange={setOpenResponse}>
                     <AlertDialogContent className='border border-border bg-background text-foreground'>
                         <AlertDialogHeader>
                             <AlertDialogTitle>Client Turnover</AlertDialogTitle>
@@ -3351,7 +3337,7 @@ export function FinanceBoard() {
                                 <p>{lockData.customerName}</p>
                                 <p>{lockData.unit}</p>
                                 <p>{lockData.note}</p>
-                                <p>Sales: {lockData.salesEmail} - Finance: {lockData.financeEmail}</p>
+                                <p>Sales: {lockData.salesEmail}</p>
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

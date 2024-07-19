@@ -175,6 +175,7 @@ import { FaSave } from "react-icons/fa";
 import UnitPicker from "~/components/dashboard/unitPicker/unitPicker";
 import { cors } from "remix-utils";
 import { TextFunction } from "~/components/dashboard/calls/logText";
+import { ModelPage } from "~/overviewUtils/modelPage";
 
 /**  const [formData, setFormData] = useState({
     referral: mergedFinanceList.referral || "off",
@@ -208,7 +209,7 @@ export const headers = ({ loaderHeaders, parentHeaders }) => {
 };
 
 export default function Dashboard() {
-  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications } = useLoaderData();
+  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown } = useLoaderData();
 
 
   const [financeIdState, setFinanceIdState] = useState();
@@ -1814,19 +1815,6 @@ export default function Dashboard() {
     )
   }
   const formDataSizeInBytes = getStateSizeInBytes(formData);
-  //console.log(`formData size: ${formDataSizeInBytes} bytes`);
-  //console.log(`formData size: ${(formDataSizeInBytes / 1024).toFixed(2)} KB`);
-  // console.log(`formData size: ${(formDataSizeInBytes / (1024 * 1024)).toFixed(2)} MB`);
-  // console.log('bmwmoto', bmwMoto)
-  // console.log(';bmwMo// Import the axios library
-
-  // console.log(finance)
-  // console.log(deFees)
-  // console.log(modelData)
-  // console.log(accessories)
-  // console.log(initial)
-  // console.log(accTotal)
-  // console.log(essentials)
 
   let today2 = new Date();
   const nextAppt = today2.setHours(today2.getHours() + 24);
@@ -1947,11 +1935,7 @@ export default function Dashboard() {
   const [messagesConvo, setMessagesConvo] = useState([]);
   const [chatReady, setChatReady] = useState(false);
 
-  console.log(
-    'messagesConvo', messagesConvo,
-    'searchData', searchData,
-    'convoList', convoList,
-  )
+
   let multipliedConvoList = [];
   for (let i = 0; i < 30; i++) {
     multipliedConvoList = multipliedConvoList.concat(convoList);
@@ -2168,21 +2152,15 @@ export default function Dashboard() {
       const filteredNotes = getNotesByFinanceId(financeNotes, data.financeId);
 
       setFinanceNoteList(filteredNotes)
-      console.log(filteredNotes, 'email client notes')
       function GetConversationsByID(conversations, financeId) {
         return conversations.filter(conversation => conversation.financeId === financeId);
       }
       const filteredConversations = GetConversationsByID(conversations, data.financeId);
 
       setConversationsList(filteredConversations)
-      console.log(filteredNotes, 'email client notes')
     }
 
   }, [data.financeId]);
-  //  const [customerEmail, setCustomerEmail] = useState('')
-  //  const [customerName, setCustomerName] = useState('')
-  //  const [customerfinanceId, setCustomerfinanceId] = useState('')
-
 
   useEffect(() => {
     if (data && open === true) {
@@ -2310,7 +2288,190 @@ export default function Dashboard() {
     { name: 'financeManager', value: finance.financeManager, label: 'Finance manager', },
   ];
 
-  // -----------------------------email ---------------------------------//
+  // -----------------------------finance dropdowns ---------------------------------//
+  const email = [
+    {
+      value: "Send Payments",
+      label: "Send Payments",
+      template: "justPayments",
+      financeId: finance.id,
+    },
+    {
+      value: "Full Breakdown",
+      label: "Full Breakdown",
+      template: "fullBreakdown",
+      financeId: finance.id,
+    },
+    {
+      value: "Full Breakdown W/ Options",
+      label: "Full Breakdown W/ Options",
+      template: "FullBreakdownWOptions",
+      financeId: finance.id,
+    },
+    {
+      value: "Custom Templated Emails",
+      label: "Custom Templated Emails",
+      template: "Custom-Templated-Emails",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+    {
+      value: "Send Payments Custom",
+      label: "Send Payments Custom",
+      template: "justPaymentsCustom",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+    {
+      value: "Full Breakdown Custom",
+      label: "Full Breakdown Custom",
+      template: "fullBreakdownCustom",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+    {
+      value: "Full Breakdown W/ Options Custom",
+      label: "Full Breakdown W/ Options Custom",
+      template: "FullBreakdownWOptionsCustom",
+      financeId: finance.id,
+      desiredPayments: finance.desiredPayments,
+    },
+  ];
+
+  const updatedEmailArray = email.concat(
+    emailTemplatesDropdown.map(template => ({
+      value: template.id,
+      label: template.subject,
+      template: 'customEmailDropdown' + template.id,
+      financeId: finance.id,
+      // Add additional properties if they exist
+      ...(template.desiredPayments && { desiredPayments: template.desiredPayments }),
+    }))
+  );
+  function SubmitTheForm(newValue, template, financeId) {
+    if (template === "justPayments" || template === "fullBreakdown" || template === "FullBreakdownWOptions") {
+      console.log(newValue, template, 'reg emails')
+      const formData = new FormData();
+      formData.append("value", newValue);
+      formData.append("modelData", modelData);
+      formData.append("template", template);
+      formData.append("financeId", financeId);
+      formData.append("intent", 'email');
+      submit(formData, { method: "post" });
+    } else if (template === "justPaymentsCustom" || template === "fullBreakdownCustom" || template === "FullBreakdownWOptionsCustom") {
+      console.log(newValue, template, 'custom emails')
+
+      setOpenEmail(true);
+    } else if (template === 'Custom-Templated-Emails') {
+      return null
+    } else {
+      console.log('hit id form')
+      const formData = new FormData();
+      formData.append("value", newValue);
+      formData.append("modelData", modelData);
+      formData.append("template", template);
+      formData.append("financeId", financeId);
+      formData.append("intent", 'email');
+      submit(formData, { method: "post" });
+    }
+  }
+  const newBody = formData.body
+
+  const [openTemplate, setOpenTemplate] = useState(false);
+
+  function SubmitTheSecondForm() {
+    const formData = new FormData();
+    formData.append("value", emailValue);
+    // formData.append("modelData", modelData);
+    formData.append("template", emailTemplate);
+    formData.append("financeId", finance.id);
+    formData.append("body", newBody);
+    formData.append("intent", 'email');
+    submit(formData, { method: "post" });
+  }
+  const [openResponse, setOpenResponse] = useState(false);
+  const [key, setKey] = useState(0);
+  const [lockData, setLockData] = useState();
+  const [note, setNote] = useState()
+  let actionData = useActionData<typeof action>();
+
+  async function SubmitLocked() {
+    const formData = new FormData();
+    formData.append("locked", true);
+    formData.append("salesEmail", user.email);
+    formData.append("financeId", finance.id);
+    formData.append("unit", `${finance.year} ${finance.brand} ${finance.model}`);
+    formData.append("customerName", finance.firstName + ' ' + finance.lastName,);
+    formData.append("intent", 'clientTurnover');
+    submit(formData, { method: "post" });
+
+    actionData = {
+      ...actionData,
+      lockedId: actionData.id,
+    }
+    setLockData(actionData)
+  }
+
+  useEffect(() => {
+    const intervalFunction = async () => {
+      console.log('Interval fired1212');
+      const getLocked = await prisma.lockFinanceTerminals.findFirst({ where: { salesEmail: user.email, locked: false, response: false } })
+      if (getLocked.response === false) {
+        setLockData(getLocked)
+        setOpenResponse(true)
+      }
+    };
+    intervalFunction()
+    const intervalId = setInterval(intervalFunction, 120000); // 120000 ms = 120 seconds
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  const HandleButtonClick = async () => {
+    const formData = new FormData();
+    formData.append("claimId", lockData.lockedId);
+    formData.append("intent", 'responseClientTurnover');
+    const update = submit(formData, { method: "post" });
+    setOpenResponse(false)
+    return json({ update })
+  };
+
+  const [checkedItems2, setCheckedItems2] = useState(
+    items.reduce((acc, item) => {
+      if (item.value === 'on' || new Date(item.value) > new Date('2022-01-01')) {
+        acc[item.name] = item.value;
+      }
+      return acc;
+    }, {})
+  );
+
+  const handleCheckboxChange2 = (name, isChecked) => {
+    setCheckedItems2((prev) => {
+      const updatedItems = { ...prev };
+      if (isChecked) {
+        updatedItems[name] = new Date().toISOString();
+      } else {
+        delete updatedItems[name];
+      }
+      return updatedItems;
+    });
+  };
+
+  const formatDate2 = (dateString) => {
+    const options = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true,
+    };
+    return new Date(dateString).toLocaleString('en-US', options);
+  };
+
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -2458,91 +2619,39 @@ export default function Dashboard() {
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
-                      <Form method='post'>
+                      <Form method='post' className='mx-4 my-4'>
                         <DialogHeader className="px-4 pb-4 pt-5">
                           <DialogTitle>Edit Customer Profile Info</DialogTitle>
+                          <hr className=" text-muted-foreground w-[98%] mx-auto" />
                         </DialogHeader>
-                        <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
-                        <ul className="grid gap-3 text-sm mt-2">
-                          {customerCard.map((customer, index) => (
-                            <li key={index} className="group flex items-center justify-between">
-                              <div className='flex'>
-                                <span className="text-muted-foreground">
-                                  {customer.label}
-                                </span>
-                                <Button
-                                  size="icon"
-                                  variant="outline"
-                                  onClick={() => copyText(customer.value)}
-                                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                                >
-                                  <Copy className="h-3 w-3" />
-                                  <span className="sr-only">Copy</span>
-                                </Button>
-                                {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
-                              </div>
-                              <span>{customer.value}</span>
-                            </li>
-                          ))}
-                        </ul>
-                        <input type='hidden' name='phone' defaultValue={finance.phone} />
-                        <input type='hidden' name='email' defaultValue={finance.email} />
-                        <input type='hidden' name='lastName' defaultValue={finance.lastName} />
-                        <input type='hidden' name='firstName' defaultValue={finance.firstName} />
-                        <input type='hidden' name='brand' defaultValue={finance.brand} />
-                        <input type='hidden' name='unit' defaultValue={finance.model} />
-                        <input type='hidden' name='brand' defaultValue={finance.brand} />
-                        <input type='hidden' name='financeId' defaultValue={finance.id} />
-                        <input type='hidden' name='userId' defaultValue={user.id} />
-                        <input type='hidden' name='apptType' defaultValue='sales' />
-                        <input type='hidden' name='min' defaultValue={minForm} />
-                        <input type='hidden' name='hour' defaultValue={hourForm} />
-                        <input type='hidden' name="dashboardId" defaultValue={finance.dashboardId} />
-                        <input type='hidden' name="clientId" defaultValue={finance.id} />
+                        {customerCard.map((user, index) => (
+                          <div key={index} className="relative mt-4">
+                            <Input
+                              name={user.name}
+                              defaultValue={user.value}
+                              className={` bg-background text-foreground border border-border`}
+                            />
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+                          </div>
+                        ))}
+                        <input type='hidden' name="financeId" defaultValue={finance.id} />
                         <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
 
-                        <DialogFooter className=" border-t border-border p-4  ">
-                          <div className='flex justify-center' >
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button
-                                  size='sm'
-                                  className=' bg-primary'
-                                >
-                                  Save changes
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent className="gap-0 p-0 outline-none border-border text-foreground">
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently change the customers profile information.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <ButtonLoading
+                          size="sm"
+                          value="updateClientInfoFinance"
+                          className="w-auto cursor-pointer mt-5 ml-auto mr-3 bg-primary justify-end"
+                          name="intent"
+                          type="submit"
+                          isSubmitting={isSubmitting}
+                          onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
+                          loadingText={`${data.firstName}'s customer file is updated...`}
+                        >
+                          Continue
+                          <PaperPlaneIcon className="h-4 w-4 ml-2" />
 
-                                  <ButtonLoading
-                                    size="sm"
-                                    value="updateClientInfoFinance"
-                                    className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
-                                    name="intent"
-                                    type="submit"
-                                    isSubmitting={isSubmitting}
-                                    onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
-                                    loadingText={`${data.firstName}'s customer file is updated...`}
-                                  >
-                                    <AlertDialogAction>Continue
-                                      <PaperPlaneIcon className="h-4 w-4 ml-2" />
+                        </ButtonLoading>
 
-                                    </AlertDialogAction>
-                                  </ButtonLoading>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-
-                          </div>
-                        </DialogFooter>
                       </Form>
 
                     </DialogContent>
@@ -2648,34 +2757,32 @@ export default function Dashboard() {
                     </CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip mt-3">
+                <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip mt-3">
                   <div className="max-h-[20vh] h-auto">
                     {editProgress === true && (
                       <Form method="post">
-                        {items
-
-                          .map((item) => {
-                            const isChecked =
-                              item.value === 'on' ||
-                              new Date(item.value) > new Date('2022-01-01');
-                            return (
-                              <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
-                                <label htmlFor={item.name}>{item.label}</label>
-                                <IndeterminateCheckbox
-                                  name={item.name}
-                                  indeterminate={checkedItems[item.name] === undefined && isChecked}
-                                  checked={checkedItems[item.name] ?? isChecked}
-                                  onChange={(e) => handleCheckboxChange(item.name, e.target.checked)}
-                                  className="border-[#c72323]"
-                                />
-                              </div>
-                            );
-                          })}
+                        {items.map((item) => {
+                          const isChecked =
+                            checkedItems2[item.name] !== undefined && checkedItems2[item.name] !== '';
+                          return (
+                            <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
+                              <label htmlFor={item.name}>{item.label}</label>
+                              <IndeterminateCheckbox
+                                name={item.name}
+                                indeterminate={checkedItems2[item.name] === undefined && isChecked}
+                                checked={isChecked}
+                                onChange={(e) => handleCheckboxChange2(item.name, e.target.checked)}
+                                className="border-[#c72323]"
+                              />
+                              <input type="hidden" name={item.name} value={checkedItems2[item.name] ?? ''} />
+                            </div>
+                          );
+                        })}
                         <input type="hidden" defaultValue={finance.id} name="financeId" />
 
                         <ButtonLoading
                           size="sm"
-                          value="dealProgress"
+                          value="updateClientInfoFinance"
                           className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-primary"
                           name="intent"
                           type="submit"
@@ -2703,14 +2810,9 @@ export default function Dashboard() {
                             (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
                           return (
                             <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
-                              <label htmlFor={item.name}>{item.label}</label>
-                              <IndeterminateCheckbox
-                                name={item.name}
-                                indeterminate={checkedItems[item.name] === undefined && isChecked}
-                                checked={checkedItems[item.name] ?? isChecked}
-                                onChange={(e) => handleCheckboxChange(item.name, e.target.checked)}
-                                className="border-[#c72323]"
-                              />
+                              <label className="text-muted-foreground" htmlFor={item.name}>{item.label}</label>
+                              <span>{formatDate2(item.value)}</span>
+
                             </div>
                           );
                         })
@@ -2726,7 +2828,6 @@ export default function Dashboard() {
                   </Button>
                 </CardFooter>
               </Card>
-
             </div>
             <Tabs defaultValue="Sales">
               <div className="flex items-center">
@@ -2759,7 +2860,7 @@ export default function Dashboard() {
                       </div>
 
                     </CardHeader>
-                    <CardContent className="flex-grow !grow  p-6 text-sm bg-background">
+                    <CardContent className="flex-grow !grow max-h-[325px] h-[325px] overflow-y-auto p-6 text-sm bg-background">
 
                       {editUnits === false && (
                         <ul className="grid gap-3">
@@ -2915,8 +3016,8 @@ export default function Dashboard() {
                 </div>
               </TabsContent>
               <TabsContent value="Finance">
-                <div className="mx-auto mt-10 mb-10">
-                  <Card className=" w-[550px] rounded-lg text-foreground mx-auto">
+                <div className=" mt-5 mb-10">
+                  <Card className=" w-[550px] rounded-lg text-foreground justify-start">
                     <CardHeader className=" bg-muted/50  flex flex-row items-start t-rounded-lg">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
@@ -2925,12 +3026,48 @@ export default function Dashboard() {
                         <CardDescription>{date}</CardDescription>
                       </div>
                       <div className="ml-auto flex items-center gap-1">
-                        <Button size="sm" variant="outline" className="h-8 gap-1">
-                          <CiEdit className="h-3.5 w-3.5" />
-                          <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                            Emails
-                          </span>
-                        </Button>
+                        <Select
+                          onValueChange={(value) => {
+                            setOpen(false);
+                            console.log("click");
+                            const selectedFramework = updatedEmailArray.find((framework) => framework.value === value);
+
+                            const newValue = value
+                            const financeId = finance.id
+                            const template = selectedFramework.template
+                            setEmailValue(value);
+                            setEmailDesiredPayments(finance.desiredPayments);
+                            setEmailTemplate(selectedFramework.template);
+                            setEmailFinanceId(finance.financeId);
+                            setEmailLabel(selectedFramework.label);
+
+                            if (selectedFramework.template === "justPayments" || selectedFramework.template === "fullBreakdown" || selectedFramework.template === "justPaymentsCustom") {
+                              console.log(selectedFramework, 'selectedFramework')
+                              SubmitTheForm(newValue, template, financeId);
+                            } else
+                              if (selectedFramework.template === "justPaymentsCustom" || selectedFramework.template === "fullBreakdownCustom" || selectedFramework.template === "FullBreakdownWOptionsCustom") {
+                                console.log(selectedFramework, 'customEmail')
+                                setOpenEmail(true);
+                              } else {
+                                SubmitTheForm(newValue, template, financeId);
+                              }
+                          }}
+                        >
+                          <SelectTrigger className="w-[180px] bg-background">
+                            <SelectValue className='bg-background' placeholder="Select email..." />
+                          </SelectTrigger>
+                          <SelectContent className='bg-background text-foreground border-border'>
+                            <SelectGroup>
+                              <SelectLabel>Emails</SelectLabel>
+                              {updatedEmailArray.map((framework) => (
+                                <SelectItem className="cursor-pointer   rounded-md  hover:bg-muted/50" key={framework.value} value={framework.value}>
+                                  {framework.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+
+                          </SelectContent>
+                        </Select>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button size="icon" variant="outline" className="h-8 w-8">
@@ -2938,62 +3075,56 @@ export default function Dashboard() {
                               <span className="sr-only">More</span>
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
+                          <DropdownMenuContent align="end" className="   w-[200px] rounded-md bg-background text-foreground border-border"                >
+                            <DropdownMenuItem onClick={() => setOpenTemplate(true)} className=" w-[100%] cursor-pointer rounded-md  text-foreground hover:bg-muted/50">
+                              Inspect Templated Emails
+                            </DropdownMenuItem>
                             <a
-                              className="mx-auto w-full"
-                              href="/dealer/leads/sales"
+                              className="mx-auto w-[100%]"
+                              href="/dealer/leads/sales/dashboard"
                               target="_blank"
                             >
-                              <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                              <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
+                                Dashboard
+                              </DropdownMenuItem>
                             </a>
                             <a
-                              className="mx-auto w-full"
+                              className="mx-auto w-[100%]"
                               href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
                               target="_blank"
                             >
-                              <DropdownMenuItem>Client File</DropdownMenuItem>
+                              <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
+                                Client File
+                              </DropdownMenuItem>
                             </a>
-
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <PrintSpec />
-                            </DropdownMenuItem>
                             <Form method="post">
-                              <DropdownMenuItem>
-                                <input
-                                  type="hidden"
-                                  name="intent"
-                                  value="financeTurnover"
-                                />
-                                <input type="hidden" name="locked" value={lockedValue} />
-                                <input
-                                  type="hidden"
-                                  name="financeId"
-                                  value={finance.id}
-                                />
-                                <ButtonLoading
-                                  size="lg"
-                                  className="ml-auto w-full cursor-pointer p-5 hover:text-primary"
-                                  type="submit"
-                                  isSubmitting={isSubmitting}
-                                  onClick={() =>
-                                    toast.success(
-                                      `Informing finance managers of requested turnover...`
-                                    )
-                                  }
-                                  loadingText="Notifying finance managers..."
-                                >
-                                  Finance Turnover
-                                </ButtonLoading>
+                              <DropdownMenuItem
+                                className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50"
+                                onClick={() => {
+                                  toast.success(
+                                    `Informing finance managers of requested turnover...`
+                                  );
+                                  SubmitLocked()
+                                }}
+                              >
+
+                                Finance Turnover
                               </DropdownMenuItem>
                             </Form>
+                            <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
+                              <PrintSpec />
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
+                              <ModelPage />
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
                     </CardHeader>
                     {secPage && (
                       <>
-                        <CardContent className="p-6 text-sm bg-background">
+                        <CardContent className="p-6 text-sm bg-background max-h-[600px] h-[600px] overflow-y-auto">
                           <div className="grid gap-3">
                             <div className="font-semibold">Payment Details</div>
                             <li className="flex items-center justify-between">
@@ -3707,7 +3838,7 @@ export default function Dashboard() {
                     )}
                     {firstPage && (
                       <>
-                        <CardContent className="p-6 text-sm  bg-background">
+                        <CardContent className="p-6 text-sm  bg-background max-h-[600px] h-[600px] overflow-y-auto">
                           <div className="grid gap-3">
                             <div className="font-semibold">Payment Details</div>
                             <ul className="grid gap-3">
@@ -4289,7 +4420,6 @@ export default function Dashboard() {
                         </CardContent>
                       </>
                     )}
-
                     <CardFooter className=" bg-muted/50   flex flex-row items-center border-t px-6 py-3  b-rounded-md">
                       <div className="text-[#8a8a93] text-xs">
                         Updated <time dateTime="2023-11-23">November 23, 2023</time>
@@ -4330,13 +4460,13 @@ export default function Dashboard() {
             </Tabs>
           </div>
           <div>
-            <Tabs defaultValue="Actions">
+            <Tabs defaultValue="Notes">
               <TabsList >
-                <TabsTrigger value="Actions">Actions</TabsTrigger>
                 <TabsTrigger value="Notes">Notes</TabsTrigger>
                 <TabsTrigger value="Apt History">Apt History</TabsTrigger>
                 <TabsTrigger value="Communications">Communications</TabsTrigger>
                 <TabsTrigger value="Upload">Upload</TabsTrigger>
+                <TabsTrigger value="Actions">Actions</TabsTrigger>
               </TabsList>
               <TabsContent value="Actions">
                 <Card
@@ -4407,9 +4537,7 @@ export default function Dashboard() {
                 </Card>
               </TabsContent>
               <TabsContent value="Notes">
-                <Card
-                  className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"
-                >
+                <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
                   <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
@@ -4446,7 +4574,7 @@ export default function Dashboard() {
                   <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
                     <div className="grid gap-3 ">
                       <Card
-                        className=" flex flex-col-reverse  max-h-[50vh] h-auto overflow-y-scroll">
+                        className=" flex flex-col-reverse  max-h-[50vh] h-auto overflow-y-auto">
                         <CardContent>
                           <div className="space-y-4 mt-5">
 
@@ -4629,7 +4757,7 @@ export default function Dashboard() {
                       </TooltipProvider>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
+                  <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
                     <div className="grid gap-3 max-h-[20vh] h-auto">
                       <Table className='w-auto overflow-x-scroll w-[650px]'>
                         <TableHeader>
@@ -5003,7 +5131,7 @@ export default function Dashboard() {
                       </TooltipProvider>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
+                  <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
                     <div className="grid gap-3 max-h-[20vh] h-auto">
                       <Table className='w-auto overflow-x-scroll w-[650px]'>
                         <TableHeader>
@@ -5225,7 +5353,7 @@ export default function Dashboard() {
 
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
+                  <CardContent className="flex-grow !grow max-h-[700px] h-[700px] overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
                     <div className="parent-container">
                       <MyIFrameComponent />
                     </div>
@@ -5329,21 +5457,11 @@ export default function Dashboard() {
 
               </TabsContent>
               <TabsContent value="Email">
-                <Card
-                  className="overflow-x-clip text-foreground rounded-lg  w-[95%] max-w-[600px]" x-chunk="dashboard-05-chunk-4"
-                >
+                <Card className="overflow-x-clip text-foreground rounded-lg  w-[95%] max-w-[600px]" x-chunk="dashboard-05-chunk-4"                >
                   <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
-                        SMS
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">To leave yourself or your colleagues notes regarding the customer.</span>
-                        </Button>
+                        Email
                       </CardTitle>
                     </div>
                     <div className="ml-auto flex items-center gap-1">
@@ -5384,6 +5502,37 @@ export default function Dashboard() {
           </div>
         </main>
       </div >
+      {lockData && (
+        <AlertDialog key={key} open={openResponse} onOpenChange={setOpenResponse}>
+          <AlertDialogContent className='border border-border bg-background text-foreground'>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Client Turnover</AlertDialogTitle>
+              <AlertDialogDescription>
+                <p>{lockData.financeEmail} will see your client shortly.</p>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <div className="flex justify-end gap-[25px]">
+
+                <ButtonLoading
+                  size="sm"
+                  className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
+                  type="submit"
+                  isSubmitting={isSubmitting}
+                  onClick={() => {
+                    HandleButtonClick()
+                    toast.success(`Claimed next customer...`)
+                  }}
+                  loadingText="Updating client info..."
+                >
+                  Claim
+                </ButtonLoading>
+
+              </div>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div >
   )
 }
@@ -5851,7 +6000,80 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   const dashboardId = idSession.get('dashboardId')
 
   // console.log('headeras', userId, clientfileId, financeId, dashboardId)
+  if (formPayload.intent === 'clientTurnover') {
 
+    const create = await prisma.lockFinanceTerminals.create({
+      data: {
+        locked: true,
+        financeId: formData.financeId,
+        salesEmail: user.email,
+        customerName: formData.customerName,
+        unit: formData.unit,
+        response: false,
+
+      }
+    })
+    return json({ create })
+  }
+  if (formPayload.intent === 'responseClientTurnover') {
+
+    const update = await prisma.lockFinanceTerminals.update({
+      where: { id: formData.claimId, },
+      data: {
+        response: true,
+      },
+    });
+    return update
+  }
+  if (intent === 'email') {
+    const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+
+    const model = finance?.model || '';
+    const modelData = formData.modelData
+    const value = formData.template
+    let data;
+    if (value.startsWith("customEmailDropdown")) {
+      const prefix = "customEmailDropdown";
+      const id = value.slice(prefix.length);
+      const emailDrop = await prisma.emailTemplatesForDropdown.findUnique({
+        where: { id: id },
+      });
+      console.log(value, emailDrop, 'hitd')
+
+      data = await resend.emails.send({
+        from: "Sales <sales@resend.dev>",
+        reply_to: user?.email,
+        to: [`${finance?.email}`],
+        subject: emailDrop.subject || '',
+        react: <CustomBody body={emailDrop.body} user={user} />
+      });
+
+    } else {
+      console.log('hitemail')
+      data = await resend.emails.send({
+        from: "Sales <sales@resend.dev>",
+        reply_to: user?.email,
+        to: [`${finance?.email}`],
+        subject: `${finance?.brand} ${model} model information.`,
+        react: <PaymentCalculatorEmail user={user} finance={finance} modelData={modelData} formData={formData} />
+      });
+    }
+    await prisma.previousComms.create({
+      data: {
+        financeId: finance.financeId,
+        body: formData.body || 'Templated Email',
+        userName: user.name,
+        type: 'Email',
+        customerEmail: finance.email,
+        direction: 'Outgoing',
+        subject: `${finance?.brand} ${model} model information.`,
+        result: 'Attempted',
+        userEmail: user.email,
+        dept: 'Sales',
+      }
+    })
+    return json({ data })
+  }
   if (intent === 'createOrder') {
     let partNumbers = formData["partNumbers[]"];
 
@@ -6449,19 +6671,173 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   }
   // client info
   if (intent === 'updateClientInfoFinance') {
-    const updateClient = await prisma.clientfile.update({
-      where: { id: formData.clientId },
+    const updateClient = await prisma.finance.update({
+      where: { id: formData.financeId },
       data: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        name: formData.firstName + ' ' + formData.lastName,
+        clientfileId: formData.clientfileId,
+        activixId: formData.activixId,
+        theRealActId: formData.theRealActId,
+        financeManager: formData.financeManager,
         email: formData.email,
+        firstName: formData.firstName,
+        mileage: formData.mileage,
+        lastName: formData.lastName,
         phone: formData.phone,
+        name: formData.name,
         address: formData.address,
         city: formData.city,
-        province: formData.province,
         postal: formData.postal,
+        province: formData.province,
         dl: formData.dl,
+        typeOfContact: formData.typeOfContact,
+        timeToContact: formData.timeToContact,
+        iRate: formData.iRate,
+        months: formData.months,
+        discount: formData.discount,
+        total: formData.total,
+        onTax: formData.onTax,
+        on60: formData.on60,
+        biweekly: formData.biweekly,
+        weekly: formData.weekly,
+        weeklyOth: formData.weeklyOth,
+        biweekOth: formData.biweekOth,
+        oth60: formData.oth60,
+        weeklyqc: formData.weeklyqc,
+        biweeklyqc: formData.biweeklyqc,
+        qc60: formData.qc60,
+        deposit: formData.deposit,
+        biweeklNatWOptions: formData.biweeklNatWOptions,
+        weeklylNatWOptions: formData.weeklylNatWOptions,
+        nat60WOptions: formData.nat60WOptions,
+        weeklyOthWOptions: formData.weeklyOthWOptions,
+        biweekOthWOptions: formData.biweekOthWOptions,
+        oth60WOptions: formData.oth60WOptions,
+        biweeklNat: formData.biweeklNat,
+        weeklylNat: formData.weeklylNat,
+        nat60: formData.nat60,
+        qcTax: formData.qcTax,
+        otherTax: formData.otherTax,
+        totalWithOptions: formData.totalWithOptions,
+        otherTaxWithOptions: formData.otherTaxWithOptions,
+        desiredPayments: formData.desiredPayments,
+        freight: formData.freight,
+        admin: formData.admin,
+        commodity: formData.commodity,
+        pdi: formData.pdi,
+        discountPer: formData.discountPer,
+        userLoanProt: formData.userLoanProt,
+        userTireandRim: formData.userTireandRim,
+        userGap: formData.userGap,
+        userExtWarr: formData.userExtWarr,
+        userServicespkg: formData.userServicespkg,
+        deliveryCharge: formData.deliveryCharge,
+        vinE: formData.vinE,
+        lifeDisability: formData.lifeDisability,
+        rustProofing: formData.rustProofing,
+        userOther: formData.userOther,
+        paintPrem: formData.paintPrem,
+        licensing: formData.licensing,
+        stockNum: formData.stockNum,
+        options: formData.options,
+        accessories: formData.accessories,
+        labour: formData.labour,
+        year: formData.year,
+        brand: formData.brand,
+        model: formData.model,
+        model1: formData.model1,
+        color: formData.color,
+        modelCode: formData.modelCode,
+        msrp: formData.msrp,
+        userEmail: formData.userEmail,
+        tradeValue: formData.tradeValue,
+        tradeDesc: formData.tradeDesc,
+        tradeColor: formData.tradeColor,
+        tradeYear: formData.tradeYear,
+        tradeMake: formData.tradeMake,
+        tradeVin: formData.tradeVin,
+        tradeTrim: formData.tradeTrim,
+        tradeMileage: formData.tradeMileage,
+        tradeLocation: formData.tradeLocation,
+        trim: formData.trim,
+        vin: formData.vin,
+        leadNote: formData.leadNote,
+        sendToFinanceNow: formData.sendToFinanceNow,
+        dealNumber: formData.dealNumber,
+        bikeStatus: formData.bikeStatus,
+        lien: formData.lien,
+        dob: formData.dob,
+        othTax: formData.othTax,
+        optionsTotal: formData.optionsTotal,
+        lienPayout: formData.lienPayout,
+        referral: formData.referral,
+        visited: formData.visited,
+        bookedApt: formData.bookedApt,
+        aptShowed: formData.aptShowed,
+        aptNoShowed: formData.aptNoShowed,
+        testDrive: formData.testDrive,
+        metService: formData.metService,
+        metManager: formData.metManager,
+        metParts: formData.metParts,
+        sold: formData.sold,
+        depositMade: formData.depositMade,
+        refund: formData.refund,
+        turnOver: formData.turnOver,
+        financeApp: formData.financeApp,
+        approved: formData.approved,
+        signed: formData.signed,
+        pickUpSet: formData.pickUpSet,
+        demoed: formData.demoed,
+        delivered: formData.delivered,
+        lastContact: formData.lastContact,
+        status: formData.status,
+        customerState: formData.customerState,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: formData.nextAppointment,
+        followUpDay: formData.followUpDay,
+        deliveryDate: formData.deliveryDate,
+        deliveredDate: formData.deliveredDate,
+        notes: formData.notes,
+        visits: formData.visits,
+        progress: formData.progress,
+        metSalesperson: formData.metSalesperson,
+        metFinance: formData.metFinance,
+        financeApplication: formData.financeApplication,
+        pickUpDate: formData.pickUpDate,
+        pickUpTime: formData.pickUpTime,
+        depositTakenDate: formData.depositTakenDate,
+        docsSigned: formData.docsSigned,
+        tradeRepairs: formData.tradeRepairs,
+        seenTrade: formData.seenTrade,
+        lastNote: formData.lastNote,
+        applicationDone: formData.applicationDone,
+        licensingSent: formData.licensingSent,
+        liceningDone: formData.liceningDone,
+        refunded: formData.refunded,
+        cancelled: formData.cancelled,
+        lost: formData.lost,
+        dLCopy: formData.dLCopy,
+        insCopy: formData.insCopy,
+        testDrForm: formData.testDrForm,
+        voidChq: formData.voidChq,
+        loanOther: formData.loanOther,
+        signBill: formData.signBill,
+        ucda: formData.ucda,
+        tradeInsp: formData.tradeInsp,
+        customerWS: formData.customerWS,
+        otherDocs: formData.otherDocs,
+        urgentFinanceNote: formData.urgentFinanceNote,
+        funded: formData.funded,
+        leadSource: formData.leadSource,
+        financeDeptProductsTotal: formData.financeDeptProductsTotal,
+        bank: formData.bank,
+        loanNumber: formData.loanNumber,
+        idVerified: formData.idVerified,
+        dealerCommission: formData.dealerCommission,
+        financeCommission: formData.financeCommission,
+        salesCommission: formData.salesCommission,
+        firstPayment: formData.firstPayment,
+        loanMaturity: formData.loanMaturity,
       }
     })
     /** if (user?.activixActivated === 'yes') {
@@ -6959,7 +7335,9 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const conversations = await prisma.previousComms.findMany({ orderBy: { createdAt: "desc" }, });
 
   // -----------------------------email---------------------------------//
-
+  const emailTemplatesDropdown = await prisma.emailTemplatesForDropdown.findMany({
+    where: { userEmail: email },
+  });
   if (user?.activixActivated === 'yes') {
     const financeData = finance
     await PullActivix(financeData)
@@ -6967,39 +7345,39 @@ export async function loader({ params, request }: DataFunctionArgs) {
   if (brand === 'Manitou') {
     const modelData = await getDataByModelManitou(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, searchData, convoList, conversations })
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown })
   }
   if (brand === 'Switch') {
     const modelData = await getDataByModel(finance);
     const manOptions = await getLatestOptionsManitou(email)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
   }
   if (brand === 'Kawasaki') {
     const modelData = await getDataKawasaki(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
   }
   if (brand === 'BMW-Motorrad') {
     const bmwMoto = await getLatestBMWOptions(financeId)
     const bmwMoto2 = await getLatestBMWOptions2(financeId)
     const modelData = await getDataBmwMoto(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown }))
   }
   if (brand === 'Triumph') {
     const modelData = await getDataTriumph(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
   }
   if (brand === 'Harley-Davidson') {
     const modelData = await getDataHarley(finance);
     const apptFinance2 = await getAllFinanceApts2(financeId)
     const aptFinance3 = await getAllFinanceApts(financeId)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
   }
   if (brand === 'Indian' || brand === 'Can-Am' || brand === 'Sea-Doo' || brand === 'Ski-Doo' || brand === 'Suzuki' || brand === 'Spyder' || brand === 'Can-Am-SXS') {
     const modelData = await getDataByModel(finance)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, searchData, convoList, conversations, }))
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown }))
 
   }
-  return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, }))
+  return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
 }
 
 type ValuePiece = Date | null;

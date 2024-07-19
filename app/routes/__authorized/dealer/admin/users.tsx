@@ -1,14 +1,17 @@
 import { json, redirect } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useNavigation } from "@remix-run/react";
 import pluralize from "pluralize";
 import bcrypt from "bcryptjs";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
+import { ButtonLoading } from "~/components/ui/button-loading";
 
 import {
   AvatarAuto, Badge, Debug, RemixLink, Button,
   ButtonLink,
   PageAdminHeader,
-  RemixForm, Card, CardContent, Input, Label, Select, SelectTrigger, SelectContent, SelectItem, Avatar, AvatarFallback, AvatarImage, PopoverTrigger, PopoverContent, Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, Popover, CardHeader, CardTitle, CardDescription,
+  RemixForm, Card, CardContent, Input, Label, Avatar, AvatarFallback, AvatarImage, PopoverTrigger, PopoverContent, Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, Popover, CardHeader, CardTitle, CardDescription,
+  SelectContent, SelectLabel, SelectGroup,
+  SelectValue, Select, SelectTrigger, SelectItem,
 } from "~/components";
 import { model } from "~/models";
 import {
@@ -44,16 +47,73 @@ import { Resend } from "resend";
 import { Plus, Trash } from "~/icons";
 import { prisma } from "~/libs";
 import { useState } from "react";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, Menu } from "lucide-react";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
 import { GetUser } from "~/utils/loader.server";
 import { EmployEmail } from "./employeeOnboarding";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+} from '@tremor/react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog"
+import { toast } from "sonner";
+
 
 export const handle = createSitemap();
 
 export async function loader({ request, params }: LoaderArgs) {
-  const users = await model.adminUser.query.getAll();
+  // const users = await model.adminUser.query.getAll();
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      subscriptionId: true,
+      customerId: true,
+      returning: true,
+      phone: true,
+      positions: { select: { position: true } },
+      roleId: true,
+      profileId: true,
+      omvicNumber: true,
+      lastSubscriptionCheck: true,
+      profile: true,
+      activisUserId: true,
+      activixEmail: true,
+      activixActivated: true,
+      newLook: true,
+      activixId: true,
+      dealerAccountId: true,
+      microId: true,
+      givenName: true,
+      familyName: true,
+      identityProvider: true,
+      plan: true,
+      role: { select: { symbol: true, name: true } },
+    },
+  });
   const userCount = await model.adminUser.query.count();
   const userRoles = await model.userRole.query.getAll();
   const usersCount = users.length;
@@ -147,27 +207,43 @@ export async function action({ request }: ActionArgs) {
     });
     return redirect(`..`);
   }
+  switch (formData.intent) {
+    case 'sendOnboardingEmail':
+      const userAdd = {
+        name: formData.name,
+      }
+      const onboardingEmail = await resend.emails.send({
+        from: "Sales <sales@resend.dev>",
+        reply_to: user?.email,
+        to: [`${formData?.email}`],
+        subject: 'Onboarding Email',
+        react: <EmployEmail dealer={formData.dealer} userAdd={userAdd} />
+      });
+      return onboardingEmail
+      break;
+    default:
+      break;
+  }
   return redirect(`.`);
 }
 
 
 export default function Route() {
-  const { users, usersCount, userCount, userRole, userRoles } = useLoaderData<typeof loader>();
+  const { users, usersCount, userCount, userRole, userRoles, user } = useLoaderData<typeof loader>();
   const [addUserRole, setAddUserRole] = useState(false)
-  const [editUser, setEditUser] = useState(false)
-  const [isRowSelected, setIsRowSelected] = useState(false);
   const [name, setName] = useState('')
   const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [activixEmail, setActivixEmail] = useState('')
   const [dept, setDept] = useState('')
-  const [position, setPosition] = useState('')
-  const [dealer, setDealer] = useState('')
   const [role, setRole] = useState('')
+  const [dealer, setDealer] = useState('')
   const [omvicNumber, setOmvic] = useState('')
+  const [position, setPosition] = useState('')
   const handleRowClick = (user) => {
-    setIsRowSelected(true);
+    console.log(user, 'from row click user')
+    //   setIsRowSelected(true);
     setName(user.name);
     setUsername(user.username)
     setPhone(user.phone)
@@ -176,13 +252,27 @@ export default function Route() {
     setOmvic(user.omvic)
     setDealer(user.dealer)
     setActivixEmail(user.activixEmail)
-    setPosition(user.position)
     setDept(user.dept)
-
+    setPosition(user.positions.position)
   };
   if (users.length <= 0) {
     return <span>No users. Please register new.</span>;
   }
+  const userData = [
+    { name: 'name', defaultValue: name, label: 'Name' },
+    { name: 'username', defaultValue: username, label: 'Username' },
+    { name: 'email', defaultValue: email, label: 'Email' },
+    { name: 'phone', defaultValue: phone, label: 'Phone' },
+    { name: 'dealer', defaultValue: dealer, label: 'Dealer' },
+    { name: 'dept', defaultValue: dept, label: 'Dept' },
+    { name: 'activixEmail', defaultValue: activixEmail, label: 'Activix Email' },
+    { name: 'omvicNumber', defaultValue: omvicNumber, label: 'Omvic Number' },
+    { name: 'position', defaultValue: position, label: 'Position' }, // Extract position(s)
+  ]
+
+  const navigation = useNavigation();
+
+  const isSubmitting = navigation.state === "submitting";
   return (
     <Tabs defaultValue="Users" className="m-5  ">
       <TabsList className="">
@@ -191,274 +281,293 @@ export default function Route() {
         <TabsTrigger value="UserRoles">User Roles</TabsTrigger>
       </TabsList>
       <TabsContent value="Users">
-        <Card>
-          <CardContent className="space-y-2 rounded-md bg-background text-foreground border-border">
-            <Form method="post" className="">
-              <div className='mt-5 text-foreground'>
-                <div className='max-w-xl   text-foreground'>
-                  <header>
 
-                  </header>
-                  {!isRowSelected ? (
-                    <>
-                      <CardHeader>
-                        <CardTitle className='flex justify-between'>
-                          <p>
-                            Team Members
-                          </p>
-                          <span>{formatPluralItems("user", usersCount)}</span>
-                        </CardTitle>
-                        <CardDescription>
-                          Invite your team members to collaborate.
-                        </CardDescription>
-                      </CardHeader>
-                      <ul className="space-y-2">
-                        {users.map((user) => {
-                          const userNotesCount = user.notes?.length;
-                          const userImagesCount = user.images?.length;
-                          const initials = user.name.split(' ').map(word => word[0]).join('');
-                          return (
-                            <li key={user.id}>
-                              <div className="relative mt-3"  >
-                                <CardContent className="grid gap-6 border-border">
-                                  <div className="flex items-center justify-between space-x-4">
-                                    <div className="flex items-center space-x-4">
-                                      <Avatar className='bg-black border-[#fafafa]'>
-                                        <AvatarImage src="/avatars/01.png" />
-                                        <AvatarFallback>{initials}</AvatarFallback>
-                                      </Avatar>
-                                      <div className='grid grid-colds-2'>
-                                        <div className='flex items-center justify-between'>
-                                          <p className="text-sm text-muted-foreground ml-2">@{user.username}</p>
-                                          <Badge className='mt-2'>{user.role.name}</Badge>
-                                        </div>
-                                        <div className='flex items-center justify-between'>
-                                          <p className="text-sm text-muted-foreground mr-2">{user.email}</p>
-                                          <p className="text-sm text-muted-foreground ml-2">{user.phone}</p>
-                                        </div>
-                                        <div className='flex items-center justify-between'>
-                                          <p className="text-sm text-muted-foreground mr-2">{user.position}</p>
-                                          <p className="text-sm text-muted-foreground ml-2">{user.dealer}</p>
-                                        </div>
-                                        <div className='flex items-center justify-between'>
-                                          <p className="text-sm text-muted-foreground mr-2">{user.omvicNumber}</p>
-                                          <p className="text-sm text-muted-foreground ml-2">{user.dept}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <RemixLink
-                                      prefetch="intent"
-                                      onClick={() => {
-                                        handleRowClick(user);
-                                      }}
-                                      className="card hover:card-hover queue-center"
-                                    >
-                                      <Button size='sm' variant="outline" className="ml-autp bg-primary">
-                                        Edit
-                                      </Button>
-                                    </RemixLink>
-                                  </div>
-                                </CardContent>
-                                <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{user.name}</label>
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                      {configDev.isDevelopment && (
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button size='sm' variant="outline" className="bg-primary">
-                              <span>Delete All {formatPluralItems("User", userCount)}</span>
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent className='bg-white'>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete your
-                                accounts and remove your data from our servers.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction>
-                                <RemixForm method="delete">
-                                  <Button
-                                    variant="outline"
-                                    name="intent"
-                                    value="delete-all-users"
-                                    disabled={userCount <= 0}
-                                  >
-                                    <Trash className="size-sm" />
-                                    <span>Delete All {formatPluralItems("User", userCount)}</span>
-                                  </Button>
-                                </RemixForm>
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      )}
-                    </>
-                  ) : (
-                    <Form method='post' className='max-w-sm' >
-                      <div className='mt-5'>
-                        <Label className='text-lg'>
-                          Full Name
-                        </Label>
-                        <Input name='name' defaultValue={name} className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="name"
-                          autoFocus
-                          required />
-                      </div>
-                      <div className='mt-5'>
-                        <Label className='text-lg'>
-                          Username
-                        </Label>
-                        <Input name='username' defaultValue={username} className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="username"
-                          autoFocus
-                          required />
-                      </div>
-                      <div className='mt-5'>
-                        <Label className='text-lg'>
-                          Phone
-                        </Label>
-                        <Input name='phone' defaultValue={phone} className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="phone"
-                          autoFocus
-                          required />
-                      </div>
-                      <div className='mt-5'>
-                        <Label className='text-lg'>
-                          Email
-                        </Label>
-                        <Input name='email' defaultValue={email} className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
-                          autoFocus
-                          required />
-                      </div>
-                      <div className='mt-5'>
-                        <Label className='text-lg'>
-                          Dealer
-                        </Label>
-                        <Input name='dealer' defaultValue={dealer} className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
-                          autoFocus
-                          required />
-                      </div>
-                      <div className='mt-5'>
-                        <Label className='text-lg'>
-                          Position
-                        </Label>
-                        <Input name='position' defaultValue={position} className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
-                          autoFocus
-                          required />
-                      </div>
-                      <div className='mt-5'>
-                        <Label className='text-lg'>
-                          Dept
-                        </Label>
-                        <Input name='dept' defaultValue={dept} className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
-                          autoFocus
-                          required />
-                      </div>
-                      <div className='mt-5'>
-                        <Label className='text-lg'>
-                          Activix Email
-                        </Label>
-                        <Input name='activixEmail' defaultValue={activixEmail} className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" autoComplete="email"
-                          autoFocus
-                          required />
-                      </div>
-
-                      <div className='mt-5'>
-                        <Label className='text-lg'>
-                          OMVIC #
-                        </Label>
-                        <Input name='omvicNumber' defaultValue={omvicNumber} className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                      </div>
-                      <div>
-                        <Label className='text-lg mt-5'>
-                          Role
-                        </Label>
-
-                        <Select name='userRole'>
-                          <SelectTrigger className='mr-3 w-auto border-primary  text-primary'>
-                            Role
-                          </SelectTrigger>
-                          <SelectContent align="end" className='bg-background text-foreground ' required>
-                            {userRole.map((role) => (
-                              <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-primary hover:underline">
-                                {role.symbol}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <Button variant='outline' type='submit' name='intent' value='update-user' className="mt-5 ml-auto justify-end">
-                        Edit User
-                      </Button>
-                    </Form>
-                  )}
-                </div>
-              </div>
-
-            </Form>
-
-          </CardContent>
-        </Card >
-      </TabsContent >
-
-      <TabsContent value="Add">
-        <Card>
-          <CardContent className="space-y-2 rounded-md bg-background text-foreground border-border">
-            <div className="mt-2  grid  grid-cols-1 gap-2">
-              <Form method='post' className='space-y-3 max-w-sm '>
-                <div className="relative mt-3"  >
-                  <Input name='name' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Name</label>
-                </div>
-                <div className="relative mt-3"  >
-                  <Input name='username' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Username</label>
-                </div>
-                <div className="relative mt-3"  >
-                  <Input name='email' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  Email</label>
-                </div>
-                <div className="relative mt-3"  >
-                  <Input name='phone' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">S Phone</label>
-                </div>
-                <div className="relative mt-3"  >
-                  <Input name='phone' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Position</label>
-                </div>
-                <div className="relative mt-3"  >
-                  <Input name='omvicNumber' className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1" />
-                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">  OMVIC #</label>
-                </div>
-                <div className="relative mt-3"  >
-                  <Select name='userRole'>
-                    <SelectTrigger className='mr-3 bg-background w-[95%] text-foreground border-border'>
-                    </SelectTrigger>
-                    <SelectContent align="end" className='bg-background text-foreground border-[#8c8c91]'>
-                      {userRole.map((role) => (
-                        <SelectItem key={role.id} value={role.symbol} className="cursor-pointer bg-[#fff] capitalize text-[#000]  hover:text-primary hover:underline">
-                          {role.symbol}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <label className="required:border-primary text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500"> Role</label>
-                </div>
-                <Button size='sm' variant='outline' type='submit' name='intent' value='addUser' className='mt-5 bg-primary'>
-                  Add User
-                </Button>
-              </Form>
+        <>
+          <div className="sm:flex sm:items-center sm:justify-between sm:space-x-10">
+            <div>
+              <p className="mt-3 text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
+                To add or keep track of, this is where you do it all for your users.
+              </p>
             </div>
-          </CardContent>
-        </Card>
+
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant='outline'
+                  type="button"
+                  className="mt-4 bg-primary w-full whitespace-nowrap rounded-tremor-small  px-4 py-2.5 text-tremor-default font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis dark:bg-dark-tremor-brand dark:text-dark-tremor-brand-inverted dark:shadow-dark-tremor-input dark:hover:bg-dark-tremor-brand-emphasis sm:mt-0 sm:w-fit"
+                >
+                  Add user
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] border border-border">
+                <DialogHeader>
+                  <DialogTitle>Add user profile</DialogTitle>
+
+                </DialogHeader>
+                <Form method='post' className='max-w-sm' >
+                  {userData.map((user, index) => (
+                    <div key={index} className="relative mt-5">
+                      <Input
+                        name={user.name}
+                        className={` bg-background text-foreground border border-border`}
+                      />
+                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+                    </div>
+                  ))}
+                  <div className="relative mt-4">
+                    <Select name='userRole'>
+                      <SelectTrigger className="w-full  bg-background text-foreground border border-border">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className='bg-background text-foreground border border-border '>
+                        <SelectGroup>
+                          <SelectLabel>Positions</SelectLabel>
+                          {userRole.map((role) => (
+                            <SelectItem key={role.id} value={role.name} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                              {role.symbol}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Role</label>
+                  </div>
+                  <Button variant='outline' type='submit' name='intent' value='addUser' className="mt-5 ml-auto justify-end">
+                    Add User
+                  </Button>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </div>
+          <Table className="mt-8">
+            <TableHead>
+              <TableRow className="">
+                <TableHeaderCell className="w-[20px] text-tremor-content-strong dark:text-dark-tremor-content-strong">
+
+                </TableHeaderCell>
+                <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong">
+
+                </TableHeaderCell>
+                <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong">
+
+                </TableHeaderCell>
+                <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong">
+
+                </TableHeaderCell>
+                <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong">
+
+                </TableHeaderCell>
+                <TableHeaderCell className="text-right text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                </TableHeaderCell>
+                <TableHeaderCell className="text-right text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                </TableHeaderCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((item, index) => {
+                const userNotesCount = item.notes?.length;
+                const userImagesCount = item.images?.length;
+                const initials = item.name.split(' ').map(word => word[0]).join('');
+                return (
+                  <>
+                    <TableRow key={index}>
+                      <TableCell className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                        <Avatar className='bg-black border-[#fafafa]'>
+                          <AvatarImage src="/avatars/01.png" />
+                          <AvatarFallback>{initials}</AvatarFallback>
+                        </Avatar>
+                      </TableCell>
+                      <TableCell><div className='grid grid-cols-1 text-left'>
+                        <p>{item.name}</p>
+                        <p className='text-muted-foreground'>{item.email}</p>
+                      </div></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell className="text-right"></TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger><Menu color="#ffffff" /></DropdownMenuTrigger>
+                          <DropdownMenuContent className='bg-background border border-border'>
+                            <DropdownMenuLabel>User Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onSelect={(e) => { e.preventDefault(); handleRowClick(item) }}>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <p className='w-full rounded-[4px] bg-[#262626]'>
+                                    Edit
+                                  </p>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px] border border-border">
+                                  <DialogHeader>
+                                    <DialogTitle>Edit user profile</DialogTitle>
+                                    <DialogDescription>
+                                      Make changes to the profile here. Click save when you're done.
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <Form method='post' className='max-w-sm' >
+                                    {userData.map((user, index) => (
+                                      <div key={index} className="relative mt-4">
+                                        <Input
+                                          name={user.name}
+                                          defaultValue={user.defaultValue}
+                                          className={` bg-background text-foreground border border-border`}
+                                        />
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+                                      </div>
+                                    ))}
+                                    <div className="relative mt-4">
+                                      <Select name='userRole' defaultValue={role} >
+                                        <SelectTrigger className="w-full  bg-background text-foreground border border-border">
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent className='bg-background text-foreground border border-border '>
+                                          <SelectGroup>
+                                            <SelectLabel>Positions</SelectLabel>
+                                            {userRole.map((role) => (
+                                              <SelectItem key={role.id} value={role.name} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                                                {role.symbol}
+                                              </SelectItem>
+                                            ))}
+                                          </SelectGroup>
+                                        </SelectContent>
+                                      </Select>
+                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Role</label>
+                                    </div>
+                                    <Button variant='outline' type='submit' name='intent' value='update-user' className="mt-5 ml-auto justify-end">
+                                      Edit User
+                                    </Button>
+                                  </Form>
+
+                                  <DialogFooter>
+                                    <Button type="submit">Save changes</Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onSelect={(e) => { e.preventDefault(); handleRowClick(item) }}>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <p className='w-full rounded-[4px] bg-[#262626]'>
+                                    View
+                                  </p>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                  <DialogHeader>
+                                    <DialogTitle>User profile</DialogTitle>
+                                  </DialogHeader>
+                                  <ul className="grid gap-3">
+                                    {userData.map((user, index) => (
+                                      <>
+                                        <li key={index} className="flex items-center justify-between mt-3">
+                                          <span className="text-muted-foreground">{user.label}</span>
+                                          <span>{user.name}</span>
+                                        </li>
+                                        <li className="flex items-center justify-between mt-3">
+                                          <span className="text-muted-foreground">Position</span>
+                                          <span>{user.defaultValue}</span>
+                                        </li>
+                                        <hr className="my-1 text-muted-foreground w-[98%] mx-auto" />
+
+                                      </>
+                                    ))}
+                                  </ul>
+                                </DialogContent>
+                              </Dialog>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Form method='post'>
+                                <input type='hidden' name='email' value={item.email} />
+                                <input type='hidden' name='dealer' value={item.dealer} />
+                                <input type='hidden' name='name' value={item.name} />
+                                <ButtonLoading
+                                  size="sm"
+                                  value='sendOnboardingEmail'
+                                  className="w-auto cursor-pointer ml-3 hover:text-primary border-border"
+                                  name="intent"
+                                  type="submit"
+                                  isSubmitting={isSubmitting}
+                                  onClick={() => toast.success(`Sending email`)}
+                                  loadingText="Updating client info..."
+                                >
+                                  Send Onboarding Email
+                                </ButtonLoading>
+                              </Form>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Form method='post'>
+                                <input type='hidden' name='userId' value={item.id} />
+                                <input type='hidden' name='email' value={item.email} />
+                                <ButtonLoading
+                                  size="sm"
+                                  variant='ghost'
+                                  value='deleteUser'
+                                  className="w-auto cursor-pointer ml-3 hover:text-primary border-border tex-left"
+                                  name="intent"
+                                  type="submit"
+                                  isSubmitting={isSubmitting}
+                                  onClick={() => toast.success(`Sending email`)}
+                                  loadingText="Deleting client info..."
+                                >
+                                  Delete
+                                </ButtonLoading>
+                              </Form>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  </>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </>
+      </TabsContent >
+      <TabsContent value="Add">
+
+        <div className="mt-2  grid  grid-cols-1 gap-2">
+          <Form method='post' className='space-y-3 max-w-sm '>
+            {userData.map((user, index) => (
+              <div key={index} className="relative mt-4">
+                <Input
+                  name={user.name}
+                  defaultValue={user.defaultValue}
+                  className={` bg-background text-foreground border border-border`}
+                />
+                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+              </div>
+            ))}
+            <div className="relative mt-3">
+              <Select name='userRole' defaultValue={role} >
+                <SelectTrigger className="w-full  bg-background text-foreground border border-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className='bg-background text-foreground '>
+                  <SelectGroup>
+                    <SelectLabel>Positions</SelectLabel>
+                    {userRole.map((role) => (
+                      <SelectItem key={role.id} value={role.name} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                        {role.symbol}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Role</label>
+            </div>
+            <Button size='sm' variant='outline' type='submit' name='intent' value='addUser' className='mt-5 bg-primary'>
+              Add User
+            </Button>
+          </Form>
+        </div>
+
       </TabsContent >
 
       <TabsContent value="UserRoles">
-        <Card>
+        <Card className='w-[600px] '>
           <CardContent className="space-y-2 rounded-md bg-background text-foreground border-border mt-5">
             <div className='flex justify-between'>
               <Button variant='outline' onClick={() => { setAddUserRole(true) }}>
@@ -499,18 +608,16 @@ export default function Route() {
             {userRoles.length <= 0 && <span>No user roles. Please add.</span>}
 
             {userRoles.length > 0 && (
-              <ul className="stack grid grid-cols-2">
+              <div className="grid gap-3">
                 {userRoles.map((userRole) => {
                   return (
-                    <li key={userRole.symbol} className="card-sm mt-5">
-                      <div className="queue-center  ">
-                        <Badge>{userRole.symbol}</Badge>
-                      </div>
-                      <p>{userRole.description}</p>
+                    <li key={userRole.symbol} className="flex items-center justify-between">
+                      <Badge>{userRole.symbol}</Badge>
+                      <span className="text-[#8a8a93]">{userRole.description}</span>
                     </li>
                   );
                 })}
-              </ul>
+              </div>
             )}
           </CardContent>
         </Card>

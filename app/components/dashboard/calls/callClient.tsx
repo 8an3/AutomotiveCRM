@@ -3,7 +3,6 @@ import { Input, Button, Separator, Checkbox, PopoverTrigger, PopoverContent, Pop
 import { useLoaderData, Form, useFetcher, useLocation } from "@remix-run/react";
 import { PhoneOutcome, MenuScale, Mail, MessageText, User, ArrowDown, Calendar as CalendarIcon, WebWindowClose, } from "iconoir-react";
 import { dashboardLoader } from "~/components/actions/dashboardCalls";
-import { response } from "express";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import React, { useEffect, useRef, useState } from 'react';
 import * as Toast from "@radix-ui/react-toast";
@@ -12,7 +11,7 @@ export let loader = dashboardLoader;
 
 
 
-export default function CallClient() {
+export default function CallClient({ data }) {
   const today = new Date();
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -62,6 +61,7 @@ export default function CallClient() {
           <input type="hidden" value='+17073834342' name='to' />
           <input type="hidden" value='+16138980992' name='from' />
           <input type='hidden' value='callClient' name='intent' />
+          <input type='hidden' value={data.Phone} name='Phone' />
 
           <PhoneOutcome />
         </button >

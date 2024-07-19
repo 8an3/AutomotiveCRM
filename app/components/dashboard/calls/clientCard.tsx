@@ -172,7 +172,7 @@ export default function ClientCard({ data }) {
                                     </div>
                                 ))}
                             <div className="relative mt-5">
-                                <Select name='timeToContact'                                                >
+                                <Select name='timeToContact' defaultValue={data.timeToContact}  >
                                     <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
                                         <SelectValue defaultValue={data.timeToContact} />
                                     </SelectTrigger>
@@ -190,7 +190,7 @@ export default function ClientCard({ data }) {
                             </div>
                             <div className="relative mt-5">
 
-                                <Select name='typeOfContact'                                                >
+                                <Select name='typeOfContact' defaultValue={data.typeOfContact} >
                                     <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
                                         <SelectValue defaultValue={data.typeOfContact} />
                                     </SelectTrigger>
@@ -306,14 +306,16 @@ export default function ClientCard({ data }) {
 
                     <div className='flex justify-between mt-3'>
                         <Form method='post' >
-                            <input type='hidden' name='intent' value='financeTurnover' />
-                            <input type='hidden' name='locked' value={lockedValue} />
-                            <input type='hidden' name='financeManager' value={user.email} />
+                            <input type='hidden' name='unit' value={`${data.year} ${data.brand} ${data.model}`} />
+                            <input type='hidden' name='salesEmail' value={user.email} />
+                            <input type='hidden' name='customerName' value={data.firstName + ' ' + data.lastName} />
                             <input type='hidden' name='financeId' value={data.id} />
                             <ButtonLoading
                                 size="sm"
                                 className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
                                 type="submit"
+                                name='intent'
+                                value='clientTurnover'
                                 isSubmitting={isSubmitting}
                                 onClick={() => toast.success(`Informing finance managers of requested turnover...`)}
                                 loadingText="Reaching out to the finance dept..."

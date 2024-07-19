@@ -227,144 +227,31 @@ export default function WelcomeDealerFeesSection() {
   //      <video loop autoPlay width='750' height='750' src='https://youtu.be/u1MLfrFzCBo' className='mx-auto z-49' frameBorder="0" allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
   const [open, setOpen] = React.useState(false);
   return (
-    <Form method="post" className="">
-      <div className="grid grid-cols-1 mx-auto ">
-        <div className=" mt-5">
-          <h2 className="text-2xl font-thin">
-            QUICK RUNDOWN
-          </h2>
-          <Separator className="my-4" />
-        </div>
-        <iframe
-          width="750"
-          height="750"
-          src="https://www.youtube.com/embed/u1MLfrFzCBo"
-          title="YouTube video player"
-          frameBorder="0"
-          className='z-47 my-auto mx-auto'
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen>
-        </iframe>
-      </div>
-      <div className="grid grid-cols-1 gap-4 mx-auto">+
-        {/* Row 1 */}
-        <div className=" p-4">
-          <div className=" mt-5">
-            <h2 className="text-2xl font-thin">
-              DEALER FEES
-            </h2>
-            <p className="text-sm text-foreground">
-              This is where you can change values like freight, admin, taxes and
-              such. If you don't have all this information with you, dont worry, you can always come back and update it later.
-            </p>
-            <Separator className="my-4" />
-
-          </div>
-
-          <div className="grid grid-cols-3 gap-2">
-            {Dealerfees.map((fee, index) => (
-              <div key={index}>
-                <label className=''>{fee.placeholder}</label>
-                <Input
-                  name={fee.name}
-                  defaultValue={fee.value}
-
-                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-primary  mx-1"
-                />
-              </div>
-            ))}
-            <div className="">
-              <label>Licensing (Required)</label>
-              <Input
-                defaultValue={deFees.userLicensing}
-                name="userLicensing"
-                className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-primary  mx-1"
-              />
-              {errors?.userLicensing ? (
-                <em className="text-[#ff0202]">{errors.userLicensing}</em>
-              ) : null}
-            </div>
-
-            <div className="">
-              <label>Sales tax (Required)</label>
-              <Input
-                defaultValue={deFees.userTax}
-                name="userTax"
-                className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-primary  mx-1"
-              />
-              {errors?.userTax ? (
-                <em className="text-[#ff0202]">{errors.userTax}</em>
-              ) : null}
-            </div>
-            <div className="">
-              <label>Service Labour (Required)</label>
-              <Input
-                defaultValue={deFees.userLabour}
-                name="userLabour"
-                className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-[#ff0202]  mx-1"
-              />
-              {errors?.userLabour ? (
-                <em className="text-[#ff0202]">{errors.userLabour}</em>
-              ) : null}
-            </div>
-          </div>
-        </div>
-
-        {/* Row 2 */}
-        <h2 className="text-2xl font-thin mt-4">
-          OPTIONS
+    <div className="grid grid-cols-1 mx-auto ">
+      <div className=" mt-5">
+        <h2 className="text-2xl font-thin">
+          Getting Started
         </h2>
         <Separator className="mb-4" />
-        <div className="p-4 grid gap-2">
-          <div className="h-[250px] grid grid-cols-3 gap-2 ">
-            {FinanceOptions.map((option, index) => (
-              <div key={index}>
-                <label className='mt-2'>{option.placeholder}</label>
-                <Input
-                  name={option.name}
-                  defaultValue={option.value}
-                  className="bg-myColor-900 px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary text-slate4 active:bg-primary font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150
-                 focus:outline-none  focus:text-primary  mx-1"
-                />
-              </div>
-            ))}
-            <Input type='hidden'
-              defaultValue={user.email}
-              name="email"
-            />
-            <Toast.Provider swipeDirection="right">
-              <Button className="bg-primary mb-10 w-[75px] ml-2  mr-2 cursor-pointer text-foreground active:bg-[#0176b2] font-bold uppercase   text-xs  rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all text-center duration-150" type="submit"
-                onClick={() => {
-                  setOpen(false);
-                  window.clearTimeout(timerRef.current);
-                  timerRef.current = window.setTimeout(() => {
-                    setOpen(true);
-                  }, 100);
-                }}
-              >
-                Update
-              </Button>
-              <Toast.Root
-                className="bg-white rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut"
-                open={open}
-                onOpenChange={setOpen}
-              >
-                <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-foreground text-[15px]">
-                  Dealer Fees Updated.
-                </Toast.Title>
-                <Toast.Description asChild>
-                </Toast.Description>
-              </Toast.Root>
-              <Toast.Viewport className="[--viewport-padding:_25px] fixed bottom-0 right-0 flex flex-col p-[var(--viewport-padding)] gap-[10px] w-[390px]  max-w-[250vw] m-0 list-none z-[2147483647] outline-none" />
-            </Toast.Provider>
-          </div>
-        </div>
+        <p className="text-sm text-foreground mt-3 mb-3">
+          To get started you will need to take care of a few things before using the CRM. First you will need to input your dealer's fees and other values, in your settings section, for the quoting system to populate accurate quotes.
+        </p>
       </div>
-    </Form>
+      <a href='/dealer/user/dashboard/settings' target="_blank">
+        <Button className='bg-primary border border-border text-foreground'>
+          User Settings
+        </Button>
+      </a>
+      <p className='my-3'>
+        Afterwards your free to start using the crm you can access everything from the menu on the top right of the screen. Although we suggest going over the documentation to get the most out of the CRM. It's not needed if you have used other CRM's before, but there are features found in our CRM that you have not used before that could be useful in your everyday tasks.
+      </p>
+      <a href='/dealer/user/_docs/docs' target="_blank">
+        <Button className='bg-primary border border-border text-foreground'>
+          Documentation
+        </Button>
+      </a>
+    </div>
+
   )
 }
 

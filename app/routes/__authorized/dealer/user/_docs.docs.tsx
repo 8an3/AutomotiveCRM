@@ -10,7 +10,7 @@ import { RemixNavLink, } from "~/components"
 import { Separator, Button, Input, Label, Switch, Checkbox } from '~/components/ui/index'
 import { getUserIsAllowed } from "~/helpers";
 import { useState } from "react"
-
+import ReactPlayer from 'react-player'
 
 
 export async function loader({ request, params }: LoaderFunction) {
@@ -114,7 +114,8 @@ export default function Mainbody() {
         <div className='w-[98%]'>
           <div className="mx-auto my-auto w-[90%] h-[90%]">
             <h1 className='text-foreground mb-5'>{docsTitle}</h1>
-            <video width="50%" autoPlay src={docuVideos} />
+            <ReactPlayer url={docuVideos} />
+
           </div>
         </div>
       </div>

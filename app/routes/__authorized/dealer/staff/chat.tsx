@@ -89,6 +89,7 @@ import { CheckIcon, PaperPlaneIcon, PlusIcon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import useSWR, { SWRConfig, mutate } from "swr";
 import CheckingDealerPlan from "~/routes/__customerLandingPages/welcome/dealer";
+import { Plus } from "lucide-react";
 
 const fetchData = async (url) => {
   const response = await fetch(url);
@@ -127,14 +128,20 @@ const sortConversationsByDept = (conversations, labels) => {
 export default function StaffChat({ content }) {
   function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-  const { user, conversationsList, } = useLoaderData();
+  const { user, conversationsList, users, userChats } = useLoaderData();
   const [conversations, setConversations] = useState([]);
   const [filtererdConversations, setFilteredConversations] = useState([]);
   const [roomLabel, setRoomLabel] = useState("General");
-
+  const [addPerson, setAddPerson] = useState(false);
+  const [personAdded, setPersonAdded] = useState('');
+  const mergedLists = [
+    ...conversationsList,
+    ...userChats
+  ]
   useEffect(() => {
     setConversations(conversationsList);
-    const filteredConversations = conversationsList.reduce((filtered, conv) => {
+    //   const filteredConversations = conversationsList.reduce((filtered, conv) => {
+    const filteredConversations = mergedLists.reduce((filtered, conv) => {
       if (conv.dept === roomLabel) {
         filtered.push(conv);
       }
@@ -155,7 +162,8 @@ export default function StaffChat({ content }) {
   useEffect(() => {
     if (Array.isArray(userMessages)) {
       setConversations(userMessages);
-      const filteredConversations = conversationsList.reduce(
+      //   const filteredConversations = conversationsList.reduce(
+      const filteredConversations = mergedLists.reduce(
         (filtered, conv) => {
           if (conv.dept === roomLabel) {
             filtered.push(conv);
@@ -172,11 +180,13 @@ export default function StaffChat({ content }) {
     setRoomLabel(dept);
     await delay(150);
     if (!conversations) {
-      const filteredConversations = conversationsList.filter(conv => conv.dept === dept);
+      //  const filteredConversations = conversationsList.filter(conv => conv.dept === dept);
+      const filteredConversations = mergedLists.filter(conv => conv.dept === dept);
       console.log(filteredConversations, "filteredConversations");
       setFilteredConversations(filteredConversations);
     } else {
-      const filteredConversations = conversationsList.filter(conv => conv.dept === dept);
+      //  const filteredConversations = conversationsList.filter(conv => conv.dept === dept);
+      const filteredConversations = mergedLists.filter(conv => conv.dept === dept);
       console.log(filteredConversations, "filteredConversations");
       setFilteredConversations(filteredConversations);
     }
@@ -238,22 +248,37 @@ export default function StaffChat({ content }) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [filtererdConversations]);
+
+  function AddPerson(value) {
+    setPersonAdded(value)
+  }
+  const staffChats = []
   return (
     <Card
-      className=" z-50 w-[800px] text-foreground max-h-[60vh]"
+      className=" z-50 w-[715px] text-foreground max-h-[715px]"
       x-chunk="dashboard-05-chunk-4"
     >
-      <CardHeader className="flex flex-row items-start bg-muted-background rouned-lg">
-        <div className="grid gap-0.5">
-          <CardTitle className="group flex items-center gap-2 text-lg">
-            Staff Chat
-          </CardTitle>
+
+      <CardContent className=" bg-background p-6 text-sm rounded-t-[8px]">
+        <div className="flex justify-between items-center gap-0.5 mb-5">
+          <p>Staff Chat {personAdded}</p>
+          <Button
+            size="icon"
+            onClick={() => {
+              setAddPerson(true)
+              toast.success(`Message Sent!`);
+            }}
+            //   disabled={inputLength === 0}
+            className="bg-primary ml-auto "
+          >
+            <Plus className="h-4 w-4" />
+            <span className="sr-only">Send</span>
+          </Button>
         </div>
-      </CardHeader>
-      <CardContent className=" bg-background p-6 text-sm">
+
         <div className="grid grid-cols-8 gap-3 ">
-          <Card className="col-span-2 max-h-[500px] h-[500px]">
-            <CardContent className="flex-col overflow-y-auto">
+          <Card className="col-span-2 max-h-[545px] h-[545px]">
+            <CardContent className="flex-col overflow-y-auto mt-3">
               {labels.map((room, index) => (
                 <Button
                   key={index}
@@ -261,7 +286,7 @@ export default function StaffChat({ content }) {
                   onClick={() => handleRoomButtonClick(room.dept)}
                   className={cn(
                     buttonVariants({ variant: "ghost" }),
-                    roomLabel === room.dept
+                    roomLabel === room.dept || roomLabel === room.from
                       ? "w-[90%] bg-[#232324] hover:bg-muted/50"
                       : "w-[90%] hover:bg-muted/50",
                     "w-[90%] justify-start"
@@ -270,10 +295,47 @@ export default function StaffChat({ content }) {
                   {room.label}
                 </Button>
               ))}
+              {staffChats.map((user, index) => (
+                <Button
+                  key={index}
+                  variant="ghost"
+                  onClick={() => handleRoomButtonClick(room.from)}
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    roomLabel === room.from
+                      ? "w-[90%] bg-[#232324] hover:bg-muted/50"
+                      : "w-[90%] hover:bg-muted/50",
+                    "w-[90%] justify-start"
+                  )}
+                >
+                  {user.from}
+                </Button>
+              ))}
+              {addPerson === true && (
+                <div className="relative mt-4">
+
+                  <Select name='msgUser' onValueChange={setPersonAdded} >
+                    <SelectTrigger className="w-full  bg-background text-foreground border border-border">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className='bg-background text-foreground border border-border '>
+                      <SelectGroup>
+                        <SelectLabel>Message User</SelectLabel>
+                        {users.map((user, index) => (
+                          <SelectItem key={index} value={user.email} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                            {user.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Users</label>
+                </div>
+              )}
             </CardContent>
           </Card>
-          <Card className="col-span-6 max-h-[500px] h-[500px]" >
-            <CardContent className="flex-grow  overflow-x-clip overflow-y-scroll rouned-b-md" ref={containerRef}>
+          <Card className="col-span-6 max-h-[545px] h-[545px]" >
+            <CardContent className="flex-grow  overflow-x-clip overflow-y-auto rouned-b-md mt-3" ref={containerRef}>
               <div className="mt-5 h-auto  max-h-[450px] space-y-4">
                 {filtererdConversations.map((conversation) => (
                   <div
@@ -301,12 +363,14 @@ export default function StaffChat({ content }) {
         </div>
 
       </CardContent>
-      <CardFooter className=" border-t rounded-lg border-border bg-muted-background ">
-        <Input type="hidden" defaultValue={user.email} name="userEmail" />
-        <Input type="hidden" defaultValue={user.username || user.name} name="username" />
-        <Input type="hidden" defaultValue={roomLabel} name="dept" />
-        <fetcher.Form className="flex flex-row items-center w-full px-6 py-3">
+      <CardFooter className=" bg-muted-background ">
 
+        <fetcher.Form className="flex flex-row items-center w-full px-6 py-3">
+          <Input type="hidden" defaultValue={user.email} name="userEmail" />
+          <Input type="hidden" defaultValue={user.username || user.name} name="username" />
+          <Input type="hidden" defaultValue={roomLabel} name="dept" />
+          <Input type="hidden" defaultValue={personAdded} name="personAdded" />
+          <Input type="hidden" defaultValue={personAdded} name="to" />
           <Input
             id="message"
             placeholder="Type your message..."
@@ -346,11 +410,11 @@ export async function loader({ request, params }) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email");
   const user = await GetUser(email);
+  const users = await prisma.user.findMany({})
   const conversationsList = await prisma.staffChat.findMany();
-  console.log(user);
-  // const interruptionsData = await prisma.interruptions.findMany();
+  const userChats = await prisma.staffMessages.findMany({ where: { userEmail: email } })
   const getThing = await CheckingDealerPlan()
-  return json({ user, conversationsList });
+  return json({ user, conversationsList, users, userChats });
 }
 
 
@@ -360,13 +424,28 @@ export async function action({ request }: ActionFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   console.log('hitaction')
   const email = session2.get("email");
+  console.log('personAdded:', formData, formData.personAdded);
+
+  if (formData.personAdded && formData.personAdded.length > 2) {
+    console.log('personadded')
+    const saveMessage = await prisma.staffMessages.create({
+      data: {
+        body: formData.body || '',
+        userEmail: formData.userEmail || '',
+        username: formData.username || '',
+        to: formPayload.to || '',
+        from: formData.userEmail || '',
+      },
+    })
+    return saveMessage;
+  }
   if (formData.intent === 'sendMessage') {
     const saveMessage = await prisma.staffChat.create({
       data: {
-        body: formData.body,
-        userEmail: formData.userEmail,
-        username: formData.username,
-        dept: formData.dept,
+        body: formData.body || '',
+        userEmail: formData.userEmail || '',
+        username: formData.username || '',
+        dept: formData.dept || '',
       },
     })
     return saveMessage;

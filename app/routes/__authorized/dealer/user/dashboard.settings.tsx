@@ -461,10 +461,6 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
         <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>
         <TabsTrigger className='rounded-md' value="stats">Statistics</TabsTrigger>
         <TabsTrigger className='rounded-md' value="Automations">Automations</TabsTrigger>
-        {user.position === 'Finance Manager' && (
-          <TabsTrigger className='rounded-md' value="FinanceProducts">Finance Products</TabsTrigger>
-        )}
-        <TabsTrigger className='rounded-md' value="FinanceProducts">Finance Products</TabsTrigger>
       </TabsList>
       <TabsContent value="stats" className='rounded-md'>
         <Card className='rounded-md text-foreground border-border border'>
