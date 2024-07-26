@@ -1,9 +1,7 @@
 import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "~/components/ui/index";
 import * as React from "react"
-import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
-import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, } from "@tanstack/react-table"
-import { Checkbox } from "~/components/ui/checkbox"
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
+import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, sortingFns, } from "@tanstack/react-table"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
 import {
     Dialog,
@@ -20,118 +18,41 @@ import {
     rankItem,
     compareItems,
 } from '@tanstack/match-sorter-utils'
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useSubmit, useFetcher } from "@remix-run/react";
 import { getSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
-import { type MetaFunction, redirect, type LoaderFunctionArgs, json } from '@remix-run/node'
+import { type MetaFunction, redirect, type LoaderFunctionArgs, json, ActionFunction } from '@remix-run/node'
 import { GetUser } from "~/utils/loader.server";
+import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput } from "~/components/actions/shared";
+import { Cross2Icon, CaretSortIcon, CalendarIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
+import IndeterminateCheckbox, { EditableText, Filter } from '~/components/actions/shared'
+import { X } from "lucide-react";
+import { toast } from "sonner";
+import { DataTablePagination } from "~/components/dashboard/calls/pagination";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
+import UnitDialog from '~/components/dashboard/inventory/diaolog'
 
-export const loader = async ({ request }) => {
-    const session = await getSession(request.headers.get("Cookie"));
-    const email = session.get("email")
-
-
-    const user = await GetUser(email)
-
-    /// console.log(user, account, 'wquiote loadert')
-    const notifications = await prisma.notificationsUser.findMany({
-        where: {
-            userEmail: email
-        }
-    })
-    if (!user) {
-        redirect('/login')
-    }
-    return json({ user, notifications });
-}
-
-const data: Payment[] = [
+export const columns = [
     {
-        id: "m5gr84i9",
-        amount: 316,
-        status: "success",
-        email: "ken99@yahoo.com",
-    },
-    {
-        id: "3u1reuv4",
-        amount: 242,
-        status: "success",
-        email: "Abe45@gmail.com",
-    },
-    {
-        id: "derv1ws0",
-        amount: 837,
-        status: "processing",
-        email: "Monserrat44@gmail.com",
-    },
-    {
-        id: "5kma53ae",
-        amount: 874,
-        status: "success",
-        email: "Silas22@gmail.com",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 721,
-        status: "failed",
-        email: "carmella@hotmail.com",
-    },
-]
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-    // Rank the item
-    const itemRank = rankItem(row.getValue(columnId), value)
-
-    // Store the itemRank info
-    addMeta({
-        itemRank,
-    })
-
-    // Return if the item should be filtered in/out
-    return itemRank.passed
-}
-const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-    let dir = 0
-
-    // Only sort by rank if the column has ranking information
-    if (rowA.columnFiltersMeta[columnId]) {
-        dir = compareItems(
-            rowA.columnFiltersMeta[columnId]?.itemRank!,
-            rowB.columnFiltersMeta[columnId]?.itemRank!
-        )
-    }
-
-    // Provide an alphanumeric fallback for when the item ranks are equal
-    return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
-}
-export type Payment = {
-    id: string
-    amount: number
-    status: "pending" | "processing" | "success" | "failed"
-    email: string
-}
-
-export const columns: ColumnDef<Payment>[] = [
-    {
-        id: "select",
+        id: 'select',
         header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
+            <IndeterminateCheckbox
+                checked={table.getIsAllRowsSelected()}
+                indeterminate={table.getIsSomeRowsSelected()}
+                onChange={table.getToggleAllRowsSelectedHandler()}
+                className='border-primary mx-auto'
             />
         ),
         cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
+            <div className="px-1">
+                <IndeterminateCheckbox
+                    checked={row.getIsSelected()}
+                    indeterminate={row.getIsSomeSelected()}
+                    onChange={row.getToggleSelectedHandler()}
+                    className='border-primary mx-auto'
+                />
+            </div>
         ),
-        enableSorting: false,
-        enableHiding: false,
     },
     {
         accessorKey: "id",
@@ -141,30 +62,43 @@ export const columns: ColumnDef<Payment>[] = [
         ),
     },
     {
-        filterFn: 'fuzzy',
+        accessorKey: "unitInfo",
+        cell: ({ row, column: { id } }) => {
+            const data = row.original
+            return (
+            <UnitDialog data={data} />
+            )
+        },
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
+    },
+    {
         accessorKey: "stockNumber",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
+                    className='mx-auto justify-center'
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Stock #
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                    <CaretSortIcon className="ml-2 h-4 w-4 " />
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="uppercase">{row.getValue("stockNumber")}</div>,
+        filterFn: fuzzyFilter,
+        sortingFn: fuzzySort,
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "year",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
+                    className='mx-auto'
+
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Year
@@ -172,16 +106,18 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("year")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "make",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
+                    className=''
+
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Make
@@ -189,10 +125,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("make")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "model",
         header: ({ column }) => {
@@ -206,10 +142,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="uppercase">{row.getValue("model")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "modelName",
         header: ({ column }) => {
@@ -223,27 +159,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("modelName")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
-        sortingFn: fuzzySort,
-        accessorKey: "model2",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Model Name 2
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("model2")}</div>,
-    },
-    {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "submodel",
         header: ({ column }) => {
@@ -257,10 +176,27 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("submodel")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
+        sortingFn: fuzzySort,
+        accessorKey: "subSubmodel",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Sub SuB Model
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+
+    },
+    {
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "price",
         header: ({ column }) => {
@@ -274,10 +210,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("price")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "exteriorColor",
         header: ({ column }) => {
@@ -291,10 +227,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("exteriorColor")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "mileage",
         header: ({ column }) => {
@@ -308,10 +244,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("mileage")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "consignment",
         header: ({ column }) => {
@@ -325,10 +261,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("consignment")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "onOrder",
         header: ({ column }) => {
@@ -342,10 +278,11 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("onOrder")}</div>,
+
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "expectedOn",
         header: ({ column }) => {
@@ -359,10 +296,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("expectedOn")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "status",
         header: ({ column }) => {
@@ -376,10 +313,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("status")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "orderStatus",
         header: ({ column }) => {
@@ -393,10 +330,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("orderStatus")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "vin",
         header: ({ column }) => {
@@ -410,10 +347,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("vin")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "age",
         header: ({ column }) => {
@@ -427,10 +364,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("age")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "floorPlanDueDate",
         header: ({ column }) => {
@@ -444,10 +381,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("floorPlanDueDate")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "location",
         header: ({ column }) => {
@@ -461,10 +398,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("location")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "isNew",
         header: ({ column }) => {
@@ -478,10 +415,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("isNew")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "keyNumber",
         header: ({ column }) => {
@@ -495,10 +432,10 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("keyNumber")}</div>,
+
     },
     {
-        filterFn: 'fuzzy',
+        filterFn: fuzzyFilter,
         sortingFn: fuzzySort,
         accessorKey: "sold",
         header: ({ column }) => {
@@ -512,58 +449,78 @@ export const columns: ColumnDef<Payment>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("sold")}</div>,
+
     },
-
-
-
     {
         accessorKey: "packageNumber",
-        header: "packageNumber",
+        header: "Package Number",
+        id: 'packageNumber',
+        footer: props => props.column.id,
     },
     {
         accessorKey: "packagePrice",
-        header: "packagePrice",
+        header: "Package Price",
+
     },
     {
         accessorKey: "type",
         header: "type",
+
+
     },
     {
         accessorKey: "class",
         header: "class",
+
     },
     {
         accessorKey: "hdcFONumber",
         header: "hdcFONumber",
+
     },
     {
         accessorKey: "hdmcFONumber",
         header: "hdmcFONumber",
+
     },
     {
         accessorKey: "stocked",
-        header: "stocked",
+        header: "Stocked",
+        id: 'stocked',
+        cell: info => info.getValue(),
+        footer: props => props.column.id,
+
     },
     {
         accessorKey: "stockedDate",
-        header: "stockedDate",
+        header: "Stocked Date",
+        id: 'stockedDate',
+        cell: info => info.getValue(),
+        footer: props => props.column.id,
+
     },
     {
         accessorKey: "isNew",
-        header: "isNew",
+        header: "Is New",
+        id: 'isNew',
+        cell: info => info.getValue(),
+        footer: props => props.column.id,
+
     },
     {
         accessorKey: "mfgSerialNumber",
         header: "mfgSerialNumber",
+
     },
     {
         accessorKey: "actualCost",
         header: "actualCost",
+
     },
     {
         accessorKey: "engineNumber",
         header: "engineNumber",
+
     },
     {
         accessorKey: "plates",
@@ -573,217 +530,272 @@ export const columns: ColumnDef<Payment>[] = [
     {
         accessorKey: "width",
         header: "width",
+
     },
     {
         accessorKey: "engine",
         header: "engine",
+
     },
     {
         accessorKey: "fuelType",
         header: "fuelType",
+
     },
     {
         accessorKey: "power",
         header: "power",
+
     },
     {
         accessorKey: "chassisNumber",
         header: "chassisNumber",
+
     },
     {
         accessorKey: "chassisYear",
         header: "chassisYear",
+
     },
     {
         accessorKey: "chassisMake",
         header: "chassisMake",
+
     },
     {
         accessorKey: "chassisModel",
         header: "chassisModel",
     },
-    {
-        accessorKey: "fuelType",
-        header: "fuelType",
-    },
+
     {
         accessorKey: "chassisType",
         header: "chassisType",
+
     },
     {
         accessorKey: "registrationState",
         header: "registrationState",
+
     },
     {
         accessorKey: "registrationExpiry",
         header: "registrationExpiry",
+
     },
     {
         accessorKey: "netWeight",
         header: "netWeight",
+
     },
     {
         accessorKey: "grossWeight",
         header: "grossWeight",
+
     },
     {
         accessorKey: "insuranceCompany",
         header: "insuranceCompany",
+
     },
     {
         accessorKey: "policyNumber",
         header: "policyNumber",
+
     },
     {
         accessorKey: "insuranceStartDate",
         header: "insuranceStartDate",
+
     },
     {
         accessorKey: "insuranceAgent",
         header: "insuranceAgent",
+
     },
     {
         accessorKey: "insuranceEndDate",
         header: "insuranceEndDate",
+
     },
+    {
+        accessorKey: "length",
+        header: "length",
+    },
+
 ]
-declare module '@tanstack/table-core' {
-    interface FilterFns {
-        fuzzy: FilterFn<unknown>
-    }
-    interface FilterMeta {
-        itemRank: RankingInfo
-    }
+
+// Give our default column cell renderer editing superpowers!
+export const defaultColumn = {
+    cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+            <EditableText
+                value={row.getValue(id)}
+                fieldName="name"
+                inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
+                buttonClassName="text-center py-1 px-2 text-foreground"
+                buttonLabel={`Edit "${id}"`}
+                inputLabel={`Edit "${id}"`}
+            >
+                <input type="hidden" name="intent" value='updateDefaultColumn' />
+                <input type="hidden" name="id" value={data.id} />
+                <input type="hidden" name="colName" value={id} />
+            </EditableText>
+        )
+    },
 }
-export default function Mainboard() {
-    const [selectedTab, setSelectedTab] = useState("dashboard");
-    /** <TabsList className="ml-[19px] grid w-[600px] grid-cols-4 mt-[70px]">
-                    <TabsTrigger onClick={() => {
-                        setSelectedTab("null")
-                        setSelectedTab("dashboard")
-                    }}
-                        value="dashboard">Inventory</TabsTrigger>
-                    <TabsTrigger onClick={() => {
-                        setSelectedTab("null")
-                        setSelectedTab("newLeads")
-                    }}
-                        value="newLeads">Sold</TabsTrigger>
-                    <TabsTrigger onClick={() => setSelectedTab("search")} value="search">New</TabsTrigger>
-                    <TabsTrigger onClick={() => setSelectedTab("wishList")} value="wishList">Used</TabsTrigger>
 
-                </TabsList> */
+export const loader = async ({ request }) => {
+    const session = await getSession(request.headers.get("Cookie"));
+    const email = session.get("email")
+    const user = await GetUser(email)
+    const inventoryMotorcycle = await prisma.inventoryMotorcycle.findMany()
 
-    return (
-        <>
-
-
-            <Tabs defaultValue="dashboard" className='mt-10'>
-
-                <TabsContent className="w-[98%] mx-auto" value="dashboard">
-                    <InventoryMoto />
-                </TabsContent>
-                {selectedTab === "newLeads" && (
-                    <TabsContent className="w-[98%]" value="newLeads">
-                        <InventoryMoto />
-                    </TabsContent>
-                )}
-                {selectedTab === "search" && (
-                    <TabsContent className="w-[98%]" value="search">
-                        <InventoryMoto />
-                    </TabsContent>
-                )}
-                {selectedTab === "wishList" && (
-                    <TabsContent className="w-[98%]" value="wishList">
-                        <InventoryMoto />
-                    </TabsContent>
-                )}
-            </Tabs>
-        </>
-    )
+    if (!user) { redirect('/login') }
+    return json({ user, inventoryMotorcycle });
 }
-async function getData() {
-    const res = await fetch('/dashboard/inventory/moto')
-    if (!res.ok) {
-        throw new Error("Failed to fetch data");
+export const action: ActionFunction = async ({ request, params }) => {
+    const formPayload = Object.fromEntries(await request.formData());
+    let formData = financeFormSchema.parse(formPayload)
+    const userSession = await getSession(request.headers.get("Cookie"));
+    if (!userSession) { return json({ status: 302, redirect: 'login' }); };
+    const email = userSession.get("email");
+    const user = await GetUser(email)
+    const intent = formData.intent
+
+    if (intent === 'updateUnit') {
+      const update = await prisma.InventoryMotorcycle.update({
+        where: {id : data.id},
+        data: {
+            packageNumber: formData.packageNumber,
+packagePrice: formData.packagePrice,
+stockNumber: formData.stockNumber,
+type: formData.type,
+class: formData.class,
+year: formData.year,
+make: formData.make,
+model: formData.model,
+modelName: formData.modelName,
+submodel: formData.submodel,
+subSubmodel: formData.subSubmodel,
+price: formData.price,
+exteriorColor: formData.exteriorColor,
+mileage: formData.mileage,
+consignment: formData.consignment,
+onOrder: formData.onOrder,
+expectedOn: formData.expectedOn,
+status: formData.status,
+orderStatus: formData.orderStatus,
+hdcFONumber: formData.hdcFONumber,
+hdmcFONumber: formData.hdmcFONumber,
+vin: formData.vin,
+age: formData.age,
+floorPlanDueDate: formData.floorPlanDueDate,
+location: formData.location,
+stocked: formData.stocked,
+stockedDate: formData.stockedDate,
+isNew: formData.isNew,
+actualCost: formData.actualCost,
+mfgSerialNumber: formData.mfgSerialNumber,
+engineNumber: formData.engineNumber,
+plates: formData.plates,
+keyNumber: formData.keyNumber,
+length: formData.length,
+width: formData.width,
+engine: formData.engine,
+fuelType: formData.fuelType,
+power: formData.power,
+chassisNumber: formData.chassisNumber,
+chassisYear: formData.chassisYear,
+chassisMake: formData.chassisMake,
+chassisModel: formData.chassisModel,
+chassisType: formData.chassisType,
+registrationState: formData.registrationState,
+registrationExpiry: formData.registrationExpiry,
+grossWeight: formData.grossWeight,
+netWeight: formData.netWeight,
+insuranceCompany: formData.insuranceCompany,
+policyNumber: formData.policyNumber,
+insuranceAgent: formData.insuranceAgent,
+insuranceStartDate: formData.insuranceStartDate,
+insuranceEndDate: formData.insuranceEndDate,
+sold: formData.sold,
+        }
+      })
+        return json({ update })
     }
-    return res.json();
+    return json({ message: 'Invalid intent' }, { status: 400 });
 }
-export function InventoryMoto() {
-    const [data, setPaymentData,] = useState([]);
-    useEffect(() => {
-        const data = async () => {
-            const result = await getData();
-            setPaymentData(result);
-        };
-        data()
-    }, []);
 
-    //  console.log(data, 'data')
-    const [sorting, setSorting] = React.useState<SortingState>([])
+export default function UnitInv() {
+    const { inventoryMotorcycle, user } = useLoaderData()
+    const [data, setPaymentData,] = useState(inventoryMotorcycle);
+
+    const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
-    )
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({
-            id: false,
-            packageNumber: false,
-            packagePrice: false,
-            type: false,
-            class: false,
-            hdcFONumber: false,
-            hdmcFONumber: false,
-            stocked: false,
-            stockedDate: false,
-            isNew: false,
-            mfgSerialNumber: false,
-            actualCost: false,
-            engineNumber: false,
-            plates: false,
-            length: false,
-            width: false,
-            engine: false,
-            fuelType: false,
-            power: false,
-            chassisNumber: false,
-            chassisYear: false,
-            chassisMake: false,
-            chassisModel: false,
-            chassisType: false,
-            registrationState: false,
-            registrationExpiry: false,
-            netWeight: false,
-            grossWeight: false,
-            insuranceCompany: false,
-            policyNumber: false,
-            insuranceStartDate: false,
-            insuranceAgent: false,
-            insuranceEndDate: false,
-            model2: false,
-            consignment: false,
-        })
-    const [rowSelection, setRowSelection] = React.useState({})
-    const [globalFilter, setGlobalFilter] = React.useState('')
-    const [filterBy, setFilterBy] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [open, setOpen] = React.useState(false);
+    );
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+        id: false,
+        packageNumber: false,
+        packagePrice: false,
+        type: false,
+        class: false,
+        hdcFONumber: false,
+        hdmcFONumber: false,
+        //stocked: false,
+        //stockedDate: false,
+        isNew: false,
+        mfgSerialNumber: false,
+        actualCost: false,
+        engineNumber: false,
+        plates: false,
+        length: false,
+        width: false,
+        engine: false,
+        fuelType: false,
+        power: false,
+        chassisNumber: false,
+        chassisYear: false,
+        chassisMake: false,
+        chassisModel: false,
+        chassisType: false,
+        registrationState: false,
+        registrationExpiry: false,
+        netWeight: false,
+        grossWeight: false,
+        insuranceCompany: false,
+        policyNumber: false,
+        insuranceStartDate: false,
+        insuranceAgent: false,
+        insuranceEndDate: false,
+        model2: false,
+        consignment: false,
+    });
+    const [rowSelection, setRowSelection] = React.useState({});
+    const [globalFilter, setGlobalFilter] = useState('')
     const [selectedRowData, setSelectedRowData] = useState(null);
-    // console.log(selectedRowData, 'selectedRowData')
-    const handleRowClick = (row) => {
-        setSelectedRowData(row);
-        setIsModalOpen(true);
-        setOpen(true)
-    };
-    const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
+    const [selectedModel, setSelectedModel] = useState({})
+    const [filterBy, setFilterBy] = useState('');
+    const [showFilter, setShowFilter] = useState(false);
+    const [selectedColumn, setSelectedColumn] = useState("");
+    const [selectedGlobal, setSelectedGlobal] = useState(false);
+    const [todayfilterBy, setTodayfilterBy] = useState(null);
 
     const table = useReactTable({
         data,
         columns,
-        filterFns: {
-            fuzzy: fuzzyFilter,
-        },
-        globalFilterFn: fuzzyFilter,
-        onGlobalFilterChange: setGlobalFilter,
+        defaultColumn,
+        filterFns: { fuzzy: fuzzyFilter, },
+        globalFilterFn: 'fuzzy',
 
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
+            globalFilter,
+        },
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
@@ -792,617 +804,531 @@ export function InventoryMoto() {
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
-        state: {
-            sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
-            globalFilter,
+        enableColumnResizing: true,
+        columnResizeMode: 'onChange',
+        onGlobalFilterChange: setGlobalFilter,
+        enableRowSelection: true,
+    });
 
-        },
-    })
+    // -------- my components --------  //
+    const submit = useSubmit();
+    const fetcher = useFetcher();
 
+    // clears filters
     const setAllFilters = () => {
         setColumnFilters([]);
-        setSorting([])
-        setFilterBy('')
-        setGlobalFilter('')
+        setSorting([]);
+        setFilterBy("");
+        setGlobalFilter([]);
+    };
+    const toggleFilter = () => {
+        setAllFilters()
+        setShowFilter(!showFilter);
+    };
+    const setColumnFilterDropdown = (event) => {
+        const columnId = event.target.getAttribute("data-value");
+        setSelectedColumn(columnId);
+        console.log("Selected column:", columnId);
+        // Add your logic here to handle the column selection
+    };
+    const handleGlobalChange = (value) => {
+        console.log("value", value);
+        table.getColumn(selectedColumn)?.setFilterValue(value);
     };
 
-    /**  <DebouncedInput
-                    value={globalFilter ?? ''}
-                    onChange={value => setGlobalFilter(String(value))}
-                    className="ml-2 max-w-sm border-[#878787] bg-[#363a3f] text-[#fff]"
-                    placeholder="Search all columns..."
-                /> */
-    function ClientDetailsFunction() {
-        // split into groups unit, sold info, other info, and so on
-        const ClientDetails = [
-            { name: "stockNumber", value: selectedRowData?.original.stockNumber, placeHolder: "stockNumber" },
-            { name: "year", value: selectedRowData?.original.year, placeHolder: "year" },
-            { name: "make", value: selectedRowData?.original.make, placeHolder: "make" },
-            { name: "model", value: selectedRowData?.original.model, placeHolder: "model" },
-            { name: "modelName", value: selectedRowData?.original.modelName, placeHolder: "modelName" },
-            { name: "model2", value: selectedRowData?.original.model2, placeHolder: "model2" },
-            { name: "submodel", value: selectedRowData?.original.submodel, placeHolder: "submodel" },
-            { name: "price", value: selectedRowData?.original.price, placeHolder: "price" },
-            { name: "exteriorColor", value: selectedRowData?.original.exteriorColor, placeHolder: "exteriorColor" },
-            { name: "mileage", value: selectedRowData?.original.mileage, placeHolder: "mileage" },
-            { name: "onOrder", value: selectedRowData?.original.onOrder, placeHolder: "onOrder" },
-            { name: "expectedOn", value: selectedRowData?.original.expectedOn, placeHolder: "expectedOn" },
-            { name: "status", value: selectedRowData?.original.status, placeHolder: "status" },
-            { name: "orderStatus", value: selectedRowData?.original.orderStatus, placeHolder: "orderStatus" },
-            { name: "vin", value: selectedRowData?.original.vin, placeHolder: "vin" },
-            { name: "age", value: selectedRowData?.original.age, placeHolder: "age" },
-            { name: "location", value: selectedRowData?.original.location, placeHolder: "location" },
-            { name: "isNew", value: selectedRowData?.original.isNew, placeHolder: "isNew" },
-            { name: "keyNumber", value: selectedRowData?.original.keyNumber, placeHolder: "keyNumber" },
-            { name: "sold", value: selectedRowData?.original.sold, placeHolder: "sold" },
-        ];
-        return ClientDetails;
-    }
-    function ClientDetailsFunction2() {
-        // split into groups unit, sold info, other info, and so on
-        const ClientDetails = [
-            { name: "floorPlanDueDate", value: selectedRowData?.original.floorPlanDueDate, placeHolder: "floorPlanDueDate" },
-            { name: "packageNumber", value: selectedRowData?.original.packageNumber, placeHolder: "packageNumber" },
-            { name: "packagePrice", value: selectedRowData?.original.packagePrice, placeHolder: "packagePrice" },
-            { name: "type", value: selectedRowData?.original.type, placeHolder: "type" },
-            { name: "class", value: selectedRowData?.original.class, placeHolder: "class" },
-            { name: "hdcFONumber", value: selectedRowData?.original.hdcFONumber, placeHolder: "hdcFONumber" },
-            { name: "consignment", value: selectedRowData?.original.consignment, placeHolder: "consignment" },
-            { name: "hdmcFONumber", value: selectedRowData?.original.hdmcFONumber, placeHolder: "hdmcFONumber" },
-            { name: "stocked", value: selectedRowData?.original.stocked, placeHolder: "stocked" },
-            { name: "stockedDate", value: selectedRowData?.original.stockedDate, placeHolder: "stockedDate" },
-            { name: "mfgSerialNumber", value: selectedRowData?.original.mfgSerialNumber, placeHolder: "mfgSerialNumber" },
-            { name: "actualCost", value: selectedRowData?.original.actualCost, placeHolder: "actualCost" },
-            { name: "plates", value: selectedRowData?.original.plates, placeHolder: "plates" },
-            { name: "width", value: selectedRowData?.original.width, placeHolder: "width" },
-            { name: "engine", value: selectedRowData?.original.engine, placeHolder: "engine" },
-            { name: "fuelType", value: selectedRowData?.original.fuelType, placeHolder: "fuelType" },
-        ];
-        return ClientDetails;
-    }
-
-    function ClientDetailsFunction3() {
-        // split into groups unit, sold info, other info, and so on
-        const ClientDetails = [
-            { name: "power", value: selectedRowData?.original.power, placeHolder: "power" },
-            { name: "chassisNumber", value: selectedRowData?.original.chassisNumber, placeHolder: "chassisNumber" },
-            { name: "engineNumber", value: selectedRowData?.original.engineNumber, placeHolder: "engineNumber" },
-            { name: "chassisYear", value: selectedRowData?.original.chassisYear, placeHolder: "chassisYear" },
-            { name: "chassisMake", value: selectedRowData?.original.chassisMake, placeHolder: "chassisMake" },
-            { name: "chassisModel", value: selectedRowData?.original.chassisModel, placeHolder: "chassisModel" },
-            { name: "registrationState", value: selectedRowData?.original.registrationState, placeHolder: "registrationState" },
-            { name: "chassisType", value: selectedRowData?.original.chassisType, placeHolder: "chassisType" },
-            { name: "registrationExpiry", value: selectedRowData?.original.registrationExpiry, placeHolder: "registrationExpiry" },
-            { name: "netWeight", value: selectedRowData?.original.netWeight, placeHolder: "netWeight" },
-            { name: "grossWeight", value: selectedRowData?.original.grossWeight, placeHolder: "grossWeight" },
-            { name: "insuranceCompany", value: selectedRowData?.original.insuranceCompany, placeHolder: "insuranceCompany" },
-            { name: "policyNumber", value: selectedRowData?.original.policyNumber, placeHolder: "policyNumber" },
-            { name: "insuranceStartDate", value: selectedRowData?.original.insuranceStartDate, placeHolder: "insuranceStartDate" },
-            { name: "insuranceAgent", value: selectedRowData?.original.insuranceAgent, placeHolder: "insuranceAgent" },
-            { name: "insuranceEndDate", value: selectedRowData?.original.insuranceEndDate, placeHolder: "insuranceEndDate" },
-        ];
-        return ClientDetails;
-    }
-    function ClientDetailsFunction4() {
-        // split into groups unit, sold info, other info, and so on
-        const ClientDetails = [
-            { name: "dealNum", value: selectedRowData?.original.dealNum, placeHolder: "dealNum" },
-            { name: "customerName", value: selectedRowData?.original.customerName, placeHolder: "customerName" },
-            { name: "customerPhone", value: selectedRowData?.original.customerPhone, placeHolder: "customerPhone" },
-            { name: "customerAddress", value: selectedRowData?.original.customerAddress, placeHolder: "customerAddress" },
-            { name: "deliveredDate", value: selectedRowData?.original.deliveredDate, placeHolder: "deliveredDate" },
-        ];
-        return ClientDetails;
-    }
-
-    const DeliveriesList = [
+    const CallsList = [
         {
-            key: "allInventory",
-            name: "Inventory",
+            key: "inStock",
+            name: "In Stock",
         },
         {
-            key: "Sold",
+            key: "inStockArrived",
+            name: "In Stock and Available",
+        },
+        {
+            key: "newStock",
+            name: "New Stock",
+        },
+        {
+            key: "usedStock",
+            name: "Used Stock",
+        },
+        {
+            key: "sold",
             name: "Sold",
         },
         {
-            key: "NewUnits",
-            name: "New",
+            key: "otd",
+            name: "Out The Door",
         },
         {
-            key: "UsedUnits",
-            name: "Used",
+            key: "deposits",
+            name: "Sold Units - Waiting To Be Picked Up",
         },
-
+    ];
+    const DeliveriesList = [
+        {
+            key: "todaysDeliveries",
+            name: "Deliveries - Today",
+        },
+        {
+            key: "tomorowsDeliveries",
+            name: "Deliveries - Tomorrow",
+        },
+        {
+            key: "yestDeliveries",
+            name: "Deliveries - Yesterday",
+        },
+        {
+            key: "deliveredThisMonth",
+            name: "Delivered - Current Month",
+        },
+        {
+            key: "deliveredLastMonth",
+            name: "Delivered - Last Month",
+        },
+        {
+            key: "deliveredThisYear",
+            name: "Delivered - Year",
+        },
+    ];
+    const DepositsTakenList = [
+        {
+            key: "depositsToday",
+            name: "Deposit Taken - Need to Finalize Deal",
+        },
     ];
     const handleFilterChange = (selectedFilter) => {
         setAllFilters()
-        const newColumn = table.getColumn('isNew');
+        const customerStateColumn = table.getColumn('customerState');
+        const nextAppointmentColumn = table.getColumn('nextAppointment');
+        const deliveredDate = table.getColumn('deliveredDate');
+        const pickUpDate = table.getColumn('pickUpDate');
         const status = table.getColumn('status');
+        const depositMade = table.getColumn('depositMade');
+        const sold = table.getColumn('sold')
+        const delivered = table.getColumn('delivered')
+        const signed = table.getColumn('signed')
+        const financeApp = table.getColumn('financeApp')
 
-        if (selectedFilter === "Sold") {
-            status?.setFilterValue('reserved');
-        }
-        if (selectedFilter === "NewUnits") {
-            newColumn?.setFilterValue(true);
-        }
-        if (selectedFilter === "UsedUnits") {
-            newColumn?.setFilterValue(false);
+        switch (selectedFilter) {
+            case 'inStock':
+                table.getColumn('status')?.setFilterValue('available');
+                break;
+            case 'inStockArrived':
+                table.getColumn('status')?.setFilterValue('available');
+                table.getColumn('orderStatus')?.setFilterValue('STOCK');
+                break;
+            case 'newStock':
+                table.getColumn('new')?.setFilterValue(true);
+                break;
+            case 'usedStock':
+                table.getColumn('new')?.setFilterValue(false);
+                break;
+            case 'sold':
+                table.getColumn('status')?.setFilterValue('reserved');
+                break;
+            case 'otd':
+                table.getColumn('status')?.setFilterValue('sold');
+                break;
+            case 'deposits':
+                table.getColumn('status')?.setFilterValue('reserved');
+                break;
+            case 'customerOrders':
+                table.getColumn('orderStatus')?.setFilterValue('WISH');
+                break;
+            case 'deliveredThisMonth':
+                customerStateColumn?.setFilterValue('delivered');
+                deliveredDate?.setFilterValue(getFirstDayOfCurrentMonth);
+                status?.setFilterValue('active');
+                break;
+            case 'todaysDeliveries':
+                pickUpDate?.setFilterValue(getToday);
+                status?.setFilterValue('active');
+                sold?.setFilterValue(sold && sold.length > 3);
+                delivered?.setFilterValue(null)
+                break;
+            case 'tomorowsDeliveries':
+                pickUpDate?.setFilterValue(getTomorrow);
+                status?.setFilterValue('active');
+                depositMade?.setFilterValue(depositMade && depositMade.length > 3);
+                sold?.setFilterValue(sold && sold.length > 3);
+                delivered?.setFilterValue(null)
+                break;
+            case 'yestDeliveries':
+                pickUpDate?.setFilterValue(getYesterday);
+                status?.setFilterValue('active');
+                depositMade?.setFilterValue(depositMade && depositMade.length > 3);
+                sold?.setFilterValue(sold && sold.length > 3);
+                delivered?.setFilterValue(null)
+                break;
+
+            case 'deliveredThisYear':
+                customerStateColumn?.setFilterValue('delivered');
+                deliveredDate?.setFilterValue(getThisYear);
+                status?.setFilterValue('active');
+                break;
+            case 'depositsToday':
+                status?.setFilterValue('active');
+                depositMade?.setFilterValue('on');
+                sold?.setFilterValue('on');
+                delivered?.setFilterValue('off')
+                signed?.setFilterValue('off')
+                financeApp?.setFilterValue('off')
+                break;
+
+
+            default:
+                null;
         }
     }
-    const [todayfilterBy, setTodayfilterBy] = useState(null);
-    const [edit, setEdit] = useState(false);
-    const toggleColumns = () => {
-        setEdit((prev) => !prev);
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+    const formatMonth = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${year}-${month}`;
     };
 
-    const copyText = (text) => {
-        navigator.clipboard.writeText(text)
-            .then(() => {
-                setCopiedText(text);
-                setTimeout(() => setCopiedText(''), 3000); // Reset after 3 seconds
-            })
-            .catch((error) => {
-                console.error('Failed to copy text: ', error);
-            });
-    };
-    const [copiedText, setCopiedText] = useState('');
+    const now = new Date(); // Current date and time
+    const formattedDate = formatDate(now);
+    function getToday() {
+        const today = new Date();
+        today.setDate(today.getDate());
+        console.log(formatDate(today), 'today')
+        return formatDate(today);
+    }
+    function getTomorrow() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return formatDate(tomorrow);
+    }
+    function getYesterday() {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        return formatDate(yesterday);
+    }
+    function getLastDayOfPreviousMonth() {
+        const date = new Date();
+        date.setDate(1); // sets the day to the last day of the previous month
+        return formatMonth(date);
+    }
+    function getFirstDayOfCurrentMonth() {
+        const date = new Date();
+        date.setDate(1); // sets the day to the first day of the current month
+        return formatDate(date);
+    }
+    function getFirstDayOfTwoMonthsAgo() {
+        const date = new Date();
+        date.setMonth(date.getMonth() - 2);
+        date.setDate(1); // sets the day to the first day of the month two months ago
+        return formatMonth(date);
+    }
+    function getYear() {
+        const today = new Date();
+        return today.getFullYear().toString();
+    }
+    const getThisYear = getYear();
+
     return (
-        <div className="w-full">
-            <div className="flex items-center ">
-
-
-                <Input
-                    value={globalFilter ?? ''}
-                    onChange={event => setGlobalFilter(event.target.value)}
-                    className="font-lg border-block w-[400px] border border-[#878787] bg-background p-2 text-foreground shadow"
-                    placeholder="Search all columns..."
-                />
-                <Select
-                    className='text-foreground border-white focus:border-primary ml-2'
-                    onValueChange={(value) => {
-                        const item = DeliveriesList.find((i) => i.key === value);
-
-                        if (item) {
-                            handleFilterChange(item.key);
-                            setTodayfilterBy(item.name);
-                        }
-                    }}
-                >
-                    <SelectTrigger className="w-auto text-foreground border-white focus:border-primary  ml-2">
-                        <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
-                    </SelectTrigger>
-                    <SelectContent className='bg-white text-black'>
-                        {DeliveriesList.map((item) => (
-                            <SelectItem key={item.key} value={item.key}>
-                                {item.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-
-
-
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline' className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-background px-4 py-3  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
-                >
-                    Clear
-                </Button>
+        <div className="w-[95%] mt-[35px] mx-auto">
+            <div className="flex items-center py-4">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-2 text-foreground border-white">
-                            Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        </Button>
+                        <Button variant="outline" >Menu</Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className='bg-white text-black'>
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                )
-                            })}
+                    <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
+                        <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem
+                                className="cursor-pointer"
+                                onSelect={() => setSelectedGlobal(true)}
+                            >
+                                Global Filter
+                            </DropdownMenuItem>
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger className="cursor-pointer">
+                                    Default Filters
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                        <DropdownMenuLabel>
+                                            {todayfilterBy || "Default Filters"}
+                                        </DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        {CallsList.map((item) => (
+                                            <DropdownMenuItem
+                                                onSelect={(event) => {
+                                                    const value =
+                                                        event.currentTarget.getAttribute("data-value");
+                                                    const item =
+                                                        CallsList.find((i) => i.key === value) ||
+                                                        DeliveriesList.find((i) => i.key === value) ||
+                                                        DepositsTakenList.find((i) => i.key === value);
+                                                    if (item) {
+                                                        handleFilterChange(item.key);
+                                                        setTodayfilterBy(item.name);
+                                                    }
+                                                }}
+                                                data-value={item.key}
+                                                textValue={item.key}
+                                            >
+                                                {item.name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                        {CallsList.map((item) => (
+                                            <DropdownMenuItem
+                                                onSelect={(event) => {
+                                                    const value =
+                                                        event.currentTarget.getAttribute("data-value");
+                                                    const item =
+                                                        CallsList.find((i) => i.key === value) ||
+                                                        DeliveriesList.find((i) => i.key === value) ||
+                                                        DepositsTakenList.find((i) => i.key === value);
+                                                    if (item) {
+                                                        handleFilterChange(item.key);
+                                                        setTodayfilterBy(item.name);
+                                                    }
+                                                }}
+                                                data-value={item.key}
+                                                textValue={item.key}
+                                            >
+                                                {item.name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                        {CallsList.map((item) => (
+                                            <DropdownMenuItem
+                                                onSelect={(event) => {
+                                                    const value =
+                                                        event.currentTarget.getAttribute("data-value");
+                                                    const item =
+                                                        CallsList.find((i) => i.key === value) ||
+                                                        DeliveriesList.find((i) => i.key === value) ||
+                                                        DepositsTakenList.find((i) => i.key === value);
+                                                    if (item) {
+                                                        handleFilterChange(item.key);
+                                                        setTodayfilterBy(item.name);
+                                                    }
+                                                }}
+                                                data-value={item.key}
+                                                textValue={item.key}
+                                            >
+                                                {item.name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger className="cursor-pointer">
+                                    Global Filters
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                        {table
+                                            .getAllColumns()
+                                            .filter((column) => column.getCanHide())
+                                            .map((column) => (
+                                                <DropdownMenuItem
+                                                    onSelect={(event) => {
+                                                        setColumnFilterDropdown(event);
+                                                    }}
+                                                    data-value={column.id}
+                                                    key={column.id}
+                                                    className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                                                >
+                                                    {column.id}
+                                                </DropdownMenuItem>
+                                            ))}
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuItem
+                                className="cursor-pointer"
+                                onSelect={() => {
+                                    setAllFilters([]);
+                                    setSelectedGlobal(false);
+                                }}
+                            >
+                                Clear
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem
+                                className="cursor-pointer"
+                                onSelect={toggleFilter}
+                            >
+                                Toggle All Columns
+                            </DropdownMenuItem>
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger className="cursor-pointer">
+                                    Column Toggle
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                        {table
+                                            .getAllColumns()
+                                            .filter((column) => column.getCanHide())
+                                            .map((column) => {
+                                                return (
+                                                    <DropdownMenuCheckboxItem
+                                                        key={column.id}
+                                                        className="cursor-pointer bg-background  capitalize text-foreground"
+                                                        checked={column.getIsVisible()}
+                                                        onCheckedChange={(value) =>
+                                                            column.toggleVisibility(!!value)
+                                                        }
+                                                    >
+                                                        {column.id}
+                                                    </DropdownMenuCheckboxItem>
+                                                );
+                                            })}
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                        </DropdownMenuGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
-            </div>
-            <div className="rounded-md border border-border mt-5 ">
-                <Table className='w-full overflow-x-auto border-border text-foreground'>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow
-                                key={headerGroup.id}
-                                className=' border-border'
+                {selectedColumn && (
+                    <Input
+                        placeholder={`Filter ${selectedColumn}...`}
+                        onChange={(e) => handleGlobalChange(e.target.value)}
+                        className="ml-2 max-w-sm "
+                    />
+                )}
+                {selectedGlobal === true && (
+                    <div className="relative ">
+                        <DebouncedInput
+                            value={globalFilter ?? ""}
+                            onChange={(value) => setGlobalFilter(String(value))}
+                            className="mx-1 rounded-md border border-border bg-background p-2 text-foreground shadow "
+                            placeholder="Search all columns..."
+                        />
+                        <label className=" scale-80 absolute -top-3 right-3 rounded-full  bg-transparent px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                            <Button
+                                onClick={() => {
+                                    setGlobalFilter([]);
+                                    setSelectedGlobal(false);
+                                }}
+                                size="icon"
+                                variant="ghost"
+                                className="hover:bg-transparent"
                             >
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead className='items-center ' key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
+                                <X />
+                            </Button>
+                        </label>
+                    </div>
+                )}
+                <Button
+                    variant="outline"
+                    className='ml-3'
+                    onClick={() => {
+                        console.info('table.getSelectedRowModel().flatRows',)
+                        setSelectedModel(table.getSelectedRowModel().flatRows[0].original);
+                        /*   const formData = new FormData();
+                           formData.append("stockNum", selectedModel.lockedId);
+                           formData.append("financeId", finance.lockedId);
+                           formData.append("year", selectedModel.year);
+                           formData.append("color", selectedModel.color);
+                           formData.append("model1", selectedModel.model1);
+                           formData.append("model", selectedModel.model);
+                           formData.append("vin", selectedModel.vin);
+                           formData.append("bikeStatus", selectedModel.bikeStatus);
+                           formData.append("location", selectedModel.location);
+                           formData.append("make", selectedModel.make);
+                           formData.append("modelName", selectedModel.modelName);
+                           formData.append("color", selectedModel.color);
+                           formData.append("msrp", selectedModel.msrp);
+                           formData.append("mileage", selectedModel.mileage);
+                           formData.append("expectedOn", selectedModel.expectedOn);
+                           formData.append("orderStatus", selectedModel.orderStatus);
+                           formData.append("age", selectedModel.age);
+                           formData.append("isNew", selectedModel.isNew);
+                           formData.append("keyNumber", selectedModel.keyNumber);
+                           formData.append("onOrder", selectedModel.onOrder);
+                           formData.append("vehicleIdWanted", selectedModel.vehicleIdWanted);
+                           formData.append("intent", 'updateFinanceWanted');
+                           submit(formData, { method: "post" });*/
+                        toast.message('Unit has been saved to contract.', {
+                            description: `finance.firstName}, finance.lastName}`,
+                        })
+                    }}
+                >Assign Unit</Button>
+            </div>
+            <div className="container mx-auto py-5">
+                <div className="rounded-md border">
+                    <Table className='border border-border text-foreground bg-background'>
+                        <TableHeader className='border border-border text-muted-foreground bg-background'>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        return (
+                                            <TableHead key={header.id}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                                {header.column.getCanFilter() && showFilter && (
+                                                    <div className="mx-auto items-center justify-center cursor-pointer text-center ">
+                                                        <Filter column={header.column} table={table} />
+                                                    </div>
                                                 )}
-
-                                        </TableHead>
-                                    )
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                    className='cursor-pointer border-border bg-background p-4 capitalize text-foreground hover:text-primary'
-                                    onClick={() => handleRowClick(row)}
-
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
-
+                                            </TableHead>
+                                        )
+                                    })}
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
-
-                                >
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
-            {isModalOpen && (
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger asChild>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[925px] bg-white">
-                        <Form
-                        //onSubmit={(event) => {
-                        //   wait().then(() => setOpen(false));
-                        //    event.preventDefault();
-                        //  }}
-                        >
-
-                            <div className=" gap-4 py-4">
-                                <Tabs defaultValue="dashboard" className=''>
-                                    <TabsList className="grid w-[600px] grid-cols-4">
-                                        <TabsTrigger value="dashboard">Unit2</TabsTrigger>
-                                        <TabsTrigger value="newLeads">Other Info</TabsTrigger>
-                                        <TabsTrigger value="search">Other Info Con.</TabsTrigger>
-                                        <TabsTrigger value="wishList">Customer Info</TabsTrigger>
-                                    </TabsList>
-                                    <TabsContent className="w-[98%] mx-auto " value="dashboard">
-                                        {edit ? (
-                                            <>
-                                                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-[98%]'>
-
-                                                    {ClientDetailsFunction().map((fee, index) => (
-                                                        <div key={index} className="w-full max-w-sm items-center gap-1.5">
-                                                            <Label htmlFor="email">{fee.placeHolder}</Label>
-                                                            <Input
-                                                                name={fee.name}
-                                                                defaultValue={fee.value}
-
-                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-primary'
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                                <DialogFooter>
-                                                    <Button type="submit">Save changes</Button>
-                                                </DialogFooter>
-                                            </>
-                                        ) : (
-                                            <div className='grid grid-cols-1 md:grid-cols-2 justify-between gap-4 w-[98%]'>
-
-                                                {ClientDetailsFunction().map((fee, index) => (
-                                                    <div key={index} className="w-full grid grid-cols-2 justify-between max-w-sm items-center gap-1.5">
-
-                                                        <p>{fee.placeHolder}</p>
-                                                        {fee.value ? (
-                                                            <p onClick={() => copyText(fee.value)} className='text-right cursor-pointer'>{fee.value}</p>
-                                                        ) : (
-                                                            <p className='text-right'>N/A</p>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                        )}
-
-                                    </TabsContent>
-                                    <TabsContent className="w-[98%]" value="newLeads">
-                                        {edit ? (
-                                            <>
-                                                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-[98%]'>
-
-                                                    {ClientDetailsFunction().map((fee, index) => (
-                                                        <div key={index} className="w-full max-w-sm items-center gap-1.5">
-                                                            <Label htmlFor="email">{fee.placeHolder}</Label>
-                                                            <Input
-                                                                name={fee.name}
-                                                                defaultValue={fee.value}
-
-                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-primary'
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                                <DialogFooter>
-                                                    <Button type="submit">Save changes</Button>
-                                                </DialogFooter>
-                                            </>
-                                        ) : (
-                                            <div className='grid grid-cols-1 md:grid-cols-2 justify-between gap-4 w-[98%]'>
-
-                                                {ClientDetailsFunction().map((fee, index) => (
-                                                    <div key={index} className="w-full grid grid-cols-2 justify-between max-w-sm items-center gap-1.5">
-
-                                                        <p>{fee.placeHolder}</p>
-                                                        {fee.value ? (
-                                                            <p className='text-right'>{fee.value}</p>
-                                                        ) : (
-                                                            <p className='text-right'>N/A</p>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                        )}
-
-
-                                    </TabsContent>
-                                    <TabsContent className="w-[98%]" value="search">
-                                        {edit ? (
-                                            <>
-                                                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-[98%]'>
-
-                                                    {ClientDetailsFunction3().map((fee, index) => (
-                                                        <div key={index} className="w-full max-w-sm items-center gap-1.5">
-                                                            <Label htmlFor="email">{fee.placeHolder}</Label>
-                                                            <Input
-                                                                name={fee.name}
-                                                                defaultValue={fee.value}
-
-                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-primary'
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                                <DialogFooter>
-                                                    <Button type="submit">Save changes</Button>
-                                                </DialogFooter>
-                                            </>
-                                        ) : (
-                                            <div className='grid grid-cols-1 md:grid-cols-2 justify-between gap-4 w-[98%]'>
-
-                                                {ClientDetailsFunction3().map((fee, index) => (
-                                                    <div key={index} className="w-full grid grid-cols-2 justify-between max-w-sm items-center gap-1.5">
-
-                                                        <p>{fee.placeHolder}</p>
-                                                        {fee.value ? (
-                                                            <p className='text-right'>{fee.value}</p>
-                                                        ) : (
-                                                            <p className='text-right'>N/A</p>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                        )}
-
-
-                                    </TabsContent>
-                                    <TabsContent className="w-[98%]" value="wishList">
-                                        {edit ? (
-                                            <>
-                                                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-[98%]'>
-
-                                                    {ClientDetailsFunction4().map((fee, index) => (
-                                                        <div key={index} className="w-full max-w-sm items-center gap-1.5">
-                                                            <Label htmlFor="email">{fee.placeHolder}</Label>
-                                                            <Input
-                                                                name={fee.name}
-                                                                defaultValue={fee.value}
-
-                                                                className='mt-2 h-8 text-black bg-white border-black focus:border-primary'
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                                <DialogFooter>
-                                                    <Button type="submit">Save changes</Button>
-                                                </DialogFooter>
-                                            </>
-                                        ) : (
-                                            <div className='grid grid-cols-1 md:grid-cols-2 justify-between gap-4 w-[98%]'>
-
-                                                {ClientDetailsFunction4().map((fee, index) => (
-                                                    <div key={index} className="w-full grid grid-cols-2 justify-between max-w-sm items-center gap-1.5">
-
-                                                        <p>{fee.placeHolder}</p>
-                                                        {fee.value ? (
-                                                            <p className='text-right'>{fee.value}</p>
-                                                        ) : (
-                                                            <p className='text-right'>N/A</p>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                        )}
-
-
-                                    </TabsContent>
-                                </Tabs>
-                                <Button variant='outline' onClick={toggleColumns} className='mt-4'>Edit</Button>
-
-                            </div>
-
-                        </Form>
-                    </DialogContent>
-                </Dialog>
-            )}
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="flex-1 text-sm text-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
-                </div>
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-foreground border-white"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-foreground border-white"
-
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                    >
-                        Next
-                    </Button>
+                            ))}
+                        </TableHeader>
+                        <TableBody className='border border-border text-foreground bg-background'>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                        className='border border-border text-foreground bg-background'
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-24 text-center border border-border text-foreground bg-background">
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
                 </div>
             </div>
+            <DataTablePagination table={table} />
         </div>
-    )
-}
+    );
+};
 
 
-function Filter({
-    column,
-    table,
-}: {
-    column: Column<any, unknown>
-    table: Table<any>
-}) {
-    const firstValue = table
-        .getPreFilteredRowModel()
-        .flatRows[0]?.getValue(column.id)
-
-    const columnFilterValue = column.getFilterValue()
-
-    const sortedUniqueValues = React.useMemo(
-        () =>
-            typeof firstValue === 'number'
-                ? []
-                : Array.from(column.getFacetedUniqueValues().keys()).sort(),
-        [column.getFacetedUniqueValues()]
-    )
-
-    return typeof firstValue === 'number' ? (
-        <div>
-            <div className="flex space-x-2">
-                <DebouncedInput
-                    type="number"
-                    min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-                    max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-                    value={(columnFilterValue as [number, number])?.[0] ?? ''}
-                    onChange={value =>
-                        column.setFilterValue((old: [number, number]) => [value, old?.[1]])
-                    }
-                    placeholder={`Min ${column.getFacetedMinMaxValues()?.[0]
-                        ? `(${column.getFacetedMinMaxValues()?.[0]})`
-                        : ''
-                        }`}
-                    className="w-24 border shadow rounded"
-                />
-                <DebouncedInput
-                    type="number"
-                    min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-                    max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-                    value={(columnFilterValue as [number, number])?.[1] ?? ''}
-                    onChange={value =>
-                        column.setFilterValue((old: [number, number]) => [old?.[0], value])
-                    }
-                    placeholder={`Max ${column.getFacetedMinMaxValues()?.[1]
-                        ? `(${column.getFacetedMinMaxValues()?.[1]})`
-                        : ''
-                        }`}
-                    className="w-24 border shadow rounded"
-                />
-            </div>
-            <div className="h-1" />
-        </div>
-    ) : (
-        <>
-            <datalist id={column.id + 'list'}>
-                {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-                    <option value={value} key={value} />
-                ))}
-            </datalist>
-            <DebouncedInput
-                type="text"
-                value={(columnFilterValue ?? '') as string}
-                onChange={value => column.setFilterValue(value)}
-                placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
-                className="w-36 border shadow rounded"
-                list={column.id + 'list'}
-            />
-            <div className="h-1" />
-        </>
-    )
-}
-
-// A debounced input react component
-function DebouncedInput({
-    value: initialValue,
-    onChange,
-    debounce = 500,
-    ...props
-}: {
-    value: string | number
-    onChange: (value: string | number) => void
-    debounce?: number
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
-    const [value, setValue] = React.useState(initialValue)
-
-    React.useEffect(() => {
-        setValue(initialValue)
-    }, [initialValue])
-
-    React.useEffect(() => {
-        const timeout = setTimeout(() => {
-            onChange(value)
-        }, debounce)
-
-        return () => clearTimeout(timeout)
-    }, [value])
-
-    return (
-        <input {...props} value={value} onChange={e => setValue(e.target.value)} />
-    )
-}
 export const meta: MetaFunction = () => {
     return [
         { title: 'Motorcycle Inventory - Dealer Sales Assistant' },

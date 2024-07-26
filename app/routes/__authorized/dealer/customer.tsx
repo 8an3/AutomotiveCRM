@@ -27,7 +27,6 @@ export const links: LinksFunction = () => [
 
 
 export function SidebarNav({ mergedFinanceList, }) {
-  // console.log(mergedFinanceList, 'mergedFinanceListp')
   return (
     <nav
       className={cn(
@@ -149,7 +148,7 @@ export default function SettingsLayout() {
     },
   ]
   return (
-    <div className='max-w-[100vw] w-[100vw]'>
+    <div className='max-w-full w-full overflow-x-clip'>
       <Outlet />
     </div>
   )

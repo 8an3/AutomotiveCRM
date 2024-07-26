@@ -26,9 +26,12 @@ export const metadata = {
 
 export const todoRoadmap = [
   // ----------------------------------------------------------DONE NEEDS TESTING---------------------------------------
-  { board: "dev", column: "done needs testing", item: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
+  { board: "dev", column: "Done Needs Testing", item: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
   { board: "dev", column: "done needs testing", item: "webhook for incoming emails, save notifiation and messeages" },
-  { board: "dev", column: "done needs testing", item: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
+  { board: "dev", column: "done needs testing", item: "mass sms - wip" },
+  { board: "dev", column: "done needs testing", item: "email" },
+  { board: "dev", column: "done needs testing", item: "sms" },
+  { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
   // -----------------------------------------------------------WIP-----------------------------------------------------
   { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers" },
   { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
@@ -37,8 +40,18 @@ export const todoRoadmap = [
   { board: "dev", column: "WIP", item: "sales manager dash" },
   { board: "dev", column: "WIP", item: "dev control panel needs to send email to new dealers with sign in info" },
   { board: "dev", column: "WIP", item: "https://developers.klaviyo.com/en/reference/get_campaigns" },
+    { board: "dev", column: "WIP", item: "admin dash" },
+    { board: "dev", column: "WIP", item: "need to test all functions due to database changes" },
+
   // ---------------------------------------------------------ISSUE-----------------------------------------------------
-  { board: "dev", column: "issue", item: "export in managers section - export csv files of customers, inventory etc" },
+   { board: "dev", column: "issue", item: "search need to finish the drop down to specefiy which file u want to go to " },
+    { board: "dev", column: "issue", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
+    { board: "dev", column: "issue", item: "dashboard - fix dob calendar" },
+
+    { board: "dev", column: "issue", item: "user docs instead of having a doc section maybe have dialog open up from the menu and they can read the docs per page instead of learning and cramming evrything at once they can learn when they need to and use the inforation right away and have it question what the user wants to learn and give it the right info on the spot and have link to video on utube open in new window" },
+    { board: "dev", column: "issue", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
+
+    { board: "dev", column: "issue", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
   // -----------------------------------------------------OWNER---------------------------------------------------------
   { board: "dev", column: "owner", item: "Owners dashboard" },
   { board: "dev", column: "owner", item: "Owner Section" },
@@ -113,8 +126,9 @@ export const todoRoadmap = [
   { board: "dev", column: "paid feature - ai", item: "Ai assistant to book apointments, complete and etc like gowrench or just a work flow to customers to guide themselves" },
   // ----------------------------------PAID FEATURE---------------------------------------------------------------------
   // ----------------------------------IDEAS---------------------------------------------------------------------
-  { board: "dev", column: "ideas", item: "saveform to local storage, never loose data for a internet hiccup or outage" },
-
+  { board: "dev", column: "ideas", item: "save form to local storage, never loose data for a internet hiccup or outage" },
+  { board: "dev", column: "ideas", item: "transcribe videos and enable a fuzzy search on them so if people dont know what they are looking for tghey can even give a short description to try to find it" },
+  { board: "dev", column: "ideas", item: "employee to employee messaging using the emitter and alert dialog so its an important message that they have to read rght away, like next client here etc" },
   // ----------------------------------IDEAS---------------------------------------------------------------------
 
 
@@ -122,6 +136,38 @@ export const todoRoadmap = [
 
 const DoneRoadMap = [
   { board: "dev", column: "WIP", item: "Finance Dashboard" },
+  { board: "dev", column: "ideas", item: "trllo board for users" },
+  { board: "dev", column: "issue", item: "export in managers section - export csv files of customers, inventory etc" },
+    { board: "dev", column: "ideas", item: "teleprompter" },
+    { board: "dev", column: "ideas", item: "client turnover list? and sales rotation on same tab?" },
+    { board: "dev", column: "issue", item: "dashboard - client vehicle card make it so trade info only shows up on one palce" },
+    { board: "dev", column: "issue", item: "customer / clietfile / financefile fix menu button placement" },
+    { board: "dev", column: "issue", item: "temmplate builder fix add tempalte modal size" },
+    { board: "dev", column: "issue", item: "admin / overview  fix button palcement" },
+    { board: "dev", column: "issue", item: "dev move new menu to dev section" },
+    { board: "dev", column: "issue", item: "admin / ussers  fix add user modal size" },
+    { board: "dev", column: "issue", item: "admin / users  get rid of search leads link maybe replace with their own sales like dashboard" },    { board: "dev", column: "issue", item: "customer / clietfile / financefile redisgn coms section" },
+    { board: "dev", column: "issue", item: "clientfile financeid - add claim button to dashboard" },
+    { board: "dev", column: "issue", item: "customer / clietfile / financefile need to start and finish customer timeline react diagrams?" },
+    { board: "dev", column: "issue", item: "overview - need to access and edit the deal whenever you want " },
+    { board: "dev", column: "issue", item: "unit picker - redesign" },
+    { board: "dev", column: "issue", item: "fix sales person select in clientfile/financeid and add finance manager as well" },
+    { board: "dev", column: "issue", item: "missing data on client file page, compare with clientcard and other places" },
+    { board: "dev", column: "issue", item: "added new schema model comm for communications, need to update comms to upload data" },
+    { board: "dev", column: "issue", item: "notifications - put in menu" },
+    { board: "dev", column: "issue", item: "user settings board fix css finance products " },
+    { board: "dev", column: "issue", item: "dashboard - menu global filter " },
+    { board: "dev", column: "issue", item: "dashboard - column search" },
+    { board: "dev", column: "issue", item: "man / csi  fix placement mt-10 or whatever" },
+    { board: "dev", column: "issue", item: "dashboard - add customer modal size needs fixing " },
+    { board: "dev", column: "done needs testing", item: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
+    { board: "dev", column: "sales", item: "Add trello board to user section so they can use it if they want to" },
+    { board: "dev", column: "WIP", item: "mass email/sms - wip" },
+    { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers" },
+    { board: "dev", column: "issue", item: "export in managers section - export csv files of customers, inventory etc" },
+    { board: "dev", column: "WIP", item: "dev control panel needs to send email to new dealers with sign in info" },
+    { board: "dev", column: "issue", item: "idea for a chart to show data, remember the sales funnel? do that but in a chart form i guess idk" },
+    { board: "dev", column: "issue", item: "idea for a chart  active, duplicate, invalid, lost fell through crack" },
 
   { board: "dev", column: "Dev", item: "need to make function that addes prisma statemnt to save alll communucations" },
   { board: "dev", column: "Dev", item: "mobile frendly dash and calendar" },

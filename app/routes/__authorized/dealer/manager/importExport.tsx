@@ -20,7 +20,7 @@ import { toast } from "sonner"
 import { useState, useRef, useEffect } from 'react';
 
 
-export const loader: LoaderFunction = async ({ req, request, params }) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   const user = await GetUser(email)
@@ -162,7 +162,7 @@ export default function ImportExport() {
             method='post' encType="multipart/form-data">
             <ul className="grid gap-3 mt-4">
               <li className="flex items-center justify-between">
-                <span className="text-foreground ">
+                <div className="text-foreground ">
                   <div className="relative mt-3">
                     <Select name='intent' onValueChange={ImportChange}>
                       <SelectTrigger className="w-[180px] bg-background border-border">
@@ -181,26 +181,26 @@ export default function ImportExport() {
                     </Select>
                     <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Data Type</label>
                   </div>
-                </span>
-                <span>
+                </div>
+                <div>
                   <div className="relative mt-3">
                     <Input id="file" type="file" className='hidden' name='csv' onChange={handleFileChange} />
                     <label htmlFor="file" className={`h-[37px] cursor-pointer border border-border rounded-md text-foreground bg-background px-4 py-2 inline-block w-[225px]
                     ${isFile === false ? 'border-primary' : 'border-[#3dff3d]'}`}  >
-                      <span className="mr-4">
+                      <div className="mr-4">
                         {isFile === false ? <p>Choose File - No File Chosen</p> : <p>File Selected</p>}
-                      </span>
+                      </div>
                     </label>
                     <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
                       CSV File
                     </label>
                   </div>
 
-                </span>
+                </div>
               </li>
               <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]"> </span>
-                <span>
+                <div className="text-[#8a8a93]"> </div>
+                <div>
                   <Button
                     type="submit"
                     size="icon"
@@ -210,9 +210,9 @@ export default function ImportExport() {
                     disabled={isFile === false && selectImport === false}
                     className='bg-primary '>
                     <UploadIcon className="h-4 w-4" />
-                    <span className="sr-only">Upload</span>
+                    <div className="sr-only">Upload</div>
                   </Button>
-                </span>
+                </div>
               </li>
 
             </ul>
@@ -221,7 +221,7 @@ export default function ImportExport() {
           <fetcher.Form  >
             <div>
               <label htmlFor="contact-file">
-                <span>Upload a file</span>
+                <div>Upload a file</div>
                 <input id="contact-file" name="selected_csv" type="file" onChange={DropChangeOn} />
               </label>
               <p>or drag and drop</p>
@@ -232,11 +232,11 @@ export default function ImportExport() {
           <div className="font-semibold">Export Data</div>
           <ul className="grid gap-3 mt-4">
             <li className="flex items-center justify-between">
-              <span className="text-foreground ">
+              <div className="text-foreground ">
                 <div className="relative mt-3">
                   <Select name='intent' onValueChange={ExportChange}>
                     <SelectTrigger className="w-[180px] bg-background border-border">
-                      <SelectValue placeholder="Select an option" />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent className='bg-background border-border text-foreground'>
                       <SelectGroup>
@@ -251,8 +251,8 @@ export default function ImportExport() {
                   </Select>
                   <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Data Type</label>
                 </div>
-              </span>
-              <span>
+              </div>
+              <div>
                 <a href={`/dealer/manager/export/${link}`} target='_blank'>
                   <Button
                     type="submit"
@@ -263,10 +263,10 @@ export default function ImportExport() {
                     disabled={selectExport === false}
                     className='bg-primary '>
                     <DownloadIcon className="h-4 w-4" />
-                    <span className="sr-only">Download</span>
+                    <div className="sr-only">Download</div>
                   </Button>
                 </a>
-              </span>
+              </div>
             </li>
           </ul>
         </div>

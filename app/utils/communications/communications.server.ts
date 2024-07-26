@@ -12,11 +12,11 @@ export async function CreateCommunications(comdata) {
     throw error;
   }
 }
-export async function getComsOverview(financeId) {
+export async function getComsOverview(email) {
   try {
-    const finance = await prisma.previousComms.findMany({
+    const finance = await prisma.comm.findMany({
       where: {
-        financeId: financeId,
+        userEmail: email,
       },
     });
     return finance;

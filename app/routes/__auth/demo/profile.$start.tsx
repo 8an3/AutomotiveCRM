@@ -402,7 +402,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                     <CardHeader className="flex flex-row items-start bg-background">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
-                          Wanted Vehichle
+                          Wanted Vehicle
                           <Button
                             size="icon"
                             variant="outline"
@@ -499,7 +499,7 @@ export function Profile({ data, formData, setFormData, handleSubmit, WantedData,
                     <CardHeader className="flex flex-row items-start bg-background">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
-                          Trade Vehichle
+                          Trade Vehicle
                           <Button
                             size="icon"
                             variant="outline"

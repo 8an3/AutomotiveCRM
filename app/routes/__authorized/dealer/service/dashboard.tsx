@@ -607,7 +607,7 @@ export default function Dashboard() {
                 <CardHeader className="flex flex-row items-start bg-muted-background rounded-md">
                   <div className="grid ">
                     <CardTitle className="group flex items-center text-sm">
-                      Current Vehichle
+                      Current Vehicle
                       <Button
                         size="icon"
                         variant="outline"

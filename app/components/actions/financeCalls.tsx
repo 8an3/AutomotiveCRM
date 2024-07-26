@@ -49,7 +49,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
   const financeNotes = await prisma.financeNote.findMany({ orderBy: { createdAt: "desc" }, });
   const searchData = await prisma.clientfile.findMany({ orderBy: { createdAt: 'desc', }, });
-  const conversations = await prisma.previousComms.findMany({ orderBy: { createdAt: "desc" }, });
+  const conversations = await prisma.comm.findMany({ orderBy: { createdAt: "desc" }, });
   const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
 
   const fetchLatestNotes = async (webLeadData) => {
@@ -867,8 +867,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       return bankingInfo;
     case 'empty':
       return null
-    case 'empty':
-      return null
+
     default:
       console.log('default reached')
   }

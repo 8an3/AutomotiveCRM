@@ -1,42 +1,67 @@
-import { Button, Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, } from "~/components/ui/index";
-import React, { useMemo, useEffect, useState, useRef, Suspense, forwardRef } from "react";
-import { ScrollArea } from "~/components/ui/scroll-area";
-import { type ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, type SortingState, getSortedRowModel, sortingFns, SortingFn, FilterFns, FilterFn, type VisibilityState, getFilteredRowModel, type ColumnFiltersState, } from "@tanstack/react-table";
+import {
+  Button,
+  Input,
+  Separator,
+  Checkbox,
+  PopoverTrigger,
+  PopoverContent,
+  Popover,
+} from "~/components/ui/index";
+import React, {
+  useMemo,
+  useEffect,
+  useState,
+  useRef,
+  Suspense,
+  forwardRef,
+} from "react";
+import {
+  Column,
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  type SortingState,
+  getSortedRowModel,
+  sortingFns,
+  SortingFn,
+  FilterFns,
+  FilterFn,
+  type VisibilityState,
+  getFilteredRowModel,
+  type ColumnFiltersState,
+  ColumnResizeMode,
+  ColumnResizeDirection,
+} from "@tanstack/react-table";
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table";
-import { Form, Link, useFetcher, useLoaderData, useTransition, Await, useSubmit } from "@remix-run/react";
-import AddCustomer from "~/components/dashboard/calls/addCustomer";
-import Filter from "~/components/dashboard/calls/Filter";
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { CalendarCheck, Search, MailWarning, UserPlus, MessageSquare, Mail } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select"
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "~/components/ui/drawer"
-import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
-import { prisma } from "~/libs";
-import { json, LinksFunction } from "@remix-run/node";
-import { toast } from "sonner"
-import MassEmail from "./dashboard/calls/massEmail";
+  Form,
+  Link,
+  useFetcher,
+  useLoaderData,
+  useTransition,
+  Await,
+  useSubmit,
+} from "@remix-run/react";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "~/components/ui/accordion"
+  CalendarCheck,
+  Search,
+  MailWarning,
+  UserPlus,
+  MessageSquare,
+  Mail,
+} from "lucide-react";
+import useSWR, { SWRConfig, mutate, useSWRConfig } from "swr";
+import { toast } from "sonner";
 import MassSMS, { TextFunction } from "./dashboard/calls/massSms";
 import {
   DropdownMenu,
@@ -52,159 +77,87 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
+} from "~/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger, DialogClose,
-} from "~/components/ui/dialog"
+  DialogTrigger,
+  DialogClose,
+} from "~/components/ui/dialog";
+import { X } from "lucide-react";
+import {
+  RankingInfo,
+  rankItem,
+  compareItems,
+} from "@tanstack/match-sorter-utils";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  dashData: TData[];
-  user: TData[]
+declare module "@tanstack/react-table" {
+  //add fuzzy filter to the filterFns
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>;
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo;
+  }
 }
 
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value);
 
-export function DataTable({
-  columns,
-  data,
-  user,
-  smsDetails,
-}) {
+  // Store the itemRank info
+  addMeta({
+    itemRank,
+  });
 
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({
-      id: false,
-      oth60WOptions: false,
-      weeklyOthWOptions: false,
-      weeklylNatWOptions: false,
-      biweekOthWOptions: false,
-      desiredPayments: false,
-      clientfileId: false,
-      commodity: false,
-      msrp: false,
-      turnover: false,
-      unitPicker: false,
-      painPrem: false,
-      freight: false,
-      biweeklNatWOptions: false,
-      nat60WOptions: false,
-      deliveredDate: false,
-      licensing: false,
-      followUpDay: false,
-      pdi: false,
-      admin: false,
-      accessories: false,
-      labour: false,
-      trailer: false,
-      weeklyOth: false,
-      biweekOth: false,
-      months: false,
-      depositMade: false,
-      oth60: false,
-      weeklylNat: false,
-      on60: false,
-      iRate: false,
-      biweeklNat: false,
-      nat60: false,
-      biweekly: false,
-      weeklyqc: false,
-      biweeklyqc: false,
-      weekly: false,
-      qc60: false,
-      financeId: false,
-      province: false,
-      userEmail: false,
-      postal: false,
-      address: false,
-      city: false,
-      phone: false,
-      result: false,
-      email: false,
-      referral: false,
-      visited: false,
-      bookedApt: false,
-      aptShowed: false,
-      aptNoShowed: false,
-      testDrive: false,
-      metService: false,
-      metManager: false,
-      metParts: false,
-      sold: false,
-      contactMethod: false,
-      refund: false,
-      turnOver: false,
-      financeApp: false,
-      approved: false,
-      signed: false,
-      pickUpSet: false,
-      demoed: false,
-      delivered: false,
-      tradeMake: false,
-      tradeYear: false,
-      tradeTrim: false,
-      tradeColor: false,
-      tradeVin: false,
-      timesContacted: false,
-      visits: false,
-      financeApplication: false,
-      progress: false,
-      metFinance: false,
-      metSalesperson: false,
-      seenTrade: false,
-      docsSigned: false,
-      tradeRepairs: false,
-      dl: false,
-      timeOfDay: false,
-      timeToContact: false,
-      typeOfContact: false,
-      discount: false,
-      pickUpTime: false,
-      total: false,
-      onTax: false,
-      deliveryCharge: false,
-      userLoanProt: false,
-      userTireandRim: false,
-      userGap: false,
-      userExtWarr: false,
-      userServicespkg: false,
-      vinE: false,
-      lifeDisability: false,
-      rustProofing: false,
-      userOther: false,
-      deposit: false,
-      paintPrem: false,
-      discountPer: false,
-      qcTax: false,
-      otherTax: false,
-      totalWithOptions: false,
-      otherTaxWithOptions: false,
-      stockNum: false,
-      model1: false,
-      note: false,
-      color: false,
-      modelCode: false,
-      lastNote: false,
-      documentUpload: false,
-      tradeValue: false,
-      singleFinNote: false,
-    });
+  // Return if the item should be filtered in/out
+  return itemRank.passed;
+};
 
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [rowSelection, setRowSelection] = React.useState({})
+const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
+  let dir = 0;
 
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  // Only sort by rank if the column has ranking information
+  if (rowA.columnFiltersMeta[columnId]) {
+    dir = compareItems(
+      rowA.columnFiltersMeta[columnId]?.itemRank!,
+      rowB.columnFiltersMeta[columnId]?.itemRank!
+    );
+  }
+
+  // Provide an alphanumeric fallback for when the item ranks are equal
+  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
+};
+
+export function DataTable({ columns, data, user, smsDetails, columnState }) {
+  const state = columnState.state;
+  const jsonString = state.replace(/'/g, '"');
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>();
+
+    useEffect(() => {
+      setColumnVisibility(JSON.parse(jsonString))
+  }, []);
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
+
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({
     data,
     columns,
+    filterFns: { fuzzy: fuzzyFilter },
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      globalFilter,
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -213,94 +166,76 @@ export function DataTable({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     enableRowSelection: true,
-    // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
     onRowSelectionChange: setRowSelection,
-
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
+    onGlobalFilterChange: setGlobalFilter,
+    enableGlobalFilter: true,
+    globalFilterFn: "fuzzy",
   });
 
-  const [filterBy, setFilterBy] = useState('');
-
+  const [filterBy, setFilterBy] = useState("");
   const handleInputChange = (name) => {
-    setFilterBy(name);
+    setFilterBy(columnId);
   };
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed in JavaScript
+    const day = String(date.getDate()).padStart(2, "0");
     const hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
   };
   const formatMonth = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed in JavaScript
+    const day = String(date.getDate()).padStart(2, "0");
     const hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, "0");
 
     return `${year}-${month}`;
   };
-  const now = new Date(); // Current date and time
+  const now = new Date();
   const formattedDate = formatDate(now);
-  //console.log(formattedDate); // Output: "Wed, Nov 02, 2023, 09:05 AM"
-
   function getToday() {
     const today = new Date();
     today.setDate(today.getDate());
-    console.log(formatDate(today), 'today')
+    console.log(formatDate(today), "today");
     return formatDate(today);
   }
-
   function getTomorrow() {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     return formatDate(tomorrow);
   }
-
   function getYesterday() {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     return formatDate(yesterday);
   }
-
   function getLastDayOfPreviousMonth() {
     const date = new Date();
     date.setDate(1); // sets the day to the last day of the previous month
     return formatMonth(date);
   }
-
   function getFirstDayOfCurrentMonth() {
     const date = new Date();
     date.setDate(1); // sets the day to the first day of the current month
     return formatDate(date);
   }
-
   function getFirstDayOfTwoMonthsAgo() {
     const date = new Date();
     date.setMonth(date.getMonth() - 2);
     date.setDate(1); // sets the day to the first day of the month two months ago
     return formatMonth(date);
   }
-
   function getYear() {
     const today = new Date();
     return today.getFullYear().toString();
   }
   const getThisYear = getYear();
-
-
   const [todayfilterBy, setTodayfilterBy] = useState(null);
-
   const DeliveriesList = [
     {
       key: "todaysDeliveries",
@@ -369,139 +304,138 @@ export function DataTable({
     },
   ];
 
-
   const handleFilterChange = (selectedFilter) => {
-    setAllFilters()
-    const customerStateColumn = table.getColumn('customerState');
-    const nextAppointmentColumn = table.getColumn('nextAppointment');
-    const deliveredDate = table.getColumn('deliveredDate');
-    const pickUpDate = table.getColumn('pickUpDate');
-    const status = table.getColumn('status');
-    const depositMade = table.getColumn('depositMade');
-    const sold = table.getColumn('sold')
-    const delivered = table.getColumn('delivered')
-    const signed = table.getColumn('signed')
-    const financeApp = table.getColumn('financeApp')
+    setAllFilters();
+    const customerStateColumn = table.getColumn("customerState");
+    const nextAppointmentColumn = table.getColumn("nextAppointment");
+    const deliveredDate = table.getColumn("deliveredDate");
+    const pickUpDate = table.getColumn("pickUpDate");
+    const status = table.getColumn("status");
+    const depositMade = table.getColumn("depositMade");
+    const sold = table.getColumn("sold");
+    const delivered = table.getColumn("delivered");
+    const signed = table.getColumn("signed");
+    const financeApp = table.getColumn("financeApp");
 
     if (selectedFilter === "deliveredThisMonth") {
-      customerStateColumn?.setFilterValue('delivered');
+      customerStateColumn?.setFilterValue("delivered");
       deliveredDate?.setFilterValue(getFirstDayOfCurrentMonth);
-      status?.setFilterValue('active');
-
+      status?.setFilterValue("active");
     }
 
     if (selectedFilter === "deliveredLastMonth") {
-      customerStateColumn?.setFilterValue('delivered');
+      customerStateColumn?.setFilterValue("delivered");
       deliveredDate?.setFilterValue(getLastDayOfPreviousMonth);
-      status?.setFilterValue('active');
+      status?.setFilterValue("active");
     }
 
     if (selectedFilter === "deliveredThisYear") {
-      customerStateColumn?.setFilterValue('delivered');
+      customerStateColumn?.setFilterValue("delivered");
       deliveredDate?.setFilterValue(getThisYear);
-      status?.setFilterValue('active');
+      status?.setFilterValue("active");
     }
 
     if (selectedFilter === "pendingCalls") {
-      customerStateColumn?.setFilterValue('Pending');
-      status?.setFilterValue('active');
+      customerStateColumn?.setFilterValue("Pending");
+      status?.setFilterValue("active");
     }
 
     if (selectedFilter === "todaysCalls") {
       nextAppointmentColumn?.setFilterValue(getToday);
-      console.log(nextAppointmentColumn, 'nextAppointmentColumn')
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('off');
-      sold?.setFilterValue('off');
-      delivered?.setFilterValue('off')
+      console.log(nextAppointmentColumn, "nextAppointmentColumn");
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("off");
+      sold?.setFilterValue("off");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "tomorowsCalls") {
       nextAppointmentColumn?.setFilterValue(getTomorrow);
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('off');
-      sold?.setFilterValue('off');
-      delivered?.setFilterValue('off')
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("off");
+      sold?.setFilterValue("off");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "yestCalls") {
       nextAppointmentColumn?.setFilterValue(getYesterday);
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('off');
-      sold?.setFilterValue('off');
-      delivered?.setFilterValue('off')
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("off");
+      sold?.setFilterValue("off");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "missedCalls") {
       nextAppointmentColumn?.setFilterValue(getFirstDayOfCurrentMonth);
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('off');
-      sold?.setFilterValue('off');
-      delivered?.setFilterValue('off')
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("off");
+      sold?.setFilterValue("off");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "missedCallsLastMonth") {
       nextAppointmentColumn?.setFilterValue(getLastDayOfPreviousMonth);
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('off');
-      sold?.setFilterValue('off');
-      delivered?.setFilterValue('off')
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("off");
+      sold?.setFilterValue("off");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "missedCallsTwoMonths") {
       nextAppointmentColumn?.setFilterValue(getFirstDayOfTwoMonthsAgo);
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('off');
-      sold?.setFilterValue('off');
-      delivered?.setFilterValue('off')
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("off");
+      sold?.setFilterValue("off");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "missedCallsYear") {
       nextAppointmentColumn?.setFilterValue(getThisYear);
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('off');
-      sold?.setFilterValue('off');
-      delivered?.setFilterValue('off')
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("off");
+      sold?.setFilterValue("off");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "todaysDeliveries") {
       pickUpDate?.setFilterValue(getToday);
-      status?.setFilterValue('active');
-      sold?.setFilterValue('on');
-      delivered?.setFilterValue('off')
+      status?.setFilterValue("active");
+      sold?.setFilterValue("on");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "tomorowsDeliveries") {
       pickUpDate?.setFilterValue(getTomorrow);
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('on');
-      sold?.setFilterValue('on');
-      delivered?.setFilterValue('off')
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("on");
+      sold?.setFilterValue("on");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "yestDeliveries") {
       pickUpDate?.setFilterValue(getYesterday);
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('on');
-      sold?.setFilterValue('on');
-      delivered?.setFilterValue('off')
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("on");
+      sold?.setFilterValue("on");
+      delivered?.setFilterValue("off");
     }
 
     if (selectedFilter === "depositsToday") {
-      status?.setFilterValue('active');
-      depositMade?.setFilterValue('on');
-      sold?.setFilterValue('on');
-      delivered?.setFilterValue('off')
-      signed?.setFilterValue('off')
-      financeApp?.setFilterValue('off')
+      status?.setFilterValue("active");
+      depositMade?.setFilterValue("on");
+      sold?.setFilterValue("on");
+      delivered?.setFilterValue("off");
+      signed?.setFilterValue("off");
+      financeApp?.setFilterValue("off");
     }
   };
 
   // clears filters
   const setAllFilters = () => {
     setColumnFilters([]);
-    setSorting([])
-    setFilterBy('')
+    setSorting([]);
+    setFilterBy("");
+    setGlobalFilter([]);
   };
 
   // toggle column filters
@@ -517,70 +451,82 @@ export function DataTable({
   // </ClientOnly>
 
   //defaultValue={todayfilterBy}>
-  const submit = useSubmit()
+  const submit = useSubmit();
 
   async function rotateSalesQueue() {
-    console.log(salesPeople, 'rotateSalesQueue')
+    console.log(salesPeople, "rotateSalesQueue");
     const formData = new FormData();
-    formData.append("intent", 'rotateSalesQueue');
+    formData.append("intent", "rotateSalesQueue");
     const update = submit(formData, { method: "post" });
-    return update
+    return update;
   }
   async function rotateFinanceQueue() {
-    console.log(salesPeople, 'rotateFinanceQueue')
+    console.log(salesPeople, "rotateFinanceQueue");
     const formData = new FormData();
-    formData.append("intent", 'rotateFinanceQueue');
+    formData.append("intent", "rotateFinanceQueue");
     const update = submit(formData, { method: "post" });
-    return update
+    return update;
   }
   async function resetQueueFinance() {
-    console.log(salesPeople, 'resetQueueFinance')
+    console.log(salesPeople, "resetQueueFinance");
     const formData = new FormData();
-    formData.append("intent", 'rotateFinanceQueue');
+    formData.append("intent", "rotateFinanceQueue");
     const update = submit(formData, { method: "post" });
-    return update
+    return update;
   }
   async function resetQueue() {
-    console.log(salesPeople, 'resetQueue')
+    console.log(salesPeople, "resetQueue");
     const formData = new FormData();
-    formData.append("intent", 'resetQueue');
+    formData.append("intent", "resetQueue");
     const update = submit(formData, { method: "post" });
-    return update
+    return update;
   }
 
-  const [salesPeople, setSalesPeople] = useState([])
-  const [financeManager, setFinanceManager] = useState([])
-  const [massSms, setMassSms] = useState(false)
-  const [massEmail, setMassEmail] = useState(false)
-  const [addCustomer, setAddCustomer] = useState(false)
+  const [salesPeople, setSalesPeople] = useState([]);
+  const [financeManager, setFinanceManager] = useState([]);
+  const [massSms, setMassSms] = useState(false);
+  const [massEmail, setMassEmail] = useState(false);
+  const [addCustomer, setAddCustomer] = useState(false);
 
-  const swrFetcher = url => fetch(url).then(r => r.json())
+  const swrFetcher = (url) => fetch(url).then((r) => r.json());
 
-  const { data: userFetch, userError } = useSWR('/dealer/api/findManyUsers', swrFetcher, {
-    refreshInterval: 60000, revalidateOnMount: true, revalidateOnReconnect: true
-  });
-  const { data: financeFetch, financeError } = useSWR('/dealer/api/findManyFinance', swrFetcher, {
-    refreshInterval: 60000, revalidateOnMount: true, revalidateOnReconnect: true
-  });
+  const { data: userFetch, userError } = useSWR(
+    "/dealer/api/findManyUsers",
+    swrFetcher,
+    {
+      refreshInterval: 60000,
+      revalidateOnMount: true,
+      revalidateOnReconnect: true,
+    }
+  );
+  const { data: financeFetch, financeError } = useSWR(
+    "/dealer/api/findManyFinance",
+    swrFetcher,
+    {
+      refreshInterval: 60000,
+      revalidateOnMount: true,
+      revalidateOnReconnect: true,
+    }
+  );
 
   useEffect(() => {
     if (userFetch) {
-      console.log(userFetch.users, 'userFetch')
-      setSalesPeople(userFetch.users)
+      console.log(userFetch.users, "userFetch");
+      setSalesPeople(userFetch.users);
     }
     if (financeFetch) {
-      console.log(financeFetch.users, 'userFetch')
-      setFinanceManager(financeFetch.users)
+      console.log(financeFetch.users, "userFetch");
+      setFinanceManager(financeFetch.users);
     }
   }, [userFetch, financeFetch]);
 
-  const [customerMessages, setCustomerMessages] = useState([])
-  const [customer, setCustomer] = useState()
-  const [conversationSid, setConversationSid] = useState('')
+  const [customerMessages, setCustomerMessages] = useState([]);
+  const [customer, setCustomer] = useState();
+  const [conversationSid, setConversationSid] = useState("");
 
   useEffect(() => {
-    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
-    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+    const accountSid = "AC9b5b398f427c9c925f18f3f1e204a8e2";
+    const authToken = "d38e2fd884be4196d0f6feb0b970f63f";
     setCustomer(smsDetails);
 
     if (smsDetails) {
@@ -595,10 +541,10 @@ export function DataTable({
         async function fetchMessages() {
           try {
             const response = await fetch(url, {
-              method: 'GET',
-              headers: { 'Authorization': `Basic ${base64Credentials}` },
+              method: "GET",
+              headers: { Authorization: `Basic ${base64Credentials}` },
             });
-            console.log(response, 'response')
+            console.log(response, "response");
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -606,15 +552,13 @@ export function DataTable({
             const data = await response.json();
             if (data.length !== 0) {
               setCustomerMessages(data.messages);
-
+            } else {
+              setCustomerMessages([]);
             }
-            else {
-              setCustomerMessages([])
-            }
-            console.log(data, 'fetched messages');
+            console.log(data, "fetched messages");
             return data;
           } catch (error) {
-            console.error('Failed to fetch messages:', error);
+            console.error("Failed to fetch messages:", error);
           }
         }
 
@@ -685,11 +629,11 @@ export function DataTable({
       }
       }
 
-GetNumber()
+    GetNumber()
     }*/
   }, [smsDetails]);
 
-  const fetcher = useFetcher()
+  const fetcher = useFetcher();
   const userEmail = user?.email;
 
   const initial = {
@@ -703,12 +647,12 @@ GetNumber()
     const { name, value, checked, type } = e.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
-  const [brandId, setBrandId] = useState('');
+  const [brandId, setBrandId] = useState("");
   const [modelList, setModelList] = useState();
 
   const handleBrand = (e) => {
     setBrandId(e.target.value);
-    console.log(brandId, modelList)
+    console.log(brandId, modelList);
   };
 
   useEffect(() => {
@@ -731,18 +675,17 @@ GetNumber()
   }, [brandId]);
   const [open, setOpen] = useState(false);
 
-  const [rowData, setRowData] = useState()
+  const [rowData, setRowData] = useState();
 
   useEffect(() => {
     if (rowData) {
       const serializedUser = JSON.stringify(user);
-      const cust = rowData.rowData.map(user => user.email);
-      console.log(cust, 'cust')
+      const cust = rowData.rowData.map((user) => user.email);
+      console.log(cust, "cust");
       const serializedCust = JSON.stringify(cust);
       window.localStorage.setItem("user", serializedUser);
       window.localStorage.setItem("customer", serializedCust);
     }
-
   }, []);
 
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
@@ -766,26 +709,27 @@ GetNumber()
         typeof window !== "undefined" ? window.location.host : null;
       if (iFrameRef.current) {
         if (currentHost === "localhost:3000") {
-          iFrameRef.current.src = "http://localhost:3000/dealer/email/massEmail";
+          iFrameRef.current.src =
+            "http://localhost:3000/dealer/email/massEmail";
         }
         if (currentHost === "dealersalesassistant.ca") {
           iFrameRef.current.src =
             "https://www.dealersalesassistant.ca/dealer/email/massEmail";
         }
         window.addEventListener("message", handleHeightMessage);
-        const cust = rowData
+        const cust = rowData;
 
         const sendData = { cust, user };
 
         // Add load event listener to ensure iframe is loaded
         const onLoad = () => {
-          iFrameRef.current.contentWindow?.postMessage(sendData, '*');
+          iFrameRef.current.contentWindow?.postMessage(sendData, "*");
         };
-        iFrameRef.current.addEventListener('load', onLoad);
+        iFrameRef.current.addEventListener("load", onLoad);
 
         return () => {
           window.removeEventListener("message", handleHeightMessage);
-          iFrameRef.current?.removeEventListener('load', onLoad);
+          iFrameRef.current?.removeEventListener("load", onLoad);
         };
       }
     }, []);
@@ -799,8 +743,7 @@ GetNumber()
             width="100%"
             className=" border-none"
             style={{
-              minHeight: "40vh"
-
+              minHeight: "40vh",
             }}
           />
         </div>
@@ -815,110 +758,181 @@ GetNumber()
       window.localStorage.setItem("user", serializedUser);
       window.localStorage.setItem("customer", serializedCust);
     }
-
   }, [rowData]);
 
+  const [selectedColumn, setSelectedColumn] = useState("");
+  const [selectedGlobal, setSelectedGlobal] = useState(false);
+
+  const setColumnFilterDropdown = (event) => {
+    const columnId = event.target.getAttribute("data-value");
+    setSelectedColumn(columnId);
+    console.log("Selected column:", columnId);
+    // Add your logic here to handle the column selection
+  };
+
+  const handleGlobalChange = (value) => {
+    console.log("value", value);
+    table.getColumn(selectedColumn)?.setFilterValue(value);
+  };
+  //apply the fuzzy sort if the fullName column is being filtered
+  useEffect(() => {
+    if (table.getState().columnFilters[0]?.id === "fullName") {
+      if (table.getState().sorting[0]?.id !== "fullName") {
+        table.setSorting([{ id: "fullName", desc: false }]);
+      }
+    }
+  }, [table.getState().columnFilters[0]?.id]);
+
+
+  const [getTheState, setGetTheState] = useState([])
+  const [getTheState2, setGetTheState2] = useState([])
+  useEffect(() => {
+                                   const formData = new FormData();
+                              formData.append("userEmail", user.email);
+                              formData.append("columnState", getTheState2);
+                              formData.append("intent", "salesColumns");
+                             fetcher.submit(formData, { method: "post" });
+  }, [getTheState2, getTheState]);
 
   return (
-    <div className="mb-[20px]  even:bg-background  rounded    justify-center">
+    <div className="mb-[20px]  justify-center  rounded    even:bg-background">
       <div className="ml-auto flex items-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">Menu</Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-background text-foreground border border-border">
+          <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
             <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onSelect={() => setSelectedGlobal(true)}
+              >
+                Global Filter
+              </DropdownMenuItem>
               <DropdownMenuSub>
-                <DropdownMenuSubTrigger className='cursor-pointer' >Default Filters</DropdownMenuSubTrigger>
+                <DropdownMenuSubTrigger className="cursor-pointer">
+                  Default Filters
+                </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto bg-background text-foreground border border-border">
-                    <DropdownMenuLabel>{todayfilterBy || "Default Filters"}</DropdownMenuLabel>
+                  <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                    <DropdownMenuLabel>
+                      {todayfilterBy || "Default Filters"}
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {CallsList.map((item) => (
                       <DropdownMenuItem
                         onSelect={(event) => {
-                          const value = event.currentTarget.getAttribute('data-value');
-                          const item = CallsList.find(i => i.key === value)
-                            || DeliveriesList.find(i => i.key === value)
-                            || DepositsTakenList.find(i => i.key === value);
+                          const value =
+                            event.currentTarget.getAttribute("data-value");
+                          const item =
+                            CallsList.find((i) => i.key === value) ||
+                            DeliveriesList.find((i) => i.key === value) ||
+                            DepositsTakenList.find((i) => i.key === value);
                           if (item) {
                             handleFilterChange(item.key);
                             setTodayfilterBy(item.name);
                           }
                         }}
                         data-value={item.key}
-                        textValue={item.key}>{item.name}</DropdownMenuItem>
+                        textValue={item.key}
+                      >
+                        {item.name}
+                      </DropdownMenuItem>
                     ))}
                     {CallsList.map((item) => (
                       <DropdownMenuItem
                         onSelect={(event) => {
-                          const value = event.currentTarget.getAttribute('data-value');
-                          const item = CallsList.find(i => i.key === value)
-                            || DeliveriesList.find(i => i.key === value)
-                            || DepositsTakenList.find(i => i.key === value);
+                          const value =
+                            event.currentTarget.getAttribute("data-value");
+                          const item =
+                            CallsList.find((i) => i.key === value) ||
+                            DeliveriesList.find((i) => i.key === value) ||
+                            DepositsTakenList.find((i) => i.key === value);
                           if (item) {
                             handleFilterChange(item.key);
                             setTodayfilterBy(item.name);
                           }
                         }}
                         data-value={item.key}
-                        textValue={item.key}>{item.name}</DropdownMenuItem>
+                        textValue={item.key}
+                      >
+                        {item.name}
+                      </DropdownMenuItem>
                     ))}
                     {CallsList.map((item) => (
                       <DropdownMenuItem
                         onSelect={(event) => {
-                          const value = event.currentTarget.getAttribute('data-value');
-                          const item = CallsList.find(i => i.key === value)
-                            || DeliveriesList.find(i => i.key === value)
-                            || DepositsTakenList.find(i => i.key === value);
+                          const value =
+                            event.currentTarget.getAttribute("data-value");
+                          const item =
+                            CallsList.find((i) => i.key === value) ||
+                            DeliveriesList.find((i) => i.key === value) ||
+                            DepositsTakenList.find((i) => i.key === value);
                           if (item) {
                             handleFilterChange(item.key);
                             setTodayfilterBy(item.name);
                           }
                         }}
                         data-value={item.key}
-                        textValue={item.key}>{item.name}</DropdownMenuItem>
-                    ))}
-
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className='cursor-pointer' >Global Filters</DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto bg-background text-foreground border border-border">
-                    {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => (
-                      <DropdownMenuItem
-                        onSelect={(event) => {
-                          handleInputChange(event)
-                        }}
-                        data-value={column.id}
-                        key={column.id}
-                        className="bg-background text-foreground capitalize cursor-pointer  hover:underline hover:text-primary">
-                        {column.id}
+                        textValue={item.key}
+                      >
+                        {item.name}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="cursor-pointer">
+                  Global Filters
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                    {table
+                      .getAllColumns()
+                      .filter((column) => column.getCanHide())
+                      .map((column) => (
+                        <DropdownMenuItem
+                          onSelect={(event) => {
+                            setColumnFilterDropdown(event);
+                          }}
+                          data-value={column.id}
+                          key={column.id}
+                          className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                        >
+                          {column.id}
+                        </DropdownMenuItem>
+                      ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
               <DropdownMenuItem
-                className='cursor-pointer'
-                onSelect={() => setAllFilters([])}>Clear</DropdownMenuItem>
+                className="cursor-pointer"
+                onSelect={() => {
+                  setAllFilters([]);
+                  setSelectedGlobal(false);
+                }}
+              >
+                Clear
+              </DropdownMenuItem>
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-
               <DropdownMenuItem
-                className='cursor-pointer'
-                onSelect={toggleFilter}>Toggle  All Columns</DropdownMenuItem>
+                className="cursor-pointer"
+                onSelect={toggleFilter}
+              >
+                Toggle All Columns
+              </DropdownMenuItem>
               <DropdownMenuSub>
-                <DropdownMenuSubTrigger className='cursor-pointer' >Column Toggle</DropdownMenuSubTrigger>
+                <DropdownMenuSubTrigger className="cursor-pointer">
+                  Column Toggle
+                </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto bg-background text-foreground border border-border">
+                  <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
                     {table
                       .getAllColumns()
                       .filter((column) => column.getCanHide())
@@ -926,11 +940,17 @@ GetNumber()
                         return (
                           <DropdownMenuCheckboxItem
                             key={column.id}
-                            className="bg-background capitalize  cursor-pointer text-foreground"
+                            className="cursor-pointer bg-background  capitalize text-foreground"
                             checked={column.getIsVisible()}
-                            onCheckedChange={(value) =>
-                              column.toggleVisibility(!!value)
-                            }
+                            onCheckedChange={(value) => {
+                              column.toggleVisibility(!!value);
+                                 const columnState = JSON.stringify(table.getState().columnVisibility);
+                              const getVisibleFlatColumns = JSON.stringify(table.getVisibleFlatColumns());
+                              const formattedColumnState = columnState.replace(/"/g, "'").replace(/\s+/g, '');
+                              const formattedgetVisibleFlatColumns = columnState.replace(/"/g, "'").replace(/\s+/g, '');
+                              setGetTheState(formattedColumnState)
+                                    setGetTheState2(formattedgetVisibleFlatColumns)
+                            }}
                           >
                             {column.id}
                           </DropdownMenuCheckboxItem>
@@ -940,17 +960,22 @@ GetNumber()
                 </DropdownMenuPortal>
               </DropdownMenuSub>
 
-              <div className='w-[650px]' >
+              <div className="w-[650px]">
                 <Dialog>
-                  <DialogTrigger className='w-full cursor-pointer'>
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()} className='w-full'>
+                  <DialogTrigger className="w-full cursor-pointer">
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="w-full cursor-pointer"
+                    >
                       Mass SMS
-                      <DropdownMenuShortcut> <MessageSquare color="foreground" /></DropdownMenuShortcut>
-
+                      <DropdownMenuShortcut>
+                        {" "}
+                        <MessageSquare color="foreground" />
+                      </DropdownMenuShortcut>
                     </DropdownMenuItem>
                   </DialogTrigger>
                   <DialogContent className="w-[600px] max-w-[600px]">
-                    <DialogHeader className='w-[600px] max-w-[600px]'>
+                    <DialogHeader className="w-[600px] max-w-[600px]">
                       <DialogTitle>Mass SMS</DialogTitle>
                       <DialogDescription>
                         <TextFunction
@@ -966,17 +991,22 @@ GetNumber()
                 </Dialog>
               </div>
 
-
-              <div className='w-[650px]' >
+              <div className="w-[650px]">
                 <Dialog>
-                  <DialogTrigger className='w-full cursor-pointer'>
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()} className='w-full'>
+                  <DialogTrigger className="w-full cursor-pointer">
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="w-full cursor-pointer"
+                    >
                       Mass Email
-                      <DropdownMenuShortcut> <Mail color="foreground" /></DropdownMenuShortcut>
+                      <DropdownMenuShortcut>
+                        {" "}
+                        <Mail color="foreground" />
+                      </DropdownMenuShortcut>
                     </DropdownMenuItem>
                   </DialogTrigger>
                   <DialogContent className="w-[600px] max-w-[600px]">
-                    <DialogHeader className='w-[600px] max-w-[600px]'>
+                    <DialogHeader className="w-[600px] max-w-[600px]">
                       <DialogTitle>Mass Email</DialogTitle>
                       <DialogDescription>
                         <MyIFrameComponent />
@@ -987,95 +1017,125 @@ GetNumber()
               </div>
 
               <DropdownMenuSub>
-                <DropdownMenuSubTrigger className='cursor-pointer' >Rotation</DropdownMenuSubTrigger>
+                <DropdownMenuSubTrigger className="cursor-pointer">
+                  Rotation
+                </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="overflow-y-auto bg-background text-foreground border border-border">
+                  <DropdownMenuSubContent className="overflow-y-auto border border-border bg-background text-foreground">
                     <DropdownMenuGroup>
                       <DropdownMenuLabel>Sales Rotation</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {salesPeople.map(person => (
-                        <DropdownMenuItem className='text-muted-foreground mt-2' key={person.id}>{person.name}</DropdownMenuItem>
+                      {salesPeople.map((person) => (
+                        <DropdownMenuItem
+                          className="mt-2 text-muted-foreground"
+                          key={person.id}
+                        >
+                          {person.name}
+                        </DropdownMenuItem>
                       ))}
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                       <DropdownMenuLabel>Finance Rotation</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {financeManager.map(person => (
-                        <DropdownMenuItem className='text-muted-foreground mt-2' key={person.id}>{person.name}</DropdownMenuItem>
+                      {financeManager.map((person) => (
+                        <DropdownMenuItem
+                          className="mt-2 text-muted-foreground"
+                          key={person.id}
+                        >
+                          {person.name}
+                        </DropdownMenuItem>
                       ))}
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger>Actions</DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
-                        <DropdownMenuSubContent className=" overflow-y-auto bg-background text-foreground border border-border">
+                        <DropdownMenuSubContent className=" overflow-y-auto border border-border bg-background text-foreground">
                           <DropdownMenuItem
                             onClick={() => {
-                              rotateSalesQueue()
-                              toast.success(`Rotating sales...`)
+                              rotateSalesQueue();
+                              toast.success(`Rotating sales...`);
                             }}
-                          >Rotate Sales</DropdownMenuItem>
+                          >
+                            Rotate Sales
+                          </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => {
-                              rotateFinanceQueue()
-                              toast.success(`Rotating sales...`)
+                              rotateFinanceQueue();
+                              toast.success(`Rotating sales...`);
                             }}
-                          >  Rotate Finance</DropdownMenuItem>
+                          >
+                            {" "}
+                            Rotate Finance
+                          </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => {
-                              resetQueue()
-                              toast.success(`Rotating sales...`)
+                              resetQueue();
+                              toast.success(`Rotating sales...`);
                             }}
-                          >Reset Sales</DropdownMenuItem>
+                          >
+                            Reset Sales
+                          </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => {
-                              resetQueueFinance()
-                              toast.success(`Rotating sales...`)
+                              resetQueueFinance();
+                              toast.success(`Rotating sales...`);
                             }}
-                          >Reset Finance</DropdownMenuItem>
+                          >
+                            Reset Finance
+                          </DropdownMenuItem>
                         </DropdownMenuSubContent>
                       </DropdownMenuPortal>
                     </DropdownMenuSub>
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
-
             </DropdownMenuGroup>
 
             <DropdownMenuGroup>
-              <div className='w-[650px]' >
+              <div className="w-[650px]">
                 <Dialog>
-                  <DialogTrigger className='w-full cursor-pointer'>
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()} className='w-full'>
+                  <DialogTrigger className="w-full cursor-pointer">
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="w-full cursor-pointer"
+                    >
                       Add Customer
-                      <DropdownMenuShortcut> <UserPlus color="foreground" /></DropdownMenuShortcut>
+                      <DropdownMenuShortcut>
+                        {" "}
+                        <UserPlus color="foreground" />
+                      </DropdownMenuShortcut>
                     </DropdownMenuItem>
                   </DialogTrigger>
                   <DialogContent className="w-[600px] max-w-[600px]">
-                    <DialogHeader className='w-[600px] max-w-[600px]'>
+                    <DialogHeader className="w-[600px] max-w-[600px]">
                       <DialogTitle> Add Customer</DialogTitle>
                       <DialogDescription>
                         <>
-                          <fetcher.Form method="post">
-                            <div className="flex flex-col ">
+                          <fetcher.Form method="post" className="  w-[95%] ">
+                            <div className="flex flex-col   ">
                               <div className="relative mt-3">
                                 <Input
                                   type="text"
                                   name="firstName"
                                   onChange={handleChange}
-                                  className='border-border bg-background'
+                                  className="border-border bg-background"
                                 />
-                                <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                                <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                  First Name
+                                </label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
                                   type="text"
                                   name="lastName"
                                   onChange={handleChange}
-                                  className='border-border bg-background '
+                                  className="border-border bg-background "
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Last Name</label>
+                                <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                  Last Name
+                                </label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -1083,7 +1143,9 @@ GetNumber()
                                   type="number"
                                   name="phone"
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                                <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                  Phone
+                                </label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -1091,7 +1153,9 @@ GetNumber()
                                   type="email"
                                   name="email"
                                 />
-                                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                                <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                  Email
+                                </label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -1099,7 +1163,9 @@ GetNumber()
                                   type="text"
                                   name="address"
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Address</label>
+                                <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                  Address
+                                </label>
                               </div>
                               <div className="relative mt-3">
                                 <Input
@@ -1109,7 +1175,9 @@ GetNumber()
                                   name="brand"
                                   onChange={handleBrand}
                                 />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
+                                <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                  Brand
+                                </label>
                               </div>
                               <datalist id="ListOptions">
                                 <option value="BMW-Motorrad" />
@@ -1134,9 +1202,13 @@ GetNumber()
                                   <div className="relative mt-3">
                                     <Input
                                       className="  "
-                                      type="text" list="ListOptions2" name="model"
+                                      type="text"
+                                      list="ListOptions2"
+                                      name="model"
                                     />
-                                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
+                                    <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                      Model
+                                    </label>
                                   </div>
                                   <datalist id="ListOptions2">
                                     {modelList.models.map((item, index) => (
@@ -1146,24 +1218,50 @@ GetNumber()
                                 </>
                               )}
                             </div>
-                            <Input type="hidden" name="iRate" defaultValue={10.99} />
-                            <Input type="hidden" name="tradeValue" defaultValue={0} />
-                            <Input type="hidden" name="discount" defaultValue={0} />
-                            <Input type="hidden" name="deposit" defaultValue={0} />
-                            <Input type="hidden" name="months" defaultValue={60} />
-                            <Input type="hidden" name="userEmail" defaultValue={userEmail} />
+                            <Input
+                              type="hidden"
+                              name="iRate"
+                              defaultValue={10.99}
+                            />
+                            <Input
+                              type="hidden"
+                              name="tradeValue"
+                              defaultValue={0}
+                            />
+                            <Input
+                              type="hidden"
+                              name="discount"
+                              defaultValue={0}
+                            />
+                            <Input
+                              type="hidden"
+                              name="deposit"
+                              defaultValue={0}
+                            />
+                            <Input
+                              type="hidden"
+                              name="months"
+                              defaultValue={60}
+                            />
+                            <Input
+                              type="hidden"
+                              name="userEmail"
+                              defaultValue={userEmail}
+                            />
                             <Input
                               type="hidden"
                               name="name"
-                              defaultValue={`${firstName}` + " " + `${lastName}`}
+                              defaultValue={
+                                `${firstName}` + " " + `${lastName}`
+                              }
                             />
                             <div className="mt-[25px] flex justify-end">
                               <Button
                                 name="intent"
                                 value="AddCustomer"
                                 type="submit"
-                                size='sm'
-                                className='bg-primary'
+                                size="sm"
+                                className="bg-primary"
                               >
                                 Add
                               </Button>
@@ -1177,321 +1275,171 @@ GetNumber()
               </div>
 
               <DropdownMenuItem>
-                <Link to='/dealer/calendar/sales' className='w-full flex justify-between items-center'>
+                <Link
+                  to="/dealer/calendar/sales"
+                  className="flex w-full items-center justify-between"
+                >
                   <p>Calendar</p>
-                  <DropdownMenuShortcut><CalendarCheck color="#cbd0d4" size={20} strokeWidth={1.5} /></DropdownMenuShortcut>
+                  <DropdownMenuShortcut>
+                    <CalendarCheck
+                      color="#cbd0d4"
+                      size={20}
+                      strokeWidth={1.5}
+                    />
+                  </DropdownMenuShortcut>
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
-
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {filterBy && (
+        {selectedColumn && (
           <Input
-            placeholder={`Filter ${filterBy} ...`}
-            value={
-              (table.getColumn(filterBy)?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn(filterBy)?.setFilterValue(event.target.value)
-            }
+            placeholder={`Filter ${selectedColumn}...`}
+            onChange={(e) => handleGlobalChange(e.target.value)}
             className="ml-2 max-w-sm "
           />
         )}
+        {selectedGlobal === true && (
+          <div className="relative ">
+            <DebouncedInput
+              value={globalFilter ?? ""}
+              onChange={(value) => setGlobalFilter(String(value))}
+              className="ml-3 border border-border p-2 shadow"
+              placeholder="Search all columns..."
+            />
+            <label className=" scale-80 absolute -top-3 right-3 rounded-full  bg-transparent px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+              <Button
+                onClick={() => {
+                  setGlobalFilter([]);
+                  setSelectedGlobal(false);
+                }}
+                size="icon"
+                variant="ghost"
+                className="hover:bg-transparent"
+              >
+                <X />
+              </Button>
+            </label>
+          </div>
+        )}
       </div>
 
-      <div className="mt-[20px] rounded-md  border border-border text-foreground">
+      <div style={{ direction: table.options.columnResizeDirection }}>
+        <div className="mt-[20px] rounded-md  border border-border text-foreground">
+          <Table            className="overflow-x-auto rounded-md border-border"       table={table}              >
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className=" border-border">
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead                    key={header.id}                                              >
+                        <>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
 
-        <Table className="rounded-md overflow-x-auto border-border">
-          <TableHeader>
-
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className=' border-border'>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      <>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
+                          {header.column.getCanFilter() && showFilter && (
+                            <div className="mx-auto cursor-pointer items-center justify-center text-center ">
+                              <Filter column={header.column} table={table} />
+                            </div>
                           )}
 
-                        {header.column.getCanFilter() && showFilter && (
-                          <div className="mx-auto items-center justify-center cursor-pointer text-center ">
-                            <Filter column={header.column} table={table} />
-                          </div>
-                        )}
-
-                      </>
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody className="overflow-x-auto border-border">
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row, index) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className={`p-4 text-foreground bg-background border-border capitalize cursor-pointer  ${index % 2 === 0 ? 'bg-background' : 'bg-background'}`}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                        </>
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center text-foreground bg-background capitalize cursor-pointer hover:text-primary"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody className="overflow-x-auto border-border">
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row, index) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    className={`cursor-pointer border-border bg-background p-4 capitalize text-foreground  ${
+                      index % 2 === 0 ? "bg-background" : "bg-background"
+                    }`}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell                       key={cell.id}                                              >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        <DataTablePagination table={table} />
+              <pre>{JSON.stringify(table.getState().columnVisibility, null, 2)}</pre>
 
       </div>
-      <DataTablePagination table={table} />
-    </div >
+    </div>
   );
 }
 
-function SimplerStaticVersion() {
+function Filter({ column }: { column: Column<any, unknown> }) {
+  const columnFilterValue = column.getFilterValue();
+
   return (
-    <p>Not working contact support...</p>
-  )
+    <DebouncedInput
+      type="text"
+      value={(columnFilterValue ?? "") as string}
+      onChange={(value) => column.setFilterValue(value)}
+      placeholder={`Search...`}
+      className="w-36 rounded border shadow"
+    />
+  );
 }
-function Loading() {
+
+// A typical debounced input react component
+function DebouncedInput({
+  value: initialValue,
+  onChange,
+  debounce = 500,
+  ...props
+}: {
+  value: string | number;
+  onChange: (value: string | number) => void;
+  debounce?: number;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) {
+  const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value);
+    }, debounce);
+
+    return () => clearTimeout(timeout);
+  }, [value]);
+
   return (
-    <ul>
-      {Array.from({ length: 12 }).map((_, i) => (
-        <li key={i}>
-          <div className="spinner" />
-        </li>
-      ))}
-    </ul>
-  )
+    <Input
+      {...props}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+    />
+  );
 }
-/*const FilterForm = ({ column }) => {
-    const { filterValue, setFilter } = column;
-    return (
-        <span>
-            <input
-                value={filterValue || ''}
-                onChange={(e) => setFilter(e.target.value)}
-            />
-        </span>
-    );
-};
-
-export default FilterForm;
-*/
-
-/**
-      <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className='border-transparent'>
-          <AccordionTrigger className='border-transparent'>        <Button variant='outline' >Menu</Button>
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="ml-auto flex items-center">
-              <Select className='bg-background text-foreground border-border hover:text-primary  hover:border-primary'
-                onValueChange={(value) => {
-                  const item = CallsList.find(i => i.key === value) || DeliveriesList.find(i => i.key === value) || DepositsTakenList.find(i => i.key === value);
-                  if (item) {
-                    handleFilterChange(item.key);
-                    setTodayfilterBy(item.name);
-                  }
-                }}>
-                <SelectTrigger className="w-auto bg-background text-foreground border-border hover:border-primary hover:text-primary mr-3 ">
-                  <SelectValue>{todayfilterBy || "Default Filters"}</SelectValue>
-                </SelectTrigger>
-                <SelectContent className='bg-background text-foreground'>
-                  {CallsList.map((item) => (
-                    <SelectItem value={item.key}>{item.name}</SelectItem>
-                  ))}
-                  {DeliveriesList.map((item) => (
-                    <SelectItem value={item.key}>{item.name}</SelectItem>
-                  ))}
-                  {DepositsTakenList.map((item) => (
-                    <SelectItem value={item.key}>{item.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select onValueChange={(value) => handleInputChange(value)} >
-                <SelectTrigger className='text-foreground border-border w-auto  mr-3 hover:text-primary  hover:border-primary'>
-                  Global Filters
-                </SelectTrigger>
-                <SelectContent align="end" className='bg-background text-foreground '>
-                  {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => (
-                    <SelectItem key={column.id} value={column.id} className="bg-background text-foreground capitalize cursor-pointer  hover:underline hover:text-primary">
-                      {column.id}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-
-              {filterBy && (
-                <Input
-                  placeholder={`Filter ${filterBy} ...`}
-                  value={
-                    (table.getColumn(filterBy)?.getFilterValue() as string) ?? ""
-                  }
-                  onChange={(event) =>
-                    table.getColumn(filterBy)?.setFilterValue(event.target.value)
-                  }
-                  className="ml-2 max-w-sm "
-                />
-              )}
-
-              <Button
-                variant='outline'
-                onClick={() => setAllFilters([])} className='bg-background text-foreground border-border hover:text-primary  hover:border-primary hover:bg-transparent mr-3' >
-                Clear
-              </Button>
-
-              <Button
-                variant='outline' onClick={toggleFilter} className='bg-background text-foreground border-border hover:text-primary  hover:border-primary hover:bg-transparent' >
-                Toggle Col
-              </Button>
-              <div className="mx-2">
-                <MassEmail table={table} user={user} />
-              </div>
-              <MassSMS data={data} table={table} />
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button variant="outline">Rotation</Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                  <div className="mx-auto w-full max-w-sm">
-                    <DrawerHeader>
-                      <DrawerTitle className='font-thin uppercase'>Roation for Sales and Finance</DrawerTitle>
-                    </DrawerHeader>
-                    <div className="p-4 pb-0 grid grid-cols-1">
-                      <div className="items-center justify-center space-x-2">
-                        <h2 className='font-thin uppercase'>Sales People Rotation</h2>
-                        <hr className=" text-muted-foreground w-[95%] mx-auto mb-2" />
-                        <ul>
-                          {salesPeople.map(person => (
-                            <li className='text-muted-foreground mt-2' key={person.id}>{person.name}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="items-center justify-center space-x-2 mt-5">
-                        <h2 className='font-thin uppercase'>Finance Manager Rotation</h2>
-                        <hr className=" text-muted-foreground w-[95%] mx-auto" />
-                        <ul>
-                          {financeManager.map(person => (
-                            <li className='text-muted-foreground mt-2' key={person.id}>{person.name}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                    <Accordion type="single" collapsible>
-                      <AccordionItem value="item-1" className='border-transparent'>
-                        <AccordionTrigger className='border-transparent'>        <Button variant='outline' className="w-auto cursor-pointer mt-3  bg-primary" >Actions</Button>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className='grid grid-cols-1 mt-5 mb-5' >
-                            <Button
-                              className="w-auto cursor-pointer  bg-primary"
-                              onClick={() => {
-                                rotateSalesQueue()
-                                toast.success(`Rotating sales...`)
-                              }
-                              }
-                            >
-                              Rotate Sales
-                            </Button>
-                            <Button
-                              className="w-auto cursor-pointer mt-3  bg-primary"
-                              onClick={() => {
-                                rotateFinanceQueue()
-                                toast.success(`Rotating finance...`)
-                              }
-                              }
-                            >
-                              Rotate Finance
-                            </Button>
-                            <Button
-                              className="w-auto cursor-pointer mt-3  bg-primary"
-                              onClick={() => {
-                                resetQueue()
-                                toast.success(`Resetting sales...`)
-                              }
-                              }
-                            >
-                              Reset Sales
-                            </Button>
-                            <Button
-                              className="w-auto cursor-pointer mt-3  bg-primary"
-                              onClick={() => {
-                                resetQueueFinance()
-                                toast.success(`Resetting finance...`)
-                              }
-                              }
-                            >
-                              Reset Finance
-                            </Button>
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  </div>
-                </DrawerContent>
-              </Drawer>
-
-              <div className="flex" >
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <p className="cursor-pointer my-auto ml-5 mr-5 hover:text-primary ">
-                      <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.14998 14V1H0.849976V14H2.14998ZM6.14998 14V1H4.84998V14H6.14998ZM10.15 1V14H8.84998V1H10.15ZM14.15 14V1H12.85V14H14.15Z" fill="#cbd0d4" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                    </p>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-background text-black">
-                    <ScrollArea className="h-[500px] w-[200px] rounded-md  p-4">
-                      {table
-                        .getAllColumns()
-                        .filter((column) => column.getCanHide())
-                        .map((column) => {
-                          return (
-                            <DropdownMenuCheckboxItem
-                              key={column.id}
-                              className="bg-background capitalize  cursor-pointer text-foreground"
-                              checked={column.getIsVisible()}
-                              onCheckedChange={(value) =>
-                                column.toggleVisibility(!!value)
-                              }
-                            >
-                              {column.id}
-                            </DropdownMenuCheckboxItem>
-                          );
-                        })}
-                    </ScrollArea>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <AddCustomer />
-                <Link to='/dealer/calendar/sales'>
-                  <button className=' p-2 cursor-pointer hover:text-blue-8 justify-center items-center mr-3 border-[#fff]' >
-                    <CalendarCheck color="#cbd0d4" size={20} strokeWidth={1.5} />
-                  </button>
-                </Link>
-              </div>
-            </div >
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion> */

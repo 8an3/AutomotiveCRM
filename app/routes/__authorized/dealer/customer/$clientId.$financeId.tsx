@@ -76,7 +76,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb"
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent } from "~/components/ui/dropdown-menu"
 //import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, } from "~/components/ui/dropdown-menu";
 import {
   Pagination,
@@ -138,8 +138,6 @@ import { toast } from "sonner"
 import { FaMotorcycle } from "react-icons/fa";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
-
-
 import { ImageSelectNav } from '~/overviewUtils/imageselect'
 import canamIndex from '~/logos/canamIndex.png'
 import manitouIndex from '~/logos/manitouIndex.png'
@@ -156,7 +154,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer"
-
 import { overviewLoader, overviewAction, financeIdLoader } from '~/components/actions/overviewActions'
 import EmailSheet from '~/overviewUtils/Emails'
 import FeaturePop from '~/overviewUtils/FeaturePop'
@@ -172,10 +169,18 @@ import { PrintSpec } from "~/overviewUtils/printSpec";
 import { CiEdit } from "react-icons/ci";
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
 import { FaSave } from "react-icons/fa";
-import UnitPicker from "~/components/dashboard/unitPicker/unitPicker";
+import UnitPicker from "~/routes/__authorized/dealer/stockUnit";
 import { cors } from "remix-utils";
 import { TextFunction } from "~/components/dashboard/calls/logText";
 import { ModelPage } from "~/overviewUtils/modelPage";
+import timeline from "~/styles/timeline.css";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "~/components/ui/hover-card"
+import useSWR from "swr";
+
 
 /**  const [formData, setFormData] = useState({
     referral: mergedFinanceList.referral || "off",
@@ -209,8 +214,7 @@ export const headers = ({ loaderHeaders, parentHeaders }) => {
 };
 
 export default function Dashboard() {
-  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown } = useLoaderData();
-
+  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers } = useLoaderData();
 
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
@@ -298,10 +302,9 @@ export default function Dashboard() {
     }
   }, [isAdding]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, []);
-
 
   useEffect(() => {
     if (finance.id) {
@@ -331,7 +334,6 @@ export default function Dashboard() {
   const [hour, setHour] = useState(currentHour)
   const [min, setMin] = useState(currentMinute)
   const currentTime = `${hour}:${min}:${currentSecond}`
-  console.log(`Current time is `, currentTime);
   const time = `${hour}:${min}:00`
 
   useEffect(() => {
@@ -500,7 +502,7 @@ export default function Dashboard() {
       });
   };
   const [copiedText, setCopiedText] = useState('');
-  React.useEffect(() => {
+  useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, [])
 
@@ -534,12 +536,12 @@ export default function Dashboard() {
 
   type User = (typeof users)[number]
 
-  const [open, setOpen] = React.useState(false)
-  const [openAppt, setOpenAppt] = React.useState(false)
-  const [openComms, setOpenComms] = React.useState(false)
-  const [selectedUsers, setSelectedUsers] = React.useState<User[]>([])
+  const [open, setOpen] = useState(false)
+  const [openAppt, setOpenAppt] = useState(false)
+  const [openComms, setOpenComms] = useState(false)
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([])
 
-  const [messages, setMessages] = React.useState([
+  const [messages, setMessages] = useState([
     {
       role: "agent",
       content: "Hi, how can I help you today?",
@@ -557,7 +559,7 @@ export default function Dashboard() {
       content: "I can't log in.",
     },
   ])
-  const [input, setInput] = React.useState("")
+  const [input, setInput] = useState("")
   const inputLength = input.trim().length
   const navigation = useNavigation();
 
@@ -625,8 +627,8 @@ export default function Dashboard() {
   let { brandId } = useParams()
   const brand = brandId
   const showSection = true
-  const eventDateRef = React.useRef(new Date());
-  React.useEffect(() => {
+  const eventDateRef = useRef(new Date());
+  useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, []);
 
@@ -639,7 +641,6 @@ export default function Dashboard() {
   let bmwTotal = 0;
   let totalSum = 0;
 
-  console.log(deFees, finance, 'deFees')
   const initial = {
     userLabour: parseInt(deFees.userLabour) || 0,
     accessories: finance.accessories ? parseFloat(finance.accessories) : 0,
@@ -748,8 +749,6 @@ export default function Dashboard() {
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
   };
-
-
 
   function BrandOptions() {
     if (brand === 'Manitou') {
@@ -2141,7 +2140,7 @@ export default function Dashboard() {
   // -----------------------------email ---------------------------------//
   const { conversations, } = useLoaderData();
 
-  const [emailData, setEmailData] = useState([])
+  const [emailData, setEmailData] = useState()
 
   useEffect(() => {
     if (data) {
@@ -2187,14 +2186,14 @@ export default function Dashboard() {
 
   if (emailData) {
     const SaveFunction = async () => {
-      const createFinanceNotes = await prisma.previousComms.create({
+      const createFinanceNotes = await prisma.comm.create({
+        Finance: { connect: { id: emailData.financeId, } },
+
         data: {
-          dept: 'Sales',
           financeId: emailData.financeId,
           body: emailData.body,
           userName: emailData.userName,
           type: 'Email',
-          customerEmail: emailData.customerEmail,
           direction: 'Outgoing',
           subject: emailData.subject,
           result: 'Attempted',
@@ -2389,6 +2388,8 @@ export default function Dashboard() {
     formData.append("intent", 'email');
     submit(formData, { method: "post" });
   }
+
+  // ------------------------ finance turnover ---- //
   const [openResponse, setOpenResponse] = useState(false);
   const [key, setKey] = useState(0);
   const [lockData, setLockData] = useState();
@@ -2472,19 +2473,143 @@ export default function Dashboard() {
     return new Date(dateString).toLocaleString('en-US', options);
   };
 
+  // ----- sales card model and brand ---- //
+
+
+  // --------- the sacred timeline -------//
+  const options2 = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  };
+  const createEvent = (date, type, title, userName) => ({
+    date: new Date(date).toLocaleDateString('en-US', options2),
+    type,
+    title,
+    userName,
+    details: {}
+  });
+  const eventFields = {
+    metSalesperson: { type: 'Meeting', title: 'Met Salesperson' },
+    signBill: { type: 'Document', title: 'Signed Bill' },
+    funded: { type: 'Finance', title: 'Funded' },
+    customerWS: { type: 'Document', title: 'Customer WS' },
+    tradeInsp: { type: 'Inspection', title: 'Trade Inspection' },
+    ucda: { type: 'Document', title: 'UCDA' },
+    voidChq: { type: 'Document', title: 'Void Cheque' },
+    testDrForm: { type: 'Document', title: 'Test Drive Form' },
+    insCopy: { type: 'Document', title: 'Insurance Copy' },
+    lost: { type: 'Status', title: 'Lost' },
+    cancelled: { type: 'Status', title: 'Cancelled' },
+    refunded: { type: 'Finance', title: 'Refunded' },
+    liceningDone: { type: 'Document', title: 'Licensing Done' },
+    licensingSent: { type: 'Document', title: 'Licensing Sent' },
+    applicationDone: { type: 'Status', title: 'Application Done' },
+    seenTrade: { type: 'Status', title: 'Seen Trade' },
+    docsSigned: { type: 'Document', title: 'Documents Signed' },
+    depositTakenDate: { type: 'Finance', title: 'Deposit Taken Date' },
+    deliveredDate: { type: 'Status', title: 'Delivered Date' },
+    financeApplication: { type: 'Document', title: 'Finance Application' },
+    metFinance: { type: 'Meeting', title: 'Met Finance' },
+    deliveryDate: { type: 'Status', title: 'Delivery Date' },
+    delivered: { type: 'Status', title: 'Delivered' },
+    demoed: { type: 'Status', title: 'Demoed' },
+    pickUpSet: { type: 'Status', title: 'Pick Up Set' },
+    signed: { type: 'Status', title: 'Signed' },
+    approved: { type: 'Status', title: 'Approved' },
+    financeApp: { type: 'Document', title: 'Finance Application' },
+    turnOver: { type: 'Finance', title: 'Turnover' },
+    refund: { type: 'Finance', title: 'Refund' },
+    depositMade: { type: 'Finance', title: 'Deposit Made' },
+    sold: { type: 'Status', title: 'Sold' },
+    metParts: { type: 'Meeting', title: 'Met Parts' },
+    metService: { type: 'Meeting', title: 'Met Service' },
+    metManager: { type: 'Meeting', title: 'Met Manager' },
+    testDrive: { type: 'Test', title: 'Test Drive' }
+  };
+  const additionalEvents = Object.entries(eventFields)
+    .filter(([key, { type }]) => finance[key] !== null && finance[key] !== undefined)
+    .map(([key, { type, title }]) => createEvent(finance[key], type, title, finance.userName));
+  const financeArray = [finance]
+  const events = [
+    ...aptFinance3.map(app => ({
+      id: app.id,
+      date: new Date(app.start).toLocaleDateString('en-US', options2),
+      type: 'Appointment',
+      title: app.title,
+      userName: app.userName,
+      details: { ...app }
+    })),
+    // Communications
+    ...conversations.map(comm => ({
+      id: comm.id,
+      date: new Date(comm.createdAt).toLocaleDateString('en-US', options2),
+      type: 'Communication',
+      subType: comm.type,
+      userName: comm.userName,
+      title: comm.type,
+      direction: comm.direction,
+      details: { ...comm }
+    })),
+    // Finance Events
+    ...financeArray.map(fin => ({
+      id: fin.id,
+      date: new Date(fin.createdAt).toLocaleDateString('en-US', options2),
+      type: 'Quote',
+      title: fin.name || 'Quote Created',
+      details: { ...fin }
+    })),
+    // finance notes
+    ...financeNotes.map(app => ({
+      id: app.id,
+      date: new Date(app.createdAt).toLocaleDateString('en-US', options2),
+      type: 'Note',
+      title: 'Note left on clients finance file.',
+      userName: app.userName,
+      details: { ...app }
+    })),
+    ...additionalEvents
+  ]
+  // signBill, funded, customerWS, tradeInsp, ucda, voidChq, testDrForm, insCopy, lost, cancelled, refunded, liceningDone, licensingSent, applicationDone, seenTrade, docsSigned, depositTakenDate, deliveredDate, financeApplication, metFinance, deliveryDate, delivered, demoed, pickUpSet, signed, approved, financeApp, turnOver, refund, depositMade, sold,metParts, metService, metManager, testDrive,
+  const sortedEvents = events.sort((a, b) => new Date(a.date) - new Date(b.date));
+  async function getData() {
+    const res = await fetch('/dealer/dashboard/inventory/moto')
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    return res.json();
+  }
+  useEffect(() => {
+    const data = async () => {
+      const result = await getData();
+      console.log(result, 'result')
+      setTableData(result);
+    };
+    data()
+  }, []);
+
+  const dataFetcher = (url) => fetch(url).then((res) => res.json());
+  const { data: swrTable } = useSWR("http://localhost:3000/dealer/dashboard/inventory/moto", dataFetcher);
+  const result = swrTable
+  console.log(result, 'result')
+  const [tableData, setTableData] = useState(result);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+      <aside className="fixed inset-y-0 left-0 z-10  sm:w-[50px] sm:flex-col sm:border-r sm:bg-background sm:flex sm:border-border">
         <SidebarNav mergedFinanceList={mergedFinanceList} finance={finance} />
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header className=" w-[50%] sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-transparent px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <Breadcrumb className="hidden md:flex  text-foreground">
+        <header className=" w-[50%] sticky top-0 z-30 flex h-14 items-center gap-4 bg-transparent px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          <Breadcrumb className="hidden md:flex  text-foreground ml-[25px]">
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to={`/dealer/quote/${finance.brand}`}>
+                  <Link to={`/dealer/quote/new/${finance.brand}`}>
                     Quote
                   </Link>
                 </BreadcrumbLink>
@@ -2492,14 +2617,14 @@ export default function Dashboard() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to={`/dealer/overview/${finance.brand}/${finance.id}`}>
+                  <Link to={`/dealer/overview/new/${finance.brand}/${finance.id}`}>
                     Overview
                   </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <Link to={`/dealer/leads/sales`}>
+              <BreadcrumbItem asChild>
+                <Link to={`/dealer/leads/sales/dashboard`}>
                   Dashboard
                 </Link>
               </BreadcrumbItem>
@@ -2515,7 +2640,7 @@ export default function Dashboard() {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-6">
-              <Card className="sm:col-span-2 bg-background text-foreground rounded-lg" x-chunk="dashboard-05-chunk-0"  >
+              <Card className="sm:col-span-2 bg-background text-foreground rounded-lg  flex flex-col h-full" x-chunk="dashboard-05-chunk-0"  >
                 <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
                   <div className="grid">
                     <CardTitle className="group flex items-center text-sm">
@@ -2603,6 +2728,30 @@ export default function Dashboard() {
                       </span>
                       <span>{finance.postal}</span>
                     </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        Drivers License
+                      </span>
+                      <span>{finance.dl}</span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        DOB
+                      </span>
+                      <span>{finance.dob}</span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        Preferred Time
+                      </span>
+                      <span>{finance.timeToContact}</span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        Preferred Contact
+                      </span>
+                      <span>{finance.typeOfContact}</span>
+                    </li>
                   </ul>
                 </CardContent>
                 <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted/50 px-6 py-3">
@@ -2634,6 +2783,73 @@ export default function Dashboard() {
                             <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
                           </div>
                         ))}
+                         <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        className={cn(
+                                            "w-[100%] pl-3 text-left font-normal mt-4 ",
+                                            !date && "text-muted-foreground"
+                                        )}
+                                    >
+                                        {date ? (
+                                            format(date, "PPP")
+                                        ) : (
+                                            <span>DOB</span>
+                                        )}
+                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        className='w-auto'
+                                        mode="single"
+                                        fromYear={1900}
+                                        selected={date}
+                                        onSelect={setDate}
+                                        disabled={(date) =>
+                                            date > new Date() || date < new Date("1900-01-01")
+                                        }
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <input type='hidden' value={String(date)} name='dob' />
+                          <div className="relative mt-4">
+                                <Select name='timeToContact' defaultValue={data.timeToContact}  >
+                                    <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                                        <SelectValue defaultValue={data.timeToContact} />
+                                    </SelectTrigger>
+                                    <SelectContent className=' bg-background text-foreground border border-border' >
+                                        <SelectGroup>
+                                            <SelectLabel>Best Time To Contact</SelectLabel>
+                                            <SelectItem value="Morning">Morning</SelectItem>
+                                            <SelectItem value="Afternoon">Afternoon</SelectItem>
+                                            <SelectItem value="Evening">Evening</SelectItem>
+                                            <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
+                            </div>
+                            <div className="relative mt-4">
+
+                        <Select name='typeOfContact' defaultValue={data.typeOfContact} >
+                            <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                                <SelectValue defaultValue={data.typeOfContact} />
+                            </SelectTrigger>
+                            <SelectContent className=' bg-background text-foreground border border-border' >
+                                <SelectGroup>
+                                    <SelectLabel>Contact Method</SelectLabel>
+                                    <SelectItem value="Phone">Phone</SelectItem>
+                                    <SelectItem value="InPerson">In-Person</SelectItem>
+                                    <SelectItem value="SMS">SMS</SelectItem>
+                                    <SelectItem value="Email">Email</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Type To Be Contacted</label>
+                        </div>
                         <input type='hidden' name="financeId" defaultValue={finance.id} />
                         <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
 
@@ -2658,95 +2874,96 @@ export default function Dashboard() {
                   </Dialog>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-1 " className="bg-background text-foreground rounded-lg sm:col-span-2">
-                <CardHeader className="flex flex-row items-start  bg-muted/50  rounded-md">
-                  <div className="grid ">
+              <Card x-chunk="dashboard-05-chunk-2" className="bg-background text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
+                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                  <div className="grid">
                     <CardTitle className="group flex items-center text-sm">
-                      Current Vehichle
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                      >
-                        <Copy className="h-3 w-3" />
-                      </Button>
+                      Current Vehicle
                     </CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className='text-sm'>
-                  <ul className="grid gap-3 mt-3">
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Year
-                      </span>
-                      <span>{finance.year}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Brand
-                      </span>
-                      <span>{finance.brand}</span>
-                    </li>
-                    <li className=" group flex items-center justify-between">
-                      <div className='flex'>
+                <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip mt-3">
+                  <div className="max-h-[20vh] h-auto">
+                    <ul className="grid gap-3 mt-3">
+
+                      <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">
-                          Model
+                          Year
                         </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(finance.model)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === finance.model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                      </div>
-                      <span>{finance.model}  </span>
-                    </li>
-
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Color
-                      </span>
-                      <span>{finance.color}</span>
-                    </li>
-                    <li className=" group flex items-center justify-between">
-                      <div className='flex'>
+                        <span>{finance.year}</span>
+                      </li>
+                      <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">
-                          VIN
+                          Brand
                         </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(finance.vin)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === finance.vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                      </div>
-                      <span>{finance.vin}  </span>
-                    </li>
+                        <span>{finance.brand}</span>
+                      </li>
+                      <li className=" group flex items-center justify-between">
+                        <div className='flex'>
+                          <span className="text-muted-foreground">
+                            Model
+                          </span>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            onClick={() => copyText(finance.model)}
+                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                          >
+                            <Copy className="h-3 w-3" />
+                            <span className="sr-only">Copy</span>
+                          </Button>
+                          {copiedText === finance.model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                        </div>
+                        <span>{finance.model}  </span>
+                      </li>
 
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Current Mileage
-                      </span>
-                      <span>{finance.mileage}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Location
-                      </span>
-                      <span>{finance.location}</span>
-                    </li>
-                  </ul>
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">
+                          Color
+                        </span>
+                        <span>{finance.color}</span>
+                      </li>
+                      <li className=" group flex items-center justify-between">
+                        <div className='flex'>
+                          <span className="text-muted-foreground">
+                            VIN
+                          </span>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            onClick={() => copyText(finance.vin)}
+                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                          >
+                            <Copy className="h-3 w-3" />
+                            <span className="sr-only">Copy</span>
+                          </Button>
+                          {copiedText === finance.vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                        </div>
+                        <span>{finance.vin}  </span>
+                      </li>
 
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">
+                          Current Mileage
+                        </span>
+                        <span>{finance.mileage}</span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">
+                          Location
+                        </span>
+                        <span>{finance.location}</span>
+                      </li>
+                    </ul>
+                  </div>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                  <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => handleProgressUnits()}>
+                    <Truck className="h-3.5 w-3.5" />
+                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                      Edit Progress
+                    </span>
+                  </Button>
                 </CardFooter>
               </Card>
               <Card x-chunk="dashboard-05-chunk-2" className="bg-background text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
@@ -2761,7 +2978,7 @@ export default function Dashboard() {
                   <div className="max-h-[20vh] h-auto">
                     {editProgress === true && (
                       <Form method="post">
-                        {items.map((item) => {
+                        {items && items.map((item) => {
                           const isChecked =
                             checkedItems2[item.name] !== undefined && checkedItems2[item.name] !== '';
                           return (
@@ -2797,7 +3014,7 @@ export default function Dashboard() {
                     )
                     }
                     {editProgress === false && (
-                      items
+                      items && items
                         .filter((item) => {
                           const isChecked =
                             item.value === 'on' ||
@@ -2840,14 +3057,12 @@ export default function Dashboard() {
                 </TabsList>
               </div>
               <TabsContent value="Sales" className="  text-foreground rounded-lg">
-                <div className='grid grid-cols-2' >
-                  <Card
-                    className="overflow-hidden  flex flex-col h-full rounded-lg" x-chunk="dashboard-05-chunk-4 mx-2"
-                  >
+                <div className='flex flex-col md:grid md:grid-cols-2' >
+                  <Card className="overflow-hidden  flex flex-col h-full  m-2 rounded-lg" x-chunk="dashboard-05-chunk-4"  >
                     <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
-                          Wanted Vehichle
+                          Wanted Vehicle
                           <Button
                             size="icon"
                             variant="outline"
@@ -2860,7 +3075,7 @@ export default function Dashboard() {
                       </div>
 
                     </CardHeader>
-                    <CardContent className="flex-grow !grow max-h-[325px] h-[325px] overflow-y-auto p-6 text-sm bg-background">
+                    <CardContent className="max-h-[500px] h-auto flex-grow !grow  p-6 text-sm bg-background overflow-y-auto">
 
                       {editUnits === false && (
                         <ul className="grid gap-3">
@@ -2877,13 +3092,13 @@ export default function Dashboard() {
                       {editUnits === true && (
                         <fetcher.Form method='post' >
                           <ul className="grid gap-3">
+
                             {WantedData.map((item, index) => (
                               <li key={index} className="flex items-center justify-between">
                                 <span className="text-muted-foreground">
                                   {item.placeholder}
                                 </span>
                                 <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-background border-border' />
-
                               </li>
                             ))}
                           </ul>
@@ -2904,15 +3119,15 @@ export default function Dashboard() {
                         </fetcher.Form>
                       )}
                     </CardContent>
-                    <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                    <CardFooter className=" items-end justify-end  flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
                       <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditUnits())}>
                         <Truck className="h-3.5 w-3.5" />
                         <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
                           Edit Unit
                         </span>
                       </Button>
-                      <UnitPicker data={data} />
-
+                      <UnitPicker finance={finance} tableData={tableData} />
+                      {/** salesPeople, financeManagers */}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
@@ -2921,32 +3136,79 @@ export default function Dashboard() {
                             className="h-7 gap-1 text-sm text-foreground border-border"
                           >
                             <ListFilter className="h-3.5 w-3.5" />
-                            <span className="sr-only sm:not-sr-only"> Sales Person</span>
+                            <span className="sr-only sm:not-sr-only">Agents</span>
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="text-foreground bg-background border-border">
-                          <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                          <DropdownMenuGroup>
+                            <DropdownMenuLabel>Assigned Sales Person</DropdownMenuLabel>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger>
+                                {finance.userName && finance.userName.length > 3 ? <p>{finance.userName}</p> : <p>Not yet assigned</p>}
+                              </DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent className='border border-border'>
+                                  {salesPeople.map((sales) => (
+                                    <DropdownMenuItem onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("financeId", finance.id);
+                                      formData.append("userEmail", sales.email);
+                                      formData.append("userName", sales.name);
+                                      formData.append("intent", 'changeSales');
+                                      submit(formData, { method: "post" });
+                                    }}
+                                      className="cursor-pointer rounded-md hover:bg-muted/50"
+                                      key={sales.id}
+                                      value={sales.email}
+                                    >
+                                      <p>{sales.name}</p>
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                          </DropdownMenuGroup>
                           <DropdownMenuSeparator />
-                          <DropdownMenuCheckboxItem checked>
-                            Fulfilled
-                          </DropdownMenuCheckboxItem>
-                          <DropdownMenuCheckboxItem>
-                            Declined
-                          </DropdownMenuCheckboxItem>
-                          <DropdownMenuCheckboxItem>
-                            Refunded
-                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuGroup>
+                            <DropdownMenuLabel>Assigned Finance Manager</DropdownMenuLabel>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger>
+                                {finance.financeManager && finance.financeManager.length > 3 ? <p>{finance.financeManagerName}</p> : <p>Not yet assigned</p>}
+                              </DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <Form method="post">
+                                  <DropdownMenuSubContent className='border border-border'>
+                                    {financeManagers.map((sales) => (
+                                      <DropdownMenuItem
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("financeId", finance.id);
+                                          formData.append("financeManager", sales.email);
+                                          formData.append("financeManagerName", sales.name);
+                                          formData.append("intent", 'changeFinance');
+                                          submit(formData, { method: "post" });
+                                        }}
+                                        className="cursor-pointer rounded-md hover:bg-muted/50"
+                                        key={sales.id} // using sales.id instead of index for unique key
+                                        value={sales.email}
+                                      >
+                                        <p>{sales.name}</p>
+                                      </DropdownMenuItem>
+                                    ))}
+                                  </DropdownMenuSubContent>
+                                </Form>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                          </DropdownMenuGroup>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </CardFooter>
                   </Card>
-                  <Card
-                    className="overflow-hidden mx-2  flex flex-col h-full rounded-lg" x-chunk="dashboard-05-chunk-4"
-                  >
+                  <Card className="overflow-hidden m-2  flex flex-col h-full rounded-lg" x-chunk="dashboard-05-chunk-4" >
                     <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                       <div className="grid gap-0.5">
                         <CardTitle className="group flex items-center gap-2 text-lg">
-                          Trade Vehichle
+                          Trade Vehicle
                           <Button
                             size="icon"
                             variant="outline"
@@ -2959,7 +3221,7 @@ export default function Dashboard() {
                       </div>
 
                     </CardHeader>
-                    <CardContent className="flex-grow !grow  p-6 text-sm bg-background">
+                    <CardContent className="flex-grow !grow  p-6 text-sm bg-background overflow-y-auto">
 
                       {editTradeUnits === false && (
                         <ul className="grid gap-3">
@@ -3124,7 +3386,7 @@ export default function Dashboard() {
                     </CardHeader>
                     {secPage && (
                       <>
-                        <CardContent className="p-6 text-sm bg-background max-h-[600px] h-[600px] overflow-y-auto">
+                        <CardContent className="p-6 text-sm bg-background max-h-[500px] h-[500px] overflow-y-auto">
                           <div className="grid gap-3">
                             <div className="font-semibold">Payment Details</div>
                             <li className="flex items-center justify-between">
@@ -3135,6 +3397,12 @@ export default function Dashboard() {
                               <span className="text-[#8a8a93]">Model</span>
                               <span> {finance.model}</span>
                             </li>
+
+                            <datalist id="ListOptions2">
+                              {modelList && modelList.map((item, index) => (
+                                <option key={index} value={item.model} />
+                              ))}
+                            </datalist>
                             {finance.brand !== "BMW-Motorrad" && (
                               <>
                                 <li className="flex items-center justify-between">
@@ -3838,7 +4106,7 @@ export default function Dashboard() {
                     )}
                     {firstPage && (
                       <>
-                        <CardContent className="p-6 text-sm  bg-background max-h-[600px] h-[600px] overflow-y-auto">
+                        <CardContent className="p-6 text-sm  bg-background max-h-[500px] h-[500px] overflow-y-auto">
                           <div className="grid gap-3">
                             <div className="font-semibold">Payment Details</div>
                             <ul className="grid gap-3">
@@ -4454,28 +4722,26 @@ export default function Dashboard() {
                   </Card>
                 </div>
               </TabsContent>
-              <TabsContent value="Service">Change your password here.</TabsContent>
-              <TabsContent value="Accessories">Make changes to your account here.</TabsContent>
-              <TabsContent value="Parts">Change your password here.</TabsContent>
+              <TabsContent value="Service">Content soon to come!</TabsContent>
+              <TabsContent value="Accessories">Content soon to come!</TabsContent>
+              <TabsContent value="Parts">Content soon to come!</TabsContent>
             </Tabs>
           </div>
           <div>
-            <Tabs defaultValue="Notes">
+            <Tabs defaultValue="Timeline">
               <TabsList >
+                <TabsTrigger value="Timeline">Timeline</TabsTrigger>
                 <TabsTrigger value="Notes">Notes</TabsTrigger>
                 <TabsTrigger value="Apt History">Apt History</TabsTrigger>
                 <TabsTrigger value="Communications">Communications</TabsTrigger>
                 <TabsTrigger value="Upload">Upload</TabsTrigger>
-                <TabsTrigger value="Actions">Actions</TabsTrigger>
               </TabsList>
-              <TabsContent value="Actions">
-                <Card
-                  className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"
-                >
+              <TabsContent value="Timeline">
+                <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
                   <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
-                        Actions
+                        Timeline
                         <Button
                           size="icon"
                           variant="outline"
@@ -4485,46 +4751,33 @@ export default function Dashboard() {
                           <span className="sr-only">Snap shot on customer interactions, whether they are buying something or a sales person following up to make a sale.</span>
                         </Button>
                       </CardTitle>
-                      <CardDescription>Date: November 23, 2023</CardDescription>
+
                     </div>
 
                   </CardHeader>
                   <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
-                    <div className="grid gap-3 max-h-[20vh] h-auto">
-                      <div className="font-semibold">Customer Interactions</div>
-                      <ul className="grid gap-3">
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Glimmer Lamps x <span>2</span>
-                          </span>
-                          <span>$250.00</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Aqua Filters x <span>1</span>
-                          </span>
-                          <span>$49.00</span>
-                        </li>
-                      </ul>
-                      <Separator className="my-2" />
-                      <ul className="grid gap-3">
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Subtotal</span>
-                          <span>$299.00</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Shipping</span>
-                          <span>$5.00</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Tax</span>
-                          <span>$25.00</span>
-                        </li>
-                        <li className="flex items-center justify-between font-semibold">
-                          <span className="text-muted-foreground">Total</span>
-                          <span>$329.00</span>
-                        </li>
-                      </ul>
+                    <div className="grid gap-3 max-h-[65vh] h-auto">
+                      <div className="rightbox">
+                        <div className="rb-container">
+                          <ul className="rb">
+                            {sortedEvents.reverse().map((event, index) => (
+                              <li key={index} className="rb-item grid-grid-cols-1 bg-muted-background rounded-lg px-3 py-2 ">
+                                <div className="timestamp flex justify-between text-primary">
+                                  <p>{event.date}</p>
+                                  <p className='text-right'>{event.type}</p>
+                                </div>
+                                <div className="timestamp flex justify-between">
+                                  <div className="item-title">{event.title}</div>
+                                  {event.type === 'Communication' ? (
+                                    <><p className="item-title text-right">{event.direction}</p></>
+                                  ) : null}
+                                </div>
+                                <p>{event.userName}</p>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
                     </div>
 
                   </CardContent>
@@ -4573,8 +4826,7 @@ export default function Dashboard() {
                   </CardHeader>
                   <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
                     <div className="grid gap-3 ">
-                      <Card
-                        className=" flex flex-col-reverse  max-h-[50vh] h-auto overflow-y-auto">
+                      <Card className=" flex flex-col-reverse  max-h-[50vh] h-auto overflow-y-auto">
                         <CardContent>
                           <div className="space-y-4 mt-5">
 
@@ -4721,9 +4973,7 @@ export default function Dashboard() {
                 </Card>
               </TabsContent>
               <TabsContent value="Apt History">
-                <Card
-                  className="overflow-hidden text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"
-                >
+                <Card className="overflow-hidden text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"                >
                   <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
@@ -4759,71 +5009,55 @@ export default function Dashboard() {
                   </CardHeader>
                   <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
                     <div className="grid gap-3 max-h-[20vh] h-auto">
-                      <Table className='w-auto overflow-x-scroll w-[650px]'>
-                        <TableHeader>
-                          <TableRow className="bg-accent border-border">
-                            <TableHead>
-                              Title
-                            </TableHead>
-                            <TableHead className="hidden sm:table-cell">
-                              Type
-                            </TableHead>
-                            <TableHead className="hidden sm:table-cell">
-                              Date
-                            </TableHead>
-                            <TableHead className="hidden md:table-cell">
-                              Completed
-                            </TableHead>
-                            <TableHead className="hidden md:table-cell">
-                              Menu
-                            </TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {aptFinance3.map((message) => {
-                            const isValidDate = message.start && message.start !== '1969-12-31 19:00';
-                            const formattedDateAppt = isValidDate ? new Date(message.start).toISOString() : 'TBD';
+                      <div className="space-y-4 mt-5">
 
-                            return (
-                              <TableRow
-                                key={message.id}
-                                className="bg-background border-border">
-                                <TableCell>
-                                  {message.title}
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell">
-                                  {message.contactMethod}
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell">
-                                  {formattedDateAppt}
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
+                        {aptFinance3.map((message, index) => {
+                          const options = {
+                            weekday: 'short',
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                          };
+                          const isValidDate = message.start && message.start !== '1969-12-31 19:00';
+                          const date = new Date(message.start);
+                          const formattedDateAppt = isValidDate ? date.toLocaleDateString('en-US', options) : 'TBD';
+                          return (
+                            <div
+                              key={index}
+                              className={cn("flex w-[95%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-[#262626] mx-auto")} >
+                              <div className='grid grid-cols-1'>
+                                <div className='flex justify-between '>
                                   {message.completed === 'yes' ? (
                                     <Badge className="text-xs bg-[#1e9b3d]" variant="secondary">
                                       Completed!
                                     </Badge>
                                   ) : (
-                                    <Badge className="text-xs bg-transparent" variant="secondary">
+                                    <Badge className="text-xs bg-primary" variant="secondary">
                                       Incomplete
                                     </Badge>
                                   )}
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell">
                                   <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                      <Button size="icon" variant="outline" className="h-8 w-8">
+                                      <Button size="icon" variant="outline" className="h-8 w-8 bg-transparent">
                                         <MoreVertical className="h-3.5 w-3.5" />
                                         <span className="sr-only">Menu</span>
                                       </Button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className=' bg-muted/50  text-white'>
+                                    <DropdownMenuContent align="end" className=' bg-blackground  text-foreground border border-border'>
                                       <Form method='post'>
-                                        <DropdownMenuItem>
-                                          <button type='submit'
-                                            name='intent'
-                                            value='deleteApt' >
-                                            Delete
-                                          </button>
+                                        <DropdownMenuItem
+                                          onSelect={() => {
+                                            const formData = new FormData();
+                                            formData.append("aptId", item.message);
+                                            formData.append("userEmail", user.email);
+                                            formData.append("userName", user.name);
+                                            formData.append("intent", 'deleteApt');
+                                            submit(formData, { method: "post" });
+                                          }}>
+                                          Delete
                                         </DropdownMenuItem>
                                         <input type='hidden' name='financeId' defaultValue={finance.id} />
                                       </Form>
@@ -4832,12 +5066,18 @@ export default function Dashboard() {
                                       <DropdownMenuItem>Trash</DropdownMenuItem>
                                     </DropdownMenuContent>
                                   </DropdownMenu>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                        </TableBody>
-                      </Table>
+
+                                </div>
+                                <div className='flex justify-between mt-1'>
+                                  <p className='text-muted-foreground'>{formattedDateAppt}</p>
+                                  <p>{message.contactMethod}</p>
+                                </div>
+                                <p className='mt-1'> {message.title}</p>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
                     </div>
                   </CardContent>
                   <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
@@ -5096,9 +5336,7 @@ export default function Dashboard() {
                 </Dialog>
               </TabsContent>
               <TabsContent value="Communications">
-                <Card
-                  className=" text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"
-                >
+                <Card className=" text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"                >
                   <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                     <div className="grid gap-0.5">
                       <CardTitle className="group flex items-center gap-2 text-lg">
@@ -5132,61 +5370,42 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
-                    <div className="grid gap-3 max-h-[20vh] h-auto">
-                      <Table className='w-auto overflow-x-scroll w-[650px]'>
-                        <TableHeader>
-                          <TableRow className="bg-accent border-border">
-                            <TableHead className="hidden sm:table-cell">
-                              Direction
-                            </TableHead>
-                            <TableHead className="hidden sm:table-cell">
-                              Type
-                            </TableHead>
-                            <TableHead className="hidden md:table-cell">
-                              Result
-                            </TableHead>
-                            <TableHead className=" w-[200px]">
-                              Title
-                            </TableHead>
-                            <TableHead className="hidden md:table-cell">
-                              Content
-                            </TableHead>
-                            <TableHead className="hidden md:table-cell w-[100px]">
-                              Employee
-                            </TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {Coms.map((message) => {
-                            const isValidDate = message.start && message.start !== '1969-12-31 19:00';
-                            const formattedDateAppt = isValidDate ? new Date(message.start).toLocaleString() : 'TBD';
-                            return (
-                              <TableRow
-                                key={message.id}
-                                className="bg-accent border-border">
-                                <TableCell>
-                                  {message.direction}
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell">
-                                  {message.type}
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell">
-                                  {message.result}
-                                </TableCell >
-                                <TableCell className='w-[150px]'>
-                                  {message.subject}
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell">
-                                  {message.body}
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell w-[100px]">
-                                  {message.userName}
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                        </TableBody>
-                      </Table>
+                    <div className="grid gap-3 max-h-[40vh] h-auto">
+                      <div className="space-y-4 mt-5">
+
+                        {Coms.map((message, index) => (
+                          <div
+                            key={index}
+                            className={cn(
+                              "flex  max-w-[75%]   w-[65%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                              message.direction === 'Outgoing'
+                                ? "ml-auto bg-primary text-foreground"
+                                : "bg-[#262626]"
+                            )}
+                          >
+                            <div className='grid grid-cols-1'>
+                              <div className='flex justify-between'>
+                                <p>{message.direction}</p>
+                                <p className='text-right'>{message.type}</p>
+                              </div>
+                              <div className='flex justify-between'>
+                                <p>{message.result}</p>
+                                {message.userEmail === 'Outgoing' && (
+                                  <p className='text-[#8c8c8c] text-right'>
+                                    {message.userName}
+                                  </p>
+                                )}
+                              </div>
+                              <p className='text-[#8c8c8c]'>
+                                {message.createdAt}
+                              </p>
+                              <p>{message.subject}</p>
+                              <p>{message.body}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
                     </div>
                     <Dialog open={openComms} onOpenChange={setOpenComms}>
                       <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
@@ -5317,8 +5536,8 @@ export default function Dashboard() {
                       </DialogContent>
                     </Dialog>
                   </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t  bg-muted/50  px-6 py-3">
-                    <div className="text-xs text-muted-foreground">
+                  <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50  px-6 py-3">
+                    <div className="text-xs text-muted/50">
                       Updated <time dateTime="2023-11-23">November 23, 2023</time>
                     </div>
 
@@ -5536,451 +5755,6 @@ export default function Dashboard() {
     </div >
   )
 }
-function SidebarNav({ mergedFinanceList, finance }) {
-  console.log(mergedFinanceList, 'mergedFinanceListp')
-  function ImageSelectNav(brandId) {
-    if (brandId === 'Can-Am') {
-      return (
-        <img
-          width="300"
-          height="166"
-          className="mx-auto"
-          src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
-          alt="srry"
-        />
-      )
-    }
-    if (brandId === 'Can-Am-SXS') {
-      return (
-        <img
-          width="300"
-          height="166"
-          className="mx-auto"
-          src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
-          alt="srry"
-        />
-      )
-    }
-    else if (brandId === 'Ski-Doo') {
-      return (
-        <img
-          width="300"
-          height="166"
-          className="mx-auto"
-          src="https://searchlogovector.com/wp-content/uploads/2020/04/ski-doo-logo-vector.png"
-          alt="steve"
-        />
-      )
-    }
-    else if (brandId === 'Sea-Doo') {
-      return (
-        <img
-          width="300"
-          height="166"
-          alt="steve"
-          className="mx-auto"
-          src="https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
-        />
-      )
-    }
-    else if (brandId === 'Kawasaki') {
-      return (
-        <div className="flex justify-center mt-5">
-          <svg
-            className="mx-auto flex-1 mr-6"
-            width="260.5398px"
-            height="70.7005px"
-            viewBox="0 0 130.5398 35.7005"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink">
-            <defs>
-              <polygon
-                id="path-1"
-                points="0 0 130.5398 0 130.5398 35.7005 0 35.7005"></polygon>
-            </defs>
-            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-              <g transform="translate(-45.000000, -20.000000)">
-                <g transform="translate(45.000000, 20.000000)">
-                  <mask fill="white">
-                    <use xlinkHref="#path-1"></use>
-                  </mask>
-                  <g id="Clip-2"></g>
-                  <path
-                    d="M123.178,35.5435 L124.588,35.5435 L124.588,28.1385 L123.178,28.1385 L123.178,35.5435 Z M120.1,35.5435 L121.51,35.5435 L121.51,28.1385 L120.1,28.1385 L120.1,35.5435 Z M117.377,32.8915 C117.377,31.8545 116.89,31.1535 116.029,31.1535 C115.161,31.1535 114.684,31.8545 114.684,32.8915 C114.684,33.9295 115.161,34.6215 116.029,34.6215 C116.89,34.6215 117.377,33.9295 117.377,32.8915 L117.377,32.8915 Z M118.808,32.8915 C118.808,34.4775 117.678,35.6985 116.029,35.6985 C114.382,35.6985 113.253,34.4775 113.253,32.8915 C113.253,31.3075 114.382,30.0855 116.029,30.0855 C117.678,30.0855 118.808,31.3075 118.808,32.8915 L118.808,32.8915 Z M110.736,30.4465 C110.736,29.7725 110.302,29.4435 109.557,29.4435 L107.981,29.4435 L107.981,31.4625 L109.535,31.4625 C110.323,31.4625 110.736,31.0995 110.736,30.4465 L110.736,30.4465 Z M110.809,32.5085 L112.662,35.5435 L110.923,35.5435 L109.203,32.6845 L107.981,32.6845 L107.981,35.5435 L106.427,35.5435 L106.427,28.1385 L109.68,28.1385 C110.539,28.1385 111.182,28.3845 111.616,28.8315 C112.031,29.2555 112.281,29.7725 112.281,30.4375 C112.281,31.4715 111.742,32.1985 110.809,32.5085 L110.809,32.5085 Z M100.814,32.3135 C100.057,32.1565 99.352,32.1165 99.352,31.6605 C99.352,31.2765 99.715,31.0695 100.263,31.0695 C100.863,31.0695 101.226,31.2765 101.288,31.8455 L102.562,31.8455 C102.46,30.7775 101.682,30.0845 100.284,30.0845 C99.072,30.0845 98.118,30.6325 98.118,31.7835 C98.118,32.9445 99.05,33.2025 100.004,33.3905 C100.731,33.5345 101.401,33.5875 101.401,34.0955 C101.401,34.4675 101.051,34.7045 100.429,34.7045 C99.798,34.7045 99.361,34.4365 99.269,33.8245 L97.964,33.8245 C98.047,34.9535 98.906,35.6985 100.451,35.6985 C101.777,35.6985 102.688,35.0585 102.688,33.9905 C102.688,32.7475 101.703,32.4975 100.814,32.3135 L100.814,32.3135 Z M95.518,32.3115 C95.478,31.6375 95.031,31.1735 94.391,31.1735 C93.643,31.1735 93.28,31.6195 93.157,32.3115 L95.518,32.3115 Z M96.989,33.2845 L93.135,33.2845 C93.24,34.1035 93.696,34.6105 94.493,34.6105 C95.044,34.6105 95.364,34.3615 95.518,33.9585 L96.906,33.9585 C96.709,34.9005 95.872,35.7005 94.505,35.7005 C92.742,35.7005 91.747,34.4665 91.747,32.8815 C91.747,31.3085 92.815,30.0835 94.37,30.0835 C96.078,30.0835 96.989,31.3885 96.989,33.2845 L96.989,33.2845 Z M88.88,30.0855 C88.206,30.0855 87.646,30.4365 87.282,31.0175 L87.261,31.0175 C87.002,30.4575 86.464,30.0855 85.793,30.0855 C85.057,30.0855 84.537,30.4575 84.248,30.9445 L84.217,30.9445 L84.217,30.2295 L82.86,30.2295 L82.86,35.5455 L84.269,35.5455 L84.269,32.4585 C84.269,31.7535 84.651,31.2975 85.22,31.2975 C85.74,31.2975 86.039,31.6085 86.039,32.2085 L86.039,35.5455 L87.449,35.5455 L87.449,32.4585 C87.449,31.7535 87.812,31.2975 88.403,31.2975 C88.92,31.2975 89.221,31.6085 89.221,32.2085 L89.221,35.5455 L90.628,35.5455 L90.628,31.9685 C90.628,30.8085 89.997,30.0855 88.88,30.0855 L88.88,30.0855 Z M79.804,35.5435 L81.214,35.5435 L81.214,30.2285 L79.804,30.2285 L79.804,35.5435 Z M79.804,29.4035 L81.214,29.4035 L81.214,28.1385 L79.804,28.1385 L79.804,29.4035 Z M72.78,29.4025 L75.008,29.4025 L75.008,35.5425 L76.51,35.5425 L76.51,29.4025 L78.735,29.4025 L78.735,28.1375 L72.78,28.1375 L72.78,29.4025 Z M68.191,32.9235 C68.191,31.9075 67.859,31.2245 66.957,31.2245 C66.181,31.2245 65.787,31.9075 65.787,32.8925 C65.787,33.9175 66.19,34.5175 66.917,34.5175 C67.757,34.5175 68.191,33.8955 68.191,32.9235 L68.191,32.9235 Z M68.16,28.1375 L69.57,28.1375 L69.57,35.5455 L68.212,35.5455 L68.212,34.8495 L68.191,34.8495 C67.88,35.3575 67.351,35.6995 66.606,35.6995 C65.27,35.6995 64.359,34.6125 64.359,32.8925 C64.359,31.2335 65.301,30.0855 66.627,30.0855 C67.372,30.0855 67.84,30.4275 68.129,30.8735 L68.16,30.8735 L68.16,28.1375 Z M62.027,32.8915 C62.027,31.8545 61.541,31.1535 60.679,31.1535 C59.811,31.1535 59.334,31.8545 59.334,32.8915 C59.334,33.9295 59.811,34.6215 60.679,34.6215 C61.541,34.6215 62.027,33.9295 62.027,32.8915 L62.027,32.8915 Z M63.458,32.8915 C63.458,34.4775 62.328,35.6985 60.679,35.6985 C59.032,35.6985 57.903,34.4775 57.903,32.8915 C57.903,31.3075 59.032,30.0855 60.679,30.0855 C62.328,30.0855 63.458,31.3075 63.458,32.8915 L63.458,32.8915 Z M55.594,32.8915 C55.594,31.8545 55.107,31.1535 54.246,31.1535 C53.378,31.1535 52.901,31.8545 52.901,32.8915 C52.901,33.9295 53.378,34.6215 54.246,34.6215 C55.107,34.6215 55.594,33.9295 55.594,32.8915 L55.594,32.8915 Z M57.025,32.8915 C57.025,34.4775 55.895,35.6985 54.246,35.6985 C52.599,35.6985 51.47,34.4775 51.47,32.8915 C51.47,31.3075 52.599,30.0855 54.246,30.0855 C55.895,30.0855 57.025,31.3075 57.025,32.8915 L57.025,32.8915 Z M47.245,32.7675 L49.027,32.7675 L49.027,32.8105 C49.027,33.6265 48.27,34.4875 47.119,34.4875 C45.845,34.4875 45.048,33.3805 45.048,31.8655 C45.048,30.3945 45.743,29.2345 47.14,29.2345 C48.094,29.2345 48.642,29.7545 48.809,30.4685 L50.28,30.4685 C50.04,29.0185 48.975,27.9945 47.11,27.9945 C46.116,27.9945 45.328,28.2925 44.727,28.8435 C43.949,29.5575 43.515,30.6345 43.515,31.8655 C43.515,32.9855 43.866,33.9365 44.478,34.6235 C45.091,35.2945 45.959,35.7005 47.079,35.7005 C47.959,35.7005 48.652,35.3985 49.159,34.5495 L49.181,34.5495 L49.233,35.5435 L50.363,35.5435 L50.363,31.6075 L47.245,31.6075 L47.245,32.7675 Z M38.748,32.3115 C38.708,31.6375 38.262,31.1735 37.622,31.1735 C36.874,31.1735 36.511,31.6195 36.388,32.3115 L38.748,32.3115 Z M40.219,33.2845 L36.366,33.2845 C36.471,34.1035 36.926,34.6105 37.723,34.6105 C38.274,34.6105 38.594,34.3615 38.748,33.9585 L40.136,33.9585 C39.939,34.9005 39.102,35.7005 37.736,35.7005 C35.972,35.7005 34.978,34.4665 34.978,32.8815 C34.978,31.3085 36.046,30.0835 37.6,30.0835 C39.308,30.0835 40.219,31.3885 40.219,33.2845 L40.219,33.2845 Z M32.048,30.0835 C31.322,30.0835 30.888,30.3635 30.503,30.9235 L30.472,30.9235 L30.472,28.1385 L29.063,28.1385 L29.063,35.5435 L30.472,35.5435 L30.472,32.5305 C30.472,31.8045 30.928,31.3085 31.549,31.3085 C32.14,31.3085 32.473,31.7115 32.473,32.2815 L32.473,35.5435 L33.879,35.5435 L33.879,32.0755 C33.879,30.9145 33.144,30.0835 32.048,30.0835 L32.048,30.0835 Z M26.693,33.9785 L26.693,31.1625 L27.604,31.1625 L27.604,30.2295 L26.693,30.2295 L26.693,28.5715 L25.314,28.5715 L25.314,30.2295 L24.578,30.2295 L24.578,31.1625 L25.314,31.1625 L25.314,34.2805 C25.314,35.2835 26.071,35.5545 26.754,35.5545 C27.314,35.5545 27.634,35.5325 27.634,35.5325 L27.634,34.4985 C27.634,34.4985 27.394,34.5075 27.219,34.5075 C26.908,34.5075 26.693,34.3725 26.693,33.9785 L26.693,33.9785 Z M19.804,33.9785 L19.804,31.1625 L20.715,31.1625 L20.715,30.2295 L19.804,30.2295 L19.804,28.5715 L18.425,28.5715 L18.425,30.2295 L17.689,30.2295 L17.689,31.1625 L18.425,31.1625 L18.425,34.2805 C18.425,35.2835 19.182,35.5545 19.865,35.5545 C20.425,35.5545 20.746,35.5325 20.746,35.5325 L20.746,34.4985 C20.746,34.4985 20.505,34.5075 20.33,34.5075 C20.019,34.5075 19.804,34.3725 19.804,33.9785 L19.804,33.9785 Z M15.388,32.3115 C15.348,31.6375 14.902,31.1735 14.262,31.1735 C13.514,31.1735 13.151,31.6195 13.028,32.3115 L15.388,32.3115 Z M16.859,33.2845 L13.006,33.2845 C13.111,34.1035 13.566,34.6105 14.363,34.6105 C14.914,34.6105 15.234,34.3615 15.388,33.9585 L16.776,33.9585 C16.579,34.9005 15.742,35.7005 14.376,35.7005 C12.612,35.7005 11.618,34.4665 11.618,32.8815 C11.618,31.3085 12.686,30.0835 14.24,30.0835 C15.948,30.0835 16.859,31.3885 16.859,33.2845 L16.859,33.2845 Z M7.454,34.2565 L10.935,34.2565 L10.935,35.5095 L5.952,35.5095 L5.952,28.1045 L7.454,28.1045 L7.454,34.2565 Z"
-                    id="Fill-1"
-                    fill="#000000"
-                    mask="url(#mask-2)"></path>
-                  <path
-                    d="M68.8788,13.291 C68.8788,13.291 66.6518,14.025 65.4028,14.567 C64.1568,15.111 64.7798,16.059 64.7798,16.059 C64.7798,16.059 65.4028,17.092 66.8958,16.712 C69.0418,16.143 68.8788,13.291 68.8788,13.291 L68.8788,13.291 Z M74.2588,9.412 C74.6108,14.54 73.8988,18.026 75.4238,20.023 L69.7458,20.023 C69.7458,20.023 69.2278,19.343 68.9578,18.692 C68.9578,18.692 67.4408,20.483 64.1838,20.483 C60.9278,20.483 59.0938,18.584 59.0938,16.143 C59.0938,13.7 60.5078,11.907 65.0508,11.094 C66.8688,10.769 68.4968,10.552 68.5778,9.547 C68.6598,8.542 67.2748,8.353 66.9228,8.353 C66.9228,8.353 64.8478,8.201 64.8258,10.506 L59.5278,10.506 C59.5278,10.506 58.4008,4.663 67.3018,4.663 C67.3018,4.663 73.9068,4.281 74.2588,9.412 L74.2588,9.412 Z M29.4108,13.291 C29.4108,13.291 27.1808,14.025 25.9348,14.567 C24.6858,15.111 25.3118,16.059 25.3118,16.059 C25.3118,16.059 25.9348,17.092 27.4278,16.712 C29.5728,16.143 29.4108,13.291 29.4108,13.291 L29.4108,13.291 Z M34.7928,9.412 C35.1428,14.54 34.4298,18.026 35.9558,20.023 L30.2778,20.023 C30.2778,20.023 29.7628,19.343 29.4888,18.692 C29.4888,18.692 27.9718,20.483 24.7158,20.483 C21.4598,20.483 19.6258,18.584 19.6258,16.143 C19.6258,13.7 21.0398,11.907 25.5798,11.094 C27.4008,10.769 29.0288,10.552 29.1128,9.547 C29.1908,8.542 27.8098,8.353 27.4548,8.353 C27.4548,8.353 25.3798,8.201 25.3578,10.506 L20.0568,10.506 C20.0568,10.506 18.9328,4.663 27.8338,4.663 C27.8338,4.663 34.4388,4.281 34.7928,9.412 L34.7928,9.412 Z M19.7558,0.003 L12.1578,0.003 L6.0758,6.101 L6.0758,0.003 L-0.0002,0.003 L-0.0002,20.019 L6.0738,20.019 L6.0738,14.095 L7.6468,12.469 L12.4258,20.016 L20.3328,20.016 L11.9978,7.981 L19.7558,0.003 Z M123.1618,5.542 L116.2948,5.542 L113.3338,8.982 L113.3338,0 L107.5048,0 L107.5048,20.019 L113.3338,20.019 L113.3338,15.942 L114.0848,15.137 L117.2868,20.013 L124.0158,20.013 L118.0858,10.941 L123.1618,5.542 Z M124.7098,20.016 L130.5398,20.016 L130.5398,5.548 L124.7098,5.548 L124.7098,20.016 Z M124.7098,4.079 L130.5398,4.079 L130.5398,0.005 L124.7098,0.005 L124.7098,4.079 Z M100.4808,13.291 C100.4808,13.291 98.2538,14.025 97.0048,14.567 C95.7558,15.111 96.3818,16.059 96.3818,16.059 C96.3818,16.059 97.0048,17.092 98.4978,16.712 C100.6428,16.143 100.4808,13.291 100.4808,13.291 L100.4808,13.291 Z M105.8628,9.412 C106.2148,14.54 105.5028,18.026 107.0278,20.023 L101.3468,20.023 C101.3468,20.023 100.8328,19.343 100.5618,18.692 C100.5618,18.692 99.0418,20.483 95.7828,20.483 C92.5298,20.483 90.6928,18.584 90.6928,16.143 C90.6928,13.7 92.1128,11.907 96.6548,11.094 C98.4698,10.769 100.0988,10.552 100.1818,9.547 C100.2608,8.542 98.8788,8.353 98.5248,8.353 C98.5248,8.353 96.4498,8.201 96.4308,10.506 L91.1288,10.506 C91.1288,10.506 90.0018,4.663 98.9068,4.663 C98.9068,4.663 105.5078,4.281 105.8628,9.412 L105.8628,9.412 Z M84.4268,10.568 C81.3338,10.162 80.9028,9.894 80.9028,9.217 C80.9028,8.699 81.5228,8.293 82.6368,8.293 C83.7498,8.293 84.4028,9.111 84.5108,9.897 L89.5818,9.897 C89.5818,7.182 87.7918,4.858 82.5008,4.858 C75.0378,4.858 75.4738,9.81 75.4738,9.81 C75.4738,13.854 80.3318,14.269 82.6118,14.61 C84.6468,14.938 84.5898,16.051 84.5898,16.051 C84.5898,16.051 84.6468,17.14 82.7988,17.14 C80.4938,17.14 80.5208,14.959 80.5208,14.959 L75.2008,14.959 C75.2008,19.573 79.2988,20.719 82.7478,20.719 C86.1908,20.719 90.0188,19.527 90.0188,15.864 C90.0188,12.199 87.9808,11.302 84.4268,10.568 L84.4268,10.568 Z M59.7548,5.55 L55.3048,20.013 L49.6348,20.013 L47.3538,12.932 L45.4008,20.013 L39.5138,20.013 L34.5188,5.55 L40.5708,5.55 L42.6318,12.336 L44.7638,5.55 L49.8238,5.55 L51.7778,12.336 L54.0308,5.55 L59.7548,5.55 Z"
-                    id="Fill-3"
-                    fill="#E60012"
-                    mask="url(#mask-2)"></path>
-                </g>
-              </g>
-            </g>
-          </svg>
-        </div>
-      )
-    }
-    else if (brandId === 'Manitou') {
-      return (
-        <img
-          width="599"
-          height="105"
-          alt=""
-          className="mx-auto"
-          src="data:image/jpg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCACNAyADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD5Hooor1SAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKK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567QSPfJ6mnUUUtBBQuQu3ouMbVwB9MADiiigAb51YHpu3beCpORyQR6Dp7CiiigAooopgFC/IqgdN27bwFByeQAPQ9Pc0UUgBvnDA/XPBBPqQR+lFFFGgBRRRTAKKKKAF9cEj0GThfm9iCePek59f5/40UUnZu47g3zdTkY4XGADRRRTEFFFFACYPy852jjOcA+2CCPzpefX+f+NFFToO4p5ORnd03Mc4H0pKKKLIQUUUVQBR9TkHqpHFFFIA578k9WJOf50rMS27cxbOdzMSfrk55pKKNB3CiiimIKKKKACl4+XqNp4OeQPbGAPypKKnQBCob7+H9MqOOmMZzjHOPqaWiiq6WAKKKKACiiigAooooAF+XocDHK4yCaOfX+f+NFFToANll2kkjnPJxzuPGSSOW9e1FFFCSQBRRRVAFFFFABRRRQAgXbu2jaWBywxkk9c4AzS8+v8/8AGiiloO4c+v8AP/Gjn1/n/jRRU8qC4c+v8/8AGjn1/n/jRRRyoLhz6/z/AMaOfX+f+NFFHKguHPr/AD/xob5upyMcLjABoop6CCiiiqAKKKKADn1/n/jRz6/z/wAaKKjlQ7hz6/z/AMaOfX+f+NFFHKguHPr/AD/xo59f5/40UUcqC4c+v8/8aOfX+f8AjRRRyoLgfmBDfMvQKQPlH1IOaKKKaSQhNvy4ySMbccAY9OnT2paKKa0HcKKKKYgooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwP//Z"
-        >
-        </img>
-      )
-    }
-    if (brandId === 'Spyder') {
-      return (
-        <img
-          width="300"
-          height="166"
-          className="mx-auto"
-          src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
-          alt="srry"
-        />
-      )
-    }
-    if (brandId === 'Suzuki') {
-      return (
-        <img
-          width="250"
-          height="150"
-          className="mx-auto"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/500px-Suzuki_logo_2.svg.png"
-          alt="steve"
-        />
-      )
-    }
-    if (brandId === 'BMW-Motorrad') {
-      return (
-        <>
-          <img
-            width="150"
-            height="150"
-            className="mx-auto"
-            src={BMW}
-            alt="steve"
-          />
-        </>
-      )
-    }
-    if (brandId === 'Harley-Davidson') {
-      return (
-        <img
-          className="mx-auto "
-          src={Harley}
-          alt="steve"
-        />
-      )
-    }
-    if (brandId === 'Triumph') {
-      return (
-        <img
-          src="https://media.triumphmotorcycles.co.uk/image/upload/f_auto/q_auto/sitecoremedialibrary/media-library/misc/misc-images/logo.svg?la=en-US"
-          alt="Triumph Logo">
-        </img>
-      )
-    }
-    if (brandId === 'Indian') {
-      return (
-        <p>Coming Soon</p>
-      )
-    }
-    if (brandId === 'KTM') {
-      return (
-        <p>Coming Soon</p>
-      )
-    }
-    if (brandId === 'Yamaha') {
-      return (
-        <p>Coming Soon</p>
-      )
-    }
-    else if (brandId === 'Switch') {
-      return (
-        <img
-          width="300"
-          height="166"
-          alt="steve"
-          className="mx-auto"
-          src="https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
-        />
-      )
-    }
-
-
-  }
-  return (
-    <nav
-      className={cn(
-        "flex flex-col items-center gap-4 px-2 sm:py-4 mt-10",
-      )}
-    >
-      {mergedFinanceList && mergedFinanceList.map((item) => {
-        return (
-          <Tooltip key={item.to}>
-            <TooltipTrigger asChild>
-              <Link
-                to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 bg-transparent hover:bg-transparent"
-              >
-                <Button variant="ghost" className="bg-transparente  hover:bg-transparent hover:underline">
-                  <div className="h-5 w-5 flex justify-center">
-                    <FaMotorcycle className='text-foreground text-3xl mx-auto' />
-
-                  </div>
-                </Button>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='bg-background text-foreground  z-35 '>
-              <div>
-                <p>{item.year} {item.brand}</p>
-                <p>{item.model.toString().slice(0, 28)}</p>
-                <Badge className="">{item.customerState}</Badge>
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        );
-      })}
-    </nav >
-  )
-}
-
-
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: second },
-  { rel: "icon", type: "image/svg", href: '/user.svg' },
-];
-
-
-async function GetMergedWithActivix(financeId) {
-  try {
-    const financeData = await prisma.finance.findUnique({ where: { id: financeId, }, });
-    const activixData = await prisma.activixLead.findUnique({ where: { financeId: financeId } })
-    const newData = {
-      ...activixData,
-      ...financeData,
-    };
-    console.log('newData:', newData);
-    return newData
-    return newData;
-  } catch (error) {
-    console.error("Error fetching dashboard entries by financeId:", error);
-    throw new Error("Failed to fetch dashboard entries by financeId");
-  }
-}
-
-async function PullActivix(financeData) {
-  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
-  async function CallActi() {
-    try {
-      const response = await axios.get(`https://api.crm.activix.ca/v2/leads/${financeData.activixId}?include[]=emails&include[]=phones&include[]=vehicles&include[]=events`, {
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${accessToken}`, }
-      });
-      return response.data; // Return response data directly
-    } catch (error) {
-      console.error('Full error object:', error);
-      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
-      console.error(`Error status: ${error.response.status}`);
-      console.error('Error response:', error.response.data);
-      throw error; // Throw error to be caught by the caller
-    }
-  }
-  const formData = await CallActi();
-  try {
-    const activixIdString = formData?.id.toString()
-    const findFinance = await prisma.finance.findFirst({ where: { activixId: activixIdString } })
-    const financeData = await prisma.finance.update({
-      where: { id: findFinance?.id },
-      data: {
-        firstName: formData.first_name,
-        lastName: formData.last_name,
-        name: formData.first_name + ' ' + formData.last_name,
-        email: formData.emails[0].address,
-        phone: formData.phones[0].number,
-        address: formData.address_line1,
-        city: formData.city,
-        postal: formData.postal_code,
-        province: formData.province,
-        year: formData.vehicles[1].year,
-        brand: formData.vehicles[1].make,
-        model: formData.vehicles[1].model,
-        model1: formData.model1,
-        color: formData.vehicles[1].color_exterior,
-        modelCode: formData.modelCode,
-        msrp: formData.vehicles[1].price,
-        tradeValue: formData.vehicles[0].price,
-        tradeDesc: formData.vehicles[0].model,
-        tradeColor: formData.vehicles[0].color_exterior,
-        tradeYear: formData.vehicles[0].year,
-        tradeMake: formData.vehicles[0].make,
-        tradeVin: formData.vehicles[0].vin,
-        tradeTrim: formData.vehicles[0].trim,
-        tradeMileage: formData.vehicles[0].odometer,
-        trim: formData.vehicles[1].trim,
-        vin: formData.vehicles[1].vin,
-      }
-    })
-    const dashboardData = await prisma.dashboard.update({
-      where: { id: financeData.dashboardId },
-      data: {
-        referral: formData.referral,
-        visited: formData.visited,
-        bookedApt: formData.bookedApt,
-        aptShowed: formData.aptShowed,
-        aptNoShowed: formData.aptNoShowed,
-        testDrive: formData.testDrive,
-        metService: formData.metService,
-        metManager: formData.metManager,
-        metParts: formData.metParts,
-        sold: formData.sold,
-        depositMade: formData.depositMade,
-        refund: formData.refund,
-        turnOver: formData.turnOver,
-        financeApp: formData.financeApp,
-        approved: formData.approved,
-        signed: formData.signed,
-        pickUpSet: formData.pickUpSet,
-        demoed: formData.demoed,
-        delivered: formData.delivered,
-        status: formData.status,
-        customerState: formData.state,
-        result: formData.result,
-        timesContacted: formData.timesContacted,
-        nextAppointment: formData.nextAppointment,
-        followUpDay: formData.followUpDay,
-        state: formData.state,
-        deliveredDate: formData.deliveredDate,
-        notes: formData.notes,
-        visits: formData.visits,
-        progress: formData.progress,
-        metSalesperson: formData.metSalesperson,
-        metFinance: formData.metFinance,
-        financeApplication: formData.financeApplication,
-        pickUpDate: formData.pickUpDate,
-        pickUpTime: formData.pickUpTime,
-        depositTakenDate: formData.depositTakenDate,
-        docsSigned: formData.docsSigned,
-        tradeRepairs: formData.tradeRepairs,
-        seenTrade: formData.seenTrade,
-        lastNote: formData.lastNote,
-        dLCopy: formData.dLCopy,
-        insCopy: formData.insCopy,
-        testDrForm: formData.testDrForm,
-        voidChq: formData.voidChq,
-        loanOther: formData.loanOther,
-        signBill: formData.signBill,
-        ucda: formData.ucda,
-        tradeInsp: formData.tradeInsp,
-        customerWS: formData.customerWS,
-        otherDocs: formData.otherDocs,
-        urgentFinanceNote: formData.urgentFinanceNote,
-        funded: formData.funded,
-        countsInPerson: formData.countsInPerson,
-        countsPhone: formData.countsPhone,
-        countsSMS: formData.countsSMS,
-        countsOther: formData.countsOther,
-        countsEmail: formData.countsEmail,
-      }
-    })
-    const data = formData
-    const activixData = await prisma.activixLead.update({
-      where: { id: financeData.theRealActId, },
-      data: {
-        account_id: data.account_id.toString(),
-        customer_id: data.customer_id.toString(),
-        appointment_date: data.appointment_date,
-        phone_appointment_date: data.phone_appointment_date,
-        available_date: data.available_date,
-        be_back_date: data.be_back_date,
-        call_date: data.call_date,
-        created_at: data.created_at,
-        csi_date: data.csi_date,
-        delivered_date: data.delivered_date,
-        deliverable_date: data.deliverable_date,
-        delivery_date: data.delivery_date,
-        paperwork_date: data.paperwork_date,
-        presented_date: data.presented_date,
-        //   promised_date: data.promised_date,
-        financed_date: data.financed_date,
-        road_test_date: data.road_test_date,
-        home_road_test_date: data.home_road_test_date,
-        sale_date: data.sale_date,
-        updated_at: data.updated_at,
-        address_line1: data.address_line1,
-        city: data.city,
-        civility: data.civility,
-        country: data.country,
-        credit_approved: data.credit_approved ? data.credit_approved.toString() : null,
-        dealer_tour: data.creditdealer_tour_approved ? data.dealer_tour.toString() : null,
-        financial_institution: data.financial_institution,
-        first_name: data.first_name,
-        funded: data.funded ? data.funded.toString() : null,
-        inspected: data.inspected ? data.inspected.toString() : null,
-        last_name: data.last_name,
-        postal_code: data.postal_code,
-        province: data.province,
-        result: data.result,
-        status: data.status,
-        type: data.type,
-        walk_around: data.walk_around ? data.walk_around.toString() : null,
-        comment: data.comment,
-        delivered_by: data.delivered_by,
-        emails: data.emails[0].address,
-        phones: data.phones[0].number,
-        financeId: data.financeId,
-        userEmail: user?.email,
-
-        /**home_presented_date: data.home_presented_date,
-         birth_date: data.birth_date,
-         source_id: data.source_id,
-         Integer: data.Integer,
-         provider_id: data.provider_id,
-         unsubscribe_all_date: data.unsubscribe_all_date,
-         unsubscribe_call_date: data.unsubscribe_call_date,
-         unsubscribe_email_date: data.unsubscribe_email_date,
-         unsubscribe_sms_date: data.unsubscribe_sms_date,
-         advisor: data.advisor,
-         take_over_date: data.take_over_date,
-         search_term: data.search_term,
-         gender: data.gender,
-         form: data.form,
-         division: data.division,
-         created_method: data.created_method,
-         campaign: data.campaign,
-         address_line2: data.address_line2,
-         business: data.business,
-         business_name: data.business_name,
-         second_contact: data.second_contact,
-         second_contact_civility: data.second_contact_civility,
-         segment: data.segment,
-         source: data.source,
-         qualification: data.qualification,
-         rating: data.rating,
-         referrer: data.referrer,
-         provider: data.provider,
-         progress_state: data.progress_state,
-         locale: data.locale,
-         navigation_history: data.navigation_history,
-         keyword: data.keyword,*/
-
-      }
-    })
-
-    return { financeData, activixData, dashboardData };
-  } catch (error) {
-    console.error('Error:', error);
-  } finally {
-    console.log("This code always runs, regardless of whether there was an error or not.");
-  }
-  return null
-}
 
 export const action: ActionFunction = async ({ req, request, params }) => {
 
@@ -6000,7 +5774,29 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   const dashboardId = idSession.get('dashboardId')
 
   // console.log('headeras', userId, clientfileId, financeId, dashboardId)
-  if (formPayload.intent === 'clientTurnover') {
+  if (intent === 'changeFinance') {
+    console.log('formdata', formData)
+    const update = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: {
+        financeManagerName: formData.financeManagerName,
+        financeManager: formData.financeManager,
+      }
+    })
+    return json({ update })
+  }
+  if (intent === 'changeSales') {
+    console.log('formdata', formData)
+    const update = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: {
+        userEmail: formData.userEmail,
+        userName: formData.userName,
+      }
+    })
+    return json({ update })
+  }
+  if (intent === 'clientTurnover') {
 
     const create = await prisma.lockFinanceTerminals.create({
       data: {
@@ -6015,7 +5811,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     })
     return json({ create })
   }
-  if (formPayload.intent === 'responseClientTurnover') {
+  if (intent === 'responseClientTurnover') {
 
     const update = await prisma.lockFinanceTerminals.update({
       where: { id: formData.claimId, },
@@ -6214,7 +6010,6 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     return json({ deleteNote });
   }
   if (intent === 'completeApt') {
-    // console.log('hit completeapt')
     let customerState = formData.customerState
     if (customerState === 'Pending') { customerState = 'Attempted' }
     const completed = 'yes'
@@ -6358,7 +6153,6 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     const financeId = formData.financeId
     const userEmail = formData.userEmail
     brand = formData.brand
-    // console.log('1111', formData.financeId, '2222')
 
     delete formData.financeId
     delete formData.timeToContact
@@ -6401,8 +6195,6 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     }
     delete clientData.financeId
     delete financeData.financeId
-    // console.log(financeData, 'financeData', finance, 'finance', clientData, 'clientData', financeId)
-    //   console.log(formData, 'formData from dashboardAL')
     switch (brand) {
       case "Manitou":
         const updatingManitouFinance = await updateFinanceWithDashboard(financeId, financeData, finance);
@@ -6414,7 +6206,6 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         const updatingBMWMotoFinance = await updateFinanceWithDashboard(financeId, financeData, finance);
         return json({ updatingBMWMotoFinance });
       default:
-        // console.log(financeData, 'financeData', finance, 'finance', clientData, 'clientData')
 
         const updateClient = await updateFinanceWithDashboard(financeId, financeData, finance)
         if (user?.activixActivated === 'yes') {
@@ -6428,31 +6219,49 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     }
   }
   // update wanted unit
-  if (intent === 'updateWantedUnit') {
-    const financeData = {
-      brand: formData.brand,
-      model: formData.model,
-      year: formData.year,
-      trim: formData.trim,
-      stockNum: formData.stockNum,
-      modelCode: formData.modelCode,
-      color: formData.color,
-      vin: formData.vin,
-    }
-    const finance = []
-    const updateClient = await updateFinanceWithDashboard(financeId, financeData, finance)
-
-    const userIntegration = await prisma.userIntergration.findUnique({
-      where: { userEmail: user?.email }
+  if (intent === 'updateFinanceWanted') {
+    console.log(formData, 'upding wanted unit')
+    const finance = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: {
+        mileage: formData.mileage,
+        freight: formData.freight,
+        admin: formData.admin,
+        commodity: formData.commodity,
+        pdi: formData.pdi,
+        paintPrem: formData.paintPrem,
+        licensing: formData.licensing,
+        stockNum: formData.stockNum,
+        year: formData.year,
+        brand: formData.make,
+        model: formData.model,
+        model1: formData.model1,
+        color: formData.color,
+        modelCode: formData.modelCode,
+        msrp: formData.msrp,
+        trim: formData.trim,
+        vin: formData.vin,
+        //bikeStatus: formData.bikeStatus,
+        location: formData.location,
+        //modelName: formData.modelName,
+        //expectedOn: formData.expectedOn,
+        //orderStatus: formData.orderStatus,
+        //age: formData.age,
+        //isNew: formData.isNew,
+        //keyNumber: formData.keyNumber,
+        //onOrder: formData.onOrder,
+        // stocked: formData.stocked,
+        invId: formData.invId,
+        //   isNew: formData.isNew,
+        userName: user.username,
+      }
     })
-    const activixActivated = userIntegration.activixActivated
-    if (activixActivated === 'yes') {
-      await UpdateLeadWantedVeh(formData)
-    }
-    return json({ updateClient, })
+    //const userIntegration = await prisma.userIntergration.findUnique({      where: { userEmail: user?.email }    })
+    // const activixActivated = userIntegration.activixActivated
+    // if (activixActivated === 'yes') {      await UpdateLeadWantedVeh(formData)    }
+    return json({ finance })
   }
   if (intent === 'dealProgress') {
-    console.log(formData, 'formdata')
     const currentDate = new Date().toISOString();
 
     const date = new Date();
@@ -6868,7 +6677,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   if (clientfileId === undefined) { clientfileId = clientId }
   let sliderWidth = 50
 
-  const aptFinance3 = await getAppointmentsForFinance(financeId)
+  let aptFinance3 = await getAppointmentsForFinance(financeId)
   let finance
   if (user?.activixActivated === 'yes') {
     finance = await GetMergedWithActivix(financeId)
@@ -6883,7 +6692,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const financeNotes = await getAllFinanceNotes(financeId)
   const docTemplates = await getDocsbyUserId(userId)
   const clientFile = await getClientFileById(clientfileId)
-  const Coms = await getComsOverview(financeId)
+  const Coms = await getComsOverview(email)
   let dealerFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
   if (!dealerFees) {
     dealerFees = await prisma.dealer.findFirst();
@@ -7332,7 +7141,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   }
   // -----------------------------sms ---------------------------------//
   // -----------------------------email---------------------------------//
-  const conversations = await prisma.previousComms.findMany({ orderBy: { createdAt: "desc" }, });
+  const conversations = await prisma.comm.findMany({ orderBy: { createdAt: "desc" }, });
 
   // -----------------------------email---------------------------------//
   const emailTemplatesDropdown = await prisma.emailTemplatesForDropdown.findMany({
@@ -7342,42 +7151,528 @@ export async function loader({ params, request }: DataFunctionArgs) {
     const financeData = finance
     await PullActivix(financeData)
   }
-  if (brand === 'Manitou') {
-    const modelData = await getDataByModelManitou(finance);
-    const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown })
+  const salesPeople = await prisma.user.findMany({
+    where: { positions: { some: { position: 'Sales' } } }
+  });
+  const financeManagers = await prisma.user.findMany({
+    where: { positions: { some: { position: 'Finance Manager' } } }
+  });
+  let modelData = []
+  let apptFinance2 = []
+  let manOptions = []
+  let bmwMoto = []
+  let bmwMoto2 = []
+  switch (brand) {
+    case 'Harley-Davidson':
+      modelData = await getDataHarley(finance);
+      apptFinance2 = await getAllFinanceApts2(financeId)
+      break;
+    case 'Manitou':
+      modelData = await getDataByModelManitou(finance);
+      manOptions = await getLatestOptionsManitou(email)
+      break;
+    case 'Switch':
+      modelData = await getDataByModel(finance);
+      manOptions = await getLatestOptionsManitou(email)
+      break;
+    case 'Kawasaki':
+      modelData = await getDataKawasaki(finance);
+      manOptions = await getLatestOptionsManitou(email)
+      break;
+    case 'BMW-Motorrad':
+      bmwMoto = await getLatestBMWOptions(financeId)
+      bmwMoto2 = await getLatestBMWOptions2(financeId)
+      modelData = await getDataBmwMoto(finance);
+      break;
+    case 'Triumph':
+      modelData = await getDataTriumph(finance);
+      break;
+    case 'Indian' || 'Can-Am' || 'Sea-Doo' || 'Ski-Doo' || 'Suzuki' || 'Spyder' || 'Can-Am-SXS':
+      modelData = await getDataByModel(finance)
+      break;
+    default:
+    // code block
   }
-  if (brand === 'Switch') {
-    const modelData = await getDataByModel(finance);
-    const manOptions = await getLatestOptionsManitou(email)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
-  }
-  if (brand === 'Kawasaki') {
-    const modelData = await getDataKawasaki(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
-  }
-  if (brand === 'BMW-Motorrad') {
-    const bmwMoto = await getLatestBMWOptions(financeId)
-    const bmwMoto2 = await getLatestBMWOptions2(financeId)
-    const modelData = await getDataBmwMoto(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown }))
-  }
-  if (brand === 'Triumph') {
-    const modelData = await getDataTriumph(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
-  }
-  if (brand === 'Harley-Davidson') {
-    const modelData = await getDataHarley(finance);
-    const apptFinance2 = await getAllFinanceApts2(financeId)
-    const aptFinance3 = await getAllFinanceApts(financeId)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, modelData, docs: docTemplates, clientFile, apptFinance2, aptFinance3, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
-  }
-  if (brand === 'Indian' || brand === 'Can-Am' || brand === 'Sea-Doo' || brand === 'Ski-Doo' || brand === 'Suzuki' || brand === 'Spyder' || brand === 'Can-Am-SXS') {
-    const modelData = await getDataByModel(finance)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown }))
+
+
+  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2 }));
+}
+
+function SidebarNav({ mergedFinanceList, finance }) {
+  function ImageSelectNav(brandId) {
+    if (brandId === 'Can-Am') {
+      return (
+        <img
+          width="300"
+          height="166"
+          className="mx-auto"
+          src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
+          alt="srry"
+        />
+      )
+    }
+    if (brandId === 'Can-Am-SXS') {
+      return (
+        <img
+          width="300"
+          height="166"
+          className="mx-auto"
+          src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
+          alt="srry"
+        />
+      )
+    }
+    else if (brandId === 'Ski-Doo') {
+      return (
+        <img
+          width="300"
+          height="166"
+          className="mx-auto"
+          src="https://searchlogovector.com/wp-content/uploads/2020/04/ski-doo-logo-vector.png"
+          alt="steve"
+        />
+      )
+    }
+    else if (brandId === 'Sea-Doo') {
+      return (
+        <img
+          width="300"
+          height="166"
+          alt="steve"
+          className="mx-auto"
+          src="https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
+        />
+      )
+    }
+    else if (brandId === 'Kawasaki') {
+      return (
+        <div className="flex justify-center mt-5">
+          <svg
+            className="mx-auto flex-1 mr-6"
+            width="260.5398px"
+            height="70.7005px"
+            viewBox="0 0 130.5398 35.7005"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink">
+            <defs>
+              <polygon
+                id="path-1"
+                points="0 0 130.5398 0 130.5398 35.7005 0 35.7005"></polygon>
+            </defs>
+            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+              <g transform="translate(-45.000000, -20.000000)">
+                <g transform="translate(45.000000, 20.000000)">
+                  <mask fill="white">
+                    <use xlinkHref="#path-1"></use>
+                  </mask>
+                  <g id="Clip-2"></g>
+                  <path
+                    d="M123.178,35.5435 L124.588,35.5435 L124.588,28.1385 L123.178,28.1385 L123.178,35.5435 Z M120.1,35.5435 L121.51,35.5435 L121.51,28.1385 L120.1,28.1385 L120.1,35.5435 Z M117.377,32.8915 C117.377,31.8545 116.89,31.1535 116.029,31.1535 C115.161,31.1535 114.684,31.8545 114.684,32.8915 C114.684,33.9295 115.161,34.6215 116.029,34.6215 C116.89,34.6215 117.377,33.9295 117.377,32.8915 L117.377,32.8915 Z M118.808,32.8915 C118.808,34.4775 117.678,35.6985 116.029,35.6985 C114.382,35.6985 113.253,34.4775 113.253,32.8915 C113.253,31.3075 114.382,30.0855 116.029,30.0855 C117.678,30.0855 118.808,31.3075 118.808,32.8915 L118.808,32.8915 Z M110.736,30.4465 C110.736,29.7725 110.302,29.4435 109.557,29.4435 L107.981,29.4435 L107.981,31.4625 L109.535,31.4625 C110.323,31.4625 110.736,31.0995 110.736,30.4465 L110.736,30.4465 Z M110.809,32.5085 L112.662,35.5435 L110.923,35.5435 L109.203,32.6845 L107.981,32.6845 L107.981,35.5435 L106.427,35.5435 L106.427,28.1385 L109.68,28.1385 C110.539,28.1385 111.182,28.3845 111.616,28.8315 C112.031,29.2555 112.281,29.7725 112.281,30.4375 C112.281,31.4715 111.742,32.1985 110.809,32.5085 L110.809,32.5085 Z M100.814,32.3135 C100.057,32.1565 99.352,32.1165 99.352,31.6605 C99.352,31.2765 99.715,31.0695 100.263,31.0695 C100.863,31.0695 101.226,31.2765 101.288,31.8455 L102.562,31.8455 C102.46,30.7775 101.682,30.0845 100.284,30.0845 C99.072,30.0845 98.118,30.6325 98.118,31.7835 C98.118,32.9445 99.05,33.2025 100.004,33.3905 C100.731,33.5345 101.401,33.5875 101.401,34.0955 C101.401,34.4675 101.051,34.7045 100.429,34.7045 C99.798,34.7045 99.361,34.4365 99.269,33.8245 L97.964,33.8245 C98.047,34.9535 98.906,35.6985 100.451,35.6985 C101.777,35.6985 102.688,35.0585 102.688,33.9905 C102.688,32.7475 101.703,32.4975 100.814,32.3135 L100.814,32.3135 Z M95.518,32.3115 C95.478,31.6375 95.031,31.1735 94.391,31.1735 C93.643,31.1735 93.28,31.6195 93.157,32.3115 L95.518,32.3115 Z M96.989,33.2845 L93.135,33.2845 C93.24,34.1035 93.696,34.6105 94.493,34.6105 C95.044,34.6105 95.364,34.3615 95.518,33.9585 L96.906,33.9585 C96.709,34.9005 95.872,35.7005 94.505,35.7005 C92.742,35.7005 91.747,34.4665 91.747,32.8815 C91.747,31.3085 92.815,30.0835 94.37,30.0835 C96.078,30.0835 96.989,31.3885 96.989,33.2845 L96.989,33.2845 Z M88.88,30.0855 C88.206,30.0855 87.646,30.4365 87.282,31.0175 L87.261,31.0175 C87.002,30.4575 86.464,30.0855 85.793,30.0855 C85.057,30.0855 84.537,30.4575 84.248,30.9445 L84.217,30.9445 L84.217,30.2295 L82.86,30.2295 L82.86,35.5455 L84.269,35.5455 L84.269,32.4585 C84.269,31.7535 84.651,31.2975 85.22,31.2975 C85.74,31.2975 86.039,31.6085 86.039,32.2085 L86.039,35.5455 L87.449,35.5455 L87.449,32.4585 C87.449,31.7535 87.812,31.2975 88.403,31.2975 C88.92,31.2975 89.221,31.6085 89.221,32.2085 L89.221,35.5455 L90.628,35.5455 L90.628,31.9685 C90.628,30.8085 89.997,30.0855 88.88,30.0855 L88.88,30.0855 Z M79.804,35.5435 L81.214,35.5435 L81.214,30.2285 L79.804,30.2285 L79.804,35.5435 Z M79.804,29.4035 L81.214,29.4035 L81.214,28.1385 L79.804,28.1385 L79.804,29.4035 Z M72.78,29.4025 L75.008,29.4025 L75.008,35.5425 L76.51,35.5425 L76.51,29.4025 L78.735,29.4025 L78.735,28.1375 L72.78,28.1375 L72.78,29.4025 Z M68.191,32.9235 C68.191,31.9075 67.859,31.2245 66.957,31.2245 C66.181,31.2245 65.787,31.9075 65.787,32.8925 C65.787,33.9175 66.19,34.5175 66.917,34.5175 C67.757,34.5175 68.191,33.8955 68.191,32.9235 L68.191,32.9235 Z M68.16,28.1375 L69.57,28.1375 L69.57,35.5455 L68.212,35.5455 L68.212,34.8495 L68.191,34.8495 C67.88,35.3575 67.351,35.6995 66.606,35.6995 C65.27,35.6995 64.359,34.6125 64.359,32.8925 C64.359,31.2335 65.301,30.0855 66.627,30.0855 C67.372,30.0855 67.84,30.4275 68.129,30.8735 L68.16,30.8735 L68.16,28.1375 Z M62.027,32.8915 C62.027,31.8545 61.541,31.1535 60.679,31.1535 C59.811,31.1535 59.334,31.8545 59.334,32.8915 C59.334,33.9295 59.811,34.6215 60.679,34.6215 C61.541,34.6215 62.027,33.9295 62.027,32.8915 L62.027,32.8915 Z M63.458,32.8915 C63.458,34.4775 62.328,35.6985 60.679,35.6985 C59.032,35.6985 57.903,34.4775 57.903,32.8915 C57.903,31.3075 59.032,30.0855 60.679,30.0855 C62.328,30.0855 63.458,31.3075 63.458,32.8915 L63.458,32.8915 Z M55.594,32.8915 C55.594,31.8545 55.107,31.1535 54.246,31.1535 C53.378,31.1535 52.901,31.8545 52.901,32.8915 C52.901,33.9295 53.378,34.6215 54.246,34.6215 C55.107,34.6215 55.594,33.9295 55.594,32.8915 L55.594,32.8915 Z M57.025,32.8915 C57.025,34.4775 55.895,35.6985 54.246,35.6985 C52.599,35.6985 51.47,34.4775 51.47,32.8915 C51.47,31.3075 52.599,30.0855 54.246,30.0855 C55.895,30.0855 57.025,31.3075 57.025,32.8915 L57.025,32.8915 Z M47.245,32.7675 L49.027,32.7675 L49.027,32.8105 C49.027,33.6265 48.27,34.4875 47.119,34.4875 C45.845,34.4875 45.048,33.3805 45.048,31.8655 C45.048,30.3945 45.743,29.2345 47.14,29.2345 C48.094,29.2345 48.642,29.7545 48.809,30.4685 L50.28,30.4685 C50.04,29.0185 48.975,27.9945 47.11,27.9945 C46.116,27.9945 45.328,28.2925 44.727,28.8435 C43.949,29.5575 43.515,30.6345 43.515,31.8655 C43.515,32.9855 43.866,33.9365 44.478,34.6235 C45.091,35.2945 45.959,35.7005 47.079,35.7005 C47.959,35.7005 48.652,35.3985 49.159,34.5495 L49.181,34.5495 L49.233,35.5435 L50.363,35.5435 L50.363,31.6075 L47.245,31.6075 L47.245,32.7675 Z M38.748,32.3115 C38.708,31.6375 38.262,31.1735 37.622,31.1735 C36.874,31.1735 36.511,31.6195 36.388,32.3115 L38.748,32.3115 Z M40.219,33.2845 L36.366,33.2845 C36.471,34.1035 36.926,34.6105 37.723,34.6105 C38.274,34.6105 38.594,34.3615 38.748,33.9585 L40.136,33.9585 C39.939,34.9005 39.102,35.7005 37.736,35.7005 C35.972,35.7005 34.978,34.4665 34.978,32.8815 C34.978,31.3085 36.046,30.0835 37.6,30.0835 C39.308,30.0835 40.219,31.3885 40.219,33.2845 L40.219,33.2845 Z M32.048,30.0835 C31.322,30.0835 30.888,30.3635 30.503,30.9235 L30.472,30.9235 L30.472,28.1385 L29.063,28.1385 L29.063,35.5435 L30.472,35.5435 L30.472,32.5305 C30.472,31.8045 30.928,31.3085 31.549,31.3085 C32.14,31.3085 32.473,31.7115 32.473,32.2815 L32.473,35.5435 L33.879,35.5435 L33.879,32.0755 C33.879,30.9145 33.144,30.0835 32.048,30.0835 L32.048,30.0835 Z M26.693,33.9785 L26.693,31.1625 L27.604,31.1625 L27.604,30.2295 L26.693,30.2295 L26.693,28.5715 L25.314,28.5715 L25.314,30.2295 L24.578,30.2295 L24.578,31.1625 L25.314,31.1625 L25.314,34.2805 C25.314,35.2835 26.071,35.5545 26.754,35.5545 C27.314,35.5545 27.634,35.5325 27.634,35.5325 L27.634,34.4985 C27.634,34.4985 27.394,34.5075 27.219,34.5075 C26.908,34.5075 26.693,34.3725 26.693,33.9785 L26.693,33.9785 Z M19.804,33.9785 L19.804,31.1625 L20.715,31.1625 L20.715,30.2295 L19.804,30.2295 L19.804,28.5715 L18.425,28.5715 L18.425,30.2295 L17.689,30.2295 L17.689,31.1625 L18.425,31.1625 L18.425,34.2805 C18.425,35.2835 19.182,35.5545 19.865,35.5545 C20.425,35.5545 20.746,35.5325 20.746,35.5325 L20.746,34.4985 C20.746,34.4985 20.505,34.5075 20.33,34.5075 C20.019,34.5075 19.804,34.3725 19.804,33.9785 L19.804,33.9785 Z M15.388,32.3115 C15.348,31.6375 14.902,31.1735 14.262,31.1735 C13.514,31.1735 13.151,31.6195 13.028,32.3115 L15.388,32.3115 Z M16.859,33.2845 L13.006,33.2845 C13.111,34.1035 13.566,34.6105 14.363,34.6105 C14.914,34.6105 15.234,34.3615 15.388,33.9585 L16.776,33.9585 C16.579,34.9005 15.742,35.7005 14.376,35.7005 C12.612,35.7005 11.618,34.4665 11.618,32.8815 C11.618,31.3085 12.686,30.0835 14.24,30.0835 C15.948,30.0835 16.859,31.3885 16.859,33.2845 L16.859,33.2845 Z M7.454,34.2565 L10.935,34.2565 L10.935,35.5095 L5.952,35.5095 L5.952,28.1045 L7.454,28.1045 L7.454,34.2565 Z"
+                    id="Fill-1"
+                    fill="#000000"
+                    mask="url(#mask-2)"></path>
+                  <path
+                    d="M68.8788,13.291 C68.8788,13.291 66.6518,14.025 65.4028,14.567 C64.1568,15.111 64.7798,16.059 64.7798,16.059 C64.7798,16.059 65.4028,17.092 66.8958,16.712 C69.0418,16.143 68.8788,13.291 68.8788,13.291 L68.8788,13.291 Z M74.2588,9.412 C74.6108,14.54 73.8988,18.026 75.4238,20.023 L69.7458,20.023 C69.7458,20.023 69.2278,19.343 68.9578,18.692 C68.9578,18.692 67.4408,20.483 64.1838,20.483 C60.9278,20.483 59.0938,18.584 59.0938,16.143 C59.0938,13.7 60.5078,11.907 65.0508,11.094 C66.8688,10.769 68.4968,10.552 68.5778,9.547 C68.6598,8.542 67.2748,8.353 66.9228,8.353 C66.9228,8.353 64.8478,8.201 64.8258,10.506 L59.5278,10.506 C59.5278,10.506 58.4008,4.663 67.3018,4.663 C67.3018,4.663 73.9068,4.281 74.2588,9.412 L74.2588,9.412 Z M29.4108,13.291 C29.4108,13.291 27.1808,14.025 25.9348,14.567 C24.6858,15.111 25.3118,16.059 25.3118,16.059 C25.3118,16.059 25.9348,17.092 27.4278,16.712 C29.5728,16.143 29.4108,13.291 29.4108,13.291 L29.4108,13.291 Z M34.7928,9.412 C35.1428,14.54 34.4298,18.026 35.9558,20.023 L30.2778,20.023 C30.2778,20.023 29.7628,19.343 29.4888,18.692 C29.4888,18.692 27.9718,20.483 24.7158,20.483 C21.4598,20.483 19.6258,18.584 19.6258,16.143 C19.6258,13.7 21.0398,11.907 25.5798,11.094 C27.4008,10.769 29.0288,10.552 29.1128,9.547 C29.1908,8.542 27.8098,8.353 27.4548,8.353 C27.4548,8.353 25.3798,8.201 25.3578,10.506 L20.0568,10.506 C20.0568,10.506 18.9328,4.663 27.8338,4.663 C27.8338,4.663 34.4388,4.281 34.7928,9.412 L34.7928,9.412 Z M19.7558,0.003 L12.1578,0.003 L6.0758,6.101 L6.0758,0.003 L-0.0002,0.003 L-0.0002,20.019 L6.0738,20.019 L6.0738,14.095 L7.6468,12.469 L12.4258,20.016 L20.3328,20.016 L11.9978,7.981 L19.7558,0.003 Z M123.1618,5.542 L116.2948,5.542 L113.3338,8.982 L113.3338,0 L107.5048,0 L107.5048,20.019 L113.3338,20.019 L113.3338,15.942 L114.0848,15.137 L117.2868,20.013 L124.0158,20.013 L118.0858,10.941 L123.1618,5.542 Z M124.7098,20.016 L130.5398,20.016 L130.5398,5.548 L124.7098,5.548 L124.7098,20.016 Z M124.7098,4.079 L130.5398,4.079 L130.5398,0.005 L124.7098,0.005 L124.7098,4.079 Z M100.4808,13.291 C100.4808,13.291 98.2538,14.025 97.0048,14.567 C95.7558,15.111 96.3818,16.059 96.3818,16.059 C96.3818,16.059 97.0048,17.092 98.4978,16.712 C100.6428,16.143 100.4808,13.291 100.4808,13.291 L100.4808,13.291 Z M105.8628,9.412 C106.2148,14.54 105.5028,18.026 107.0278,20.023 L101.3468,20.023 C101.3468,20.023 100.8328,19.343 100.5618,18.692 C100.5618,18.692 99.0418,20.483 95.7828,20.483 C92.5298,20.483 90.6928,18.584 90.6928,16.143 C90.6928,13.7 92.1128,11.907 96.6548,11.094 C98.4698,10.769 100.0988,10.552 100.1818,9.547 C100.2608,8.542 98.8788,8.353 98.5248,8.353 C98.5248,8.353 96.4498,8.201 96.4308,10.506 L91.1288,10.506 C91.1288,10.506 90.0018,4.663 98.9068,4.663 C98.9068,4.663 105.5078,4.281 105.8628,9.412 L105.8628,9.412 Z M84.4268,10.568 C81.3338,10.162 80.9028,9.894 80.9028,9.217 C80.9028,8.699 81.5228,8.293 82.6368,8.293 C83.7498,8.293 84.4028,9.111 84.5108,9.897 L89.5818,9.897 C89.5818,7.182 87.7918,4.858 82.5008,4.858 C75.0378,4.858 75.4738,9.81 75.4738,9.81 C75.4738,13.854 80.3318,14.269 82.6118,14.61 C84.6468,14.938 84.5898,16.051 84.5898,16.051 C84.5898,16.051 84.6468,17.14 82.7988,17.14 C80.4938,17.14 80.5208,14.959 80.5208,14.959 L75.2008,14.959 C75.2008,19.573 79.2988,20.719 82.7478,20.719 C86.1908,20.719 90.0188,19.527 90.0188,15.864 C90.0188,12.199 87.9808,11.302 84.4268,10.568 L84.4268,10.568 Z M59.7548,5.55 L55.3048,20.013 L49.6348,20.013 L47.3538,12.932 L45.4008,20.013 L39.5138,20.013 L34.5188,5.55 L40.5708,5.55 L42.6318,12.336 L44.7638,5.55 L49.8238,5.55 L51.7778,12.336 L54.0308,5.55 L59.7548,5.55 Z"
+                    id="Fill-3"
+                    fill="#E60012"
+                    mask="url(#mask-2)"></path>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </div>
+      )
+    }
+    else if (brandId === 'Manitou') {
+      return (
+        <img
+          width="599"
+          height="105"
+          alt=""
+          className="mx-auto"
+          src="data:image/jpg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCACNAyADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD5Hooor1SAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKK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567QSPfJ6mnUUUtBBQuQu3ouMbVwB9MADiiigAb51YHpu3beCpORyQR6Dp7CiiigAooopgFC/IqgdN27bwFByeQAPQ9Pc0UUgBvnDA/XPBBPqQR+lFFFGgBRRRTAKKKKAF9cEj0GThfm9iCePek59f5/40UUnZu47g3zdTkY4XGADRRRTEFFFFACYPy852jjOcA+2CCPzpefX+f+NFFToO4p5ORnd03Mc4H0pKKKLIQUUUVQBR9TkHqpHFFFIA578k9WJOf50rMS27cxbOdzMSfrk55pKKNB3CiiimIKKKKACl4+XqNp4OeQPbGAPypKKnQBCob7+H9MqOOmMZzjHOPqaWiiq6WAKKKKACiiigAooooAF+XocDHK4yCaOfX+f+NFFToANll2kkjnPJxzuPGSSOW9e1FFFCSQBRRRVAFFFFABRRRQAgXbu2jaWBywxkk9c4AzS8+v8/8AGiiloO4c+v8AP/Gjn1/n/jRRU8qC4c+v8/8AGjn1/n/jRRRyoLhz6/z/AMaOfX+f+NFFHKguHPr/AD/xob5upyMcLjABoop6CCiiiqAKKKKADn1/n/jRz6/z/wAaKKjlQ7hz6/z/AMaOfX+f+NFFHKguHPr/AD/xo59f5/40UUcqC4c+v8/8aOfX+f8AjRRRyoLgfmBDfMvQKQPlH1IOaKKKaSQhNvy4ySMbccAY9OnT2paKKa0HcKKKKYgooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwP//Z"
+        >
+        </img>
+      )
+    }
+    if (brandId === 'Spyder') {
+      return (
+        <img
+          width="300"
+          height="166"
+          className="mx-auto"
+          src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
+          alt="srry"
+        />
+      )
+    }
+    if (brandId === 'Suzuki') {
+      return (
+        <img
+          width="250"
+          height="150"
+          className="mx-auto"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/500px-Suzuki_logo_2.svg.png"
+          alt="steve"
+        />
+      )
+    }
+    if (brandId === 'BMW-Motorrad') {
+      return (
+        <>
+          <img
+            width="150"
+            height="150"
+            className="mx-auto"
+            src={BMW}
+            alt="steve"
+          />
+        </>
+      )
+    }
+    if (brandId === 'Harley-Davidson') {
+      return (
+        <img
+          className="mx-auto "
+          src={Harley}
+          alt="steve"
+        />
+      )
+    }
+    if (brandId === 'Triumph') {
+      return (
+        <img
+          src="https://media.triumphmotorcycles.co.uk/image/upload/f_auto/q_auto/sitecoremedialibrary/media-library/misc/misc-images/logo.svg?la=en-US"
+          alt="Triumph Logo">
+        </img>
+      )
+    }
+    if (brandId === 'Indian') {
+      return (
+        <p>Coming Soon</p>
+      )
+    }
+    if (brandId === 'KTM') {
+      return (
+        <p>Coming Soon</p>
+      )
+    }
+    if (brandId === 'Yamaha') {
+      return (
+        <p>Coming Soon</p>
+      )
+    }
+    else if (brandId === 'Switch') {
+      return (
+        <img
+          width="300"
+          height="166"
+          alt="steve"
+          className="mx-auto"
+          src="https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
+        />
+      )
+    }
+
 
   }
-  return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown }))
+  return (
+    <div>
+      <nav
+        className={cn("sm:flex hidden  flex-col items-center gap-4 px-2 sm:py-4 mt-10",)}    >
+        {mergedFinanceList && mergedFinanceList.map((item, index) => {
+          const brand = item.brand
+          return (
+            <HoverCard key={index}>
+              <HoverCardTrigger asChild>
+                <Link
+                  to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 "
+                >
+                  <Button variant="ghost" className="bg-transparent    hover:bg-transparent">
+                    <div className="h-5 w-5 flex justify-center">
+                      <FaMotorcycle className='text-foreground text-3xl mx-auto' />
+
+                    </div>
+                  </Button>
+                </Link>
+              </HoverCardTrigger >
+              <HoverCardContent side="right" className='bg-background text-foreground w-80 border border-border z-50 '>
+                <div className='m-4'>
+                  <p>{item.year} {item.brand}</p>
+                  <p>{item.model.toString().slice(0, 28)}</p>
+                  <Badge className="">{item.customerState}</Badge>
+                </div>
+              </HoverCardContent >
+            </HoverCard>
+          );
+        })}
+      </nav >
+      <nav
+        className={cn(" sm:hidden flex  items-center gap-4 px-2 sm:py-4 mt-[10px] ml-[50px] ",)}    >
+        {mergedFinanceList && mergedFinanceList.map((item) => {
+          const brand = item.brand
+          return (
+            <HoverCard key={item.to}>
+              <HoverCardTrigger asChild className=''>
+                <Link
+                  to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
+                  className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-10 md:w-10  cursor-pointer"
+                >
+                  <Button variant="ghost" className="bg-transparent    hover:bg-transparent">
+                    <div className="h-5 w-5 flex justify-center">
+                      <FaMotorcycle className='text-foreground text-3xl mx-auto' />
+
+                    </div>
+                  </Button>
+                </Link>
+              </HoverCardTrigger >
+              <HoverCardContent side="right" className='bg-background text-foreground w-80 border border-border z-50 '>
+                <div className='m-4'>
+                  <p>{item.year} {item.brand}</p>
+                  <p>{item.model.toString().slice(0, 28)}</p>
+                  <Badge className="">{item.customerState}</Badge>
+                </div>
+              </HoverCardContent >
+            </HoverCard>
+          );
+        })}
+      </nav >
+    </div>
+
+  )
+}
+
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: second },
+  { rel: "stylesheet", href: timeline },
+  { rel: "icon", type: "image/svg", href: '/user.svg' },
+];
+
+
+async function GetMergedWithActivix(financeId) {
+  try {
+    const financeData = await prisma.finance.findUnique({ where: { id: financeId, }, });
+    const activixData = await prisma.activixLead.findUnique({ where: { financeId: financeId } })
+    const newData = {
+      ...activixData,
+      ...financeData,
+    };
+    console.log('newData:', newData);
+    return newData
+    return newData;
+  } catch (error) {
+    console.error("Error fetching dashboard entries by financeId:", error);
+    throw new Error("Failed to fetch dashboard entries by financeId");
+  }
+}
+
+async function PullActivix(financeData) {
+  const accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzFkZTg5NzMwZmIyYTZlNmU1NWNhNzA4OTc2YTdjNzNiNWFmZDQwYzdmNDQ3YzE4ZjM5ZGE4MjMwYWFhZmE3ZmEyMTBmNGYyMzdkMDE0ZGQiLCJpYXQiOjE3MDI1NzI0NDIuNTcwMTAyLCJuYmYiOjE3MDI1NzI0NDIuNTcwMTA0LCJleHAiOjQ4NTgyNDYwNDIuNTI2NDI4LCJzdWIiOiIxNDMwNDEiLCJzY29wZXMiOlsidmlldy1sZWFkcyIsIm1hbmFnZS1sZWFkcyIsInRyaWdnZXItZmxvdyIsIm5vdGVzOmNyZWF0ZSIsIm5vdGVzOnVwZGF0ZSIsIm5vdGVzOnZpZXciXX0.ZrXbofK55iSlkvYH0AVGNtc5SH5KEXqu8KdopubrLsDx8A9PW2Z55B5pQCt8jzjE3J9qTcyfnLjDIR3pU4SozCFCmNOMZVWkpLgUJPLsCjQoUpN-i_7V5uqcojWIdOya7_WteJeoTOxeixLgP_Fg7xJoC96uHP11PCQKifACVL6VH2_7XJN_lHu3R3wIaYJrXN7CTOGMQplu5cNNf6Kmo6346pV3tKZKaCG_zXWgsqKuzfKG6Ek6VJBLpNuXMFLcD1wKMKKxMy_FiIC5t8SK_W7-LJTyo8fFiRxyulQuHRhnW2JpE8vOGw_QzmMzPxFWlAPxnT4Ma6_DJL4t7VVPMJ9ZoTPp1LF3XHhOExT2dMUt4xEQYwR1XOlnd0icRRlgn2el88pZwXna8hju_0R-NhG1caNE7kgRGSxiwdSEc3kQPNKDiJeoSbvYoxZUuAQRNgEkjIN-CeQp5LAvOgI8tTXU9lOsRFPk-1YaIYydo0R_K9ru9lKozSy8tSqNqpEfgKf8S4bqAV0BbKmCJBVJD7JNgplVAxfuF24tiymq7i9hjr08R8p2HzeXS6V93oW4TJJiFB5kMFQ2JQsxT-yeFMKYFJQLNtxsCtVyk0x43AnFD_7XrrywEoPXrd-3SBP2z65DP9Js16-KCsod3jJZerlwb-uKeeURhbaB9m1-hGk"
+  async function CallActi() {
+    try {
+      const response = await axios.get(`https://api.crm.activix.ca/v2/leads/${financeData.activixId}?include[]=emails&include[]=phones&include[]=vehicles&include[]=events`, {
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${accessToken}`, }
+      });
+      return response.data; // Return response data directly
+    } catch (error) {
+      console.error('Full error object:', error);
+      console.error(`Activix Error: ${error.response.status} - ${error.response.data}`);
+      console.error(`Error status: ${error.response.status}`);
+      console.error('Error response:', error.response.data);
+      throw error; // Throw error to be caught by the caller
+    }
+  }
+  const formData = await CallActi();
+  try {
+    const activixIdString = formData?.id.toString()
+    const findFinance = await prisma.finance.findFirst({ where: { activixId: activixIdString } })
+    const financeData = await prisma.finance.update({
+      where: { id: findFinance?.id },
+      data: {
+        firstName: formData.first_name,
+        lastName: formData.last_name,
+        name: formData.first_name + ' ' + formData.last_name,
+        email: formData.emails[0].address,
+        phone: formData.phones[0].number,
+        address: formData.address_line1,
+        city: formData.city,
+        postal: formData.postal_code,
+        province: formData.province,
+        year: formData.vehicles[1].year,
+        brand: formData.vehicles[1].make,
+        model: formData.vehicles[1].model,
+        model1: formData.model1,
+        color: formData.vehicles[1].color_exterior,
+        modelCode: formData.modelCode,
+        msrp: formData.vehicles[1].price,
+        tradeValue: formData.vehicles[0].price,
+        tradeDesc: formData.vehicles[0].model,
+        tradeColor: formData.vehicles[0].color_exterior,
+        tradeYear: formData.vehicles[0].year,
+        tradeMake: formData.vehicles[0].make,
+        tradeVin: formData.vehicles[0].vin,
+        tradeTrim: formData.vehicles[0].trim,
+        tradeMileage: formData.vehicles[0].odometer,
+        trim: formData.vehicles[1].trim,
+        vin: formData.vehicles[1].vin,
+      }
+    })
+    const dashboardData = await prisma.dashboard.update({
+      where: { id: financeData.dashboardId },
+      data: {
+        referral: formData.referral,
+        visited: formData.visited,
+        bookedApt: formData.bookedApt,
+        aptShowed: formData.aptShowed,
+        aptNoShowed: formData.aptNoShowed,
+        testDrive: formData.testDrive,
+        metService: formData.metService,
+        metManager: formData.metManager,
+        metParts: formData.metParts,
+        sold: formData.sold,
+        depositMade: formData.depositMade,
+        refund: formData.refund,
+        turnOver: formData.turnOver,
+        financeApp: formData.financeApp,
+        approved: formData.approved,
+        signed: formData.signed,
+        pickUpSet: formData.pickUpSet,
+        demoed: formData.demoed,
+        delivered: formData.delivered,
+        status: formData.status,
+        customerState: formData.state,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: formData.nextAppointment,
+        followUpDay: formData.followUpDay,
+        state: formData.state,
+        deliveredDate: formData.deliveredDate,
+        notes: formData.notes,
+        visits: formData.visits,
+        progress: formData.progress,
+        metSalesperson: formData.metSalesperson,
+        metFinance: formData.metFinance,
+        financeApplication: formData.financeApplication,
+        pickUpDate: formData.pickUpDate,
+        pickUpTime: formData.pickUpTime,
+        depositTakenDate: formData.depositTakenDate,
+        docsSigned: formData.docsSigned,
+        tradeRepairs: formData.tradeRepairs,
+        seenTrade: formData.seenTrade,
+        lastNote: formData.lastNote,
+        dLCopy: formData.dLCopy,
+        insCopy: formData.insCopy,
+        testDrForm: formData.testDrForm,
+        voidChq: formData.voidChq,
+        loanOther: formData.loanOther,
+        signBill: formData.signBill,
+        ucda: formData.ucda,
+        tradeInsp: formData.tradeInsp,
+        customerWS: formData.customerWS,
+        otherDocs: formData.otherDocs,
+        urgentFinanceNote: formData.urgentFinanceNote,
+        funded: formData.funded,
+        countsInPerson: formData.countsInPerson,
+        countsPhone: formData.countsPhone,
+        countsSMS: formData.countsSMS,
+        countsOther: formData.countsOther,
+        countsEmail: formData.countsEmail,
+      }
+    })
+    const data = formData
+    const activixData = await prisma.activixLead.update({
+      where: { id: financeData.theRealActId, },
+      data: {
+        account_id: data.account_id.toString(),
+        customer_id: data.customer_id.toString(),
+        appointment_date: data.appointment_date,
+        phone_appointment_date: data.phone_appointment_date,
+        available_date: data.available_date,
+        be_back_date: data.be_back_date,
+        call_date: data.call_date,
+        created_at: data.created_at,
+        csi_date: data.csi_date,
+        delivered_date: data.delivered_date,
+        deliverable_date: data.deliverable_date,
+        delivery_date: data.delivery_date,
+        paperwork_date: data.paperwork_date,
+        presented_date: data.presented_date,
+        //   promised_date: data.promised_date,
+        financed_date: data.financed_date,
+        road_test_date: data.road_test_date,
+        home_road_test_date: data.home_road_test_date,
+        sale_date: data.sale_date,
+        updated_at: data.updated_at,
+        address_line1: data.address_line1,
+        city: data.city,
+        civility: data.civility,
+        country: data.country,
+        credit_approved: data.credit_approved ? data.credit_approved.toString() : null,
+        dealer_tour: data.creditdealer_tour_approved ? data.dealer_tour.toString() : null,
+        financial_institution: data.financial_institution,
+        first_name: data.first_name,
+        funded: data.funded ? data.funded.toString() : null,
+        inspected: data.inspected ? data.inspected.toString() : null,
+        last_name: data.last_name,
+        postal_code: data.postal_code,
+        province: data.province,
+        result: data.result,
+        status: data.status,
+        type: data.type,
+        walk_around: data.walk_around ? data.walk_around.toString() : null,
+        comment: data.comment,
+        delivered_by: data.delivered_by,
+        emails: data.emails[0].address,
+        phones: data.phones[0].number,
+        financeId: data.financeId,
+        userEmail: user?.email,
+
+        /**home_presented_date: data.home_presented_date,
+         birth_date: data.birth_date,
+         source_id: data.source_id,
+         Integer: data.Integer,
+         provider_id: data.provider_id,
+         unsubscribe_all_date: data.unsubscribe_all_date,
+         unsubscribe_call_date: data.unsubscribe_call_date,
+         unsubscribe_email_date: data.unsubscribe_email_date,
+         unsubscribe_sms_date: data.unsubscribe_sms_date,
+         advisor: data.advisor,
+         take_over_date: data.take_over_date,
+         search_term: data.search_term,
+         gender: data.gender,
+         form: data.form,
+         division: data.division,
+         created_method: data.created_method,
+         campaign: data.campaign,
+         address_line2: data.address_line2,
+         business: data.business,
+         business_name: data.business_name,
+         second_contact: data.second_contact,
+         second_contact_civility: data.second_contact_civility,
+         segment: data.segment,
+         source: data.source,
+         qualification: data.qualification,
+         rating: data.rating,
+         referrer: data.referrer,
+         provider: data.provider,
+         progress_state: data.progress_state,
+         locale: data.locale,
+         navigation_history: data.navigation_history,
+         keyword: data.keyword,*/
+
+      }
+    })
+
+    return { financeData, activixData, dashboardData };
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    console.log("This code always runs, regardless of whether there was an error or not.");
+  }
+  return null
 }
 
 type ValuePiece = Date | null;
@@ -7411,3 +7706,50 @@ async function getToken(
     throw new Error(`ERROR received from ${requestAddress}: ${error}\n`);
   }
 }
+
+
+/**
+   *
+   * if (brand === 'Triumph') {
+    const modelData = await getDataTriumph(finance);
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+  }
+
+
+   * if (brand === 'BMW-Motorrad') {
+    const bmwMoto = await getLatestBMWOptions(financeId)
+    const bmwMoto2 = await getLatestBMWOptions2(financeId)
+    const modelData = await getDataBmwMoto(finance);
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+  }
+   *
+   *  if (brand === 'Kawasaki') {
+    const modelData = await getDataKawasaki(finance);
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+  }
+
+
+   * if (brand === 'Switch') {
+    const modelData = await getDataByModel(finance);
+    const manOptions = await getLatestOptionsManitou(email)
+    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+  }
+
+
+   *   if (brand === 'Manitou') {
+    const modelData = await getDataByModelManitou(finance);
+    const manOptions = await getLatestOptionsManitou(email)
+    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown })
+  }
+   *  if (brand === 'Harley-Davidson') {
+    const modelData = await getDataHarley(finance);
+    const apptFinance2 = await getAllFinanceApts2(financeId)
+    const aptFinance3 = await getAllFinanceApts(financeId)
+    return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }));
+  }
+      if (brand === 'Indian' || brand === 'Can-Am' || brand === 'Sea-Doo' || brand === 'Ski-Doo' || brand === 'Suzuki' || brand === 'Spyder' || brand === 'Can-Am-SXS') {
+  const modelData = await getDataByModel(finance)
+  return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+
+}
+    */

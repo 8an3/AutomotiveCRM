@@ -26,13 +26,6 @@ async function seed() {
   await Board()
   await DeptSalesAchieved()
 }
-
-/**
- * -----------------------------------------------------------------------------
- * Various seed functions
- * -----------------------------------------------------------------------------
- */
-
 export async function seedUsers() {
   // ---------------------------------------------------------------------------
   console.info("Seed user roles...");
@@ -42,22 +35,286 @@ export async function seedUsers() {
     data: dataUserRoles,
   });
 
-  const adminUserRole = await prisma.userRole.findFirst({
-    where: { symbol: "Administrator" },
-  });
-  const devUserRole = await prisma.userRole.findFirst({
-    where: { symbol: "DEV" },
-  });
+  const adminUserRole = await prisma.userRole.findFirst({ where: { symbol: "Administrator" }, });
+  const devUserRole = await prisma.userRole.findFirst({ where: { symbol: "DEV" }, });
+  const salesRole = await prisma.userRole.findFirst({ where: { symbol: "Sales" }, });
+  const financeRole = await prisma.userRole.findFirst({ where: { symbol: "Finance Manager" }, });
   invariant(adminUserRole, "User Role with symbol ADMIN is not found");
 
   // ---------------------------------------------------------------------------
   console.log(chalk.yellow("Seeding users ..."));
-
   const { REMIX_ADMIN_EMAIL, REMIX_ADMIN_PASSWORD } = process.env;
   invariant(REMIX_ADMIN_EMAIL, "REMIX_ADMIN_EMAIL must be set");
   invariant(REMIX_ADMIN_PASSWORD, "REMIX_ADMIN_PASSWORD must be set");
 
   // const hashedPassword = await bcrypt.hash(REMIX_ADMIN_PASSWORD, 10);
+  // ---- customer
+  console.log(chalk.yellow("Seeding first customer ..."));
+
+  const user = await prisma.user.findFirst({
+    where: { role: { symbol: "ADMIN" } },
+  });
+  const clientfile = await prisma.clientfile.create({
+    data: {
+      email: 'skylerzanth@gmail.com',
+      firstName: 'Skyler',
+      lastName: 'zanth',
+      phone: '+16138980992',
+      name: 'skyler zanth',
+      address: '1234 st',
+      city: 'Otawa',
+      postal: 'k1j23V2',
+      province: 'ON',
+      dl: 'HS02QI3J0DF',
+      typeOfContact: 'SMS',
+      timeToContact: '7:00pm',
+      userId: process.env.REMIX_ADMIN_EMAIL
+    }
+  })
+  const finance = await prisma.finance.create({
+    data: {
+      clientfileId: clientfile.id,
+      financeManager: 'skylerzanth@outlook.com',
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      financeManagerName: 'Skyler Zanth',
+      email: 'skylerzanth@gmail.com',
+      firstName: 'skyler',
+      lastName: 'zanth',
+      phone: '6138980992',
+      name: 'skyler zanth',
+      address: '15490 ashburn rd',
+      city: 'berwick',
+      postal: 'k0c1g0',
+      province: 'on',
+      dl: 'b51515',
+      typeOfContact: 'Phone',
+      timeToContact: 'Afternoon',
+      iRate: '10.99',
+      months: '60',
+      discount: '0',
+      total: '27921.05',
+      onTax: '32109.79',
+      on60: '697.98',
+      biweekly: '322.14',
+      weekly: '161.07',
+      weeklyOth: '161.07',
+      biweekOth: '322.14',
+      oth60: '697.98',
+      weeklyqc: '161.07',
+      biweeklyqc: '322.14',
+      qc60: '697.98',
+      deposit: '500',
+      biweeklNatWOptions: '280.12',
+      weeklylNatWOptions: '140.06',
+      nat60WOptions: '606.93',
+      weeklyOthWOptions: '161.07',
+      biweekOthWOptions: '322.14',
+      oth60WOptions: '697.98',
+      biweeklNat: '285.73',
+      weeklylNat: '142.86',
+      nat60: '619.08',
+      qcTax: '32109.79',
+      otherTax: '32109.79',
+      totalWithOptions: '27921.05',
+      otherTaxWithOptions: '32109.79',
+      desiredPayments: 'Standard Payment',
+      freight: '1250',
+      admin: '699',
+      commodity: '0',
+      pdi: '625',
+      discountPer: '0',
+      userLoanProt: 0,
+      userTireandRim: '0',
+      userGap: 0,
+      userExtWarr: '0',
+      userServicespkg: 0,
+      deliveryCharge: 0,
+      vinE: 0,
+      lifeDisability: 0,
+      rustProofing: 0,
+      userOther: 0,
+      paintPrem: '0',
+      licensing: '45',
+      stockNum: '',
+      options: '',
+      accessories: 500,
+      labour: '2',
+      year: '2024',
+      brand: 'Harley-Davidson',
+      model: 'Low Rider S - Color - FXLRS',
+      model1: '',
+      color: 'Color',
+      modelCode: '',
+      msrp: '24899',
+
+      tradeValue: '500',
+      tradeDesc: 's1000r',
+      tradeColor: 'black',
+      tradeYear: '2024',
+      tradeMake: 'bmw',
+      tradeVin: 'asdasdasdsaa',
+      tradeTrim: 'R',
+      tradeMileage: '500',
+      tradeLocation: 'shop',
+      trim: null,
+      vin: null,
+      leadNote: null,
+      referral: null,
+      visited: null,
+      bookedApt: null,
+      aptShowed: null,
+      aptNoShowed: null,
+      testDrive: null,
+      metService: null,
+      metManager: null,
+      metParts: null,
+      sold: null,
+      depositMade: null,
+      refund: null,
+      turnOver: null,
+      financeApp: null,
+      approved: null,
+      signed: null,
+      pickUpSet: null,
+      demoed: null,
+      delivered: null,
+      lastContact: 'Sat, Jul 20, 2024, 06:32:46 AM',
+      quoted: 'Sat, Jul 20, 2024, 06:32:46 AM',
+      status: 'Active',
+      customerState: 'Reached',
+      result: 'Quoted',
+      timesContacted: null,
+      nextAppointment: null,
+      followUpDay: null,
+      deliveredDate: null,
+      notes: null,
+      visits: null,
+      progress: null,
+      metSalesperson: 'Sat, Jul 20, 2024, 06:32:46 AM',
+      metFinance: null,
+      financeApplication: null,
+      pickUpDate: null,
+      pickUpTime: null,
+      depositTakenDate: null,
+      docsSigned: null,
+      tradeRepairs: null,
+      seenTrade: null,
+      lastNote: null,
+      applicationDone: null,
+      licensingSent: null,
+      liceningDone: null,
+      refunded: null,
+      cancelled: null,
+      lost: null,
+      dLCopy: null,
+      insCopy: null,
+      testDrForm: null,
+      voidChq: null,
+      loanOther: null,
+      signBill: null,
+      ucda: null,
+      tradeInsp: null,
+      customerWS: null,
+      otherDocs: null,
+      urgentFinanceNote: null,
+      funded: null,
+      leadSource: null,
+      financeDeptProductsTotal: null,
+      bank: null,
+      loanNumber: null,
+      idVerified: null,
+      dealerCommission: null,
+      financeCommission: null,
+      salesCommission: null,
+      firstPayment: null,
+      loanMaturity: null,
+      InPerson: 1,
+      Phone: 1,
+      SMS: 1,
+      Email: 1,
+      Other: null,
+    }
+  })
+  const newLeadfinance = await prisma.finance.create({
+    data: {
+      clientfileId: clientfile.id,
+      financeManager: 'skylerzanth@outlook.com',
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      email: 'skylerzanth@gmail.com',
+      firstName: 'skyler',
+      lastName: 'zanth',
+      phone: '6138980992',
+      name: 'skyler zanth',
+      address: '15490 ashburn rd',
+      city: 'berwick',
+      postal: 'k0c1g0',
+      province: 'on',
+      dl: 'b51515',
+      typeOfContact: 'Phone',
+      timeToContact: 'Afternoon',
+
+      year: '2024',
+      brand: 'Harley-Davidson',
+      model: 'Low Rider S - Color - FXLRS',
+      color: 'Color',
+      msrp: '24899',
+
+      status: 'Active',
+      customerState: 'Pending',
+    }
+  })
+  const createInPerson = await prisma.comm.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      type: 'InPerson',
+      body: '',
+      subject: '',
+      userName: 'Skyler Zanth',
+      direction: 'Incoming',
+      result: 'Reached',
+      financeId: finance.id,
+    }
+  })
+  const createPhone = await prisma.comm.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      type: 'Phone',
+      body: '',
+      subject: '',
+      userName: 'Skyler Zanth',
+      direction: 'Outgoing',
+      result: 'Reached',
+      financeId: finance.id,
+    }
+  })
+  const createSMS = await prisma.comm.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      type: 'SMS',
+      body: 'Hey hows it going',
+      subject: '',
+      userName: 'Skyler Zanth',
+      direction: 'Outgoing',
+      result: 'Attempted',
+      financeId: finance.id,
+    }
+  })
+  const createEmail = await prisma.comm.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      type: 'Email',
+      body: 'Hey hows it going',
+      subject: 'Good deals buy now',
+      userName: 'Skyler Zanth',
+      direction: 'Outgoing',
+      result: 'Attempted',
+      financeId: finance.id,
+    }
+  })
+  console.log(chalk.green("First customer seeded!"));
+  // ---- users
   const admin = await prisma.user.create({
     data: {
       email: REMIX_ADMIN_EMAIL,
@@ -85,10 +342,6 @@ export async function seedUsers() {
   await prisma.userGoals.create({
     data: { userEmail: admin.email, year: '2024' },
   });
-
-
-
-  console.log(chalk.green("Admin user seeded!"));
   const autoAdmin = await prisma.automations.create({
     data: {
       userEmail: 'skylerzanth@outlook.com',
@@ -102,6 +355,195 @@ export async function seedUsers() {
       afterHoursClosed: 'no',
     }
   })
+  await prisma.notificationsUser.create({
+    data: {
+      title: 'hey dude',
+      type: 'messages',
+      subType: 'email',
+      financeId: finance.id,
+      clientfileId: clientfile.id,
+      to: 'skylerzanth@outlook.com',
+      from: 'skylerzanth@gmail.com',
+      userEmail: admin.email,
+      customerName: 'billy bobby'
+
+    }
+  })
+  await prisma.notificationsUser.create({
+    data: {
+      content: 'hey wanted to buy something',
+      type: 'messages',
+      title: 'Incoming SMS from Skyler Zanth',
+      subType: 'sms',
+      financeId: finance.id,
+      clientfileId: clientfile.id,
+      to: '6138980992',
+      from: 'skylerzanth@gmail.com',
+      userEmail: admin.email,
+      customerName: 'billy bobby'
+
+    }
+  })
+  await prisma.notificationsUser.create({
+    data: {
+      title: 'New Lead Inbound',
+      content: 'inquring about unit',
+      type: 'New Lead',
+      financeId: newLeadfinance.id,
+      clientfileId: clientfile.id,
+      userEmail: admin.email,
+      customerName: 'billy bobby'
+    }
+  })
+  await prisma.notificationsUser.create({
+    data: {
+      title: 'sales2 left a note on skylers file',
+      content: 'note body start',
+      type: 'updates',
+      financeId: newLeadfinance.id,
+      clientfileId: clientfile.id,
+      userEmail: admin.email,
+      customerName: 'billy bobby'
+
+    }
+  })
+  await prisma.notificationsUser.create({
+    data: {
+      title: 'finance2 took a deposit for skylers file',
+      content: 'Customer called in with cc',
+
+      type: 'updates',
+      financeId: newLeadfinance.id,
+      clientfileId: clientfile.id,
+      userEmail: admin.email,
+      customerName: 'billy bobby'
+
+    }
+  })
+  const columns = {
+    "dl": false,
+    "id": false,
+    "pdi": false,
+    "city": false,
+    "msrp": false,
+    "note": false,
+    "on60": false,
+    "qc60": false,
+    "sold": false,
+    "vinE": false,
+    "admin": false,
+    "color": false,
+    "email": false,
+    "iRate": false,
+    "nat60": false,
+    "onTax": false,
+    "oth60": false,
+    "phone": false,
+    "qcTax": false,
+    "total": false,
+    "demoed": false,
+    "labour": false,
+    "model1": false,
+    "months": false,
+    "postal": false,
+    "refund": false,
+    "result": false,
+    "signed": false,
+    "visits": false,
+    "weekly": false,
+    "address": false,
+    "deposit": false,
+    "freight": false,
+    "trailer": false,
+    "userGap": false,
+    "visited": false,
+    "approved": false,
+    "biweekly": false,
+    "discount": false,
+    "lastNote": false,
+    "metParts": false,
+    "otherTax": false,
+    "painPrem": false,
+    "progress": false,
+    "province": false,
+    "referral": false,
+    "stockNum": false,
+    "tradeVin": false,
+    "turnOver": false,
+    "turnover": false,
+    "weeklyqc": false,
+    "aptShowed": false,
+    "biweekOth": false,
+    "bookedApt": false,
+    "commodity": false,
+    "delivered": false,
+    "financeId": false,
+    "licensing": false,
+    "modelCode": false,
+    "paintPrem": false,
+    "pickUpSet": false,
+    "seenTrade": false,
+    "testDrive": false,
+    "timeOfDay": false,
+    "tradeMake": false,
+    "tradeTrim": false,
+    "tradeYear": false,
+    "userEmail": false,
+    "userOther": false,
+    "weeklyOth": false,
+    "biweeklNat": false,
+    "biweeklyqc": false,
+    "docsSigned": false,
+    "financeApp": false,
+    "metFinance": false,
+    "metManager": false,
+    "metService": false,
+    "pickUpTime": false,
+    "tradeColor": false,
+    "tradeValue": false,
+    "unitPicker": false,
+    "weeklylNat": false,
+    "accessories": false,
+    "aptNoShowed": false,
+    "depositMade": false,
+    "discountPer": false,
+    "followUpDay": false,
+    "userExtWarr": false,
+    "clientfileId": false,
+    "rustProofing": false,
+    "tradeRepairs": false,
+    "userLoanProt": false,
+    "contactMethod": false,
+    "deliveredDate": false,
+    "nat60WOptions": false,
+    "oth60WOptions": false,
+    "singleFinNote": false,
+    "timeToContact": false,
+    "typeOfContact": false,
+    "deliveryCharge": false,
+    "documentUpload": false,
+    "lifeDisability": false,
+    "metSalesperson": false,
+    "timesContacted": false,
+    "userTireandRim": false,
+    "desiredPayments": false,
+    "userServicespkg": false,
+    "totalWithOptions": false,
+    "biweekOthWOptions": false,
+    "weeklyOthWOptions": false,
+    "biweeklNatWOptions": false,
+    "financeApplication": false,
+    "weeklylNatWOptions": false,
+    "otherTaxWithOptions": false
+  }
+  const state = JSON.stringify(columns)
+  const userEmail = 'skylerzanth@outlook.com'
+  await prisma.columnStateSales.upsert({
+    where: { userEmail },
+    create: { userEmail, state },
+    update: { state },
+  })
+  console.log(chalk.green("Admin user seeded!"));
 
   const dev = await prisma.user.create({
     data: {
@@ -123,16 +565,115 @@ export async function seedUsers() {
   await prisma.position.create({
     data: {
       userId: dev.id,
-      position: devUserRole.name
+      position: 'Finance Manager'
+    }
+  })
+  await prisma.position.create({
+    data: {
+      userId: dev.id,
+      position: 'Sales'
     }
   })
   await prisma.userGoals.create({
     data: { userEmail: dev.email, year: '2024' },
   });
+  await prisma.automations.create({
+    data: {
+      userEmail: dev.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
   console.log(chalk.green("Dev user seeded!"));
 
+  const sales2 = await prisma.user.create({
+    data: {
+      email: 'sales2@gmail.com',
+      name: "sales2",
+      username: "sales2",
+      phone: "+16138980997",
+      dealer: "Freedom H-D",
+      role: { connect: { id: salesRole?.id } },
+      profile: {
+        create: {
+          headline: "I am Dev",
+          bio: "The dev of this app.",
+        },
+      },
 
-  return ({ admin, dev, autoAdmin })
+    },
+  });
+  await prisma.position.create({
+    data: {
+      userId: sales2.id,
+      position: 'Sales'
+    }
+  })
+  await prisma.userGoals.create({
+    data: { userEmail: sales2.email, year: '2024' },
+  });
+  await prisma.automations.create({
+    data: {
+      userEmail: sales2.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+  console.log(chalk.green("Sales2 user seeded!"));
+
+  const finance2 = await prisma.user.create({
+    data: {
+      email: 'finance2@gmail.com',
+      name: "finance2",
+      username: "finance2",
+      phone: "+16138980977",
+      dealer: "Freedom H-D",
+      role: { connect: { id: financeRole?.id } },
+      profile: {
+        create: {
+          headline: "I am Dev",
+          bio: "The dev of this app.",
+        },
+      },
+
+    },
+  });
+  await prisma.position.create({
+    data: {
+      userId: finance2.id,
+      position: 'Finance Manager'
+    }
+  })
+  await prisma.userGoals.create({
+    data: { userEmail: finance2.email, year: '2024' },
+  });
+  await prisma.automations.create({
+    data: {
+      userEmail: finance2.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+  console.log(chalk.green("finance2 user seeded!"));
+  return ({ admin, dev, autoAdmin, finance2, sales2, user, finance, clientfile, createInPerson, createPhone, createSMS, createEmail })
 }
 export async function SeedLockFinanceTerminals() {
   console.log(chalk.yellow("Seeding lock finance terminals ..."));
@@ -219,212 +760,47 @@ export async function seedNotes() {
   return createNote
 }
 export async function FirstCustomer() {
-  console.log(chalk.yellow("Seeding first customer ..."));
-
-  const user = await prisma.user.findFirst({
-    where: { role: { symbol: "ADMIN" } },
-  });
-  const clientfile = await prisma.clientfile.create({
-    data: {
-      email: 'skylerzanth@outlook.com',
-      firstName: 'Skyler',
-      lastName: 'zanth',
-      phone: '+16138980992',
-      name: 'skyler zanth',
-      address: '1234 st',
-      city: 'Otawa',
-      postal: 'k1j23V2',
-      province: 'ON',
-      dl: 'HS02QI3J0DF',
-      userId: process.env.REMIX_ADMIN_EMAIL
-    }
-  })
-  const finance = await prisma.finance.create({
-    data: {
-      clientfileId: clientfile.id,
-      financeManager: null,
-      email: 'skylerzanth@outlook.com',
-      firstName: 'skyler',
-      lastName: 'zanth',
-      phone: '+16138980992',
-      name: 'skyler zanth',
-      address: '1234 st',
-      city: 'Otawa',
-      postal: 'k1j23V2',
-      province: 'ON',
-      dl: 'HS02QI3J0DF',
-      typeOfContact: 'phone',
-      timeToContact: 'Morning',
-      iRate: '10.99',
-      months: '60',
-      discount: '0',
-      total: null,
-      onTax: null,
-      on60: null,
-      biweekly: null,
-      weekly: null,
-      weeklyOth: null,
-      biweekOth: null,
-      oth60: null,
-      weeklyqc: null,
-      biweeklyqc: null,
-      qc60: null,
-      deposit: '0',
-      biweeklNatWOptions: null,
-      weeklylNatWOptions: null,
-      nat60WOptions: null,
-      weeklyOthWOptions: null,
-      biweekOthWOptions: null,
-      oth60WOptions: null,
-      biweeklNat: null,
-      weeklylNat: null,
-      nat60: null,
-      qcTax: null,
-      otherTax: null,
-      totalWithOptions: null,
-      otherTaxWithOptions: null,
-      desiredPayments: null,
-      freight: null,
-      admin: null,
-      commodity: null,
-      pdi: null,
-      discountPer: null,
-      userLoanProt: null,
-      userTireandRim: null,
-      userGap: null,
-      userExtWarr: null,
-      userServicespkg: null,
-      deliveryCharge: null,
-      vinE: null,
-      lifeDisability: null,
-      rustProofing: null,
-      userOther: null,
-      paintPrem: null,
-      licensing: null,
-      stockNum: null,
-      options: null,
-      accessories: null,
-      labour: null,
-      year: null,
-      brand: 'Harley-Davidson',
-      model: 'Low Rider S - Color - FXLRS',
-      model1: null,
-      color: null,
-      modelCode: null,
-      msrp: null,
-      userEmail: 'skylerzanth@outlook.com',
-      tradeValue: '0',
-      tradeDesc: null,
-      tradeColor: null,
-      tradeYear: null,
-      tradeMake: null,
-      tradeVin: null,
-      tradeTrim: null,
-      tradeMileage: null,
-      trim: null,
-      vin: null,
-      leadNote: null,
-
-
-      referral: null,
-      visited: null,
-      bookedApt: null,
-      aptShowed: null,
-      aptNoShowed: null,
-      testDrive: null,
-      metService: null,
-      metManager: null,
-      metParts: null,
-      sold: null,
-      depositMade: null,
-      refund: null,
-      turnOver: null,
-      financeApp: null,
-      approved: null,
-      signed: null,
-      pickUpSet: null,
-      demoed: null,
-      delivered: null,
-      lastContact: null,
-      status: null,
-      customerState: null,
-      result: null,
-      timesContacted: null,
-      nextAppointment: null,
-      followUpDay: null,
-      deliveredDate: null,
-      notes: null,
-      visits: null,
-      progress: null,
-      metSalesperson: null,
-      metFinance: null,
-      financeApplication: null,
-      pickUpDate: null,
-      pickUpTime: null,
-      depositTakenDate: null,
-      docsSigned: null,
-      tradeRepairs: null,
-      seenTrade: null,
-      lastNote: null,
-      applicationDone: null,
-      licensingSent: null,
-      liceningDone: null,
-      refunded: null,
-      cancelled: null,
-      lost: null,
-      dLCopy: null,
-      insCopy: null,
-      testDrForm: null,
-      voidChq: null,
-      loanOther: null,
-      signBill: null,
-      ucda: null,
-      tradeInsp: null,
-      customerWS: null,
-      otherDocs: null,
-      urgentFinanceNote: null,
-      funded: null,
-      leadSource: null,
-
-    }
-  })
-
-
-  console.log(chalk.green("First customer seeded!"));
-
-  return json({ user, finance, clientfile, })
+  return null
 }
 
 export async function Board() {
   const completed = [
-    { board: "dev", column: "ideas", item: "trllo board for users" },
-    { board: "dev", column: "ideas", item: "teleprompter" },
-    { board: "dev", column: "ideas", item: "client turnover list? and sales rotation on same tab?" },
-    { board: "dev", column: "done needs testing", item: "when bike becomes available that customer is looking at or something similar set note in finance file and notifition for user" },
-    { board: "dev", column: "sales", item: "Add trello board to user section so they can use it if they want to" },
-    { board: "dev", column: "WIP", item: "mass email/sms - wip" },
-    { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers" },
-    { board: "dev", column: "issue", item: "export in managers section - export csv files of customers, inventory etc" },
-    { board: "dev", column: "WIP", item: "dev control panel needs to send email to new dealers with sign in info" },
 
   ]
   const doneneedstesting = [
     { board: "dev", column: "Done Needs Testing", item: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
     { board: "dev", column: "done needs testing", item: "webhook for incoming emails, save notifiation and messeages" },
     { board: "dev", column: "done needs testing", item: "mass sms - wip" },
-    { board: "dev", column: "done needs testing", item: "need to test all functions due to database changes" },
-    { board: "dev", column: "issue", item: "email" },
-    { board: "dev", column: "issue", item: "sms" },
+    { board: "dev", column: "done needs testing", item: "email" },
+    { board: "dev", column: "done needs testing", item: "sms" },
+    { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
+
   ]
   const WIP = [
-    { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
     { board: "dev", column: "WIP", item: "manager Dashboard" },
-    { board: "dev", column: "WIP", item: "sales manager dash" },
+    { board: "dev", column: "WIP", item: "admin dash" },
+    { board: "dev", column: "done needs testing", item: "need to test all functions due to database changes" },
+
+  ]
+  const completedIssues = [
+
+
   ]
   const issue = [
+    { board: "dev", column: "issue", item: "search need to finish the drop down to specefiy which file u want to go to " },
+    { board: "dev", column: "issue", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
+    { board: "dev", column: "issue", item: "dashboard - fix dob calendar" },
+
+    { board: "dev", column: "issue", item: "user docs instead of having a doc section maybe have dialog open up from the menu and they can read the docs per page instead of learning and cramming evrything at once they can learn when they need to and use the inforation right away and have it question what the user wants to learn and give it the right info on the spot and have link to video on utube open in new window" },
+    { board: "dev", column: "issue", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
+
+    { board: "dev", column: "issue", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
+
+
   ]
   const ideas = [
-    { board: "dev", column: "ideas", item: "saveform to local storage, never loose data for a internet hiccup or outage" },
+    { board: "dev", column: "ideas", item: "save form to local storage, never loose data for a internet hiccup or outage" },
+    { board: "dev", column: "ideas", item: "transcribe videos and enable a fuzzy search on them so if people dont know what they are looking for tghey can even give a short description to try to find it" },
     { board: "dev", column: "ideas", item: "employee to employee messaging using the emitter and alert dialog so its an important message that they have to read rght away, like next client here etc" },
   ]
   const sales = [
@@ -602,8 +978,6 @@ export async function DeptSalesAchieved() {
   });
   console.log(chalk.green('Completed!'));
 }
-
-
 export async function FirstMsgNotification() {
   console.log(chalk.yellow("Seeding notifications ..."));
 

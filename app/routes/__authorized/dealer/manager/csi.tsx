@@ -79,7 +79,7 @@ export async function action({ request }: ActionFunction) {
 
 export default function Products() {
   return (
-    <div className="h-full">
+    <div className="h-full mt-10">
       <NewBoard />
       <Boards />
     </div>

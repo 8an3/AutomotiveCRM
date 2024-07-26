@@ -540,7 +540,7 @@ export default function FinanceTab(merged) {
               </div>
             ))}
           <p className="mt-2  basis-2/4   text-sm font-thin">
-            Vehichle Options
+            Vehicle Options
           </p>
           <Separator />
 

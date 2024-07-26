@@ -10,8 +10,17 @@ export async function loader({ request, params }: LoaderFunction) {
     where: { id: clientId }
   })
   const finance = await prisma.finance.findMany({
-    where: { email: client.email }
+    where: { email: client?.email }
   })
-  const financeId = finance[0].id
+  console.log('client', client, finance,)
+
+  let financeId = finance[0].id || null
+
+  console.log('client', financeId)
+  if (!financeId) {
+    financeId = finance.id
+    console.log('client', financeId)
+
+  }
   return redirect(`/dealer/customer/${clientId}/${financeId}`)
 };

@@ -3,7 +3,6 @@ import { isRouteErrorResponse, Outlet, useLoaderData, useRouteError } from "@rem
 import {
   buttonVariants,
   Debug,
-
   Icon,
   Logo,
   PageAdminHeader,
@@ -27,13 +26,14 @@ import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { model } from "~/models";
 import { GetUser } from "~/utils/loader.server";
 import base from "~/styles/base.css";
+import tailwind from "~/styles/tailwind.css";
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
   { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
   { rel: "stylesheet", href: base },
+  { rel: "stylesheet", href: tailwind },
 ]
-
 
 export const handle = createSitemap();
 
@@ -66,7 +66,6 @@ export async function action({ request }: ActionArgs) {
 export default function Route() {
   return (
     <>
-      <Sidebar />
       <AdminLayout>
         <Outlet />
       </AdminLayout>
@@ -76,26 +75,21 @@ export default function Route() {
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const { notifications, user } = useLoaderData()
-
   const userIsAllowed = getUserIsAllowed(user, ["ADMIN"]);
-
-
   return (
     <>
-      <div className="hidden space-y-6 p-10 pb-16 md:block bg-background text-foreground">
+      <div className="hidden space-y-6 p-10 pb-16 md:block bg-background text-foreground w-[100%] h-[100%] overflow-clip ">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight">Admin</h2>
           <p className="text-muted-foreground">
             Manage your site.
           </p>
-          <hr className="my-3 text-muted-foreground" />
+          <Separator className="mb-4" />
 
         </div>
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
           <aside className="-mx-4 lg:w-1/6">
             <SearchForm action="/dealer/admin/search" />
-            <hr className="my-3 text-[#09090b]" />
-
             <SidebarNav items={adminSidebarNav} />
           </aside>
           <div className="flex-1 grow pb-10">

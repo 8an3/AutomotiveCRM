@@ -1,7 +1,6 @@
 /* eslint-disable tailwindcss/classnames-order */
 import { Input, Separator, Button, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, } from '~/components'
-import Calendar from 'react-calendar';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Form, useLoaderData, useSubmit, Link, useFetcher, useNavigation } from '@remix-run/react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
 import { toast } from "sonner"
@@ -12,26 +11,30 @@ import MesasageContent from "./messageContent";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { testLeademail, testLeadPhone } from '~/routes/__authorized/dealer/api/activix';
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
-
-type ValuePiece = Date | null;
-
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "~/components/ui/popover"
+import { Calendar } from "~/components/ui/calendarDob"
+import { Calendar as RegCalendar } from "~/components/ui/calendar"
+import { CalendarIcon } from "@radix-ui/react-icons"
+import { cn } from "~/components/ui/utils"
+import { format } from "date-fns"
+import { FaSave } from 'react-icons/fa';
+import { Truck } from 'lucide-react';
 
 export default function ClientCard({ data }) {
-    const [value, onChange] = useState<Value>(data.pickUpDate);
-    const { dashBoardCustURL, user } = useLoaderData()
+    const [value, onChange] = useState(data.pickUpDate);
+    const { user } = useLoaderData()
     let finance
     const navigation = useNavigation();
-
     const isSubmitting = navigation.state === "submitting";
-
-    const [open, setOpen] = React.useState(false);
-    const eventDateRef = React.useRef(new Date());
-    const timerRef = React.useRef(0);
+    const timerRef = useRef(0);
     const submit = useSubmit();
     const fetcher = useFetcher();
 
-    React.useEffect(() => {
+    useEffect(() => {
         return () => clearTimeout(timerRef.current);
     }, []);
     const [formData, setFormData] = useState({
@@ -56,12 +59,6 @@ export default function ClientCard({ data }) {
         seenTrade: data.seenTrade,
         delivered: data.delivered,
     })
-    const handleInputChange = (name, checked) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: checked ? 'on' : 'off',
-        }));
-    };
     const generateHiddenInputs = () => {
         return ClientResultFunction({ formData }).map((item) => (
             <input
@@ -72,7 +69,6 @@ export default function ClientCard({ data }) {
             />
         ));
     };
-
     const generateHiddenInputsForState = () => {
         return ClientStateFunction().map((item) => {
             const isFirstInputOn = ClientResultFunction({ formData }).find((result) => result.name === item.name)?.value === 'on';
@@ -90,27 +86,9 @@ export default function ClientCard({ data }) {
             );
         });
     };
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const response = await fetch('/dashboard/calls', {
-            method: 'POST',
-            body: formData,
-        });
-        if (response.ok) {
-            const id = data.id;
-            const redirectTo = `/customer/${data.id}`;
-            window.open(redirectTo, '_blank');
-        } else {
-            console.error('Failed to submit form');
-        }
-    };
-    const [isOpen, setIsOpen] = useState(false);
-
     if (!data) {
         return null;
     }
-    const lockedValue = Boolean(true)
     function ClientDetailsFunction() {
         let ClientDetails = [
             { name: "firstName", value: data.firstName, placeHolder: "First Name" },
@@ -122,25 +100,54 @@ export default function ClientCard({ data }) {
             { name: "province", value: data.province, placeHolder: "Province" },
             { name: "postal", value: data.postal, placeHolder: "Postal Code" },
             { name: "dl", value: data.dl, placeHolder: "Driver License" },
-            { name: "dob", value: data.dob, placeHolder: "DOB - 1988-06-15" },
         ];
         return ClientDetails;
     }
     const [checkedItems, setCheckedItems] = useState({});
-
-
-    const handleCheckboxChange = (name, isChecked) => {
-        setCheckedItems((prevCheckedItems) => ({
-            ...prevCheckedItems,
-            [name]: isChecked ? (prevCheckedItems[name] ?? new Date().toISOString()) : false,
-        }));
+    const [date, setDate] = useState<Date>()
+    const items = ClientResultFunction({ formData });
+    const [checkedItems2, setCheckedItems2] = useState(
+        items.reduce((acc, item) => {
+            if (item.value === 'on' || new Date(item.value) > new Date('2022-01-01')) {
+                acc[item.name] = item.value;
+            }
+            return acc;
+        }, {})
+    );
+    const handleCheckboxChange2 = (name, isChecked) => {
+        setCheckedItems2((prev) => {
+            const updatedItems = { ...prev };
+            if (isChecked) {
+                updatedItems[name] = new Date().toISOString();
+            } else {
+                delete updatedItems[name];
+            }
+            return updatedItems;
+        });
     };
-
+    const formatDate2 = (dateString) => {
+        const options = {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true,
+        };
+        return new Date(dateString).toLocaleString('en-US', options);
+    };
+    const [editProgress, setEditProgress] = useState(false)
+    const isDate = (date) => !isNaN(date) && date instanceof Date;
+    function capitalizeFirstLetter(string) {
+        return string[0].toUpperCase() + string.slice(1);
+    }
     return (
         <>
             <Sheet>
                 <SheetTrigger asChild>
-                    <p>{data.firstName} </p>
+                    <p>{capitalizeFirstLetter(data.firstName)} </p>
                 </SheetTrigger>
                 <SheetContent side='left' className='bg-background text-foreground w-full md:w-[50%] overflow-y-auto border  border-border ' >
                     <Form method="post" >
@@ -155,7 +162,7 @@ export default function ClientCard({ data }) {
                                 Make changes to the profile here. Click save when you're done.
                             </SheetDescription>
                         </SheetHeader>
-                        <div className="grid grid-cols-1  mt-3 w-[90%] ">
+                        <div className="grid grid-cols-1  mt-3 w-[90%] mb-3 ">
                             {/* Content for the first column */}
                             {ClientDetailsFunction({ data, finance })
                                 .map((fee, index) =>
@@ -171,6 +178,40 @@ export default function ClientCard({ data }) {
                                         </div>
                                     </div>
                                 ))}
+
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        className={cn(
+                                            "w-[100%] pl-3 text-left font-normal mt-3 ",
+                                            !date && "text-muted-foreground"
+                                        )}
+                                    >
+                                        {date ? (
+                                            format(date, "PPP")
+                                        ) : (
+                                            <span>DOB</span>
+                                        )}
+                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        className='w-auto'
+                                        mode="single"
+                                        fromYear={1900}
+                                        selected={date}
+                                        onSelect={setDate}
+                                        disabled={(date) =>
+                                            date > new Date() || date < new Date("1900-01-01")
+                                        }
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <input type='hidden' value={String(date)} name='dob' />
+
                             <div className="relative mt-5">
                                 <Select name='timeToContact' defaultValue={data.timeToContact}  >
                                     <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
@@ -186,7 +227,7 @@ export default function ClientCard({ data }) {
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Time To Be Contacted</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
                             </div>
                             <div className="relative mt-5">
 
@@ -204,79 +245,77 @@ export default function ClientCard({ data }) {
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Prefered Type To Be Contacted</label>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Type To Be Contacted</label>
                             </div>
 
-
-
-                            <Accordion type="single" collapsible>
-                                <AccordionItem value="1" className='mt-5'>
-                                    <AccordionTrigger className=' cursor-pointer'>
-                                        Result
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        {ClientResultFunction({ formData, finance, dashBoardCustURL })
-                                            .map((item) => {
-                                                const isChecked =
-                                                    item.value === 'on' ||
-                                                    new Date(item.value) > new Date('2022-01-01');
-                                                return (
-                                                    <div key={item.name} className='flex justify-between items-center ml-3 mt-3'>
-                                                        <label htmlFor={item.name}>{item.label}</label>
-                                                        <IndeterminateCheckbox
-                                                            name={item.name}
-                                                            indeterminate={checkedItems[item.name] === undefined && isChecked}
-                                                            checked={checkedItems[item.name] ?? isChecked}
-                                                            onChange={(e) => handleCheckboxChange(item.name, e.target.checked)}
-                                                            className="border-[#c72323]"
-                                                        />
-                                                    </div>
-                                                )
-                                            })}
-
-                                    </AccordionContent>
-                                </AccordionItem>
-                            </Accordion>
-                            {formData.depositMade === "on" && (
+                            {data.depositMade && data.depositMade.length > 4 && (
                                 <>
                                     {formData.delivered === 'on' && (<p className="mt-4">Delivered On</p>)}
                                     {formData.delivered === 'off' && (<p className="mt-4">Prefered Pick Up Date</p>)}
 
                                     <Separator className='w-[90%] mb-3' />
-                                    <div>
-                                        <Calendar onChange={onChange} name="pickUpDate" value={value} calendarType="gregory" />
-                                    </div>
-                                    <input type="hidden" value={value} name="pickUpDate" />
 
-                                    <select defaultValue={data.pickUpTime}
-                                        name='pickUpTime'
-                                        placeholder='Time of day'
-                                        className="mx-auto rounded border-0 ml-2 mr-2 bg-background border-border  px-3 py-3 text-sm text-gray-600 placeholder-blue-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring focus-visible:ring-primary">
-                                        <option>Time of day</option>
-                                        <option value="9:00">9:00</option>
-                                        <option value="9:30">9:30</option>
-                                        <option value="10:00">10:00</option>
-                                        <option value="10:30">10:30</option>
-                                        <option value="11:00">11:00</option>
-                                        <option value="11:30">11:30</option>
-                                        <option value="12:00">12:00</option>
-                                        <option value="12:30">12:30</option>
-                                        <option value="1:00">1:00</option>
-                                        <option value="1:30">1:30</option>
-                                        <option value="2:00">2:00</option>
-                                        <option value="2:30">2:30</option>
-                                        <option value="3:00">3:00</option>
-                                        <option value="3:30">3:30</option>
-                                        <option value="4:00">4:00</option>
-                                        <option value="4:30">4:30</option>
-                                        <option value="5:00">5:00</option>
-                                        <option value="5:30">5:30</option>
-                                        <option value="6:00">6:00</option>
-                                    </select>
                                     {generateHiddenInputs()}
                                     {generateHiddenInputsForState()}
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                variant={"outline"}
+                                                className={cn(
+                                                    "w-[100%] pl-3 text-left font-normal mt-3 ",
+                                                    !date && "text-muted-foreground"
+                                                )}
+                                            >
+                                                {date ? (
+                                                    format(date, "PPP")
+                                                ) : (
+                                                    <span>Requested P/U Date</span>
+                                                )}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <RegCalendar
+                                                className='w-[280px] mx-auto'
+                                                mode="single"
+                                                selected={value}
+                                                onSelect={onChange}
+                                                initialFocus
+                                            />
 
+                                            <Select>
+                                                <SelectTrigger className="w-[80%] mx-auto mb-4 " name='pickUpTime' defaultValue={data.pickUpTime}>
+                                                    <SelectValue placeholder="Select a time" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Times</SelectLabel>
+                                                        <SelectItem value="9:00">9:00</SelectItem>
+                                                        <SelectItem value="9:30">9:30</SelectItem>
+                                                        <SelectItem value="10:00">10:00</SelectItem>
+                                                        <SelectItem value="10:30">10:30</SelectItem>
+                                                        <SelectItem value="11:00">11:00</SelectItem>
+                                                        <SelectItem value="11:30">11:30</SelectItem>
+                                                        <SelectItem value="12:00">12:00</SelectItem>
+                                                        <SelectItem value="12:30">12:30</SelectItem>
+                                                        <SelectItem value="1:00">1:00</SelectItem>
+                                                        <SelectItem value="1:30">1:30</SelectItem>
+                                                        <SelectItem value="2:00">2:00</SelectItem>
+                                                        <SelectItem value="2:30">2:30</SelectItem>
+                                                        <SelectItem value="3:00">3:00</SelectItem>
+                                                        <SelectItem value="3:30">3:30</SelectItem>
+                                                        <SelectItem value="4:00">4:00</SelectItem>
+                                                        <SelectItem value="4:30">4:30</SelectItem>
+                                                        <SelectItem value="5:00">5:00</SelectItem>
+                                                        <SelectItem value="5:30">5:30</SelectItem>
+                                                        <SelectItem value="6:00">6:00</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                            <input type="hidden" value={value} name="pickUpDate" />
 
+                                        </PopoverContent>
+                                    </Popover>
                                 </>
                             )}
                             {/* Button Group */}
@@ -303,7 +342,87 @@ export default function ClientCard({ data }) {
                             Update
                         </ButtonLoading>
                     </Form>
+                    <Accordion type="single" collapsible>
+                        <AccordionItem value="1" className='mt-3'>
+                            <AccordionTrigger className=' cursor-pointer'>
+                                Result
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <div className="">
+                                    {editProgress === true && (
+                                        <Form method="post">
+                                            {items.map((item) => {
+                                                const isChecked =
+                                                    checkedItems2[item.name] !== undefined && checkedItems2[item.name] !== '';
+                                                return (
+                                                    <div key={item.name} className="flex justify-between items-center mt-3 mr-1">
+                                                        <label htmlFor={item.name}>{item.label}</label>
+                                                        <IndeterminateCheckbox
+                                                            name={item.name}
+                                                            indeterminate={checkedItems2[item.name] === undefined && isChecked}
+                                                            checked={isChecked}
+                                                            onChange={(e) => handleCheckboxChange2(item.name, e.target.checked)}
+                                                            className="border-[#c72323]"
+                                                        />
+                                                        <input type="hidden" name={item.name} value={checkedItems2[item.name] ?? ''} />
+                                                    </div>
+                                                );
+                                            })}
+                                            <input type="hidden" defaultValue={data.id} name="financeId" />
 
+                                            <ButtonLoading
+                                                size="sm"
+                                                value="updateClientInfoFinance"
+                                                className="w-auto cursor-pointer ml-auto mt-5 mb-5 "
+                                                name="intent"
+                                                type="submit"
+                                                isSubmitting={isSubmitting}
+                                                onClick={() => toast.success(`${data.firstName}'s customer file is updated...`)}
+                                                loadingText={`${data.firstName}'s customer file is updated...`}
+                                            >
+                                                Save
+                                                <FaSave className="h-4 w-4 ml-2" />
+                                            </ButtonLoading>
+                                        </Form>
+                                    )
+                                    }
+                                    {editProgress === false && (
+                                        items
+                                            .filter((item) => {
+                                                const isChecked =
+                                                    item.value === 'on' ||
+                                                    (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
+                                                return checkedItems[item.name] ?? isChecked;
+                                            })
+                                            .map((item) => {
+                                                const isChecked =
+                                                    item.value === 'on' ||
+                                                    (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
+                                                return (
+                                                    <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
+                                                        <label className="text-muted-foreground" htmlFor={item.name}>{item.label}</label>
+                                                        <span>{formatDate2(item.value)}</span>
+
+                                                    </div>
+                                                );
+                                            })
+                                    )}
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="h-8 gap-1 mr-3 mt-3"
+                                        onClick={() => {
+                                            setEditProgress((prevEditProgress) => !prevEditProgress)
+                                        }}>
+                                        <Truck className="h-3.5 w-3.5" />
+                                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                                            Edit Progress
+                                        </span>
+                                    </Button>
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                     <div className='flex justify-between mt-3'>
                         <Form method='post' >
                             <input type='hidden' name='unit' value={`${data.year} ${data.brand} ${data.model}`} />

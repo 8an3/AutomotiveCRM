@@ -1,10 +1,12 @@
 import { json, redirect, type LoaderFunction, type ActionFunction } from '@remix-run/node';
-import { Outlet, useFetcher, useLoaderData, useLocation, Link, useSubmit } from '@remix-run/react';
+import { Outlet, useFetcher, useLoaderData, useLocation, Link, useSubmit, Form } from '@remix-run/react';
 import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 import { prisma } from '~/libs';
 //import Sidebar, { managerSidebarNav, adminSidebarNav, devSidebarNav, } from '~/components/shared/sidebar'
+import { Theme, useTheme } from "remix-themes";
+
 import UserSideBar from '~/components/shared/userSideBar';
 import Interruptions from '~/components/shared/interruptions';
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
@@ -38,60 +40,24 @@ import {
 } from "~/components/ui/tooltip"
 import { getUserIsAllowed } from "~/helpers";
 
+import { ButtonIcon } from "~/components";
+import { Moon, Sun } from "~/icons";
+import SearchFunction2 from './dealer/searchTable';
+import useSWR from 'swr';
+
+
 export async function loader({ request, params }: LoaderFunction) {
-  let q = new URL(request.url).searchParams.get('q')
-  // if (!q) return []
-  if (q) {
-    q = q.toLowerCase();
-    let result;
-    console.log(q, 'q')
-    const getit = await prisma.clientfile.findMany({})
-    console.log(getit, 'getit')
-    // const searchResults = await getit//searchCases(q)
-    result = getit.filter(result =>
-      result.email?.includes(q) ||
-      result.phone?.includes(q) ||
-      result.firstName?.includes(q) ||
-      result.lastName?.includes(q)
-    )
-    console.log(getit, 'getit', result, 'results',)
-    return result
-  }
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   let user = await GetUser(email)
-  const interruptionsData = await prisma.interruptions.findMany({ where: { userEmail: email, read: 'false' } });
-  const getLeads = await prisma.notificationsUser.findMany({
-    where: {
-      reads: {
-        some: {
-          userEmail: email,
-        },
-      },
-      type: 'New Lead',
-    },
-    include: {
-      reads: {
-        where: {
-          userEmail: email,
-        },
-        select: {
-          read: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: 'desc', // Optional: Order by creation date
-    },
+  const interruptionsData = await prisma.interruptions.findMany({ where: { userEmail: email } });
+  const notifications = await prisma.notificationsUser.findMany({
+    where: { userEmail: email, },
+    include: { reads: true, },
+    orderBy: { createdAt: 'desc', },
   });
-  const getloadNewLead = () => {
-    return getLeads.map(notification => ({
-      ...notification,
-      read: notification.reads[0]?.read || false, // Extract read status
-    }));
-  }
-  const loadNewLead = getloadNewLead()
-  return json({ user, email, interruptionsData, loadNewLead, });
+  const host = request.headers.get('host');
+  return json({ user, email, interruptionsData, notifications, host });
 }
 
 export async function action({ request, params }: ActionFunction) {
@@ -196,52 +162,94 @@ export async function action({ request, params }: ActionFunction) {
     const location = `/dealer/leads/sales/newLeads`
     return redirect(location);
   }
+  if (formData.intent === 'newLead') {
+    await prisma.notificationRead.create({
+      data: {
+        userEmail: formData.userEmail,
+        notificationId: formData.notificationId,
+        read: true
+      }
+    })
+    return redirect(formData.navigate)
+  }
+  if (formData.intent === 'newInterruption') {
+    await prisma.interruptions.update({
+      where: { id: formData.notificationId },
+      data: {
+        read: 'true'
+      }
+    })
+    return redirect(formData.navigate)
+  }
+  if (formData.intent === 'newMsg') {
+    await prisma.notificationRead.create({
+      data: {
+        userEmail: formData.userEmail,
+        notificationId: formData.notificationId,
+        read: true
+      }
+    })
+    return redirect(formData.navigate)
+  }
+
 
 
   return null
 };
 
 export default function SettingsLayout() {
-  const { user, email, interruptionsData, loadNewLead, getEmails } = useLoaderData()
+  const { user, email, interruptionsData, loadNewLead, getEmails, notifications, host } = useLoaderData()
+  /**
+   *
+          {/* activix *
+   *
+           {/* accessories *
+  {userIsACCESSORIES && (
+    <>
+    </>
+  )}
+     {/* PARTS *
+  {userIsPARTS && (
+    <>
+    </>
+  )}
+     {/*  TECHNICIAN *
+  {userIsTECHNICIAN && (
+    <>
+    </>
+  )}
+   {/*  RECIEVING *
+  {userIsRECIEVING && (
+    <>
+    </>
+  )}
+   {/*  NORMAL  *
+  {userIsNORMAL && (
+    <>
+    </>
+  )}
+   {/*  EDITOR *
+  {userIsEDITOR && (
+    <>
+    </>
+  )} */
+  return (
+    <>
+      <SearchFunction />
+      <MainDropwdown user={user} email={email} interruptionsData={interruptionsData} loadNewLead={loadNewLead} getEmails={getEmails} notifications={notifications} host={host} />
+      <Outlet />
+    </>
+  )
+}
+export function MainDropwdown({ user, email, interruptionsData, loadNewLead, getEmails, notifications, host }) {
   const location = useLocation();
   const pathname = location.pathname
   let fetcher = useFetcher()
   const submit = useSubmit()
 
-
-  // ------------------------ search -----------------------//
-  let [show, setShow] = useState(false)
-  let ref = useRef()
-  let search = useFetcher()
-
-  useEffect(() => {
-    if (show) {
-      ref.current.select()
-    }
-  }, [show])
-
-  useEffect(() => {
-    setShow(false)
-  }, [location])
-
-  // bind command + k
-  useEffect(() => {
-    let listener = (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-        event.preventDefault()
-        setShow(true)
-      }
-    }
-    window.addEventListener('keydown', listener)
-    return () => window.removeEventListener('keydown', listener)
-  }, [])
-
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
-  // ------------------------ search -----------------------//
-
-  // ------------------------ navigation ------------------//
   /**  <Sidebar user={user} email={email} /> */
   let quoteUrl = '/dealer/quote/new/'
   const my24Watercraft = [
@@ -357,7 +365,6 @@ export default function SettingsLayout() {
   const userIsFinance = user.positions.some(
     (pos) => pos.position === 'Finance Manager' || pos.position === 'Administrator'
   );
-  console.log(userIsFinance, user, 'user userisfinance');
   const userIsSales = user.positions.some(
     (pos) => pos.position === 'Sales' || pos.position === 'Administrator'
   );
@@ -380,74 +387,269 @@ export default function SettingsLayout() {
   const userIsRECIEVING = getUserIsAllowed(user, ["RECIEVING"]);
   const userIsNORMAL = getUserIsAllowed(user, ["NORMAL"]);
   const userIsEDITOR = getUserIsAllowed(user, ["EDITOR"]);
-  /**
-   *
-          {/* activix *
-   *
-           {/* accessories *
-  {userIsACCESSORIES && (
-    <>
-    </>
-  )}
-     {/* PARTS *
-  {userIsPARTS && (
-    <>
-    </>
-  )}
-     {/*  TECHNICIAN *
-  {userIsTECHNICIAN && (
-    <>
-    </>
-  )}
-   {/*  RECIEVING *
-  {userIsRECIEVING && (
-    <>
-    </>
-  )}
-   {/*  NORMAL  *
-  {userIsNORMAL && (
-    <>
-    </>
-  )}
-   {/*  EDITOR *
-  {userIsEDITOR && (
-    <>
-    </>
-  )} */
-  // ------------------------ navigation ------------------//
 
-  // ------------------------ interuptions ------------------//
-  // bind command + i
+  const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {
     let listener = (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === 'i') {
-        event.preventDefault()
-        const formData = new FormData();
-        formData.append("userEmail", email);
-        formData.append("intent", 'createInterruption');
-        formData.append("pathname", pathname);
-        submit(formData, { method: "post" });
+      if ((event.metaKey || event.ctrlKey) && event.key === 'm') {
+        setMenuOpen(true)
       }
     }
     window.addEventListener('keydown', listener)
     return () => window.removeEventListener('keydown', listener)
   }, [])
-  // ------------------------ interuptions ------------------//
-  // <UserSideBar user={user} email={email} />
-  //<NotificationSystem interruptionsData={interruptionsData} loadNewLead={loadNewLead} getEmails={getEmails} />
+  // ------------- theme -------------- //
+  const [theme, setTheme] = useTheme();
+  const nameTo = theme === Theme.DARK ? Theme.LIGHT : Theme.DARK;
+  const handleChangeTheme = () => {
+    setTheme(nameTo);
+  };
+  // ----------- notifications ------ //
+  // notifications
+  const [updates, setUpdates] = useState([])
+  const [lead, setLead] = useState([]);
+  const [messages, setMessages] = useState([])
+  const [interruptions, setInterruptions] = useState([])
+
+
+  useEffect(() => {
+    if (notifications && Array.isArray(notifications)) {
+      const newLeads = notifications.filter(notification => notification.userEmail === user.email && notification.type === 'New Lead');
+      setLead(newLeads);
+    }
+  }, [notifications, user.email]);
+
+  const leadLength = lead.length;
+
+  const [swrURL, setSwrURL] = useState(`http://localhost:3000/dealer/notifications/notifications/${user.email}`)
+  if (host !== 'localhost:3000') {
+    setSwrURL(`https://www.dealersalesassistant.ca/dealer/notifications/notifications/${user.email}`)
+  }
+
+  const dataFetcher = (url) => fetch(url).then(res => res.json());
+  const { data, error, isLoading } = useSWR(swrURL, dataFetcher, { refreshInterval: 180000 });
+  //if (error) return <div>Loading...</div>;
+  ///  if (isLoading) return <div>Error loading data</div>;
+  const notificationsList = data//.notifications
+
+  let newMessages;
+  let newLeads;
+  let newUpdates;
+
+  useEffect(() => {
+    if (interruptionsData) {
+      setInterruptions(interruptionsData)
+    }
+  }, [])
+
+  useEffect(() => {
+    newUpdates = notifications && notifications.filter(notification => notification.userEmail === user.email && notification.type === 'updates');
+    if (newUpdates) {
+      setUpdates(newUpdates)
+    }
+  }, [notifications])
+
+  useEffect(() => {
+    if (notificationsList) {
+      console.log(notificationsList, 'data')
+      newUpdates = notificationsList.filter(notification => notification.userEmail === user.email && notification.type === 'updates');
+      setUpdates(newUpdates)
+      newLeads = notificationsList.filter(notification => notification.userEmail === user.email && notification.type === 'New Lead');
+      setLead(newLeads)
+      newMessages = notificationsList.filter(notification => notification.userEmail === user.email && notification.type === 'messages');
+      setMessages(newMessages)
+    }
+
+  }, [notificationsList])
+
+  const msgsength = Object.keys(messages).length || 0;
+  const intLength = Object.keys(interruptions).length || 0;
+  const updatesLength = Object.keys(updates).length || 0;
+
+  const shouldShowNotification = (
+    messages.some(item => !item.reads || Object.keys(item.reads).length === 0) ||
+    (lead.length > 0 && lead.every(l => l.reads && Object.keys(l.reads).length === 0)) ||
+    updates.some(item => !item.reads || Object.keys(item.reads).length === 0) ||
+    interruptions.some(item => item.read === 'false')
+  );
+
+
   return (
     <>
-      <SearchFunction />
-      <div className=''>
-        <DropdownMenu>
+      <DropdownMenu >
+        <div className='relative' >
           <DropdownMenuTrigger >
-            <Button variant='ghost' size='icon' className='cursor-pointer text-[#fff] right-[25px] top-[25px]  fixed'>
-              <Menu size={32} color="#fff" strokeWidth={1.5} />
+            {shouldShowNotification && (
+              <span className="animate-ping fixed left-[15px] top-[18px] inline-flex h-[20px] w-[20px] rounded-full bg-sky-400 opacity-75"></span>
+            )}
+            <Button
+              variant='ghost' size='icon' className=' left-[12px] top-[15px] z-50 fixed  inline-flex cursor-pointer text-foreground items-center justify-center'>
+              <Menu size={32} strokeWidth={1.5} />
             </Button>
+
           </DropdownMenuTrigger>
-          <DropdownMenuContent className=" absolute right-0 top-full mt-2  w-56  bg-background border border-border max-h-[500px] overflow-y-auto">
+          <DropdownMenuContent className="   w-56  bg-background border border-border max-h-[500px] overflow-y-auto">
             {/* Interruptions */}
             <Interruptions user={user} email={email} />
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className='text-primary'>Notifications</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              {/* messages */}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='cursor-pointer'>
+                  <div className='mr-2'>
+                    {messages && messages.some(item => !item.reads || Object.keys(item.reads).length === 0) && (
+                      <span className="relative flex h-[20px] w-[20px] items-center justify-center">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
+                          <p className='text-white hover:text-primary text-xs'>{msgsength}</p>
+                        </span>
+                      </span>
+                    )}
+                  </div>
+                  Messages
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background w-[300px] border border-border">
+                    {messages ? messages.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.reads.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                        onSelect={() => {
+                          const formData = new FormData();
+                          formData.append("notificationId", item.id);
+                          formData.append("userEmail", user.email);
+                          formData.append("userName", user.name);
+                          formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
+                          formData.append("intent", 'newMsg');
+                          submit(formData, { method: "post" });
+                        }}
+                      >
+                        {item.title}
+                      </DropdownMenuItem>
+                    )) : <DropdownMenuItem>No messages available</DropdownMenuItem>}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              {/* leads */}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='cursor-pointer'>
+                  <div className='mr-2'>
+                    {lead.length > 0 && lead.every(l => l.reads && Object.keys(l.reads).length === 0) && (
+                      <span className="relative flex h-[20px] w-[20px] items-center justify-center">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
+                          <p className='text-white hover:text-primary text-xs'>{leadLength}</p>
+                        </span>
+                      </span>
+                    )}
+                  </div>
+                  Leads
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background border border-border w-[300px]">
+                    <Form method='post'>
+                      {lead ? lead.map((item, index) => (
+                        <DropdownMenuItem
+                          key={index}
+                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.reads.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                          onSelect={() => {
+                            const formData = new FormData();
+                            formData.append("notificationId", item.id);
+                            formData.append("userEmail", user.email);
+                            formData.append("userName", user.name);
+                            formData.append("navigate", `/dealer/leads/sales/newLeads`);
+                            formData.append("intent", 'newLead');
+                            submit(formData, { method: "post" });
+                          }}
+                        >
+                          <div>
+                            <p> {item.title} - {item.content}</p>
+                            <p className='text-muted-foreground'>billy bobby</p>
+                          </div>
+
+                        </DropdownMenuItem>
+                      )) : <DropdownMenuItem>No new leads available</DropdownMenuItem>}
+                    </Form>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              {/* updates */}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='cursor-pointer'>
+                  <div className='mr-2'>
+                    {updates && updates.some(item => !item.reads || Object.keys(item.reads).length === 0) && (
+                      <span className="relative flex h-[20px] w-[20px] items-center justify-center">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
+                          <p className='text-white hover:text-primary text-xs'>{updatesLength}</p>
+                        </span>
+                      </span>
+                    )}
+                  </div>
+                  Updates
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background w-[300px] border border-border">
+                    {updates ? updates.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.reads.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                      >
+                        <p className='w-[95%] rounded-[6px] flex justify-between items-center'>
+                          {item.title}
+                        </p>
+                      </DropdownMenuItem>
+                    )) : <DropdownMenuItem>No updates available</DropdownMenuItem>}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              {/* Inter */}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='cursor-pointer'>
+                  <div className='mr-2'>
+                    {interruptions && interruptions.some(item => item.read === 'false') && (
+                      <span className="relative flex h-[20px] w-[20px] items-center justify-center">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
+                          <p className='text-white hover:text-primary text-xs'>{intLength}</p>
+                        </span>
+                      </span>
+                    )}
+
+
+                  </div>
+                  Interruptions
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background w-[300px] border border-border">
+                    {interruptions ? (interruptions.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.read === 'true' ? 'bg-background ' : 'bg-[#181818]'}`}
+                        onSelect={() => {
+                          const formData = new FormData();
+                          formData.append("notificationId", item.id);
+                          formData.append("userEmail", user.email);
+                          formData.append("userName", user.name);
+                          formData.append("navigate", item.location);
+                          formData.append("intent", 'newInterruption');
+                          submit(formData, { method: "post" });
+                        }}
+                      >
+                        <div>
+                          <p> {item.title} </p>
+                          <p className='text-muted-foreground'>{item.date}</p>
+                          <p className='text-muted-foreground'>{item.location}</p>
+                        </div>
+
+                      </DropdownMenuItem>
+                    ))) : <DropdownMenuItem>No interruptions available</DropdownMenuItem>}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             {/* Quotes */}
             <DropdownMenuLabel className='text-primary'>Quotes</DropdownMenuLabel>
@@ -457,11 +659,11 @@ export default function SettingsLayout() {
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className='cursor-pointer'>MY24</DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="bg-background">
+                  <DropdownMenuSubContent className="bg-background    border border-border">
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger className='cursor-pointer'>Watercraft</DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
-                        <DropdownMenuSubContent className="bg-background w-[200px]">
+                        <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
                           {my24Watercraft.map((item, index) => (
                             <DropdownMenuItem
                               key={index}
@@ -486,7 +688,7 @@ export default function SettingsLayout() {
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger className='cursor-pointer'>Motorcycle</DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
-                        <DropdownMenuSubContent className="bg-background">
+                        <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
                           {my24Moto.map((item, index) => (
                             <DropdownMenuItem
                               key={index}
@@ -511,7 +713,7 @@ export default function SettingsLayout() {
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger className='cursor-pointer'>Off-Road</DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
-                        <DropdownMenuSubContent className="bg-background">
+                        <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
                           {my24OffRoad.map((item, index) => (
                             <DropdownMenuItem
                               key={index}
@@ -536,7 +738,7 @@ export default function SettingsLayout() {
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger disabled className='cursor-pointer'>On-Road</DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
-                        <DropdownMenuSubContent className="bg-background">
+                        <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
                           <DropdownMenuItem>Email</DropdownMenuItem>
                         </DropdownMenuSubContent>
                       </DropdownMenuPortal>
@@ -825,6 +1027,12 @@ export default function SettingsLayout() {
             <DropdownMenuLabel className='text-primary'>User</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+              <DropdownMenuItem onSelect={handleChangeTheme} className='flex items-center'>
+                Toggle Theme
+                <DropdownMenuShortcut>
+                  {theme === Theme.DARK ? <Sun /> : <Moon />}
+                </DropdownMenuShortcut>
+              </DropdownMenuItem>
               {userNavSidebarNav.map((item, index) => (
                 <DropdownMenuItem
                   key={index}
@@ -845,13 +1053,11 @@ export default function SettingsLayout() {
               ))}
             </DropdownMenuGroup>
           </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <Outlet />
+        </div>
+      </DropdownMenu>
     </>
   )
 }
-
 /**     */
 /**   <TooltipProvider>
               <Tooltip>

@@ -8,7 +8,13 @@ import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { type ActionFunction, json, type LoaderFunction, redirect } from "@remix-run/node"
 import { getUser } from '~/components/microsoft/GraphService';
 import { config, msalConfig } from '~/components/microsoft/Config';
-
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
 
 
 
@@ -83,34 +89,84 @@ export default function Welcome() {
     <>
       <div className="p-5 mb-4 bg-light rounded-3">
         <UnauthenticatedTemplate>
-          <div className="p-5 mb-4 bg-light rounded-3">
-            <div className="grid  w-full grid-cols-1">
-              <div className="w-[50%]">
-                <div className="flex items-center justify-center text-center">
-                  <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-                    <h1 className="text-foreground">Welcome to D.S.A.</h1>
-                    <p className="mt-5 text-foreground">
-                      Log-in
-                    </p>
-                    <Button onClick={OnClick} variant="outline" className="mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-foreground bg-[#c72323]"  >
-                      <p className="mr-1">Login with your </p>
-                      <TfiMicrosoft className="text-[28px]" />{" "}
-                      <p className="ml-2">account</p>
-                    </Button>
-                    <hr className="solid mb-5 mt-5 text-foreground" />
-                    <Link to="/privacy">
-                      <p className="text-foreground">To review our Privacy Policy</p>
-                    </Link>
-                  </div>
+          <Card className="max-w-[350px] w-[350px]  fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+            <CardHeader>
+              <CardTitle className="text-2xl">Login</CardTitle>
+              <CardDescription>
+                Login with your microsoft account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                <Button
+                  onClick={OnClick}
+                  variant="outline"
+                  className=" w-full text-foreground bg-primary"  >
+                  <p className="mr-1">Login with </p>
+                  <TfiMicrosoft className="text-[28px]" />{" "}
+                </Button>
+                <hr className="solid text-muted-foreground" />
+                <Link to="/privacy">
+                  <Button variant='outline' type="submit" className="w-full bg-background">
+                    <p className="text-muted-foreground">To review our Privacy Policy</p>
+                  </Button>
+                </Link>
+                <div className="mt-4 text-center text-sm">
+                  No account?{" "}
+                  <Link to="/subscribe" className="underline">
+                    Sign up
+                  </Link>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+
         </UnauthenticatedTemplate>
       </div>
       <div className="p-5 mb-4 bg-light rounded-3">
         <AuthenticatedTemplate>
-          <div className="grid  w-full grid-cols-1">
+          <Card className="max-w-[350px] w-[350px] fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+            <CardHeader>
+              <CardTitle className="text-2xl"> Welcome back {activeAccount?.name}!
+              </CardTitle>
+              <CardDescription>
+                Have a nice day!
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                <Button
+                  onClick={() => {
+                    OnClickContinue()
+                  }}
+                  variant="outline"
+                  className=" w-full text-foreground bg-primary"  >
+                  Continue...
+                </Button>
+                <hr className="solid text-foreground" />
+                <Link to="/privacy">
+                  <Button onClick={OnClickLogout} className="w-full  text-foreground ">
+                    <p className="mr-1">Logout of your </p>
+                    <TfiMicrosoft className="text-[28px]" />{" "}
+                    <p className="ml-2">account</p>
+                  </Button>
+                </Link>
+                <Link to="/privacy">
+                  <Button variant='outline' type="submit" className="w-full">
+                    <p className=" text-foreground ">To review our Privacy Policy</p>
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+
+        </AuthenticatedTemplate>
+      </div>
+    </>
+  );
+}
+/** <div className="grid  w-full grid-cols-1">
             <div className="w-[50%]">
               <div className="flex items-center justify-center text-center">
 
@@ -144,40 +200,18 @@ export default function Welcome() {
               </div>
             </div>
           </div>
+ */
+
+/**  <>
+      <div className="p-5 mb-4 bg-light rounded-3">
+        <UnauthenticatedTemplate>
+
+        </UnauthenticatedTemplate>
+      </div>
+      <div className="p-5 mb-4 bg-light rounded-3">
+        <AuthenticatedTemplate>
 
 
         </AuthenticatedTemplate>
       </div>
-    </>
-  );
-}
-
-/**  <div className="p-5 mb-4 bg-light rounded-3">
-        <AuthenticatedTemplate>
-          <div className="grid  w-full grid-cols-1">
-            <div className="w-[50%]">
-              <div className="flex items-center justify-center text-center">
-
-                <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-                  <h1 className="text-foreground">Have a nice day!</h1>
-                  <p className="mt-5 text-foreground">
-                    Are you sure you want to log out?
-                  </p>
-                  <Button onClick={app.signOut!} variant="outline" className="mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-foreground "  >
-                    <p className="mr-1">Logout of your </p>
-                    <TfiMicrosoft className="text-[28px]" />{" "}
-                    <p className="ml-2">account</p>
-                  </Button>
-                  <hr className="solid mb-5 mt-5 text-foreground" />
-                  <Link to="/privacy">
-                    <p className="text-foreground">To review our Privacy Policy</p>
-                  </Link>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-
-        </AuthenticatedTemplate>
-      </div> */
+    </> */

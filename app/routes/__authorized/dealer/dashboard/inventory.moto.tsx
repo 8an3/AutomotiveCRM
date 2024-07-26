@@ -10,9 +10,8 @@ import { commitSession } from '~/sessions/session.server';
 export async function loader({ request, params }: LoaderFunction) {
     const inventoryMotorcycle = await prisma.inventoryMotorcycle.findMany()
 
-    //console.log(inventoryMotorcycle, 'data23')
     // console.log(dataSet, 'dataSet', userEmail)
-    return json(inventoryMotorcycle)
+    return inventoryMotorcycle
 }
 /**
  * , {

@@ -53,7 +53,7 @@ export async function loader({ request, params }: LoaderFunction) {
 
   });
   // -------------------------------------- get dealer employees
-  const dealerInfo = await prisma.dealerInfo.findMany()
+  const dealerInfo = await prisma.dealer.findMany()
   const users = await prisma.user.findMany({
     where: { dealer: dealerInfo.dealerName },
   })

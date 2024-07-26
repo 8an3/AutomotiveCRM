@@ -9,7 +9,7 @@ export async function loader({ request, params }: LoaderFunction) {
     where: {
       positions: {
         some: {
-          position: 'Administrator'//'Finance Manager'
+          position: 'Finance Manager'
         }
       }
     },

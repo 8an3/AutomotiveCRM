@@ -37,7 +37,7 @@ export function Column({ name, columnId, items }: ColumnProps) {
   return (
     <div
       className={
-        "flex-shrink-0 flex flex-col overflow-hidden max-h-full w-[250px] border border-white rounded-[6px] shadow-sm shadow-muted-background bg-background   " +
+        "flex-shrink-0 flex flex-col overflow-hidden max-h-full w-[250px] border border-border rounded-[6px] shadow-sm shadow-muted-background bg-background   " +
         (acceptDrop ? `outline outline-2 outline-brand-red` : ``)
       }
       onDragOver={(event) => {
@@ -87,7 +87,7 @@ export function Column({ name, columnId, items }: ColumnProps) {
           inputLabel="Edit column name"
           buttonLabel={`Edit column "${name}" name`}
           inputClassName="border border-border w-full rounded-lg py-1 px-2  text-foreground bg-background"
-          buttonClassName="block rounded-lg text-left w-auto py-1 px-2 font-medium text-slate-600"
+          buttonClassName="block rounded-lg text-left w-auto py-1 px-2 font-medium text-foreground"
         >
           <input type="hidden" name="intent" value={INTENTS.updateColumn} />
           <input type="hidden" name="columnId" value={columnId} />
@@ -139,9 +139,9 @@ export function Column({ name, columnId, items }: ColumnProps) {
               });
               scrollList();
             }}
-            className="flex items-start gap-2 rounded-lg text-left w-full p-2 font-medium text-foreground hover:bg-slate-200 focus:bg-slate-200"
+            className="flex justify-start gap-2 rounded-lg text-left w-full p-2 font-medium text-foreground hover:text-primary focus:bg-slate-200"
           >
-            <Plus color="#fcfcfc" /> Add a card
+            <Plus color="#fcfcfc" /> <p>Add a card</p>
           </Button>
         </div>
       )}

@@ -1,4 +1,5 @@
-import { Filter, DebouncedInput, invariant, type Payment, type TableMeta, defaultColumn, fuzzyFilter, fuzzySort } from '~/routes/__authorized/dealer/leads/sales.$tab'
+import {  type Payment,  } from '~/routes/__authorized/dealer/leads/sales.$tab'
+import IndeterminateCheckbox, {fuzzyFilter, fuzzySort,login , getToken, invariant, Loading, checkForMobileDevice, type TableMeta,Filter,DebouncedInput, defaultColumn  } from '~/components/actions/shared'
 import React, { HTMLAttributes, HTMLProps, useState, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Form, Link, useActionData, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'

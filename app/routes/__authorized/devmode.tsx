@@ -1,36 +1,55 @@
-import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react'
 import { json, redirect, type LoaderFunction } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
 import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
-import Sidebar, { devSidebarNav } from "~/components/shared/sidebar";
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
-import UserSideBar from '~/components/shared/userSideBar';
-import { useEffect, useState, useLocation, } from 'react';
-import {
-  RemixNavLink, Input, Separator, Button, buttonVariants, Tabs, TabsContent, TabsList, TabsTrigger, Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-  SearchForm,
-} from "~/components"
-import { Sheet, SheetClose, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "~/components/ui/userSideBarSheet"
+import { useEffect, useState, } from 'react';
 import { getUserIsAllowed } from "~/helpers";
-import { Code, Banknote, Laptop, X } from 'lucide-react';
 import base from "~/styles/base.css";
+import { prisma } from '~/libs';
+import { MainDropwdown } from './dealer';
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
   { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
   { rel: "stylesheet", href: base },
-
 ]
 
 export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   let user = await GetUser(email)
-  return json({ user, email });
+  const interruptionsData = await prisma.interruptions.findMany({ where: { userEmail: email, read: 'false' } });
+  const getLeads = await prisma.notificationsUser.findMany({
+    where: {
+      reads: {
+        some: {
+          userEmail: email,
+        },
+      },
+      type: 'New Lead',
+    },
+    include: {
+      reads: {
+        where: {
+          userEmail: email,
+        },
+        select: {
+          read: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc', // Optional: Order by creation date
+    },
+  });
+  const getloadNewLead = () => {
+    return getLeads.map(notification => ({
+      ...notification,
+      read: notification.reads[0]?.read || false, // Extract read status
+    }));
+  }
+  const loadNewLead = getloadNewLead()
+  return json({ user, email, loadNewLead, interruptionsData });
 }
 
 interface SettingsLayoutProps {
@@ -38,7 +57,7 @@ interface SettingsLayoutProps {
 }
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
-  const { user, email } = useLoaderData()
+  const { user, email, interruptionsData, loadNewLead, getEmails } = useLoaderData()
   const userIsFinance = getUserIsAllowed(user, ["FINANCE"]);
   const userIsDEV = getUserIsAllowed(user, ["DEV"]);
   const userIsADMIN = getUserIsAllowed(user, ["ADMIN"]);
@@ -52,22 +71,18 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
   const closeDialog = () => {
     setIsOpen(false);
   };
-  return (
-    <>
-
-      <Sidebar user={user} email={email} />
+  /**      <Sidebar user={user} email={email} />
       <NotificationSystem />
       <UserSideBar
         user={user}
         email={email}
         // isOpen={isOpen}
         setIsOpen={setIsOpen}
-      />
-      <div className={`w-[95vw]  flex-1 ${isOpen === true ? 'ml-64' : 'ml-0'}`}>
-
-        <Outlet />
-      </div>
-
+      /> */
+  return (
+    <>
+      <MainDropwdown user={user} email={email} interruptionsData={interruptionsData} loadNewLead={loadNewLead} getEmails={getEmails} />
+      <Outlet />
     </>
   )
 }

@@ -251,9 +251,7 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   ) : null}
                   <div className="relative mt-5">
                     <Input
-                      className={`input border-border bg-background
-
-                   `}
+                      className={`input border-border bg-background `}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       type="text"
                       name="address"
@@ -262,11 +260,8 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   </div>
                   <div className="relative mt-5">
                     <Input
-                      className={`input border-border bg-background
-
-                     `}
+                      className={`input border-border bg-background`}
                       onChange={handleBrand}
-
                       type="text"
                       list="ListOptions1"
                       name="brand"

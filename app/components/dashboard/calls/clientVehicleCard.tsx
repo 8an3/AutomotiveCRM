@@ -160,167 +160,176 @@ export default function ClientVehicleCard({ data, }) {
       <SheetHeader>
         <SheetTitle>
           <SheetContent side='left' className='bg-background text-foreground w-full h-screen md:w-[50%] overflow-y-auto   ' >
-
             <h3 className="text-2xl font-thin text-foreground">CLIENT VEHICLE CARD</h3>
-
             <Form method='post'>
               <div className="grid grid-cols-1 text-foreground">
-                {/* Left column with inputs */}
-                <div>
-                  <div className="mx-3 my-3 w-[90%]">
-                    <h3 className="text-2xl font-thin">PURCHASING</h3>
+                <div className="mx-3w-[99%]">
+                  <Tabs defaultValue="model" className="mx-3 w-auto">
+                    <TabsList>
+                      <TabsTrigger value="model">Model</TabsTrigger>
+                      <TabsTrigger value="price">Price</TabsTrigger>
+                      <TabsTrigger value="Finance">Finance</TabsTrigger>
+                      <TabsTrigger value="Options">Options</TabsTrigger>
+                      <TabsTrigger value="trade">Trade</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="model">
+                      <h3 className="text-2xl font-thin">PURCHASING</h3>
 
-                    <Input type="hidden" defaultValue={data.id} name="financeId" />
-                    <Input type="hidden" defaultValue={id} name="id" />
-                    <Input type="hidden" defaultValue={data.brand} name="brand" />
-                    <Input type="hidden" defaultValue='updateFinance' name="intent" />
-
-                  </div>
-                  <div className="mx-3 my-3 w-[99%]">
-                    <Tabs defaultValue="model" className="my-x mx-3 w-auto">
-                      <TabsList className="flex w-full flex-row  ">
-                        <TabsTrigger value="model">Model</TabsTrigger>
-                        <TabsTrigger value="price">Price</TabsTrigger>
-                        <TabsTrigger value="Finance">Finance</TabsTrigger>
-                        <TabsTrigger value="Options">Options</TabsTrigger>
-                        <TabsTrigger value="Acc">Acc</TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="model">
-                        <div className='grid grid-cols-2 items-center'>
-                          <p>Stock Number</p>
-                          {data.stockNum ? (
-                            <p className='text-right'>{data.stockNum}</p>
-                          ) : (
-                            <p className='text-right'>N/A</p>
-                          )}
-                          <p>Year</p>
-                          <p className='text-right'>{data.year}</p>
-                          <p>Brand</p>
-                          <p className='text-right'>{data.brand}</p>
-                          <p>Model</p>
-                          <p className='text-right'>{data.model}</p>
-                          <p>Trim</p>
-                          <p className='text-right'>{data.trim}</p>
-                          <p>Color</p>
-                          <p className='text-right'>{data.color}</p>
-
-                          <p>VIN</p>
-                          {data.vin ? (
-                            <p className='text-right'>{data.vin}</p>
-                          ) : (
-                            <p className='text-right'>N/A</p>
-                          )}
-
-                          <p>Status</p>
-                          {data.statusBike && data.statusBike ? (
-                            <p className='text-right'>{data.statusBike}</p>
-                          ) : (
-                            <p className='text-right'>N/A</p>
-                          )}
-                          <p>Location</p>
-                          {data.location ? (
-                            <p className='text-right'>{data.location}</p>
-                          ) : (
-                            <p className='text-right'>N/A</p>
-                          )}
-                          <p>Mileage</p>
-                          {data.mileage ? (
-                            <p className='text-right'>{data.mileage}</p>
-                          ) : (
-                            <p className='text-right'>N/A</p>
-                          )}
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="price">
-                        {Dealerfees.map((fee, index) => (
-                          fee.value > 0 && (
-                            <div key={index} className="flex justify-between">
-                              <p>{fee.placeholder}</p>
-                              <p>{fee.value}</p>
-                            </div>
-                          )
-                        ))}
-                        {FinanceOptions.map((fee, index) => (
-                          fee.value > 0 && (
-                            <div key={index} className="flex justify-between">
-                              <p>{fee.placeholder}</p>
-                              <p>{fee.value}</p>
-                            </div>
-                          )
-                        ))}
-                        {data.desiredPayments === "Standard Payment" && (
-                          <>
-                            <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4  text-foreground  text-sm  font-thin">
-                                Total
-                              </p>
-                              <p className="flex basis-2/4  items-end text-foreground   justify-end  text-right text-sm font-thin ">
-                                ${data.total}
-                              </p>
-                            </div>
-                            <div className="mt-2 flex flex-wrap justify-between text-foreground  ">
-                              <p className="mt-2 basis-2/4   text-sm text-foreground  font-thin">
-                                After Tax
-                              </p>
-                              <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
-                                ${data.onTax}
-                              </p>
-                            </div>
-                          </>
+                      <div className='grid grid-cols-2 items-center'>
+                        <p>Stock Number</p>
+                        {data.stockNum ? (
+                          <p className='text-right'>{data.stockNum}</p>
+                        ) : (
+                          <p className='text-right'>N/A</p>
                         )}
-                        {data.desiredPayments === "Payments with Options" && (
-                          <>
-                            <div className="mt-2 flex flex-wrap justify-between text-foreground ">
-                              <p className="mt-2 basis-2/4  text-foreground  text-sm  font-thin">
-                                Total
-                              </p>
-                              <p className="flex basis-2/4 text-foreground  items-end  justify-end text-right text-sm font-thin ">
-                                ${data.totalWithOptions}
-                              </p>
-                            </div>
-                            <div className="mt-2 flex flex-wrap text-foreground  justify-between ">
-                              <p className="mt-2 basis-2/4 text-foreground   text-sm  font-thin">
-                                After Tax
-                              </p>
-                              <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
-                                ${data.qcTax}
-                              </p>
-                            </div>
-                          </>
+                        <p>Year</p>
+                        <p className='text-right'>{data.year}</p>
+                        <p>Brand</p>
+                        <p className='text-right'>{data.brand}</p>
+                        <p>Model</p>
+                        <p className='text-right'>{data.model}</p>
+                        <p>Trim</p>
+                        <p className='text-right'>{data.trim}</p>
+                        <p>Color</p>
+                        <p className='text-right'>{data.color}</p>
+
+                        <p>VIN</p>
+                        {data.vin ? (
+                          <p className='text-right'>{data.vin}</p>
+                        ) : (
+                          <p className='text-right'>N/A</p>
                         )}
-                        {data.desiredPayments === "No Tax Payment" && (
-                          <>
-                            <div className="mt-2 flex flex-wrap text-foreground  justify-between ">
-                              <p className="mt-2 basis-2/4  text-foreground  text-sm  font-thin">
-                                After Tax
-                              </p>
-                              <p className="flex basis-2/4  text-foreground  items-end   justify-end  text-right text-sm font-thin ">
-                                ${data.native}
-                              </p>
-                            </div>
-                          </>
+
+                        <p>Status</p>
+                        {data.statusBike && data.statusBike ? (
+                          <p className='text-right'>{data.statusBike}</p>
+                        ) : (
+                          <p className='text-right'>N/A</p>
                         )}
-                        {data.desiredPayments === "No Tax Payment with Options" && (
-                          <>
-                            <div className="mt-2 flex flex-wrap text-foreground  justify-between ">
-                              <p className="mt-2 basis-2/4 text-foreground   text-sm  font-thin">
-                                Total
-                              </p>
-                              <p className="flex basis-2/4  items-end text-foreground   justify-end  text-right text-sm font-thin ">
-                                ${data.totalWithOptions}
-                              </p>
-                            </div>
-                          </>
+                        <p>Location</p>
+                        {data.location ? (
+                          <p className='text-right'>{data.location}</p>
+                        ) : (
+                          <p className='text-right'>N/A</p>
                         )}
-                        {data.desiredPayments === "Custom Tax Payment" && (
+                        <p>Mileage</p>
+                        {data.mileage ? (
+                          <p className='text-right'>{data.mileage}</p>
+                        ) : (
+                          <p className='text-right'>N/A</p>
+                        )}
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="price">
+                      {Dealerfees.map((fee, index) => (
+                        fee.value > 0 && (
+                          <div key={index} className="flex justify-between">
+                            <p>{fee.placeholder}</p>
+                            <p>{fee.value}</p>
+                          </div>
+                        )
+                      ))}
+                      {FinanceOptions.map((fee, index) => (
+                        fee.value > 0 && (
+                          <div key={index} className="flex justify-between">
+                            <p>{fee.placeholder}</p>
+                            <p>{fee.value}</p>
+                          </div>
+                        )
+                      ))}
+                      {data.desiredPayments === "Standard Payment" && (
+                        <>
+                          <div className="mt-2 flex flex-wrap justify-between ">
+                            <p className="mt-2 basis-2/4  text-foreground  text-sm  font-thin">
+                              Total
+                            </p>
+                            <p className="flex basis-2/4  items-end text-foreground   justify-end  text-right text-sm font-thin ">
+                              ${data.total}
+                            </p>
+                          </div>
+                          <div className="mt-2 flex flex-wrap justify-between text-foreground  ">
+                            <p className="mt-2 basis-2/4   text-sm text-foreground  font-thin">
+                              After Tax
+                            </p>
+                            <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
+                              ${data.onTax}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments === "Payments with Options" && (
+                        <>
+                          <div className="mt-2 flex flex-wrap justify-between text-foreground ">
+                            <p className="mt-2 basis-2/4  text-foreground  text-sm  font-thin">
+                              Total
+                            </p>
+                            <p className="flex basis-2/4 text-foreground  items-end  justify-end text-right text-sm font-thin ">
+                              ${data.totalWithOptions}
+                            </p>
+                          </div>
+                          <div className="mt-2 flex flex-wrap text-foreground  justify-between ">
+                            <p className="mt-2 basis-2/4 text-foreground   text-sm  font-thin">
+                              After Tax
+                            </p>
+                            <p className="flex basis-2/4  items-end text-foreground   justify-end text-sm font-thin ">
+                              ${data.qcTax}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments === "No Tax Payment" && (
+                        <>
+                          <div className="mt-2 flex flex-wrap text-foreground  justify-between ">
+                            <p className="mt-2 basis-2/4  text-foreground  text-sm  font-thin">
+                              After Tax
+                            </p>
+                            <p className="flex basis-2/4  text-foreground  items-end   justify-end  text-right text-sm font-thin ">
+                              ${data.native}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments === "No Tax Payment with Options" && (
+                        <>
+                          <div className="mt-2 flex flex-wrap text-foreground  justify-between ">
+                            <p className="mt-2 basis-2/4 text-foreground   text-sm  font-thin">
+                              Total
+                            </p>
+                            <p className="flex basis-2/4  items-end text-foreground   justify-end  text-right text-sm font-thin ">
+                              ${data.totalWithOptions}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments === "Custom Tax Payment" && (
+                        <>
+                          <div className="mt-2 flex flex-wrap justify-between ">
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Total
+                            </p>
+                            <p className="flex basis-2/4  items-end   justify-end text-sm font-thin ">
+                              ${data.total}
+                            </p>
+                          </div>
+                          <div className="mt-2 flex flex-wrap justify-between ">
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              After Tax
+                            </p>
+                            <p className="flex basis-2/4  items-end   justify-end  text-right text-sm font-thin ">
+                              ${data.otherTax}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments ===
+                        "Custom Tax Payment with Options" && (
                           <>
                             <div className="mt-2 flex flex-wrap justify-between ">
                               <p className="mt-2 basis-2/4   text-sm  font-thin">
                                 Total
                               </p>
                               <p className="flex basis-2/4  items-end   justify-end text-sm font-thin ">
-                                ${data.total}
+                                ${data.totalWithOptions}
                               </p>
                             </div>
                             <div className="mt-2 flex flex-wrap justify-between ">
@@ -328,388 +337,363 @@ export default function ClientVehicleCard({ data, }) {
                                 After Tax
                               </p>
                               <p className="flex basis-2/4  items-end   justify-end  text-right text-sm font-thin ">
-                                ${data.otherTax}
+                                ${data.otherTaxWithOptions}
                               </p>
                             </div>
                           </>
                         )}
-                        {data.desiredPayments ===
-                          "Custom Tax Payment with Options" && (
-                            <>
-                              <div className="mt-2 flex flex-wrap justify-between ">
-                                <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                  Total
-                                </p>
-                                <p className="flex basis-2/4  items-end   justify-end text-sm font-thin ">
-                                  ${data.totalWithOptions}
-                                </p>
-                              </div>
-                              <div className="mt-2 flex flex-wrap justify-between ">
-                                <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                  After Tax
-                                </p>
-                                <p className="flex basis-2/4  items-end   justify-end  text-right text-sm font-thin ">
-                                  ${data.otherTaxWithOptions}
-                                </p>
-                              </div>
-                            </>
-                          )}
 
-                        <div className="mt-2 flex flex-wrap justify-between ">
+                      <div className="mt-2 flex flex-wrap justify-between ">
+                        <p className="mt-2 basis-2/4   text-sm  font-thin">
+                          Deposit
+                        </p>
+                        <p className="flex basis-2/4  items-end   justify-end text-sm font-thin ">
+                          ${data.deposit}
+                        </p>
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="Finance">
+                      <div className="mt-2 flex flex-wrap justify-between ">
+                        <p className="mt-2 basis-2/4   text-sm  font-thin">
+                          Desposit
+                        </p>
+                        <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                          ${data.deposit}
+                        </p>
+                        <p className="mt-2 basis-2/4   text-sm  font-thin">
+                          Term
+                        </p>
+                        <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                          {data.months}
+                        </p>
+                        <p className="mt-2 basis-2/4   text-sm  font-thin">
+                          Rate
+                        </p>
+                        <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                          {data.iRate}%
+                        </p>
+                      </div>
+                      {data.desiredPayments === "Standard Payment" && (
+                        <>
                           <p className="mt-2 basis-2/4   text-sm  font-thin">
-                            Deposit
+                            Standard
                           </p>
-                          <p className="flex basis-2/4  items-end   justify-end text-sm font-thin ">
-                            ${data.deposit}
+                          <hr className="solid" />
+                          <div className="mt-2 flex flex-wrap justify-between ">
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Monthly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.on60}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Bi-weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.biweekly}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.weekly}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments === "Payments with Options" && (
+                        <>
+                          <p className="mt-2 basis-2/4   text-sm  font-thin">
+                            Standard W/ Options
                           </p>
+                          <hr className="solid" />
+                          <div className="mt-2 flex flex-wrap justify-between ">
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Monthly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.qc60}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Bi-weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.biweeklyqc}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.weeklyqc}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments === "No Tax Payment" && (
+                        <>
+                          <p className="mt-2 basis-2/4   text-sm  font-thin">
+                            Tax Exempt
+                          </p>
+                          <hr className="solid" />
+                          <div className="mt-2 flex flex-wrap justify-between ">
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Monthly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.nat60}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Bi-weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.biweeklNat}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.weeklylNat}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments === "No Tax Payment with Options" && (
+                        <>
+                          <p className="mt-2 basis-2/4   text-sm  font-thin">
+                            Tax Exempt
+                          </p>
+                          <hr className="solid" />
+                          <div className="mt-2 flex flex-wrap justify-between ">
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Monthly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.oth60}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Bi-weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.biweekOth}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.weeklyOth}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments === "Custom Tax Payment" && (
+                        <>
+                          <p className="mt-2 basis-2/4   text-sm  font-thin">
+                            Tax Exempt
+                          </p>
+                          <hr className="solid" />
+                          <div className="mt-2 flex flex-wrap justify-between ">
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Monthly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.nat60WOptions}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Bi-weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.biweeklNatWOptions}
+                            </p>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Weekly
+                            </p>
+                            <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                              ${data.weeklylNatWOptions}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      {data.desiredPayments ===
+                        "Custom Tax Payment with Options" && (
+                          <>
+                            <p className="mt-2 basis-2/4   text-sm  font-thin">
+                              Tax Exempt
+                            </p>
+                            <hr className="solid" />
+                            <div className="mt-2 flex flex-wrap justify-between ">
+                              <p className="mt-2 basis-2/4   text-sm  font-thin">
+                                Monthly
+                              </p>
+                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                                ${data.oth60WOptions}
+                              </p>
+                              <p className="mt-2 basis-2/4   text-sm  font-thin">
+                                Bi-weekly
+                              </p>
+                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                                ${data.biweekOthWOptions}
+                              </p>
+                              <p className="mt-2 basis-2/4   text-sm  font-thin">
+                                Weekly
+                              </p>
+                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
+                                ${data.weeklyOthWOptions}
+                              </p>
+                            </div>
+                          </>
+                        )}
+                    </TabsContent>
+                    <TabsContent value="Options">
+                      {/* loading all and every option may be too consuming of internet resources, if they want to see the options and accessories they can go to the quote itself */}
+                      <p className="mt-2  basis-2/4   text-sm font-thin">
+                        Finance Products
+                      </p>
+                      <Separator />
+
+                      {FinanceOptions.map((fee, index) => {
+                        if (
+                          fee.value > 0 &&
+                          fee.value !== "on" &&
+                          fee.value !== "0"
+                        ) {
+                          return (
+                            <div
+                              key={index}
+                              className="mt-2 flex flex-wrap justify-between "
+                            >
+                              <p className="mt-2  basis-2/4   text-sm font-thin">
+                                {fee.name}
+                              </p>
+                              <p className="flex basis-2/4   items-end  justify-end text-sm font-thin ">
+                                ${fee.value}
+                              </p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })}
+                      <p className="mt-2  basis-2/4   text-sm font-thin">
+                        Vehicle Options
+                      </p>
+                      <Separator />
+
+                      <p className="mt-2  basis-2/4   text-sm font-thin">
+                        Parts & Acc
+                      </p>
+                      <Separator />
+                    </TabsContent>
+                    <TabsContent value="trade">
+                      {/* right column with inputs */}
+                      <div className="mx-3 my-3 w-[90%]">
+                        <h3 className="text-2xl font-thin">TRADE</h3>
+                        <div className="relative mt-5">
+                          <Input
+                            className="mr-3 mt-2 h-8 border-border bg-background    "
+                            name="tradeMake"
+                            defaultValue={data.tradeMake}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
                         </div>
-                      </TabsContent>
-                      <TabsContent value="Finance">
-                        <div className="mt-2 flex flex-wrap justify-between ">
-                          <p className="mt-2 basis-2/4   text-sm  font-thin">
-                            Desposit
-                          </p>
-                          <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                            ${data.deposit}
-                          </p>
-                          <p className="mt-2 basis-2/4   text-sm  font-thin">
-                            Term
-                          </p>
-                          <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                            {data.months}
-                          </p>
-                          <p className="mt-2 basis-2/4   text-sm  font-thin">
-                            Rate
-                          </p>
-                          <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                            {data.iRate}%
-                          </p>
+                        <div className="relative mt-5">
+                          <Input
+                            className="mt-2 h-8 pr-5 border-border bg-background  "
+                            name="tradeDesc"
+                            defaultValue={data.tradeDesc}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
                         </div>
-                        {data.desiredPayments === "Standard Payment" && (
-                          <>
-                            <p className="mt-2 basis-2/4   text-sm  font-thin">
-                              Standard
-                            </p>
-                            <hr className="solid" />
-                            <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Monthly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.on60}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Bi-weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.biweekly}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.weekly}
-                              </p>
-                            </div>
-                          </>
-                        )}
-                        {data.desiredPayments === "Payments with Options" && (
-                          <>
-                            <p className="mt-2 basis-2/4   text-sm  font-thin">
-                              Standard W/ Options
-                            </p>
-                            <hr className="solid" />
-                            <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Monthly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.qc60}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Bi-weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.biweeklyqc}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.weeklyqc}
-                              </p>
-                            </div>
-                          </>
-                        )}
-                        {data.desiredPayments === "No Tax Payment" && (
-                          <>
-                            <p className="mt-2 basis-2/4   text-sm  font-thin">
-                              Tax Exempt
-                            </p>
-                            <hr className="solid" />
-                            <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Monthly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.nat60}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Bi-weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.biweeklNat}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.weeklylNat}
-                              </p>
-                            </div>
-                          </>
-                        )}
-                        {data.desiredPayments === "No Tax Payment with Options" && (
-                          <>
-                            <p className="mt-2 basis-2/4   text-sm  font-thin">
-                              Tax Exempt
-                            </p>
-                            <hr className="solid" />
-                            <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Monthly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.oth60}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Bi-weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.biweekOth}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.weeklyOth}
-                              </p>
-                            </div>
-                          </>
-                        )}
-                        {data.desiredPayments === "Custom Tax Payment" && (
-                          <>
-                            <p className="mt-2 basis-2/4   text-sm  font-thin">
-                              Tax Exempt
-                            </p>
-                            <hr className="solid" />
-                            <div className="mt-2 flex flex-wrap justify-between ">
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Monthly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.nat60WOptions}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Bi-weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.biweeklNatWOptions}
-                              </p>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Weekly
-                              </p>
-                              <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                ${data.weeklylNatWOptions}
-                              </p>
-                            </div>
-                          </>
-                        )}
-                        {data.desiredPayments ===
-                          "Custom Tax Payment with Options" && (
-                            <>
-                              <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                Tax Exempt
-                              </p>
-                              <hr className="solid" />
-                              <div className="mt-2 flex flex-wrap justify-between ">
-                                <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                  Monthly
-                                </p>
-                                <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                  ${data.oth60WOptions}
-                                </p>
-                                <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                  Bi-weekly
-                                </p>
-                                <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                  ${data.biweekOthWOptions}
-                                </p>
-                                <p className="mt-2 basis-2/4   text-sm  font-thin">
-                                  Weekly
-                                </p>
-                                <p className="mt-2 flex basis-2/4 items-end justify-end text-sm font-thin">
-                                  ${data.weeklyOthWOptions}
-                                </p>
-                              </div>
-                            </>
+                        <div className="relative mt-5">
+                          <Input
+                            className="mt-2  h-8 border-border bg-background  "
+                            name="tradeYear"
+                            defaultValue={data.tradeYear}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Year</label>
+                        </div>
+                        <div className="relative mt-5">
+                          <Input
+                            className="mt-2 h-8 border-border bg-background  "
+                            name="tradeTrim"
+                            defaultValue={data.tradeTrim}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Trim</label>
+                        </div>
+                        <div className="relative mt-5">
+                          <Input
+                            className="mt-2  h-8  border-border bg-background  "
+                            name="tradeColor"
+                            defaultValue={data.tradeColor}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Color</label>
+                        </div>
+                        <div className="relative mt-5">
+                          <Input
+                            className="mt-2  h-8 border-border bg-background  "
+                            name="tradeVin"
+                            defaultValue={data.tradeVin}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">VIN</label>
+                        </div>
+                        <div className="relative mt-5">
+                          <Input
+                            className="mt-2  h-8 border-border bg-background  "
+                            name="tradeMileage"
+                            defaultValue={data.tradeMileage}
+                          />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Mileage</label>
+                        </div>
+                        <input type='hidden' name='vehicleIdWTrade' defaultValue={data.vehicleIdWTrade} />
+                        <div className="mx-3 my-3 grid w-[90%] grid-cols-2 p-2">
+                          <p className=" text-sm ">Trade Value</p>
+                          <Input
+                            className="  ml-3 h-8 w-auto  text-right  border-border bg-background  text-sm "
+                            name="tradeValue"
+                            defaultValue={data.tradeValue}
+                          />
+                          <p className=" mt-2  text-sm ">Needed Repairs</p>
+                          <Input
+                            className="  ml-3 mt-2 h-8  w-auto  text-right border-border bg-background   text-sm "
+                            name="tradeRepairs"
+                            defaultValue={data.tradeRepairs}
+                          />
+                          <p className=" mt-2  text-sm ">Trade Seen</p>
+                          {data.seenTrade === "off" && (
+                            <p className=" mt-2 text-right  text-sm ">No</p>
                           )}
-                      </TabsContent>
-                      <TabsContent value="Options">
-                        {/* loading all and every option may be too consuming of internet resources, if they want to see the options and accessories they can go to the quote itself */}
-                        <p className="mt-2  basis-2/4   text-sm font-thin">
-                          Finance Products
-                        </p>
-                        <Separator />
-
-                        {FinanceOptions.map((fee, index) => {
-                          if (
-                            fee.value > 0 &&
-                            fee.value !== "on" &&
-                            fee.value !== "0"
-                          ) {
-                            return (
-                              <div
-                                key={index}
-                                className="mt-2 flex flex-wrap justify-between "
-                              >
-                                <p className="mt-2  basis-2/4   text-sm font-thin">
-                                  {fee.name}
-                                </p>
-                                <p className="flex basis-2/4   items-end  justify-end text-sm font-thin ">
-                                  ${fee.value}
-                                </p>
-                              </div>
-                            );
-                          }
-                          return null;
-                        })}
-                        <p className="mt-2  basis-2/4   text-sm font-thin">
-                          Vehichle Options
-                        </p>
-                        <Separator />
-
-                        <p className="mt-2  basis-2/4   text-sm font-thin">
-                          Parts & Acc
-                        </p>
-                        <Separator />
-                      </TabsContent>
-                      <TabsContent value="Acc"></TabsContent>
-                    </Tabs>
-                  </div>
+                          {data.seenTrade === "on" && (
+                            <p className=" mt-2 text-right  text-sm ">Yes</p>
+                          )}
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </div>
-                {/* right column with inputs */}
-                <div className="mx-3 my-3 w-[90%]">
-                  <h3 className="text-2xl font-thin">TRADE</h3>
-                  <div className="relative mt-5">
-                    <Input
-                      className="mr-3 mt-2 h-8 border-border bg-background    "
-                      name="tradeMake"
-                      defaultValue={data.tradeMake}
-                    />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Brand</label>
-                  </div>
-                  <div className="relative mt-5">
-                    <Input
-                      className="mt-2 h-8 pr-5 border-border bg-background  "
-                      name="tradeDesc"
-                      defaultValue={data.tradeDesc}
-                    />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Model</label>
-                  </div>
-                  <div className="relative mt-5">
-                    <Input
-                      className="mt-2  h-8 border-border bg-background  "
-                      name="tradeYear"
-                      defaultValue={data.tradeYear}
-                    />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Year</label>
-                  </div>
-                  <div className="relative mt-5">
-                    <Input
-                      className="mt-2 h-8 border-border bg-background  "
-                      name="tradeTrim"
-                      defaultValue={data.tradeTrim}
-                    />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Trim</label>
-                  </div>
-                  <div className="relative mt-5">
-                    <Input
-                      className="mt-2  h-8  border-border bg-background  "
-                      name="tradeColor"
-                      defaultValue={data.tradeColor}
-                    />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Color</label>
-                  </div>
-                  <div className="relative mt-5">
-                    <Input
-                      className="mt-2  h-8 border-border bg-background  "
-                      name="tradeVin"
-                      defaultValue={data.tradeVin}
-                    />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">VIN</label>
-                  </div>
-                  <div className="relative mt-5">
-                    <Input
-                      className="mt-2  h-8 border-border bg-background  "
-                      name="tradeMileage"
-                      defaultValue={data.tradeMileage}
-                    />
-                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Mileage</label>
-                  </div>
-                  <input type='hidden' name='vehicleIdWTrade' defaultValue={data.vehicleIdWTrade} />
-                  <div className="mx-3 my-3 grid w-[90%] grid-cols-2 p-2">
-                    <p className=" text-sm ">Trade Value</p>
-                    <Input
-                      className="  ml-3 h-8 w-auto  text-right  border-border bg-background  text-sm "
-                      name="tradeValue"
-                      defaultValue={data.tradeValue}
-                    />
-                    <p className=" mt-2  text-sm ">Needed Repairs</p>
-                    <Input
-                      className="  ml-3 mt-2 h-8  w-auto  text-right border-border bg-background   text-sm "
-                      name="tradeRepairs"
-                      defaultValue={data.tradeRepairs}
-                    />
-                    <p className=" mt-2  text-sm ">Trade Seen</p>
-                    {data.seenTrade === "off" && (
-                      <p className=" mt-2 text-right  text-sm ">No</p>
-                    )}
-                    {data.seenTrade === "on" && (
-                      <p className=" mt-2 text-right  text-sm ">Yes</p>
-                    )}
-                  </div>
-                </div>
-                {/* Button Group */}
+                <Input type="hidden" defaultValue={id} name="id" />
+                <Input type="hidden" defaultValue='updateFinance' name="intent" />
                 <input type='hidden' name='financeId' value={data.id} />
                 <input type='hidden' name='userEmail' value={data.userEmail} />
                 <input type='hidden' name='brand' value={data.brand} />
                 <input type='hidden' name='clientfileId' value={data.clientfileId} />
                 <input type='hidden' name='activixId' value={data.activixId} />
                 <input type='hidden' name='whichVehicle' value='exchange' />
-
-                <div className="mb-auto mr-auto p-3">
-
+                <div className="flex mr-auto p-3 gap-3">
                   <ButtonLoading
                     size="sm"
                     value='updateFinanceTrade'
                     className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
-                    name="intent" type="submit"
-
+                    name="intent"
+                    type="submit"
                     onClick={() => toast.success(`Quote updated for ${data.firstName}`)}
                     loadingText="Saving..."
                   >
                     Update
                   </ButtonLoading>
-
                 </div>
               </div>
             </Form>
             <div className="ml-4">
               <UnitPicker data={data} />
-
             </div>
-
           </SheetContent>
         </SheetTitle>
       </SheetHeader>
@@ -1303,7 +1287,7 @@ export default async function ClientVehicleCard({ data }) {
                           return null;
                         })}
                         <p className="mt-2  basis-2/4   text-sm font-thin">
-                          Vehichle Options
+                          Vehicle Options
                         </p>
                         <Separator />
 

@@ -768,7 +768,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     pickUpDate = "To Be Det.";
   }
   const id = formData?.id;
-  // activix done need toa add create vehichle
+  // activix done need toa add create Vehicle
   if (intent === 'newLead') {
     console.log('less than 20')
     const brand = formData.brand

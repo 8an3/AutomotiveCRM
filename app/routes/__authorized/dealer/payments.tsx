@@ -32,10 +32,10 @@ export async function loader({ request, params }: LoaderFunction) {
 export default function SettingsLayout() {
 
   return (
-    <>
+    <div className='overflow-hidden'>
       <Outlet />
 
-    </>
+    </div>
   )
 }
 /** <div className="hidden space-y-6 p-10 pb-16 md:block">

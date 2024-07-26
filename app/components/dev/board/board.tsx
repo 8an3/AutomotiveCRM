@@ -64,7 +64,7 @@ export function Board() {
           value={board.name}
           fieldName="name"
           inputClassName="mx-8 my-4 border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
-          buttonClassName="mx-8 my-4   rounded-lg text-left   py-1 px-2 text-slate-800"
+          buttonClassName="mx-8 my-4   rounded-lg text-left   py-1 px-2 text-foreground"
           buttonLabel={`Edit board "${board.name}" name`}
           inputLabel="Edit board name"
         >

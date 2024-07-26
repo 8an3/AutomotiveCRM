@@ -88,7 +88,7 @@ export async function loader({ request, params }: LoaderFunction) {
         }
       }
 
-      const comsRecords = await prisma.previousComms.findMany({ where: { userEmail: email }, });
+      const comsRecords = await prisma.comm.findMany({ where: { userEmail: email }, });
       const session2 = await getAppearance(request.headers.get("Cookie"));
       const getNewLook = user.newLook
       console.log(getNewLook, 'checking appearance')
@@ -296,31 +296,31 @@ export function StatsTable({ statsData, comsRecords }) {
     // More objects for other time periods...
   ];
   return (
-    <Table className='bg-background text-foreground'>
+    <Table className='bg-background text-foreground w-full max-w-full overflow-x-auto'>
       <TableCaption>List of Stats</TableCaption>
       <TableHeader>
-        <TableRow className="bg-accent border-border">
-          <TableHead >Period</TableHead>
-          <TableHead >Quotes</TableHead>
-          <TableHead >Deposits</TableHead>
-          <TableHead >Financed</TableHead>
-          <TableHead >Delivered</TableHead>
-          <TableHead >Repeat Cust</TableHead>
-          <TableHead >Walk-in</TableHead>
-          <TableHead >Web-lead</TableHead>
-          <TableHead >Phone-lead</TableHead>
-          <TableHead >Total</TableHead>
-          <TableHead >emailsSent</TableHead>
-          <TableHead >smsSent</TableHead>
-          <TableHead >phoneCallsMade</TableHead>
-          <TableHead >timesContacted</TableHead>
-          <TableHead >Appts</TableHead>
-          <TableHead >Appts Showed</TableHead>
+        <TableRow className="bg-background border-border text-muted-foreground">
+          <TableHead className='w-[200px] no-wrap text-center' >Period</TableHead>
+          <TableHead className='w-auto no-wrap text-center' >Quotes</TableHead>
+          <TableHead className='w-auto no-wrap text-center' >Deposits</TableHead>
+          <TableHead className='w-auto no-wrap text-center' >Financed</TableHead>
+          <TableHead className='w-auto no-wrap text-center' >Delivered</TableHead>
+          <TableHead className='w-[175px] no-wrap text-center' >Repeat Cust</TableHead>
+          <TableHead className='w-[100px] no-wrap text-center' >Walk-in</TableHead>
+          <TableHead className='w-[175px] no-wrap text-center' >Web-lead</TableHead>
+          <TableHead className='w-[175px] no-wrap text-center' >Phone-lead</TableHead>
+          <TableHead className='w-auto no-wrap text-center' >Total</TableHead>
+          <TableHead className='w-[175px] no-wrap text-center' >Emails Sent</TableHead>
+          <TableHead className='w-[175px] no-wrap text-center' >SMS Sent</TableHead>
+          <TableHead className='w-[175px] no-wrap text-center' >Phone Calls Made</TableHead>
+          <TableHead className='w-[175px] no-wrap text-center' >Times Contacted</TableHead>
+          <TableHead className='w-auto no-wrap text-center' >Appts</TableHead>
+          <TableHead className='w-[175px] no-wrap text-center' >Appts Showed</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {stats.map((stat) => (
-          <TableRow key={stat.period} className="bg-accent border-border">
+          <TableRow key={stat.period} className="bg-background border-border text-center even:bg-accent">
             <TableCell >{stat.period}</TableCell>
             <TableCell >{stat.quotes}</TableCell>
             <TableCell >{stat.deposits}</TableCell>
@@ -455,7 +455,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
   };
   const { boards } = useLoaderData()
   return (
-    <Tabs defaultValue="account" className="w-[75%] ml-5 mr-auto" >
+    <Tabs defaultValue="account" className="w-[80%] ml-5 mr-auto" >
       <TabsList className="rounded-md ">
         <TabsTrigger className='rounded-md' value="account">Account</TabsTrigger>
         <TabsTrigger className='rounded-md' value="dealerFees">Dealer Fees</TabsTrigger>

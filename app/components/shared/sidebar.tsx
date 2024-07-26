@@ -593,7 +593,7 @@ export const adminSidebarNav = [
     to: "/dealer/admin/users",
   },
   {
-    title: "Search Leads",
+    title: "Customers",
     to: "/dealer/admin/leads",
   },
   {

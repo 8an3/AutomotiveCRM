@@ -1,5 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, Dialog,
   DialogContent,
@@ -1387,9 +1387,9 @@ export default function Shight() {
       });
   };
   const [copiedText, setCopiedText] = useState('');
-  const timerRef = React.useRef(0);
+  const timerRef = useRef(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, [])
 
@@ -1573,7 +1573,7 @@ export default function Shight() {
                   Add Template
                 </Button>
               </DialogTrigger>
-              <DialogContent className="gap-0 p-0 outline-none border-border text-foreground   max-h-[750px] h-[750px] w-[500px] ">
+              <DialogContent className="gap-0 p-0 outline-none border-border text-foreground   max-h-[445px] h-[445px] w-full md:w-[600px] md:max-w-[600px] mx-3">
                 <div className='grid grid-cols-1 my-8 mx-auto w-full overflow-y-auto' >
                   <EditorTiptapHookNewTemplates user={user} content={contentNewTemplate} />
                 </div>

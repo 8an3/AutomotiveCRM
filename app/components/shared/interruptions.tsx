@@ -63,7 +63,7 @@ export default function Interruptions(user, email) {
         <input type='hidden' name='pathname' value={pathname} />
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger className='flex justify-between items-center'>
+            <TooltipTrigger className='flex justify-between items-center w-full'>
 
               <BellPlus color="#fdfcfc" size={16} />
               <DropdownMenuShortcut className='justify-end'> ctrl + i</DropdownMenuShortcut>

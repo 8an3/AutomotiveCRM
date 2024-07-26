@@ -42,7 +42,7 @@ export default function CustMaIN() {
 
   return (
     <>
-      <div className="h-screen w-screen overflow-hidden">
+      <div className="overflow-clip ">
         <Outlet />
       </div>
     </>

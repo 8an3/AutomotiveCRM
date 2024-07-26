@@ -678,7 +678,7 @@ export function UnitPickerTable({ finance, }) {
     []
   )
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({
+    useState<VisibilityState>({
       id: false,
       packageNumber: false,
       packagePrice: false,
@@ -970,7 +970,7 @@ export function UnitPickerTable({ finance, }) {
       </div>
       <div className="rounded-md border text-foreground bg-background border-border">
         <Table className='w-full overflow-x-auto text-foreground bg-background border-border'>
-          <TableHeader>
+          <TableHeader className=" border text-foreground bg-background border-border">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
@@ -992,7 +992,7 @@ export function UnitPickerTable({ finance, }) {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className=" border text-foreground bg-background border-border">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -1017,7 +1017,7 @@ export function UnitPickerTable({ finance, }) {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className=" border text-foreground bg-background border-border">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 cursor-pointer  text-center capitalize text-foreground bg-background border-border"

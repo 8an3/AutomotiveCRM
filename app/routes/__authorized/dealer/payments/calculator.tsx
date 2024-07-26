@@ -168,7 +168,7 @@ export async function loader({ request, params }: LoaderFunction) {
   });
 }
 
-export function PaymentCalc({ outletSize }) {
+export default function PaymentCalc() {
   const { modelData, deFees, manOptions, bmwMoto, bmwMoto2, user, client } =
     useLoaderData();
   const finance = {
@@ -953,7 +953,7 @@ export function PaymentCalc({ outletSize }) {
 
       return (
         <>
-          <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+          <hr className="my-4 text-border w-[95%] mx-auto" />
           <ul className="grid gap-3">
             {manSwitchAccArray.some((option) => manOptions[option] > 0) && (
               <>
@@ -1382,10 +1382,10 @@ export function PaymentCalc({ outletSize }) {
   }
 
   return (
-    <div className="">
+    <div className="mx-auto">
 
       <div className="mx-auto mt-10 mb-10">
-        <Card className=" w-[550px] rounded-md">
+        <Card className="mx-auto w-[550px] rounded-md">
           <CardHeader className="bg-muted-background flex flex-row items-start t-rounded-md">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
@@ -1396,7 +1396,7 @@ export function PaymentCalc({ outletSize }) {
           </CardHeader>
           {firstPage && (
             <>
-              <CardContent className="p-6 text-sm bg-background">
+              <CardContent className="p-6 text-sm bg-background max-h-[600px] overflow-y-auto h-auto">
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment Details</div>
 
@@ -1571,7 +1571,7 @@ export function PaymentCalc({ outletSize }) {
                  */}
                   </ul>
                 </div>
-                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                <hr className="my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Standard Terms</div>
                 <div className="my-4">
                   <div className="main-button-group flex justify-between ">
@@ -1808,7 +1808,7 @@ export function PaymentCalc({ outletSize }) {
                   </div>
                 )}
 
-                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                <hr className="my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Contract Variables</div>
                 <div className="grid grid-cols-2 ">
                   <div className=" mt-2 ">
@@ -1883,7 +1883,7 @@ export function PaymentCalc({ outletSize }) {
                   </div>
                 </div>
 
-                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                <hr className="my-4 text-border w-[95%] mx-auto" />
                 <Drawer>
                   <DrawerTrigger>Other Inputs</DrawerTrigger>
                   <DrawerContent className='bg-background w-1/2 mb-5'>
@@ -1945,7 +1945,7 @@ export function PaymentCalc({ outletSize }) {
                   </DrawerContent>
                 </Drawer>
 
-                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                <hr className="my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Total</div>
                 <ul className="grid gap-3">
                   {perDiscountGiven > 0 && (
@@ -2106,7 +2106,7 @@ export function PaymentCalc({ outletSize }) {
           )}
           {secPage && (
             <>
-              <CardContent className="p-6 text-sm  bg-background">
+              <CardContent className="p-6 text-sm  bg-background max-h-[600px] overflow-y-auto h-aut">
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment Details</div>
                   <ul className="grid gap-3">
@@ -2147,7 +2147,7 @@ export function PaymentCalc({ outletSize }) {
                 )}
                     */}
                   </ul>
-                  <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                  <hr className="my-4 text-border w-[95%] mx-auto" />
                   <div className="font-semibold">Price</div>
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
@@ -2208,7 +2208,7 @@ export function PaymentCalc({ outletSize }) {
                 )}
                  */}
                   </ul>
-                  <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                  <hr className="my-4 text-border w-[95%] mx-auto" />
                   <div className="font-semibold">Fees</div>
                   <ul className="grid gap-3">
                     {deFees.userAirTax > 0 && (
@@ -2281,7 +2281,7 @@ export function PaymentCalc({ outletSize }) {
                     )}
                   </ul>
                 </div>
-                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                <hr className="my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Standard Terms</div>
                 <div className="mt-3">
                   <div className="main-button-group flex justify-between ">
@@ -2499,7 +2499,7 @@ export function PaymentCalc({ outletSize }) {
                   </div>
                 )}
 
-                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                <hr className="my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Contract Variables</div>
                 <ul className="grid gap-3">
                   <li className="flex items-center justify-between">
@@ -2535,7 +2535,7 @@ export function PaymentCalc({ outletSize }) {
                 </ul>
 
 
-                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                <hr className="my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Total</div>
                 <ul className="grid gap-3">
                   {perDiscountGiven > 0 && (
@@ -2732,7 +2732,7 @@ export function PaymentCalc({ outletSize }) {
   );
 }
 
-export default function PaymentsCalc() {
+export function PaymentsCalc() {
   const { notifications, user, sliderWidth } = useLoaderData();
 
   const [outletSize, setOutletSize] = useState(sliderWidth);
@@ -2754,7 +2754,7 @@ export default function PaymentsCalc() {
           <div className="flex px-4 sm:px-6 lg:px-8 text-[#f4f4f4]">
             <div className="w-full rounded-lg">
               <div className="mx-auto my-auto md:flex">
-                <div className="mx-auto my-auto" style={{ width: outletSize }}>
+                <div className="mx-auto my-auto" >
                   <div className="mx-auto my-auto ">
                     <PaymentCalc outletSize={outletSize} />
                   </div>
@@ -2762,7 +2762,14 @@ export default function PaymentsCalc() {
               </div>
             </div>
           </div>
-          <div className="mb-[25px] mt-[25px] flex justify-center">
+
+        </div>
+      </body>
+    </html >
+  );
+}
+
+/** <div className="mb-[25px] mt-[25px] flex justify-center">
             <input
               name="sliderWidth"
               type="range"
@@ -2783,12 +2790,7 @@ export default function PaymentsCalc() {
 
                 `}
             </style>
-          </div>
-        </div>
-      </body>
-    </html >
-  );
-}
+          </div> */
 /***
 
 //// wookring do not touch.

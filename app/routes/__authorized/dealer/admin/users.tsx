@@ -301,7 +301,7 @@ export default function Route() {
                   Add user
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] border border-border">
+              <DialogContent className="md:max-w-[325px] border border-border w-full mx-3 ">
                 <DialogHeader>
                   <DialogTitle>Add user profile</DialogTitle>
 
@@ -593,7 +593,7 @@ export default function Route() {
                   <Label className='text-lg'>
                     Description
                   </Label>
-                  <Input name='description' placeholder="Vehichle sales staff member." className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
+                  <Input name='description' placeholder="Vehicle sales staff member." className="mx-1 flex h-[45px] w-[95%] flex-1 items-center justify-center rounded bg-myColor-900 px-5  text-[15px] font-bold uppercase leading-none text-slate4 shadow outline-none transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary hover:text-primary hover:shadow-md
                  focus:text-primary focus:outline-none    active:bg-primary" />
                 </div>
                 <Button variant='outline' type='submit' name='intent' value='addUserRole' className="mt-5 ml-auto">

@@ -25,7 +25,6 @@ import {
   SiRemix,
   SiTelegram,
   SiThreads,
-  SiTwitter,
   SiX as SiXTwitter,
   SiYoutube,
 } from "@icons-pack/react-simple-icons"

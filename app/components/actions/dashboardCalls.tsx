@@ -1,38 +1,26 @@
 import { json, type ActionFunction, createCookie, type LoaderFunction, redirect, defer } from "@remix-run/node";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
-import { findDashboardDataById, findQuoteById, getDataBmwMoto, getDataByModel, getDataByModelManitou, getDataHarley, getDataKawasaki, getDataTriumph, getLatestBMWOptions, getLatestBMWOptions2, getLatestOptionsManitou, getRecords, } from "~/utils/finance/get.server";
 import { getDealerFeesbyEmail } from "~/utils/user.server";
 import { deleteFinanceNote } from "~/utils/financeNote/delete.server";
-import UpdateStatus from "../dashboard/calls/actions/UpdateStatus";
 import DeleteCustomer from "../dashboard/calls/actions/DeleteCustomer";
 import { updateFinanceNote } from "~/utils/client/updateFinanceNote.server";
 import { prisma } from "~/libs";
 import { deleteFinanceAppts } from "~/utils/financeAppts/delete.server";
 import UpdateAppt from "../dashboard/calls/actions/updateAppt";
-import updateFinanceNotes from "../dashboard/calls/actions/updateFinanceNote";
 import CreateAppt from "../dashboard/calls/actions/createAppt";
-import updateFinance23 from "../dashboard/calls/actions/updateFinance";
-import { createfinanceApt } from "~/utils/financeAppts/create.server";
-import { model } from "~/models";
 import { getSession, commitSession } from '~/sessions/auth-session.server';
-import { updateFinance, updateFinanceWithDashboard } from "~/utils/finance/update.server"
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { DataForm } from '../dashboard/calls/actions/dbData';
 import { GetUser } from "~/utils/loader.server";
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
-import { createFinanceManitou, createBMWOptions, createBMWOptions2, createClientFileRecord, financeWithDashboard, } from "~/utils/finance/create.server";
 import { QuoteServerActivix } from '~/utils/quote/quote.server';
-import twilio from 'twilio';
-import axios from "axios";
 import emitter from '~/routes/__authorized/dealer/emitter';
 import { checkForMobileDevice, getToken, CompleteLastAppt, TwoDays, FollowUpApt, ComsCount, QuoteServer } from './shared'
-
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
   const user = await GetUser(email)
-  console.log(user, email, 'dashboard laoder')
   if (!user) { redirect('/login') }
   const proxyPhone = '+12176347250'
   const deFees = await getDealerFeesbyEmail(user.email);
@@ -43,7 +31,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
   const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
   const financeNotes = await prisma.financeNote.findMany({ orderBy: { createdAt: "desc" }, });
-  const conversations = await prisma.previousComms.findMany({ orderBy: { createdAt: "desc" }, });
+  const conversations = await prisma.comm.findMany({ orderBy: { createdAt: "desc" }, });
   const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
 
   const fetchLatestNotes = async (webLeadData) => {
@@ -129,11 +117,9 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
   const getDemoDay = await prisma.demoDay.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: 'skylerzanth@outlook.com' } });
 
-
   const webLeadData = await prisma.finance.findMany({
     where: { OR: [{ userEmail: null }, { userEmail: '' }], },
   });
-
 
   let callToken;
   let username = 'skylerzanth'//localStorage.getItem("username") ?? "";
@@ -156,8 +142,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   let newToken;
 
   const firstTime = await prisma.twilioSMSDetails.findUnique({ where: { userEmail: 'skylerzanth@gmail.com', } })//user?.email } })
-
-  //  console.log(callToken, 'callToken')
 
   if (!firstTime) {
     function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
@@ -236,7 +220,6 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     convoList = getConvos;
   }
 
-
   const conversation = await prisma.getConversation.findFirst({
     where: { userEmail: 'skylerzanth@gmail.com'/*user.email*/ },
     orderBy: {
@@ -263,13 +246,13 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
   const userAgent = request.headers.get('User-Agent');
   const isMobileDevice = checkForMobileDevice(userAgent);
-  /*
-   */
-  console.log(user, email, ';user')
   const rotationList = await prisma.user.findMany()
-
+  const userEmail = user.email
+  const columnState = await prisma.columnStateSales.findUnique({
+    where: { userEmail }
+  });
   return json({
-    ok: true,
+
     getDemoDay,
     finance,
     deFees,
@@ -285,7 +268,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     request,
     wishlistMatches,
     callToken,
-    convoList, username, newToken, password, getText, isMobileDevice, email,
+    convoList, username, newToken, password, getText, isMobileDevice, email, columnState,
     rotationList
   }, { headers: { "Set-Cookie": await commitSession(session2), }, })
 }
@@ -301,7 +284,187 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   const userId = user?.id;
   const intent = formPayload.intent;
+  if (intent === 'updateClientInfoFinance') {
+    const updateClient = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: {
+        clientfileId: formData.clientfileId,
+        activixId: formData.activixId,
+        theRealActId: formData.theRealActId,
+        financeManager: formData.financeManager,
+        email: formData.email,
+        firstName: formData.firstName,
+        mileage: formData.mileage,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        name: formData.name,
+        address: formData.address,
+        city: formData.city,
+        postal: formData.postal,
+        province: formData.province,
+        dl: formData.dl,
+        typeOfContact: formData.typeOfContact,
+        timeToContact: formData.timeToContact,
+        iRate: formData.iRate,
+        months: formData.months,
+        discount: formData.discount,
+        total: formData.total,
+        onTax: formData.onTax,
+        on60: formData.on60,
+        biweekly: formData.biweekly,
+        weekly: formData.weekly,
+        weeklyOth: formData.weeklyOth,
+        biweekOth: formData.biweekOth,
+        oth60: formData.oth60,
+        weeklyqc: formData.weeklyqc,
+        biweeklyqc: formData.biweeklyqc,
+        qc60: formData.qc60,
+        deposit: formData.deposit,
+        biweeklNatWOptions: formData.biweeklNatWOptions,
+        weeklylNatWOptions: formData.weeklylNatWOptions,
+        nat60WOptions: formData.nat60WOptions,
+        weeklyOthWOptions: formData.weeklyOthWOptions,
+        biweekOthWOptions: formData.biweekOthWOptions,
+        oth60WOptions: formData.oth60WOptions,
+        biweeklNat: formData.biweeklNat,
+        weeklylNat: formData.weeklylNat,
+        nat60: formData.nat60,
+        qcTax: formData.qcTax,
+        otherTax: formData.otherTax,
+        totalWithOptions: formData.totalWithOptions,
+        otherTaxWithOptions: formData.otherTaxWithOptions,
+        desiredPayments: formData.desiredPayments,
+        freight: formData.freight,
+        admin: formData.admin,
+        commodity: formData.commodity,
+        pdi: formData.pdi,
+        discountPer: formData.discountPer,
+        userLoanProt: formData.userLoanProt,
+        userTireandRim: formData.userTireandRim,
+        userGap: formData.userGap,
+        userExtWarr: formData.userExtWarr,
+        userServicespkg: formData.userServicespkg,
+        deliveryCharge: formData.deliveryCharge,
+        vinE: formData.vinE,
+        lifeDisability: formData.lifeDisability,
+        rustProofing: formData.rustProofing,
+        userOther: formData.userOther,
+        paintPrem: formData.paintPrem,
+        licensing: formData.licensing,
+        stockNum: formData.stockNum,
+        options: formData.options,
+        accessories: formData.accessories,
+        labour: formData.labour,
+        year: formData.year,
+        brand: formData.brand,
+        model: formData.model,
+        model1: formData.model1,
+        color: formData.color,
+        modelCode: formData.modelCode,
+        msrp: formData.msrp,
+        userEmail: formData.userEmail,
+        tradeValue: formData.tradeValue,
+        tradeDesc: formData.tradeDesc,
+        tradeColor: formData.tradeColor,
+        tradeYear: formData.tradeYear,
+        tradeMake: formData.tradeMake,
+        tradeVin: formData.tradeVin,
+        tradeTrim: formData.tradeTrim,
+        tradeMileage: formData.tradeMileage,
+        tradeLocation: formData.tradeLocation,
+        trim: formData.trim,
+        vin: formData.vin,
+        leadNote: formData.leadNote,
+        sendToFinanceNow: formData.sendToFinanceNow,
+        dealNumber: formData.dealNumber,
+        bikeStatus: formData.bikeStatus,
+        lien: formData.lien,
+        dob: formData.dob,
+        othTax: formData.othTax,
+        optionsTotal: formData.optionsTotal,
+        lienPayout: formData.lienPayout,
+        referral: formData.referral,
+        visited: formData.visited,
+        bookedApt: formData.bookedApt,
+        aptShowed: formData.aptShowed,
+        aptNoShowed: formData.aptNoShowed,
+        testDrive: formData.testDrive,
+        metService: formData.metService,
+        metManager: formData.metManager,
+        metParts: formData.metParts,
+        sold: formData.sold,
+        depositMade: formData.depositMade,
+        refund: formData.refund,
+        turnOver: formData.turnOver,
+        financeApp: formData.financeApp,
+        approved: formData.approved,
+        signed: formData.signed,
+        pickUpSet: formData.pickUpSet,
+        demoed: formData.demoed,
+        delivered: formData.delivered,
+        lastContact: formData.lastContact,
+        status: formData.status,
+        customerState: formData.customerState,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: formData.nextAppointment,
+        followUpDay: formData.followUpDay,
+        deliveryDate: formData.deliveryDate,
+        deliveredDate: formData.deliveredDate,
+        notes: formData.notes,
+        visits: formData.visits,
+        progress: formData.progress,
+        metSalesperson: formData.metSalesperson,
+        metFinance: formData.metFinance,
+        financeApplication: formData.financeApplication,
+        pickUpDate: formData.pickUpDate,
+        pickUpTime: formData.pickUpTime,
+        depositTakenDate: formData.depositTakenDate,
+        docsSigned: formData.docsSigned,
+        tradeRepairs: formData.tradeRepairs,
+        seenTrade: formData.seenTrade,
+        lastNote: formData.lastNote,
+        applicationDone: formData.applicationDone,
+        licensingSent: formData.licensingSent,
+        liceningDone: formData.liceningDone,
+        refunded: formData.refunded,
+        cancelled: formData.cancelled,
+        lost: formData.lost,
+        dLCopy: formData.dLCopy,
+        insCopy: formData.insCopy,
+        testDrForm: formData.testDrForm,
+        voidChq: formData.voidChq,
+        loanOther: formData.loanOther,
+        signBill: formData.signBill,
+        ucda: formData.ucda,
+        tradeInsp: formData.tradeInsp,
+        customerWS: formData.customerWS,
+        otherDocs: formData.otherDocs,
+        urgentFinanceNote: formData.urgentFinanceNote,
+        funded: formData.funded,
+        leadSource: formData.leadSource,
+        financeDeptProductsTotal: formData.financeDeptProductsTotal,
+        bank: formData.bank,
+        loanNumber: formData.loanNumber,
+        idVerified: formData.idVerified,
+        dealerCommission: formData.dealerCommission,
+        financeCommission: formData.financeCommission,
+        salesCommission: formData.salesCommission,
+        firstPayment: formData.firstPayment,
+        loanMaturity: formData.loanMaturity,
+      }
+    })
+    return json({ updateClient })
+  }
   switch (intent) {
+    case 'salesColumns':
+          const userEmail = formData.userEmail
+      const state = formData.columnState//JSON.stringify(formData.columnState);
+       const columnStateSalesUpdate = await prisma.columnStateSales.update({
+       where: { userEmail: userEmail },
+       data: { state },
+      });
+      return json({ columnStateSalesUpdate })
     case 'rotateSalesQueue':
       const firstPerson = await prisma.user.findFirst({
         where: {

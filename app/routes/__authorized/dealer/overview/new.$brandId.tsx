@@ -3771,7 +3771,7 @@ export default function Quote() {
   return (
     <>
       <div
-        className={`mb-10 bg-background text-foreground mt-[50px] flex  h-[100vh] min-h-screen px-4 sm:px-6 lg:px-8
+        className={`mb-10 bg-background text-foreground mt-[25px] w-[100%] h-[100%] overflow-clip  px-4 sm:px-6 lg:px-8
         `}
       >
         <div className="w-full  rounded-lg">

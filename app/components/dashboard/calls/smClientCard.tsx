@@ -25,6 +25,8 @@ import EmailClient from './emailClient';
 import PresetFollowUpDay from './presetFollowUpDay';
 import TwoDaysFromNow from './2DaysFromNow';
 import CompleteCall from './completeCall';
+import AttemptedOrReached from "~/components/dashboard/calls/setAttOrReached";
+
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];

@@ -27,19 +27,6 @@ import EmailMessages from "./notifications/email";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu";
 
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "~/components/ui/command"
-import Handler from "../IFrameComp/newEmails";
-import { cn } from "~/utils";
-import { testInbox } from "~/components/microsoft/GraphService";
-import {
   IoIosMailUnread,
   IoIosMail,
   IoMdAlert,
@@ -48,9 +35,6 @@ import {
 } from "react-icons/io";
 import { prisma } from "~/libs/prisma.server";
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
-import InterruptionsForm from "~/components/shared/interruptionsForm";
-import NewLeadForm from "~/components/shared/newLeadForm";
-import GetData from "./email/notificationsClient";
 
 function NotificationSkeleton() {
   return (
@@ -124,11 +108,6 @@ export default function NotificationSystem(interruptionsData, getEmails) {
     }
   }, [updateData]);
 
-  /***  useEffect(() => {
-      if (emailData) {
-        setEmails(emailData);
-      }
-    }, [emailData]); */
 
   if (leadError || updateError) return <div>Failed to load</div>;
   if (leadLoading || updateLoading) return <div>Loading...</div>;

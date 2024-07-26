@@ -44,7 +44,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const userEmail = user?.email
   const dataPDF = await getDailyPDF(userEmail)
   const statsData = await getMergedFinance(userEmail)
-  const comsRecords = await prisma.previousComms.findMany({ where: { userEmail: user.email, }, });
+  const comsRecords = await prisma.comm.findMany({ where: { userEmail: user.email, }, });
   return json(
     { user, metrics, dealer, dataPDF, statsData, comsRecords },
     { headers: createCacheHeaders(request) }
@@ -231,7 +231,7 @@ export default function Route() {
                         This is where you can change values like freight, admin, taxes and
                         such. If you don't have all this information with you, dont worry, you can always come back and update it later.
                       </p>
-                      <Separator className="my-4" />
+                      <Separator className="mb-4" />
 
                     </div>
 
@@ -285,8 +285,7 @@ export default function Route() {
                   {/* Row 2 */}
                   <h2 className="text-2xl font-thin mt-1">
                     OPTIONS
-                    <hr className="mb-4 text-muted-foreground" />
-
+                    <Separator className="mb-4" />
                   </h2>
                   <div className="p-4 grid gap-2">
                     <div className="h-[250px] grid grid-cols-3 gap-2 ">
@@ -308,9 +307,11 @@ export default function Route() {
                         defaultValue='updateDealerFeesAdmin'
                         name="intent"
                       />
-                      <Button size='sm' className="bg-primary ml-auto mr-2" type="submit"
+                      <Button
+                        size='sm'
+                        className="bg-primary mr-auto text-foreground"
+                        type="submit"
                         onClick={() => {
-                          setIsButtonPressed(true);
                           toast.message('Dealer Fees Updated', {})
                         }}
                       >
