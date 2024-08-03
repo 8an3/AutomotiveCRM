@@ -127,6 +127,8 @@ export async function loader({ request, params }: LoaderFunction) {
       clientfileId: true,
       discount: true,
       discPer: true,
+      dept: true,
+      status: true,
       Clientfile: {
         select: {
           id: true,
@@ -234,6 +236,41 @@ export async function action({ request, params }: LoaderFunction) {
         });
         return newEntry;
       }
+    } catch (error) {
+      console.error('Error updating or creating accessory order:', error);
+      throw error;
+    }
+  }
+  if (intent === 'updateDept') {
+    try {
+      const update = await prisma.accOrder.update({
+        where: { id: formPayload.orderId },
+        data: {
+          total: parseFloat(formPayload.total),
+          dept: formPayload.dept,
+        },
+      });
+
+      return update
+    } catch (error) {
+      console.error('Error updating or creating accessory order:', error);
+      throw error;
+    }
+  }
+  if (intent === 'updateStatus') {
+    try {
+      const update = await prisma.accOrder.update({
+        where: { id: formPayload.orderId },
+        data: {
+          total: parseFloat(formPayload.total),
+          status: formPayload.status,
+        },
+      });
+
+      return update
+    } catch (error) {
+      console.error('Error updating or creating accessory order:', error);
+      throw error;
     }
   }
   if (intent === 'createPayment') {
@@ -246,12 +283,23 @@ export async function action({ request, params }: LoaderFunction) {
         receiptId: formPayload.receiptId,
       },
     });
-    await prisma.accOrder.update({
-      where: { id: formPayload.accOrderId },
-      data: {
-        total: parseFloat(formPayload.total),
-      },
-    });
+    if (formPayload.remaining === '0') {
+      await prisma.accOrder.update({
+        where: { id: formPayload.accOrderId },
+        data: {
+          total: parseFloat(formPayload.total),
+          status: formPayload.status,
+        },
+      });
+    } else {
+      await prisma.accOrder.update({
+        where: { id: formPayload.accOrderId },
+        data: {
+          total: parseFloat(formPayload.total),
+        },
+      });
+    }
+
     return payment;
   }
   if (intent === 'updateOrderQuantity') {
@@ -547,6 +595,14 @@ export default function Purchase() {
   const [back, setBack] = useState('#FFFFFF');
   const [fore, setFore] = useState('#000000');
   const [size, setSize] = useState(100);
+  const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
+
+  useEffect(() => {
+    if (remaining === 0) {
+      toast.success('Order is paid in full!')
+    }
+  }, [remaining]);
+
 
   return (
     <div>
@@ -674,9 +730,11 @@ export default function Purchase() {
               className={cn('h-auto', changeSize === true ? "max-h-[200px]" : "max-h-[475px]", "")}>
               <CardHeader className="px-7">
                 <CardTitle className='flex items-center'>
-                  <p>
+                  <p className='mr-5'>
                     Search Parts
                   </p>
+                </CardTitle>
+                <CardDescription>
                   <search.Form method="get" action='/dealer/accessories/products/search' className='mx-auto w-[100%]'>
                     <div className="relative ml-auto flex-1 md:grow-0 ">
                       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -690,10 +748,11 @@ export default function Purchase() {
                           search.submit(e.currentTarget.form);
                         }}
                         placeholder="Search..."
-                        className="w-auto rounded-lg bg-background pl-8 max-w-[350px]"
+                        className="w-[250px] rounded-lg bg-background pl-8 max-w-[250px]"
                       />
                     </div>
-                  </search.Form></CardTitle>
+                  </search.Form>
+                </CardDescription>
               </CardHeader>
               <CardContent className={cn('h-auto overflow-y-auto ', changeSize === true ? "max-h-[115px]" : "max-h-[400px]", "")}             >
                 <Table>
@@ -1041,10 +1100,10 @@ export default function Purchase() {
                     <DropdownMenuItem onSelect={() => {
                       setData(result)
                       PrintReceipt(toReceipt)
-                    }}>Reprint Receipt</DropdownMenuItem>
-                    <DropdownMenuItem>Go To Cash</DropdownMenuItem>
+                    }}>Print Receipt</DropdownMenuItem>
+                    <DropdownMenuItem>Discount</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Trash</DropdownMenuItem>
+                    <DropdownMenuItem>Delete</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -1131,9 +1190,7 @@ export default function Purchase() {
                             <Button
                               type="submit"
                               size="icon"
-                              onClick={() => {
-                                toast.success(`Text sent!`)
-                              }}
+
                               disabled={!discDollar}
                               className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
                               <PaperPlaneIcon className="h-4 w-4" />
@@ -1191,9 +1248,7 @@ export default function Purchase() {
                             <Button
                               type="submit"
                               size="icon"
-                              onClick={() => {
-                                toast.success(`Text sent!`)
-                              }}
+
                               disabled={!discPer}
                               className='bg-primary mr-2 absolute right-1.5 top-[8px] h-4 w-4 text-foreground '>
                               <PaperPlaneIcon className="h-4 w-4" />
@@ -1219,7 +1274,7 @@ export default function Purchase() {
               <div className="grid gap-3">
                 <div className="font-semibold flex justify-between">
                   <p>
-                    Customer Information
+                    Order & Customer Information
                   </p>
                   <Button
                     size="icon"
@@ -1269,13 +1324,83 @@ export default function Purchase() {
                         <p>{order.Clientfile.postal}</p>
                       </dd>
                     </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Status</dt>
+                      <dd>
+
+
+                        <Select
+                          name='status'
+                          defaultValue={order.status}
+                          onValueChange={(value) => {
+                            const formData = new FormData();
+                            formData.append("orderId", order.id);
+                            formData.append("total", total);
+                            formData.append("intent", 'updateStatus');
+                            formData.append("status", value);
+                            console.log(formData, 'formData');
+
+                            payment.submit(formData, { method: "post" });
+                          }}>
+                          <SelectTrigger className="w-[200px] " >
+                            <SelectValue defaultValue={order.status} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Status</SelectLabel>
+                              <SelectItem value="Quote">Quote</SelectItem>
+                              <SelectItem value="Need to Order">Need to Order</SelectItem>
+                              <SelectItem value="On Order">On Order</SelectItem>
+                              <SelectItem value="Back Order">Back Order</SelectItem>
+                              <SelectItem value="Fulfilled">Fulfilled</SelectItem>
+                              <SelectItem value="Layaway">Layaway</SelectItem>
+                              <SelectItem value="Deposit">Deposit</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Dept</dt>
+                      <dd>
+
+                        <Select
+                          name='dept'
+                          defaultValue={order.dept}
+                          onValueChange={(value) => {
+                            const formData = new FormData();
+                            formData.append("orderId", order.id);
+                            formData.append("total", total);
+                            formData.append("intent", 'updateDept');
+                            formData.append("dept", value);
+                            console.log(formData, 'formData');
+
+                            payment.submit(formData, { method: "post" });
+                          }}>
+                          <SelectTrigger className="w-[200px]  ">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Deptarment</SelectLabel>
+                              <SelectItem value="Accessories">Accessories</SelectItem>
+                              <SelectItem value="Sales">Sales</SelectItem>
+                              <SelectItem value="Parts">Parts</SelectItem>
+                              <SelectItem value="Service">Service</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+
+                      </dd>
+                    </div>
                   </dl>
                 </>)}
 
               </div>
               <Separator className="my-4" />
               <div className="grid gap-3">
-                <div className="font-semibold">Payment Information</div>
+                <div className="font-semibold">Payment</div>
                 <dl className="grid gap-3">
 
                   <div className="flex flex-col" >
@@ -1302,10 +1427,19 @@ export default function Purchase() {
                         size="sm"
                         variant="outline"
                         onClick={() => setPaymentType('Debit')}
-                        className={cn(' bg-primary', paymentType === 'Debit' ? "bg-secondary" : "", "")}
+                        className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
                       >
                         <CreditCard className="h-4 w-4 text-foreground" />
                         <p className="">Debit</p>
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setPaymentType('Cheque')}
+                        className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
+                      >
+                        <CreditCard className="h-4 w-4 text-foreground" />
+                        <p className="">Cheque</p>
                       </Button>
                     </div>
                     <div className='flex items-center justify-center text-foreground mt-2'>
@@ -1321,19 +1455,26 @@ export default function Purchase() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className={cn(' bg-primary', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
+                        className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
                         onClick={() => setPaymentType('Online Transaction')}
                       >
                         <PanelTop className="h-4 w-4 text-foreground" />
                         <p className="">Online Transaction</p>
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
+                        onClick={() => setPaymentType('E-Transfer')}
+                      >
+                        <PanelTop className="h-4 w-4 text-foreground" />
+                        <p className="">E-Transfer</p>
+                      </Button>
                     </div>
                   </div>
                 </dl>
               </div>
-              <Separator className="my-4" />
               <div className="grid gap-3">
-                <div className="font-semibold">Payment</div>
                 <ul className="grid gap-3">
                   {order.Payments && order.Payments.map((result, index) => (
                     <li className="flex items-center justify-between" key={index}                    >
@@ -1346,6 +1487,9 @@ export default function Purchase() {
                     <span>${parseFloat(total) - parseFloat(totalAmountPaid)}</span>
 
                   </li>
+                  {parseFloat(total) - parseFloat(totalAmountPaid) === 0 && (
+                    <input type='hidden' name='status' value='Fulfilled' />
+                  )}
                   {paymentType !== '' && (
                     <>
                       <li className="flex items-center justify-between">
@@ -1367,7 +1511,7 @@ export default function Purchase() {
                               type="submit"
                               size="icon"
                               onClick={() => {
-                                toast.success(`Text sent!`)
+                                toast.success(`Payment rendered!`)
                               }}
                               disabled={inputLength === 0}
                               className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>

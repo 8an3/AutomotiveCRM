@@ -1401,9 +1401,6 @@ export function Overview({ outletSize }) {
       setSecPage(false);
     }
   }
-  const isDate = (date) => !isNaN(date) && date instanceof Date;
-  const date = new Date();
-  const lockedValue = Boolean(true);
 
   function DealerOptionsAmounts() {
     return (
@@ -1586,24 +1583,8 @@ export function Overview({ outletSize }) {
       </>
     );
   }
-  const formDataSizeInBytes = getStateSizeInBytes(formData);
-  //console.log(`formData size: ${formDataSizeInBytes} bytes`);
-  //console.log(`formData size: ${(formDataSizeInBytes / 1024).toFixed(2)} KB`);
-  // console.log(`formData size: ${(formDataSizeInBytes / (1024 * 1024)).toFixed(2)} MB`);
-  // console.log('bmwmoto', bmwMoto)
-  // console.log(';bmwMo// Import the axios library
-
-  // console.log(finance)
-  // console.log(deFees)
-  // console.log(modelData)
-  // console.log(accessories)
-  // console.log(initial)
-  // console.log(accTotal)
-  // console.log(essentials)
 
   let today2 = new Date();
-  let today3 = new Date().toISOString();
-  const nextAppt = today2.setHours(today2.getHours() + 24);
 
   useEffect(() => {
     const button = document.getElementById("myButton");
@@ -1734,18 +1715,7 @@ export function Overview({ outletSize }) {
   const [emailFinanceId, setEmailFinanceId] = useState('');
   const [emailTemplate, setEmailTemplate] = useState('');
   const [emailValue, setEmailValue] = useState('');
-  const [body, setBody] = useState('');
 
-  const [emailFormData, setEmailFormData] = useState({
-    modelData: modelData,
-    deFees: deFees,
-    body: body,
-    finance: finance,
-    user: user,
-  });
-
-
-  const [valueCal, onChange] = useState<Value>(new Date());
   const [dateCal, setDate] = React.useState<Date>("");
   const now = new Date();
   const currentHour = now.getHours();
@@ -1753,7 +1723,6 @@ export function Overview({ outletSize }) {
   const currentSecond = now.getSeconds();
   const [hour, setHour] = useState(currentHour);
   const [min, setMin] = useState(currentMinute);
-  const [secs, setSecs] = useState(currentSecond);
   const currentTime = `${hour}:${min}:${currentSecond}`;
   console.log(`Current time is `, currentTime);
   const time = `${hour}:${min}:00`;
@@ -1849,7 +1818,6 @@ export function Overview({ outletSize }) {
     return json({ update })
   };
 
-
   const toReceipt =
   {
     "qrCode": finance.id,
@@ -1880,8 +1848,6 @@ export function Overview({ outletSize }) {
     "address": finance.address,
     "whichTemplate": 'Sales',
   }
-
-
 
   return (
     <div className="">
@@ -2011,7 +1977,6 @@ export function Overview({ outletSize }) {
                         SubmitLocked()
                       }}
                     >
-
                       Finance Turnover
                     </DropdownMenuItem>
                   </Form>

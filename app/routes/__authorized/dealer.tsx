@@ -45,6 +45,7 @@ import { Moon, Sun } from "~/icons";
 import SearchFunction2 from './dealer/searchTable';
 import useSWR from 'swr';
 import SearchByOrderFunction from './dealer/searchByOrder';
+import { toast } from 'sonner';
 
 
 export async function loader({ request, params }: LoaderFunction) {
@@ -531,13 +532,108 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
     setDropdownOpen(prev => !prev); // Toggle dropdown visibility
   };
 
+  useEffect(() => {
+    if (messages) {
+      messages.forEach(item => {
+        if (!item.reads || Object.keys(item.reads).length === 0) {
+          if (item.subType === 'email') {
+            toast(`Incoming email! `, {
+              description: `${item.title}`,
+              duration: 10000,
+              action: {
+                label: 'Client',
+                onClick: () => {
+                  const formData = new FormData();
+                  formData.append("notificationId", item.id);
+                  formData.append("userEmail", user.email);
+                  formData.append("userName", user.name);
+                  formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
+                  formData.append("intent", 'newMsg');
+                  submit(formData, { method: "post" });
+                }
+              },
+
+            });
+          }
+          if (item.subType === 'sms') {
+            toast(`Incoming text message! `, {
+              description: `${item.title} - ${item.content}`,
+              duration: 10000,
+              action: {
+                label: 'Client',
+                onClick: () => {
+                  const formData = new FormData();
+                  formData.append("notificationId", item.id);
+                  formData.append("userEmail", user.email);
+                  formData.append("userName", user.name);
+                  formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
+                  formData.append("intent", 'newMsg');
+                  submit(formData, { method: "post" });
+                }
+              }
+            });
+          }
+
+        }
+      });
+    }
+  }, [messages]);
+  useEffect(() => {
+    if (lead) {
+      lead.forEach(item => {
+        if (!item.reads || Object.keys(item.reads).length === 0) {
+          toast(`Incoming new lead! `, {
+            description: `${item.title} - ${item.content}`,
+            duration: Infinity,
+            action: {
+              label: 'Leads',
+              onClick: () => {
+                const formData = new FormData();
+                formData.append("notificationId", item.id);
+                formData.append("userEmail", user.email);
+                formData.append("userName", user.name);
+                formData.append("navigate", `/dealer/leads/sales/newLeads`);
+                formData.append("intent", 'newLead');
+                submit(formData, { method: "post" });
+              }
+            },
+          });
+        }
+      });
+    }
+  }, [lead]);
+  useEffect(() => {
+    if (lead) {
+      lead.forEach(item => {
+        if (!item.reads || Object.keys(item.reads).length === 0) {
+          toast(`Incoming new lead! `, {
+            description: `${item.title} - ${item.content}`,
+            duration: Infinity,
+            action: {
+              label: 'Leads',
+              onClick: () => {
+                const formData = new FormData();
+                formData.append("notificationId", item.id);
+                formData.append("userEmail", user.email);
+                formData.append("userName", user.name);
+                formData.append("navigate", `/dealer/leads/sales/newLeads`);
+                formData.append("intent", 'newLead');
+                submit(formData, { method: "post" });
+              }
+            },
+          });
+        }
+      });
+    }
+  }, [lead]);
+
+
+
   return (
     <>
       <DropdownMenu open={isDropdownOpen} onOpenChange={setDropdownOpen}>
         <DropdownMenuTrigger >
-          {shouldShowNotification && (
-            <span className="animate-ping fixed left-[15px] top-[18px] inline-flex h-[20px] w-[20px] rounded-full bg-sky-400 opacity-75"></span>
-          )}
+
           <Button
             onClick={handleButtonClick}
             variant='ghost' size='icon' className=' left-[12px] top-[15px] z-50 fixed  inline-flex cursor-pointer text-foreground items-center justify-center'>

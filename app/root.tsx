@@ -1,5 +1,5 @@
 import { json, redirect, createCookie } from "@remix-run/node";
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useLoaderData, useNavigation, useRouteError, } from "@remix-run/react";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useFetcher, useLoaderData, useNavigation, useRouteError, } from "@remix-run/react";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
 import { IconoirProvider } from "iconoir-react";
 import React, { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import { type RootLoaderData } from "~/hooks";
 import { Theme } from "@radix-ui/themes";
 //import FinanceIdContext from "~/components/ui/financeIdContext";
 import slider from "~/styles/slider.css";
-import { Toaster } from "sonner";
+import { toast, Toaster } from "sonner";
 import { getSession, commitSession } from "./sessions/auth-session.server";
 import { GlobalLoading } from "./components/ui/globalLoading";
 import nProgressStyles from "~/styles/loader.css";
@@ -29,6 +29,7 @@ import { Copy } from "lucide-react";
 import { FaCheck } from "react-icons/fa";
 import Spinner from "./components/shared/spinner";
 import { themeSessionResolver } from "~/sessions";
+import sonner from "~/styles/sonner.css";
 
 import {
   PreventFlashOnWrongTheme,
@@ -36,6 +37,7 @@ import {
   ThemeProvider as RemixThemeProvider,
   useTheme as remixUseTheme,
 } from "remix-themes";
+import { prisma } from "./libs";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwind },
@@ -45,7 +47,7 @@ export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg" },
   { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg" },
   { rel: "apple-touch-icon", sizes: "180x180", href: "/money180.svg" },
-  { rel: "stylesheet", href: nProgressStyles },
+  { rel: "stylesheet", href: sonner },
   { rel: "stylesheet", href: secondary },
 ];
 
@@ -61,6 +63,7 @@ export async function loader({ request }: LoaderArgs) {
   if (!email) {
     return json({ ENV });
   }
+
   const referrer = request.headers.get('referer');
   const user = await model.user.query.getForSession({ email: email });
 
@@ -97,6 +100,23 @@ function App() {
   const data = useLoaderData<typeof loader>();
   const [theme] = remixUseTheme();
   const defaultTheme = theme ? theme : "dark";
+  const navigation = useNavigation();
+  const active = navigation.state !== "idle";
+  const promise = () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Sonner' }), 5000));
+
+  useEffect(() => {
+    if (active) {
+      toast.promise(promise(), {
+        loading: 'Loading...',
+        // success: (data) => `${data.name} toast has been added`,
+        error: 'Error',
+      });
+    }
+  }, [active]);
+
+
+
+  //  <Spinner />
 
   return (
     <html lang="en" data-theme={defaultTheme}>
@@ -124,18 +144,19 @@ function App() {
                 )}`,
               }}
             />
-            <Toaster richColors />
             {configDev.isDevelopment &&
               configDev.features.debugScreens && (
                 <TailwindIndicator />
               )}
           </IconoirProvider>
+
         </TooltipProvider>
         <VercelAnalytics />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        <Spinner />
+        <Toaster richColors closeButton />
+
       </body>
     </html>
   );

@@ -92,6 +92,16 @@ import useSWR from 'swr'
 import ScanSound from '~/images/scan.mp4'
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
 import QRCode from 'react-qr-code';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select"
+
 
 export async function loader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
@@ -112,6 +122,8 @@ export async function loader({ request, params }: LoaderFunction) {
       discount: true,
       discPer: true,
       clientfileId: true,
+      dept: true,
+      status: true,
       Clientfile: {
         select: {
           id: true,
@@ -215,6 +227,7 @@ export async function action({ request, params }: ActionFunction) {
 export default function Purchase() {
   const { user, orders, sevTotal, tax, filteredOrders30, thiryTotal } = useLoaderData();
   let ref = useRef();
+  let payment = useFetcher();
   let search = useFetcher();
   const submit = useSubmit();
   const navigate = useNavigate()
@@ -566,7 +579,6 @@ export default function Purchase() {
                 <TabsTrigger value="month">Last 30 Days</TabsTrigger>
                 <TabsTrigger value="Search Orders">Search Orders</TabsTrigger>
                 <TabsTrigger value="End Of Day">End Of Day</TabsTrigger>
-                <TabsTrigger value="Print Labels">Print Labels</TabsTrigger>
               </TabsList>
             </div>
             <TabsContent value="week">
@@ -616,17 +628,39 @@ export default function Purchase() {
                             <TableCell className="hidden sm:table-cell">
                               Sale
                             </TableCell>
-                            <TableCell className=" ">
-                              {result.dept}
-                            </TableCell>
+
                             <TableCell className="hidden sm:table-cell">
                               <Badge className="text-xs" variant="secondary">
-                                {result.fullfilled ? (
-                                  <p>Fullfilled</p>
-                                ) : (
-                                  <p>Not Completed</p>
-                                )}
+                                {result.status}
                               </Badge>
+                            </TableCell>
+                            <TableCell className=" ">
+                              <Select
+                                name='dept'
+                                defaultValue={result.dept}
+                                onValueChange={(value) => {
+                                  const formData = new FormData();
+                                  formData.append("orderId", result.id);
+
+                                  formData.append("intent", 'updateDept');
+                                  formData.append("dept", value);
+                                  console.log(formData, 'formData');
+
+                                  payment.submit(formData, { method: "post" });
+                                }}>
+                                <SelectTrigger className="w-[200px]  ">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Deptarment</SelectLabel>
+                                    <SelectItem value="Accessories">Accessories</SelectItem>
+                                    <SelectItem value="Sales">Sales</SelectItem>
+                                    <SelectItem value="Parts">Parts</SelectItem>
+                                    <SelectItem value="Service">Service</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                               {new Date(result.createdAt).toLocaleDateString(
@@ -944,6 +978,9 @@ export default function Purchase() {
                                           ).toLocaleDateString("en-US", options2)}
                                         </TableCell>
                                         <TableCell className="text-right">
+                                          {result.dept}
+                                        </TableCell>
+                                        <TableCell className="text-right">
                                           ${result.total}
                                         </TableCell>
                                         <TableCell className="text-right">
@@ -960,13 +997,13 @@ export default function Purchase() {
                                               </Button>
                                             </TooltipTrigger>
                                             <TooltipContent side="right">
-                                              Previous Order
+                                              See Details
                                             </TooltipContent>
                                           </Tooltip>
                                           <Tooltip>
                                             <TooltipTrigger asChild>
                                               <Link
-                                                to={`/dealer/accessories/previousOrder/${result.id}`}
+                                                to={`/dealer/accessories/newOrder/${result.id}`}
                                               >
                                                 <Button
                                                   size="icon"
@@ -978,27 +1015,10 @@ export default function Purchase() {
                                               </Link>
                                             </TooltipTrigger>
                                             <TooltipContent side="right">
-                                              Reprint Receipt
+                                              Go To Order
                                             </TooltipContent>
                                           </Tooltip>
-                                          <Tooltip>
-                                            <TooltipTrigger asChild>
-                                              <Link
-                                                to={`/dealer/accessories/newOrder/${result.id}`}
-                                              >
-                                                <Button
-                                                  size="icon"
-                                                  variant="ghost"
-                                                  className="hover:bg-primary"
-                                                >
-                                                  <Banknote className="h-5 w-5" />
-                                                </Button>
-                                              </Link>
-                                            </TooltipTrigger>
-                                            <TooltipContent side="right">
-                                              Go To Cash
-                                            </TooltipContent>
-                                          </Tooltip>
+
                                         </TableCell>
                                       </TableRow>
                                     </TableBody>
@@ -1070,154 +1090,7 @@ export default function Purchase() {
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent value="Print Labels">
-              <Tabs defaultValue="Labels">
-                <TabsList>
-                  <TabsTrigger value="Labels">Labels</TabsTrigger>
-                  <TabsTrigger value="Label Maker">Label Maker</TabsTrigger>
-                </TabsList>
-                <TabsContent value="Labels">
-                  <div>
-                    <div className='flex'>
-                      <products.Form method="get" action='/dealer/accessories/products/search'>
-                        <div className="relative ml-auto flex-1 md:grow-0 ">
-                          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            ref={ref}
-                            type="search"
-                            name="q"
-                            onChange={e => {
-                              //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
-                              products.submit(e.currentTarget.form);
-                            }}
-                            placeholder="Search..."
-                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-                          />
-                        </div>
-                      </products.Form>
-                      <div className='grid grid-cols-1' >
-                        <div id="sourceSelectPanel" className='mx-auto w-[100%] mt-2' style={{ display: 'none' }}>
-                          <select id="sourceSelect" className='w-[100%] text-sm mx-auto rounded-lg px-3 py-1 bg-background text-foreground border-border border' style={{ maxWidth: '400px' }}></select>
-                        </div>
-                        <div className='flex  justify-between' >
-                          <div className='flex flex-col mt-auto'>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="h-7 gap-1 text-sm mb-3 bg-primary"
-                              id="startButton"
-                            >
-                              <Scan className="h-3.5 w-3.5" />
-                              <span className="sr-only sm:not-sr-only text-foreground">Scan</span>
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="h-7 gap-1 text-sm  "
-                              id="resetButton"
-                            >
-                              <Scan className="h-3.5 w-3.5" />
-                              <span className="sr-only sm:not-sr-only text-foreground">Reset</span>
-                            </Button>
-                          </div>
-                          <div className='grid grid-cols-1 ml-2 mt-auto ' >
-                            <div className='rounded-[5px] border border-border mx-auto mt-auto' style={{ padding: 0, width: '150px', maxHeight: '100px', overflow: 'hidden', }}>
-                              <video id="video" style={{ width: '150px', maxHeight: '100px', }}></video>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div style={{ display: 'none' }}>
-                        <div style={{ padding: 0, width: '100px', maxHeight: '100px', overflow: 'hidden', border: '1px solid gray' }}>
-                          <video id="video" style={{ width: '100px' }}></video>
-                        </div>
-                        <input className='text-background bg-background border-background' type="file" id="imageUploadButton" accept="image/*" style={{ display: 'inline-block', }} />
-                        <label className='text-background' htmlFor="sourceSelect">Change video source:</label>
-                        <label className='text-background' >Result:</label>
-                        <pre><code className='text-background' id="result"></code></pre>
 
-                      </div>
-                    </div>
-                    <div>
-
-                      <Table>
-                        <TableHeader>
-                          <TableRow className='border-border'>
-                            <TableHead>
-                              Name & Price
-                            </TableHead>
-                            <TableHead className="">
-                              Location
-                            </TableHead>
-                            <TableHead className="">
-                              ID
-                            </TableHead>
-                            <TableHead>Quantity</TableHead>
-                            <TableHead className="">
-                              Add To Order
-                            </TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {products.data &&
-                            products.data.map((result, index) => (
-                              <TableRow key={index} className="hover:bg-accent border-border">
-                                <TableCell>
-                                  <div>
-                                    {result.name}
-                                  </div>
-                                  <div>
-                                    {result.price}
-                                  </div>
-                                </TableCell>
-                                <TableCell className="">
-                                  {result.location}
-                                </TableCell>
-                                <TableCell className="">
-                                  {result.id}
-                                </TableCell>
-                                <TableCell>
-                                  <input
-                                    type="number"
-                                    min="1"
-                                    value={quantities[result.id] || 1}
-                                    onChange={(e) => handleQuantityChange(result.id, parseInt(e.target.value))}
-                                  />
-                                </TableCell>
-                                <TableCell>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="bg-primary"
-                                        onClick={() => handleAddToOrder(result)}
-                                      >
-                                        <Plus className="h-5 w-5" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="right">
-                                      Add To Labels
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                    <pre>{JSON.stringify(localData, null, 2)}</pre>
-                  </div>
-                </TabsContent>
-                <TabsContent value="Label Maker">
-                  <ClientOnly fallback={<SimplerStaticVersion />} >
-                    {() => (
-                      <PrintLabels inputs={localData} />
-                    )}
-                  </ClientOnly>
-                </TabsContent>
-              </Tabs>
-            </TabsContent>
           </Tabs>
         </div>
         <div>
@@ -1367,9 +1240,7 @@ export default function Purchase() {
                                 <Button
                                   type="submit"
                                   size="icon"
-                                  onClick={() => {
-                                    toast.success(`Text sent!`)
-                                  }}
+
                                   disabled={!discDollar}
                                   className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
                                   <PaperPlaneIcon className="h-4 w-4" />
@@ -1427,9 +1298,7 @@ export default function Purchase() {
                                 <Button
                                   type="submit"
                                   size="icon"
-                                  onClick={() => {
-                                    toast.success(`Text sent!`)
-                                  }}
+
                                   disabled={!discPer}
                                   className='bg-primary mr-2 absolute right-1.5 top-[9px] h-4 w-4 text-foreground '>
                                   <PaperPlaneIcon className="h-4 w-4" />
@@ -1719,9 +1588,7 @@ export default function Purchase() {
                                   <Button
                                     type="submit"
                                     size="icon"
-                                    onClick={() => {
-                                      toast.success(`Text sent!`)
-                                    }}
+
                                     disabled={!discDollar}
                                     className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
                                     <PaperPlaneIcon className="h-4 w-4" />
@@ -1779,9 +1646,7 @@ export default function Purchase() {
                                   <Button
                                     type="submit"
                                     size="icon"
-                                    onClick={() => {
-                                      toast.success(`Text sent!`)
-                                    }}
+
                                     disabled={!discPer}
                                     className='bg-primary mr-2 absolute right-1.5 top-[9px] h-4 w-4 text-foreground '>
                                     <PaperPlaneIcon className="h-4 w-4" />
@@ -1960,3 +1825,151 @@ async function getTotalFromLast30Days() {
   );
   return formattedSumTotal;
 }
+/** <TabsContent value="Print Labels">
+              <Tabs defaultValue="Labels">
+                <TabsList>
+                  <TabsTrigger value="Labels">Labels</TabsTrigger>
+                  <TabsTrigger value="Label Maker">Label Maker</TabsTrigger>
+                </TabsList>
+                <TabsContent value="Labels">
+                  <div>
+                    <div className='flex'>
+                      <products.Form method="get" action='/dealer/accessories/products/search'>
+                        <div className="relative ml-auto flex-1 md:grow-0 ">
+                          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            ref={ref}
+                            type="search"
+                            name="q"
+                            onChange={e => {
+                              //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                              products.submit(e.currentTarget.form);
+                            }}
+                            placeholder="Search..."
+                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                          />
+                        </div>
+                      </products.Form>
+                      <div className='grid grid-cols-1' >
+                        <div id="sourceSelectPanel" className='mx-auto w-[100%] mt-2' style={{ display: 'none' }}>
+                          <select id="sourceSelect" className='w-[100%] text-sm mx-auto rounded-lg px-3 py-1 bg-background text-foreground border-border border' style={{ maxWidth: '400px' }}></select>
+                        </div>
+                        <div className='flex  justify-between' >
+                          <div className='flex flex-col mt-auto'>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 gap-1 text-sm mb-3 bg-primary"
+                              id="startButton"
+                            >
+                              <Scan className="h-3.5 w-3.5" />
+                              <span className="sr-only sm:not-sr-only text-foreground">Scan</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 gap-1 text-sm  "
+                              id="resetButton"
+                            >
+                              <Scan className="h-3.5 w-3.5" />
+                              <span className="sr-only sm:not-sr-only text-foreground">Reset</span>
+                            </Button>
+                          </div>
+                          <div className='grid grid-cols-1 ml-2 mt-auto ' >
+                            <div className='rounded-[5px] border border-border mx-auto mt-auto' style={{ padding: 0, width: '150px', maxHeight: '100px', overflow: 'hidden', }}>
+                              <video id="video" style={{ width: '150px', maxHeight: '100px', }}></video>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ display: 'none' }}>
+                        <div style={{ padding: 0, width: '100px', maxHeight: '100px', overflow: 'hidden', border: '1px solid gray' }}>
+                          <video id="video" style={{ width: '100px' }}></video>
+                        </div>
+                        <input className='text-background bg-background border-background' type="file" id="imageUploadButton" accept="image/*" style={{ display: 'inline-block', }} />
+                        <label className='text-background' htmlFor="sourceSelect">Change video source:</label>
+                        <label className='text-background' >Result:</label>
+                        <pre><code className='text-background' id="result"></code></pre>
+
+                      </div>
+                    </div>
+                    <div>
+
+                      <Table>
+                        <TableHeader>
+                          <TableRow className='border-border'>
+                            <TableHead>
+                              Name & Price
+                            </TableHead>
+                            <TableHead className="">
+                              Location
+                            </TableHead>
+                            <TableHead className="">
+                              ID
+                            </TableHead>
+                            <TableHead>Quantity</TableHead>
+                            <TableHead className="">
+                              Add To Order
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {products.data &&
+                            products.data.map((result, index) => (
+                              <TableRow key={index} className="hover:bg-accent border-border">
+                                <TableCell>
+                                  <div>
+                                    {result.name}
+                                  </div>
+                                  <div>
+                                    {result.price}
+                                  </div>
+                                </TableCell>
+                                <TableCell className="">
+                                  {result.location}
+                                </TableCell>
+                                <TableCell className="">
+                                  {result.id}
+                                </TableCell>
+                                <TableCell>
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    value={quantities[result.id] || 1}
+                                    onChange={(e) => handleQuantityChange(result.id, parseInt(e.target.value))}
+                                  />
+                                </TableCell>
+                                <TableCell>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="bg-primary"
+                                        onClick={() => handleAddToOrder(result)}
+                                      >
+                                        <Plus className="h-5 w-5" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                      Add To Labels
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    <pre>{JSON.stringify(localData, null, 2)}</pre>
+                  </div>
+                </TabsContent>
+                <TabsContent value="Label Maker">
+                  <ClientOnly fallback={<SimplerStaticVersion />} >
+                    {() => (
+                      <PrintLabels inputs={localData} />
+                    )}
+                  </ClientOnly>
+                </TabsContent>
+              </Tabs>
+            </TabsContent> */

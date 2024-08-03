@@ -1051,9 +1051,13 @@ export async function Board() {
     { board: "dev", column: "issue", item: "add notes ability to inventory, parts" },
     { board: "dev", column: "PAC", item: "print barcodes use same pdf generator u use now" },
     { board: "dev", column: "PAC", item: "add auto focus to forms so first input alrady has cursor" },
+    { board: "dev", column: "issue", item: "Print receipt, have qrcode on it so you can just scan it" },
+    { board: "dev", column: "issue", item: "service receipts / quotes qrcode on it to just scan it and have it pulled up no more messing with looking for customers" },
 
   ]
   const issue = [
+    { board: "dev", column: "PAC", item: "inventory counter, like u know the ones u see at walmart" },
+
     { board: "dev", column: "PAC", item: "move accessories pages that are needed else where to components and import them that way so you can use your routes actions - this did not work first try" },
     { board: "dev", column: "PAC", item: "give the ability to transfer orders to other depts and have them able to claim it to the work order or unit" },
     { board: "dev", column: "PAC", item: "copy over the create and update orders into the finance file so you can create and update the orders attached to the unit" },
@@ -1061,7 +1065,6 @@ export async function Board() {
     { board: "dev", column: "PAC", item: "customer file sync between mobile and desktop" },
     { board: "dev", column: "issue", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try" },
     { board: "dev", column: "issue", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },
-    { board: "dev", column: "issue", item: "Print receipt, have qrcode on it so you can just scan it" },
     { board: "dev", column: "issue", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
     { board: "dev", column: "PAC", item: "end of day reports, chose date so you can print any day" },
     { board: "dev", column: "PAC", item: "receiving" },
@@ -1069,7 +1072,6 @@ export async function Board() {
 
     { board: "dev", column: "issue", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
 
-    { board: "dev", column: "issue", item: "service receipts / quotes qrcode on it to just scan it and have it pulled up no more messing with looking for customers" },
     { board: "dev", column: "issue", item: "for the tech have clock in clock out, but also a check off list of the items that need to be done if they want it that tracks what item was done when and to ensure nothing gets missed" },
     { board: "dev", column: "issue", item: "service board to have a section with buttons that adds the most purchased services to the work order making it a breeze for the desk to produce quotes fast, that even inputs the part numbers, hours to complete, etc will need to make a dashboard where the service manager can set this up, maybe even produce a list of common parts associated with those jobs incase the customer doesn't like that specifc tire" },
     { board: "dev", column: "issue", item: "try to make it so the service writers dont have to type anything in barely, maybe even have a section of most typed comments, have scanner in service as well so the can jkust scan parts instead of inputing part numbers" },
@@ -1081,7 +1083,6 @@ export async function Board() {
 
 
 
-    { board: "dev", column: "PAC", item: "inventory counter, like u know the ones u see at walmart" },
     { board: "dev", column: "PAC", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase" },
   ]
   const ideas = [

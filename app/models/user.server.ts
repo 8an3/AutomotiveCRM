@@ -60,6 +60,7 @@ export const query = {
         returning: true,
         phone: true,
         role: { select: { symbol: true, name: true } },
+        customerSync: { select: { orderId: true, updatedAt: true } },
         profile: {
           select: {
             id: true,

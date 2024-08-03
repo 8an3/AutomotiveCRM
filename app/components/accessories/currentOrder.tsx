@@ -873,9 +873,7 @@ export default function Purchase({ user, order, tax, }) {
                             <Button
                               type="submit"
                               size="icon"
-                              onClick={() => {
-                                toast.success(`Text sent!`)
-                              }}
+
                               disabled={!discDollar}
                               className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
                               <PaperPlaneIcon className="h-4 w-4" />
@@ -933,9 +931,7 @@ export default function Purchase({ user, order, tax, }) {
                             <Button
                               type="submit"
                               size="icon"
-                              onClick={() => {
-                                toast.success(`Text sent!`)
-                              }}
+
                               disabled={!discPer}
                               className='bg-primary mr-2 absolute right-1.5 top-[8px] h-4 w-4 text-foreground '>
                               <PaperPlaneIcon className="h-4 w-4" />
@@ -1118,7 +1114,7 @@ export default function Purchase({ user, order, tax, }) {
                               type="submit"
                               size="icon"
                               onClick={() => {
-                                toast.success(`Text sent!`)
+                                toast.success(`Payment rendered!`)
                               }}
                               disabled={inputLength === 0}
                               className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>

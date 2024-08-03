@@ -1167,7 +1167,6 @@ model AccOrder {
   updatedAt DateTime @updatedAt
 
   userEmail  String?
-  fulfilled  Boolean?
   attachedId String?
   dept       String?
   total      Float?
@@ -1190,7 +1189,9 @@ model AccOrder {
 }
 
 model Payment {
-  id          String  @id @default(cuid())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
   accOrderId  String
   paymentType String?
   amountPaid  Float?
@@ -1304,113 +1305,78 @@ model LockFinanceTerminals {
   response     Boolean? @default(false)
 }
 
-// dashboardId         String? @unique
-//  financeId           String? @unique
 model Finance {
-  id String @id @default(cuid())
+  // employees
+  financeManager     String?
+  userEmail          String?
+  userName           String? // need to add //   // need to add on site actions //
+  financeManagerName String? // need to add //   // need to add on site actions //
 
-  clientfileId   String?
-  activixId      String? @unique
-  theRealActId   String?
-  financeManager String?
-  userEmail      String?
   // client
-  email          String?
-  firstName      String?
-  lastName       String?
-  phone          String?
-  name           String?
-  address        String?
-  city           String?
-  postal         String?
-  province       String?
-  dl             String?
-  typeOfContact  String?
-  timeToContact  String?
-  dob            String?
+  email         String?
+  firstName     String?
+  lastName      String?
+  phone         String?
+  name          String?
+  address       String?
+  city          String?
+  postal        String?
+  province      String?
+  dl            String?
+  typeOfContact String?
+  timeToContact String?
+  dob           String?
 
   // finance
-  othTax              String?
-  optionsTotal        String?
-  lienPayout          String?
-  leadNote            String?
-  sendToFinanceNow    String?
-  dealNumber          String?
-  iRate               String?
-  months              String?
-  discount            String?
-  total               String?
-  onTax               String?
-  on60                String?
-  biweekly            String?
-  weekly              String?
-  weeklyOth           String?
-  biweekOth           String?
-  oth60               String?
-  weeklyqc            String?
-  biweeklyqc          String?
-  qc60                String?
-  deposit             String?
-  biweeklNatWOptions  String?
-  weeklylNatWOptions  String?
-  nat60WOptions       String?
-  weeklyOthWOptions   String?
-  biweekOthWOptions   String?
-  oth60WOptions       String?
-  biweeklNat          String?
-  weeklylNat          String?
-  nat60               String?
-  qcTax               String?
-  otherTax            String?
-  totalWithOptions    String?
-  otherTaxWithOptions String?
-  desiredPayments     String?
-  admin               String?
-  commodity           String?
-  pdi                 String?
-  discountPer         String?
-  userLoanProt        Int?
-  userTireandRim      String?
-  userGap             Int?
-  userExtWarr         String?
-  userServicespkg     Int?
-  deliveryCharge      Int?
-  vinE                Int?
-  lifeDisability      Int?
-  rustProofing        Int?
-  userOther           Int?
-  // wanted unit
-  paintPrem           String?
-  licensing           String?
-  stockNum            String?
-  options             String?
-  accessories         Int?
-  freight             String?
-  labour              String?
-  year                String?
-  brand               String?
-  mileage             String?
-  model               String?
-  model1              String?
-  color               String?
-  modelCode           String?
-  msrp                String?
-  trim                String?
-  vin                 String?
-  bikeStatus          String?
-  invId               String?
-  //trade
-  tradeValue          String?
-  tradeDesc           String?
-  tradeColor          String?
-  tradeYear           String?
-  tradeMake           String?
-  tradeVin            String?
-  tradeTrim           String?
-  tradeMileage        String?
-  tradeLocation       String?
-  lien                String?
-
+  othTax                   String?
+  optionsTotal             String?
+  lienPayout               String?
+  leadNote                 String?
+  sendToFinanceNow         String?
+  dealNumber               String?
+  iRate                    String?
+  months                   String?
+  discount                 String?
+  total                    String?
+  onTax                    String?
+  on60                     String?
+  biweekly                 String?
+  weekly                   String?
+  weeklyOth                String?
+  biweekOth                String?
+  oth60                    String?
+  weeklyqc                 String?
+  biweeklyqc               String?
+  qc60                     String?
+  deposit                  String?
+  biweeklNatWOptions       String?
+  weeklylNatWOptions       String?
+  nat60WOptions            String?
+  weeklyOthWOptions        String?
+  biweekOthWOptions        String?
+  oth60WOptions            String?
+  biweeklNat               String?
+  weeklylNat               String?
+  nat60                    String?
+  qcTax                    String?
+  otherTax                 String?
+  totalWithOptions         String?
+  otherTaxWithOptions      String?
+  desiredPayments          String?
+  admin                    String?
+  commodity                String?
+  pdi                      String?
+  discountPer              String?
+  userLoanProt             Int?
+  userTireandRim           String?
+  userGap                  Int?
+  userExtWarr              String?
+  userServicespkg          Int?
+  deliveryCharge           Int?
+  vinE                     Int?
+  lifeDisability           Int?
+  rustProofing             Int?
+  userOther                Int?
   // dates
   referral                 String?
   visited                  String?
@@ -1483,25 +1449,57 @@ model Finance {
   loanMaturity             String?
   quoted                   String?
 
-  InPerson           Int?    @default(0)
-  Phone              Int?    @default(0)
-  SMS                Int?    @default(0)
-  Email              Int?    @default(0)
-  Other              Int?    @default(0)
-  // need to add on site actions //
-  // need to add //
-  userName           String?
-  financeManagerName String?
+  // calls
+  InPerson Int? @default(0)
+  Phone    Int? @default(0)
+  SMS      Int? @default(0)
+  Email    Int? @default(0)
+  Other    Int? @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  //------already moved
+  // wanted unit
+  paintPrem     String?
+  licensing     String?
+  stockNum      String?
+  options       String?
+  accessories   Int?
+  freight       String?
+  labour        String?
+  year          String?
+  brand         String?
+  mileage       String?
+  model         String?
+  model1        String?
+  color         String?
+  modelCode     String?
+  msrp          String?
+  trim          String?
+  vin           String?
+  bikeStatus    String?
+  invId         String?
+  //trade
+  tradeValue    String?
+  tradeDesc     String?
+  tradeColor    String?
+  tradeYear     String?
+  tradeMake     String?
+  tradeVin      String?
+  tradeTrim     String?
+  tradeMileage  String?
+  tradeLocation String?
+  lien          String?
 
-  finManOptions  FinManOptions[]  @relation("finance")
-  bmwMotoOptions BmwMotoOptions[] @relation("finance")
-  financeStorage FinanceStorage[] @relation("finance")
-  clientApts     ClientApts[]     @relation("finance")
-  uCDAForm       UCDAForm[]       @relation("finance")
-
+  id                  String                @id @default(cuid())
+  clientfileId        String?
+  activixId           String?               @unique
+  theRealActId        String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  finManOptions       FinManOptions[]       @relation("finance")
+  bmwMotoOptions      BmwMotoOptions[]      @relation("finance")
+  financeStorage      FinanceStorage[]      @relation("finance")
+  clientApts          ClientApts[]          @relation("finance")
+  uCDAForm            UCDAForm[]            @relation("finance")
   FinCanOptions       FinCanOptions[]       @relation("finance")
   Comm                Comm[]
   FinanceDeptProducts FinanceDeptProducts[]
@@ -1509,16 +1507,79 @@ model Finance {
   FinanceTradeUnit    FinanceTradeUnit[]
   AccOrders           AccOrder[]
   WorkOrders          WorkOrder[]
+  FinancePayments     FinancePayment[]
+}
+
+model FinancePayment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  paymentType String?
+  amountPaid  Float?
+  cardNum     String?
+  receiptId   String?
+
+  financeId String
+  finance   Finance @relation(fields: [financeId], references: [id], onDelete: Cascade)
+
+  @@index([financeId])
 }
 
 model FinanceUnit {
+  paintPrem   String?
+  licensing   String?
+  stockNum    String?
+  options     String?
+  accessories Int?
+  freight     String?
+  labour      String?
+  year        String?
+  brand       String?
+  mileage     String?
+  model       String?
+  model1      String?
+  color       String?
+  modelCode   String?
+  msrp        String?
+  trim        String?
+  vin         String?
+  bikeStatus  String?
+  invId       String?
+  location    String?
+
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  financeId String
+  Finance   Finance     @relation(fields: [financeId], references: [id], onDelete: Cascade)
+  WorkOrder WorkOrder[]
+
+  @@index([financeId])
+}
+
+model FinanceTradeUnit {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   financeId String
   Finance   Finance  @relation(fields: [financeId], references: [id], onDelete: Cascade)
 
-  WorkOrder WorkOrder[]
+  price       String?
+  brand       String?
+  model       String?
+  color       String?
+  accessories String?
+  options     String?
+  year        String?
+  vin         String?
+  trim        String?
+  mileage     String?
+  location    String?
+  condition   String?
+  repairs     String?
+  stockNum    String?
+  licensing   Boolean?
+  tradeEval   Boolean?
 
   @@index([financeId])
 }
@@ -1586,6 +1647,24 @@ model InventoryMotorcycle {
 
 // for styling the workorder have a timeline on the left hand side for the unit and all its workorders with a title and show description that you can click on so its easy to find work orders and you dont have to go through each one on the right it would be make a new workorde rand everything you need to do that it will be the same styling for the unit page for the work order / unit info side have a tab that have the cuistomer info on the second tab wherre you can assign a customer
 model WorkOrder {
+  unit        String?
+  mileage     String?
+  vin         String?
+  tag         String?
+  motor       String?
+  budget      String?
+  totalLabour String?
+  totalParts  String?
+  subTotal    String?
+  total       String?
+  writer      String?
+  tech        String?
+  notes       String?
+  customerSig String?
+  status      String?
+  location    String?
+  quoted      String?
+
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1595,36 +1674,25 @@ model WorkOrder {
   AccOrders     AccOrder[]
   financeId     String?
   Finance       Finance?    @relation(fields: [financeId], references: [id], onDelete: SetNull)
+  WOPayments    WOPayment[]
 
   @@index([FinanceUnitId])
   @@index([financeId])
 }
 
-model FinanceTradeUnit {
+model WOPayment {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  financeId String
-  Finance   Finance  @relation(fields: [financeId], references: [id], onDelete: Cascade)
 
-  price       String?
-  brand       String?
-  model       String?
-  color       String?
-  accessories String?
-  options     String?
-  year        String?
-  vin         String?
-  trim        String?
-  mileage     String?
-  location    String?
-  condition   String?
-  repairs     String?
-  stockNum    String?
-  licensing   Boolean?
-  tradeEval   Boolean?
+  paymentType String?
+  amountPaid  Float?
+  cardNum     String?
+  receiptId   String?
 
-  @@index([financeId])
+  workOrderId String
+  WorkOrders  WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+
+  @@index([workOrderId])
 }
 
 model Comm {
