@@ -14,7 +14,7 @@ import {
     downloadJsonFile,
 
     generateAllPDFs,
-} from "~/components/document/helper";
+} from "~/components/document/helpertheone";
 import { checkTemplate } from "@pdfme/common";
 import { generate } from "@pdfme/generator";
 import ucdaTemplate from '~/components/document/ucda.json'

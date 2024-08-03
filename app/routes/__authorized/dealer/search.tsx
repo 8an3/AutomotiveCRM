@@ -61,10 +61,10 @@ export async function loader({ request, params }: LoaderFunction) {
   // const searchResults = await getit//searchCases(q)
   result = getit.filter(
     (result) =>
-      result.email?.includes(q) ||
+      result.email?.toLowerCase().includes(q) ||
       result.phone?.includes(q) ||
-      result.firstName?.includes(q) ||
-      result.lastName?.includes(q)
+      result.firstName?.toLowerCase().includes(q) ||
+      result.lastName?.toLowerCase().includes(q)
   );
   //console.log(getit, 'getit', result, 'results',)
   return result;
@@ -91,7 +91,8 @@ export default function SearchFunction() {
   // bind command + k
   useEffect(() => {
     let listener = (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+      // if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+      if (event.key === 'F3') {
         event.preventDefault();
         setShow(true);
       }
@@ -105,27 +106,27 @@ export default function SearchFunction() {
   }
   const [dropTable, setDropTable] = useState(false);
   const [finances, setFinances] = useState([]);
+
   const selectedCustomer = async (email) => {
     console.log("selected search", email);
-    const finance = await prisma.finance.findMany({ where: { email: email } });
-    console.log("finance", finance);
-    setFinances(finance);
+    try {
+      const response = await fetch(`/dealer/api/searchFinance/${email}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const finance = await response.json();
+      console.log("finance", finance);
+      setFinances(finance);
+    } catch (error) {
+      console.error("Error fetching finance data:", error);
+    }
   };
 
-   const handleMouseEnter = (email) => () => {
+  const handleMouseEnter = (email) => () => {
     selectedCustomer(email);
   };
 
-  useEffect(() => {
-    if (data) {
-      setFinances(data);
-      console.log(data);
-    }
-  }, [data]);
-
-    const [open, setOpen] = useState(false)
-
-
+  const [open, setOpen] = useState(false);
   return (
     <div>
       <TooltipProvider>
@@ -141,13 +142,13 @@ export default function SearchFunction() {
                   setShow(true);
                 }}
               >
-                <Search className="texct-foreground" />
+                <Search className="text-foreground" />
               </Button>
             </>
           </TooltipTrigger>
           <TooltipContent>
             <p>Customer Search</p>
-            <p>ctrl + k will also open this feature.</p>
+            <p>F3 - Open search</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -197,6 +198,7 @@ export default function SearchFunction() {
               placeholder="Search"
               type="search"
               name="q"
+              autoFocus
               onKeyDown={(event) => {
                 if (
                   event.key === "Escape" &&
@@ -223,16 +225,14 @@ export default function SearchFunction() {
               }}
             />
           </search.Form>
-
-          <Table className="mx-auto w-[95%]">
-            <TableBody className="mx-auto mt-3">
-              {search.data &&
-                search.data.map((result, index) => (
-                  <>
+          {search.data &&
+            search.data.map((result, index) => (
+              <>
+                <Table className="mx-auto w-[95%]">
+                  <TableBody className="mx-auto mt-3">
                     <TableRow
                       key={index}
                       className="mx-auto my-3 rounded-[6px] border-b  border-border"
-                      onMouseEnter={handleMouseEnter(result.email)}
                     >
                       <TableCell className="rounded-l-[8px] text-center text-lg text-foreground">
                         {capitalizeFirstLetter(result.firstName)}{" "}
@@ -259,66 +259,60 @@ export default function SearchFunction() {
                         </Link>
                       </TableCell>
                       <TableCell className="rounded-r-[8px] text-center text-lg text-muted-foreground">
-    <Drawer open={open} onOpenChange={setOpen}>
-                          <DrawerTrigger asChild>
-                            <Button                variant="outline">Deals</Button>
-                          </DrawerTrigger>
-                          <DrawerContent className='z-100'>
-                            <div className="mx-auto w-full max-w-sm">
-                              <DrawerHeader>
-                                <DrawerTitle>Client's Files</DrawerTitle>
-                                <DrawerDescription>
-                                  Select the deal to be taken to the clients
-                                  file
-                                </DrawerDescription>
-                              </DrawerHeader>
-                              <div className="p-4 pb-0">
-                                {finances &&
-                                  finances.map((finance) => (
-                                    <>
-                                      <Link
-                                        to={`/dealer/customer/${result.id}/${finance.id}`}
-                                        className=" "
-                                      >
-                                        <TableRow
-                                          key={finance.id}
-                                          className="mx-auto border-b border-border hover:rounded-[6px]"
-                                        >
-                                          {finance.year && (
-                                            <TableCell className="text-center text-lg text-muted-foreground">
-                                              {finance.year}
-                                            </TableCell>
-                                          )}
-                                          <TableCell className="text-center text-lg text-muted-foreground">
-                                            {finance.brand}
-                                          </TableCell>
-                                          <TableCell className="text-center text-lg text-foreground">
-                                            {finance.model}
-                                          </TableCell>
-                                          {finance.stockNum && (
-                                            <TableCell className="text-center text-lg text-muted-foreground">
-                                              {finance.stockNum}
-                                            </TableCell>
-                                          )}
-                                        </TableRow>
-                                      </Link>
-                                    </>
-                                  ))}
-                              </div>
-                              <DrawerFooter>
-                                <DrawerClose asChild>
-                                  <Button variant="outline">Cancel</Button>
-                                </DrawerClose>
-                              </DrawerFooter>
-                            </div>
-                          </DrawerContent>
-                        </Drawer>
+                        <Button
+                          onClick={() => {
+                            selectedCustomer(result.email);
+                            setOpen(true);
+                          }}
+                          variant="outline"
+                        >
+                          Deals
+                        </Button>
                       </TableCell>
                     </TableRow>
-                  </>
-                ))}
-            </TableBody>
-          </Table>
+                  </TableBody>
+                </Table>
+                <Table className="mx-auto w-[95%]">
+                  <TableBody className="mx-auto mt-3  border-b border-border">
+                    {open === true && (
+                      <>
+                        {finances &&
+                          finances.map((finance) => (
+                            <>
+                              <TableRow
+                                key={finance.id}
+                                className="mx-auto w-full rounded-[8px] hover:rounded-[6px] border-border"
+                              >
+                                <Link
+                                  to={`/dealer/customer/${result.id}/${finance.id}`}
+                                  className="w-full "
+                                >
+                                  {finance.year && (
+                                    <TableCell className="text-center text-lg text-muted-foreground rounded-l-[8px]">
+                                      {finance.year}
+                                    </TableCell>
+                                  )}
+                                  <TableCell className="w-[150px] text-center text-lg text-muted-foreground">
+                                    {finance.brand}
+                                  </TableCell>
+                                  <TableCell className="w-[350px] text-center text-lg text-foreground rounded-r-[8px]">
+                                    {finance.model}
+                                  </TableCell>
+                                  {finance.stockNum && (
+                                    <TableCell className="text-center text-lg text-muted-foreground">
+                                      {finance.stockNum}
+                                    </TableCell>
+                                  )}
+                                </Link>
+                              </TableRow>
+                            </>
+                          ))}
+                      </>
+                    )}
+                  </TableBody>
+                </Table>
+              </>
+            ))}
         </div>
       </div>
     </div>

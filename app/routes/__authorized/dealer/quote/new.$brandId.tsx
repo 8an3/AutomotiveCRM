@@ -225,6 +225,7 @@ export default function Quote() {
                                     <div className="relative  ">
                                         <Input
                                             name="firstName"
+                                            autoFocus
                                             value={formData.firstName}
                                             className={`col-span-3 bg-background border-border
                                                 ${validity.firstName === true ? 'border-[#42ff31]   text-foreground' : ' '}

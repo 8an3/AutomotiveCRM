@@ -36,6 +36,7 @@ import {
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons"
 import { Table } from "@tanstack/react-table"
+import { toast } from "sonner";
 
 
 // sms
@@ -985,6 +986,9 @@ export function EditableText({
         flushSync(() => {
           setEdit(false);
         });
+        toast.success(`Saving ${fieldName}...`, {
+          description: `With ${value}.`,
+        })
         buttonRef.current?.focus();
       }}
 

@@ -75,9 +75,19 @@ model User {
   userGoals         UserGoals[]
   thirtyDayGoals    ThirtyDayGoal[]
   columnStateSales  ColumnStateSales[]
+  customerSync      CustomerSync?
 
   @@index([profileId])
   @@index([roleId])
+}
+
+model CustomerSync {
+  updatedAt DateTime @updatedAt
+
+  orderId String?
+
+  user      User   @relation(fields: [userEmail], references: [email])
+  userEmail String @id @unique
 }
 
 model ColumnStateSales {
@@ -1133,26 +1143,6 @@ model Part {
   @@index([partNumber])
 }
 
-model Accessory {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  partNumber  Int     @default(autoincrement())
-  brand       String?
-  name        String?
-  price       Int?
-  cost        Int?
-  quantity    Int?
-  description String?
-  category    String?
-  subCategory String?
-  onOrder     Int?
-  distributer String?
-
-  @@index([partNumber])
-}
-
 model PartsOrder {
   orderNumber Int @id @default(autoincrement())
 
@@ -1171,20 +1161,96 @@ model PartsOrderDetail {
   quantity    Int?
 }
 
-// -----------------------------------------------------------------------------
-// client
-// -----------------------------------------------------------------------------
-model Clientfile {
+model AccOrder {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  financeId      String? @unique
+  userEmail  String?
+  fulfilled  Boolean?
+  attachedId String?
+  dept       String?
+  total      Float?
+  discount   Float?
+  discPer    Float?
+  status     String?
+
+  clientfileId        String
+  Clientfile          Clientfile            @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
+  AccessoriesOnOrders AccessoriesOnOrders[]
+  Payments            Payment[]
+  workOrderId         String?
+  WorkOrder           WorkOrder?            @relation(fields: [workOrderId], references: [id], onDelete: SetNull)
+  financeId           String?
+  Finance             Finance?              @relation(fields: [financeId], references: [id], onDelete: SetNull)
+
+  @@index([clientfileId])
+  @@index([workOrderId])
+  @@index([financeId])
+}
+
+model Payment {
+  id          String  @id @default(cuid())
+  accOrderId  String
+  paymentType String?
+  amountPaid  Float?
+  cardNum     String?
+  receiptId   String?
+
+  AccOrder AccOrder @relation(fields: [accOrderId], references: [id], onDelete: Cascade)
+
+  @@index([accOrderId])
+}
+
+model AccessoriesOnOrders {
+  id          String      @id @default(cuid())
+  quantity    Int         @default(1)
+  accOrderId  String
+  status      String?     @default("Fulfilled")
+  orderNumber String?
+  accOrder    AccOrder    @relation(fields: [accOrderId], references: [id])
+  accessoryId String
+  accessory   Accessories @relation(fields: [accessoryId], references: [id])
+
+  @@unique([accOrderId, accessoryId])
+  @@unique([id])
+  @@unique([accessoryId])
+}
+
+model Accessories {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  accessoryNumber Int      @default(autoincrement())
+  brand           String?
+  name            String?
+  price           Float?
+  cost            Float?
+  quantity        Int?
+  description     String?
+  category        String?
+  subCategory     String?
+  onOrder         Int?
+  distributer     String?
+  location        String?
+  note            String?
+
+  AccessoriesOnOrders AccessoriesOnOrders[]
+}
+
+// -----------------------------------------------------------------------------
+// client
+// -----------------------------------------------------------------------------
+model Clientfile {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  financeId      String?  @unique
   userId         String?
   firstName      String?
   lastName       String?
   name           String?
-  email          String? @unique
+  email          String?  @unique
   phone          String?
   address        String?
   city           String?
@@ -1194,6 +1260,9 @@ model Clientfile {
   typeOfContact  String?
   timeToContact  String?
   conversationId String?
+  billingAddress Boolean?
+
+  AccOrder AccOrder[]
 }
 
 // -----------------------------------------------------------------------------
@@ -1438,6 +1507,8 @@ model Finance {
   FinanceDeptProducts FinanceDeptProducts[]
   FinanceUnit         FinanceUnit[]
   FinanceTradeUnit    FinanceTradeUnit[]
+  AccOrders           AccOrder[]
+  WorkOrders          WorkOrder[]
 }
 
 model FinanceUnit {
@@ -1510,6 +1581,7 @@ model InventoryMotorcycle {
   insuranceStartDate String? //
   insuranceEndDate   String? //
   sold               String? //
+  financeId          String?
 }
 
 // for styling the workorder have a timeline on the left hand side for the unit and all its workorders with a title and show description that you can click on so its easy to find work orders and you dont have to go through each one on the right it would be make a new workorde rand everything you need to do that it will be the same styling for the unit page for the work order / unit info side have a tab that have the cuistomer info on the second tab wherre you can assign a customer
@@ -1520,8 +1592,12 @@ model WorkOrder {
 
   FinanceUnitId String
   FinanceUnit   FinanceUnit @relation(fields: [FinanceUnitId], references: [id], onDelete: Cascade)
+  AccOrders     AccOrder[]
+  financeId     String?
+  Finance       Finance?    @relation(fields: [financeId], references: [id], onDelete: SetNull)
 
   @@index([FinanceUnitId])
+  @@index([financeId])
 }
 
 model FinanceTradeUnit {

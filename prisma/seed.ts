@@ -68,6 +68,7 @@ export async function seedUsers() {
       dl: 'HS02QI3J0DF',
       typeOfContact: 'SMS',
       timeToContact: '7:00pm',
+      billingAddress: true,
       userId: process.env.REMIX_ADMIN_EMAIL
     }
   })
@@ -313,6 +314,237 @@ export async function seedUsers() {
       financeId: finance.id,
     }
   })
+  await prisma.accessories.create({
+    data: {
+      brand: 'Brand A',
+      name: 'Accessory 1',
+      price: 100,
+      cost: 80,
+      quantity: 10,
+      description: 'Description 1',
+      category: 'Category 1',
+      subCategory: 'SubCategory 1',
+      onOrder: 5,
+      distributer: 'Distributor 1',
+      location: 'Location 1',
+    },
+  });
+  await prisma.accessories.create({
+    data: {
+      brand: 'Brand B',
+      name: 'Accessory 2',
+      price: 200,
+      cost: 150,
+      quantity: 20,
+      description: 'Description 2',
+      category: 'Category 2',
+      subCategory: 'SubCategory 2',
+      onOrder: 10,
+      distributer: 'Distributor 2',
+      location: 'Location 2',
+    },
+  });
+  await prisma.accessories.create({
+    data: {
+      brand: 'Brand C',
+      name: 'Accessory 3',
+      price: 300,
+      cost: 250,
+      quantity: 30,
+      description: 'Description 3',
+      category: 'Category 3',
+      subCategory: 'SubCategory 3',
+      onOrder: 15,
+      distributer: 'Distributor 3',
+      location: 'Location 3',
+    },
+  });
+  const seventh = await prisma.accessories.create({
+    data: {
+      brand: 'Brand D',
+      name: 'Accessory 4',
+      price: 400,
+      cost: 350,
+      quantity: 40,
+      description: 'Description 4',
+      category: 'Category 4',
+      subCategory: 'SubCategory 4',
+      onOrder: 20,
+      distributer: 'Distributor 4',
+      location: 'Location 4',
+    },
+  });
+  const sixth = await prisma.accessories.create({
+    data: {
+      brand: 'Brand E',
+      name: 'Accessory 5',
+      price: 500,
+      cost: 450,
+      quantity: 50,
+      description: 'Description 5',
+      category: 'Category 5',
+      subCategory: 'SubCategory 5',
+      onOrder: 25,
+      distributer: 'Distributor 5',
+      location: 'Location 5',
+    },
+  });
+  const first = await prisma.accessories.create({
+    data: {
+      brand: 'FOX',
+      name: 'T-Shirt XL',
+      price: 80.79,
+      cost: 40.79,
+      quantity: 60,
+      description: 'Shirt with Fox',
+      category: 'Casual Wear',
+      subCategory: 'T-Shirts',
+      onOrder: 30,
+      distributer: 'FOX',
+      location: 'Wall 1',
+    },
+  });
+  const second = await prisma.accessories.create({
+    data: {
+      brand: 'BMW-Motorrad',
+      name: 'Riders Jacket XL',
+      price: 700.00,
+      cost: 650.00,
+      quantity: 70,
+      description: 'Casual riding jacket.',
+      category: 'Motorcycle Jackets',
+      subCategory: 'Protective Wear',
+      onOrder: 35,
+      distributer: 'BMW-Motorrad',
+      location: 'Wall 2',
+    },
+  });
+  const third = await prisma.accessories.create({
+    data: {
+      brand: 'BMW-Motorrad',
+      name: 'Casual Riding Kevlar Jeans XL',
+      price: 800.59,
+      cost: 750.59,
+      quantity: 80,
+      description: 'Kevlar jeans for casual riding',
+      category: 'Motorcycle pants',
+      subCategory: 'Protective Wear',
+      onOrder: 40,
+      distributer: 'BMW-Motorrad',
+      location: 'Wall 2',
+    },
+  });
+  const forth = await prisma.accessories.create({
+    data: {
+      brand: 'BMW-Motorrad',
+      name: 'Riding Casual Boot Size 12',
+      price: 900.00,
+      cost: 850.00,
+      quantity: 90,
+      description: 'Casual designed boot for casual riding',
+      category: 'Motorcycle boots',
+      subCategory: 'Protective Wear',
+      onOrder: 45,
+      distributer: 'BMW-Motorrad',
+      location: 'Boot Section',
+    },
+  });
+  const fith = await prisma.accessories.create({
+    data: {
+      brand: 'FOX',
+      name: 'Riding Gloves XL',
+      price: 101.59,
+      cost: 75.59,
+      quantity: 100,
+      description: 'Fox riding glove',
+      category: 'Protective Wear',
+      subCategory: 'Gloves',
+      onOrder: 50,
+      distributer: 'FOX',
+      location: 'wall 6',
+    },
+  });
+  const createOrderWithAccessories = async (orderData, accessories) => {
+    // Create the order
+    const order = await prisma.accOrder.create({
+      data: {
+        userEmail: orderData.userEmail,
+        fulfilled: orderData.fulfilled,
+        clientfileId: orderData.clientfileId,
+        paymentType: orderData.paymentType,
+        cardNum: orderData.cardNum,
+        total: orderData.total,
+      },
+    });
+
+    // Add accessories to the order
+    const accessoriesData = accessories.map(accessory => ({
+      accOrderId: order.id,
+      accessoryId: accessory.id,
+      quantity: accessory.quantity, // Assuming quantity is provided in the accessory object
+    }));
+
+    await prisma.accessoriesOnOrders.createMany({
+      data: accessoriesData,
+    });
+
+    return order;
+  };
+
+  // Usage example
+  const orderData1 = {
+    userEmail: 'skylerzanth@outlook.com',
+    fulfilled: true,
+    clientfileId: clientfile.id,
+    paymentType: 'Visa',
+    cardNum: '4532',
+    total: 2582.97,
+  };
+
+  const accessories1 = [
+    { id: first.id, quantity: 1 },
+    { id: second.id, quantity: 1 },
+    { id: third.id, quantity: 1 },
+    { id: forth.id, quantity: 1 },
+    { id: fith.id, quantity: 1 },
+  ];
+
+  const orderData2 = {
+    userEmail: 'skylerzanth@outlook.com',
+    fulfilled: true,
+    clientfileId: clientfile.id,
+    paymentType: 'Debit',
+    cardNum: '4532',
+    total: 3582.97,
+  };
+
+  const accessories2 = [
+    { id: first.id, quantity: 1 },
+    { id: second.id, quantity: 1 },
+    { id: third.id, quantity: 1 },
+    { id: forth.id, quantity: 1 },
+    { id: fith.id, quantity: 1 },
+    { id: sixth.id, quantity: 1 },
+    { id: seventh.id, quantity: 1 },
+  ];
+
+  // Create orders with accessories
+  createOrderWithAccessories(orderData1, accessories1)
+    .then(order => {
+      console.log('Order 1 created:', order);
+    })
+    .catch(error => {
+      console.error('Error creating order 1:', error);
+    });
+
+  createOrderWithAccessories(orderData2, accessories2)
+    .then(order => {
+      console.log('Order 2 created:', order);
+    })
+    .catch(error => {
+      console.error('Error creating order 2:', error);
+    });
+
   console.log(chalk.green("First customer seeded!"));
   // ---- users
   const admin = await prisma.user.create({
@@ -323,7 +555,13 @@ export async function seedUsers() {
       username: "Skyler",
       phone: "+16138980992",
       dealer: "Freedom H-D",
+      dept: 'Finance',
       role: { connect: { id: adminUserRole.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
       profile: {
         create: {
           headline: "I am Admin",
@@ -337,6 +575,12 @@ export async function seedUsers() {
     data: {
       userId: admin.id,
       position: adminUserRole.name
+    }
+  })
+  await prisma.position.create({
+    data: {
+      userId: admin.id,
+      position: 'Finance Manager'
     }
   })
   await prisma.userGoals.create({
@@ -551,6 +795,7 @@ export async function seedUsers() {
       name: "Justin Zanth",
       username: "Justin",
       phone: "+16138980991",
+      dept: 'Sales',
       dealer: "Freedom H-D",
       role: { connect: { id: devUserRole?.id } },
       profile: {
@@ -559,13 +804,18 @@ export async function seedUsers() {
           bio: "The dev of this app.",
         },
       },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
 
     },
   });
   await prisma.position.create({
     data: {
       userId: dev.id,
-      position: 'Finance Manager'
+      position: 'DEV'
     }
   })
   await prisma.position.create({
@@ -597,6 +847,7 @@ export async function seedUsers() {
       email: 'sales2@gmail.com',
       name: "sales2",
       username: "sales2",
+      dept: 'Sales',
       phone: "+16138980997",
       dealer: "Freedom H-D",
       role: { connect: { id: salesRole?.id } },
@@ -605,6 +856,11 @@ export async function seedUsers() {
           headline: "I am Dev",
           bio: "The dev of this app.",
         },
+      },
+      customerSync: {
+        create: {
+          orderId: null
+        }
       },
 
     },
@@ -638,6 +894,7 @@ export async function seedUsers() {
       email: 'finance2@gmail.com',
       name: "finance2",
       username: "finance2",
+      dept: 'Finance',
       phone: "+16138980977",
       dealer: "Freedom H-D",
       role: { connect: { id: financeRole?.id } },
@@ -646,6 +903,11 @@ export async function seedUsers() {
           headline: "I am Dev",
           bio: "The dev of this app.",
         },
+      },
+      customerSync: {
+        create: {
+          orderId: null
+        }
       },
 
     },
@@ -673,7 +935,7 @@ export async function seedUsers() {
     }
   })
   console.log(chalk.green("finance2 user seeded!"));
-  return ({ admin, dev, autoAdmin, finance2, sales2, user, finance, clientfile, createInPerson, createPhone, createSMS, createEmail })
+  return ({ admin, dev, autoAdmin, finance2, sales2, user, finance, clientfile, createInPerson, createPhone, createSMS, createEmail, })
 }
 export async function SeedLockFinanceTerminals() {
   console.log(chalk.yellow("Seeding lock finance terminals ..."));
@@ -783,20 +1045,44 @@ export async function Board() {
 
   ]
   const completedIssues = [
-
+    { board: "dev", column: "issue", item: "search need to finish the drop down to specefiy which file u want to go to " },
+    { board: "dev", column: "issue", item: "dashboard - fix dob calendar" },
+    { board: "dev", column: "issue", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
+    { board: "dev", column: "issue", item: "add notes ability to inventory, parts" },
+    { board: "dev", column: "PAC", item: "print barcodes use same pdf generator u use now" },
+    { board: "dev", column: "PAC", item: "add auto focus to forms so first input alrady has cursor" },
 
   ]
   const issue = [
-    { board: "dev", column: "issue", item: "search need to finish the drop down to specefiy which file u want to go to " },
-    { board: "dev", column: "issue", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
-    { board: "dev", column: "issue", item: "dashboard - fix dob calendar" },
+    { board: "dev", column: "PAC", item: "move accessories pages that are needed else where to components and import them that way so you can use your routes actions - this did not work first try" },
+    { board: "dev", column: "PAC", item: "give the ability to transfer orders to other depts and have them able to claim it to the work order or unit" },
+    { board: "dev", column: "PAC", item: "copy over the create and update orders into the finance file so you can create and update the orders attached to the unit" },
+    { board: "dev", column: "PAC", item: "redirect user when customer has no unit to the order page" },
+    { board: "dev", column: "PAC", item: "customer file sync between mobile and desktop" },
+    { board: "dev", column: "issue", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try" },
+    { board: "dev", column: "issue", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },
+    { board: "dev", column: "issue", item: "Print receipt, have qrcode on it so you can just scan it" },
+    { board: "dev", column: "issue", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
+    { board: "dev", column: "PAC", item: "end of day reports, chose date so you can print any day" },
+    { board: "dev", column: "PAC", item: "receiving" },
+    { board: "dev", column: "PAC", item: "saving templates, see if you can save big json strings in database" },
+
+    { board: "dev", column: "issue", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
+
+    { board: "dev", column: "issue", item: "service receipts / quotes qrcode on it to just scan it and have it pulled up no more messing with looking for customers" },
+    { board: "dev", column: "issue", item: "for the tech have clock in clock out, but also a check off list of the items that need to be done if they want it that tracks what item was done when and to ensure nothing gets missed" },
+    { board: "dev", column: "issue", item: "service board to have a section with buttons that adds the most purchased services to the work order making it a breeze for the desk to produce quotes fast, that even inputs the part numbers, hours to complete, etc will need to make a dashboard where the service manager can set this up, maybe even produce a list of common parts associated with those jobs incase the customer doesn't like that specifc tire" },
+    { board: "dev", column: "issue", item: "try to make it so the service writers dont have to type anything in barely, maybe even have a section of most typed comments, have scanner in service as well so the can jkust scan parts instead of inputing part numbers" },
+
+    { board: "dev", column: "issue", item: "payment processor for purchases?" },
 
     { board: "dev", column: "issue", item: "user docs instead of having a doc section maybe have dialog open up from the menu and they can read the docs per page instead of learning and cramming evrything at once they can learn when they need to and use the inforation right away and have it question what the user wants to learn and give it the right info on the spot and have link to video on utube open in new window" },
     { board: "dev", column: "issue", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
 
-    { board: "dev", column: "issue", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
 
 
+    { board: "dev", column: "PAC", item: "inventory counter, like u know the ones u see at walmart" },
+    { board: "dev", column: "PAC", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase" },
   ]
   const ideas = [
     { board: "dev", column: "ideas", item: "save form to local storage, never loose data for a internet hiccup or outage" },
@@ -821,6 +1107,7 @@ export async function Board() {
     { board: "dev", column: "service", item: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
     { board: "dev", column: "service", item: "service writer dash" },
     { board: "dev", column: "service", item: "tech dash" },
+    { board: "dev", column: "service", item: "scan incoming crates and add them into inventory or something, maybe a inbox for the admin to convert them to inventory" },
   ]
   const docs = [
     { board: "dev", column: "docs", item: "Videos for docs" },

@@ -148,7 +148,7 @@ export default function EmailClient({
             width="100%"
             className=" border-none"
             style={{
-              minHeight: "40vh"
+              minHeight: "250px"
 
             }}
           />
@@ -207,7 +207,7 @@ export default function EmailClient({
     <>
       {data && (
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className=' w-[95%] md:w-[1050px] '>
+          <DialogContent className='w-full max-w-[95%]  m-8  md:max-w-[75%] '>
             <Tabs defaultValue="account" className=" ">
               <TabsList className="">
                 <TabsTrigger value="account">Email</TabsTrigger>

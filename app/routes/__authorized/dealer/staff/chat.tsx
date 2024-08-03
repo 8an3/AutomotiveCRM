@@ -379,7 +379,7 @@ export default function StaffChat({ content }) {
             value={input}
             onChange={(event) => setInput(event.target.value)}
             name="body"
-
+            autoFocus
           />
 
           <Button

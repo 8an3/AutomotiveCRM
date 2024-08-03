@@ -301,7 +301,7 @@ export default function UnitDialog({ data }) {
                     </CardHeader>
                     <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
                     <Form method='post'>
-                      <div className="grid h-auto  max-h-[65vh] grid-cols-2 gap-3">
+                      <div className="grid h-auto  max-h-[65vh] grid-cols-2 gap-3 mt-5">
                         <div className="mb-5">
                           <div className="grid grid-cols-2 justify-between">
                             <div  className="relative mt-5 w-[40%]">

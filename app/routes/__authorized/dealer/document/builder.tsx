@@ -186,7 +186,7 @@ export default function DesignerApp() {
       const templateName = window.prompt("Template Name") || "";
       const docName = templateName + financeId;
       const data = {
-        userId: userId, // Assuming userId is defined in the scope
+        userId: userId,
         doc: templateData,
         docName: docName,
         dept: "",
@@ -603,8 +603,9 @@ export default function DesignerApp() {
         <Button
           className='mx-2'
           onClick={() => {
+            console.log(merged, inputs, 'inputs')
+
             GeneratePDFWInputs(inputs, designer.current);
-            console.log(merged, 'inputs')
           }}>
           Generate PDF w inputs
         </Button>

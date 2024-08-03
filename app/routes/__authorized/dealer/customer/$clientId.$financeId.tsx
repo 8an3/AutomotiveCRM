@@ -62,6 +62,7 @@ import {
   Package,
   Package2,
   PanelLeft,
+  Plus,
   Search,
   Settings,
   ShoppingCart,
@@ -115,16 +116,20 @@ import {
   RemixForm,
   RemixLinkText,
   CardHeader,
-  CardTitle, Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider, Avatar,
+  CardTitle, Avatar,
   AvatarFallback,
   AvatarImage,
   Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup,
   RemixNavLink, Input, Separator, Button, TextArea, Label, PopoverTrigger, PopoverContent, Popover,
 } from "~/components"
 import { CheckIcon, PaperPlaneIcon, PlusIcon, UploadIcon } from "@radix-ui/react-icons"
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip"
 import {
   Command,
   CommandEmpty,
@@ -2783,72 +2788,72 @@ export default function Dashboard() {
                             <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
                           </div>
                         ))}
-                         <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant={"outline"}
-                                        className={cn(
-                                            "w-[100%] pl-3 text-left font-normal mt-4 ",
-                                            !date && "text-muted-foreground"
-                                        )}
-                                    >
-                                        {date ? (
-                                            format(date, "PPP")
-                                        ) : (
-                                            <span>DOB</span>
-                                        )}
-                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        className='w-auto'
-                                        mode="single"
-                                        fromYear={1900}
-                                        selected={date}
-                                        onSelect={setDate}
-                                        disabled={(date) =>
-                                            date > new Date() || date < new Date("1900-01-01")
-                                        }
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                            <input type='hidden' value={String(date)} name='dob' />
-                          <div className="relative mt-4">
-                                <Select name='timeToContact' defaultValue={data.timeToContact}  >
-                                    <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
-                                        <SelectValue defaultValue={data.timeToContact} />
-                                    </SelectTrigger>
-                                    <SelectContent className=' bg-background text-foreground border border-border' >
-                                        <SelectGroup>
-                                            <SelectLabel>Best Time To Contact</SelectLabel>
-                                            <SelectItem value="Morning">Morning</SelectItem>
-                                            <SelectItem value="Afternoon">Afternoon</SelectItem>
-                                            <SelectItem value="Evening">Evening</SelectItem>
-                                            <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
-                            </div>
-                            <div className="relative mt-4">
-
-                        <Select name='typeOfContact' defaultValue={data.typeOfContact} >
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[100%] pl-3 text-left font-normal mt-4 ",
+                                !date && "text-muted-foreground"
+                              )}
+                            >
+                              {date ? (
+                                format(date, "PPP")
+                              ) : (
+                                <span>DOB</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              className='w-auto'
+                              mode="single"
+                              fromYear={1900}
+                              selected={date}
+                              onSelect={setDate}
+                              disabled={(date) =>
+                                date > new Date() || date < new Date("1900-01-01")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <input type='hidden' value={String(date)} name='dob' />
+                        <div className="relative mt-4">
+                          <Select name='timeToContact' defaultValue={data.timeToContact}  >
                             <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
-                                <SelectValue defaultValue={data.typeOfContact} />
+                              <SelectValue defaultValue={data.timeToContact} />
                             </SelectTrigger>
                             <SelectContent className=' bg-background text-foreground border border-border' >
-                                <SelectGroup>
-                                    <SelectLabel>Contact Method</SelectLabel>
-                                    <SelectItem value="Phone">Phone</SelectItem>
-                                    <SelectItem value="InPerson">In-Person</SelectItem>
-                                    <SelectItem value="SMS">SMS</SelectItem>
-                                    <SelectItem value="Email">Email</SelectItem>
-                                </SelectGroup>
+                              <SelectGroup>
+                                <SelectLabel>Best Time To Contact</SelectLabel>
+                                <SelectItem value="Morning">Morning</SelectItem>
+                                <SelectItem value="Afternoon">Afternoon</SelectItem>
+                                <SelectItem value="Evening">Evening</SelectItem>
+                                <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                              </SelectGroup>
                             </SelectContent>
-                        </Select>
-                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Type To Be Contacted</label>
+                          </Select>
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
+                        </div>
+                        <div className="relative mt-4">
+
+                          <Select name='typeOfContact' defaultValue={data.typeOfContact} >
+                            <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                              <SelectValue defaultValue={data.typeOfContact} />
+                            </SelectTrigger>
+                            <SelectContent className=' bg-background text-foreground border border-border' >
+                              <SelectGroup>
+                                <SelectLabel>Contact Method</SelectLabel>
+                                <SelectItem value="Phone">Phone</SelectItem>
+                                <SelectItem value="InPerson">In-Person</SelectItem>
+                                <SelectItem value="SMS">SMS</SelectItem>
+                                <SelectItem value="Email">Email</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Type To Be Contacted</label>
                         </div>
                         <input type='hidden' name="financeId" defaultValue={finance.id} />
                         <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
@@ -4723,7 +4728,211 @@ export default function Dashboard() {
                 </div>
               </TabsContent>
               <TabsContent value="Service">Content soon to come!</TabsContent>
-              <TabsContent value="Accessories">Content soon to come!</TabsContent>
+              <TabsContent value="Accessories">
+                <Card x-chunk="dashboard-05-chunk-3">
+                  <CardHeader className="px-7">
+                    <CardTitle>
+                      <div className='flex justify-between items-center' >
+                        <p>Orders</p>
+                        <Link to={`/dealer/accessories/order/${finance.clientfileId}`} >
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 gap-1 text-sm"
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                            <span className="sr-only sm:not-sr-only">New Order</span>
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardTitle>
+                    <CardDescription>
+                      Recent orders from your store.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Customer</TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Type
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Status
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Date
+                          </TableHead>
+                          <TableHead className="text-right">Amount</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow className="bg-accent">
+                          <TableCell>
+                            <div className="font-medium">Liam Johnson</div>
+                            <div className="hidden text-sm text-muted-foreground md:inline">
+                              liam@example.com
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            Sale
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <Badge className="text-xs" variant="secondary">
+                              Fulfilled
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            2023-06-23
+                          </TableCell>
+                          <TableCell className="text-right">$250.00</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <div className="font-medium">Olivia Smith</div>
+                            <div className="hidden text-sm text-muted-foreground md:inline">
+                              olivia@example.com
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            Refund
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <Badge className="text-xs" variant="outline">
+                              Declined
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            2023-06-24
+                          </TableCell>
+                          <TableCell className="text-right">$150.00</TableCell>
+                        </TableRow>
+                        {/* <TableRow>
+                          <TableCell>
+                            <div className="font-medium">Liam Johnson</div>
+                            <div className="hidden text-sm text-muted-foreground md:inline">
+                              liam@example.com
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            Sale
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <Badge className="text-xs" variant="secondary">
+                              Fulfilled
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            2023-06-23
+                          </TableCell>
+                          <TableCell className="text-right">$250.00</TableCell>
+                        </TableRow> */}
+                        <TableRow>
+                          <TableCell>
+                            <div className="font-medium">Noah Williams</div>
+                            <div className="hidden text-sm text-muted-foreground md:inline">
+                              noah@example.com
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            Subscription
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <Badge className="text-xs" variant="secondary">
+                              Fulfilled
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            2023-06-25
+                          </TableCell>
+                          <TableCell className="text-right">$350.00</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <div className="font-medium">Emma Brown</div>
+                            <div className="hidden text-sm text-muted-foreground md:inline">
+                              emma@example.com
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            Sale
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <Badge className="text-xs" variant="secondary">
+                              Fulfilled
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            2023-06-26
+                          </TableCell>
+                          <TableCell className="text-right">$450.00</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <div className="font-medium">Liam Johnson</div>
+                            <div className="hidden text-sm text-muted-foreground md:inline">
+                              liam@example.com
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            Sale
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <Badge className="text-xs" variant="secondary">
+                              Fulfilled
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            2023-06-23
+                          </TableCell>
+                          <TableCell className="text-right">$250.00</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <div className="font-medium">Olivia Smith</div>
+                            <div className="hidden text-sm text-muted-foreground md:inline">
+                              olivia@example.com
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            Refund
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <Badge className="text-xs" variant="outline">
+                              Declined
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            2023-06-24
+                          </TableCell>
+                          <TableCell className="text-right">$150.00</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <div className="font-medium">Emma Brown</div>
+                            <div className="hidden text-sm text-muted-foreground md:inline">
+                              emma@example.com
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            Sale
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <Badge className="text-xs" variant="secondary">
+                              Fulfilled
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            2023-06-26
+                          </TableCell>
+                          <TableCell className="text-right">$450.00</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </TabsContent>
               <TabsContent value="Parts">Content soon to come!</TabsContent>
             </Tabs>
           </div>
@@ -7384,8 +7593,8 @@ function SidebarNav({ mergedFinanceList, finance }) {
         {mergedFinanceList && mergedFinanceList.map((item, index) => {
           const brand = item.brand
           return (
-            <HoverCard key={index}>
-              <HoverCardTrigger asChild>
+            <Tooltip key={index}>
+              <TooltipTrigger asChild>
                 <Link
                   to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 "
@@ -7397,28 +7606,27 @@ function SidebarNav({ mergedFinanceList, finance }) {
                     </div>
                   </Button>
                 </Link>
-              </HoverCardTrigger >
-              <HoverCardContent side="right" className='bg-background text-foreground w-80 border border-border z-50 '>
-                <div className='m-4'>
-                  <p>{item.year} {item.brand}</p>
-                  <p>{item.model.toString().slice(0, 28)}</p>
-                  <Badge className="">{item.customerState}</Badge>
-                </div>
-              </HoverCardContent >
-            </HoverCard>
+              </TooltipTrigger>
+              <TooltipContent side="right">  <div className='m-4'>
+                <p>{item.year} {item.brand}</p>
+                <p>{item.model.toString().slice(0, 28)}</p>
+                <Badge className="">{item.customerState}</Badge>
+              </div></TooltipContent>
+            </Tooltip>
+
           );
         })}
       </nav >
       <nav
         className={cn(" sm:hidden flex  items-center gap-4 px-2 sm:py-4 mt-[10px] ml-[50px] ",)}    >
-        {mergedFinanceList && mergedFinanceList.map((item) => {
+        {mergedFinanceList && mergedFinanceList.map((item, index) => {
           const brand = item.brand
           return (
-            <HoverCard key={item.to}>
-              <HoverCardTrigger asChild className=''>
+            <Tooltip key={index}>
+              <TooltipTrigger asChild>
                 <Link
                   to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-10 md:w-10  cursor-pointer"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 "
                 >
                   <Button variant="ghost" className="bg-transparent    hover:bg-transparent">
                     <div className="h-5 w-5 flex justify-center">
@@ -7427,15 +7635,15 @@ function SidebarNav({ mergedFinanceList, finance }) {
                     </div>
                   </Button>
                 </Link>
-              </HoverCardTrigger >
-              <HoverCardContent side="right" className='bg-background text-foreground w-80 border border-border z-50 '>
-                <div className='m-4'>
-                  <p>{item.year} {item.brand}</p>
-                  <p>{item.model.toString().slice(0, 28)}</p>
-                  <Badge className="">{item.customerState}</Badge>
-                </div>
-              </HoverCardContent >
-            </HoverCard>
+              </TooltipTrigger>
+              <TooltipContent side="right">  <div className='m-4'>
+                <p>{item.year} {item.brand}</p>
+                <p>{item.model.toString().slice(0, 28)}</p>
+                <Badge className="">{item.customerState}</Badge>
+              </div></TooltipContent>
+            </Tooltip>
+
+
           );
         })}
       </nav >

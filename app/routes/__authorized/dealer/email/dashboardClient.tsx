@@ -65,6 +65,7 @@ export default function DashboardClient() {
           <div className="relative w-full">
             <Input
               name="subject"
+              autoFocus
               className=" bg-background border-border text-foreground"
               onChange={(e) => setSubject(e.target.value)}
             />

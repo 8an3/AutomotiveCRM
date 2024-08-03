@@ -27,10 +27,10 @@ import { ScrollArea } from "~/components/ui/scroll-area"
 
 const EmailSheet = (finance) => {
     const { user, tokens } = useLoaderData()
-    console.groupCollapsed(finance, 'emailsheet')
-    console.log(user, tokens, 'emails popup')
+    // console.groupCollapsed(finance, 'emailsheet')
+    //  console.log(user, tokens, 'emails popup')
     function handleSendPayments() {
-        console.log(user, tokens, 'inside handesendpayments')
+        // console.log(user, tokens, 'inside handesendpayments')
         const send = SendPayments(tokens, user)
         return send
     }

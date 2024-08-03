@@ -152,8 +152,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
+import PrintReceipt from "../document/printReceiptSales";
+import { ClientOnly } from "remix-utils";
 
 export let action = overviewAction;
+
+function SimplerStaticVersion() {
+  return (
+    <p>Not working contact support...</p>
+  )
+}
 
 export async function loader({ params, request }: DataFunctionArgs) {
   const userSession = await getSession(request.headers.get("Cookie"));
@@ -290,7 +298,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   }
   if (brand === "Harley-Davidson") {
     const modelData = await getDataHarley(finance);
-    console.log(user, tokens, "user, tokens ");
+    // console.log(user, tokens, "user, tokens ");
     return json({
       ok: true,
       modelData,
@@ -1841,6 +1849,40 @@ export function Overview({ outletSize }) {
     return json({ update })
   };
 
+
+  const toReceipt =
+  {
+    "qrCode": finance.id,
+    "brand": finance.brand,
+    "model": finance.model,
+    "color": finance.color,
+    "msrp": `$${formData.msrp}`,
+    "freight": `$${formData.freight}`,
+    "pdi": `$${formData.pdi}`,
+    "admin": `$${formData.admin}`,
+    "msrpcopy4": `$${formData.accessories}`,
+    "msrpcopy5": `${formData.labour}/hrs`,
+    "msrpcopy6": `$${formData.licensing}`,
+    "weekly": `$${weekly}/wk`,
+    "biweekly": `$${biweekly}/bi`,
+    "monthly": `$${on60}/m`,
+    "term": months,
+    "iRate": `${iRate}%`,
+    "deposit": `$${deposit}`,
+    "tradeValue": `$${tradeValue}`,
+    "lien": `$${lien}`,
+    "total": `$${total}`,
+    "onTax": `$${onTax}`,
+    "firstName": formData.firstName,
+    "lastName": formData.lastName,
+    "phone": finance.phone,
+    "email": finance.email,
+    "address": finance.address,
+    "whichTemplate": 'Sales',
+  }
+
+
+
   return (
     <div className="">
       {lockData && (
@@ -1955,6 +1997,9 @@ export function Overview({ outletSize }) {
                       Client File
                     </DropdownMenuItem>
                   </a>
+                  <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50" onClick={() => PrintReceipt(toReceipt)}>
+                    Print Receipt
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <Form method="post">
                     <DropdownMenuItem
@@ -1971,7 +2016,11 @@ export function Overview({ outletSize }) {
                     </DropdownMenuItem>
                   </Form>
                   <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
-                    <PrintSpec />
+                    <ClientOnly fallback={<SimplerStaticVersion />} >
+                      {() => (
+                        <PrintSpec />
+                      )}
+                    </ClientOnly>
                   </DropdownMenuItem>
                   <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
                     <ModelPage />
@@ -2151,7 +2200,7 @@ export function Overview({ outletSize }) {
                       )}
                     </ul>
                   </div>
-                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Standard Terms</div>
                   <div className="my-4">
                     <div className="main-button-group flex justify-between ">
@@ -2354,7 +2403,7 @@ export function Overview({ outletSize }) {
                     </div>
                   )}
 
-                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Contract Variables</div>
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
@@ -2427,7 +2476,7 @@ export function Overview({ outletSize }) {
                     </li>
                   </ul>
 
-                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">
                     Customer Detail Confirmation
                   </div>
@@ -2476,219 +2525,10 @@ export function Overview({ outletSize }) {
                         Email
                       </label>
                     </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.address}
-                        name="address"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Address
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.city}
-                        name="city"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        City
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.province}
-                        name="province"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Province
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.postal}
-                        name="postal"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Postal Code
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.dl}
-                        name="dl"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Drivers Lic.
-                      </label>
-                    </div>
-                  </div>
-                  <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
-                    <div className="relative mt-3">
-                      <Select name="timeToContact">
-                        <SelectTrigger className="w-full  border border-border bg-background text-foreground">
-                          <SelectValue defaultValue={finance.timeToContact} />
-                        </SelectTrigger>
-                        <SelectContent className=" border border-border bg-background text-foreground">
-                          <SelectGroup>
-                            <SelectLabel>Best Time To Contact</SelectLabel>
-                            <SelectItem value="Morning">Morning</SelectItem>
-                            <SelectItem value="Afternoon">Afternoon</SelectItem>
-                            <SelectItem value="Evening">Evening</SelectItem>
-                            <SelectItem value="Do Not Contact">
-                              Do Not Contact
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Prefered Time To Be Contacted
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Select name="typeOfContact">
-                        <SelectTrigger className="w-full  border border-border bg-background text-foreground">
-                          <SelectValue defaultValue={finance.typeOfContact} />
-                        </SelectTrigger>
-                        <SelectContent className=" border border-border bg-background text-foreground">
-                          <SelectGroup>
-                            <SelectLabel>Contact Method</SelectLabel>
-                            <SelectItem value="Phone">Phone</SelectItem>
-                            <SelectItem value="InPerson">In-Person</SelectItem>
-                            <SelectItem value="SMS">SMS</SelectItem>
-                            <SelectItem value="Email">Email</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Prefered Type To Be Contacted
-                      </label>
-                    </div>
-
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <div className="relative mt-3">
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start  text-center  font-normal",
-                              !dateCal && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4 " />
-                            {dateCal ? (
-                              format(dateCal, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                          <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                            Pick A Date
-                          </label>
-                        </div>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-auto bg-background p-0 text-foreground"
-                        align="start"
-                      >
-                        <Calendar
-                          className="bg-background text-foreground"
-                          mode="single"
-                          selected={dateCal}
-                          onSelect={setDate}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <input
-                      type="hidden"
-                      value={String(dateCal)}
-                      name="pickedDate"
-                    />
-
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <div className="relative mt-3">
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-right font-normal",
-                              !dateCal && "text-muted-foreground"
-                            )}
-                          >
-                            <ClockIcon className="mr-2 h-4 w-4 " />
-                            {currentTime ? time : <span>Pick a Time</span>}
-                          </Button>
-                          <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                            Pick A Time
-                          </label>
-                        </div>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-auto bg-background p-0 text-foreground"
-                        align="start"
-                      >
-                        <div className="flex items-center">
-                          <Select
-                            name="pickHour"
-                            value={hour}
-                            onValueChange={setHour}
-                          >
-                            <SelectTrigger className="m-3 w-auto">
-                              <SelectValue placeholder="hour" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-background text-foreground">
-                              <SelectGroup>
-                                <SelectLabel>Hour</SelectLabel>
-                                <SelectItem value="09">09</SelectItem>
-                                <SelectItem value="10">10</SelectItem>
-                                <SelectItem value="11">11</SelectItem>
-                                <SelectItem value="12">12</SelectItem>
-                                <SelectItem value="13">13</SelectItem>
-                                <SelectItem value="14">14</SelectItem>
-                                <SelectItem value="15">15</SelectItem>
-                                <SelectItem value="16">16</SelectItem>
-                                <SelectItem value="17">17</SelectItem>
-                                <SelectItem value="18">18</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-
-                          <Select
-                            name="pickMin"
-                            value={min}
-                            onValueChange={setMin}
-                          >
-                            <SelectTrigger className="m-3 w-auto">
-                              <SelectValue placeholder="min" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-background text-foreground">
-                              <SelectGroup>
-                                <SelectLabel>Minute</SelectLabel>
-                                <SelectItem value="00">00</SelectItem>
-                                <SelectItem value="10">10</SelectItem>
-                                <SelectItem value="20">20</SelectItem>
-                                <SelectItem value="30">30</SelectItem>
-                                <SelectItem value="40">40</SelectItem>
-                                <SelectItem value="50">50</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
                   </div>
 
-                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+
+                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Trade Information</div>
                   <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
                     <div className="relative mt-5">
@@ -2775,7 +2615,7 @@ export function Overview({ outletSize }) {
                         Other Inputs
                       </Button>
                     </DrawerTrigger>
-                    <DrawerContent className="bg-background text-foreground">
+                    <DrawerContent className="bg-background text-foreground border-border">
                       <div className="mx-auto h-full w-full max-w-sm lg:w-[700px]">
                         <DrawerHeader>
                           <DrawerTitle>Other Inputs</DrawerTitle>
@@ -2841,6 +2681,223 @@ export function Overview({ outletSize }) {
                             </span>
                           </li>
                         </ul>
+                        <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                        <div className="font-semibold">
+                          Customer Detail Confirmation
+                        </div>
+                        <div className="mb-3 grid grid-cols-2 justify-between gap-3">
+
+                          <div className="relative mt-3">
+                            <Input
+                              defaultValue={finance.address}
+                              name="address"
+                              type="text"
+                              className="w-full border-border bg-background "
+                            />
+                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                              Address
+                            </label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Input
+                              defaultValue={finance.city}
+                              name="city"
+                              type="text"
+                              className="w-full border-border bg-background "
+                            />
+                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                              City
+                            </label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Input
+                              defaultValue={finance.province}
+                              name="province"
+                              type="text"
+                              className="w-full border-border bg-background "
+                            />
+                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                              Province
+                            </label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Input
+                              defaultValue={finance.postal}
+                              name="postal"
+                              type="text"
+                              className="w-full border-border bg-background "
+                            />
+                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                              Postal Code
+                            </label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Input
+                              defaultValue={finance.dl}
+                              name="dl"
+                              type="text"
+                              className="w-full border-border bg-background "
+                            />
+                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                              Drivers Lic.
+                            </label>
+                          </div>
+                        </div>
+                        <div className=" mb-3 grid grid-cols-2 justify-between gap-3">
+                          <div className="relative mt-3">
+                            <Select name="timeToContact">
+                              <SelectTrigger className="w-full  border border-border bg-background text-foreground">
+                                <SelectValue defaultValue={finance.timeToContact} />
+                              </SelectTrigger>
+                              <SelectContent className=" border border-border bg-background text-foreground">
+                                <SelectGroup>
+                                  <SelectLabel>Best Time To Contact</SelectLabel>
+                                  <SelectItem value="Morning">Morning</SelectItem>
+                                  <SelectItem value="Afternoon">Afternoon</SelectItem>
+                                  <SelectItem value="Evening">Evening</SelectItem>
+                                  <SelectItem value="Do Not Contact">
+                                    Do Not Contact
+                                  </SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                              Prefered Time
+                            </label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Select name="typeOfContact">
+                              <SelectTrigger className="w-full  border border-border bg-background text-foreground">
+                                <SelectValue defaultValue={finance.typeOfContact} />
+                              </SelectTrigger>
+                              <SelectContent className=" border border-border bg-background text-foreground">
+                                <SelectGroup>
+                                  <SelectLabel>Contact Method</SelectLabel>
+                                  <SelectItem value="Phone">Phone</SelectItem>
+                                  <SelectItem value="InPerson">In-Person</SelectItem>
+                                  <SelectItem value="SMS">SMS</SelectItem>
+                                  <SelectItem value="Email">Email</SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                              Prefered Contact
+                            </label>
+                          </div>
+
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <div className="relative mt-3">
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-full justify-start  text-center  font-normal",
+                                    !dateCal && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4 " />
+                                  {dateCal ? (
+                                    format(dateCal, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                </Button>
+                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                  Pick A Date
+                                </label>
+                              </div>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto bg-background p-0 text-foreground border-border"
+                              align="start"
+                            >
+                              <Calendar
+                                className="bg-background text-foreground"
+                                mode="single"
+                                selected={dateCal}
+                                onSelect={setDate}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <input
+                            type="hidden"
+                            value={String(dateCal)}
+                            name="pickedDate"
+                          />
+
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <div className="relative mt-3">
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-full justify-start text-right font-normal",
+                                    !dateCal && "text-muted-foreground"
+                                  )}
+                                >
+                                  <ClockIcon className="mr-2 h-4 w-4 " />
+                                  {currentTime ? time : <span>Pick a Time</span>}
+                                </Button>
+                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                  Pick A Time
+                                </label>
+                              </div>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto bg-background p-0 text-foreground"
+                              align="start"
+                            >
+                              <div className="flex items-center">
+                                <Select
+                                  name="pickHour"
+                                  value={hour}
+                                  onValueChange={setHour}
+                                >
+                                  <SelectTrigger className="m-3 w-auto">
+                                    <SelectValue placeholder="hour" />
+                                  </SelectTrigger>
+                                  <SelectContent className="bg-background text-foreground">
+                                    <SelectGroup>
+                                      <SelectLabel>Hour</SelectLabel>
+                                      <SelectItem value="09">09</SelectItem>
+                                      <SelectItem value="10">10</SelectItem>
+                                      <SelectItem value="11">11</SelectItem>
+                                      <SelectItem value="12">12</SelectItem>
+                                      <SelectItem value="13">13</SelectItem>
+                                      <SelectItem value="14">14</SelectItem>
+                                      <SelectItem value="15">15</SelectItem>
+                                      <SelectItem value="16">16</SelectItem>
+                                      <SelectItem value="17">17</SelectItem>
+                                      <SelectItem value="18">18</SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+
+                                <Select
+                                  name="pickMin"
+                                  value={min}
+                                  onValueChange={setMin}
+                                >
+                                  <SelectTrigger className="m-3 w-auto">
+                                    <SelectValue placeholder="min" />
+                                  </SelectTrigger>
+                                  <SelectContent className="bg-background text-foreground">
+                                    <SelectGroup>
+                                      <SelectLabel>Minute</SelectLabel>
+                                      <SelectItem value="00">00</SelectItem>
+                                      <SelectItem value="10">10</SelectItem>
+                                      <SelectItem value="20">20</SelectItem>
+                                      <SelectItem value="30">30</SelectItem>
+                                      <SelectItem value="40">40</SelectItem>
+                                      <SelectItem value="50">50</SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
 
                         <DrawerFooter>
                           <DrawerClose asChild>
@@ -2850,7 +2907,7 @@ export function Overview({ outletSize }) {
                       </div>
                     </DrawerContent>
                   </Drawer>
-                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Total</div>
                   <ul className="grid gap-3">
                     {perDiscountGiven > 0 && (
@@ -3038,7 +3095,7 @@ export function Overview({ outletSize }) {
                         </li>
                       )}
                     </ul>
-                    <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                     <div className="font-semibold">Price</div>
                     <ul className="grid gap-3">
                       <li className="flex items-center justify-between">
@@ -3099,7 +3156,7 @@ export function Overview({ outletSize }) {
                           </li>
                         )}
                     </ul>
-                    <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                     <div className="font-semibold">Fees</div>
                     <ul className="grid gap-3">
                       {deFees.userAirTax > 0 && (
@@ -3170,7 +3227,7 @@ export function Overview({ outletSize }) {
                       )}
                     </ul>
                   </div>
-                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Standard Terms</div>
                   <div className="mt-3">
                     <div className="main-button-group flex justify-between ">
@@ -3364,7 +3421,7 @@ export function Overview({ outletSize }) {
                     </div>
                   )}
 
-                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Contract Variables</div>
                   <ul className="mt-3 grid gap-3">
                     <li className="flex items-center justify-between">
@@ -3391,7 +3448,7 @@ export function Overview({ outletSize }) {
                     </li>
                   </ul>
 
-                  <hr className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
                   <div className="font-semibold">Total</div>
                   <ul className="grid gap-3">
                     {perDiscountGiven > 0 && (

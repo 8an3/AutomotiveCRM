@@ -17,7 +17,6 @@ export async function GetUser(email) {
       customerId: true,
       returning: true,
       phone: true,
-      positions: { select: { position: true } },
       roleId: true,
       profileId: true,
       omvicNumber: true,
@@ -34,7 +33,9 @@ export async function GetUser(email) {
       familyName: true,
       identityProvider: true,
       plan: true,
+      positions: { select: { position: true } },
       role: { select: { symbol: true, name: true } },
+      customerSync: { select: { orderId: true, updatedAt: true } }
     },
   });
 

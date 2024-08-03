@@ -66,7 +66,7 @@ export const columns = [
         cell: ({ row, column: { id } }) => {
             const data = row.original
             return (
-            <UnitDialog data={data} />
+                <UnitDialog data={data} />
             )
         },
         filterFn: fuzzyFilter,
@@ -664,64 +664,64 @@ export const action: ActionFunction = async ({ request, params }) => {
     const intent = formData.intent
 
     if (intent === 'updateUnit') {
-      const update = await prisma.InventoryMotorcycle.update({
-        where: {id : data.id},
-        data: {
-            packageNumber: formData.packageNumber,
-packagePrice: formData.packagePrice,
-stockNumber: formData.stockNumber,
-type: formData.type,
-class: formData.class,
-year: formData.year,
-make: formData.make,
-model: formData.model,
-modelName: formData.modelName,
-submodel: formData.submodel,
-subSubmodel: formData.subSubmodel,
-price: formData.price,
-exteriorColor: formData.exteriorColor,
-mileage: formData.mileage,
-consignment: formData.consignment,
-onOrder: formData.onOrder,
-expectedOn: formData.expectedOn,
-status: formData.status,
-orderStatus: formData.orderStatus,
-hdcFONumber: formData.hdcFONumber,
-hdmcFONumber: formData.hdmcFONumber,
-vin: formData.vin,
-age: formData.age,
-floorPlanDueDate: formData.floorPlanDueDate,
-location: formData.location,
-stocked: formData.stocked,
-stockedDate: formData.stockedDate,
-isNew: formData.isNew,
-actualCost: formData.actualCost,
-mfgSerialNumber: formData.mfgSerialNumber,
-engineNumber: formData.engineNumber,
-plates: formData.plates,
-keyNumber: formData.keyNumber,
-length: formData.length,
-width: formData.width,
-engine: formData.engine,
-fuelType: formData.fuelType,
-power: formData.power,
-chassisNumber: formData.chassisNumber,
-chassisYear: formData.chassisYear,
-chassisMake: formData.chassisMake,
-chassisModel: formData.chassisModel,
-chassisType: formData.chassisType,
-registrationState: formData.registrationState,
-registrationExpiry: formData.registrationExpiry,
-grossWeight: formData.grossWeight,
-netWeight: formData.netWeight,
-insuranceCompany: formData.insuranceCompany,
-policyNumber: formData.policyNumber,
-insuranceAgent: formData.insuranceAgent,
-insuranceStartDate: formData.insuranceStartDate,
-insuranceEndDate: formData.insuranceEndDate,
-sold: formData.sold,
-        }
-      })
+        const update = await prisma.InventoryMotorcycle.update({
+            where: { id: data.id },
+            data: {
+                packageNumber: formData.packageNumber,
+                packagePrice: formData.packagePrice,
+                stockNumber: formData.stockNumber,
+                type: formData.type,
+                class: formData.class,
+                year: formData.year,
+                make: formData.make,
+                model: formData.model,
+                modelName: formData.modelName,
+                submodel: formData.submodel,
+                subSubmodel: formData.subSubmodel,
+                price: formData.price,
+                exteriorColor: formData.exteriorColor,
+                mileage: formData.mileage,
+                consignment: formData.consignment,
+                onOrder: formData.onOrder,
+                expectedOn: formData.expectedOn,
+                status: formData.status,
+                orderStatus: formData.orderStatus,
+                hdcFONumber: formData.hdcFONumber,
+                hdmcFONumber: formData.hdmcFONumber,
+                vin: formData.vin,
+                age: formData.age,
+                floorPlanDueDate: formData.floorPlanDueDate,
+                location: formData.location,
+                stocked: formData.stocked,
+                stockedDate: formData.stockedDate,
+                isNew: formData.isNew,
+                actualCost: formData.actualCost,
+                mfgSerialNumber: formData.mfgSerialNumber,
+                engineNumber: formData.engineNumber,
+                plates: formData.plates,
+                keyNumber: formData.keyNumber,
+                length: formData.length,
+                width: formData.width,
+                engine: formData.engine,
+                fuelType: formData.fuelType,
+                power: formData.power,
+                chassisNumber: formData.chassisNumber,
+                chassisYear: formData.chassisYear,
+                chassisMake: formData.chassisMake,
+                chassisModel: formData.chassisModel,
+                chassisType: formData.chassisType,
+                registrationState: formData.registrationState,
+                registrationExpiry: formData.registrationExpiry,
+                grossWeight: formData.grossWeight,
+                netWeight: formData.netWeight,
+                insuranceCompany: formData.insuranceCompany,
+                policyNumber: formData.policyNumber,
+                insuranceAgent: formData.insuranceAgent,
+                insuranceStartDate: formData.insuranceStartDate,
+                insuranceEndDate: formData.insuranceEndDate,
+                sold: formData.sold,
+            }
+        })
         return json({ update })
     }
     return json({ message: 'Invalid intent' }, { status: 400 });
@@ -1206,33 +1206,46 @@ export default function UnitInv() {
                     </DropdownMenuContent>
                 </DropdownMenu>
                 {selectedColumn && (
-                    <Input
-                        placeholder={`Filter ${selectedColumn}...`}
-                        onChange={(e) => handleGlobalChange(e.target.value)}
-                        className="ml-2 max-w-sm "
-                    />
+                    <div className="relative flex-1 md:grow-0 ">
+
+                        <Input
+                            placeholder={`Filter ${selectedColumn}...`}
+                            onChange={(e) => handleGlobalChange(e.target.value)}
+                            className="ml-2 max-w-sm w-auto "
+                            autoFocus
+                        />
+                        <Button
+                            onClick={() => {
+                                setAllFilters([]);
+                                setSelectedGlobal(false);
+                            }}
+                            size="icon"
+                            variant="ghost"
+                            className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+
+                            <X />
+                        </Button>
+                    </div>
                 )}
                 {selectedGlobal === true && (
-                    <div className="relative ">
+                    <div className="relative flex-1 md:grow-0 ">
                         <DebouncedInput
                             value={globalFilter ?? ""}
                             onChange={(value) => setGlobalFilter(String(value))}
-                            className="mx-1 rounded-md border border-border bg-background p-2 text-foreground shadow "
-                            placeholder="Search all columns..."
+                            className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow max-w-sm w-auto"
+                            placeholder="Search all columns..." autoFocus
                         />
-                        <label className=" scale-80 absolute -top-3 right-3 rounded-full  bg-transparent px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                            <Button
-                                onClick={() => {
-                                    setGlobalFilter([]);
-                                    setSelectedGlobal(false);
-                                }}
-                                size="icon"
-                                variant="ghost"
-                                className="hover:bg-transparent"
-                            >
-                                <X />
-                            </Button>
-                        </label>
+
+                        <Button
+                            onClick={() => {
+                                setGlobalFilter([]);
+                                setSelectedGlobal(false);
+                            }}
+                            size="icon"
+                            variant="ghost"
+                            className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                            <X size={16} />
+                        </Button>
                     </div>
                 )}
                 <Button

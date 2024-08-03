@@ -137,8 +137,8 @@ export function DataTable({ columns, data, user, smsDetails, columnState }) {
   const jsonString = state.replace(/'/g, '"');
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>();
 
-    useEffect(() => {
-      setColumnVisibility(JSON.parse(jsonString))
+  useEffect(() => {
+    setColumnVisibility(JSON.parse(jsonString))
   }, []);
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -787,11 +787,11 @@ export function DataTable({ columns, data, user, smsDetails, columnState }) {
   const [getTheState, setGetTheState] = useState([])
   const [getTheState2, setGetTheState2] = useState([])
   useEffect(() => {
-                                   const formData = new FormData();
-                              formData.append("userEmail", user.email);
-                              formData.append("columnState", getTheState2);
-                              formData.append("intent", "salesColumns");
-                             fetcher.submit(formData, { method: "post" });
+    const formData = new FormData();
+    formData.append("userEmail", user.email);
+    formData.append("columnState", getTheState2);
+    formData.append("intent", "salesColumns");
+    fetcher.submit(formData, { method: "post" });
   }, [getTheState2, getTheState]);
 
   return (
@@ -944,12 +944,12 @@ export function DataTable({ columns, data, user, smsDetails, columnState }) {
                             checked={column.getIsVisible()}
                             onCheckedChange={(value) => {
                               column.toggleVisibility(!!value);
-                                 const columnState = JSON.stringify(table.getState().columnVisibility);
+                              const columnState = JSON.stringify(table.getState().columnVisibility);
                               const getVisibleFlatColumns = JSON.stringify(table.getVisibleFlatColumns());
                               const formattedColumnState = columnState.replace(/"/g, "'").replace(/\s+/g, '');
                               const formattedgetVisibleFlatColumns = columnState.replace(/"/g, "'").replace(/\s+/g, '');
                               setGetTheState(formattedColumnState)
-                                    setGetTheState2(formattedgetVisibleFlatColumns)
+                              setGetTheState2(formattedgetVisibleFlatColumns)
                             }}
                           >
                             {column.id}
@@ -1293,53 +1293,67 @@ export function DataTable({ columns, data, user, smsDetails, columnState }) {
           </DropdownMenuContent>
         </DropdownMenu>
         {selectedColumn && (
-          <Input
-            placeholder={`Filter ${selectedColumn}...`}
-            onChange={(e) => handleGlobalChange(e.target.value)}
-            className="ml-2 max-w-sm "
-          />
+          <div className="relative ">
+
+            <Input
+              placeholder={`Filter ${selectedColumn}...`}
+              onChange={(e) => handleGlobalChange(e.target.value)}
+              className="ml-2 max-w-sm w-auto "
+            />
+            <Button
+              onClick={() => {
+                setAllFilters([]);
+                setSelectedGlobal(false);
+              }}
+              size="icon"
+              variant="ghost"
+              className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+
+              <X />
+            </Button>
+          </div>
         )}
         {selectedGlobal === true && (
           <div className="relative ">
             <DebouncedInput
               value={globalFilter ?? ""}
               onChange={(value) => setGlobalFilter(String(value))}
-              className="ml-3 border border-border p-2 shadow"
+              className="ml-3 border border-border p-2 shadow max-w-sm w-auto"
               placeholder="Search all columns..."
+              autoFocus
             />
-            <label className=" scale-80 absolute -top-3 right-3 rounded-full  bg-transparent px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-              <Button
-                onClick={() => {
-                  setGlobalFilter([]);
-                  setSelectedGlobal(false);
-                }}
-                size="icon"
-                variant="ghost"
-                className="hover:bg-transparent"
-              >
-                <X />
-              </Button>
-            </label>
+
+            <Button
+              onClick={() => {
+                setGlobalFilter([]);
+                setSelectedGlobal(false);
+              }}
+              size="icon"
+              variant="ghost"
+              className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+
+              <X />
+            </Button>
           </div>
         )}
       </div>
 
       <div style={{ direction: table.options.columnResizeDirection }}>
         <div className="mt-[20px] rounded-md  border border-border text-foreground">
-          <Table            className="overflow-x-auto rounded-md border-border"       table={table}              >
+          <Table className="overflow-x-auto rounded-md border-border" table={table}              >
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className=" border-border">
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead                    key={header.id}                                              >
+                      <TableHead key={header.id}                                              >
                         <>
                           {header.isPlaceholder
                             ? null
                             : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
 
                           {header.column.getCanFilter() && showFilter && (
                             <div className="mx-auto cursor-pointer items-center justify-center text-center ">
@@ -1360,12 +1374,11 @@ export function DataTable({ columns, data, user, smsDetails, columnState }) {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className={`cursor-pointer border-border bg-background p-4 capitalize text-foreground  ${
-                      index % 2 === 0 ? "bg-background" : "bg-background"
-                    }`}
+                    className={`cursor-pointer border-border bg-background p-4 capitalize text-foreground  ${index % 2 === 0 ? "bg-background" : "bg-background"
+                      }`}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell                       key={cell.id}                                              >
+                      <TableCell key={cell.id}                                              >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -1389,7 +1402,6 @@ export function DataTable({ columns, data, user, smsDetails, columnState }) {
         </div>
 
         <DataTablePagination table={table} />
-              <pre>{JSON.stringify(table.getState().columnVisibility, null, 2)}</pre>
 
       </div>
     </div>

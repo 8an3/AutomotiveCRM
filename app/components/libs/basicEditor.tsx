@@ -1132,7 +1132,7 @@ export function EditorTiptapHookComposeDashboardEmailClient({ content, subject, 
           <div className="relative">
             <Select name='userRole'
               onValueChange={(value) => {
-                handleChange(value); // Pass the input value directly to handleChange
+                handleChange(value);
               }}   >
               <SelectTrigger className="w-[500px]  bg-background text-foreground border border-border">
                 <SelectValue />

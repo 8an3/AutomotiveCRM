@@ -281,7 +281,7 @@ export const salesFeatures = [
 export const dealerFeatures = [
   { name: "Dashboard", description: "Overview of your sales activities for the day, includes time saving methods that will save you 1000's of minuites over the course of the year." },
   { name: "Sales Tracker", description: "Track your sales performance" },
-  { name: "Sales Calendar", description: "Keep track of your sales events, can either use the dashboard to make your calls or your calendar depending on which you prefer more" },
+  { name: "Tailer made Sales Calendar", description: "Sales calendars typically suck, because the people who make them for sales people, arent sales people." },
   { name: "Script Builder", description: "Create and manage sales scripts" },
   { name: "Document Builder", description: "Generate sales documents, that are reusable for every single sale. Just need to make them once the first time, then at every sale just hit print." },
   { name: "Customer Wish List Dashboard", description: "Manage customer wish lists and get notified when it hits your inventory, so you never miss a sale again", },
@@ -296,41 +296,55 @@ export const dealerFeatures = [
   { name: "Hard to Soft Document Storage", description: "Store documents securely, store documents on the customers deal page so you can come back to them whenever you need them as many times as you want.", },
   { name: "Dept and General Staff Chat", description: "Internal chat for staff.", },
   { name: "Staff Scheduler / Store Hours", description: "Schedule your staff in the crm so your staff knows their schedule.", },
-  { name: "Dept Leaderboards", description: "To instill an ever competitive attitude among the staff.", },
+  { name: "Dept Leaderboards", description: "To instill an ever competitive attitude among the staff, with the ability to set goals and compare how your doing against eachother. Made in a way where you can compete, not dollar to dollar from each dept, but instead set goals attached to sales figures appropriate for each dept and see who can hit their depts goals month over month. So instead of seeing how much profit one made more than the other, which can be demotivating, it just shows how hard everyone pushed to complete their depts goals.", },
   { name: "Finance Dashboard", description: "Finance dept specific dashboard." },
-  { name: "Finance Specific Processes To Streamline the Sales Flow", description: "Finance processes optimization", },
+  { name: "Finance Specific Processes To Streamline the Sales Flow", description: "", },
   { name: "Admin Section", description: "Administrative tools to manage your crm." },
   { name: "Manager Section", description: "Managerial tools to manage your staff and inventory" },
   { name: "Owner Section", description: "Managerial tools to manage your staff and inventory" },
   { name: "Inventory Dashboard - Automotive", description: "Manage your in stock and sold inventory." },
   { name: "Import / Export Data", description: "Any data you want at any time.", },
+  { name: "Revolutionary sales to finance handoff process", description: "Never before seen in the auto industry, making the sales process seem like magic to the customer", },
   { name: "Cloud Based Setup", description: "No initial set-up or installation of any kind for our clients.", },
   { name: "API for Lead Generating Sources", description: "Want to try out a new lead generation campaign with a new company, just give them the api details and your all set.", },
+  { name: "No more expensive weird, one off equipment", description: "No special inventory machines to log product, no special printers needed to print anything, no fancy scanners to scan product/unit barcodes", },
 
+  // here now
+  { name: "QR code system to easily get the information you need at the tap of a button", description: "Each receipt, work order or anything to do with a client will include a qr code so you can quickly scan it, either with your computer to pull up their file to work on when a client walks through the door, or your phone so you can work on the file on the go without needing a computer or workorder to refer to, has a plethora of other uses but too many to lsit here. Also removes the need for printed work orders to chase or keep track of.", },
+  { name: "Client sync with mobile devices and desktop", description: "For example, your looking at a customers unit outside with them and you pull up their order on your phone to make notes on work needed, once all work has been gone over with the vehicle and the client, you walk back inside with your client and navigate to the orders page, with your clients file already pulled up and everything you noted outside, is already on their file. Or your in accessories, you have the customers order already up on your phone and as your helping your customer try things on and they agree to buy them, your already ringing up thier items they want to purchase with your phone. When their done shopping, you can confirm the order with them on your phone or go to your computer and have the order pulled up with all the customers items already on their order, all they have to do is pay.", },
+  { name: "Demo Day Dashboard - Coming Soon! - Here now!", description: "Book your clients in for your next demo day. (Coming Soon)", },
+  { name: "Full Parts CRM and Inventory Mgt - Coming Soon! - Here now!", description: "Parts CRM and inventory management (Coming Soon)", },
+  { name: "Full Acc CRM and Inventory Mgt - Coming Soon! - Here now!", description: "Accessories CRM and inventory management (Coming Soon)", },
+  { name: "Mass Email - Coming Soon! - Here now!", description: "Unit just come in? Great, send an email blast.", },
+  { name: "No more fancy equipment for scanning items, inventory etc - Here now!", description: "All you need is a cell phone or a simple webcam", },
+  { name: "Task & Reminder Automation - Coming Soon! - Here now!", description: "Never forget a task again.", },
+  { name: "Customizable Dealer CSI Reports - Coming Soon! - Here now!", description: "Dept specfic csi reports to see how your doing", },
+  { name: "Customizable finance products - Coming Soon! - Here now!", description: "No longer have to wait for head office to input products", },
+  { name: "Easy unit inventory managment for service- Coming Soon! - Here now!", description: "just take your cell phone, scan the unit's bar code thats it", },
+  { name: "AI Booking Assistant - Extra Fees Apply - Coming Soon! - Here now!", description: "Generate so many leads you need help booking appointments, our ai assisntant can help book your clients in your schedule.." },
+  { name: "AI Writing Partner - Extra Fees Apply - Here now!", description: "Dont know what to say, our AI can help write your next sales email." },
+  { name: "Lead Rotation board - Coming Soon! - Here now!", description: "Automate lead rotation and walk-ins. finance and sales team", },
+  { name: "Sales stats breakdowns - Coming Soon! - Here now!", description: "In an easy to digest format for any person looking at their stats. Instead of just looking at a huge wall of numbers, we display the stats in graphs and charts, we compare them to ones that make sense. Breaking down your entire process and showing where you can improve from day to day, to month to month. We do also have the big wall of stats if your into it though.", },
 
-  { name: "Demo Day Dashboard - Coming Soon!", description: "Book your clients in for your next demo day. (Coming Soon)", },
+  // here now
+
   { name: "Manager Dashboard - Coming Soon!", description: "Dashboard for managers (Coming Soon)", },
   { name: "Owner Dashboard - Coming Soon!", description: "Dashboard for owners (Coming Soon)", },
   { name: "Full Service CRM - Coming Soon!", description: "Full service CRM (Coming Soon), from service writer to technician. Helping your team save time while giving clear instructions with work orders.", },
-  { name: "Full Parts CRM and Inventory Mgt - Coming Soon!", description: "Parts CRM and inventory management (Coming Soon)", },
-  { name: "Full Acc CRM and Inventory Mgt - Coming Soon!", description: "Accessories CRM and inventory management (Coming Soon)", },
-  { name: "Customizable Dealer CSI Reports - Coming Soon!", description: "Dept specfic csi reports to see how your doing", },
-  { name: "Task & Reminder Automation - Coming Soon!", description: "Never forget a task again.", },
-  { name: "Mass Email - Coming Soon!", description: "Unit just come in? Great, send an email blast.", },
   { name: "Compaigns - Coming Soon!", description: "Set up and automate an advertising campaign to target your customers where they are specifically in the sales funnnel.", },
-  { name: "Lead Rotation board - Coming Soon!", description: "Automate lead rotation and walk-ins.", },
   { name: "Cross Platform Ad Manager - Coming Soon!", description: "Make one ad on our platform and push to al of your social media.", },
   { name: "Optional - In-House Infrastructure - Coming Soon!", description: "You would rather host your own server on site.", },
 
 
   { name: "Full Dealer Set-up - Extra Fees Apply", description: "Not good with technology and need help setting up all your employees in your dealer? No problem, were here to help.", },
-  { name: "Voice Calling - Extra Fees Apply", description: "Make voice calls straight from the dashboard to quickly go from call to call." },
-  { name: "SMS Client - Extra Fees Apply", description: "Send and receive SMS messages, right in the dashboard." },
+  { name: "Voice Calling - Extra Fees Apply - Here now!", description: "Make voice calls straight from the dashboard to quickly go from call to call." },
+  { name: "SMS Client - Extra Fees Apply - Here now!", description: "Send and receive SMS messages, right in the dashboard." },
   { name: "Speech To Text - Extra Fees Apply", description: "Slow at typing, no worries its a lot quicker to say an email than type it for a lot of people." },
-  { name: "AI Writing Partner - Extra Fees Apply", description: "Dont know what to say, our AI can help write your next sales email." },
-  { name: "AI Booking Assistant - Extra Fees Apply - Coming Soon!", description: "Generate so many leads you need help booking appointments, our ai assisntant can help book your clients in your schedule.." },
   { name: "Trade Evaluations - Extra Fees Apply - Coming Soon!", description: "Trade in pricing from the kelley blue book integrated right into our quoting system.", },
 
+  { name: "Payment processor - Coming Soon!", description: "Why bring in more program's when you dont need to?", },
+
+  { name: "Theres more...", description: "But we can't seem to remember all of them to continue listing them off here...", },
 
 ];
 export function DealerPrice() {
