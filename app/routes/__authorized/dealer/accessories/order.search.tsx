@@ -80,12 +80,16 @@ export async function loader({ request, params }: LoaderFunction) {
         select: {
           id: true,
           createdAt: true,
+          status: true,
           updatedAt: true,
+          userName: true,
+          dept: true,
           userEmail: true,
-          fulfilled: true,
           total: true,
           discount: true,
           discPer: true,
+          sendToAccesories: true,
+          sendToAccessories: true,
           clientfileId: true,
           AccessoriesOnOrders: {
             select: {
@@ -93,6 +97,8 @@ export async function loader({ request, params }: LoaderFunction) {
               quantity: true,
               accOrderId: true,
               accessoryId: true,
+              status: true,
+              orderNumber: true,
               accessory: {
                 select: {
                   id: true,
@@ -108,6 +114,7 @@ export async function loader({ request, params }: LoaderFunction) {
                   onOrder: true,
                   distributer: true,
                   location: true,
+                  note: true,
                 },
               },
             },

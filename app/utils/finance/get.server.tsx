@@ -25,19 +25,89 @@ export async function getClientFileByEmail(financeEmail) {
 export async function getClientFileById(clientfileId) {
   try {
     const clientFile = await prisma.clientfile.findUnique({
-      where: {
-        id: clientfileId,
+      where: { id: clientfileId },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        name: true,
+        email: true,
+        phone: true,
+        address: true,
+        city: true,
+        postal: true,
+        province: true,
+        dl: true,
+        typeOfContact: true,
+        timeToContact: true,
+        conversationId: true,
+        billingAddress: true,
+        AccOrder: {
+          select: {
+            id: true,
+            createdAt: true,
+            status: true,
+            updatedAt: true,
+            userName: true,
+            dept: true,
+            userEmail: true,
+            total: true,
+            discount: true,
+            discPer: true,
+            sendToAccesories: true,
+            sendToAccessories: true,
+            clientfileId: true,
+            AccessoriesOnOrders: {
+              select: {
+                id: true,
+                quantity: true,
+                accOrderId: true,
+                accessoryId: true,
+                status: true,
+                orderNumber: true,
+                accessory: {
+                  select: {
+                    id: true,
+                    accessoryNumber: true,
+                    brand: true,
+                    name: true,
+                    price: true,
+                    cost: true,
+                    quantity: true,
+                    description: true,
+                    category: true,
+                    subCategory: true,
+                    onOrder: true,
+                    distributer: true,
+                    location: true,
+                    note: true,
+                  },
+                },
+              },
+            },
+            Payments: {
+              select: {
+                id: true,
+                accOrderId: true,
+                paymentType: true,
+                amountPaid: true,
+                cardNum: true,
+                receiptId: true,
+              },
+            },
+          },
+        },
       },
     });
 
     if (!clientFile) {
-      console.log("No client file found with this email");
+      console.log("No client file found with this ID");
       return null;
     }
 
-    return clientFile
+    return clientFile;
   } catch (error) {
-    console.error("Error fetching client file by email:", error);
+    console.error("Error fetching client file by ID:", error);
     throw error;
   }
 }

@@ -1006,18 +1006,6 @@ model FinanceStorage {
   finance   Finance? @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
-model FinanceNote {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  financeId    String?
-  body         String?
-  userEmail    String?
-  userName     String?
-  clientfileId String
-}
-
 model ClientApts {
   id            String    @id @default(cuid())
   finance       Finance?  @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -1166,13 +1154,16 @@ model AccOrder {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userEmail  String?
-  attachedId String?
-  dept       String?
-  total      Float?
-  discount   Float?
-  discPer    Float?
-  status     String?
+  userEmail         String?
+  userName          String?
+  attachedId        String?
+  dept              String?
+  total             Float?
+  discount          Float?
+  discPer           Float?
+  status            String?
+  sendToAccesories  Boolean?
+  sendToAccessories Boolean?
 
   clientfileId        String
   Clientfile          Clientfile            @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
@@ -1263,7 +1254,9 @@ model Clientfile {
   conversationId String?
   billingAddress Boolean?
 
-  AccOrder AccOrder[]
+  AccOrder  AccOrder[]
+  Finance   Finance[]
+  WorkOrder WorkOrder[]
 }
 
 // -----------------------------------------------------------------------------
@@ -1490,7 +1483,6 @@ model Finance {
   lien          String?
 
   id                  String                @id @default(cuid())
-  clientfileId        String?
   activixId           String?               @unique
   theRealActId        String?
   createdAt           DateTime              @default(now())
@@ -1508,6 +1500,28 @@ model Finance {
   AccOrders           AccOrder[]
   WorkOrders          WorkOrder[]
   FinancePayments     FinancePayment[]
+  FinanceNote         FinanceNote[]
+
+  clientfileId String?
+  Clientfile   Clientfile? @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
+
+  @@index([clientfileId])
+}
+
+model FinanceNote {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  body         String?
+  userEmail    String?
+  userName     String?
+  clientfileId String
+
+  financeId String?
+  finance   Finance? @relation(fields: [financeId], references: [id], onDelete: Cascade)
+
+  @@index([financeId])
 }
 
 model FinancePayment {
@@ -1675,7 +1689,10 @@ model WorkOrder {
   financeId     String?
   Finance       Finance?    @relation(fields: [financeId], references: [id], onDelete: SetNull)
   WOPayments    WOPayment[]
+  clientfileId  String?
+  Clientfile    Clientfile? @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
 
+  @@index([clientfileId])
   @@index([FinanceUnitId])
   @@index([financeId])
 }

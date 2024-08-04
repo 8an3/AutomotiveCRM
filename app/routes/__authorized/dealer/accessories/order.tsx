@@ -117,7 +117,6 @@ export async function loader({ request, params }: LoaderFunction) {
       id: true,
       createdAt: true,
       userEmail: true,
-      fulfilled: true,
       total: true,
       discount: true,
       discPer: true,
@@ -575,12 +574,18 @@ export default function Purchase() {
           <Tabs defaultValue="week">
             <div className="flex items-center">
               <TabsList>
+                <TabsTrigger value="Parts Orders">Parts Orders</TabsTrigger>
+                <TabsTrigger value="Acc Orders">Acc Orders</TabsTrigger>
                 <TabsTrigger value="week">Last 7 Days</TabsTrigger>
                 <TabsTrigger value="month">Last 30 Days</TabsTrigger>
                 <TabsTrigger value="Search Orders">Search Orders</TabsTrigger>
                 <TabsTrigger value="End Of Day">End Of Day</TabsTrigger>
               </TabsList>
             </div>
+            <TabsContent value="Parts Orders">
+            </TabsContent>
+            <TabsContent value="Acc Orders">
+            </TabsContent>
             <TabsContent value="week">
               <Card x-chunk="dashboard-05-chunk-3">
                 <CardHeader className="px-7">
@@ -950,16 +955,14 @@ export default function Purchase() {
                               </TableRow>
                               {result.AccOrder.map((result, index) => (
                                 <>
-                                  <Table className='ml-5 w-[70%]'>
+                                  <Table className='ml-5'>
                                     <TableBody>
                                       <TableRow
                                         key={index}
                                         className="rounded-[6px] hover:bg-accent"
                                         onClick={() => toggleOrderDetails(result.id)}
                                       >
-                                        <TableCell className="hidden sm:table-cell">
-                                          Sale
-                                        </TableCell>
+
                                         <TableCell className="hidden sm:table-cell">
                                           <Badge
                                             className="text-xs"

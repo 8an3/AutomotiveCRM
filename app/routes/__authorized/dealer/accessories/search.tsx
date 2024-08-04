@@ -47,6 +47,7 @@ import { Outlet, Link, useFetcher, useActionData, useSubmit, Form } from "@remix
 import { LoaderFunction, redirect } from "@remix-run/node"
 import { prisma } from "~/libs"
 import { getSession } from "~/sessions/auth-session.server"
+import { GetUser } from "~/utils/loader.server"
 
 export async function loader({ request, params }: LoaderFunction) {
   let q = new URL(request.url).searchParams.get("q");
@@ -72,12 +73,15 @@ export async function action({ request, params }: LoaderFunction) {
   const formPayload = Object.fromEntries(await request.formData());
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
+  const user = await GetUser(email)
+
   if (formPayload.intent === 'createNewOrder') {
     const order = await prisma.accOrder.create({
       data: {
+        userName: user.name,
         userEmail: email,
         dept: 'Accessories',
-        fulfilled: false,
+        status: 'Quote',
         total: 0.00,
         clientfileId: formPayload.clientfileId,
       }

@@ -469,10 +469,11 @@ export async function seedUsers() {
     const order = await prisma.accOrder.create({
       data: {
         userEmail: orderData.userEmail,
-        fulfilled: orderData.fulfilled,
+        status: 'Quote',
+        financeId: finance.id,
         clientfileId: orderData.clientfileId,
-        paymentType: orderData.paymentType,
-        cardNum: orderData.cardNum,
+        userName: 'Skyler Zanth',
+        dept: 'Sales',
         total: orderData.total,
       },
     });
@@ -1057,6 +1058,7 @@ export async function Board() {
   ]
   const issue = [
     { board: "dev", column: "PAC", item: "inventory counter, like u know the ones u see at walmart" },
+    { board: "dev", column: "PAC", item: "a electronix lineup system kinda like how you do with financ e managers" },
 
     { board: "dev", column: "PAC", item: "move accessories pages that are needed else where to components and import them that way so you can use your routes actions - this did not work first try" },
     { board: "dev", column: "PAC", item: "give the ability to transfer orders to other depts and have them able to claim it to the work order or unit" },

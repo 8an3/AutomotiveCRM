@@ -184,7 +184,7 @@
     "material-icons": "^1.13.12",
     "mongodb": "^6.4.0",
     "msal": "^1.4.18",
-    "nanoid": "^3.3.4",
+    "nanoid": "^3.3.7",
     "nodemailer": "6.9.2",
     "nprogress": "^0.2.0",
     "onscan.js": "^1.5.2",
