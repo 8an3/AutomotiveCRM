@@ -730,7 +730,7 @@ export default function Purchase() {
                   <CardTitle>Order</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-6 ">
+                  <div className="grid gap-6 grid-cols-2 ">
                     <div>
                       <div className="relative mt-4">
                         <Select
@@ -749,10 +749,11 @@ export default function Purchase() {
                           <SelectTrigger className="w-[200px] " >
                             <SelectValue defaultValue={order.status} />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className='border-border'>
                             <SelectGroup>
                               <SelectLabel>Status</SelectLabel>
                               <SelectItem value="Quote">Quote</SelectItem>
+                              <SelectItem value="Review and Approved">Review and Approved</SelectItem>
                               <SelectItem value="Need to Order">Need to Order</SelectItem>
                               <SelectItem value="On Order">On Order</SelectItem>
                               <SelectItem value="Back Order">Back Order</SelectItem>
@@ -781,7 +782,7 @@ export default function Purchase() {
                           <SelectTrigger className="w-[200px]  ">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className='border-border'>
                             <SelectGroup>
                               <SelectLabel>Deptarment</SelectLabel>
                               <SelectItem value="Accessories">Accessories</SelectItem>
@@ -793,6 +794,13 @@ export default function Purchase() {
                         </Select>
                         <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dept</label>
                       </div>
+                    </div>
+                    <div>
+                      {order.dept === 'Sales' && order.sendToAccessories && (
+                        <Button size='sm' className='bg-primary'>
+                          Send To Accessories
+                        </Button>
+                      )}
                     </div>
 
                   </div>

@@ -71,6 +71,7 @@ import {
   Truck,
   Users2,
   Eye,
+  PanelTop,
 } from "lucide-react"
 import {
   Breadcrumb,
@@ -193,6 +194,8 @@ import { ClientOnly } from "remix-utils";
 import PrintReceipt from "../document/printReceiptSales";
 import EmailPreview, { TemplatePreviewThree, TemplatePreviewTwo, TemplatePreview } from "~/emails/preview";
 import { Printer } from "lucide-react";
+import { BanknoteIcon } from "lucide-react";
+import { DollarSign } from "lucide-react";
 
 
 /**  const [formData, setFormData] = useState({
@@ -228,7 +231,7 @@ export const headers = ({ loaderHeaders, parentHeaders }) => {
 
 export default function Dashboard() {
   const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers } = useLoaderData();
-
+  //console.log(clientFile, ' in default')
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
   const submit = useSubmit();
@@ -236,6 +239,7 @@ export default function Dashboard() {
   let formRef = useRef();
   const [value, onChange] = useState();
   const timerRef = React.useRef(0);
+  let addProduct = useFetcher();
 
   const [tradeToggled, setTradeToggled] = useState(true);
   const [financeInfo, setFinanceInfo] = useState(true);
@@ -596,7 +600,7 @@ export default function Dashboard() {
     { name: 'tradeDesc', value: finance.tradeDesc, placeholder: 'Model' },
     { name: 'tradeTrim', value: finance.tradeTrim, placeholder: 'Trim' },
     { name: 'tradeColor', value: finance.tradeColor, placeholder: 'Color' },
-    { name: 'tradeMileage', value: finance.tradeMileage, placeholder: 'Mileage' },
+    { name: 'tradeMileage', value: finance.tradeMileage || '', placeholder: 'Mileage' },
     { name: 'tradeLocation', value: finance.tradeLocation, placeholder: 'Location' },
     { name: 'tradeVin', value: finance.tradeVin, placeholder: 'VIN' },
   ]
@@ -1969,8 +1973,6 @@ export default function Dashboard() {
   };
   const getObjectById = (id) => { return searchData.find(item => item.id === id); };
 
-
-
   const handleButtonClickSMS = async (data) => {
     const theFile = await getObjectById(data.clientfileId)
     const clientfileId = data.clientfileId
@@ -2587,7 +2589,7 @@ export default function Dashboard() {
     })),
     ...additionalEvents
   ]
-  // signBill, funded, customerWS, tradeInsp, ucda, voidChq, testDrForm, insCopy, lost, cancelled, refunded, liceningDone, licensingSent, applicationDone, seenTrade, docsSigned, depositTakenDate, deliveredDate, financeApplication, metFinance, deliveryDate, delivered, demoed, pickUpSet, signed, approved, financeApp, turnOver, refund, depositMade, sold,metParts, metService, metManager, testDrive,
+
   const sortedEvents = events.sort((a, b) => new Date(a.date) - new Date(b.date));
   async function getData() {
     const res = await fetch('/dealer/dashboard/inventory/moto')
@@ -2611,8 +2613,6 @@ export default function Dashboard() {
   console.log(result, 'result')
   const [tableData, setTableData] = useState(result);
 
-
-  console.log(user, 'in customer')
   let sync = useFetcher();
 
   useEffect(() => {
@@ -2676,38 +2676,46 @@ export default function Dashboard() {
   const [emailTemplate, setEmailTemplate] = useState('');
   const [emailValue, setEmailValue] = useState('');
   const [accOrder, setAccOrder] = useState([]);
-  const [showOrder, setShowOrder] = useState(false);
+  const [showOrder, setShowOrder] = useState();
 
+  const [paymentType, setPaymentType] = useState('');
+  const payment = useFetcher()
   let order
-  if (clientFile.AccOrder) {
-    clientFile.AccOrder[0]
-  }
-  console.log(clientFile.AccOrder, ';clientFile.AccOrder')
+  useEffect(() => {
+
+    if (clientFile.AccOrder) {
+      order = clientFile.AccOrder[0]
+    }
+
+  }, []);
+
   const toggleOrderDetails = (orderId) => {
     if (showOrder.id === orderId.id) {
       setShowOrder(null);
     } else {
-
       setShowOrder(orderId);
     }
   };
 
   let totalAccessoriesCost
   if (showOrder) {
-    totalAccessoriesCost = showOrder.AccessoriesOnOrders.reduce((total, accessoryOnOrder) => {
-      return total + (accessoryOnOrder.quantity * accessoryOnOrder.accessory.price);
-    }, 0);
+    totalAccessoriesCost = showOrder.AccessoriesOnOrders.reduce((total, accessoryOnOrder) => { return total + (accessoryOnOrder.quantity * accessoryOnOrder.accessory.price); }, 0);
   }
 
   let totalAmountPaid
   if (showOrder) {
-    totalAmountPaid = showOrder.Payments.reduce((total, payment) => {
-      return total + payment.amountPaid;
-    }, 0);
+    totalAmountPaid = showOrder.Payments.reduce((total, payment) => { return total + payment.amountPaid; }, 0);
   }
 
   const taxMultiplier = Number(deFees.userTax);
   const taxRate = 1 + taxMultiplier / 100;
+
+  const [deposits, setDeposits] = useState("")
+  const depositsLength = deposits.trim().length
+  const financeId = finance.id
+  const attachedToFinance = clientFile.AccOrder.filter(order => order.financeId === financeId);
+  const notAttachedToFinance = clientFile.AccOrder.filter(order => order.financeId !== financeId);
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10  sm:w-[50px] sm:flex-col sm:border-r sm:bg-background sm:flex sm:border-border">
@@ -4026,7 +4034,7 @@ export default function Dashboard() {
                               </div>
                               <div className="relative mt-3">
                                 <Input
-                                  defaultValue={finance.tradeMileage}
+                                  defaultValue={finance.tradeMileage || ''}
                                   name="tradeMileage"
                                   type="text"
                                   className="w-full border-border bg-background "
@@ -5260,10 +5268,29 @@ export default function Dashboard() {
                         Review quote and orders the customer has looked at or purchased.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className='h-auto max-h-[300px] overflow-y-auto'>
                       <div className="grid ">
-                        <div className="font-semibold mt-4">Orders With Unit</div>
-                        <Table>
+                        <div className="font-semibold mt-4 flex justify-between items-center">
+                          <p>
+                            Orders With Unit
+                          </p>
+                          <Button
+                            size='sm'
+                            className='bg-primary'
+                            onClick={() => {
+                              const formData = new FormData();
+                              formData.append("financeId", finance.id);
+                              formData.append("userEmail", user.email);
+                              formData.append("userName", user.name);
+                              formData.append("clientfileId", clientFile.id);
+                              formData.append("intent", 'createAccQuote');
+                              submit(formData, { method: "post", });
+                            }} >
+                            Create Quote
+                          </Button>
+
+                        </div>
+                        <Table className='w-[95%] mx-auto'>
                           <TableHeader>
                             <TableRow className='border-border'>
                               <TableHead>
@@ -5285,14 +5312,13 @@ export default function Dashboard() {
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {finance.AccOrder &&
-                              finance.AccOrder.map((result, index) => (
+                            {attachedToFinance &&
+                              attachedToFinance.map((result, index) => (
                                 <TableRow key={index} className="hover:bg-accent border-border">
                                   <TableCell>
                                     <div>
                                       {result.dept}
                                     </div>
-
                                   </TableCell>
                                   <TableCell className="hidden md:table-cell">
                                     {result.userName}
@@ -5305,7 +5331,6 @@ export default function Dashboard() {
                                   <TableCell className="hidden md:table-cell">
                                     {result.total}
                                   </TableCell>
-
                                   <TableCell className='flex items-center gap-3'>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
@@ -5350,6 +5375,7 @@ export default function Dashboard() {
                                           size="icon"
                                           variant="ghost"
                                           className="bg-primary"
+                                          disabled={result.sendToAccessories === true}
                                           onClick={() => {
                                             const formData = new FormData();
                                             formData.append("orderId", result.id);
@@ -5369,11 +5395,13 @@ export default function Dashboard() {
                               ))}
                           </TableBody>
                         </Table>
-                        <div className="font-semibold mt-4">Other Orders Under Clients File</div>
+                        <Separator className='my-5' />
 
-                        <Table>
+                        <div className="font-semibold mt-4">Other Orders Under Clients File</div>
+                        <Table className='w-[95%] mx-auto'>
                           <TableHeader>
                             <TableRow className='border-border'>
+
                               <TableHead>
                                 Dept
                               </TableHead>
@@ -5393,14 +5421,14 @@ export default function Dashboard() {
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {clientFile.AccOrder &&
-                              clientFile.AccOrder.map((result, index) => (
+
+                            {notAttachedToFinance &&
+                              notAttachedToFinance.map((result, index) => (
                                 <TableRow key={index} className="hover:bg-accent border-border">
                                   <TableCell>
                                     <div>
                                       {result.dept}
                                     </div>
-
                                   </TableCell>
                                   <TableCell className="hidden md:table-cell">
                                     {result.userName}
@@ -5423,6 +5451,8 @@ export default function Dashboard() {
                                           className="bg-primary"
                                           onClick={() => {
                                             setShowOrder(result)
+                                            console.log(showOrder, showOrder, 'sasdfa')
+
                                           }}
                                         >
                                           <Eye className="h-5 w-5" />
@@ -5452,6 +5482,7 @@ export default function Dashboard() {
                                         Go To Order
                                       </TooltipContent>
                                     </Tooltip>
+
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <Button
@@ -5461,7 +5492,7 @@ export default function Dashboard() {
                                           onClick={() => {
                                             const formData = new FormData();
                                             formData.append("orderId", result.id);
-                                            formData.append("clientfileId", clientFile.id);
+                                            formData.append("financeId", finance.id);
                                             formData.append("intent", 'claimAccOrder');
                                             submit(formData, { method: "post", });
                                           }}
@@ -5478,108 +5509,71 @@ export default function Dashboard() {
                               ))}
                           </TableBody>
                         </Table>
-                        {clientFile.AccOrder && clientFile.AccOrder.map((result, index) => (
-                          <>
-
-                          </>
-                        ))}
 
                       </div>
                     </CardContent>
                     <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
                       <div className="text-xs text-muted-foreground flex items-center justify-between">
                         <div>
-                          <Badge size='sm' className='text-foreground text-center mx-auto w-auto'>
-                            {showOrder.userName}
-                          </Badge>
+
                         </div>
 
-                        <Button
-                          variant='outline'
-                          className='bg-background text-foreground border-border border ml-3'
-                          onSelect={() => {
-                            setData(result)
-                            PrintReceipt(toReceipt)
-                          }}>
-                          Print Receipt
-                        </Button>
+
                       </div>
                     </CardFooter>
                   </Card>
                   {showOrder && (
                     <Card className='sm:col-span-2 m-4' x-chunk="dashboard-07-chunk-3">
                       <CardHeader className=' bg-muted/50'>
-                        <CardTitle>   Current Order: {showOrder.id}   <div className="ml-auto flex items-center gap-1">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button size="icon" variant="outline" className="h-8 w-8">
-                                <MoreVertical className="h-3.5 w-3.5" />
-                                <span className="sr-only">More</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                              align="end"
-                              className="border border-border"
-                            >
-                              <DropdownMenuItem onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
-                              <DropdownMenuItem>Discount</DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onSelect={() => {
-
-                                }}>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                        </CardTitle>
+                        <CardTitle> Order Details </CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <div className="grid gap-6">
-                          <div className="font-semibold">Order Details</div>
-                          <ul className="grid gap-3 max-h-[400px] h-auto overflow-y-auto">
-                            {showOrder.AccessoriesOnOrders && showOrder.AccessoriesOnOrders.map((result, index) => (
-                              <li
-                                className="flex items-center justify-between"
-                                key={index}
-                              >
-                                <div>
-                                  <div className='flex items-center group '>
-                                    <div className="font-medium">
-                                      {result.accessory.brand}{" "}
-                                      {result.accessory.name}
+                      <CardContent className=' !grow !flex-grow h-auto max-h-[300px] overflow-y-auto'>
+                        <div className="grid gap-6 mt-4">
+                          <div className="font-semibold"></div>
+                          <ul className="grid gap-3 max-h-[00px] h-auto overflow-y-auto">
+                            {showOrder.AccessoriesOnOrders && showOrder.AccessoriesOnOrders.map((result, index) => {
+                              console.log(result); // Check the data here
+                              return (
+                                <li className="flex items-center justify-between" key={index}>
+                                  <div>
+                                    <div className='flex items-center group'>
+                                      <div className="font-medium">
+                                        {result.accessory.brand} {result.accessory.name}
+                                      </div>
+                                      <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                        <input type="hidden" name="id" value={result.id} />
+                                        <input type='hidden' name='total' value={total} />
+                                        <input type='hidden' name='accOrderId' value={showOrder.id} />
+                                        <Button
+                                          size="icon"
+                                          variant="outline"
+                                          name="intent" value='deleteOrderItem'
+                                          className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                          type='submit'
+                                        >
+                                          <X className="h-4 w-4 text-foreground" />
+                                        </Button>
+                                      </addProduct.Form>
                                     </div>
-                                    <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                      <input type="hidden" name="id" value={result.id} />
-                                      <input type='hidden' name='total' value={total} />
-                                      <input type='hidden' name='accOrderId' value={order.id} />
-                                      <Button
-                                        size="icon"
-                                        variant="outline"
-                                        name="intent" value='deleteOrderItem'
-                                        className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                        type='submit'
-                                      >
-                                        <X className="h-4 w-4 text-foreground" />
-                                      </Button>
-                                    </addProduct.Form>
-                                  </div>
 
-                                  <div className="hidden text-sm text-muted-foreground md:inline">
-                                    {result.accessory.category}{" "}
+                                    <div className="hidden text-sm text-muted-foreground md:inline">
+                                      {result.accessory.category}
+                                    </div>
+                                    <div className="hidden text-sm text-muted-foreground md:inline">
+                                      {result.accessory.description}
+                                    </div>
                                   </div>
-                                  <div className="hidden text-sm text-muted-foreground md:inline">
-                                    {result.accessory.description}
-                                  </div>
-                                </div>
-                                <span>${result.accessory.price}{" "}{" "}x{" "}{" "}{result.quantity}</span>
-                              </li>
-                            ))}
+                                  <span>${result.accessory.price} x {result.quantity}</span>
+                                </li>
+                              );
+                            })}
+
                           </ul>
                           <Separator className="my-2" />
                           <ul className="grid gap-3">
                             <li className="flex items-center justify-between">
                               <span className="text-muted-foreground">Subtotal</span>
-                              <span>${totalAccessoriesCost.toFixed(2)}</span>
+                              <span>${totalAccessoriesCost}</span>
                             </li>
                             {showOrder.discount && (
                               <li className="flex items-center justify-between">
@@ -5822,7 +5816,7 @@ export default function Dashboard() {
                                 <li className="flex items-center justify-between">
                                   <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
                                   <payment.Form method="post" ref={formRef} >
-                                    <input type='hidden' name='accOrderId' value={order.id} />
+                                    <input type='hidden' name='accOrderId' value={showOrder.id} />
                                     <input type='hidden' name='paymentType' value={paymentType} />
                                     <input type='hidden' name='intent' value='createPayment' />
                                     <input type='hidden' name='total' value={total} />
@@ -5856,26 +5850,32 @@ export default function Dashboard() {
 
                       </CardContent>
                       <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
-                        <div className="text-xs text-muted-foreground flex items-center justify-between">
-                          <div>
-                            <Badge size='sm' className='text-foreground text-center mx-auto w-auto'>
-                              {showOrder.userName}
-                            </Badge>
-                          </div>
+                        <div className="ml-auto flex items-center gap-1">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button size="icon" variant="outline" className="h-8 w-8">
+                                <MoreVertical className="h-3.5 w-3.5" />
+                                <span className="sr-only">More</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="border border-border"
+                            >
+                              <DropdownMenuItem onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
+                              <DropdownMenuItem>Discount</DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onSelect={() => {
 
-                          <Button
-                            variant='outline'
-                            className='bg-background text-foreground border-border border ml-3'
-                            onSelect={() => {
-                              setData(result)
-                              PrintReceipt(toReceipt)
-                            }}>
-                            Print Receipt
-                          </Button>
+                                }}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </CardFooter>
                     </Card>
                   )}
+
 
                 </div>
 
@@ -5891,6 +5891,7 @@ export default function Dashboard() {
                 <TabsTrigger value="Apt History">Apt History</TabsTrigger>
                 <TabsTrigger value="Communications">Communications</TabsTrigger>
                 <TabsTrigger value="Upload">Upload</TabsTrigger>
+                <TabsTrigger value="Deposits">Deposits</TabsTrigger>
               </TabsList>
               <TabsContent value="Timeline">
                 <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
@@ -6803,6 +6804,174 @@ export default function Dashboard() {
                   </CardFooter>
                 </Card>
               </TabsContent>
+              <TabsContent value="Deposits">
+                <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
+                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                    <div className="grid gap-0.5">
+                      <CardTitle className="group flex items-center gap-2 text-lg">
+                        Deposits
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
+                    <div>
+                      <ul className="grid gap-3">
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Subtotal</span>
+                          <span>${totalAccessoriesCost}</span>
+                        </li>
+                        {finance.discount && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Discount</span>
+                            <span>{finance.discount}</span>
+                          </li>
+                        )}
+                        {finance.discount && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Discount</span>
+                            <span>{finance.discount}</span>
+                          </li>
+                        )}
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Tax</span>
+                          <span>{deFees.userTax}%</span>
+                        </li>
+                        <li className="flex items-center justify-between font-semibold">
+                          <span className="text-muted-foreground">Total</span>
+                          <span>${total}</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <Separator className="my-4" />
+                    <div className="grid gap-3">
+                      <div className="font-semibold">Payment</div>
+                      <dl className="grid gap-3">
+
+                        <div className="flex flex-col" >
+                          <div className='flex items-center justify-center text-foreground'>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
+                              onClick={() => setPaymentType('Visa')}
+                            >
+                              <CreditCard className="h-4 w-4 text-foreground" />
+                              <p className="">Visa</p>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
+                              onClick={() => setPaymentType('Mastercard')}
+                            >
+                              <CreditCard className="h-4 w-4 text-foreground" />
+                              <p className="">Mastercard</p>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setPaymentType('Debit')}
+                              className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
+                            >
+                              <CreditCard className="h-4 w-4 text-foreground" />
+                              <p className="">Debit</p>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setPaymentType('Cheque')}
+                              className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
+                            >
+                              <CreditCard className="h-4 w-4 text-foreground" />
+                              <p className="">Cheque</p>
+                            </Button>
+                          </div>
+                          <div className='flex items-center justify-center text-foreground mt-2'>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
+                              onClick={() => setPaymentType('Cash')}
+                            >
+                              <BanknoteIcon className="h-4 w-4 text-foreground" />
+                              <p className="">Cash</p>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
+                              onClick={() => setPaymentType('Online Transaction')}
+                            >
+                              <PanelTop className="h-4 w-4 text-foreground" />
+                              <p className="">Online Transaction</p>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
+                              onClick={() => setPaymentType('E-Transfer')}
+                            >
+                              <PanelTop className="h-4 w-4 text-foreground" />
+                              <p className="">E-Transfer</p>
+                            </Button>
+                          </div>
+                        </div>
+                      </dl>
+                    </div>
+                    <div className="grid gap-3">
+                      <ul className="grid gap-3">
+                        {showOrder && showOrder.Payments.map((result, index) => (
+                          <li className="flex items-center justify-between" key={index}                    >
+                            <span className="text-muted-foreground">{result.paymentType}</span>
+                            <span>${result.amountPaid}</span>
+                          </li>
+                        ))}
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Balance</span>
+                          <span>${parseFloat(total) - parseFloat(totalAmountPaid)}</span>
+
+                        </li>
+                        {parseFloat(total) - parseFloat(totalAmountPaid) === 0 && (
+                          <input type='hidden' name='status' value='Fulfilled' />
+                        )}
+
+
+                      </ul>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                    {paymentType !== '' && (
+                      <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
+                        <input type='hidden' name='financeId' defaultValue={clientFile.Finance.id} />
+                        <input type='hidden' name='userEmail' defaultValue={user.email} />
+                        <input type='hidden' name='paymentType' value={paymentType} />
+                        <div className="relative ml-auto flex-1 md:grow-0 ">
+                          <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            name='amountPaid'
+                            className='text-right pr-9'
+                            value={input}
+                            onChange={(event) => setInput(event.target.value)}
+                          />
+                          <Button
+                            value="createPayment"
+                            type="submit"
+                            name="intent"
+                            size="icon"
+                            onClick={() => {
+                              toast.success(`Payment rendered!`)
+                            }}
+                            disabled={inputLength === 0}
+                            className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                            <PaperPlaneIcon className="h-4 w-4" />
+                            <span className="sr-only">Cash</span>
+                          </Button>
+                        </div>
+                      </fetcher.Form>
+                    )}
+                  </CardFooter>
+                </Card>
+              </TabsContent>
               <TabsContent value="Phone">
               </TabsContent>
               <TabsContent value="SMS">
@@ -6914,7 +7083,6 @@ export default function Dashboard() {
 }
 
 export const action: ActionFunction = async ({ req, request, params }) => {
-
   const formPayload = Object.fromEntries(await request.formData());
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
@@ -6931,10 +7099,25 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   const dashboardId = idSession.get('dashboardId')
 
   // console.log('headeras', userId, clientfileId, financeId, dashboardId)
+
+  if (intent === 'createAccQuote') {
+    const create = await prisma.accOrder.create({
+      data: {
+        financeId: formdata.financeId,
+        userEmail: formData.userEmail,
+        userName: formData.userName,
+        dept: 'Sales',
+        status: 'Quote',
+        sendToAccessories: true,
+        clientrfileId: formData.clientfileId,
+      }
+    })
+    return redirect(`/dealer/accessories/newOrder/${create.id}`)
+  }
   if (intent === "claimAccOrder") {
     const sendtoacc = await prisma.accOrder.update({
       where: { id: formData.orderId },
-      data: { clientfileId: formData.clientfileId }
+      data: { financeId: formData.financeId }
     });
     return json({ sendtoacc })
   }
@@ -7645,7 +7828,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
       tradeYear: formData.tradeYear,
       tradeTrim: formData.tradeTrim,
       tradeColor: formData.tradeColor,
-      tradeMileage: formData.tradeMileage,
+      tradeMileage: formData.tradeMileage || '',
       tradeVin: formData.tradeVin,
       tradeLocation: formData.tradeLocation,
     }
@@ -7743,7 +7926,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         tradeMake: formData.tradeMake,
         tradeVin: formData.tradeVin,
         tradeTrim: formData.tradeTrim,
-        tradeMileage: formData.tradeMileage,
+        tradeMileage: formData.tradeMileage || '',
         tradeLocation: formData.tradeLocation,
         trim: formData.trim,
         vin: formData.vin,
@@ -7856,39 +8039,509 @@ export async function loader({ params, request }: DataFunctionArgs) {
   let sliderWidth = 50
 
   let aptFinance3 = await getAppointmentsForFinance(financeId)
+  const clientFile = await getClientFileById(params.clientId)
+  console.log(clientFile, 'checking clientFile')
+
   let finance
   if (user?.activixActivated === 'yes') {
     finance = await GetMergedWithActivix(financeId)
     await UpdateClientFromActivix(finance)
   } else {
-    finance = await prisma.finance.findUnique({
-      where: { id: financeId },
-      include: {
-        finManOptions: true,
-        bmwMotoOptions: true,
-        financeStorage: true,
-        clientApts: true,
-        uCDAForm: true,
-        FinCanOptions: true,
-        Comm: true,
-        FinanceDeptProducts: true,
-        FinanceUnit: true,
-        FinanceTradeUnit: true,
-        AccOrders: true,
-        WorkOrders: true,
-        FinancePayments: true,
-        Clientfile: true
-      },
-    });
+    // Check if clientFile and its Finance property are properly defined
+    if (clientFile && Array.isArray(clientFile.Finance)) {
+      // console.log('Finance array:', clientFile.Finance);
+      //console.log('Searching for financeId:', financeId);
+
+      // Filter the array to find the matching finance object
+      const filteredFinances = clientFile.Finance.filter(finance => {
+        //   console.log('Comparing:', finance.id, 'with', financeId);
+        // Use the appropriate type conversion if necessary
+        return String(finance.id) === String(financeId);
+      });
+
+      // console.log('Filtered finances:', filteredFinances);
+
+      // Check if we have any matches
+      if (filteredFinances.length > 0) {
+        const selectedFinance = filteredFinances[0];
+        //   console.log('Selected finance:', selectedFinance);
+        finance = selectedFinance
+      } else {
+        console.log('No matching finance found.');
+      }
+    } else {
+      console.log('Client file or Finance array not found or is not an array.');
+    }
+
+    /**
+        finance = await prisma.finance.findUnique({
+          where: { id: financeId },
+          select: {
+            // employees
+            financeManager: true,
+            userEmail: true,
+            userName: true,
+            financeManagerName: true,
+
+            // client
+            email: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+            name: true,
+            address: true,
+            city: true,
+            postal: true,
+            province: true,
+            dl: true,
+            typeOfContact: true,
+            timeToContact: true,
+            dob: true,
+
+            // finance
+            othTax: true,
+            optionsTotal: true,
+            lienPayout: true,
+            leadNote: true,
+            sendToFinanceNow: true,
+            dealNumber: true,
+            iRate: true,
+            months: true,
+            discount: true,
+            total: true,
+            onTax: true,
+            on60: true,
+            biweekly: true,
+            weekly: true,
+            weeklyOth: true,
+            biweekOth: true,
+            oth60: true,
+            weeklyqc: true,
+            biweeklyqc: true,
+            qc60: true,
+            deposit: true,
+            biweeklNatWOptions: true,
+            weeklylNatWOptions: true,
+            nat60WOptions: true,
+            weeklyOthWOptions: true,
+            biweekOthWOptions: true,
+            oth60WOptions: true,
+            biweeklNat: true,
+            weeklylNat: true,
+            nat60: true,
+            qcTax: true,
+            otherTax: true,
+            totalWithOptions: true,
+            otherTaxWithOptions: true,
+            desiredPayments: true,
+            admin: true,
+            commodity: true,
+            pdi: true,
+            discountPer: true,
+            userLoanProt: true,
+            userTireandRim: true,
+            userGap: true,
+            userExtWarr: true,
+            userServicespkg: true,
+            deliveryCharge: true,
+            vinE: true,
+            lifeDisability: true,
+            rustProofing: true,
+            userOther: true,
+
+            // dates
+            referral: true,
+            visited: true,
+            bookedApt: true,
+            aptShowed: true,
+            aptNoShowed: true,
+            testDrive: true,
+            metService: true,
+            metManager: true,
+            metParts: true,
+            sold: true,
+            depositMade: true,
+            refund: true,
+            turnOver: true,
+            financeApp: true,
+            approved: true,
+            signed: true,
+            pickUpSet: true,
+            demoed: true,
+            delivered: true,
+            lastContact: true,
+            status: true,
+            customerState: true,
+            result: true,
+            timesContacted: true,
+            nextAppointment: true,
+            followUpDay: true,
+            deliveryDate: true,
+            deliveredDate: true,
+            notes: true,
+            visits: true,
+            progress: true,
+            metSalesperson: true,
+            metFinance: true,
+            financeApplication: true,
+            pickUpDate: true,
+            pickUpTime: true,
+            depositTakenDate: true,
+            docsSigned: true,
+            tradeRepairs: true,
+            seenTrade: true,
+            lastNote: true,
+            applicationDone: true,
+            licensingSent: true,
+            liceningDone: true,
+            refunded: true,
+            cancelled: true,
+            lost: true,
+            dLCopy: true,
+            insCopy: true,
+            testDrForm: true,
+            voidChq: true,
+            loanOther: true,
+            signBill: true,
+            ucda: true,
+            tradeInsp: true,
+            customerWS: true,
+            otherDocs: true,
+            urgentFinanceNote: true,
+            funded: true,
+            leadSource: true,
+            financeDeptProductsTotal: true,
+            bank: true,
+            loanNumber: true,
+            idVerified: true,
+            dealerCommission: true,
+            financeCommission: true,
+            salesCommission: true,
+            firstPayment: true,
+            loanMaturity: true,
+            quoted: true,
+
+            // calls
+            InPerson: true,
+            Phone: true,
+            SMS: true,
+            Email: true,
+            Other: true,
+
+            // wanted unit
+            paintPrem: true,
+            licensing: true,
+            stockNum: true,
+            options: true,
+            accessories: true,
+            freight: true,
+            labour: true,
+            year: true,
+            brand: true,
+            mileage: true,
+            model: true,
+            model1: true,
+            color: true,
+            modelCode: true,
+            msrp: true,
+            trim: true,
+            vin: true,
+            bikeStatus: true,
+            invId: true,
+
+            // trade
+            tradeValue: true,
+            tradeDesc: true,
+            tradeColor: true,
+            tradeYear: true,
+            tradeMake: true,
+            tradeVin: true,
+            tradeTrim: true,
+            tradeMileage: true,
+            tradeLocation: true,
+            lien: true,
+
+            /// bmwMotoOptions: {          select: {          }        },
+            financeStorage: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                url: true,
+                filePath: true,
+              }
+            },
+            clientApts: {
+              select: {
+                id: true,
+                financeId: true,
+                title: true,
+                start: true,
+                end: true,
+                contactMethod: true,
+                completed: true,
+                apptStatus: true,
+                apptType: true,
+                note: true,
+                unit: true,
+                brand: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+                address: true,
+                userEmail: true,
+                userId: true,
+                description: true,
+                userName: true,
+                attachments: true,
+                direction: true,
+                resultOfcall: true,
+                resourceId: true,
+                activixId: true,
+                activixNoteId: true,
+                createdAt: true,
+                updatedAt: true,
+                isPublished: true,
+              }
+            },
+            //  finManOptions: { select: {  } },
+            //   uCDAForm: { select: {} },
+            // FinCanOptions: { select: {} },
+            //  Comm: { select: {} },
+            //  FinanceDeptProducts: { select: {} },
+            // FinanceTradeUnit: { select: {} },
+            FinanceUnit: {
+              select: {
+                paintPrem: true,
+                licensing: true,
+                stockNum: true,
+                options: true,
+                accessories: true,
+                freight: true,
+                labour: true,
+                year: true,
+                brand: true,
+                mileage: true,
+                model: true,
+                model1: true,
+                color: true,
+                modelCode: true,
+                msrp: true,
+                trim: true,
+                vin: true,
+                bikeStatus: true,
+                invId: true,
+                location: true,
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                WorkOrder: {
+                  select: {
+                    unit: true,
+                    mileage: true,
+                    vin: true,
+                    tag: true,
+                    motor: true,
+                    budget: true,
+                    totalLabour: true,
+                    totalParts: true,
+                    subTotal: true,
+                    total: true,
+                    writer: true,
+                    tech: true,
+                    notes: true,
+                    customerSig: true,
+                    status: true,
+                    location: true,
+                    quoted: true,
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    AccOrders: {
+                      select: {
+                        id: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        userEmail: true,
+                        userName: true,
+                        attachedId: true,
+                        dept: true,
+                        total: true,
+                        discount: true,
+                        discPer: true,
+                        status: true,
+                        sendToAccessories: true,
+                        accessoriesCompleted: true,
+                        clientfileId: true,
+                        workOrderId: true,
+                        financeId: true,
+                        AccessoriesOnOrders: {
+                          select: {
+                            id: true,
+                            quantity: true,
+                            accOrderId: true,
+                            status: true,
+                            orderNumber: true,
+                            accessory: {
+                              select: {
+                                id: true,
+                                createdAt: true,
+                                updatedAt: true,
+                                accessoryNumber: true,
+                                brand: true,
+                                name: true,
+                                price: true,
+                                cost: true,
+                                quantity: true,
+                                description: true,
+                                category: true,
+                                subCategory: true,
+                                onOrder: true,
+                                distributer: true,
+                                location: true,
+                                note: true,
+                              },
+                            },
+                          },
+                        },
+                        Payments: {
+                          select: {
+                            id: true,
+                            createdAt: true,
+                            accOrderId: true,
+                            paymentType: true,
+                            amountPaid: true,
+                            cardNum: true,
+                            receiptId: true,
+                          },
+                        },
+                        AccHandoff: {
+                          select: {
+                            id: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            status: true,
+                            handOffTime: true,
+                            completedTime: true,
+                            notes: true,
+                          },
+                        },
+                      },
+                    },
+                  }
+                },
+              }
+            },
+            AccOrders: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                userEmail: true,
+                userName: true,
+                attachedId: true,
+                dept: true,
+                total: true,
+                discount: true,
+                discPer: true,
+                status: true,
+                sendToAccessories: true,
+                accessoriesCompleted: true,
+                clientfileId: true,
+                workOrderId: true,
+                financeId: true,
+                AccessoriesOnOrders: {
+                  select: {
+                    id: true,
+                    quantity: true,
+                    accOrderId: true,
+                    status: true,
+                    orderNumber: true,
+                    accessory: {
+                      select: {
+                        id: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        accessoryNumber: true,
+                        brand: true,
+                        name: true,
+                        price: true,
+                        cost: true,
+                        quantity: true,
+                        description: true,
+                        category: true,
+                        subCategory: true,
+                        onOrder: true,
+                        distributer: true,
+                        location: true,
+                        note: true,
+                      },
+                    },
+                  },
+                },
+                Payments: {
+                  select: {
+
+                    id: true,
+                    createdAt: true,
+                    accOrderId: true,
+                    paymentType: true,
+                    amountPaid: true,
+                    cardNum: true,
+                    receiptId: true,
+                  },
+                },
+                AccHandoff: {
+                  select: {
+
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    status: true,
+                    handOffTime: true,
+                    completedTime: true,
+                    notes: true,
+                  },
+                }
+              }
+            },
+
+            Clientfile: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                financeId: true,
+                userId: true,
+                firstName: true,
+                lastName: true,
+                name: true,
+                email: true,
+                phone: true,
+                address: true,
+                city: true,
+                postal: true,
+                province: true,
+                dl: true,
+                typeOfContact: true,
+                timeToContact: true,
+                conversationId: true,
+                billingAddress: true,
+              }
+            }
+          },
+        });*/
+
   }
-  console.log(finance, 'checking connectinos')
+  //console.log(finance, 'checking connectinos')
   const SetClient66Cookie = await SetClient66(userId, clientId, financeId, request)
 
   const brand = finance?.brand
   const financeNotes = await getAllFinanceNotes(financeId)
   const docTemplates = await getDocsbyUserId(userId)
-  const clientFile = await getClientFileById(clientfileId)
-  console.log(clientFile, finance, 'checking loaders')
+
+  // console.log(finance, 'checking loaders')
   const Coms = await getComsOverview(email)
   let dealerFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
   if (!dealerFees) {
@@ -7896,424 +8549,23 @@ export async function loader({ params, request }: DataFunctionArgs) {
   }
   const dealerInfo = dealerFees
   // ------------------ nav
-  //const financeEmail = await prisma.finance.findFirst({ where: { id: financeId }, });
-  const financeList = await prisma.finance.findMany({ where: { email: finance?.email }, });
+  const financeEmail = await prisma.finance.findFirst({ where: { id: financeId }, });
+  const financeList = await prisma.finance.findMany({ where: { email: financeEmail?.email }, });
   const financeIds = financeList.map(financeRecord => financeRecord.id);
   const mergedFinanceList = await getClientListMerged(financeIds);
   // ------------------------
   let merged
-  if (user?.activixActivated === 'yes') {
-    merged = {
-      tradeMileage: finance.tradeMileage,
-      userName: user?.username,
-      year: finance.year === null ? ' ' : finance.year,
-      tradeYear: finance.tradeYear === null ? ' ' : finance.tradeYear,
-      vin: finance.vin === null ? ' ' : finance.vin,
-      tradeVin: finance.tradeVin === null ? ' ' : finance.tradeVin,
-      stockNum: finance.stockNum === null ? ' ' : finance.stockNum,
-      namextwar: finance.userExtWarr === null ? ' ' : 'Extended Warranty',
-      asdasd: finance.userOther === null ? ' ' : 'Other',
-      nameloan: finance.userLoanProt === null ? ' ' : 'Loan Protection',
-      namegap: finance.userGap === null ? ' ' : 'Gap Insurance',
-      nameTireandRim: finance.userTireandRim === null ? ' ' : 'Warranty',
-      namevinE: finance.vinE === null ? ' ' : 'Vin Etching',
-      namerust: finance.rustProofing === null ? ' asdasdsa' : 'Rust Proofing',
-      namelife: finance.lifeDisability === null ? ' ' : 'Life and Disability Ins.',
-      nameservice: finance.userServicespkg === null ? ' ' : 'Service Package',
-      namedelivery: finance.deliveryCharge === null ? ' ' : 'Delivery Charge',
-      userGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : dealerFees?.userGovern,
-      nameGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : 'Government Fees',
-      userAirTax: Number(dealerFees?.userAirTax) < 0 ? ' ' : dealerFees?.userAirTax,
-      nameAirTax: Number(dealerFees?.userAirTax) < 0 ? ' ' : 'Air Tax',
-      userTireTax: Number(dealerFees?.userTireTax) < 0 ? ' ' : dealerFees?.userTireTax,
-      nameTireTax: Number(dealerFees?.userTireTax) < 0 ? ' ' : 'Tire Tax',
-      userFinance: Number(dealerFees?.userFinance) < 0 ? ' ' : dealerFees?.userFinance,
-      nameFinance: Number(dealerFees?.userFinance) < 0 ? ' ' : 'Finance Fee',
-      destinationCharge: Number(dealerFees?.destinationCharge) < 0 ? ' ' : dealerFees?.destinationCharge,
-      namedestinationCharge: Number(dealerFees?.destinationCharge) < 0 ? ' ' : 'Destination Charge',
-      userMarketAdj: Number(dealerFees?.userMarketAdj) < 0 ? ' ' : dealerFees?.userMarketAdj,
-      nameMarketAdj: Number(dealerFees?.userMarketAdj) < 0 ? ' ' : 'Market Adjustment',
-      userOMVIC: Number(dealerFees?.userOMVIC) < 0 ? ' ' : dealerFees?.userOMVIC,
-      nameOMVIC: Number(dealerFees?.userOMVIC) < 0 ? ' ' : 'OMVIC / Gov Fee',
-      userDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : dealerFees?.userDemo,
-      nameDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : 'Demonstration Fee',
-      discountPer: Number(finance.discountPer) < 0 ? ' ' : finance.discountPer,
-      namediscountPer: Number(finance.discountPer) < 0 ? ' ' : 'Discount %',
-      discount: Number(finance.discount) < 0 ? ' ' : finance.discount,
-      namediscount: Number(finance.discount) < 0 ? ' ' : 'Discount',
-      namefreight: Number(finance.freight) < 0 ? ' ' : 'Freight',
-      nameadmin: Number(finance.admin) < 0 ? ' ' : 'Admin',
-      namepdi: Number(finance.pdi) < 0 ? ' ' : 'PDI',
-      namcomm: Number(finance.commodity) < 0 ? ' ' : 'Commodity',
-      nameaccessories: Number(finance.accessories) < 0 ? ' ' : 'Other Accessories',
-      namelabour: Number(finance.labour) < 0 ? ' ' : 'Labour',
-      netDifference: (Number(finance.total) - Number(finance.tradeValue)),
-      hstSubTotal: (Number(finance.total) + Number(finance.onTax)),
-      withLicensing: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing)),
-      withLien: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing) + Number(finance.lien)),
-      payableAfterDel: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing) + Number(finance.lien) - Number(finance.deposit)),
-
-      dealerName: dealerInfo?.dealerName,
-      dealerAddress: dealerInfo?.dealerAddress,
-      dealerProv: `${dealerInfo?.dealerCity}, ${dealerInfo?.dealerProv}, ${dealerInfo?.dealerPostal}`,
-      dealerPhone: dealerInfo?.dealerPhone,
-      userLoanProt: finance.userLoanProt,
-      userTireandRim: finance.userTireandRim,
-      userGap: finance.userGap,
-      userExtWarr: finance.userExtWarr,
-      userServicespkg: finance.userServicespkg,
-      vinE: finance.vinE,
-      lifeDisability: finance.lifeDisability,
-      rustProofing: finance.rustProofing,
-      userLicensing: dealerFees?.userLicensing,
-      //  userFinance: dealerFees?.userFinance,
-      //  userDemo: dealerFees?.userDemo,
-      userGasOnDel: dealerFees?.userGasOnDel,
-      //   userOMVIC: dealerFees?.userOMVIC,
-      userOther: finance.userOther,
-      userTax: dealerFees?.userTax,
-      //  userAirTax: dealerFees?.userAirTax,
-      //  userTireTax: dealerFees?.userTireTax,
-      //  userGovern: dealerFees?.userGovern,
-      userPDI: dealerFees?.userPDI,
-      userLabour: dealerFees?.userLabour,
-      //  userMarketAdj: dealerFees?.userMarketAdj,
-      userCommodity: dealerFees?.userCommodity,
-      // destinationCharge: dealerFees?.destinationCharge,
-      userFreight: dealerFees?.userFreight,
-      userAdmin: dealerFees?.userAdmin,
-      iRate: finance.iRate,
-      months: finance.months,
-      //  discount: finance.discount,
-      total: finance.total,
-      onTax: finance.onTax,
-      on60: finance.on60,
-      biweekly: finance.biweekly,
-      weekly: finance.weekly,
-      weeklyOth: finance.weeklyOth,
-      biweekOth: finance.biweekOth,
-      oth60: finance.oth60,
-      weeklyqc: finance.weeklyqc,
-      biweeklyqc: finance.biweeklyqc,
-      qc60: finance.qc60,
-      deposit: finance.deposit,
-      biweeklNatWOptions: finance.biweeklNatWOptions,
-      weeklylNatWOptions: finance.weeklylNatWOptions,
-      nat60WOptions: finance.nat60WOptions,
-      weeklyOthWOptions: finance.weeklyOthWOptions,
-      biweekOthWOptions: finance.biweekOthWOptions,
-      oth60WOptions: finance.oth60WOptions,
-      biweeklNat: finance.biweeklNat,
-      weeklylNat: finance.weeklylNat,
-      nat60: finance.nat60,
-      qcTax: finance.qcTax,
-      otherTax: finance.otherTax,
-      totalWithOptions: finance.totalWithOptions,
-      otherTaxWithOptions: finance.otherTaxWithOptions,
-      desiredPayments: finance.desiredPayments,
-      freight: finance.freight,
-      admin: finance.admin,
-      commodity: finance.commodity,
-      pdi: finance.pdi,
-      //   discountPer: finance.discountPer,
-      deliveryCharge: finance.deliveryCharge,
-      paintPrem: finance.paintPrem,
-      msrp: finance.msrp,
-      licensing: finance.licensing,
-      options: finance.options,
-      accessories: finance.accessories,
-      labour: finance.labour,
-      //year: finance.year,
-      brand: finance.brand,
-      model: finance.model,
-      //  stockNum: finance.stockNum,
-      model1: finance.model1,
-      color: finance.color,
-      modelCode: finance.modelCode,
-      tradeValue: finance.tradeValue,
-      tradeDesc: finance.tradeDesc,
-      tradeColor: finance.tradeColor,
-      //  tradeYear: finance.tradeYear,
-      tradeMake: finance.tradeMake,
-      //  tradeVin: finance.tradeVin,
-      tradeTrim: finance.tradeTrim,
-      tradeMileage: finance.tradeMileage,
-      trim: finance.trim,
-      //vin: finance.vin,
-      lien: finance.lien,
-
-      date: new Date().toLocaleDateString(),
-      dl: finance.dl,
-      email: finance.email,
-      firstName: finance.firstName,
-      lastName: finance.lastName,
-      phone: finance.phone,
-      name: finance.name,
-      address: finance.address,
-      city: finance.city,
-      postal: finance.postal,
-      province: finance.province,
-      referral: finance.referral,
-      visited: finance.visited,
-      bookedApt: finance.bookedApt,
-      aptShowed: finance.aptShowed,
-      aptNoShowed: finance.aptNoShowed,
-      testDrive: finance.testDrive,
-      metService: finance.metService,
-      metManager: finance.metManager,
-      metParts: finance.metParts,
-      sold: finance.sold,
-      depositMade: finance.depositMade,
-      refund: finance.refund,
-      turnOver: finance.turnOver,
-      financeApp: finance.financeApp,
-      approved: finance.approved,
-      signed: finance.signed,
-      pickUpSet: finance.pickUpSet,
-      demoed: finance.demoed,
-      delivered: finance.delivered,
-      status: finance.status,
-      customerState: finance.customerState,
-      result: finance.result,
-      notes: finance.notes,
-      metSalesperson: finance.metSalesperson,
-      metFinance: finance.metFinance,
-      financeApplication: finance.financeApplication,
-      pickUpTime: finance.pickUpTime,
-      depositTakenDate: finance.depositTakenDate,
-      docsSigned: finance.docsSigned,
-      tradeRepairs: finance.tradeRepairs,
-      seenTrade: finance.seenTrade,
-      lastNote: finance.lastNote,
-      dLCopy: finance.dLCopy,
-      insCopy: finance.insCopy,
-      testDrForm: finance.testDrForm,
-      voidChq: finance.voidChq,
-      loanOther: finance.loanOther,
-      signBill: finance.signBill,
-      ucda: finance.ucda,
-      tradeInsp: finance.tradeInsp,
-      customerWS: finance.customerWS,
-      otherDocs: finance.otherDocs,
-      urgentFinanceNote: finance.urgentFinanceNote,
-      funded: finance.funded,
-    }
-  } else {
-    merged = {
-      tradeMileage: finance.tradeMileage,
-      userName: user?.username,
-      year: finance.year === null ? ' ' : finance.year,
-      tradeYear: finance.tradeYear === null ? ' ' : finance.tradeYear,
-      vin: finance.vin === null ? ' ' : finance.vin,
-      tradeVin: finance.tradeVin === null ? ' ' : finance.tradeVin,
-      stockNum: finance.stockNum === null ? ' ' : finance.stockNum,
-      namextwar: finance.userExtWarr === null ? ' ' : 'Extended Warranty',
-      asdasd: finance.userOther === null ? ' ' : 'Other',
-      nameloan: finance.userLoanProt === null ? ' ' : 'Loan Protection',
-      namegap: finance.userGap === null ? ' ' : 'Gap Insurance',
-      nameTireandRim: finance.userTireandRim === null ? ' ' : 'Warranty',
-      namevinE: finance.vinE === null ? ' ' : 'Vin Etching',
-      namerust: finance.rustProofing === null ? ' asdasdsa' : 'Rust Proofing',
-      namelife: finance.lifeDisability === null ? ' ' : 'Life and Disability Ins.',
-      nameservice: finance.userServicespkg === null ? ' ' : 'Service Package',
-      namedelivery: finance.deliveryCharge === null ? ' ' : 'Delivery Charge',
-      userGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : dealerFees?.userGovern,
-      nameGovern: Number(dealerFees?.userGovern) < 0 ? ' ' : 'Government Fees',
-      userAirTax: Number(dealerFees?.userAirTax) < 0 ? ' ' : dealerFees?.userAirTax,
-      nameAirTax: Number(dealerFees?.userAirTax) < 0 ? ' ' : 'Air Tax',
-      userTireTax: Number(dealerFees?.userTireTax) < 0 ? ' ' : dealerFees?.userTireTax,
-      nameTireTax: Number(dealerFees?.userTireTax) < 0 ? ' ' : 'Tire Tax',
-      userFinance: Number(dealerFees?.userFinance) < 0 ? ' ' : dealerFees?.userFinance,
-      nameFinance: Number(dealerFees?.userFinance) < 0 ? ' ' : 'Finance Fee',
-      destinationCharge: Number(dealerFees?.destinationCharge) < 0 ? ' ' : dealerFees?.destinationCharge,
-      namedestinationCharge: Number(dealerFees?.destinationCharge) < 0 ? ' ' : 'Destination Charge',
-      userMarketAdj: Number(dealerFees?.userMarketAdj) < 0 ? ' ' : dealerFees?.userMarketAdj,
-      nameMarketAdj: Number(dealerFees?.userMarketAdj) < 0 ? ' ' : 'Market Adjustment',
-      userOMVIC: Number(dealerFees?.userOMVIC) < 0 ? ' ' : dealerFees?.userOMVIC,
-      nameOMVIC: Number(dealerFees?.userOMVIC) < 0 ? ' ' : 'OMVIC / Gov Fee',
-      userDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : dealerFees?.userDemo,
-      nameDemo: Number(dealerFees?.userDemo) < 0 ? ' ' : 'Demonstration Fee',
-      discountPer: Number(finance.discountPer) < 0 ? ' ' : finance.discountPer,
-      namediscountPer: Number(finance.discountPer) < 0 ? ' ' : 'Discount %',
-      discount: Number(finance.discount) < 0 ? ' ' : finance.discount,
-      namediscount: Number(finance.discount) < 0 ? ' ' : 'Discount',
-      namefreight: Number(finance.freight) < 0 ? ' ' : 'Freight',
-      nameadmin: Number(finance.admin) < 0 ? ' ' : 'Admin',
-      namepdi: Number(finance.pdi) < 0 ? ' ' : 'PDI',
-      namcomm: Number(finance.commodity) < 0 ? ' ' : 'Commodity',
-      nameaccessories: Number(finance.accessories) < 0 ? ' ' : 'Other Accessories',
-      namelabour: Number(finance.labour) < 0 ? ' ' : 'Labour',
-      netDifference: (Number(finance.total) - Number(finance.tradeValue)),
-      hstSubTotal: (Number(finance.total) + Number(finance.onTax)),
-      withLicensing: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing)),
-      withLien: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing) + Number(finance.lien)),
-      payableAfterDel: (Number(finance.total) + Number(finance.onTax) + Number(finance.licensing) + Number(finance.lien) - Number(finance.deposit)),
-
-      dealerName: dealerInfo?.dealerName,
-      dealerAddress: dealerInfo?.dealerAddress,
-      dealerProv: `${dealerInfo?.dealerCity}, ${dealerInfo?.dealerProv}, ${dealerInfo?.dealerPostal}`,
-      dealerPhone: dealerInfo?.dealerPhone,
-      userLoanProt: finance.userLoanProt,
-      userTireandRim: finance.userTireandRim,
-      userGap: finance.userGap,
-      userExtWarr: finance.userExtWarr,
-      userServicespkg: finance.userServicespkg,
-      vinE: finance.vinE,
-      lifeDisability: finance.lifeDisability,
-      rustProofing: finance.rustProofing,
-      userLicensing: dealerFees?.userLicensing,
-      //  userFinance: dealerFees?.userFinance,
-      //  userDemo: dealerFees?.userDemo,
-      userGasOnDel: dealerFees?.userGasOnDel,
-      //   userOMVIC: dealerFees?.userOMVIC,
-      userOther: finance.userOther,
-      userTax: dealerFees?.userTax,
-      //  userAirTax: dealerFees?.userAirTax,
-      //  userTireTax: dealerFees?.userTireTax,
-      //  userGovern: dealerFees?.userGovern,
-      userPDI: dealerFees?.userPDI,
-      userLabour: dealerFees?.userLabour,
-      //  userMarketAdj: dealerFees?.userMarketAdj,
-      userCommodity: dealerFees?.userCommodity,
-      // destinationCharge: dealerFees?.destinationCharge,
-      userFreight: dealerFees?.userFreight,
-      userAdmin: dealerFees?.userAdmin,
-      iRate: finance.iRate,
-      months: finance.months,
-      //  discount: finance.discount,
-      total: finance.total,
-      onTax: finance.onTax,
-      on60: finance.on60,
-      biweekly: finance.biweekly,
-      weekly: finance.weekly,
-      weeklyOth: finance.weeklyOth,
-      biweekOth: finance.biweekOth,
-      oth60: finance.oth60,
-      weeklyqc: finance.weeklyqc,
-      biweeklyqc: finance.biweeklyqc,
-      qc60: finance.qc60,
-      deposit: finance.deposit,
-      biweeklNatWOptions: finance.biweeklNatWOptions,
-      weeklylNatWOptions: finance.weeklylNatWOptions,
-      nat60WOptions: finance.nat60WOptions,
-      weeklyOthWOptions: finance.weeklyOthWOptions,
-      biweekOthWOptions: finance.biweekOthWOptions,
-      oth60WOptions: finance.oth60WOptions,
-      biweeklNat: finance.biweeklNat,
-      weeklylNat: finance.weeklylNat,
-      nat60: finance.nat60,
-      qcTax: finance.qcTax,
-      otherTax: finance.otherTax,
-      totalWithOptions: finance.totalWithOptions,
-      otherTaxWithOptions: finance.otherTaxWithOptions,
-      desiredPayments: finance.desiredPayments,
-      freight: finance.freight,
-      admin: finance.admin,
-      commodity: finance.commodity,
-      pdi: finance.pdi,
-      //   discountPer: finance.discountPer,
-      deliveryCharge: finance.deliveryCharge,
-      paintPrem: finance.paintPrem,
-      msrp: finance.msrp,
-      licensing: finance.licensing,
-      options: finance.options,
-      accessories: finance.accessories,
-      labour: finance.labour,
-      //year: finance.year,
-      brand: finance.brand,
-      model: finance.model,
-      //  stockNum: finance.stockNum,
-      model1: finance.model1,
-      color: finance.color,
-      modelCode: finance.modelCode,
-      tradeValue: finance.tradeValue,
-      tradeDesc: finance.tradeDesc,
-      tradeColor: finance.tradeColor,
-      //  tradeYear: finance.tradeYear,
-      tradeMake: finance.tradeMake,
-      //  tradeVin: finance.tradeVin,
-      tradeTrim: finance.tradeTrim,
-      //  tradeMileage: finance.tradeMileage,
-      trim: finance.trim,
-      //vin: finance.vin,
-      lien: finance.lien,
-
-      date: new Date().toLocaleDateString(),
-      dl: finance.dl,
-      email: finance.email,
-      firstName: finance.firstName,
-      lastName: finance.lastName,
-      phone: finance.phone,
-      name: finance.name,
-      address: finance.address,
-      city: finance.city,
-      postal: finance.postal,
-      province: finance.province,
-      referral: finance.referral,
-      visited: finance.visited,
-      bookedApt: finance.bookedApt,
-      aptShowed: finance.aptShowed,
-      aptNoShowed: finance.aptNoShowed,
-      testDrive: finance.testDrive,
-      metService: finance.metService,
-      metManager: finance.metManager,
-      metParts: finance.metParts,
-      sold: finance.sold,
-      depositMade: finance.depositMade,
-      refund: finance.refund,
-      turnOver: finance.turnOver,
-      financeApp: finance.financeApp,
-      approved: finance.approved,
-      signed: finance.signed,
-      pickUpSet: finance.pickUpSet,
-      demoed: finance.demoed,
-      delivered: finance.delivered,
-      status: finance.status,
-      customerState: finance.customerState,
-      result: finance.result,
-      notes: finance.notes,
-      metSalesperson: finance.metSalesperson,
-      metFinance: finance.metFinance,
-      financeApplication: finance.financeApplication,
-      pickUpTime: finance.pickUpTime,
-      depositTakenDate: finance.depositTakenDate,
-      docsSigned: finance.docsSigned,
-      tradeRepairs: finance.tradeRepairs,
-      seenTrade: finance.seenTrade,
-      lastNote: finance.lastNote,
-      dLCopy: finance.dLCopy,
-      insCopy: finance.insCopy,
-      testDrForm: finance.testDrForm,
-      voidChq: finance.voidChq,
-      loanOther: finance.loanOther,
-      signBill: finance.signBill,
-      ucda: finance.ucda,
-      tradeInsp: finance.tradeInsp,
-      customerWS: finance.customerWS,
-      otherDocs: finance.otherDocs,
-      urgentFinanceNote: finance.urgentFinanceNote,
-      funded: finance.funded,
 
 
-
-
-    }
-  }
-
-  if (user?.activixActivated === 'yeskkk') {
-    await UpdateLeadBasic(merged, user)
-    await UpdateLeademail(merged)
-    await UpdateLeadPhone(merged)
-    await UpdateLeadWantedVeh(merged)
-  }
-  for (let key in merged) {
-    merged[key] = String(merged[key]);
-  }
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: email } });
   // const UploadedDocs = await prisma.uploadDocs.findMany({ where: { financeId: finance?.id } });
   const userList = await prisma.user.findMany()
   const parts = await prisma.part.findMany()
-  const clientUnit = await prisma.inventoryMotorcycle.findFirst({ where: { stockNumber: merged.stockNum } })
+  let clientUnit
+  if (clientFile.Finance.FinanceUnit) {
+    clientUnit = await prisma.inventoryMotorcycle.findFirst({ where: { stockNumber: clientFile.Finance.FinanceUnit.stockNum } })
+  }
+
 
   // -----------------------------sms ---------------------------------//
   const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
@@ -8715,7 +8967,7 @@ async function PullActivix(financeData) {
         tradeMake: formData.vehicles[0].make,
         tradeVin: formData.vehicles[0].vin,
         tradeTrim: formData.vehicles[0].trim,
-        tradeMileage: formData.vehicles[0].odometer,
+        tradeMileage: formData.vehicles[0].odometer || '',
         trim: formData.vehicles[1].trim,
         vin: formData.vehicles[1].vin,
       }

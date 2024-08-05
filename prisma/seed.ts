@@ -464,73 +464,113 @@ export async function seedUsers() {
       location: 'wall 6',
     },
   });
-  const createOrderWithAccessories = async (orderData, accessories) => {
-    // Create the order
+  const createOrderWithAccessories = async (orderData, accessories, paymentData) => {
     const order = await prisma.accOrder.create({
       data: {
         userEmail: orderData.userEmail,
-        status: 'Quote',
-        financeId: finance.id,
+        userName: orderData.userName,
         clientfileId: orderData.clientfileId,
-        userName: 'Skyler Zanth',
-        dept: 'Sales',
-        total: orderData.total,
-      },
+        financeId: orderData.financeId,
+        dept: orderData.dept,
+        status: orderData.status,
+        sendToAccessories: orderData.sendToAccessories,
+        accessoriesCompleted: orderData.accessoriesCompleted,
+      }
     });
 
-    // Add accessories to the order
-    const accessoriesData = accessories.map(accessory => ({
+    // Aggregate accessories by ID and sum their quantities
+    const accessoryMap = accessories.reduce((acc, accessory) => {
+      if (!acc[accessory.id]) {
+        acc[accessory.id] = {
+          id: accessory.id,
+          quantity: 0
+        };
+      }
+      acc[accessory.id].quantity += accessory.quantity;
+      return acc;
+    }, {});
+
+    const accessoriesData = Object.values(accessoryMap).map(accessory => ({
       accOrderId: order.id,
       accessoryId: accessory.id,
-      quantity: accessory.quantity, // Assuming quantity is provided in the accessory object
+      quantity: accessory.quantity,
     }));
 
     await prisma.accessoriesOnOrders.createMany({
       data: accessoriesData,
     });
 
-    return order;
+    if (paymentData) {
+      await prisma.payment.create({
+        data: {
+          accOrderId: order.id,
+          paymentType: paymentData.paymentType,
+          amountPaid: paymentData.amountPaid,
+          cardNum: paymentData.cardNum,
+          receiptId: paymentData.receiptId,
+        },
+      });
+    }
+
+    return { order };
   };
 
-  // Usage example
+  // Example data
   const orderData1 = {
     userEmail: 'skylerzanth@outlook.com',
-    fulfilled: true,
-    clientfileId: clientfile.id,
-    paymentType: 'Visa',
-    cardNum: '4532',
-    total: 2582.97,
+    userName: 'Skyler Zanth',
+    clientfileId: clientfile.id,// Replace with actual ID
+    financeId: 'finance-id-1',       // Replace with actual ID
+    dept: 'Sales',
+    status: 'Quote',
+    sendToAccessories: false,
+    accessoriesCompleted: false,
   };
 
   const accessories1 = [
-    { id: first.id, quantity: 1 },
-    { id: second.id, quantity: 1 },
-    { id: third.id, quantity: 1 },
-    { id: forth.id, quantity: 1 },
-    { id: fith.id, quantity: 1 },
+    { id: 'accessory-id-1', quantity: 1 }, // Replace with actual IDs
+    { id: 'accessory-id-2', quantity: 1 },
+    { id: 'accessory-id-3', quantity: 1 },
+    { id: 'accessory-id-4', quantity: 1 },
+    { id: 'accessory-id-5', quantity: 1 },
   ];
+
+  const paymentData1 = {
+    paymentType: 'Visa',
+    amountPaid: 4532,
+    cardNum: '4532',
+    receiptId: 'some-receipt-id',
+  };
 
   const orderData2 = {
     userEmail: 'skylerzanth@outlook.com',
-    fulfilled: true,
-    clientfileId: clientfile.id,
-    paymentType: 'Debit',
-    cardNum: '4532',
-    total: 3582.97,
+    userName: 'Skyler Zanth',
+    clientfileId: clientfile.id, // Replace with actual ID
+    dept: 'Accessories',
+    status: 'Quote',
+    sendToAccessories: false,
+    accessoriesCompleted: false,
   };
 
   const accessories2 = [
-    { id: first.id, quantity: 1 },
-    { id: second.id, quantity: 1 },
-    { id: third.id, quantity: 1 },
-    { id: forth.id, quantity: 1 },
-    { id: fith.id, quantity: 1 },
-    { id: sixth.id, quantity: 1 },
-    { id: seventh.id, quantity: 1 },
+    { id: 'accessory-id-1', quantity: 1 },
+    { id: 'accessory-id-2', quantity: 1 },
+    { id: 'accessory-id-3', quantity: 1 },
+    { id: 'accessory-id-4', quantity: 1 },
+    { id: 'accessory-id-5', quantity: 1 },
+    { id: 'accessory-id-6', quantity: 1 },
+    { id: 'accessory-id-7', quantity: 1 },
   ];
 
-  // Create orders with accessories
-  createOrderWithAccessories(orderData1, accessories1)
+  const paymentData2 = {
+    paymentType: 'Visa',
+    amountPaid: 4532,
+    cardNum: '4532',
+    receiptId: 'some-receipt-id',
+  };
+
+  // Execute seed
+  createOrderWithAccessories(orderData1, accessories1, paymentData1)
     .then(order => {
       console.log('Order 1 created:', order);
     })
@@ -538,13 +578,15 @@ export async function seedUsers() {
       console.error('Error creating order 1:', error);
     });
 
-  createOrderWithAccessories(orderData2, accessories2)
+  createOrderWithAccessories(orderData2, accessories2, paymentData2)
     .then(order => {
       console.log('Order 2 created:', order);
     })
     .catch(error => {
       console.error('Error creating order 2:', error);
     });
+
+
 
   console.log(chalk.green("First customer seeded!"));
   // ---- users

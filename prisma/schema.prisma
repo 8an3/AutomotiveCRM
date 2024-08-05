@@ -1008,7 +1008,6 @@ model FinanceStorage {
 
 model ClientApts {
   id            String    @id @default(cuid())
-  finance       Finance?  @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   financeId     String
   title         String?
   start         String?
@@ -1038,6 +1037,7 @@ model ClientApts {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   isPublished   DateTime? @default(now())
+  finance       Finance?  @relation("finance", fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@index([financeId])
 }
@@ -1150,29 +1150,30 @@ model PartsOrderDetail {
 }
 
 model AccOrder {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  userEmail            String?
+  userName             String?
+  attachedId           String?
+  dept                 String?
+  total                Float?
+  discount             Float?
+  discPer              Float?
+  paid                 Boolean?
+  status               String?
+  sendToAccessories    Boolean? @default(false)
+  accessoriesCompleted Boolean? @default(false)
+  clientfileId         String
+  workOrderId          String?
+  financeId            String?
 
-  userEmail         String?
-  userName          String?
-  attachedId        String?
-  dept              String?
-  total             Float?
-  discount          Float?
-  discPer           Float?
-  status            String?
-  sendToAccesories  Boolean?
-  sendToAccessories Boolean?
-
-  clientfileId        String
   Clientfile          Clientfile            @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
   AccessoriesOnOrders AccessoriesOnOrders[]
   Payments            Payment[]
-  workOrderId         String?
   WorkOrder           WorkOrder?            @relation(fields: [workOrderId], references: [id], onDelete: SetNull)
-  financeId           String?
   Finance             Finance?              @relation(fields: [financeId], references: [id], onDelete: SetNull)
+  AccHandoff          AccHandoff[]
 
   @@index([clientfileId])
   @@index([workOrderId])
@@ -1188,23 +1189,29 @@ model Payment {
   amountPaid  Float?
   cardNum     String?
   receiptId   String?
+  financeId   String?
 
   AccOrder AccOrder @relation(fields: [accOrderId], references: [id], onDelete: Cascade)
+  Finance  Finance? @relation(fields: [financeId], references: [id], onDelete: SetNull)
 
   @@index([accOrderId])
+  @@index([financeId])
 }
 
 model AccessoriesOnOrders {
-  id          String      @id @default(cuid())
-  quantity    Int         @default(1)
-  accOrderId  String
-  status      String?     @default("Fulfilled")
-  orderNumber String?
-  accOrder    AccOrder    @relation(fields: [accOrderId], references: [id])
-  accessoryId String
-  accessory   Accessories @relation(fields: [accessoryId], references: [id])
+  id             String          @id @default(cuid())
+  quantity       Int             @default(1)
+  accOrderId     String
+  status         String?         @default("Fulfilled")
+  orderNumber    String?
+  accOrder       AccOrder        @relation(fields: [accOrderId], references: [id])
+  OrderInvId     String?
+  orderInventory OrderInventory? @relation(fields: [OrderInvId], references: [id])
+  accessoryId    String
+  accessory      Accessories     @relation(fields: [accessoryId], references: [id])
 
   @@unique([accOrderId, accessoryId])
+  @@unique([OrderInvId])
   @@unique([id])
   @@unique([accessoryId])
 }
@@ -1226,6 +1233,39 @@ model Accessories {
   distributer     String?
   location        String?
   note            String?
+
+  AccessoriesOnOrders AccessoriesOnOrders[]
+}
+
+model AccHandoff {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
+  status        String?
+  handOffTime   DateTime?
+  completedTime DateTime?
+  notes         String?
+
+  AccOrderId String
+  AccOrder   AccOrder @relation(fields: [AccOrderId], references: [id], onDelete: Cascade)
+
+  @@index([AccOrderId])
+}
+
+model OrderInventory {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  userEmail       String?
+  userName        String?
+  attachedId      String?
+  dept            String?
+  total           Float?
+  discount        Float?
+  discPer         Float?
+  status          String?
+  sendToInventory Boolean?
 
   AccessoriesOnOrders AccessoriesOnOrders[]
 }
@@ -1499,7 +1539,7 @@ model Finance {
   FinanceTradeUnit    FinanceTradeUnit[]
   AccOrders           AccOrder[]
   WorkOrders          WorkOrder[]
-  FinancePayments     FinancePayment[]
+  Payments            Payment[]
   FinanceNote         FinanceNote[]
 
   clientfileId String?
@@ -1532,11 +1572,6 @@ model FinancePayment {
   amountPaid  Float?
   cardNum     String?
   receiptId   String?
-
-  financeId String
-  finance   Finance @relation(fields: [financeId], references: [id], onDelete: Cascade)
-
-  @@index([financeId])
 }
 
 model FinanceUnit {

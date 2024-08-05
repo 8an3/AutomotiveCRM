@@ -110,7 +110,6 @@ export async function loader({ request, params }: LoaderFunction) {
       id: true,
       createdAt: true,
       userEmail: true,
-      fulfilled: true,
       total: true,
       discount: true,
       discPer: true,

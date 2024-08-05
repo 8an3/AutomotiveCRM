@@ -23,6 +23,7 @@ import {
   Percent,
   PanelTop,
   Scan,
+  X,
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -101,6 +102,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select"
+import { Check } from "lucide-react";
 
 
 export async function loader({ request, params }: LoaderFunction) {
@@ -574,8 +576,8 @@ export default function Purchase() {
           <Tabs defaultValue="week">
             <div className="flex items-center">
               <TabsList>
-                <TabsTrigger value="Parts Orders">Parts Orders</TabsTrigger>
-                <TabsTrigger value="Acc Orders">Acc Orders</TabsTrigger>
+                <TabsTrigger value="Parts Orders">Parts</TabsTrigger>
+                <TabsTrigger value="Acc Orders">Accessories</TabsTrigger>
                 <TabsTrigger value="week">Last 7 Days</TabsTrigger>
                 <TabsTrigger value="month">Last 30 Days</TabsTrigger>
                 <TabsTrigger value="Search Orders">Search Orders</TabsTrigger>
@@ -599,83 +601,36 @@ export default function Purchase() {
                     <TableHeader>
                       <TableRow className='border-border'>
                         <TableHead>Customer</TableHead>
-                        <TableHead className="hidden sm:table-cell">
-                          Type
-                        </TableHead>
-                        <TableHead className="hidden sm:table-cell">
-                          Status
-                        </TableHead>
-                        <TableHead className="hidden sm:table-cell">
-                          Dept
-                        </TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Date
-                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">Status</TableHead>
+                        <TableHead className="hidden sm:table-cell">Dept</TableHead>
+                        <TableHead className="hidden md:table-cell">Date</TableHead>
                         <TableHead className="text-right">Amount</TableHead>
+                        <TableHead className="hidden sm:table-cell text-center">Paid</TableHead>
+                        <TableHead className="hidden sm:table-cell text-center">Sent From Sales</TableHead>
+                        <TableHead className="hidden sm:table-cell text-center">Completed for Sales</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredOrders7 &&
                         filteredOrders7.map((result, index) => (
-                          <TableRow
-                            key={index}
-                            className="rounded-[6px] hover:bg-accent border-border"
-                          >
-                            <TableCell>
-                              <div className="font-medium">
-                                {result.Clientfile.name}
-                              </div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                {result.Clientfile.email}
-                              </div>
+                          <TableRow key={index} className="rounded-[6px] hover:bg-accent border-border"                          >
+                            <TableCell>  <div className="font-medium">  {result.Clientfile.name}  </div>
+                              <div className="hidden text-sm text-muted-foreground md:inline"> {result.Clientfile.email}  </div>
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
-                              Sale
-                            </TableCell>
-
-                            <TableCell className="hidden sm:table-cell">
-                              <Badge className="text-xs" variant="secondary">
-                                {result.status}
-                              </Badge>
+                              <Badge className="text-xs" variant="secondary">{result.status}</Badge>
                             </TableCell>
                             <TableCell className=" ">
-                              <Select
-                                name='dept'
-                                defaultValue={result.dept}
-                                onValueChange={(value) => {
-                                  const formData = new FormData();
-                                  formData.append("orderId", result.id);
-
-                                  formData.append("intent", 'updateDept');
-                                  formData.append("dept", value);
-                                  console.log(formData, 'formData');
-
-                                  payment.submit(formData, { method: "post" });
-                                }}>
-                                <SelectTrigger className="w-[200px]  ">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectGroup>
-                                    <SelectLabel>Deptarment</SelectLabel>
-                                    <SelectItem value="Accessories">Accessories</SelectItem>
-                                    <SelectItem value="Sales">Sales</SelectItem>
-                                    <SelectItem value="Parts">Parts</SelectItem>
-                                    <SelectItem value="Service">Service</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Badge className="text-xs" variant="secondary">{result.dept}</Badge>
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                              {new Date(result.createdAt).toLocaleDateString(
-                                "en-US",
-                                options2
-                              )}
+                              {new Date(result.createdAt).toLocaleDateString("en-US", options2)}
                             </TableCell>
-                            <TableCell className="text-right">
-                              ${result.total}
-                            </TableCell>
+                            <TableCell className="text-right">${result.total}</TableCell>
+                            <TableCell className="text-right">paid?</TableCell>
+                            <TableCell className="text-right">{result.sendToAccessories === false ? (<Check className='mx-auto' />) : (<X className='mx-auto' />)}</TableCell>
+                            <TableCell className="text-right">{result.accessoriesCompleted === false ? (<Check className='mx-auto' />) : (<X className='mx-auto' />)}</TableCell>
                             <TableCell className="text-right">
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -734,15 +689,9 @@ export default function Purchase() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Customer</TableHead>
-                        <TableHead className="hidden sm:table-cell">
-                          Type
-                        </TableHead>
-                        <TableHead className="hidden sm:table-cell">
-                          Status
-                        </TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Date
-                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">Type</TableHead>
+                        <TableHead className="hidden sm:table-cell">Status</TableHead>
+                        <TableHead className="hidden md:table-cell">Date</TableHead>
                         <TableHead className="text-right">Amount</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
@@ -750,39 +699,21 @@ export default function Purchase() {
                     <TableBody>
                       {filteredOrders30 &&
                         filteredOrders30.map((result, index) => (
-                          <TableRow
-                            key={index}
-                            className="rounded-[6px] hover:bg-accent"
-                          >
+                          <TableRow key={index} className="rounded-[6px] hover:bg-accent" >
                             <TableCell>
-                              <div className="font-medium">
-                                {result.Clientfile.name}
-                              </div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                {result.Clientfile.email}
-                              </div>
+                              <div className="font-medium">{result.Clientfile.name}</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline"> {result.Clientfile.email}</div>
                             </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              Sale
-                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">Sale</TableCell>
                             <TableCell className="hidden sm:table-cell">
                               <Badge className="text-xs" variant="secondary">
-                                {result.fullfilled ? (
-                                  <p>Fullfilled</p>
-                                ) : (
-                                  <p>Not Completed</p>
-                                )}
+                                {result.fullfilled ? (<p>Fullfilled</p>) : (<p>Not Completed</p>)}
                               </Badge>
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                              {new Date(result.createdAt).toLocaleDateString(
-                                "en-US",
-                                options2
-                              )}
+                              {new Date(result.createdAt).toLocaleDateString("en-US", options2)}
                             </TableCell>
-                            <TableCell className="text-right">
-                              ${result.total}
-                            </TableCell>
+                            <TableCell className="text-right">${result.total}</TableCell>
                             <TableCell className="text-right">
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -801,9 +732,7 @@ export default function Purchase() {
                               </Tooltip>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <Link
-                                    to={`/dealer/accessories/previousOrder/${result.id}`}
-                                  >
+                                  <Link to={`/dealer/accessories/previousOrder/${result.id}`} >
                                     <Button
                                       size="icon"
                                       variant="ghost"
@@ -820,9 +749,7 @@ export default function Purchase() {
                               {result.fullfilled === false && (
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Link
-                                      to={`/dealer/accessories/order/${result.id}`}
-                                    >
+                                    <Link to={`/dealer/accessories/order/${result.id}`}  >
                                       <Button
                                         size="icon"
                                         variant="ghost"
@@ -1093,7 +1020,6 @@ export default function Purchase() {
                 </CardContent>
               </Card>
             </TabsContent>
-
           </Tabs>
         </div>
         <div>
