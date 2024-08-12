@@ -8,7 +8,7 @@ import { GetUser } from "~/utils/loader.server";
 import secondary from "~/styles/secondary.css";
 
 export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: '/calendar.svg' },
+  { rel: "icon", type: "image/svg", href: '/favicons/calendar.svg' },
   { rel: "stylesheet", href: secondary },
 ]
 

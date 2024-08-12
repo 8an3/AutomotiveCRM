@@ -3,6 +3,10 @@ import { Readable } from 'node:stream';
 import { prisma } from '~/libs';
 import { getSession } from '~/sessions/auth-session.server';
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]
+
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")

@@ -21,6 +21,10 @@ import type { LoaderArgs, ActionArgs } from "@remix-run/node";
 
 export const handle = createSitemap();
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]
+
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { userSession, user } = await requireUserSession(request);
 

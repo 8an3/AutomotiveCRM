@@ -39,7 +39,12 @@ export async function seedUsers() {
   const devUserRole = await prisma.userRole.findFirst({ where: { symbol: "DEV" }, });
   const salesRole = await prisma.userRole.findFirst({ where: { symbol: "Sales" }, });
   const financeRole = await prisma.userRole.findFirst({ where: { symbol: "Finance Manager" }, });
+  const technicianRole = await prisma.userRole.findFirst({ where: { symbol: "Technician" }, });
   invariant(adminUserRole, "User Role with symbol ADMIN is not found");
+  invariant(devUserRole, "User Role with symbol devUserRole is not found");
+  invariant(salesRole, "User Role with symbol salesRole is not found");
+  invariant(financeRole, "User Role with symbol financeRole is not found");
+  invariant(technicianRole, "User Role with symbol technician is not found");
 
   // ---------------------------------------------------------------------------
   console.log(chalk.yellow("Seeding users ..."));
@@ -54,6 +59,58 @@ export async function seedUsers() {
   const user = await prisma.user.findFirst({
     where: { role: { symbol: "ADMIN" } },
   });
+  // creating technician
+  console.log(chalk.yellow("creating technician..."));
+  const technician = await prisma.user.create({
+    data: {
+      email: 'tech@email.com',
+      name: "technician",
+      username: "Technician",
+      phone: "6138980771",
+      dept: 'Technician',
+      dealer: "Freedom H-D",
+      role: { connect: { id: technicianRole?.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am tech",
+          bio: "The tech at this dealer.",
+        },
+      },
+    },
+  });
+  // creating admin
+  console.log(chalk.yellow("creating admin..."));
+  const admin = await prisma.user.create({
+    data: {
+      email: REMIX_ADMIN_EMAIL,
+      //    password: { create: { hash: hashedPassword } },
+      name: "Skyler Zanth",
+      username: "Skyler",
+      phone: "+16138980992",
+      dealer: "Freedom H-D",
+      dept: 'Finance',
+      role: { connect: { id: adminUserRole.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am Admin",
+          bio: "The administrator of this app.",
+        },
+      },
+
+    },
+  });
+  // creating client
+  console.log(chalk.yellow("creating client..."));
   const clientfile = await prisma.clientfile.create({
     data: {
       email: 'skylerzanth@gmail.com',
@@ -72,6 +129,8 @@ export async function seedUsers() {
       userId: process.env.REMIX_ADMIN_EMAIL
     }
   })
+  // first unit
+  console.log(chalk.yellow("creating first unit..."));
   const finance = await prisma.finance.create({
     data: {
       clientfileId: clientfile.id,
@@ -237,6 +296,8 @@ export async function seedUsers() {
       Other: null,
     }
   })
+  // secont unit
+  console.log(chalk.yellow("creating secont unit..."));
   const newLeadfinance = await prisma.finance.create({
     data: {
       clientfileId: clientfile.id,
@@ -266,6 +327,8 @@ export async function seedUsers() {
       customerState: 'Pending',
     }
   })
+  // creating comms
+  console.log(chalk.yellow("creating comms..."));
   const createInPerson = await prisma.comm.create({
     data: {
       userEmail: 'skylerzanth@outlook.com',
@@ -314,6 +377,8 @@ export async function seedUsers() {
       financeId: finance.id,
     }
   })
+  // creating accessories
+  console.log(chalk.yellow("creating accessories..."));
   await prisma.accessories.create({
     data: {
       brand: 'Brand A',
@@ -464,156 +529,505 @@ export async function seedUsers() {
       location: 'wall 6',
     },
   });
-  const createOrderWithAccessories = async (orderData, accessories, paymentData) => {
-    const order = await prisma.accOrder.create({
-      data: {
-        userEmail: orderData.userEmail,
-        userName: orderData.userName,
-        clientfileId: orderData.clientfileId,
-        financeId: orderData.financeId,
-        dept: orderData.dept,
-        status: orderData.status,
-        sendToAccessories: orderData.sendToAccessories,
-        accessoriesCompleted: orderData.accessoriesCompleted,
-      }
-    });
-
-    // Aggregate accessories by ID and sum their quantities
-    const accessoryMap = accessories.reduce((acc, accessory) => {
-      if (!acc[accessory.id]) {
-        acc[accessory.id] = {
-          id: accessory.id,
-          quantity: 0
-        };
-      }
-      acc[accessory.id].quantity += accessory.quantity;
-      return acc;
-    }, {});
-
-    const accessoriesData = Object.values(accessoryMap).map(accessory => ({
-      accOrderId: order.id,
-      accessoryId: accessory.id,
-      quantity: accessory.quantity,
-    }));
-
-    await prisma.accessoriesOnOrders.createMany({
-      data: accessoriesData,
-    });
-
-    if (paymentData) {
-      await prisma.payment.create({
-        data: {
-          accOrderId: order.id,
-          paymentType: paymentData.paymentType,
-          amountPaid: paymentData.amountPaid,
-          cardNum: paymentData.cardNum,
-          receiptId: paymentData.receiptId,
-        },
-      });
-    }
-
-    return { order };
-  };
-
-  // Example data
-  const orderData1 = {
-    userEmail: 'skylerzanth@outlook.com',
-    userName: 'Skyler Zanth',
-    clientfileId: clientfile.id,// Replace with actual ID
-    financeId: 'finance-id-1',       // Replace with actual ID
-    dept: 'Sales',
-    status: 'Quote',
-    sendToAccessories: false,
-    accessoriesCompleted: false,
-  };
-
-  const accessories1 = [
-    { id: 'accessory-id-1', quantity: 1 }, // Replace with actual IDs
-    { id: 'accessory-id-2', quantity: 1 },
-    { id: 'accessory-id-3', quantity: 1 },
-    { id: 'accessory-id-4', quantity: 1 },
-    { id: 'accessory-id-5', quantity: 1 },
-  ];
-
-  const paymentData1 = {
-    paymentType: 'Visa',
-    amountPaid: 4532,
-    cardNum: '4532',
-    receiptId: 'some-receipt-id',
-  };
-
-  const orderData2 = {
-    userEmail: 'skylerzanth@outlook.com',
-    userName: 'Skyler Zanth',
-    clientfileId: clientfile.id, // Replace with actual ID
-    dept: 'Accessories',
-    status: 'Quote',
-    sendToAccessories: false,
-    accessoriesCompleted: false,
-  };
-
-  const accessories2 = [
-    { id: 'accessory-id-1', quantity: 1 },
-    { id: 'accessory-id-2', quantity: 1 },
-    { id: 'accessory-id-3', quantity: 1 },
-    { id: 'accessory-id-4', quantity: 1 },
-    { id: 'accessory-id-5', quantity: 1 },
-    { id: 'accessory-id-6', quantity: 1 },
-    { id: 'accessory-id-7', quantity: 1 },
-  ];
-
-  const paymentData2 = {
-    paymentType: 'Visa',
-    amountPaid: 4532,
-    cardNum: '4532',
-    receiptId: 'some-receipt-id',
-  };
-
-  // Execute seed
-  createOrderWithAccessories(orderData1, accessories1, paymentData1)
-    .then(order => {
-      console.log('Order 1 created:', order);
-    })
-    .catch(error => {
-      console.error('Error creating order 1:', error);
-    });
-
-  createOrderWithAccessories(orderData2, accessories2, paymentData2)
-    .then(order => {
-      console.log('Order 2 created:', order);
-    })
-    .catch(error => {
-      console.error('Error creating order 2:', error);
-    });
-
-
-
-  console.log(chalk.green("First customer seeded!"));
-  // ---- users
-  const admin = await prisma.user.create({
+  const order = await prisma.accOrder.create({
     data: {
-      email: REMIX_ADMIN_EMAIL,
-      //    password: { create: { hash: hashedPassword } },
-      name: "Skyler Zanth",
-      username: "Skyler",
-      phone: "+16138980992",
-      dealer: "Freedom H-D",
-      dept: 'Finance',
-      role: { connect: { id: adminUserRole.id } },
-      customerSync: {
-        create: {
-          orderId: null
-        }
-      },
-      profile: {
-        create: {
-          headline: "I am Admin",
-          bio: "The administrator of this app.",
-        },
-      },
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      financeId: finance.id,
+      dept: 'Sales',
+      status: 'Quote',
 
+
+      total: fith.price + forth.price + third.price + second.price + first.price,
+      paid: false,
+
+    }
+  });
+  // creating acc orders
+  console.log(chalk.yellow("creating acc orders..."));
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order.id,
+      quantity: 1,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: second.id,
+      accOrderId: order.id,
+      quantity: 1,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: third.id,
+      accOrderId: order.id,
+      quantity: 1,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: forth.id,
+      accOrderId: order.id,
+      quantity: 1,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: fith.id,
+      accOrderId: order.id,
+      quantity: 1,
+    }
+  })
+  const order2 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: fith.price + seventh.price + seventh.price,
+      paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order2.id,
+      quantity: 1,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: sixth.id,
+      accOrderId: order2.id,
+      quantity: 1,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: seventh.id,
+      accOrderId: order2.id,
+      quantity: 1,
+    }
+  })
+  const order3 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: first.price,
+      paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order3.id,
+      quantity: 1,
+    }
+  })
+  const order4 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: first.price,
+      paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order4.id,
+      quantity: 1,
+    }
+  })
+  const order5 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: first.price,
+      paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order5.id,
+      quantity: 1,
+    }
+  })
+  const order6 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: first.price,
+      paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order6.id,
+      quantity: 1,
+    }
+  })
+  const order7 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: first.price,
+      paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order7.id,
+      quantity: 1,
+    }
+  })
+  const order8 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: first.price,
+      paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order8.id,
+      quantity: 1,
+    }
+  })
+  const order9 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: first.price,
+      paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order9.id,
+      quantity: 1,
+    }
+  })
+  const order10 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: first.price, paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order10.id,
+      quantity: 1,
+    }
+  })
+  const order11 = await prisma.accOrder.create({
+    data: {
+      userEmail: 'skylerzanth@outlook.com',
+      userName: 'Skyler Zanth',
+      clientfileId: clientfile.id,
+      dept: 'Sales',
+      status: 'Quote',
+
+
+      total: first.price,
+      paid: false,
+
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: first.id,
+      accOrderId: order11.id,
+      quantity: 1,
+    }
+  })
+  console.log(chalk.yellow("creating services..."));
+  const hourly = 215
+  const service = await prisma.services.create({
+    data: {
+      description: 'Change Tire',
+      estHr: 1.25,
+      service: 'Change Tire',
+      price: hourly * 1.25
+    }
+  })
+  const service2 = await prisma.services.create({
+    data: {
+      description: 'Oil Change',
+      estHr: 2.25,
+      service: 'Oil Change',
+      price: hourly * 2.25
+    }
+  })
+  console.log(chalk.yellow("creating service accessories..."));
+  const servPart = await prisma.accessories.create({
+    data: {
+      brand: 'Michelin',
+      name: 'Defender 2 All Season Tire for Passenger & CUV',
+      partNumber: '006-3080-8',
+      price: 216.99,
+      cost: 150.47,
+      quantity: 100,
+      description: 'Defender 2 All Season Tire for Passenger & CUV',
+      category: 'Tires',
+      subCategory: 'All-Season',
+      onOrder: 50,
+      distributer: 'Michelin',
+      location: 'rack 6',
     },
   });
+  const servPart2 = await prisma.accessories.create({
+    data: {
+      brand: 'Quaker State',
+      name: 'Full Synthetic 5W30 Engine/Motor Oil, 5-L',
+      partNumber: '028-9037-6',
+      price: 49.99,
+      cost: 39.99,
+      quantity: 100,
+      description: 'Full Synthetic 5W30 Engine/Motor Oil, 5-L',
+      category: 'Oil',
+      subCategory: 'Full Synthetic',
+      onOrder: 50,
+      distributer: 'Quaker State',
+      location: 'Shelf 6',
+    },
+  });
+  const servPart3 = await prisma.accessories.create({
+    data: {
+      brand: 'Castrol',
+      name: 'CAS7317 SFX Premium Synthetic Oil Filter',
+      partNumber: 'CAS7317',
+      price: 16.99,
+      cost: 11.99,
+      quantity: 100,
+      description: 'CAS7317 SFX Premium Synthetic Oil Filter',
+      category: 'Oil Filter',
+      subCategory: 'Synthetic',
+      onOrder: 50,
+      distributer: 'Castrol',
+      location: 'Shelf 6',
+    },
+  });
+  // creating service orders
+  console.log(chalk.yellow("creating service orders for client unit bought here..."));
+  const workOrder = await prisma.workOrder.create({
+    data: {
+      unit: finance.model,
+      mileage: '22500 kms',
+      vin: 'KS1ASDFASDFA',
+      tag: 'L1V3 FR33',
+      motor: 'V-TWIN',
+      budget: 'Unlimited',
+      totalLabour: service.estHr + service2.estHr,
+      totalParts: (servPart.price * 4) + servPart2.price + servPart3.price,
+      subTotal: (service.estHr + service2.estHr) + ((servPart.price * 4) + servPart2.price + servPart3.price),
+      total: ((service.estHr + service2.estHr) + ((servPart.price * 4) + servPart2.price + servPart3.price)) * 1.13,
+      writer: admin.name,
+      userEmail: admin.email,
+      tech: technician.name,
+      techEmail: technician.email,
+      notes: '',
+      customerSig: 'Yes',
+      status: 'In Works',
+      location: 'Garage',
+      quoted: 'Yes',
+      paid: 'No',
+      // remaining: '',
+      // FinanceUnitId
+      financeId: finance.id,
+      clientfileId: clientfile.id,
+    }
+  })
+  console.log(chalk.yellow("creating ServicesOnWorkOrders..."));
+  await prisma.servicesOnWorkOrders.create({
+    data: {
+      quantity: 4,
+      serviceId: service.id,
+      workOrderId: workOrder.workOrderId,
+    }
+  })
+  await prisma.servicesOnWorkOrders.create({
+    data: {
+      quantity: 1,
+      serviceId: service2.id,
+      workOrderId: workOrder.workOrderId,
+    }
+  })
+  console.log(chalk.yellow("creating accOrder attached to workorder..."));
+  const serviceAccOrder = await prisma.accOrder.create({
+    data: {
+      userEmail: admin.email,
+      userName: admin.name,
+      clientfileId: clientfile.id,
+      dept: 'Service',
+      status: 'Quote',
+      total: servPart.price + servPart2.price + servPart3.price,
+      paid: false,
+      workOrderId: workOrder.workOrderId
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: servPart.id,
+      accOrderId: serviceAccOrder.id,
+      quantity: 4,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: servPart2.id,
+      accOrderId: serviceAccOrder.id,
+      quantity: 1,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: servPart3.id,
+      accOrderId: serviceAccOrder.id,
+      quantity: 1,
+    }
+  })
+  console.log(chalk.yellow("creating service unit..."));
+  const serviceUnit = await prisma.serviceUnit.create({
+    data: {
+      brand: 'BMW',
+      model: 'M4',
+      color: 'Yellow',
+      year: '2023',
+      vin: 'B234DSFGWETWE',
+      trim: '',
+      mileage: '15000 km',
+      location: 'Lot',
+    }
+  })
+  console.log(chalk.yellow("creating work order with service unit..."));
+  const workOrder2 = await prisma.workOrder.create({
+    data: {
+      unit: '2023 BMW M4',
+      mileage: '15000 kms',
+      tag: 'L1V3 FR33',
+      motor: 'Inline 6',
+      budget: 'Unlimited',
+      totalLabour: service.estHr + service2.estHr,
+      totalParts: (servPart.price * 4) + servPart2.price + servPart3.price,
+      subTotal: (service.estHr + service2.estHr) + ((servPart.price * 4) + servPart2.price + servPart3.price),
+      total: ((service.estHr + service2.estHr) + ((servPart.price * 4) + servPart2.price + servPart3.price)) * 1.13,
+      writer: admin.name,
+      userEmail: admin.email,
+      tech: technician.name,
+      techEmail: technician.email,
+      notes: '',
+      customerSig: 'Yes',
+      status: 'In Works',
+      location: 'Garage',
+      quoted: 'Yes',
+      paid: 'No',
+      // remaining: '',
+      // FinanceUnitId
+      ServiceUnitId: serviceUnit.id,
+      clientfileId: clientfile.id,
+    }
+  })
+  const serviceAccOrder2 = await prisma.accOrder.create({
+    data: {
+      userEmail: admin.email,
+      userName: admin.name,
+      clientfileId: clientfile.id,
+      dept: 'Service',
+      status: 'Quote',
+      total: servPart.price + servPart2.price + servPart3.price,
+      paid: false,
+      workOrderId: workOrder2.workOrderId
+    }
+  });
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: servPart.id,
+      accOrderId: serviceAccOrder2.id,
+      quantity: 4,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: servPart2.id,
+      accOrderId: serviceAccOrder2.id,
+      quantity: 1,
+    }
+  })
+  await prisma.accessoriesOnOrders.create({
+    data: {
+      accessoryId: servPart3.id,
+      accOrderId: serviceAccOrder2.id,
+      quantity: 1,
+    }
+  })
+  // creating service orders
+  console.log(chalk.yellow("creating service orders for client with unit bought else where..."));
+  console.log(chalk.green("First customer seeded!"));
+  // ---- users
   await prisma.position.create({
     data: {
       userId: admin.id,
@@ -1033,7 +1447,11 @@ export async function DealerFees() {
     },
   });
   console.log(chalk.green("dealer fees seeded!"));
-
+  await prisma.dealerLogo.create({
+    data: {
+      dealerId: data.id
+    }
+  })
   return data
 }
 export async function seedNotes() {
@@ -1070,6 +1488,24 @@ export async function FirstCustomer() {
 
 export async function Board() {
   const completed = [
+    { board: "dev", column: "issue", item: "search need to finish the drop down to specefiy which file u want to go to " },
+    { board: "dev", column: "issue", item: "dashboard - fix dob calendar" },
+    { board: "dev", column: "issue", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
+    { board: "dev", column: "issue", item: "add notes ability to inventory, parts" },
+    { board: "dev", column: "PAC", item: "print barcodes use same pdf generator u use now" },
+    { board: "dev", column: "PAC", item: "add auto focus to forms so first input alrady has cursor" },
+    { board: "dev", column: "issue", item: "Print receipt, have qrcode on it so you can just scan it" },
+    { board: "dev", column: "issue", item: "service receipts / quotes qrcode on it to just scan it and have it pulled up no more messing with looking for customers" },
+    { board: "dev", column: "PAC", item: "move accessories pages that are needed else where to components and import them that way so you can use your routes actions - this did not work first try" },
+    { board: "dev", column: "PAC", item: "give the ability to transfer orders to other depts and have them able to claim it to the work order or unit" },
+    { board: "dev", column: "PAC", item: "copy over the create and update orders into the finance file so you can create and update the orders attached to the unit" },
+    { board: "dev", column: "PAC", item: "redirect user when customer has no unit to the order page" },
+    { board: "dev", column: "PAC", item: "customer file sync between mobile and desktop" },
+    { board: "dev", column: "PAC", item: "parts - a electronix lineup system  " },
+    { board: "dev", column: "PAC", item: "ACC - a electronix lineup system " },
+    { board: "dev", column: "PAC", item: "inventory counter, like u know the ones u see at walmart" },
+    { board: "dev", column: "PAC", item: "maybe put acc tab drop down items in an alert menu first to get confirmation " },
+
 
   ]
   const doneneedstesting = [
@@ -1088,46 +1524,40 @@ export async function Board() {
 
   ]
   const completedIssues = [
-    { board: "dev", column: "issue", item: "search need to finish the drop down to specefiy which file u want to go to " },
-    { board: "dev", column: "issue", item: "dashboard - fix dob calendar" },
-    { board: "dev", column: "issue", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
-    { board: "dev", column: "issue", item: "add notes ability to inventory, parts" },
-    { board: "dev", column: "PAC", item: "print barcodes use same pdf generator u use now" },
-    { board: "dev", column: "PAC", item: "add auto focus to forms so first input alrady has cursor" },
-    { board: "dev", column: "issue", item: "Print receipt, have qrcode on it so you can just scan it" },
-    { board: "dev", column: "issue", item: "service receipts / quotes qrcode on it to just scan it and have it pulled up no more messing with looking for customers" },
+    { board: "dev", column: "PAC", item: "receiving" },
 
   ]
+
   const issue = [
-    { board: "dev", column: "PAC", item: "inventory counter, like u know the ones u see at walmart" },
-    { board: "dev", column: "PAC", item: "a electronix lineup system kinda like how you do with financ e managers" },
+    { board: "dev", column: "PAC", item: "end of day reports, choose date so you can print any day" },
+    { board: "dev", column: "PAC", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
 
-    { board: "dev", column: "PAC", item: "move accessories pages that are needed else where to components and import them that way so you can use your routes actions - this did not work first try" },
-    { board: "dev", column: "PAC", item: "give the ability to transfer orders to other depts and have them able to claim it to the work order or unit" },
-    { board: "dev", column: "PAC", item: "copy over the create and update orders into the finance file so you can create and update the orders attached to the unit" },
-    { board: "dev", column: "PAC", item: "redirect user when customer has no unit to the order page" },
-    { board: "dev", column: "PAC", item: "customer file sync between mobile and desktop" },
-    { board: "dev", column: "issue", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try" },
-    { board: "dev", column: "issue", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },
-    { board: "dev", column: "issue", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
-    { board: "dev", column: "PAC", item: "end of day reports, chose date so you can print any day" },
-    { board: "dev", column: "PAC", item: "receiving" },
-    { board: "dev", column: "PAC", item: "saving templates, see if you can save big json strings in database" },
+    { board: "dev", column: "sales", item: "finance section in finance file, have it where it can be switch to manual mode only where there are no calculations being done" },
+    { board: "dev", column: "sales", item: "make a bill of sale where it prints the items off of acc and parts orders" },
+    { board: "dev", column: "sales", item: "need to swap out for financeUnit/tradeunit from just finance in schema" },
+    { board: "dev", column: "sales", item: "have it so if you sdelect clientfile it just goes to client file and then you can select a unit if you want to but it displays orders, and work orders under clients name not under a unit bought there" },
+    { board: "dev", column: "staff area", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
+    { board: "dev", column: "sales", item: "saving doc templates, see if you can save big json strings in database" },
+    { board: "dev", column: "sales", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
 
-    { board: "dev", column: "issue", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
+    { board: "dev", column: "service", item: "for the tech have clock in clock out, but also a check off list of the items that need to be done if they want it that tracks what item was done when and to ensure nothing gets missed" },
+    { board: "dev", column: "service", item: "service - a electronix lineup system for order/ wo" },
+    { board: "dev", column: "service", item: "once tech is done with servicing a unit, if a wo isnt assigned have a waiter board where he can get his next service wo" },
+    { board: "dev", column: "service", item: "service board to have a section with buttons that adds the most purchased services to the work order making it a breeze for the desk to produce quotes fast, that even inputs the part numbers, hours to complete, etc will need to make a dashboard where the service manager can set this up, maybe even produce a list of common parts associated with those jobs incase the customer doesn't like that specifc tire" },
+    { board: "dev", column: "service", item: "try to make it so the service writers dont have to type anything in barely, maybe even have a section of most typed comments, have scanner in service as well so the can jkust scan parts instead of inputing part numbers" },
 
-    { board: "dev", column: "issue", item: "for the tech have clock in clock out, but also a check off list of the items that need to be done if they want it that tracks what item was done when and to ensure nothing gets missed" },
-    { board: "dev", column: "issue", item: "service board to have a section with buttons that adds the most purchased services to the work order making it a breeze for the desk to produce quotes fast, that even inputs the part numbers, hours to complete, etc will need to make a dashboard where the service manager can set this up, maybe even produce a list of common parts associated with those jobs incase the customer doesn't like that specifc tire" },
-    { board: "dev", column: "issue", item: "try to make it so the service writers dont have to type anything in barely, maybe even have a section of most typed comments, have scanner in service as well so the can jkust scan parts instead of inputing part numbers" },
+    { board: "dev", column: "cutomer finance file", item: "finish className={${isCompleted ? bg-[#30A46C]: bg-primary} in finance file" },
 
-    { board: "dev", column: "issue", item: "payment processor for purchases?" },
+    { board: "dev", column: "manager", item: "manager / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
 
+    { board: "dev", column: "infastructure", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try" },
+    { board: "dev", column: "infastructure", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },
+    { board: "dev", column: "infastructure", item: "set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
+    { board: "dev", column: "infastructure", item: "payment processor for purchases?" },
     { board: "dev", column: "issue", item: "user docs instead of having a doc section maybe have dialog open up from the menu and they can read the docs per page instead of learning and cramming evrything at once they can learn when they need to and use the inforation right away and have it question what the user wants to learn and give it the right info on the spot and have link to video on utube open in new window" },
-    { board: "dev", column: "issue", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
 
 
 
-    { board: "dev", column: "PAC", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase" },
   ]
   const ideas = [
     { board: "dev", column: "ideas", item: "save form to local storage, never loose data for a internet hiccup or outage" },
@@ -1180,10 +1610,12 @@ export async function Board() {
     { board: "dev", column: "accessories", item: "acc dash" },
   ]
   const manager = [
+    { board: "dev", column: "manager", item: "have all managers stuff within managers so dashboard would have sales, acc, parts, and service" },
     { board: "dev", column: "manager", item: "cross platform ad manager, post it once here and push it to different providors" },
   ]
   const admin = [
     { board: "dev", column: "admin", item: "have it populate api keys so managers can hand them out" },
+    { board: "dev", column: "admin", item: "for making admin dash, go custom try to replicate sales dash but go all out... here you can even do context menu's aand everything, tab it by clientfile, finance, acc order, workorder, sales and in sales quickly sort by sales person by month user filters like u used in receivng" },
   ]
   const dealerOnboarding = [
     { board: "dev", column: "dealer onboarding", item: "invite user section where it send an email with links to the crm and" },

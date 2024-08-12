@@ -23,6 +23,7 @@ import {
   Percent,
   PanelTop,
   Scan,
+  User2,
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -74,7 +75,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { Outlet, Link, useLoaderData, useFetcher } from "@remix-run/react";
+import { Outlet, Link, useLoaderData, useFetcher, useNavigate } from "@remix-run/react";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { GetUser } from "~/utils/loader.server";
 import { getSession } from "~/sessions/auth-session.server";
@@ -94,6 +95,7 @@ import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundExcept
 import { EditableText } from "~/components/actions/shared";
 import { Pencil } from "lucide-react";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
+import { FaMotorcycle } from "react-icons/fa";
 
 
 export async function loader({ request, params }: LoaderFunction) {
@@ -106,18 +108,42 @@ export async function loader({ request, params }: LoaderFunction) {
   }
 
   const orders = await prisma.accOrder.findMany({
+    where: { status: 'On Order' },
     select: {
       id: true,
       createdAt: true,
+      updatedAt: true,
       userEmail: true,
+      userName: true,
+      dept: true,
       total: true,
       discount: true,
       discPer: true,
+      paid: true,
+      paidDate: true,
+      status: true,
       clientfileId: true,
+      workOrderId: true,
+      financeId: true,
+      note: true,
+      AccessoriesOnOrders: {
+        select: {
+          id: true,
+          quantity: true,
+          accOrderId: true,
+          status: true,
+          orderNumber: true,
+          OrderInvId: true,
+          accessoryId: true,
+        }
+      },
       Clientfile: {
         select: {
           id: true,
+          createdAt: true,
+          updatedAt: true,
           financeId: true,
+          userId: true,
           firstName: true,
           lastName: true,
           name: true,
@@ -132,43 +158,89 @@ export async function loader({ request, params }: LoaderFunction) {
           timeToContact: true,
           conversationId: true,
           billingAddress: true,
-        },
-      },
-      AccessoriesOnOrders: {
-        select: {
-          id: true,
-          quantity: true,
-          accessory: {
+          Finance: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              phone: true,
+              name: true,
+              address: true,
+              city: true,
+              postal: true,
+              province: true,
+              dl: true,
+              typeOfContact: true,
+              timeToContact: true,
+              dob: true,
+              AccOrders: {
+                select: {
+                  id: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  userEmail: true,
+                  userName: true,
+                  dept: true,
+                  total: true,
+                  discount: true,
+                  discPer: true,
+                  paid: true,
+                  paidDate: true,
+                  status: true,
+                  clientfileId: true,
+                  workOrderId: true,
+                  financeId: true,
+                  note: true,
+                  AccessoriesOnOrders: {
+                    select: {
+                      id: true,
+                      quantity: true,
+                      accOrderId: true,
+                      status: true,
+                      orderNumber: true,
+                      OrderInvId: true,
+                    }
+                  }
+                }
+              }
+            },
+          },
+          AccOrder: {
             select: {
               id: true,
               createdAt: true,
               updatedAt: true,
-              accessoryNumber: true,
-              brand: true,
-              name: true,
-              price: true,
-              cost: true,
-              quantity: true,
-              description: true,
-              category: true,
-              subCategory: true,
-              onOrder: true,
-              distributer: true,
-              location: true,
-            },
-          },
-        },
+              userEmail: true,
+              userName: true,
+              dept: true,
+              total: true,
+              discount: true,
+              discPer: true,
+              paid: true,
+              paidDate: true,
+              status: true,
+              clientfileId: true,
+              workOrderId: true,
+              financeId: true,
+              note: true,
+              AccessoriesOnOrders: {
+                select: {
+                  id: true,
+                  quantity: true,
+                  accOrderId: true,
+                  status: true,
+                  orderNumber: true,
+                  OrderInvId: true,
+                  accessoryId: true,
+                }
+              }
+            }
+          }
+        }
       },
-      Payments: {
-        select: {
-          id: true,
-          paymentType: true,
-          amountPaid: true,
-          cardNum: true,
-          receiptId: true,
-        },
-      },
-    },
+
+    }
   });
 
 
@@ -246,15 +318,13 @@ export default function Purchase() {
   const { user, orders, sevTotal, tax, filteredOrders30, thiryTotal } = useLoaderData();
   let ref = useRef();
   let search = useFetcher();
-
+  const navigate = useNavigate()
   const [ordersList, setOrdersList] = useState([]);
   useEffect(() => {
     setOrdersList(ordersList);
   }, []);
-  const lastOrder = orders[0];
-  const taxMultiplier = Number(tax.userTax);
-  const taxRate = 1 + taxMultiplier / 100;
 
+  const taxMultiplier = Number(tax.userTax);
 
   const options2 = {
     weekday: "short",
@@ -268,59 +338,19 @@ export default function Purchase() {
   const today = new Date();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(today.getDate() - 7);
-  const filteredOrders7 = filteredOrders30.filter((order) => {
-    const orderDate = new Date(order.createdAt);
-    return orderDate >= sevenDaysAgo && orderDate <= today;
-  });
-  const [showOrder, setShowOrder] = useState(false);
-
-  const toggleOrderDetails = (orderId) => {
-    if (showOrder === orderId) {
-      setShowOrder(null);
-    } else {
-      setShowOrder(orderId);
-    }
-  };
-
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
 
   const [showPrevOrder, setShowPrevOrder] = useState(null)
   const [showPrev, setShowPrev] = useState(false)
 
-  const showPrevOrderById = (id) => {
-    const filteredOrder = orders.find(order => order.id === id);
-    setShowPrev(true)
-    setShowPrevOrder(filteredOrder);
-  }
 
-  const totalAccessoriesCost = lastOrder.AccessoriesOnOrders.reduce((total, accessoryOnOrder) => {
-    return total + (accessoryOnOrder.quantity * accessoryOnOrder.accessory.price);
-  }, 0);
-
-  const totalAmountPaid = lastOrder.Payments.reduce((total, payment) => {
-    return total + payment.amountPaid;
-  }, 0);
-
-  const [paymentType, setPaymentType] = useState('');
   const [discount, setDiscount] = useState(false)
-  const [custInfo, setCustInfo] = useState(false)
-  let fetcher = useFetcher();
-  let buttonRef = useRef<HTMLButtonElement>(null);
-  let inputRef = useRef<HTMLInputElement>(null);
   let formRef = useRef();
-  let products = useFetcher();
   let addProduct = useFetcher();
 
-  const [discDollar, setDiscDollar] = useState(0.00)
-  const [discPer, setDiscPer] = useState(0.00)
   const [selectedPart, setSelectedPart] = useState({})
 
 
-  const total2 = ((parseFloat(totalAccessoriesCost) - parseFloat(discDollar)) * taxRate).toFixed(2)
-  const total1 = (((parseFloat(totalAccessoriesCost) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2)
-  const total = discDollar && discDollar > 0.00 ? total1 : total2
+
   const [scannedCode, setScannedCode] = useState('')
   useEffect(() => {
     const codeReader = new BrowserMultiFormatReader();
@@ -444,36 +474,89 @@ export default function Purchase() {
 
   }, [scannedCode]);
 
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [quantities, setQuantities] = useState({});
-  const handleQuantityChange = (id, quantity) => {
-    setQuantities(prev => ({ ...prev, [id]: quantity }));
-  };
+  const [clients, setClients] = useState([]);
+  const [finances, setFinances] = useState([]);
+  const [workOrders, setWorkOrders] = useState([]);
 
-  const handleAddToOrder = (product) => {
-    const quantity = quantities[product.id] || 1;
-    const newProducts = Array.from({ length: quantity }, (_, index) => {
-      const baseIndex = selectedProducts.length + index + 1;
-      return {
-        [`{${baseIndex}}free1`]: `${product.name} ${product.price}`,
-        [`{${baseIndex}}free2`]: product.location,
-        [`{${baseIndex}}code128`]: product.id,
-      };
-    });
-    setSelectedProducts(prev => [...prev, ...newProducts]);
-  };
-  const localData = selectedProducts
-  /** <Button
-              onClick={() => {
-                setAllFilters([]);
-                setSelectedGlobal(false);
-              }}
-              size="icon"
-              variant="ghost"
-              className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+  console.log(orders, 'orders')
+  useEffect(() => {
+    let clientsFilter
+    if (orders.Clientfile) {
+      clientsFilter = orders.filter((order) =>
+        order.Clientfile?.some((client) =>
+          client.Finance?.some((finance) =>
+            finance.AccOrders.some((accOrder) =>
+              accOrder.AccessoriesOnOrders.some((accessory) =>
+                accessory.accessoryId.includes(scannedCode)
+              )
+            )
+          )
+        )
+      );
+    }
+    if (clientsFilter) { setClients(clientsFilter) }
+  }, [scannedCode]);
 
-              <X />
-            </Button> */
+  useEffect(() => {
+    let financesFilter
+    if (orders.Finance) {
+      financesFilter = orders.filter((result) =>
+        result.Finance?.some((finance) =>
+          finance.AccOrder?.some((accOrder) =>
+            accOrder.AccessoriesOnOrders.some((accessory) =>
+              accessory.accessoryId.includes(scannedCode)
+            )
+          )
+        )
+      );
+    }
+    if (financesFilter) { setFinances(financesFilter) }
+  }, [scannedCode]);
+
+  useEffect(() => {
+    let workOrdersFilter
+    if (orders.WorkOrder) {
+      workOrdersFilter = orders.filter((result) =>
+        result.WorkOrder?.some((finance) =>
+          finance.AccOrder?.some((accOrder) =>
+            accOrder.AccessoriesOnOrders.some((accessory) =>
+              accessory.accessoryId.includes(scannedCode)
+            )
+          )
+        )
+      );
+    }
+    if (workOrdersFilter) { setWorkOrders(workOrdersFilter) }
+  }, [scannedCode]);
+
+
+  useEffect(() => {
+
+  }, [scannedCode]);
+
+  const filteredOrders = orders.filter(order =>
+    order.AccessoriesOnOrders.some(accessory =>
+      accessory.accessoryId === scannedCode && accessory.status === 'On Order'
+    )
+  );
+
+  // Now, you can categorize them based on their associations
+
+  // Orders related to Clientfile
+  const clientfileOrders = filteredOrders.filter(order =>
+    order.clientfileId !== null
+  );
+
+  // Orders related to Finance
+  const financeOrders = filteredOrders.filter(order =>
+    order.financeId !== null
+  );
+
+  // Orders related to WorkOrder
+  const workOrderOrders = filteredOrders.filter(order =>
+    order.workOrderId !== null
+  );
+
   return (
     <div>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -500,6 +583,8 @@ export default function Purchase() {
                   </Tooltip>
                 </CardTitle>
                 <CardDescription className='flex items-start flex-col'>
+                  <p className='mt-4'>Search By Description</p>
+
                   <search.Form method="get" action='/dealer/accessories/products/search' className='my-4'>
                     <div className="relative ml-auto flex-1 md:grow-0 ">
                       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -518,7 +603,26 @@ export default function Purchase() {
 
                     </div>
                   </search.Form>
+                  <p className='mt-4'>Search By ID</p>
+                  <search.Form method="get" action='/dealer/accessories/products/search/id' className='my-4'>
+                    <div className="relative ml-auto flex-1 md:grow-0 ">
+                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        ref={ref}
+                        type="search"
+                        name="q"
+                        onChange={e => {
+                          //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                          search.submit(e.currentTarget.form);
+                          setScannedCode(e.currentTarget)
+                        }}
+                        autoFocus
+                        placeholder="Search..."
+                        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                      />
 
+                    </div>
+                  </search.Form>
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -533,8 +637,8 @@ export default function Purchase() {
                       <div className='flex items-center'>
 
                         <div className='flex flex-col items-center  mx-auto' >
-                          <div className='rounded-[5px] border border-border relative group' style={{ padding: 0, width: '150px', maxHeight: '100px', overflow: 'hidden', border: ' ' }}>
-                            <video id="video" style={{ width: '150px' }}></video>
+                          <div className='rounded-[5px] border border-border relative  group' style={{ padding: 0, width: '150px', maxHeight: '100px', overflow: 'hidden', border: ' ' }}>
+                            <video id="video" className='' style={{ width: '150px' }}></video>
                             <Button
                               size="sm"
                               variant="outline"
@@ -557,15 +661,7 @@ export default function Purchase() {
                               <select id="sourceSelect" className='b-rounded-[5px] px-3 py-1 bg-background text-foreground border-border border   opacity-0 transition-opacity group-hover:opacity-100 ' style={{ maxWidth: '150px' }}></select>
                             </div>
                           </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-7 gap-1 text-sm  bg-primary absolute left-2.5 top-2.5  opacity-0 transition-opacity group-hover:opacity-100 "
-                            id="decodeButton"
-                          >
-                            <Scan className="h-3.5 w-3.5" />
-                            <span className="sr-only sm:not-sr-only text-foreground">decode</span>
-                          </Button>
+
                           <div style={{ display: 'none' }}>
                             <div style={{ padding: 0, width: '100px', maxHeight: '100px', overflow: 'hidden', border: '1px solid gray' }}>
                               <video id="video" style={{ width: '100px' }}></video>
@@ -623,6 +719,7 @@ export default function Purchase() {
             <div className="flex items-center">
               <TabsList>
                 <TabsTrigger value="Products">Products</TabsTrigger>
+                <TabsTrigger value="Client With Orders">Client With Orders</TabsTrigger>
               </TabsList>
             </div>
             <TabsContent value="Products">
@@ -855,6 +952,303 @@ export default function Purchase() {
                 </CardContent>
               </Card>
             </TabsContent>
+            <TabsContent value="Client With Orders">
+              <Card x-chunk="dashboard-05-chunk-3">
+                <CardHeader className="px-7">
+                  <CardTitle>Client</CardTitle>
+                  <CardDescription>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className='border-border'>
+                        <TableHead>
+                          Customer
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Phone
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Email
+                        </TableHead>
+                        <TableHead className="hidden">
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
+                      {clientfileOrders &&
+                        clientfileOrders.map((result, index) => (
+                          <TableRow key={index} className="hover:bg-accent border-border">
+                            <TableCell>
+                              {result.Clientfile.firstName} {result.Clientfile.lastName}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {result.Clientfile.phone}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.Clientfile.email}
+                            </TableCell>
+                            <TableCell className="">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size='icon'
+                                    className='bg-primary mx-auto'
+                                    onClick={() =>
+                                      navigate(`/dealer/customer/${result.Clientfile.id}`)
+                                    } >
+                                    <User2 className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <div className='flex flex-col gap-2'>
+                                    <p>Customer File</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size='icon'
+                                    className='bg-primary mx-auto ml-3'
+                                    onClick={() =>
+                                      navigate(`/dealer/accessories/newOrder/${result.id}`)
+                                    } >
+                                    <ShoppingCart className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <div className='flex flex-col gap-2'>
+                                    <p>Accessory Order</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size='icon'
+                                    className='bg-primary mx-auto ml-3'
+                                    onClick={() =>
+                                      navigate(`/dealer/customer/${result.Clientfile.id}/${result.finance.id}`)
+                                    } >
+                                    <FaMotorcycle className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <div className='flex flex-col gap-2'>
+                                    <p>Finance File</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+              <Card x-chunk="dashboard-05-chunk-3" className='my-4'>
+                <CardHeader className="px-7">
+                  <CardTitle>Contracts</CardTitle>
+                  <CardDescription>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className='border-border'>
+                        <TableHead>
+                          Customer
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Phone
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Email
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Order Created
+                        </TableHead>
+                        <TableHead className="hidden">
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
+                      {financeOrders &&
+                        financeOrders.map((result, index) => (
+                          <TableRow key={index} className="hover:bg-accent border-border">
+                            <TableCell>
+                              {result.Clientfile.firstName} {result.Clientfile.lastName}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {result.Clientfile.phone}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.Clientfile.email}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.createdAt}
+                            </TableCell>
+
+                            <TableCell className="">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size='icon'
+                                    className='bg-primary mx-auto'
+                                    onClick={() =>
+                                      navigate(`/dealer/customer/${result.clientfileId}`)
+                                    } >
+                                    <User2 className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <div className='flex flex-col gap-2'>
+                                    <p>Customer File</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size='icon'
+                                    className='bg-primary mx-auto ml-3'
+                                    onClick={() =>
+                                      navigate(`/dealer/accessories/newOrder/${result.id}`)
+                                    } >
+                                    <ShoppingCart className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <div className='flex flex-col gap-2'>
+                                    <p>Accessory Order</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size='icon'
+                                    className='bg-primary mx-auto ml-3'
+                                    onClick={() =>
+                                      navigate(`/dealer/customer/${result.clientfileId}/${result.financeId}`)
+                                    } >
+                                    <FaMotorcycle className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <div className='flex flex-col gap-2'>
+                                    <p>Finance File</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+              <Card x-chunk="dashboard-05-chunk-3" className='my-4'>
+                <CardHeader className="px-7">
+                  <CardTitle>Work Orders</CardTitle>
+                  <CardDescription>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className='border-border'>
+                        <TableHead>
+                          Customer
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Phone
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Email
+                        </TableHead>
+                        <TableHead className="hidden">
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
+                      {workOrderOrders &&
+                        workOrderOrders.map((result, index) => (
+                          <TableRow key={index} className="hover:bg-accent border-border">
+                            <TableCell>
+                              {result.Clientfile.firstName} {result.Clientfile.lastName}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {result.Clientfile.phone}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.Clientfile.email}
+                            </TableCell>
+                            <TableCell className="">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size='icon'
+                                    className='bg-primary mx-auto'
+                                    onClick={() =>
+                                      navigate(`/dealer/customer/${result.Clientfile.id}`)
+                                    } >
+                                    <User2 className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <div className='flex flex-col gap-2'>
+                                    <p>Customer File</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size='icon'
+                                    className='bg-primary mx-auto ml-3'
+                                    onClick={() =>
+                                      navigate(`/dealer/accessories/newOrder/${result.id}`)
+                                    } >
+                                    <ShoppingCart className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <div className='flex flex-col gap-2'>
+                                    <p>Accessory Order</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size='icon'
+                                    className='bg-primary mx-auto ml-3'
+                                    onClick={() =>
+                                      navigate(`/dealer/customer/${result.Clientfile.id}/${result.finance.id}`)
+                                    } >
+                                    <FaMotorcycle className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <div className='flex flex-col gap-2'>
+                                    <p>Finance File</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
         </div>
         <div>
@@ -913,7 +1307,6 @@ export default function Purchase() {
                     align="end"
                     className="border border-border"
                   >
-                    <DropdownMenuItem>Go To Order</DropdownMenuItem>
                     <DropdownMenuItem>Reprint Receipt</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
                     <DropdownMenuSeparator />

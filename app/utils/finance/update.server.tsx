@@ -35,17 +35,11 @@ export async function updateFinanceWithDashboard(financeId, financeData, dashDat
       data: { ...financeData },
     });
 
-    // Update the dashboard record
-    const dashboard = await prisma.dashboard.update({
-      where: {
-        financeId: financeId, // Assuming the financeId is also the id of the dashboard
-      },
-      data: { ...dashData, }
-    });
+
 
     console.log("Finance and Dashboard records updated successfully");
 
-    return { finance, dashboard };
+    return { finance, };
   } catch (error) {
     console.error("An error occurred while updating the records:", error);
     throw error;  // re-throw the error so it can be handled by the caller

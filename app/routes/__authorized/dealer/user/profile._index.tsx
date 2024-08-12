@@ -16,3 +16,7 @@ export const loader = async ({ request }) => {
     return redirect(`/${user.username}`); */
   return null
 }
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]

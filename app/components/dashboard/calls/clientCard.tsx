@@ -181,20 +181,24 @@ export default function ClientCard({ data }) {
 
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <Button
-                                        variant={"outline"}
-                                        className={cn(
-                                            "w-[100%] pl-3 text-left font-normal mt-3 ",
-                                            !date && "text-muted-foreground"
-                                        )}
-                                    >
-                                        {date ? (
-                                            format(date, "PPP")
-                                        ) : (
-                                            <span>DOB</span>
-                                        )}
-                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                    </Button>
+                                    <div className="relative mt-3">
+
+                                        <Button
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-[100%] pl-3 text-left font-normal  ",
+                                                !date && "text-muted-foreground"
+                                            )}
+                                        >
+                                            {date ? (
+                                                format(date, "PPP")
+                                            ) : (
+                                                <span>DOB not yet entered</span>
+                                            )}
+                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">DOB</label>
+                                    </div>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto p-0" align="start">
                                     <Calendar
@@ -443,19 +447,25 @@ export default function ClientCard({ data }) {
                             </ButtonLoading>
                         </Form>
 
-                        <a href={`/dealer/customer/${data.clientfileId}/${data.id}`} target="_blank">
-                            <ButtonLoading
-                                size="sm"
-                                type="submit"
-                                className="w-auto cursor-pointer ml-auto mt-3 hover:text-primary border-border"
-                                name="intent"
-                                value="clientProfile"
-                                isSubmitting={isSubmitting}
-                                loadingText="Naivigating to Client File.."
-                            >
-                                Client File
-                            </ButtonLoading>
-                        </a>
+                        <ButtonLoading
+                            size="sm"
+                            type="submit"
+                            className="w-auto cursor-pointer mt-3 hover:text-primary border-border"
+                            name="intent"
+                            value="clientProfile"
+                            isSubmitting={isSubmitting}
+                            loadingText="Naivigating to Client File.."
+                            onClick={() => {
+                                const formData = new FormData();
+                                formData.append("clientfileId", data.clientfileId);
+                                formData.append("financeId", data.id);
+                                formData.append("intent", 'goToClientfile');
+                                fetcher.submit(formData, { method: "post" });
+
+                            }}
+                        >
+                            Client File
+                        </ButtonLoading>
                         {data.activixId && (
                             <a href={`https://crm.activix.ca/leads/${data.activixId}`} target="_blank">
                                 <ButtonLoading

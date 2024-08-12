@@ -49,14 +49,11 @@ export async function getClientFileById(clientfileId) {
             updatedAt: true,
             userEmail: true,
             userName: true,
-            attachedId: true,
             dept: true,
             total: true,
             discount: true,
             discPer: true,
             status: true,
-            sendToAccessories: true,
-            accessoriesCompleted: true,
             clientfileId: true,
             workOrderId: true,
             financeId: true,
@@ -72,7 +69,7 @@ export async function getClientFileById(clientfileId) {
                     id: true,
                     createdAt: true,
                     updatedAt: true,
-                    accessoryNumber: true,
+                    partNumber: true,
                     brand: true,
                     name: true,
                     price: true,
@@ -106,9 +103,12 @@ export async function getClientFileById(clientfileId) {
                 createdAt: true,
                 updatedAt: true,
                 status: true,
+                sendTo: true,
+                sendToCompleted: true,
                 handOffTime: true,
                 completedTime: true,
                 notes: true,
+                AccOrderId: true,
               },
             }
           }
@@ -375,7 +375,7 @@ export async function getClientFileById(clientfileId) {
                 id: true,
                 createdAt: true,
                 updatedAt: true,
-                WorkOrder: {
+                WorkOrders: {
                   select: {
                     unit: true,
                     mileage: true,
@@ -394,7 +394,7 @@ export async function getClientFileById(clientfileId) {
                     status: true,
                     location: true,
                     quoted: true,
-                    id: true,
+                    workOrderId: true,
                     createdAt: true,
                     updatedAt: true,
                     AccOrders: {
@@ -404,14 +404,12 @@ export async function getClientFileById(clientfileId) {
                         updatedAt: true,
                         userEmail: true,
                         userName: true,
-                        attachedId: true,
+                        //  attachedId: true,
                         dept: true,
                         total: true,
                         discount: true,
                         discPer: true,
                         status: true,
-                        sendToAccessories: true,
-                        accessoriesCompleted: true,
                         clientfileId: true,
                         workOrderId: true,
                         financeId: true,
@@ -427,7 +425,7 @@ export async function getClientFileById(clientfileId) {
                                 id: true,
                                 createdAt: true,
                                 updatedAt: true,
-                                accessoryNumber: true,
+                                partNumber: true,
                                 brand: true,
                                 name: true,
                                 price: true,
@@ -453,6 +451,7 @@ export async function getClientFileById(clientfileId) {
                             amountPaid: true,
                             cardNum: true,
                             receiptId: true,
+                            userEmail: true,
                           },
                         },
                         AccHandoff: {
@@ -461,6 +460,8 @@ export async function getClientFileById(clientfileId) {
                             createdAt: true,
                             updatedAt: true,
                             status: true,
+                            sendTo: true,
+                            sendToCompleted: true,
                             handOffTime: true,
                             completedTime: true,
                             notes: true,
@@ -479,14 +480,11 @@ export async function getClientFileById(clientfileId) {
                 updatedAt: true,
                 userEmail: true,
                 userName: true,
-                attachedId: true,
                 dept: true,
                 total: true,
                 discount: true,
                 discPer: true,
                 status: true,
-                sendToAccessories: true,
-                accessoriesCompleted: true,
                 clientfileId: true,
                 workOrderId: true,
                 financeId: true,
@@ -502,7 +500,7 @@ export async function getClientFileById(clientfileId) {
                         id: true,
                         createdAt: true,
                         updatedAt: true,
-                        accessoryNumber: true,
+                        partNumber: true,
                         brand: true,
                         name: true,
                         price: true,
@@ -521,7 +519,6 @@ export async function getClientFileById(clientfileId) {
                 },
                 Payments: {
                   select: {
-
                     id: true,
                     createdAt: true,
                     accOrderId: true,
@@ -529,15 +526,17 @@ export async function getClientFileById(clientfileId) {
                     amountPaid: true,
                     cardNum: true,
                     receiptId: true,
+                    userEmail: true,
                   },
                 },
                 AccHandoff: {
                   select: {
-
                     id: true,
                     createdAt: true,
                     updatedAt: true,
                     status: true,
+                    sendTo: true,
+                    sendToCompleted: true,
                     handOffTime: true,
                     completedTime: true,
                     notes: true,
@@ -545,6 +544,19 @@ export async function getClientFileById(clientfileId) {
                 }
               }
             },
+            Payments: {
+              select: {
+                id: true,
+                createdAt: true,
+                accOrderId: true,
+                paymentType: true,
+                amountPaid: true,
+                cardNum: true,
+                receiptId: true,
+                financeId: true,
+                userEmail: true,
+              }
+            }
           },
         }
       },

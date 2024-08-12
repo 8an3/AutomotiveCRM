@@ -44,9 +44,7 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: font },
   { rel: "stylesheet", href: rbc },
   { rel: "stylesheet", href: slider },
-  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg" },
-  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg" },
-  { rel: "apple-touch-icon", sizes: "180x180", href: "/money180.svg" },
+  { rel: "icon", type: "image/svg", href: "/favicons/money.svg" },
   { rel: "stylesheet", href: sonner },
   { rel: "stylesheet", href: secondary },
 ];

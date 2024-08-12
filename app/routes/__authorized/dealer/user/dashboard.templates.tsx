@@ -2706,3 +2706,7 @@ export const financeInfo = [
     attribute: '${lien}'
   },
 ]
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]

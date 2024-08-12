@@ -37,3 +37,7 @@ export default function MusicPlayerDemo() {
   );
 }
 
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]

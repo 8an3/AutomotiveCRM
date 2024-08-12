@@ -57,6 +57,15 @@ export async function action({ request }: ActionArgs) {
   const Input = financeFormSchema.parse(formPayload)
   const intent = formPayload.intent
 
+  if (intent === 'inputDealerLogo') {
+    const logo = await prisma.dealerLogo.update({
+      where: { id: 1 },
+      data: {
+        dealerLogo: formPayload.dealerLogo
+      }
+    })
+    return json({ logo })
+  }
   if (intent === 'updateDealerFeesAdmin') {
 
     const update = await prisma.dealer.update({
@@ -207,6 +216,29 @@ export default function Route() {
   ];
   //      <video loop autoPlay width='750' height='750' src='https://youtu.be/u1MLfrFzCBo' className='mx-auto z-49' frameBorder="0" allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
   const errors = useActionData() as Record<string, string | null>;
+
+
+  const [base64, setBase64] = useState('');
+  const [error, setError] = useState('');
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setBase64(reader.result);
+      };
+
+      reader.onerror = () => {
+        setError('Failed to read file!');
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <>
       <Tabs defaultValue="dealerFees" className="w-auto mx-auto " >
@@ -241,7 +273,7 @@ export default function Route() {
                           <Input
                             name={fee.name}
                             defaultValue={fee.value}
-                            className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                            className="bg-background text-foreground border-border px-5w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                           />
                           <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{fee.placeholder}</label>
                         </div>
@@ -250,7 +282,7 @@ export default function Route() {
                         <Input
                           defaultValue={dealer.userLicensing}
                           name="userLicensing"
-                          className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                          className="bg-background text-foreground border-border px-5 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
                         {errors?.userLicensing ? (
                           <em className="text-[#ff0202]">{errors.userLicensing}</em>
@@ -261,7 +293,7 @@ export default function Route() {
                         <Input
                           defaultValue={dealer.userTax}
                           name="userTax"
-                          className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                          className="bg-background text-foreground border-border px-5   w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
                         {errors?.userTax ? (
                           <em className="text-[#ff0202]">{errors.userTax}</em>
@@ -272,7 +304,7 @@ export default function Route() {
                         <Input
                           defaultValue={dealer.userLabour}
                           name="userLabour"
-                          className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                          className="bg-background text-foreground border-border px-5   w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                         />
                         {errors?.userLabour ? (
                           <em className="text-[#ff0202]">{errors.userLabour}</em>
@@ -294,7 +326,7 @@ export default function Route() {
                           <Input
                             name={option.name}
                             defaultValue={option.value}
-                            className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                            className="bg-background text-foreground border-border px-5 w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                           />
                           <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{option.placeholder}</label>
                         </div>
@@ -345,7 +377,7 @@ export default function Route() {
                     <Input
                       defaultValue={dealerName}
                       name="dealer"
-                      className="bg-background text-foreground border-border px-5 h-[45px] w-[95%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
+                      className="bg-background text-foreground border-border px-5  w-[55%] flex-1 flex items-center justify-center text-[15px] leading-none  first:rounded-tl-md last:rounded-tr-md font-bold uppercase  rounded shadow hover:shadow-md outline-none  ease-linear transition-all duration-150  focus:outline-none  mx-1"
                     />
                     <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
                   </div>
@@ -448,7 +480,38 @@ export default function Route() {
                     Save changes
                   </Button>
                 </div>
+
+                <Separator className="my-4" />
+                <div className=" mt-5">
+                  <h2 className="text-2xl font-thin">
+                    Dealer Logo
+                  </h2>
+                  <p className="text-sm text-foreground">
+                    Image to put on receipts and such.
+                  </p>
+
+                </div>
+
               </Form>
+              <div>
+
+
+                <input type="file" accept="image/jpeg" onChange={handleFileChange} className='mt-3' />
+                <Form method='post' >
+                  <input type='hidden' value={base64} name='dealerLogo' />
+                  <Button type='submit' name='intent' value='inputDealerLogo' size='sm' className='mt-3 bg-primary' >
+                    Submit
+                  </Button>
+                  {base64 && (
+                    <div>
+                      <h3>Base64 String:</h3>
+                      <textarea readOnly rows="10" cols="50" value={base64} />
+                      <img src={base64} alt="Selected" style={{ maxWidth: '300px', maxHeight: '300px' }} />
+                    </div>
+                  )}
+                  {error && <div style={{ color: 'red' }}>{error}</div>}
+                </Form>
+              </div>
 
             </CardContent>
           </Card>

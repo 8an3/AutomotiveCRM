@@ -88,8 +88,6 @@ export async function loader({ request, params }: LoaderFunction) {
           total: true,
           discount: true,
           discPer: true,
-          sendToAccesories: true,
-          sendToAccessories: true,
           clientfileId: true,
           AccessoriesOnOrders: {
             select: {
@@ -127,6 +125,20 @@ export async function loader({ request, params }: LoaderFunction) {
               amountPaid: true,
               cardNum: true,
               receiptId: true,
+            },
+          },
+          AccHandoff: {
+            select: {
+              id: true,
+              createdAt: true,
+              updatedAt: true,
+              status: true,
+              sendTo: true,
+              sendToCompleted: true,
+              handOffTime: true,
+              completedTime: true,
+              notes: true,
+              AccOrderId: true,
             },
           },
         },

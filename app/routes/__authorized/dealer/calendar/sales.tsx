@@ -815,7 +815,7 @@ export default function DnDResource() {
 }
 
 export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: '/calendar.svg' },
+  { rel: "icon", type: "image/svg", href: '/favicons/calendar.svg' },
   { rel: "stylesheet", href: styles1 },
   { rel: "stylesheet", href: rbc },
   { rel: "stylesheet", href: base },

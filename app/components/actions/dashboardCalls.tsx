@@ -279,11 +279,16 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
   const user = await GetUser(email)
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) { redirect('/login') }
   const userId = user?.id;
   const intent = formPayload.intent;
+  if (intent === 'goToClientfile') {
+    await prisma.customerSync.update({
+      where: { userEmail: email },
+      data: { clientfileId: formData.clientfileId, financeId: formData.financeId }
+    })
+    return redirect(`/dealer/customer/${formData.clientfileId}/${formData.financeId}`)
+  }
   if (intent === 'updateClientInfoFinance') {
     const updateClient = await prisma.finance.update({
       where: { id: formData.financeId },
@@ -458,11 +463,11 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   }
   switch (intent) {
     case 'salesColumns':
-          const userEmail = formData.userEmail
+      const userEmail = formData.userEmail
       const state = formData.columnState//JSON.stringify(formData.columnState);
-       const columnStateSalesUpdate = await prisma.columnStateSales.update({
-       where: { userEmail: userEmail },
-       data: { state },
+      const columnStateSalesUpdate = await prisma.columnStateSales.update({
+        where: { userEmail: userEmail },
+        data: { state },
       });
       return json({ columnStateSalesUpdate })
     case 'rotateSalesQueue':

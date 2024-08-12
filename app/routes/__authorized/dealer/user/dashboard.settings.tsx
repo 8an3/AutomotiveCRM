@@ -1902,3 +1902,7 @@ function NewPrice({ productId, providorId, onAddPrice, onComplete, nextOrder }) 
   )
 }
  */
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]

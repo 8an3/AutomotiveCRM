@@ -27,6 +27,10 @@ import type { z } from "zod";
 
 export const handle = createSitemap();
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]
+
 export async function action({ request, params }: ActionArgs) {
   const { userSession, user } = await requireUserSession(request);
 

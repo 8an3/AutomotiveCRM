@@ -26,6 +26,10 @@ import { prisma } from "~/libs";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]
+
 export const meta = () => {
   return [{ title: "Boards" }];
 };

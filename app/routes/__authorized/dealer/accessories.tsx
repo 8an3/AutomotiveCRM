@@ -19,7 +19,8 @@ import {
   Users2,
   User,
   Tags,
-  Receipt
+  Receipt,
+  Binary
 } from "lucide-react"
 
 import {
@@ -54,9 +55,9 @@ export default function Dashboard() {
   const pathname = location.pathname
   const orderId = user?.customerSync.orderId
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r  border-border bg-background sm:flex">
-        <nav className="flex flex-col items-center gap-4 px-2 sm:py-4 mt-[45px]">
+    <div className="flex min-h-screen w-full flex-col bg-background">
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-[50px] flex-col border-r  border-border bg-background sm:flex">
+        <nav className="flex flex-col items-center gap-4 px-2 sm:py-4 mt-[40px] ">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -64,20 +65,20 @@ export default function Dashboard() {
                 disabled={!orderId}
                 onClick={() => navigate("/dealer/accessories/currentOrder")}
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  bg-transparent  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/accessories/currentOrder" ? 'bg-primary ' : ''}`}
+                  ${pathname === "/dealer/accessories/currentOrder" ? 'bg-primary text-foreground ' : ''}`}
               >
                 <Receipt className="h-5 w-5" />
                 <span className="sr-only">Orders</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right">Orders</TooltipContent>
+            <TooltipContent side="right">Customer Sync</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
                 to="/dealer/accessories/order"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/accessories/order" ? 'bg-primary ' : ''}`}
+                  ${pathname === "/dealer/accessories/order" ? 'bg-primary text-foreground ' : ''}`}
               >
                 <ShoppingCart className="h-5 w-5" />
                 <span className="sr-only">Orders</span>
@@ -91,7 +92,7 @@ export default function Dashboard() {
               <Link
                 to="/dealer/accessories/search"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                ${pathname === "/dealer/accessories/search" ? 'bg-primary ' : ''}`}
+                ${pathname === "/dealer/accessories/search" ? 'bg-primary text-foreground ' : ''}`}
               >
                 <Search className="h-5 w-5" />
                 <span className="sr-only">Search</span>
@@ -104,7 +105,7 @@ export default function Dashboard() {
               <Link
                 to="/dealer/accessories/products"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/accessories/products" ? 'bg-primary ' : ''}`}
+                  ${pathname === "/dealer/accessories/products" ? 'bg-primary text-foreground ' : ''}`}
               >
                 <Package className="h-5 w-5" />
                 <span className="sr-only">Products</span>
@@ -117,7 +118,7 @@ export default function Dashboard() {
               <Link
                 to="/dealer/accessories/labelPrinter"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/accessories/labelPrinter" ? 'bg-primary ' : ''}`}
+                  ${pathname === "/dealer/accessories/labelPrinter" ? 'bg-primary text-foreground ' : ''}`}
               >
                 <Tags className="h-5 w-5" />
                 <span className="sr-only">Label Maker</span>
@@ -128,15 +129,28 @@ export default function Dashboard() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
+                to="/dealer/accessories/inventoryCounter"
+                className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
+                  ${pathname === "/dealer/accessories/inventoryCounter" ? 'bg-primary text-foreground ' : ''}`}
+              >
+                <Binary className="h-5 w-5" />
+                <span className="sr-only">Inventory Counter</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Inventory Counter</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
                 to="/dealer/accessories/receiving"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/accessories/receiving" ? 'bg-primary ' : ''}`}
+                  ${pathname === "/dealer/accessories/receiving" ? 'bg-primary text-foreground ' : ''}`}
               >
                 <Truck className="h-5 w-5" />
                 <span className="sr-only">Receiving</span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">Analytics</TooltipContent>
+            <TooltipContent side="right">Receiving</TooltipContent>
           </Tooltip>
         </nav>
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-4">
@@ -162,3 +176,8 @@ export default function Dashboard() {
     </div>
   )
 }
+
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/money.svg", },
+]

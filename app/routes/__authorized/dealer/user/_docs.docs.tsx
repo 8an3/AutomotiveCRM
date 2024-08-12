@@ -12,6 +12,10 @@ import { getUserIsAllowed } from "~/helpers";
 import { useState } from "react"
 import ReactPlayer from 'react-player'
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]
+
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));

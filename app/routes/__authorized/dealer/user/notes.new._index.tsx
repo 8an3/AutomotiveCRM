@@ -27,7 +27,9 @@ import type { ActionArgs } from "@remix-run/node";
 import type { z } from "zod";
 
 export const handle = createSitemap();
-
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+]
 
 export default function Route3() {
   const actionData = useActionData<typeof action>();

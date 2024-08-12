@@ -196,6 +196,10 @@ import EmailPreview, { TemplatePreviewThree, TemplatePreviewTwo, TemplatePreview
 import { Printer } from "lucide-react";
 import { BanknoteIcon } from "lucide-react";
 import { DollarSign } from "lucide-react";
+import { Wrench } from "lucide-react";
+import { Shirt } from "lucide-react";
+import PrintReceiptAcc from "../document/printReceiptAcc";
+import { Receipt } from "lucide-react";
 
 
 /**  const [formData, setFormData] = useState({
@@ -230,7 +234,7 @@ export const headers = ({ loaderHeaders, parentHeaders }) => {
 };
 
 export default function Dashboard() {
-  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers } = useLoaderData();
+  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, dealerImage } = useLoaderData();
   //console.log(clientFile, ' in default')
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
@@ -1668,6 +1672,43 @@ export default function Dashboard() {
     }
   }, [mainButton, subButton]);
 
+  const [financeSubTotal, setFinanceSubTotal] = useState(0.00)
+  const [financeTotal, setFinanceTotal] = useState(0.00)
+
+  useEffect(() => {
+
+    switch (finance.desiredPayments) {
+      case 'Standard Payment':
+        setFinanceSubTotal(total)
+        setFinanceTotal(onTax)
+        break;
+      case 'Payments with Options':
+        setFinanceSubTotal(totalWithOptions)
+        setFinanceTotal(qcTax)
+        break;
+      case 'No Tax Payment':
+        setFinanceSubTotal(total)
+        setFinanceTotal(native)
+        break;
+      case 'No Tax Payment with Options':
+        setFinanceSubTotal(totalWithOptions)
+        setFinanceTotal(totalWithOptions)
+        break;
+      case 'Custom Tax Payment':
+        setFinanceSubTotal(total)
+        setFinanceTotal(otherTax)
+        break;
+      case 'Custom Tax Payment with Options':
+        setFinanceSubTotal(totalWithOptions)
+        setFinanceTotal(otherTaxWithOptions)
+        break;
+      default:
+        null
+
+    }
+  }, [finance.desiredPayments]);
+
+
 
   function getStateSizeInBytes(state) {
     const jsonString = JSON.stringify(state);
@@ -2610,7 +2651,7 @@ export default function Dashboard() {
   const dataFetcher = (url) => fetch(url).then((res) => res.json());
   const { data: swrTable } = useSWR("http://localhost:3000/dealer/dashboard/inventory/moto", dataFetcher);
   const result = swrTable
-  console.log(result, 'result')
+  // console.log(result, 'result')
   const [tableData, setTableData] = useState(result);
 
   let sync = useFetcher();
@@ -2632,11 +2673,7 @@ export default function Dashboard() {
       })
     }
   }, [user]);
-  useEffect(() => {
-    toast('Client sync', {
 
-    })
-  }, []);
 
   const toReceipt =
   {
@@ -2667,7 +2704,12 @@ export default function Dashboard() {
     "email": finance.email,
     "address": finance.address,
     "whichTemplate": 'Sales',
+    "image": dealerImage.dealerLogo
+
   }
+
+
+
 
   const [openEmail, setOpenEmail] = useState(false);
   const [emailLabel, setEmailLabel] = useState('');
@@ -2699,22 +2741,64 @@ export default function Dashboard() {
 
   let totalAccessoriesCost
   if (showOrder) {
-    totalAccessoriesCost = showOrder.AccessoriesOnOrders.reduce((total, accessoryOnOrder) => { return total + (accessoryOnOrder.quantity * accessoryOnOrder.accessory.price); }, 0);
+    totalAccessoriesCost = Number(showOrder.AccessoriesOnOrders.reduce((total, accessoryOnOrder) => { return total + (accessoryOnOrder.quantity * accessoryOnOrder.accessory.price); }, 0));
   }
 
-  let totalAmountPaid
+  let totalAmountPaid = 0
   if (showOrder) {
     totalAmountPaid = showOrder.Payments.reduce((total, payment) => { return total + payment.amountPaid; }, 0);
   }
+  let totalAmountPaidFinance = finance.Payments.reduce((total, payment) => { return total + payment.amountPaid; }, 0);
 
+  totalAmountPaidFinance = Number(totalAmountPaidFinance)
   const taxMultiplier = Number(deFees.userTax);
   const taxRate = 1 + taxMultiplier / 100;
-
+  const [discDollar, setDiscDollar] = useState(0.00)
+  const [discPer, setDiscPer] = useState(0.00)
   const [deposits, setDeposits] = useState("")
   const depositsLength = deposits.trim().length
   const financeId = finance.id
   const attachedToFinance = clientFile.AccOrder.filter(order => order.financeId === financeId);
   const notAttachedToFinance = clientFile.AccOrder.filter(order => order.financeId !== financeId);
+  // console.log(notAttachedToFinance, 'notAttachedToFinance')
+  const total2 = ((totalAccessoriesCost - parseFloat(discDollar)) * taxRate).toFixed(2)
+  const total1 = (((totalAccessoriesCost * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2)
+  const pacTotal = discPer === 0 ? total2 : total1
+
+  const maxAccessories = 19;
+
+  let toReceiptAcc = {
+    qrCode: clientFile.AccOrder.id,
+    subTotal: `$${totalAccessoriesCost}`,
+    tax: `${deFees.userTax}%`,
+    total: `$${total}`,
+    remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
+    firstName: clientFile.firstName,
+    lastName: clientFile.lastName,
+    phone: clientFile.phone,
+    email: clientFile.email,
+    address: clientFile.address,
+    date: new Date().toLocaleDateString("en-US", options2),
+    cardNum: '',
+    paymentType: '',
+    image: dealerImage.dealerLogo
+  };
+  if (showOrder) {
+    showOrder.AccessoriesOnOrders.forEach((result, index) => {
+      if (index < maxAccessories) {
+        toReceiptAcc[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
+        toReceiptAcc[`qt${index + 1}`] = String(result.quantity);
+        toReceiptAcc[`price${index + 1}`] = String(result.accessory.price);
+      }
+    });
+
+    for (let i = showOrder.AccessoriesOnOrders.length + 1; i <= maxAccessories; i++) {
+      toReceiptAcc[`desc${i}`] = '';
+      toReceiptAcc[`qt${i}`] = '';
+      toReceiptAcc[`price${i}`] = '';
+    }
+  }
+
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -2861,6 +2945,7 @@ export default function Dashboard() {
                         </DialogHeader>
                         {customerCard.map((user, index) => (
                           <div key={index} className="relative mt-4">
+
                             <Input
                               name={user.name}
                               defaultValue={user.value}
@@ -3138,8 +3223,7 @@ export default function Dashboard() {
                   <TabsTrigger value="Sales">Sales</TabsTrigger>
                   <TabsTrigger value="Finance">Finance</TabsTrigger>
                   <TabsTrigger value="Service">Service</TabsTrigger>
-                  <TabsTrigger value="Accessories">Accessories</TabsTrigger>
-                  <TabsTrigger value="Parts">Parts</TabsTrigger>
+                  <TabsTrigger value="Accessories">Accessories/Parts</TabsTrigger>
                 </TabsList>
               </div>
               <TabsContent value="Sales" className="  text-foreground rounded-lg">
@@ -4238,12 +4322,12 @@ export default function Dashboard() {
                                             variant={"outline"}
                                             className={cn(
                                               "w-full justify-start  text-center  font-normal",
-                                              !dateCal && "text-muted-foreground"
+                                              !date && "text-muted-foreground"
                                             )}
                                           >
                                             <CalendarIcon className="mr-2 h-4 w-4 " />
-                                            {dateCal ? (
-                                              format(dateCal, "PPP")
+                                            {date ? (
+                                              format(date, "PPP")
                                             ) : (
                                               <span>Pick a date</span>
                                             )}
@@ -4260,7 +4344,7 @@ export default function Dashboard() {
                                         <Calendar
                                           className="bg-background text-foreground"
                                           mode="single"
-                                          selected={dateCal}
+                                          selected={date}
                                           onSelect={setDate}
                                           initialFocus
                                         />
@@ -4268,7 +4352,7 @@ export default function Dashboard() {
                                     </Popover>
                                     <input
                                       type="hidden"
-                                      value={String(dateCal)}
+                                      value={String(date)}
                                       name="pickedDate"
                                     />
 
@@ -4279,7 +4363,7 @@ export default function Dashboard() {
                                             variant={"outline"}
                                             className={cn(
                                               "w-full justify-start text-right font-normal",
-                                              !dateCal && "text-muted-foreground"
+                                              !date && "text-muted-foreground"
                                             )}
                                           >
                                             <ClockIcon className="mr-2 h-4 w-4 " />
@@ -5261,15 +5345,15 @@ export default function Dashboard() {
               <TabsContent value="Service">Content soon to come!</TabsContent>
               <TabsContent value="Accessories">
                 <div className='grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4'>
-                  <Card x-chunk="dashboard-07-chunk-3" className="sm:col-span-2 m-4">
+                  <Card x-chunk="dashboard-07-chunk-3" className="sm:col-span-2 m-4 ">
                     <CardHeader className=' bg-muted/50'>
                       <CardTitle>  Customers Acc Orders/Quotes</CardTitle>
                       <CardDescription>
                         Review quote and orders the customer has looked at or purchased.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className='h-auto max-h-[300px] overflow-y-auto'>
-                      <div className="grid ">
+                    <CardContent className='flex-grow !grow  h-auto  overflow-y-auto'>
+                      <div className="grid h-auto max-h-[273px]">
                         <div className="font-semibold mt-4 flex justify-between items-center">
                           <p>
                             Orders With Unit
@@ -5288,7 +5372,6 @@ export default function Dashboard() {
                             }} >
                             Create Quote
                           </Button>
-
                         </div>
                         <Table className='w-[95%] mx-auto'>
                           <TableHeader>
@@ -5313,90 +5396,144 @@ export default function Dashboard() {
                           </TableHeader>
                           <TableBody>
                             {attachedToFinance &&
-                              attachedToFinance.map((result, index) => (
-                                <TableRow key={index} className="hover:bg-accent border-border">
-                                  <TableCell>
-                                    <div>
-                                      {result.dept}
-                                    </div>
-                                  </TableCell>
-                                  <TableCell className="hidden md:table-cell">
-                                    {result.userName}
-                                  </TableCell>
-                                  <TableCell className="hidden md:table-cell">
-                                    <Badge>
-                                      {result.status}
-                                    </Badge>
-                                  </TableCell>
-                                  <TableCell className="hidden md:table-cell">
-                                    {result.total}
-                                  </TableCell>
-                                  <TableCell className='flex items-center gap-3'>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button
-                                          size="icon"
-                                          variant="ghost"
-                                          className="bg-primary"
-                                          onClick={() => {
-                                            setShowOrder(result)
-                                          }}
-                                        >
-                                          <Eye className="h-5 w-5" />
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent side="right">
-                                        Preview Details
-                                      </TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button
-                                          size="icon"
-                                          variant="ghost"
-                                          className="bg-primary"
-                                          onClick={() => {
-                                            const formData = new FormData();
-                                            formData.append("orderId", result.id);
-                                            formData.append("intent", 'syncAccOrder');
-                                            submit(formData, { method: "post", });
-                                          }}
-                                        >
-                                          <FileText className="h-5 w-5" />
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent side="right">
-                                        Go To Order
-                                      </TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button
-                                          size="icon"
-                                          variant="ghost"
-                                          className="bg-primary"
-                                          disabled={result.sendToAccessories === true}
-                                          onClick={() => {
-                                            const formData = new FormData();
-                                            formData.append("orderId", result.id);
-                                            formData.append("intent", 'sendToAcc');
-                                            submit(formData, { method: "post", });
-                                          }}
-                                        >
-                                          <Send className="h-5 w-5" />
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent side="right">
-                                        Send To Accessories
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                              attachedToFinance.map((result, index) => {
+                                const isCompleted = result.AccHandoff.sendToCompleted === 'true';
+                                console.log(isCompleted, result.AccHandoff.sendTo, ' is completed')
+                                return (
+                                  <TableRow key={index} className="hover:bg-accent border-border">
+                                    <TableCell>
+                                      <div>
+                                        {result.dept}
+                                      </div>
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.userName}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      <Badge>
+                                        {result.status}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.total}
+                                    </TableCell>
+                                    <TableCell className='flex items-center gap-3'>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="bg-primary"
+                                            onClick={() => {
+                                              setShowOrder(result)
+                                            }}
+                                          >
+                                            <Eye className="h-5 w-5" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="bottom">
+                                          Preview Details
+                                        </TooltipContent>
+                                      </Tooltip>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="bg-primary"
+                                            onClick={() => {
+                                              const formData = new FormData();
+                                              formData.append("orderId", result.id);
+                                              formData.append("intent", 'syncAccOrder');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >
+                                            <FileText className="h-5 w-5" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="bottom">
+                                          Go To Order
+                                        </TooltipContent>
+                                      </Tooltip>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className={`${isCompleted ? 'bg-[#30A46C]' : 'bg-primary'
+                                              }`} disabled={result.AccHandoff.sendTo === 'Accessories'}
+                                            onClick={() => {
+                                              const formData = new FormData();
+                                              formData.append("AccOrderId", result.id);
+                                              formData.append("handOffTime", new Date().toLocaleDateString("en-US", options2));
+                                              formData.append("intent", 'sendToAcc');
+                                              submit(formData, { method: "post", });
+                                              // AccHandoff
+                                              //  sendTo          String?
+                                              //  handOffTime   DateTime?
+                                              //  status        String?
+                                              //  sendToCompleted String?  @default("false")
+                                              //  completedTime DateTime?
+                                              //  notes         String?
+                                              //  AccOrderId
+                                              // new Date(result.paidDate).toLocaleDateString("en-US", options2
+                                            }}
+                                          >
+                                            <Shirt className="h-5 w-5" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="bottom">
+                                          Send To Accessories
+                                        </TooltipContent>
+                                      </Tooltip>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className={` ${result.AccHandoff.sendToCompleted === 'true' ? 'bg-[#30A46C]' : 'bg-primary'}`}
+
+                                            disabled={result.AccHandoff.sendTo === 'Parts'}
+                                            onClick={() => {
+                                              const formData = new FormData();
+                                              formData.append("AccOrderId", result.id);
+                                              formData.append("handOffTime", new Date().toLocaleDateString("en-US", options2));
+                                              formData.append("intent", 'sendToParts');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >
+                                            <Wrench className="h-5 w-5" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="bottom">
+                                          Send To Parts
+                                        </TooltipContent>
+                                      </Tooltip>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="bg-primary"
+                                            onClick={() => {
+                                              PrintReceiptAcc(toReceiptAcc)
+                                            }}
+                                          >
+                                            <Receipt className="h-5 w-5" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="bottom">
+                                          Print Receipt
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              })}
+
                           </TableBody>
                         </Table>
                         <Separator className='my-5' />
-
                         <div className="font-semibold mt-4">Other Orders Under Clients File</div>
                         <Table className='w-[95%] mx-auto'>
                           <TableHeader>
@@ -5423,100 +5560,81 @@ export default function Dashboard() {
                           <TableBody>
 
                             {notAttachedToFinance &&
-                              notAttachedToFinance.map((result, index) => (
-                                <TableRow key={index} className="hover:bg-accent border-border">
-                                  <TableCell>
-                                    <div>
-                                      {result.dept}
-                                    </div>
-                                  </TableCell>
-                                  <TableCell className="hidden md:table-cell">
-                                    {result.userName}
-                                  </TableCell>
-                                  <TableCell className="hidden md:table-cell">
-                                    <Badge>
-                                      {result.status}
-                                    </Badge>
-                                  </TableCell>
-                                  <TableCell className="hidden md:table-cell">
-                                    {result.total}
-                                  </TableCell>
+                              notAttachedToFinance.map((result, index) => {
+                                console.log(result, 'in table')
 
-                                  <TableCell className='flex items-center gap-3'>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button
-                                          size="icon"
-                                          variant="ghost"
-                                          className="bg-primary"
-                                          onClick={() => {
-                                            setShowOrder(result)
-                                            console.log(showOrder, showOrder, 'sasdfa')
+                                return (
+                                  <TableRow key={index} className="hover:bg-accent border-border">
+                                    <TableCell>
+                                      <div>
+                                        {result.dept}
+                                      </div>
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.userName}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      <Badge>
+                                        {result.status}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.total}
+                                    </TableCell>
 
-                                          }}
-                                        >
-                                          <Eye className="h-5 w-5" />
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent side="right">
-                                        Preview Details
-                                      </TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button
-                                          size="icon"
-                                          variant="ghost"
-                                          className="bg-primary"
-                                          onClick={() => {
-                                            const formData = new FormData();
-                                            formData.append("orderId", result.id);
-                                            formData.append("intent", 'syncAccOrder');
-                                            submit(formData, { method: "post", });
-                                          }}
-                                        >
-                                          <FileText className="h-5 w-5" />
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent side="right">
-                                        Go To Order
-                                      </TooltipContent>
-                                    </Tooltip>
+                                    <TableCell className='flex items-center gap-3'>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="bg-primary"
+                                            onClick={() => {
+                                              console.log('Setting showOrder with:', result);
+                                              setShowOrder(result);
+                                              console.log('Current showOrder:', showOrder);
 
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button
-                                          size="icon"
-                                          variant="ghost"
-                                          className="bg-primary"
-                                          onClick={() => {
-                                            const formData = new FormData();
-                                            formData.append("orderId", result.id);
-                                            formData.append("financeId", finance.id);
-                                            formData.append("intent", 'claimAccOrder');
-                                            submit(formData, { method: "post", });
-                                          }}
-                                        >
-                                          <Send className="h-5 w-5" />
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent side="right">
-                                        Claim for finance file
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                                            }}
+                                          >
+                                            <Eye className="h-5 w-5" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="right">
+                                          Preview Details
+                                        </TooltipContent>
+                                      </Tooltip>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="bg-primary"
+                                            onClick={() => {
+                                              const formData = new FormData();
+                                              formData.append("orderId", result.id);
+                                              formData.append("intent", 'syncAccOrder');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >
+                                            <FileText className="h-5 w-5" />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="right">
+                                          Go To Order
+                                        </TooltipContent>
+                                      </Tooltip>
+
+
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              })}
                           </TableBody>
                         </Table>
-
                       </div>
                     </CardContent>
-                    <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
-                      <div className="text-xs text-muted-foreground flex items-center justify-between">
-                        <div>
-
-                        </div>
+                    <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                      <div className="text-xs text-muted-foreground flex items-center justify-between mb-5">
 
 
                       </div>
@@ -5528,46 +5646,49 @@ export default function Dashboard() {
                         <CardTitle> Order Details </CardTitle>
                       </CardHeader>
                       <CardContent className=' !grow !flex-grow h-auto max-h-[300px] overflow-y-auto'>
-                        <div className="grid gap-6 mt-4">
+                        <div className="grid gap-6 mt-1">
                           <div className="font-semibold"></div>
-                          <ul className="grid gap-3 max-h-[00px] h-auto overflow-y-auto">
-                            {showOrder.AccessoriesOnOrders && showOrder.AccessoriesOnOrders.map((result, index) => {
-                              console.log(result); // Check the data here
-                              return (
-                                <li className="flex items-center justify-between" key={index}>
-                                  <div>
-                                    <div className='flex items-center group'>
-                                      <div className="font-medium">
-                                        {result.accessory.brand} {result.accessory.name}
+                          <ul className="grid gap-3 max-h-[300px] h-auto overflow-y-auto">
+                            {showOrder?.AccessoriesOnOrders && (
+                              <ul>
+                                {showOrder.AccessoriesOnOrders.map((result, index) => {
+                                  console.log(result, 'kjhkhkhkj'); // Check the data here
+                                  return (
+                                    <li className="flex items-center justify-between" key={index}>
+                                      <div>
+                                        <div className='flex items-center group'>
+                                          <div className="font-medium">
+                                            {result.accessory.brand} {result.accessory.name}
+                                          </div>
+                                          <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                            <input type="hidden" name="id" value={result.id} />
+                                            <input type='hidden' name='total' value={pacTotal} />
+                                            <input type='hidden' name='accOrderId' value={showOrder.id} />
+                                            <Button
+                                              size="icon"
+                                              variant="outline"
+                                              name="intent" value='deleteOrderItem'
+                                              className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                              type='submit'
+                                            >
+                                              <X className="h-4 w-4 text-foreground" />
+                                            </Button>
+                                          </addProduct.Form>
+                                        </div>
+
+                                        <div className="hidden text-sm text-muted-foreground md:inline">
+                                          {result.accessory.category}
+                                        </div>
+                                        <div className="hidden text-sm text-muted-foreground md:inline">
+                                          {result.accessory.description}
+                                        </div>
                                       </div>
-                                      <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                        <input type="hidden" name="id" value={result.id} />
-                                        <input type='hidden' name='total' value={total} />
-                                        <input type='hidden' name='accOrderId' value={showOrder.id} />
-                                        <Button
-                                          size="icon"
-                                          variant="outline"
-                                          name="intent" value='deleteOrderItem'
-                                          className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                          type='submit'
-                                        >
-                                          <X className="h-4 w-4 text-foreground" />
-                                        </Button>
-                                      </addProduct.Form>
-                                    </div>
-
-                                    <div className="hidden text-sm text-muted-foreground md:inline">
-                                      {result.accessory.category}
-                                    </div>
-                                    <div className="hidden text-sm text-muted-foreground md:inline">
-                                      {result.accessory.description}
-                                    </div>
-                                  </div>
-                                  <span>${result.accessory.price} x {result.quantity}</span>
-                                </li>
-                              );
-                            })}
-
+                                      <span>${result.accessory.price} x {result.quantity}</span>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            )}
                           </ul>
                           <Separator className="my-2" />
                           <ul className="grid gap-3">
@@ -5575,19 +5696,19 @@ export default function Dashboard() {
                               <span className="text-muted-foreground">Subtotal</span>
                               <span>${totalAccessoriesCost}</span>
                             </li>
-                            {showOrder.discount && (
+                            {showOrder.discount === 0 && (
                               <li className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Discount</span>
                                 <span>${showOrder.discount}</span>
                               </li>
                             )}
-                            {showOrder.discPer && (
+                            {showOrder.discPer === 0 && (
                               <li className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Discount</span>
                                 <span>{showOrder.discPer}%</span>
                               </li>
                             )}
-                            {discount && (
+                            {discount !== 0 && (
                               <>
                                 <li className="flex items-center justify-between">
                                   <span className="text-muted-foreground">Discount $</span>
@@ -5714,142 +5835,30 @@ export default function Dashboard() {
                             </li>
                             <li className="flex items-center justify-between font-semibold">
                               <span className="text-muted-foreground">Total</span>
-                              <span>${total}</span>
+                              <span>${pacTotal}</span>
                             </li>
                           </ul>
-                        </div>
-
-                        <Separator className="my-4" />
-                        <div className="grid gap-3">
-                          <div className="font-semibold">Payment</div>
-                          <dl className="grid gap-3">
-
-                            <div className="flex flex-col" >
-                              <div className='flex items-center justify-center text-foreground'>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Visa')}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Visa</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Mastercard')}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Mastercard</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => setPaymentType('Debit')}
-                                  className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Debit</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => setPaymentType('Cheque')}
-                                  className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Cheque</p>
-                                </Button>
-                              </div>
-                              <div className='flex items-center justify-center text-foreground mt-2'>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Cash')}
-                                >
-                                  <BanknoteIcon className="h-4 w-4 text-foreground" />
-                                  <p className="">Cash</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Online Transaction')}
-                                >
-                                  <PanelTop className="h-4 w-4 text-foreground" />
-                                  <p className="">Online Transaction</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('E-Transfer')}
-                                >
-                                  <PanelTop className="h-4 w-4 text-foreground" />
-                                  <p className="">E-Transfer</p>
-                                </Button>
-                              </div>
+                          <Form method='post' >
+                            <input type='hidden' name='orderId' value={showOrder.id} />
+                            <div className="relative mt-4">
+                              <TextArea className='w-full' defaultValue={showOrder.note} name='note' />
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Order Notes</label>
                             </div>
-                          </dl>
+                            <Button
+                              type='submit'
+                              name='intent'
+                              value='submitNote'
+                              size='sm'
+                              className='mt-4 ml-auto'
+                            >Save</Button>
+                          </Form>
                         </div>
-                        <div className="grid gap-3">
-                          <ul className="grid gap-3">
-                            {showOrder.Payments && showOrder.Payments.map((result, index) => (
-                              <li className="flex items-center justify-between" key={index}                    >
-                                <span className="text-muted-foreground">{result.paymentType}</span>
-                                <span>${result.amountPaid}</span>
-                              </li>
-                            ))}
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Balance</span>
-                              <span>${parseFloat(total) - parseFloat(totalAmountPaid)}</span>
 
-                            </li>
-                            {parseFloat(total) - parseFloat(totalAmountPaid) === 0 && (
-                              <input type='hidden' name='status' value='Fulfilled' />
-                            )}
-                            {paymentType !== '' && (
-                              <>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
-                                  <payment.Form method="post" ref={formRef} >
-                                    <input type='hidden' name='accOrderId' value={showOrder.id} />
-                                    <input type='hidden' name='paymentType' value={paymentType} />
-                                    <input type='hidden' name='intent' value='createPayment' />
-                                    <input type='hidden' name='total' value={total} />
-                                    <div className="relative ml-auto flex-1 md:grow-0 ">
-                                      <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                      <Input
-                                        name='amountPaid'
-                                        className='text-right pr-9'
-                                        value={input}
-                                        onChange={(event) => setInput(event.target.value)}
-                                      />
-                                      <Button
-                                        type="submit"
-                                        size="icon"
-                                        onClick={() => {
-                                          toast.success(`Payment rendered!`)
-                                        }}
-                                        disabled={inputLength === 0}
-                                        className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-                                        <PaperPlaneIcon className="h-4 w-4" />
-                                        <span className="sr-only">Cash</span>
-                                      </Button>
-                                    </div>
-                                  </payment.Form>
-                                </li>
-                              </>
-                            )}
 
-                          </ul>
-                        </div>
 
                       </CardContent>
-                      <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
+                      <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+
                         <div className="ml-auto flex items-center gap-1">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -5862,25 +5871,50 @@ export default function Dashboard() {
                               align="end"
                               className="border border-border"
                             >
-                              <DropdownMenuItem onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
-                              <DropdownMenuItem>Discount</DropdownMenuItem>
+                              <DropdownMenuItem
+                                onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
+
+                              <DropdownMenuItem
+                                onSelect={() => {
+                                  PrintReceiptAcc(toReceiptAcc)
+                                }}
+                              >Print Receipt</DropdownMenuItem>
+                              <DropdownMenuItem
+                                onSelect={() => {
+                                  const formData = new FormData();
+                                  formData.append("financeId", finance.id);
+                                  formData.append("subTotal", totalAccessoriesCost);
+                                  formData.append("intent", 'pushSubtotal');
+                                  submit(formData, { method: "post", });
+                                }}
+                              >Push Sub Total to Finance</DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 onSelect={() => {
-
+                                  const formData = new FormData();
+                                  formData.append("orderId", showOrder.id);
+                                  formData.append("financeId", finance.id);
+                                  formData.append("intent", 'claimAccOrder');
+                                  submit(formData, { method: "post", });
+                                }}
+                              >Claim for Finance File</DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onSelect={() => {
+                                  const formData = new FormData();
+                                  formData.append("orderId", showOrder.id);
+                                  formData.append("intent", 'deleteAccOrder');
+                                  submit(formData, { method: "post", });
                                 }}>Delete</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
+
                         </div>
                       </CardFooter>
                     </Card>
                   )}
-
-
                 </div>
-
               </TabsContent>
-              <TabsContent value="Parts">Content soon to come!</TabsContent>
             </Tabs>
           </div>
           <div>
@@ -6818,15 +6852,15 @@ export default function Dashboard() {
                       <ul className="grid gap-3">
                         <li className="flex items-center justify-between">
                           <span className="text-muted-foreground">Subtotal</span>
-                          <span>${totalAccessoriesCost}</span>
+                          <span>${financeSubTotal}</span>
                         </li>
-                        {finance.discount && (
+                        {finance.discount !== 0 && (
                           <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Discount</span>
                             <span>{finance.discount}</span>
                           </li>
                         )}
-                        {finance.discount && (
+                        {finance.discount !== 0 && (
                           <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Discount</span>
                             <span>{finance.discount}</span>
@@ -6838,7 +6872,7 @@ export default function Dashboard() {
                         </li>
                         <li className="flex items-center justify-between font-semibold">
                           <span className="text-muted-foreground">Total</span>
-                          <span>${total}</span>
+                          <span>${financeTotal}</span>
                         </li>
                       </ul>
                     </div>
@@ -6919,16 +6953,16 @@ export default function Dashboard() {
                       </dl>
                     </div>
                     <div className="grid gap-3">
-                      <ul className="grid gap-3">
-                        {showOrder && showOrder.Payments.map((result, index) => (
+                      <ul className="grid gap-3 mt-3">
+                        {finance.Payments && finance.Payments.map((result, index) => (
                           <li className="flex items-center justify-between" key={index}                    >
                             <span className="text-muted-foreground">{result.paymentType}</span>
                             <span>${result.amountPaid}</span>
                           </li>
                         ))}
                         <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Balance</span>
-                          <span>${parseFloat(total) - parseFloat(totalAmountPaid)}</span>
+                          <span className="text-muted-foreground">Balance </span>
+                          <span>${Number(financeTotal).toFixed(2) - Number(totalAmountPaidFinance).toFixed(2)}</span>
 
                         </li>
                         {parseFloat(total) - parseFloat(totalAmountPaid) === 0 && (
@@ -6937,38 +6971,61 @@ export default function Dashboard() {
 
 
                       </ul>
+                      {paymentType !== '' && (
+                        <div className='mx-auto'>
+                          <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2 mt-3 mx-auto" >
+                            <input type='hidden' name='financeId' defaultValue={finance.id} />
+                            <input type='hidden' name='userEmail' defaultValue={user.email} />
+                            <input type='hidden' name='paymentType' value={paymentType} />
+                            <div className="relative mt-4">
+                              <Input
+                                name='cardNum'
+                                className=''
+
+                              />
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Card #</label>
+                            </div>
+
+
+                            <div className="relative mt-4">
+                              <Input
+                                name='receiptId'
+                                className=' '
+                              />
+                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Receipt Number</label>
+                            </div>
+
+
+                            <div className="relative ml-auto flex-1 md:grow-0 mt-4 ">
+                              <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                name='amountPaid'
+                                className='text-right pr-9 w-[150px] '
+                                value={input}
+                                onChange={(event) => setInput(event.target.value)}
+                              />
+
+                              <Button
+                                value="createFinancePayment"
+                                type="submit"
+                                name="intent"
+                                size="icon"
+                                onClick={() => {
+                                  toast.success(`Payment rendered!`)
+                                }}
+                                disabled={inputLength === 0}
+                                className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                                <PaperPlaneIcon className="h-4 w-4" />
+                                <span className="sr-only">Cash</span>
+                              </Button>
+                            </div>
+                          </fetcher.Form>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                   <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                    {paymentType !== '' && (
-                      <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
-                        <input type='hidden' name='financeId' defaultValue={clientFile.Finance.id} />
-                        <input type='hidden' name='userEmail' defaultValue={user.email} />
-                        <input type='hidden' name='paymentType' value={paymentType} />
-                        <div className="relative ml-auto flex-1 md:grow-0 ">
-                          <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            name='amountPaid'
-                            className='text-right pr-9'
-                            value={input}
-                            onChange={(event) => setInput(event.target.value)}
-                          />
-                          <Button
-                            value="createPayment"
-                            type="submit"
-                            name="intent"
-                            size="icon"
-                            onClick={() => {
-                              toast.success(`Payment rendered!`)
-                            }}
-                            disabled={inputLength === 0}
-                            className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-                            <PaperPlaneIcon className="h-4 w-4" />
-                            <span className="sr-only">Cash</span>
-                          </Button>
-                        </div>
-                      </fetcher.Form>
-                    )}
+                    <p className='text-muted-foreground'> {finance.updatedAt}</p>
                   </CardFooter>
                 </Card>
               </TabsContent>
@@ -7081,7 +7138,134 @@ export default function Dashboard() {
     </div >
   )
 }
+/** <Separator className="my-4" />
+                        <div className="grid gap-3">
+                          <div className="font-semibold">Payment</div>
+                          <dl className="grid gap-3">
 
+                            <div className="flex flex-col" >
+                              <div className='flex items-center justify-center text-foreground'>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('Visa')}
+                                >
+                                  <CreditCard className="h-4 w-4 text-foreground" />
+                                  <p className="">Visa</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('Mastercard')}
+                                >
+                                  <CreditCard className="h-4 w-4 text-foreground" />
+                                  <p className="">Mastercard</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setPaymentType('Debit')}
+                                  className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
+                                >
+                                  <CreditCard className="h-4 w-4 text-foreground" />
+                                  <p className="">Debit</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setPaymentType('Cheque')}
+                                  className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
+                                >
+                                  <CreditCard className="h-4 w-4 text-foreground" />
+                                  <p className="">Cheque</p>
+                                </Button>
+                              </div>
+                              <div className='flex items-center justify-center text-foreground mt-2'>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('Cash')}
+                                >
+                                  <BanknoteIcon className="h-4 w-4 text-foreground" />
+                                  <p className="">Cash</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('Online Transaction')}
+                                >
+                                  <PanelTop className="h-4 w-4 text-foreground" />
+                                  <p className="">Online Transaction</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('E-Transfer')}
+                                >
+                                  <PanelTop className="h-4 w-4 text-foreground" />
+                                  <p className="">E-Transfer</p>
+                                </Button>
+                              </div>
+                            </div>
+                          </dl>
+                        </div>
+                        <div className="grid gap-3">
+                          <ul className="grid gap-3">
+                            {showOrder.Payments && showOrder.Payments.map((result, index) => (
+                              <li className="flex items-center justify-between mt-4" key={index}                    >
+                                <span className="text-muted-foreground">{result.paymentType}</span>
+                                <span>${result.amountPaid}</span>
+                              </li>
+                            ))}
+                            <li className="flex items-center justify-between mt-4 mb-4">
+                              <span className="text-muted-foreground">Balance</span>
+                              <span>${parseFloat(pacTotal) - parseFloat(totalAmountPaid)}</span>
+
+                            </li>
+                            {parseFloat(pacTotal) - parseFloat(totalAmountPaid) === 0 && (
+                              <input type='hidden' name='status' value='Fulfilled' />
+                            )}
+                            {paymentType !== '' && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
+                                  <payment.Form method="post" ref={formRef} >
+                                    <input type='hidden' name='accOrderId' value={showOrder.id} />
+                                    <input type='hidden' name='paymentType' value={paymentType} />
+                                    <input type='hidden' name='intent' value='createPayment' />
+                                    <input type='hidden' name='total' value={pacTotal} />
+                                    <div className="relative ml-auto flex-1 md:grow-0 ">
+                                      <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                      <Input
+                                        name='amountPaid'
+                                        className='text-right pr-9'
+                                        value={input}
+                                        onChange={(event) => setInput(event.target.value)}
+                                      />
+                                      <Button
+                                        type="submit"
+                                        size="icon"
+                                        onClick={() => {
+                                          toast.success(`Payment rendered!`)
+                                        }}
+                                        disabled={inputLength === 0}
+                                        className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                                        <PaperPlaneIcon className="h-4 w-4" />
+                                        <span className="sr-only">Cash</span>
+                                      </Button>
+                                    </div>
+                                  </payment.Form>
+                                </li>
+                              </>
+                            )}
+
+                          </ul>
+                        </div> */
 export const action: ActionFunction = async ({ req, request, params }) => {
   const formPayload = Object.fromEntries(await request.formData());
   const session = await getSession(request.headers.get("Cookie"));
@@ -7099,17 +7283,34 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   const dashboardId = idSession.get('dashboardId')
 
   // console.log('headeras', userId, clientfileId, financeId, dashboardId)
-
+  if (intent === 'pushSubtotal') {
+    const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+    const subTotal = parseFloat(finance.accessories + formPayload.subTotal).toFixed(2)
+    const update = await prisma.finance.update({ where: { id: formData.financeId }, data: { accessories: Number(subTotal) } })
+    return json({ update })
+  }
+  if (intent === 'createFinancePayment') {
+    const payments = await prisma.payment.create({
+      data: {
+        financeId: formData.financeId,
+        userEmail: user.email,
+        paymentType: formData.paymentType,
+        cardNum: formData.cardNum,
+        receiptId: formData.receitId,
+        amountPaid: parseFloat(formPayload.amountPaid),
+      }
+    })
+    return json({ payments })
+  }
   if (intent === 'createAccQuote') {
     const create = await prisma.accOrder.create({
       data: {
-        financeId: formdata.financeId,
+        financeId: formData.financeId,
         userEmail: formData.userEmail,
         userName: formData.userName,
         dept: 'Sales',
         status: 'Quote',
-        sendToAccessories: true,
-        clientrfileId: formData.clientfileId,
+        clientfileId: formData.clientfileId,
       }
     })
     return redirect(`/dealer/accessories/newOrder/${create.id}`)
@@ -7121,10 +7322,26 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     });
     return json({ sendtoacc })
   }
+
+  if (intent === "sendToParts") {
+    const sendtoacc = await prisma.accHandoff.create({
+      data: {
+        sendTo: 'Parts',
+        handOffTime: formPayload.handOffTime,
+        sendToCompleted: 'false',
+        AccOrderId: formPayload.AccOrderId,
+      }
+    });
+    return json({ sendtoacc })
+  }
   if (intent === "sendToAcc") {
-    const sendtoacc = await prisma.accOrder.update({
-      where: { id: formData.orderId },
-      data: { sendToAccesories: true }
+    const sendtoacc = await prisma.accHandoff.create({
+      data: {
+        sendTo: 'Accessories',
+        handOffTime: formPayload.handOffTime,
+        sendToCompleted: 'false',
+        AccOrderId: formPayload.AccOrderId,
+      }
     });
     return json({ sendtoacc })
   }
@@ -7909,7 +8126,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         licensing: formData.licensing,
         stockNum: formData.stockNum,
         options: formData.options,
-        accessories: formData.accessories,
+        accessories: parseFloat(formData.accessories).toFixed(2),
         labour: formData.labour,
         year: formData.year,
         brand: formData.brand,
@@ -8037,6 +8254,9 @@ export async function loader({ params, request }: DataFunctionArgs) {
   let { clientId, financeId } = params;
   if (clientfileId === undefined) { clientfileId = clientId }
   let sliderWidth = 50
+  if (clientfileId === 'customer' && financeId === 'sync') {
+    clientfileId = user?.customerSync.clientfileId
+  }
 
   let aptFinance3 = await getAppointmentsForFinance(financeId)
   const clientFile = await getClientFileById(params.clientId)
@@ -8047,15 +8267,8 @@ export async function loader({ params, request }: DataFunctionArgs) {
     finance = await GetMergedWithActivix(financeId)
     await UpdateClientFromActivix(finance)
   } else {
-    // Check if clientFile and its Finance property are properly defined
     if (clientFile && Array.isArray(clientFile.Finance)) {
-      // console.log('Finance array:', clientFile.Finance);
-      //console.log('Searching for financeId:', financeId);
-
-      // Filter the array to find the matching finance object
       const filteredFinances = clientFile.Finance.filter(finance => {
-        //   console.log('Comparing:', finance.id, 'with', financeId);
-        // Use the appropriate type conversion if necessary
         return String(finance.id) === String(financeId);
       });
 
@@ -8642,9 +8855,11 @@ export async function loader({ params, request }: DataFunctionArgs) {
     default:
     // code block
   }
+  const dealerImage = await prisma.dealerLogo.findUnique({
+    where: { id: 1 }
+  })
 
-
-  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2 }));
+  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage }));
 }
 
 function SidebarNav({ mergedFinanceList, finance }) {

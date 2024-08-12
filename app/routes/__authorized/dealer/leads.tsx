@@ -6,7 +6,7 @@ import { commitSession, getSession } from '~/sessions/auth-session.server';
 import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
-import { type LinksFunction, json, createCookie } from "@remix-run/node";
+import { type LinksFunction, json, createCookie, redirect } from "@remix-run/node";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 import { GetUser } from "~/utils/loader.server";
 import secondary from "~/styles/secondary.css";
@@ -27,8 +27,7 @@ import {
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
-  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
-  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
+  { rel: "icon", type: "image/svg", href: "/favicons/money.svg", },
   { rel: "stylesheet", href: secondary },
   { rel: "stylesheet", href: global },
 ]
