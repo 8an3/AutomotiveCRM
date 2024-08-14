@@ -23,7 +23,8 @@ import {
   Binary,
   FileClock,
   Wrench,
-  User2
+  User2,
+  CalendarDays
 } from "lucide-react"
 
 import {
@@ -61,11 +62,26 @@ export default function Dashboard() {
     <div className="flex min-h-screen w-full flex-col bg-background">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-[50px] flex-col border-r  border-border bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-4 mt-[45px]">
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 size='icon'
-                disabled={!orderId}
+                onClick={() => navigate("/dealer/service/calendar")}
+                className={`flex h-9 w-9 items-center justify-center rounded-lg  bg-transparent  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
+                  ${pathname === "/dealer/service/calendar" ? 'bg-primary text-foreground ' : ''}`}
+              >
+                <CalendarDays className="h-5 w-5" />
+                <span className="sr-only">Calendar</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Calendar</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size='icon'
+
                 onClick={() => navigate("/dealer/service/dashboard")}
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  bg-transparent  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
                   ${pathname === "/dealer/service/dashboard" ? 'bg-primary text-foreground ' : ''}`}

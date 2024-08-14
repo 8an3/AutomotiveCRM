@@ -2124,6 +2124,10 @@ export const accNavSidebarNav = [
 ]
 export const serviceNavSidebarNav = [
   {
+    title: "Calendar",
+    to: "/dealer/service/calendar",
+  },
+  {
     title: "Service Dashboard",
     to: "/dealer/service/dashboard",
   },

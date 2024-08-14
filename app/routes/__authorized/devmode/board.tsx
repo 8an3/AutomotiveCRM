@@ -22,7 +22,7 @@ import { badRequest } from "~/utils/http";
 import { getHomeData, createBoard, deleteBoard } from "~/components/dev/board/queries";
 import { INTENTS } from "~/components/dev/board/types";
 import { Input } from "~/components";
-import { todoRoadmap } from "../dealer/user/dashboard.roadmap";
+import { roadMapItems } from "../dealer/user/dashboard.roadmap";
 import { prisma } from "~/libs";
 import { Trash } from "lucide-react";
 import { useState } from "react";
@@ -120,7 +120,7 @@ function Boards() {
         <Button
           onClick={() => {
             console.log('click123123')
-            processTodoRoadmap(todoRoadmap)
+            processTodoRoadmap(roadMapItems)
           }}
           variant='outline' >
           Merge

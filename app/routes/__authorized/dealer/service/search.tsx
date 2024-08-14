@@ -13,6 +13,7 @@ import {
   Package2,
   PanelLeft,
   Plus,
+  PlusIcon,
   Search,
   Settings,
   ShoppingCart,
@@ -43,11 +44,32 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip"
-import { Outlet, Link, useFetcher, useActionData, useSubmit, Form } from "@remix-run/react"
+import { Outlet, Link, useFetcher, useActionData, useSubmit, Form, useNavigation } from "@remix-run/react"
 import { LoaderFunction, redirect } from "@remix-run/node"
 import { prisma } from "~/libs"
 import { getSession } from "~/sessions/auth-session.server"
 import { GetUser } from "~/utils/loader.server"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select"
+import { toast } from "sonner"
+import { ButtonLoading } from "~/components/ui/button-loading";
+
 
 export async function loader({ request, params }: LoaderFunction) {
   let q = new URL(request.url).searchParams.get("q");
@@ -78,13 +100,72 @@ export async function action({ request, params }: LoaderFunction) {
   if (formPayload.intent === 'createNewOrder') {
     const order = await prisma.workOrder.create({
       data: {
-        writer: user.name,
+        writer: user.username,
         userEmail: email,
         status: 'Quote',
         total: 0.00,
         clientfileId: formPayload.clientfileId,
       }
     })
+
+    const accOrder = await prisma.accOrder.create({
+      data: {
+        userName: user.username,
+        userEmail: email,
+        dept: 'Service',
+        status: 'Quote',
+        total: 0.00,
+        workOrderId: order.workOrderId,
+        clientfileId: formPayload.clientfileId,
+      }
+    })
+    console.log(accOrder)
+    await prisma.customerSync.update({
+      where: { userEmail: email },
+      data: { orderId: String(order.workOrderId) }
+    })
+    return redirect(`/dealer/service/workOrder/${order.workOrderId}`)
+  }
+
+  if (formPayload.intent === 'createClient') {
+    const create = await prisma.clientfile.create({
+      data: {
+        userId: email,
+        firstName: formPayload.firstName,
+        lastName: formPayload.lastName,
+        name: formPayload.firstName + ' ' + formPayload.lastName,
+        email: formPayload.email,
+        phone: formPayload.phone,
+        address: formPayload.address,
+        city: formPayload.city,
+        postal: formPayload.postal,
+        province: formPayload.province,
+        dl: formPayload.dl,
+        typeOfContact: formPayload.typeOfContact,
+        timeToContact: formPayload.timeToContact,
+      }
+    })
+    const order = await prisma.workOrder.create({
+      data: {
+        writer: user.username,
+        userEmail: email,
+        status: 'Quote',
+        total: 0.00,
+        clientfileId: create.id,
+      }
+    })
+    const accOrder = await prisma.accOrder.create({
+      data: {
+        userName: user.username,
+        userEmail: email,
+        dept: 'Service',
+        status: 'Quote',
+        total: 0.00,
+        workOrderId: order.workOrderId,
+        clientfileId: create.id,
+      }
+    })
+    console.log(accOrder)
     await prisma.customerSync.update({
       where: { userEmail: email },
       data: { orderId: String(order.workOrderId) }
@@ -107,20 +188,108 @@ export default function SearchCustomers() {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  let customerCard = [
+    { name: 'firstName', label: 'First Name', },
+    { name: 'lastName', label: 'Last Name', },
+    { name: 'phone', label: 'Phone', },
+    { name: 'email', label: 'Email', },
+    { name: 'address', label: 'Address', },
+    { name: 'city', label: 'City', },
+    { name: 'postal', label: 'Postal', },
+    { name: 'province', label: 'Province', },
+    { name: 'dl', label: 'Drivers Lic.', },
+  ];
+  const navigation = useNavigation();
+
+  const isSubmitting = navigation.state === "submitting";
+
   return (
     <Card x-chunk="dashboard-05-chunk-3 " className='mx-5 w-[95%] md:w-[600px]'>
       <CardHeader className="px-7">
         <CardTitle>
           <div className='flex justify-between items-center'>
             <p>Customers</p>
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-7 gap-1 text-sm"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only">Create New Customer</span>
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 gap-1 text-sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only">Create New Customer</span>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] border-border">
+                <DialogHeader>
+                  <DialogTitle>Create Client</DialogTitle>
+                  <DialogDescription>
+                  </DialogDescription>
+                </DialogHeader>
+                <Form method='post' >
+                  <div className="grid gap-4 py-4">
+                    {customerCard.map((user, index) => (
+                      <div key={index} className="relative mt-4">
+                        <Input
+                          name={user.name}
+                          className={` bg-background text-foreground border border-border`}
+                        />
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+                      </div>
+                    ))}
+                    <div className="relative mt-4">
+                      <Select name='timeToContact'  >
+                        <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className=' bg-background text-foreground border border-border' >
+                          <SelectGroup>
+                            <SelectLabel>Best Time To Contact</SelectLabel>
+                            <SelectItem value="Morning">Morning</SelectItem>
+                            <SelectItem value="Afternoon">Afternoon</SelectItem>
+                            <SelectItem value="Evening">Evening</SelectItem>
+                            <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
+                    </div>
+                    <div className="relative mt-4">
+                      <Select name='typeOfContact'  >
+                        <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className=' bg-background text-foreground border border-border' >
+                          <SelectGroup>
+                            <SelectLabel>Contact Method</SelectLabel>
+                            <SelectItem value="Phone">Phone</SelectItem>
+                            <SelectItem value="InPerson">In-Person</SelectItem>
+                            <SelectItem value="SMS">SMS</SelectItem>
+                            <SelectItem value="Email">Email</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Type To Be Contacted</label>
+                    </div>
+                  </div>
+                  <ButtonLoading
+                    size="sm"
+                    value="createClient"
+                    className="w-auto cursor-pointer mt-5 ml-auto mr-3 bg-primary justify-end"
+                    name="intent"
+                    type="submit"
+                    isSubmitting={isSubmitting}
+                    onClick={() => toast.success(`Creating client...`)}
+                    loadingText={`Creating client...`}
+                  >
+                    Create
+                    <PlusIcon className="h-4 w-4 ml-2" />
+                  </ButtonLoading>
+
+                </Form>
+
+              </DialogContent>
+            </Dialog>
           </div>
         </CardTitle>
         <CardDescription>

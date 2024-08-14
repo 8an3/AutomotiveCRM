@@ -133,9 +133,23 @@ import {
 } from "~/components/ui/context-menu"
 import { EditableText } from "~/components/actions/shared";
 import { flushSync } from "react-dom";
-
+import { TextArea } from "~/components";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion"
 export default function Dashboard() {
-  const { orders, user, tax, dealerImage } = useLoaderData();
+  const { orders, user, tax, dealerImage, sales } = useLoaderData();
 
   const [scannedCode, setScannedCode] = useState('')
   useEffect(() => {
@@ -238,10 +252,9 @@ export default function Dashboard() {
       return submitOrder
     }
   }, [scannedCode]);
-
+  let services = useFetcher();
   let formRef = useRef();
   let search = useFetcher();
-  let workOrder = useFetcher();
   let ref = useRef();
   const navigate = useNavigate()
   const submit = useSubmit();
@@ -263,9 +276,14 @@ export default function Dashboard() {
   const [paymentType, setPaymentType] = useState('');
   const [serviceSubTotal, setServiceSubTotal] = useState(0.00);
   const [partsSubTotal, setPartsSubTotal] = useState(0.00);
+  const [totalPreTax, setTotalPreTax] = useState(0.00);
+
   const [input, setInput] = useState("");
   const inputLength = input.trim().length
   let payment = useFetcher();
+  let fetcher = useFetcher();
+  let workOrder = useFetcher();
+  let status = useFetcher();
 
   const showPrevOrderById = (id) => {
     const filteredOrder = orders.find(order => order.workOrderId === id);
@@ -322,6 +340,10 @@ export default function Dashboard() {
         return total + (serviceOnOrder.service.price * serviceOnOrder.hr * serviceOnOrder.quantity);
       }, 0);
       setServiceSubTotal(serviceSub.toFixed(2))
+
+      const totalPreTax = partsSub + serviceSub;
+      setTotalPreTax(totalPreTax.toFixed(2));
+
       const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
       const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
       const calculatedTotal = discDollar && discDollar > 0.00 ? total1 : total2;
@@ -345,8 +367,8 @@ export default function Dashboard() {
     }
   }, [orders]);
 
-
-
+  const order = showPrevOrder
+  console.log(search.data, 'services.data')
   return (
     <div>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -467,8 +489,8 @@ export default function Dashboard() {
             <div className="flex items-center">
               <TabsList>
                 <TabsTrigger value="week">W / O</TabsTrigger>
-                <TabsTrigger value="month">Services</TabsTrigger>
-                <TabsTrigger value="year">Year</TabsTrigger>
+                <TabsTrigger value="Sales">Sales</TabsTrigger>
+                <TabsTrigger value="Services">Services</TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
                 <DropdownMenu>
@@ -487,55 +509,56 @@ export default function Dashboard() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Quote'
-                        )
+                        const result = orders.filter((result) => result.status === 'Quote')
                         setList(result)
-                      }}
-                    >
+                      }}   >
                       Quote
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Open'
-                        )
+                        const result = orders.filter((result) => result.status === 'Sales')
+                        setList(result)
+                      }}>
+                      Sales
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        const result = orders.filter((result) => result.status === 'Open')
                         setList(result)
                       }}>
                       Open
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Waiting On Parts'
-                        )
+                        const result = orders.filter((result) => result.status === 'Waiting On Parts')
                         setList(result)
                       }}>
                       Waiting On Parts
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'In Works'
-                        )
+                        const result = orders.filter((result) => result.status === 'Waiter')
+                        setList(result)
+                      }}>
+                      Waiter
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        const result = orders.filter((result) => result.status === 'In Works')
                         setList(result)
                       }}>
                       In Works
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Work Completed'
-                        )
+                        const result = orders.filter((result) => result.status === 'Work Completed')
                         setList(result)
                       }}>
                       Work Completed
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Closed'
-                        )
+                        const result = orders.filter((result) => result.status === 'Closed')
                         setList(result)
                       }}>
                       Closed
@@ -549,7 +572,7 @@ export default function Dashboard() {
                 <CardHeader className="px-7">
                   <CardTitle>Orders</CardTitle>
                   <CardDescription>
-                    <search.Form
+                    <workOrder.Form
                       method="get"
                       action="/dealer/service/workOrder/searchAll"
                     >
@@ -561,14 +584,14 @@ export default function Dashboard() {
                           name="q"
                           onChange={(e) => {
                             //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
-                            search.submit(e.currentTarget.form);
+                            workOrder.submit(e.currentTarget.form);
                           }}
                           autoFocus
                           placeholder="Search..."
                           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
                         />
                       </div>
-                    </search.Form>
+                    </workOrder.Form>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -602,8 +625,8 @@ export default function Dashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {search.data ?
-                        search.data.map((result, index) => (
+                      {workOrder.data ?
+                        workOrder.data.map((result, index) => (
                           <TableRow key={index} className="hover:bg-accent border-border">
                             <TableCell>
                               <div className="font-medium">
@@ -727,7 +750,360 @@ export default function Dashboard() {
                                         variant="ghost"
                                         className="mr-3 hover:bg-primary"
                                         onClick={() => {
-                                          navigate(`/dealer/service/workOrder/${result.id}`)
+                                          navigate(`/dealer/service/workOrder/${result.workOrderId}`)
+                                        }}
+                                      >
+                                        <FileCheck className="h-5 w-5" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                      Go To Order
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </>
+                        )}
+
+
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Services">
+              <Card>
+                <CardHeader>
+                  <CardTitle className='flex justify-between items-center'>
+                    <p>Services</p>
+                    <Dialog>
+                      <DialogTrigger>
+                        <Button size='sm' className='text-foreground' >
+                          New Service
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className='border-border'>
+                        <DialogHeader>
+                          <DialogTitle>Add a new service</DialogTitle>
+                          <DialogDescription>
+                            <fetcher.Form method='post'>
+                              <div className='flex'>
+                                <div className="flex-col" >
+                                  <div className="relative mt-4">
+                                    <Input name='name' className='w-[350px] mr-3' />
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
+                                  </div>
+                                  <div className="relative mt-4">
+                                    <TextArea name='description' className='w-[350px] mr-3' />
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
+                                  </div>
+                                  <div className='flex items-center w-[350px]'>
+                                    <div className="relative mt-4">
+                                      <Input name='hr' className='w-[100px] mr-3' />
+                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
+                                    </div>
+                                    <Button
+                                      className='mt-4 ml-auto'
+                                      size='sm'
+                                      type='submit'
+                                      name='intent'
+                                      value='addNewService'
+                                    >
+                                      Submit
+                                    </Button>
+                                  </div>
+
+                                </div>
+
+                              </div>
+                            </fetcher.Form>
+                          </DialogDescription>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
+                  </CardTitle>
+                  <CardDescription>Add or edit common services, for ease of use with workorders.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2" >
+                    <div className='mx-4'>
+                      <search.Form method="get" action='/dealer/service/search/services'>
+                        <div className="relative ml-auto flex-1 md:grow-0 ">
+                          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            ref={ref}
+                            type="search"
+                            name="q"
+                            onChange={e => {
+                              search.submit(e.currentTarget.form);
+                            }}
+                            autoFocus
+                            placeholder="Search..."
+                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                          />
+                        </div>
+                      </search.Form>
+                      <ul className="grid gap-3 mt-3">
+                        {search.data && search.data.map((result, index) => {
+                          return (
+                            <Dialog key={index}>
+                              <DialogTrigger>
+                                <li className="cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]" onClick={() => {
+                                  // setEditService(true)
+                                  //  setServiceToEdit(result)
+                                }}>
+                                  <div className='flex items-center group'>
+
+                                    <div className="font-medium flex-col">
+                                      <p className=' text-left'>{result.service}</p>
+                                      <p className='text-muted-foreground text-left'>{result.description}</p>
+                                      <p className='text-muted-foreground text-left'>{result.estHr}/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                    </div>
+                                    <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                      <input type="hidden" name="id" value={result.id} />
+                                      <Button
+                                        size="icon"
+                                        variant="outline"
+                                        name="intent" value='deleteService'
+                                        className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                        type='submit'
+                                      >
+                                        <X className="h-4 w-4 text-foreground" />
+                                      </Button>
+                                    </addProduct.Form>
+                                  </div>
+
+                                </li>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Edit Service</DialogTitle>
+                                  <DialogDescription>
+                                    <fetcher.Form method='post'>
+                                      <input type='hidden' name='serviceId' value={result.id} />
+                                      <div className='flex'>
+                                        <div className="flex-col" >
+                                          <div className="relative mt-4">
+                                            <Input name='service' className='w-[250px] mr-3' defaultValue={result.service} />
+                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
+                                          </div>
+                                          <div className="relative mt-4">
+                                            <TextArea name='description' className='w-[250px] mr-3' defaultValue={result.description} />
+                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
+                                          </div>
+                                        </div>
+
+                                        <div className="relative mt-4">
+                                          <Input name='hr' className='w-[100px] mr-3' defaultValue={result.estHr} />
+                                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
+                                        </div>
+                                        <Button
+                                          className='mt-4'
+                                          size='icon'
+                                          type='submit'
+                                          name='intent'
+                                          value='updateService'
+                                        ><Plus /></Button>
+                                      </div>
+                                    </fetcher.Form>
+                                  </DialogDescription>
+                                </DialogHeader>
+                              </DialogContent>
+                            </Dialog>
+                          )
+                        })}
+                      </ul>
+                    </div>
+
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Sales">
+              <Card x-chunk="dashboard-05-chunk-3">
+                <CardHeader className="px-7">
+                  <CardTitle>Orders</CardTitle>
+                  <CardDescription>
+                    <workOrder.Form
+                      method="get"
+                      action="/dealer/service/workOrder/searchSales"
+                    >
+                      <div className="relative ml-auto flex-1 md:grow-0 ">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          ref={ref}
+                          type="search"
+                          name="q"
+                          onChange={(e) => {
+                            //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                            workOrder.submit(e.currentTarget.form);
+                          }}
+                          autoFocus
+                          placeholder="Search..."
+                          className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                        />
+                      </div>
+                    </workOrder.Form>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className='border-border'>
+                        <TableHead>
+                          Customer
+                        </TableHead>
+                        <TableHead className="text-center sm:table-cell">
+                          Status
+                        </TableHead>
+                        <TableHead className="text-center sm:table-cell">
+                          Location
+                        </TableHead>
+                        <TableHead className="text-center sm:table-cell">
+                          Unit
+                        </TableHead>
+                        <TableHead className="text-center hidden sm:table-cell">
+                          VIN
+                        </TableHead>
+                        <TableHead className="text-center hidden md:table-cell">
+                          Tag
+                        </TableHead>
+                        <TableHead className="text-center ">
+                          Work Order ID
+                        </TableHead>
+                        <TableHead className=" text-right">
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {workOrder.data ?
+                        workOrder.data.map((result, index) => (
+                          <TableRow key={index} className="hover:bg-accent border-border">
+                            <TableCell>
+                              <div className="font-medium">
+                                {capitalizeFirstLetter(result.Clientfile.firstName)}{" "}
+                                {capitalizeFirstLetter(result.Clientfile.lastName)}
+                              </div>
+                              <div className="text-sm text-muted-foreground ">
+                                {result.Clientfile.email}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-center  hidden sm:table-cell">
+                              {result.status}
+                            </TableCell>
+                            <TableCell className="text-center  hidden md:table-cell">
+                              {result.location}
+                            </TableCell>
+                            <TableCell className="text-center  hidden md:table-cell">
+                              {result.unit}
+                            </TableCell>
+                            <TableCell className="text-center  hidden md:table-cell">
+                              {result.vin}
+                            </TableCell>
+                            <TableCell className="text-center  hidden md:table-cell">
+                              {result.tag}
+                            </TableCell>
+                            <TableCell className="text-center  hidden md:table-cell">
+                              {result.workOrderId}
+                            </TableCell>
+                            <TableCell className="text-right flex">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="mr-3 hover:bg-primary"
+                                    onClick={() => {
+                                      setValue(result.id);
+                                      showPrevOrderById(result.id)
+                                    }}
+                                  >
+                                    <ShoppingCart className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">
+                                  Show Order
+                                </TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="mr-3 hover:bg-primary"
+                                    onClick={() => {
+                                      navigate(`/dealer/accessories/newOrder/${result.id}`)
+                                    }}
+                                  >
+                                    <FileCheck className="h-5 w-5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">
+                                  Go To Order
+                                </TooltipContent>
+                              </Tooltip>
+                            </TableCell>
+                          </TableRow>
+                        )) : (
+                          <>
+                            {sales && sales.map((result, index) => (
+                              <TableRow key={index} className="hover:bg-accent border-border">
+                                <TableCell>
+                                  <div className="font-medium">
+                                    {capitalizeFirstLetter(result.Clientfile.firstName)}{" "}
+                                    {capitalizeFirstLetter(result.Clientfile.lastName)}
+                                  </div>
+                                  <div className="text-sm text-muted-foreground ">
+                                    {result.Clientfile.email}
+                                  </div>
+                                </TableCell>
+                                <TableCell className="text-center  hidden sm:table-cell">
+                                  {result.status}
+                                </TableCell>
+                                <TableCell className="text-center  hidden md:table-cell">
+                                  {result.location}
+                                </TableCell>
+                                <TableCell className="text-center  hidden md:table-cell">
+                                  {result.unit}
+                                </TableCell>
+                                <TableCell className="text-center  hidden md:table-cell">
+                                  {result.vin}
+                                </TableCell>
+                                <TableCell className="text-center  hidden md:table-cell">
+                                  {result.tag}
+                                </TableCell>
+                                <TableCell className="text-center  hidden md:table-cell">
+                                  {result.workOrderId}
+                                </TableCell>
+                                <TableCell className="text-center flex">
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="mr-3 hover:bg-primary"
+                                        onClick={() => {
+                                          setValue(result.workOrderId);
+                                          showPrevOrderById(result.workOrderId)
+                                        }}
+                                      >
+                                        <ShoppingCart className="h-5 w-5" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                      Show Order
+                                    </TooltipContent>
+                                  </Tooltip>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="mr-3 hover:bg-primary"
+                                        onClick={() => {
+                                          navigate(`/dealer/service/workOrder/${result.workOrderId}`)
                                         }}
                                       >
                                         <FileCheck className="h-5 w-5" />
@@ -757,7 +1133,7 @@ export default function Dashboard() {
               <CardHeader className="flex flex-row items-start bg-muted/50">
                 <div className="grid gap-0.5">
                   <CardTitle className="group flex items-center gap-2 text-lg">
-                    W / O #{showPrevOrder.workOrderId}
+                    W / O #{order.workOrderId}
                     <Button
                       size="icon"
                       variant="outline"
@@ -767,37 +1143,40 @@ export default function Dashboard() {
                       <span className="sr-only">Copy Order ID</span>
                     </Button>
                   </CardTitle>
-                  {showPrevOrder.status && (
+                  {order.status && (
                     <div>
                       <div className="relative mt-4">
                         <Select
                           name='status'
-                          defaultValue={showPrevOrder.status}
+                          defaultValue={order.status}
                           onValueChange={(value) => {
                             const formData = new FormData();
-                            formData.append("id", showPrevOrder.workOrderId);
+                            formData.append("id", order.workOrderId);
                             formData.append("total", total);
                             formData.append("intent", 'updateStatus');
                             formData.append("status", value);
                             console.log(formData, 'formData');
-                            workOrder.submit(formData, { method: "post" });
+                            status.submit(formData, { method: "post" });
+                            toast.success(`Changed status to ${value}`)
                           }}>
                           <SelectTrigger className="w-[200px] " >
-                            <SelectValue defaultValue={showPrevOrder.status} />
+                            <SelectValue defaultValue={order.status} />
                           </SelectTrigger>
                           <SelectContent className='border-border'>
                             <SelectGroup>
                               <SelectLabel>Status</SelectLabel>
                               <SelectItem value="Quote">Quote</SelectItem>
-                              <SelectItem value="Open">Open</SelectItem>
+                              <SelectItem value="Sales">Sales</SelectItem>
+                              <SelectItem value="Open">Open / Scheduled</SelectItem>
                               <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
+                              <SelectItem value="Waiter">Waiter</SelectItem>
                               <SelectItem value="In Works">In Works</SelectItem>
                               <SelectItem value="Work Completed">Work Completed</SelectItem>
                               <SelectItem value="Closed">Closed</SelectItem>
                             </SelectGroup>
                           </SelectContent>
                         </Select>
-                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
+                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-muted/50 transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
                       </div>
                     </div>
                   )}
@@ -816,7 +1195,7 @@ export default function Dashboard() {
                     >
                       <DropdownMenuItem
                         onSelect={() => {
-                          navigate(`/dealer/service/workOrder/${showPrevOrder.workOrderId}`)
+                          navigate(`/dealer/service/workOrder/${order.workOrderId}`)
                         }}>
                         Go To Order
                       </DropdownMenuItem>
@@ -832,18 +1211,11 @@ export default function Dashboard() {
                         Show Discount
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onSelect={() => {
-                          setShowPrev(false)
-                          setShowPrevOrder(null)
-                        }}>
-                        Back
-                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onSelect={() => {
                           const formData = new FormData();
-                          formData.append("workOrderId", showPrevOrder.workOrderId);
+                          formData.append("workOrderId", order.workOrderId);
                           formData.append("intent", 'deleteOrder');
                           submit(formData, { method: "post", });
                         }}>
@@ -853,157 +1225,294 @@ export default function Dashboard() {
                   </DropdownMenu>
                 </div>
               </CardHeader>
-              <CardContent className="p-6 text-sm h-auto max-h-[780px] overflow-y-auto">
-                <div className="grid gap-3">
-                  <div className="font-semibold">Customer Information</div>
-                  <dl className="grid gap-3">
-                    <div className="flex items-center justify-between">
-                      <dt className="text-muted-foreground">Customer</dt>
-                      <dd>{showPrevOrder.Clientfile.name}</dd>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <dt className="text-muted-foreground">Email</dt>
-                      <dd>
-                        <a href="mailto:">{showPrevOrder.Clientfile.email}</a>
-                      </dd>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <dt className="text-muted-foreground">Phone</dt>
-                      <dd>
-                        <a href="tel:">{showPrevOrder.Clientfile.phone}</a>
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-                <Separator className="my-4" />
-                <div className="grid gap-3">
+              <CardContent className="p-6 text-sm h-auto max-h-[850px] overflow-y-auto">
+                <Accordion type="single" collapsible className="w-full border-border mt-3">
+                  <AccordionItem value="item-1" className='border-border'>
+                    <AccordionTrigger>Customer Information</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="grid gap-3">
+                        <dl className="grid gap-3">
+                          <div className="flex items-center justify-between">
+                            <dt className="text-muted-foreground">Customer</dt>
+                            <dd>{order.Clientfile.name}</dd>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <dt className="text-muted-foreground">Email</dt>
+                            <dd>
+                              <a href="mailto:">{order.Clientfile.email}</a>
+                            </dd>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <dt className="text-muted-foreground">Phone</dt>
+                            <dd>
+                              <a href="tel:">{order.Clientfile.phone}</a>
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+                <Accordion type="single" collapsible className="w-full border-border mt-3">
+                  <AccordionItem value="item-1" className='border-border'>
+                    <AccordionTrigger>Customer Unit</AccordionTrigger>
+                    <AccordionContent>
+                      <dl className="grid gap-3">
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">Unit</dt>
+                          <dd>
+                            <EditableText
+                              value={order.unit}
+                              fieldName="name"
+                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                              buttonClassName="text-center py-1 px-2 text-foreground"
+                              buttonLabel={`Edit quantity`}
+                              inputLabel={`Edit quantity`}
+                            >
+                              <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                              <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                              <input type="hidden" name="col" value='unit' />
+                            </EditableText>
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">Color</dt>
+                          <dd>
+                            <EditableText
+                              value={order.color}
+                              fieldName="name"
+                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                              buttonClassName="text-center py-1 px-2 text-foreground"
+                              buttonLabel={`Edit quantity`}
+                              inputLabel={`Edit quantity`}
+                            >
+                              <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                              <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                              <input type="hidden" name="col" value='color' />
+                            </EditableText>
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">Mileage</dt>
+                          <dd>
+                            <EditableText
+                              value={order.mileage}
+                              fieldName="name"
+                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                              buttonClassName="text-center py-1 px-2 text-foreground"
+                              buttonLabel={`Edit quantity`}
+                              inputLabel={`Edit quantity`}
+                            >
+                              <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                              <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                              <input type="hidden" name="col" value='mileage' />
+                            </EditableText>
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">vin</dt>
+                          <dd>
+                            <EditableText
+                              value={order.vin}
+                              fieldName="name"
+                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                              buttonClassName="text-center py-1 px-2 text-foreground"
+                              buttonLabel={`Edit quantity`}
+                              inputLabel={`Edit quantity`}
+                            >
+                              <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                              <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                              <input type="hidden" name="col" value='vin' />
+                            </EditableText>
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">Motor</dt>
+                          <dd>
+                            <EditableText
+                              value={order.motor}
+                              fieldName="name"
+                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                              buttonClassName="text-center py-1 px-2 text-foreground"
+                              buttonLabel={`Edit quantity`}
+                              inputLabel={`Edit quantity`}
+                            >
+                              <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                              <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                              <input type="hidden" name="col" value='motor' />
+                            </EditableText>
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">Tag</dt>
+                          <dd>
+                            <EditableText
+                              value={order.tag}
+                              fieldName="name"
+                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                              buttonClassName="text-center py-1 px-2 text-foreground"
+                              buttonLabel={`Edit quantity`}
+                              inputLabel={`Edit quantity`}
+                            >
+                              <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                              <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                              <input type="hidden" name="col" value='tag' />
+                            </EditableText>
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">location</dt>
+                          <dd>
+                            <EditableText
+                              value={order.location}
+                              fieldName="name"
+                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                              buttonClassName="text-center py-1 px-2 text-foreground"
+                              buttonLabel={`Edit quantity`}
+                              inputLabel={`Edit quantity`}
+                            >
+                              <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                              <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                              <input type="hidden" name="col" value='location' />
+                            </EditableText>
+                          </dd>
+                        </div>
+                      </dl>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+
+                <div className="grid gap-3 mt-3">
                   <div className="font-semibold">Work Order Services</div>
                   <ul className="grid gap-3">
-                    {showPrevOrder.ServicesOnWorkOrders && showPrevOrder.ServicesOnWorkOrders.map((result, index) => (
-                      <li key={index} className="flex items-center justify-between">
-                        <div>
-                          <ContextMenu>
-                            <ContextMenuTrigger>
-                              <div className='grid grid-cols-1'>
-                                <div className='flex items-center group '>
-                                  <div className="font-medium">
-                                    {result.service.service}
-                                  </div>
-                                  <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                    <input type="hidden" name="id" value={result.id} />
-                                    <input type='hidden' name='total' value={total} />
-                                    <input type='hidden' name='workOrderId' value={showPrevOrder.workOrderId} />
-                                    <Button
-                                      size="icon"
-                                      variant="outline"
-                                      name="intent" value='deleteServiceItem'
-                                      className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                      type='submit'
-                                    >
-                                      <X className="h-4 w-4 text-foreground" />
-                                    </Button>
-                                  </addProduct.Form>
-                                </div>
-                                <div className="hidden text-sm text-muted-foreground md:inline">
-                                  <div className='flex items-center'>
+                    {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => {
+                      const hours = result.hr || result.service.estHr || 0.00;
+                      return (
+                        <li key={index} className="flex items-center justify-between">
+                          <div>
+                            <ContextMenu>
+                              <ContextMenuTrigger>
+                                <div className='grid grid-cols-1'>
+                                  <div className='flex items-center group '>
                                     <div className="font-medium">
-                                      <EditableText
-                                        value={result.hr}
-                                        fieldName="name"
-                                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
-                                        buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                                        buttonLabel={`Edit name`}
-                                        inputLabel={`Edit name`}
-                                      >
-                                        <input type="hidden" name="intent" value='updateHr' />
-                                        <input type="hidden" name="id" value={result.id} />
-                                        <input type="hidden" name="colName" value='hr' />
-                                      </EditableText>
-
+                                      {result.service.service}
                                     </div>
-                                    <p>{" "}hrs{" "}{" "}@{" "}${result.service.price}</p>
+                                    <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                      <input type="hidden" name="id" value={result.id} />
+                                      <input type='hidden' name='total' value={total} />
+                                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                                      <Button
+                                        size="icon"
+                                        variant="outline"
+                                        name="intent" value='deleteServiceItem'
+                                        className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                        type='submit'
+                                      >
+                                        <X className="h-4 w-4 text-foreground" />
+                                      </Button>
+                                    </addProduct.Form>
                                   </div>
-                                </div>
-                                {result.status && (
-                                  <div>
-                                    <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
-                                  </div>
-                                )}
-                              </div>
-                            </ContextMenuTrigger>
-                            <ContextMenuContent className='border-border'>
-                              <ContextMenuSub>
-                                <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
-                                <ContextMenuSubContent className="w-48 border-border">
-                                  <ContextMenuItem>{result.service.service}</ContextMenuItem>
-                                  <ContextMenuItem>{result.service.description}</ContextMenuItem>
-                                  <ContextMenuSeparator />
-                                  <ContextMenuItem>
-                                    Est. Hours
-                                    <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
-                                  </ContextMenuItem>
-                                  <ContextMenuItem>
-                                    Price
-                                    <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
-                                  </ContextMenuItem>
-                                </ContextMenuSubContent>
-                              </ContextMenuSub>
-                              <ContextMenuSeparator />
-                              <ContextMenuCheckboxItem
-                                checked={result.status === 'In Stock'}
-                                onSelect={() => {
-                                  const formData = new FormData();
-                                  formData.append("id", result.id);
-                                  formData.append("status", 'In Stock');
-                                  formData.append("intent", 'updateServiceOnOrders');
-                                  submit(formData, { method: "post", });
-                                }}
-                              >In Stock</ContextMenuCheckboxItem>
-                              <ContextMenuCheckboxItem
-                                checked={result.status === 'On Order'}
-                                onSelect={() => {
-                                  const formData = new FormData();
-                                  formData.append("id", result.id);
-                                  formData.append("status", 'On Order');
-                                  formData.append("intent", 'updateServiceOnOrders');
-                                  submit(formData, { method: "post", });
-                                }}
-                              >On Order</ContextMenuCheckboxItem>
-                              <ContextMenuCheckboxItem
-                                checked={result.status === 'Completed'}
-                                onSelect={() => {
-                                  const formData = new FormData();
-                                  formData.append("id", result.id);
-                                  formData.append("status", 'Completed');
-                                  formData.append("intent", 'updateServiceOnOrders');
-                                  submit(formData, { method: "post", });
-                                }}
-                              >Completed</ContextMenuCheckboxItem>
-                              <ContextMenuCheckboxItem
-                                checked={result.status === 'Back Order'}
-                                onSelect={() => {
-                                  const formData = new FormData();
-                                  formData.append("id", result.id);
-                                  formData.append("status", 'Back Order');
-                                  formData.append("intent", 'updateServiceOnOrders');
-                                  submit(formData, { method: "post", });
-                                }}
-                              >Back Order</ContextMenuCheckboxItem>
-                            </ContextMenuContent>
-                          </ContextMenu>
-                        </div>
-                        <span>
-                          x{" "}{" "}{result.quantity}
+                                  <div className="hidden text-sm text-muted-foreground md:inline">
+                                    <div className='flex items-center'>
+                                      <div className="font-medium">
+                                        <EditableText
+                                          value={hours}
+                                          fieldName="name"
+                                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                          buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                          buttonLabel={`Edit name`}
+                                          inputLabel={`Edit name`}
+                                        >
+                                          <input type="hidden" name="intent" value='updateHr' />
+                                          <input type="hidden" name="id" value={result.id} />
+                                          <input type="hidden" name="colName" value='hr' />
+                                        </EditableText>
 
-                        </span>
-                      </li>
-                    ))}
+                                      </div>
+                                      <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                    </div>
+                                  </div>
+                                  {result.status && (
+                                    <div>
+                                      <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                    </div>
+                                  )}
+                                </div>
+                              </ContextMenuTrigger>
+                              <ContextMenuContent className='border-border'>
+                                <ContextMenuSub>
+                                  <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                                  <ContextMenuSubContent className="w-48 border-border">
+                                    <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                    <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                    <ContextMenuSeparator />
+                                    <ContextMenuItem>
+                                      Est. Hours
+                                      <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                    </ContextMenuItem>
+                                    <ContextMenuItem>
+                                      Price
+                                      <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                    </ContextMenuItem>
+                                  </ContextMenuSubContent>
+                                </ContextMenuSub>
+                                <ContextMenuSeparator />
+                                <ContextMenuCheckboxItem
+                                  checked={result.status === 'In Stock'}
+                                  onSelect={() => {
+                                    const formData = new FormData();
+                                    formData.append("id", result.id);
+                                    formData.append("status", 'In Stock');
+                                    formData.append("intent", 'updateServiceOnOrders');
+                                    submit(formData, { method: "post", });
+                                  }}
+                                >In Stock</ContextMenuCheckboxItem>
+                                <ContextMenuCheckboxItem
+                                  checked={result.status === 'On Order'}
+                                  onSelect={() => {
+                                    const formData = new FormData();
+                                    formData.append("id", result.id);
+                                    formData.append("status", 'On Order');
+                                    formData.append("intent", 'updateServiceOnOrders');
+                                    submit(formData, { method: "post", });
+                                  }}
+                                >On Order</ContextMenuCheckboxItem>
+                                <ContextMenuCheckboxItem
+                                  checked={result.status === 'Completed'}
+                                  onSelect={() => {
+                                    const formData = new FormData();
+                                    formData.append("id", result.id);
+                                    formData.append("status", 'Completed');
+                                    formData.append("intent", 'updateServiceOnOrders');
+                                    submit(formData, { method: "post", });
+                                  }}
+                                >Completed</ContextMenuCheckboxItem>
+                                <ContextMenuCheckboxItem
+                                  checked={result.status === 'Back Order'}
+                                  onSelect={() => {
+                                    const formData = new FormData();
+                                    formData.append("id", result.id);
+                                    formData.append("status", 'Back Order');
+                                    formData.append("intent", 'updateServiceOnOrders');
+                                    submit(formData, { method: "post", });
+                                  }}
+                                >Back Order</ContextMenuCheckboxItem>
+                              </ContextMenuContent>
+                            </ContextMenu>
+                          </div>
+                          <span>
+                            x{" "}{" "}{result.quantity}
+
+                          </span>
+                        </li>
+                      )
+                    })}
                   </ul>
                   <Separator className="my-4" />
                   <div className="font-semibold">Work Order Parts</div>
                   <ul className="grid gap-3">
-                    {showPrevOrder?.AccOrders?.length > 0 ? (
-                      showPrevOrder.AccOrders.map((accOrder, accOrderIndex) => (
+                    {order?.AccOrders?.length > 0 ? (
+                      order.AccOrders.map((accOrder, accOrderIndex) => (
                         <div key={accOrderIndex}>
                           {accOrder?.AccessoriesOnOrders?.length > 0 ? (
                             accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
@@ -1118,8 +1627,6 @@ export default function Dashboard() {
                       <p>No Orders available.</p>
                     )}
                   </ul>
-
-
                   <Separator className="my-2" />
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
@@ -1132,7 +1639,7 @@ export default function Dashboard() {
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-muted-foreground">Subtotal</span>
-                      <span>${partsSubTotal + serviceSubTotal}</span>
+                      <span>${totalPreTax}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-muted-foreground">Tax</span>
@@ -1221,7 +1728,7 @@ export default function Dashboard() {
                 </div>
                 <div className="grid gap-3">
                   <ul className="grid gap-3">
-                    {showPrevOrder.Payments && showPrevOrder.Payments.map((result, index) => (
+                    {order.Payments && order.Payments.map((result, index) => (
                       <li className="flex items-center justify-between" key={index}                    >
                         <span className="text-muted-foreground">{result.paymentType}</span>
                         <span>${result.amountPaid}</span>
@@ -1243,7 +1750,7 @@ export default function Dashboard() {
                         <li className="flex items-center justify-between">
                           <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
                           <payment.Form method="post" ref={formRef} >
-                            <input type='hidden' name='workOrderId' value={showPrevOrder.workOrderId} />
+                            <input type='hidden' name='workOrderId' value={order.workOrderId} />
                             <input type='hidden' name='paymentType' value={paymentType} />
                             <input type='hidden' name='remaining' value={remaining} />
                             <input type='hidden' name='intent' value='createPayment' />
@@ -1278,19 +1785,18 @@ export default function Dashboard() {
                 <Separator className="my-4" />
                 <div className='gap-3'>
                   <div className="font-semibold">Staff</div>
-
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
                       <span className="text-muted-foreground">
                         Technician
                       </span>
-                      <span>{showPrevOrder.tech}</span>
+                      <span>{order.tech}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-muted-foreground">
                         Service Writer
                       </span>
-                      <span>{showPrevOrder.writer}</span>
+                      <span>{order.writer}</span>
                     </li>
                   </ul>
                 </div>
@@ -1714,13 +2220,15 @@ export async function loader({ request, params }: LoaderFunction) {
     },
   });
 
+  const sales = orders.filter(order => order.status === 'Sales');
+
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
     select: { userTax: true },
   });
   const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
 
-  return json({ orders, user, tax, dealerImage });
+  return json({ orders, user, tax, dealerImage, sales });
 }
 
 function capitalizeFirstLetter(string) {
@@ -1827,7 +2335,42 @@ export async function action({ request, params }: ActionFunction) {
 
     return payment;
   }
-
+  if (intent === "updateService") {
+    const service = await prisma.services.update({
+      where: { id: formPayload.serviceId },
+      data: {
+        description: formPayload.description,
+        service: formPayload.service,
+        estHr: parseFloat(formPayload.hr),
+      }
+    })
+    return json({ service })
+  }
+  if (intent === "addNewService") {
+    const service = await prisma.services.create({
+      data: {
+        description: formPayload.description,
+        service: formPayload.name,
+        estHr: parseFloat(formPayload.hr),
+      }
+    })
+    return json({ service })
+  }
+  if (intent === "deleteService") {
+    const service = await prisma.services.delete({ where: { id: formPayload.serviceId }, })
+    return json({ service })
+  }
+  if (intent === "updateStatus") {
+    const update = await prisma.workOrder.update({
+      where: { workOrderId: Number(formPayload.id) },
+      data: {
+        status: formPayload.status,
+        total: parseFloat(formPayload.total),
+        waiter: formPayload.status === 'Waiter' ? true : null
+      }
+    });
+    return json({ update })
+  }
 }
 
 export const meta = () => {

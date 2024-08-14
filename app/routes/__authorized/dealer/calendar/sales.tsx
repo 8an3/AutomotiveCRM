@@ -635,11 +635,6 @@ export default function DnDResource() {
                 {showResources ? (
                   <DragAndDropCalendar
                     style={{
-                      // width: 'auto',//`calc(100vw - 210px)`,
-                      // height: 'auto',
-                      // maxHeight: "95vh",
-                      // overflow: "scroll",
-
                       width: `calc(100vw - 310px)`,
                       height: "100vh",
                       overflowX: "hidden",
@@ -651,8 +646,6 @@ export default function DnDResource() {
                     selected={selected}
                     defaultView={Views.DAY}
                     events={myEvents}
-                    // step={30}
-                    //showMultiDayTimes={true}
                     localizer={localizer}
                     min={minTime}
                     max={maxTime}
@@ -662,7 +655,6 @@ export default function DnDResource() {
                     view={view}
                     resizable
                     selectable
-
                     components={{
                       toolbar: CustomToolbar,
                       event: EventInfo,
@@ -671,13 +663,10 @@ export default function DnDResource() {
                     onEventResize={resizeEvent}
                     onSelectEvent={(e) => HandleSelectEvent(e)}
                     onSelectSlot={handleSelectSlot}
-                    //onClick={() => setOpenDatepickerModal(true)}
-
                     resourceIdAccessor="resourceId"
                     resources={resourceMap}
                     resourceTitleAccessor="resourceTitle"
                     eventPropGetter={eventPropGetter}
-
                   />
                 ) : (
                   <DragAndDropCalendar

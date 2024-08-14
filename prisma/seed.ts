@@ -8,6 +8,8 @@ import chalk from 'chalk';
 import { dataUserRoles } from "~/data";
 import { prisma } from "~/libs";
 
+import { roadMapItems } from '~/routes/__authorized/dealer/user/dashboard.roadmap'
+
 async function seed() {
   await seedTemplates();
   await seedmy24Canam();
@@ -67,6 +69,28 @@ export async function seedUsers() {
       name: "technician",
       username: "Technician",
       phone: "6138980771",
+      dept: 'Technician',
+      dealer: "Freedom H-D",
+      role: { connect: { id: technicianRole?.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am tech",
+          bio: "The tech at this dealer.",
+        },
+      },
+    },
+  });
+  const technician2 = await prisma.user.create({
+    data: {
+      email: 'tech2@email.com',
+      name: "technician2",
+      username: "Technician2",
+      phone: "6138980799",
       dept: 'Technician',
       dealer: "Freedom H-D",
       role: { connect: { id: technicianRole?.id } },
@@ -805,21 +829,74 @@ export async function seedUsers() {
     }
   })
   console.log(chalk.yellow("creating services..."));
-  const hourly = 215
   const service = await prisma.services.create({
     data: {
-      description: 'Change Tire',
+      description: 'Includes removal of old tire, installing new one in its place.',
       estHr: 1.25,
       service: 'Change Tire',
-      price: hourly * 1.25
     }
   })
   const service2 = await prisma.services.create({
     data: {
-      description: 'Oil Change',
+      description: 'Removing oil, and oil filter, replacing with new parts',
       estHr: 2.25,
       service: 'Oil Change',
-      price: hourly * 2.25
+    }
+  })
+  await prisma.services.create({
+    data: {
+      description: 'Align all four wheels to ensure even wear.',
+      estHr: 2.25,
+      service: 'Wheel Alignment',
+    }
+  })
+  await prisma.services.create({
+    data: {
+      description: 'Drain and refille engine coolant.',
+      estHr: 2.25,
+      service: 'Engine Coolant Flush',
+    }
+  })
+  await prisma.services.create({
+    data: {
+      description: 'Remove air filter in cabin and replace with new product.',
+      estHr: 2.25,
+      service: 'Cabin Air Filter Replacement',
+    }
+  })
+  await prisma.services.create({
+    data: {
+      description: 'Clean interior, brining it back to its new car state.',
+      estHr: 2.25,
+      service: 'Detail Interior',
+    }
+  })
+  await prisma.services.create({
+    data: {
+      description: 'Oxygen Sensor replacement',
+      estHr: 2.25,
+      service: 'Oxygen Sensor replacement',
+    }
+  })
+  await prisma.services.create({
+    data: {
+      description: 'Spark Plug replacement',
+      estHr: 2.25,
+      service: 'Spark Plug replacement',
+    }
+  })
+  await prisma.services.create({
+    data: {
+      description: 'Change Brake Pad on one wheel',
+      estHr: 2.25,
+      service: 'Change Brake Pad',
+    }
+  })
+  await prisma.services.create({
+    data: {
+      description: 'Change Brake Pad and Rotor on one wheel',
+      estHr: 2.25,
+      service: 'Change Brake Pad and Rotor',
     }
   })
   console.log(chalk.yellow("creating service accessories..."));
@@ -961,6 +1038,7 @@ export async function seedUsers() {
       trim: '',
       mileage: '15000 km',
       location: 'Lot',
+      clientfileId: clientfile.id,
     }
   })
   console.log(chalk.yellow("creating work order with service unit..."));
@@ -1022,6 +1100,60 @@ export async function seedUsers() {
       accessoryId: servPart3.id,
       accOrderId: serviceAccOrder2.id,
       quantity: 1,
+    }
+  })
+  const serviceUnit3 = await prisma.serviceUnit.create({
+    data: {
+      brand: 'Dodge',
+      model: 'Ram',
+      color: 'Black',
+      year: '2024',
+      vin: 'G151ASDF415S',
+      trim: '',
+      mileage: '42500 kms',
+      location: 'Lot',
+      clientfileId: clientfile.id,
+    }
+  })
+  const workOrder3 = await prisma.workOrder.create({
+    data: {
+      unit: `${serviceUnit3.year} ${serviceUnit3.brand} ${serviceUnit3.model}`,
+      mileage: '42500 kms',
+      vin: 'G151ASDF415S',
+      tag: '234 GRDF',
+      motor: 'V-8',
+      budget: 'Unlimited',
+      totalLabour: service.estHr + service2.estHr,
+      totalParts: (servPart.price * 4) + servPart2.price + servPart3.price,
+      subTotal: (service.estHr + service2.estHr) + ((servPart.price * 4) + servPart2.price + servPart3.price),
+      total: ((service.estHr + service2.estHr) + ((servPart.price * 4) + servPart2.price + servPart3.price)) * 1.13,
+      writer: admin.name,
+      userEmail: admin.email,
+      tech: technician2.name,
+      techEmail: technician2.email,
+      notes: '',
+      customerSig: 'Yes',
+      status: 'In Works',
+      location: 'In Lot',
+      quoted: 'Yes',
+      paid: 'No',
+      ServiceUnitId: serviceUnit3.id,
+      clientfileId: clientfile.id,
+    }
+  })
+  console.log(chalk.yellow("creating ServicesOnWorkOrders..."));
+  await prisma.servicesOnWorkOrders.create({
+    data: {
+      quantity: 4,
+      serviceId: service.id,
+      workOrderId: workOrder3.workOrderId,
+    }
+  })
+  await prisma.servicesOnWorkOrders.create({
+    data: {
+      quantity: 1,
+      serviceId: service2.id,
+      workOrderId: workOrder3.workOrderId,
     }
   })
   // creating service orders
@@ -1487,166 +1619,7 @@ export async function FirstCustomer() {
 }
 
 export async function Board() {
-  const completed = [
-    { board: "dev", column: "issue", item: "search need to finish the drop down to specefiy which file u want to go to " },
-    { board: "dev", column: "issue", item: "dashboard - fix dob calendar" },
-    { board: "dev", column: "issue", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
-    { board: "dev", column: "issue", item: "add notes ability to inventory, parts" },
-    { board: "dev", column: "PAC", item: "print barcodes use same pdf generator u use now" },
-    { board: "dev", column: "PAC", item: "add auto focus to forms so first input alrady has cursor" },
-    { board: "dev", column: "issue", item: "Print receipt, have qrcode on it so you can just scan it" },
-    { board: "dev", column: "issue", item: "service receipts / quotes qrcode on it to just scan it and have it pulled up no more messing with looking for customers" },
-    { board: "dev", column: "PAC", item: "move accessories pages that are needed else where to components and import them that way so you can use your routes actions - this did not work first try" },
-    { board: "dev", column: "PAC", item: "give the ability to transfer orders to other depts and have them able to claim it to the work order or unit" },
-    { board: "dev", column: "PAC", item: "copy over the create and update orders into the finance file so you can create and update the orders attached to the unit" },
-    { board: "dev", column: "PAC", item: "redirect user when customer has no unit to the order page" },
-    { board: "dev", column: "PAC", item: "customer file sync between mobile and desktop" },
-    { board: "dev", column: "PAC", item: "parts - a electronix lineup system  " },
-    { board: "dev", column: "PAC", item: "ACC - a electronix lineup system " },
-    { board: "dev", column: "PAC", item: "inventory counter, like u know the ones u see at walmart" },
-    { board: "dev", column: "PAC", item: "maybe put acc tab drop down items in an alert menu first to get confirmation " },
-
-
-  ]
-  const doneneedstesting = [
-    { board: "dev", column: "Done Needs Testing", item: "use same system as notifications to check on new mail, if different than whats saved, creatre notifaction evry 10 mins - done needs testing" },
-    { board: "dev", column: "done needs testing", item: "webhook for incoming emails, save notifiation and messeages" },
-    { board: "dev", column: "done needs testing", item: "mass sms - wip" },
-    { board: "dev", column: "done needs testing", item: "email" },
-    { board: "dev", column: "done needs testing", item: "sms" },
-    { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
-
-  ]
-  const WIP = [
-    { board: "dev", column: "WIP", item: "manager Dashboard" },
-    { board: "dev", column: "WIP", item: "admin dash" },
-    { board: "dev", column: "done needs testing", item: "need to test all functions due to database changes" },
-
-  ]
-  const completedIssues = [
-    { board: "dev", column: "PAC", item: "receiving" },
-
-  ]
-
-  const issue = [
-    { board: "dev", column: "PAC", item: "end of day reports, choose date so you can print any day" },
-    { board: "dev", column: "PAC", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
-
-    { board: "dev", column: "sales", item: "finance section in finance file, have it where it can be switch to manual mode only where there are no calculations being done" },
-    { board: "dev", column: "sales", item: "make a bill of sale where it prints the items off of acc and parts orders" },
-    { board: "dev", column: "sales", item: "need to swap out for financeUnit/tradeunit from just finance in schema" },
-    { board: "dev", column: "sales", item: "have it so if you sdelect clientfile it just goes to client file and then you can select a unit if you want to but it displays orders, and work orders under clients name not under a unit bought there" },
-    { board: "dev", column: "staff area", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
-    { board: "dev", column: "sales", item: "saving doc templates, see if you can save big json strings in database" },
-    { board: "dev", column: "sales", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
-
-    { board: "dev", column: "service", item: "for the tech have clock in clock out, but also a check off list of the items that need to be done if they want it that tracks what item was done when and to ensure nothing gets missed" },
-    { board: "dev", column: "service", item: "service - a electronix lineup system for order/ wo" },
-    { board: "dev", column: "service", item: "once tech is done with servicing a unit, if a wo isnt assigned have a waiter board where he can get his next service wo" },
-    { board: "dev", column: "service", item: "service board to have a section with buttons that adds the most purchased services to the work order making it a breeze for the desk to produce quotes fast, that even inputs the part numbers, hours to complete, etc will need to make a dashboard where the service manager can set this up, maybe even produce a list of common parts associated with those jobs incase the customer doesn't like that specifc tire" },
-    { board: "dev", column: "service", item: "try to make it so the service writers dont have to type anything in barely, maybe even have a section of most typed comments, have scanner in service as well so the can jkust scan parts instead of inputing part numbers" },
-
-    { board: "dev", column: "cutomer finance file", item: "finish className={${isCompleted ? bg-[#30A46C]: bg-primary} in finance file" },
-
-    { board: "dev", column: "manager", item: "manager / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
-
-    { board: "dev", column: "infastructure", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try" },
-    { board: "dev", column: "infastructure", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },
-    { board: "dev", column: "infastructure", item: "set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
-    { board: "dev", column: "infastructure", item: "payment processor for purchases?" },
-    { board: "dev", column: "issue", item: "user docs instead of having a doc section maybe have dialog open up from the menu and they can read the docs per page instead of learning and cramming evrything at once they can learn when they need to and use the inforation right away and have it question what the user wants to learn and give it the right info on the spot and have link to video on utube open in new window" },
-
-
-
-  ]
-  const ideas = [
-    { board: "dev", column: "ideas", item: "save form to local storage, never loose data for a internet hiccup or outage" },
-    { board: "dev", column: "ideas", item: "transcribe videos and enable a fuzzy search on them so if people dont know what they are looking for tghey can even give a short description to try to find it" },
-    { board: "dev", column: "ideas", item: "employee to employee messaging using the emitter and alert dialog so its an important message that they have to read rght away, like next client here etc" },
-  ]
-  const sales = [
-    { board: "dev", column: "sales", item: "Call center Section" },
-    { board: "dev", column: "sales", item: "Trade in pricing from the kelley blue book integrated right into our quoting system." },
-    { board: "dev", column: "sales", item: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
-    { board: "dev", column: "sales", item: "sales bot 2 - customer onboarding" },
-    { board: "dev", column: "sales", item: "sales bot 3 - after sales" },
-    { board: "dev", column: "sales", item: "finance dash neeed to add up totals from new package area" },
-  ]
-  const automation = [
-    { board: "dev", column: "Automation", item: "for lead rotation, if customer pending after an hour it goes up onto a free for all board so anyone can respond to him" },
-    { board: "dev", column: "Automation", item: "customer set time before delivery of what to bring" },
-    { board: "dev", column: "Automation", item: "auto email at 5, 2.5 months and 30, 7 days before consent expires, 2 years if bought, 6 months if not" },
-    { board: "dev", column: "Automation", item: "customer 2 months after pick up to make sure everything is still good" },
-  ]
-  const service = [
-    { board: "dev", column: "service", item: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
-    { board: "dev", column: "service", item: "service writer dash" },
-    { board: "dev", column: "service", item: "tech dash" },
-    { board: "dev", column: "service", item: "scan incoming crates and add them into inventory or something, maybe a inbox for the admin to convert them to inventory" },
-  ]
-  const docs = [
-    { board: "dev", column: "docs", item: "Videos for docs" },
-    { board: "dev", column: "docs", item: "scripts / templates" },
-    { board: "dev", column: "docs", item: "whole overview" },
-    { board: "dev", column: "docs", item: "quotes" },
-    { board: "dev", column: "docs", item: "dashboard" },
-    { board: "dev", column: "docs", item: "finance dashboard" },
-    { board: "dev", column: "docs", item: "user settings" },
-    { board: "dev", column: "docs", item: "document builder" },
-  ]
-  const owner = [
-    { board: "dev", column: "owner", item: "Owners dashboard" },
-    { board: "dev", column: "owner", item: "Owner Section" },
-  ]
-  const quote = [
-    { board: "dev", column: "quote", item: "set up more parts pages - started - Manitou done - switch started" },
-  ]
-  const parts = [
-    { board: "dev", column: "parts", item: "parts dash" },
-    { board: "dev", column: "parts", item: "shpping and receiving dash" },
-    { board: "dev", column: "parts", item: "parts specfic page to print label, make changes etc, have search table that switch from table to part view using use state like the one in newleads" },
-  ]
-  const accessories = [
-    { board: "dev", column: "accessories", item: "acc dash" },
-  ]
-  const manager = [
-    { board: "dev", column: "manager", item: "have all managers stuff within managers so dashboard would have sales, acc, parts, and service" },
-    { board: "dev", column: "manager", item: "cross platform ad manager, post it once here and push it to different providors" },
-  ]
-  const admin = [
-    { board: "dev", column: "admin", item: "have it populate api keys so managers can hand them out" },
-    { board: "dev", column: "admin", item: "for making admin dash, go custom try to replicate sales dash but go all out... here you can even do context menu's aand everything, tab it by clientfile, finance, acc order, workorder, sales and in sales quickly sort by sales person by month user filters like u used in receivng" },
-  ]
-  const dealerOnboarding = [
-    { board: "dev", column: "dealer onboarding", item: "invite user section where it send an email with links to the crm and" },
-    { board: "dev", column: "dealer onboarding", item: "role specific invites, for example when invitiing a tech only show him what hes going to be using maybe even see if you can book mark for them to make it super easy" },
-    { board: "dev", column: "dealer onboarding", item: "free simple install with insructions, fee for total install - for dealer that already have an it team it would save them money" },
-  ]
-  const infastructure = [
-    { board: "dev", column: "infastructure", item: "have a second non-cloud option, either as a rack for a server or tower for a non tech orientated dealer to be hosted on site but would need a license key that needs a new token every 30 days/6 months/12 months to operate based on payment plan, hardware to be paid upfront before build, payments start once activated at dealer" },
-  ]
-  const dash = [
-    { board: "dev", column: "dash", item: "dynamic dashboard widgets" },
-  ]
-  const communications = [
-    { board: "dev", column: "communications", item: "email / sms campaigns" },
-    { board: "dev", column: "communications", item: "fb msgr integration" },
-  ]
-  const paidfeature = [
-    { board: "dev", column: "paid feature - ai", item: "predictive analysis of sales trends" },
-    { board: "dev", column: "paid feature - ai", item: "customter analysis, retention, customer $ worth, visits, and more" },
-    { board: "dev", column: "paid feature - ai", item: "Predictive Customer Behavior Modeling, Utilize advanced machine learning models to predict future customer behaviors and preferences based on historical data. ie percentages on how liuekly the customer can be closed if asked at that time" },
-    { board: "dev", column: "paid feature - ai", item: "*** currently working - need to attach to components and find a way to turn on or off pending payment by customer ***" },
-    { board: "dev", column: "paid feature - ai", item: "speech to text for quicker input - done in components folder" },
-    { board: "dev", column: "paid feature - ai", item: "AI writing partner for emails, templates and scripts - done in components folder" },
-    { board: "dev", column: 'paid feature - ai', item: 'have ai take in last 5 emails with customer and suggest your next communication/script - not done yet but easy enough to complete in components folder' },
-    { board: "dev", column: 'paid feature - ai', item: 'vercel has a nice write up on this to do in their platform - ai - wip - https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts' },
-    { board: "dev", column: "paid feature - ai", item: "Ai assistant to book apointments, complete and etc like gowrench or just a work flow to customers to guide themselves" },
-  ]
-
   console.log(chalk.yellow("Creating dev board..."));
-
-
   const board = await prisma.board.create({
     data: {
       name: 'Dev',
@@ -1654,26 +1627,26 @@ export async function Board() {
     },
   });
   const columnsWithItems = [
-    { name: 'DONE NEEDS TESTING', items: doneneedstesting },
-    { name: 'WIP', items: WIP },
-    { name: 'SALES', items: sales },
-    { name: 'AUTOMATION', items: automation },
-    { name: 'SERVICE', items: service },
-    { name: 'DOCS', items: docs },
-    { name: 'OWNER', items: owner },
-    { name: 'QUOTE', items: quote },
-    { name: 'PARTS', items: parts },
-    { name: 'ACCESSORIES', items: accessories },
-    { name: 'MANAGER', items: manager },
-    { name: 'ADMIN', items: admin },
-    { name: 'DEALER ONBOARDING', items: dealerOnboarding },
-    { name: 'INFASTRUCTURE', items: infastructure },
-    { name: 'DASH', items: dash },
-    { name: 'COMMUNICATIONS', items: communications },
-    { name: 'PAID FEATURE', items: paidfeature },
-    { name: 'IDEAS', items: ideas },
-    { name: 'ISSUE', items: issue },
-    { name: 'COMPLETED', items: completed },
+    { name: 'DONE NEEDS TESTING', items: roadMapItems.doneneedstesting },
+    { name: 'WIP', items: roadMapItems.WIP },
+    { name: 'SALES', items: roadMapItems.sales },
+    { name: 'AUTOMATION', items: roadMapItems.automation },
+    { name: 'SERVICE', items: roadMapItems.service },
+    { name: 'DOCS', items: roadMapItems.docs },
+    { name: 'OWNER', items: roadMapItems.owner },
+    { name: 'QUOTE', items: roadMapItems.quote },
+    { name: 'PARTS', items: roadMapItems.parts },
+    { name: 'ACCESSORIES', items: roadMapItems.accessories },
+    { name: 'MANAGER', items: roadMapItems.manager },
+    { name: 'ADMIN', items: roadMapItems.admin },
+    { name: 'DEALER ONBOARDING', items: roadMapItems.dealerOnboarding },
+    { name: 'INFASTRUCTURE', items: roadMapItems.infastructure },
+    { name: 'DASH', items: roadMapItems.dash },
+    { name: 'COMMUNICATIONS', items: roadMapItems.communications },
+    { name: 'PAID FEATURE', items: roadMapItems.paidfeature },
+    { name: 'IDEAS', items: roadMapItems.ideas },
+    { name: 'ISSUE', items: roadMapItems.issue },
+    { name: 'COMPLETED', items: roadMapItems.completed },
   ];
 
   const createColumnsAndItems = async (board) => {

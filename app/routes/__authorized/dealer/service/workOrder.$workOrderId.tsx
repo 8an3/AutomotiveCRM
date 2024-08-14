@@ -114,7 +114,7 @@ import PrintReceipt from "../document/printReceiptAcc";
 import { Users } from "lucide-react";
 import { Activity } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";
-import { Avatar } from "~/components";
+import { Avatar, TextArea } from "~/components";
 import {
   ContextMenu,
   ContextMenuCheckboxItem,
@@ -139,9 +139,18 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/accordion"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog"
+
 
 export default function Dashboard() {
-  const { orders, user, tax, dealerImage } = useLoaderData();
+  const { order, user, tax, dealerImage, services } = useLoaderData();
 
   const [scannedCode, setScannedCode] = useState('')
   useEffect(() => {
@@ -252,14 +261,13 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const submit = useSubmit();
   let addProduct = useFetcher();
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(order.workOrderId);
   const [back, setBack] = useState('#FFFFFF');
   const [fore, setFore] = useState('#000000');
   const [size, setSize] = useState(100);
   const [discount, setDiscount] = useState(false)
   const [discDollar, setDiscDollar] = useState(0.00)
   const [discPer, setDiscPer] = useState(0.00)
-  const [order, setorder] = useState(null)
   const [showPrev, setShowPrev] = useState(false)
   const [totalAccessoriesCost, setTotalAccessoriesCost] = useState(0.00);
   const [totalAmountPaid, setTotalAmountPaid] = useState(0.00);
@@ -269,9 +277,12 @@ export default function Dashboard() {
   const [paymentType, setPaymentType] = useState('');
   const [serviceSubTotal, setServiceSubTotal] = useState(0.00);
   const [partsSubTotal, setPartsSubTotal] = useState(0.00);
+  const [totalPreTax, setTotalPreTax] = useState(0.00);
   const [input, setInput] = useState("");
   const inputLength = input.trim().length
   let payment = useFetcher();
+  let search = useFetcher();
+  let product = useFetcher();
 
   const orderById = (id) => {
     const filteredOrder = orders.find(order => order.workOrderId === id);
@@ -290,30 +301,32 @@ export default function Dashboard() {
   };
 
   let toReceipt
-  if (order) {
-    const client = order.Clientfile
-    const maxAccessories = 19;
+  useEffect(() => {
+    if (order) {
+      const client = order.Clientfile
+      const maxAccessories = 19;
 
-    toReceipt = {
-      qrCode: order.workOrderId,
-      subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
-      tax: `${tax.userTax}%`,
-      total: `$${total}`,
-      remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
-      firstName: client.firstName,
-      lastName: client.lastName,
-      phone: client.phone,
-      email: client.email,
-      address: client.address,
-      date: new Date().toLocaleDateString("en-US", options2),
-      cardNum: '',
-      paymentType: '',
-      image: dealerImage.dealerLogo
-    };
+      toReceipt = {
+        qrCode: order.workOrderId,
+        subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
+        tax: `${tax.userTax}%`,
+        total: `$${total}`,
+        remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
+        firstName: client.firstName,
+        lastName: client.lastName,
+        phone: client.phone,
+        email: client.email,
+        address: client.address,
+        date: new Date().toLocaleDateString("en-US", options2),
+        cardNum: '',
+        paymentType: '',
+        image: dealerImage.dealerLogo
+      };
 
-    let accessoryIndex = 0;
-  }
-  // console.log(order, 'order');
+      let accessoryIndex = 0;
+    }
+    console.log(order, 'order');
+  }, [order]);
 
   useEffect(() => {
     if (order) {
@@ -325,9 +338,18 @@ export default function Dashboard() {
       setPartsSubTotal(partsSub.toFixed(2))
 
       const serviceSub = order?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
-        return total + (serviceOnOrder.service.price * serviceOnOrder.hr * serviceOnOrder.quantity);
+        const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr || 0.00;
+
+        const subtotal = hours * tax.userLabour * serviceOnOrder.quantity;
+
+        return total + subtotal;
       }, 0);
+
       setServiceSubTotal(serviceSub.toFixed(2))
+
+      const totalPreTax = partsSub + serviceSub;
+      setTotalPreTax(totalPreTax.toFixed(2));
+
       const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
       const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
       const calculatedTotal = discDollar && discDollar > 0.00 ? total1 : total2;
@@ -339,20 +361,26 @@ export default function Dashboard() {
       if (totalAmountPaid2) {
         setTotalAmountPaid(totalAmountPaid2)
       }
+      console.log(partsSubTotal, serviceSubTotal, partsSubTotal + serviceSubTotal, 'totals')
 
     }
   }, [order]);
 
+  let unitCard = [
+    { name: 'year', label: 'Year', },
+    { name: 'brand', label: 'Brand', },
+    { name: 'model', label: 'Model', },
+    { name: 'color', label: 'Color', },
+    { name: 'vin', label: 'VIN', },
+    { name: 'trim', label: 'Trim', },
+    { name: 'mileage', label: 'Mileage', },
+    { name: 'location', label: 'Location', },
+    { name: 'motor', label: 'Motor', },
+    { name: 'tag', label: 'Tag', },
+  ];
+
   const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
-  const [list, setList] = useState([])
-  useEffect(() => {
-    if (orders) {
-      setList(orders)
-    }
-  }, [orders]);
-  const [newUnit, setNewUnit] = useState(false)
-
-
+  //console.log(order, 'order')
   return (
     <div>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -473,82 +501,13 @@ export default function Dashboard() {
             <div className="flex items-center">
               <TabsList>
                 <TabsTrigger value="week">W / O</TabsTrigger>
-                <TabsTrigger value="month">Calendar</TabsTrigger>
-                <TabsTrigger value="year">Year</TabsTrigger>
+                <TabsTrigger value="Parts">Parts</TabsTrigger>
               </TabsList>
-              <div className="ml-auto flex items-center gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 gap-1 text-sm"
-                    >
-                      <ListFilter className="h-3.5 w-3.5" />
-                      <span className="sr-only sm:not-sr-only">Filter</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className='border-border'>
-                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Quote'
-                        )
-                        setList(result)
-                      }}
-                    >
-                      Quote
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Open'
-                        )
-                        setList(result)
-                      }}>
-                      Open
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Waiting On Parts'
-                        )
-                        setList(result)
-                      }}>
-                      Waiting On Parts
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'In Works'
-                        )
-                        setList(result)
-                      }}>
-                      In Works
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Work Completed'
-                        )
-                        setList(result)
-                      }}>
-                      Work Completed
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) =>
-                          result.status === 'Closed'
-                        )
-                        setList(result)
-                      }}>
-                      Closed
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+              <Button size='sm' className='ml-auto text-foreground' onClick={() => {
+                const formData = new FormData();
+                formData.append("intent", 'createBooking');
+                fetcher.submit(formData, { method: "post", });
+              }} >Book Service</Button>
             </div>
             <TabsContent value="week">
               <Card x-chunk="dashboard-05-chunk-3">
@@ -559,8 +518,8 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className=' grid grid-cols-1'>
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="item-1">
+                    <Accordion type="single" collapsible className="w-full border-border">
+                      <AccordionItem value="item-1" className='border-border'>
                         <AccordionTrigger>Unit</AccordionTrigger>
                         <AccordionContent>
                           <div className='grid grid-cols-1'>
@@ -582,12 +541,14 @@ export default function Dashboard() {
                                   <TableHead className="hidden md:table-cell">
                                     Motor
                                   </TableHead>
+                                  <TableHead className="hidden md:table-cell">
+                                    Dept
+                                  </TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
-                                <p>Service Units</p>
-                                {order.ServiceUnit && order.ServiceUnit.map((result, index) => (
-                                  <Button variant='ghost' className='cursor-pointer' onClick={() => {
+                                {order.Clientfile.ServiceUnit && order.Clientfile.ServiceUnit.map((result, index) => (
+                                  <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
                                     const formData = new FormData();
                                     formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
                                     formData.append("mileage", result.mileage);
@@ -599,28 +560,28 @@ export default function Dashboard() {
                                     formData.append("intent", 'addUnit');
                                     submit(formData, { method: "post", });
                                   }}>
-                                    <TableRow key={index} className="hover:bg-accent border-border">
-                                      <TableCell>
-                                        <p>{result.year} {result.brand} {result.model}</p>
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.mileage}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.vin}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.tag}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.motor}
-                                      </TableCell>
-                                    </TableRow>
-                                  </Button>
+                                    <TableCell>
+                                      <p>{result.year} {result.brand} {result.model}</p>
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.mileage}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.vin}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.tag}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.motor}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      <p>Service Units</p>
+                                    </TableCell>
+                                  </TableRow>
                                 ))}
-                                <p>Finance Units</p>
-                                {order.Finance && order.Finance.map((result, index) => (
-                                  <Button variant='ghost' className='cursor-pointer' onClick={() => {
+                                {order.Clientfile.Finance && order.Clientfile.Finance.map((result, index) => (
+                                  <TableRow key={index} className="hover:bg-accent border-border  rounded-[6px] cursor-pointer" onClick={() => {
                                     const formData = new FormData();
                                     formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
                                     formData.append("mileage", result.mileage);
@@ -632,119 +593,409 @@ export default function Dashboard() {
                                     formData.append("intent", 'addUnit');
                                     submit(formData, { method: "post", });
                                   }}>
-                                    <TableRow key={index} className="hover:bg-accent border-border">
-                                      <TableCell>
-                                        <p>{result.year} {result.brand} {result.model}</p>
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.mileage}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.vin}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.tag && (result.tag)}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.motor && (result.motor)}
-                                      </TableCell>
-                                    </TableRow>
-                                  </Button>
+                                    <TableCell>
+                                      <p>{result.year} {result.brand} {result.model}</p>
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.mileage}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.vin}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.tag && (result.tag)}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.motor && (result.motor)}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      <p>Finance Units</p>
+                                    </TableCell>
+                                  </TableRow>
                                 ))}
                               </TableBody>
                             </Table>
-                            <Button size='sm' className='text-foreground' onClick={() => setNewUnit(true)} >
-                              New Unit
-                            </Button>
-                            {newUnit && (
-                              <>
-                                <Form method='post' >
-                                  <div className='grid grid-cols-1'>
-                                    <div className="relative mt-4">
-                                      <Input
-                                        name='year'
-                                        className={` bg-background text-foreground border border-border`}
-                                      />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Year</label>
+                            <Dialog>
+                              <DialogTrigger>
+                                <Button size='sm' className='text-foreground mt-4 w-[75px]' >
+                                  New Unit
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className='border-border'>
+                                <DialogHeader>
+                                  <DialogTitle>Add New Unit To Client File</DialogTitle>
+                                  <DialogDescription>
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <>
+                                  <Form method='post' >
+                                    <input type='hidden' name='clientfileId' value={order.Clientfile.id} />
+                                    <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                                    <div className='grid grid-cols-1'>
+                                      {unitCard.map((user, index) => (
+                                        <div key={index} className="relative mt-4">
+                                          <Input
+                                            name={user.name}
+                                            className={` bg-background text-foreground border border-border`}
+                                          />
+                                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+                                        </div>
+                                      ))}
+                                      <Button size='sm' className='text-foreground mt-4'
+                                        type='submit'
+                                        name='intent'
+                                        value='addNewServiceUnit' >
+                                        Submit
+                                      </Button>
                                     </div>
-                                    <div className="relative mt-4">
-                                      <Input
-                                        name='brand'
-                                        className={` bg-background text-foreground border border-border`}
-                                      />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Brand</label>
-                                    </div>
-                                    <div className="relative mt-4">
-                                      <Input
-                                        name='model'
-                                        className={` bg-background text-foreground border border-border`}
-                                      />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Model</label>
-                                    </div>
-                                    <div className="relative mt-4">
-                                      <Input
-                                        name='motor'
-                                        className={` bg-background text-foreground border border-border`}
-                                      />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Motor</label>
-                                    </div>
-                                    <div className="relative mt-4">
-                                      <Input
-                                        name='color'
-                                        className={` bg-background text-foreground border border-border`}
-                                      />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Color</label>
-                                    </div>
-                                    <div className="relative mt-4">
-                                      <Input
-                                        name='vin'
-                                        className={` bg-background text-foreground border border-border`}
-                                      />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">VIN</label>
-                                    </div>
-                                    <div className="relative mt-4">
-                                      <Input
-                                        name='mileage'
-                                        className={` bg-background text-foreground border border-border`}
-                                      />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">mileage</label>
-                                    </div>
-                                    <div className="relative mt-4">
-                                      <Input
-                                        name='tag'
-                                        className={` bg-background text-foreground border border-border`}
-                                      />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Tag</label>
-                                    </div>
-                                    <div className="relative mt-4">
-                                      <Input
-                                        name='location'
-                                        className={` bg-background text-foreground border border-border`}
-                                      />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Location</label>
-                                    </div>
-                                    <Button size='sm' className='text-foreground'
-                                      type='submit'
-                                      name='intent'
-                                      value='addNewServiceUnit' >
-                                      Submit
-                                    </Button>
-                                  </div>
-                                </Form>
-                              </>
-                            )}
+                                  </Form>
+                                </>
+                              </DialogContent>
+                            </Dialog>
                           </div>
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
-                    <fetcher.Form method='post'>
-                      <div className='flex'>
-                        <Input name='description' /> <Input name='hr' /> <Button size='sm' ><Plus /></Button>
+                    <p className='mt-4 mb-5'></p>
+                    <div className="grid gap-3">
+                      <div className="font-semibold">Work Order Services</div>
+                      <ul className="grid gap-3">
+                        {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => {
+                          const hours = result.hr || result.service.estHr || 0.00;
+
+                          return (
+                            <li key={index} className="flex items-center justify-between">
+                              <div>
+                                <ContextMenu>
+                                  <ContextMenuTrigger>
+                                    <div className='grid grid-cols-1'>
+                                      <div className='flex items-center group '>
+                                        <div className="font-medium flex-col">
+                                          <p>{result.service.service}</p>
+                                          <p className='text-muted-foreground'>{result.service.description}</p>
+                                        </div>
+                                        <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                          <input type="hidden" name="id" value={result.id} />
+                                          <input type='hidden' name='total' value={total} />
+                                          <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                                          <Button
+                                            size="icon"
+                                            variant="outline"
+                                            name="intent" value='deleteServiceItem'
+                                            className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                            type='submit'
+                                          >
+                                            <X className="h-4 w-4 text-foreground" />
+                                          </Button>
+                                        </addProduct.Form>
+                                      </div>
+                                      <div className="hidden text-sm text-muted-foreground md:inline">
+                                        <div className='flex items-center'>
+                                          <div className="font-medium">
+                                            <EditableText
+                                              value={hours}
+                                              fieldName="name"
+                                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                              buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                              buttonLabel={`Edit name`}
+                                              inputLabel={`Edit name`}
+                                            >
+                                              <input type="hidden" name="intent" value='updateHr' />
+                                              <input type="hidden" name="id" value={result.id} />
+                                              <input type="hidden" name="colName" value='hr' />
+                                            </EditableText>
+
+                                          </div>
+                                          <p>/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                        </div>
+                                      </div>
+                                      {result.status && (
+                                        <div>
+                                          <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </ContextMenuTrigger>
+                                  <ContextMenuContent className='border-border'>
+                                    <ContextMenuSub>
+                                      <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                                      <ContextMenuSubContent className="w-48 border-border">
+                                        <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                        <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                        <ContextMenuSeparator />
+                                        <ContextMenuItem>
+                                          Est. Hours
+                                          <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                        </ContextMenuItem>
+                                        <ContextMenuItem>
+                                          Price
+                                          <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                        </ContextMenuItem>
+                                      </ContextMenuSubContent>
+                                    </ContextMenuSub>
+                                    <ContextMenuSeparator />
+                                    <ContextMenuCheckboxItem
+                                      checked={result.status === 'In Stock'}
+                                      onSelect={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", result.id);
+                                        formData.append("status", 'In Stock');
+                                        formData.append("intent", 'updateServiceOnOrders');
+                                        submit(formData, { method: "post", });
+                                      }}
+                                    >In Stock</ContextMenuCheckboxItem>
+                                    <ContextMenuCheckboxItem
+                                      checked={result.status === 'On Order'}
+                                      onSelect={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", result.id);
+                                        formData.append("status", 'On Order');
+                                        formData.append("intent", 'updateServiceOnOrders');
+                                        submit(formData, { method: "post", });
+                                      }}
+                                    >On Order</ContextMenuCheckboxItem>
+                                    <ContextMenuCheckboxItem
+                                      checked={result.status === 'Completed'}
+                                      onSelect={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", result.id);
+                                        formData.append("status", 'Completed');
+                                        formData.append("intent", 'updateServiceOnOrders');
+                                        submit(formData, { method: "post", });
+                                      }}
+                                    >Completed</ContextMenuCheckboxItem>
+                                    <ContextMenuCheckboxItem
+                                      checked={result.status === 'Back Order'}
+                                      onSelect={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", result.id);
+                                        formData.append("status", 'Back Order');
+                                        formData.append("intent", 'updateServiceOnOrders');
+                                        submit(formData, { method: "post", });
+                                      }}
+                                    >Back Order</ContextMenuCheckboxItem>
+                                  </ContextMenuContent>
+                                </ContextMenu>
+                              </div>
+                              <span>
+                                x{" "}{" "}{result.quantity}
+
+                              </span>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    </div>
+                    <Separator className="my-4" />
+                    <div className="font-semibold">Services</div>
+
+                    <div className='grid grid-cols-2 mt-4'>
+                      <div className='mx-4'>
+                        <div className="font-semibold">Select Service</div>
+                        <search.Form method="get" action='/dealer/service/search/services'>
+                          <div className="relative ml-auto flex-1 md:grow-0 ">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              ref={ref}
+                              type="search"
+                              name="q"
+                              onChange={e => {
+                                search.submit(e.currentTarget.form);
+                              }}
+                              autoFocus
+                              placeholder="Search..."
+                              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                            />
+                          </div>
+                        </search.Form>
+                        <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+                          {search.data && search.data.map((result, index) => {
+                            return (
+                              <li key={index} className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]" onClick={() => {
+                                const formData = new FormData();
+                                formData.append("hr", result.estHr);
+                                formData.append("workOrderId", order.workOrderId);
+                                formData.append("serviceId", result.id);
+                                formData.append("intent", 'addServiceToWorkOrder');
+                                submit(formData, { method: "post", });
+                              }}>
+                                <div className="font-medium flex-col">
+                                  <p className=' text-left'>{result.service}</p>
+                                  <p className='text-muted-foreground text-left'>{result.description}</p>
+                                  <p className='text-muted-foreground text-left'>{result.estHr}/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                </div>
+                              </li>
+                            )
+                          })}
+                        </ul>
+
                       </div>
-                    </fetcher.Form>
+                      <div className='mx-4 flex-col'>
+                        <Accordion type="single" collapsible className="w-full border-border">
+                          <AccordionItem value="item-1" className='border-border'>
+                            <AccordionTrigger>Add New Service</AccordionTrigger>
+                            <AccordionContent>
+                              <fetcher.Form method='post'>
+                                <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                                <div className='flex'>
+                                  <div className="flex-col" >
+                                    <div className="relative mt-4">
+                                      <Input name='name' className='w-[250px] mr-3' />
+                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
+                                    </div>
+                                    <div className="relative mt-4">
+                                      <TextArea name='description' className='w-[250px] mr-3' />
+                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
+                                    </div>
+                                  </div>
+
+                                  <div className="relative mt-4">
+                                    <Input name='hr' className='w-[100px] mr-3' />
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
+                                  </div>
+                                  <div className="relative mt-4">
+                                    <Input name='quantity' className='w-[100px] mr-3' defaultValue={1} />
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Quantity</label>
+                                  </div>
+
+                                  <Button
+                                    className='mt-4'
+                                    size='icon'
+                                    type='submit'
+                                    name='intent'
+                                    value='addNewServiceToWorkOrder'
+                                  ><Plus /></Button>
+                                </div>
+                              </fetcher.Form>
+                            </AccordionContent>
+                          </AccordionItem>
+                        </Accordion>
+
+                      </div>
+                    </div>
+
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+            <TabsContent value="Parts">
+              <Card x-chunk="dashboard-05-chunk-3 " className='mx-5 w-[95%] '>
+                <CardHeader className="px-7">
+                  <CardTitle>
+                    <div className='flex justify-between items-center'>
+                      <p>Accessories</p>
+                    </div>
+                  </CardTitle>
+                  <CardDescription className='flex items-center'>
+                    <product.Form method="get" action='/dealer/accessories/products/search'>
+                      <div className="relative ml-auto flex-1 md:grow-0 ">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          ref={ref}
+                          type="search"
+                          name="q"
+                          onChange={e => {
+                            //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                            product.submit(e.currentTarget.form);
+                          }}
+                          autoFocus
+                          placeholder="Search..."
+                          className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                        />
+                      </div>
+                    </product.Form>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className='border-border'>
+                        <TableHead>
+                          Brand & Name
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Description
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Category
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Sub Category
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          On Order
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Distributer
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Location
+                        </TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Cost
+                        </TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Price
+                        </TableHead>
+                        <TableHead className="text-right">
+                          Quantity
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
+                      {product.data &&
+                        product.data.map((result, index) => (
+                          <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
+                            const formData = new FormData();
+                            formData.append("accessoryId", result.id);
+                            formData.append("workOrderId", order.workOrderId);
+                            formData.append("accOrderId", order.AccOrders[0].id);
+                            formData.append("intent", 'addAccToWorkOrder');
+                            submit(formData, { method: "post", });
+                          }}>
+                            <TableCell className='flex-col'>
+                              <p className="font-medium">
+                                {result.name}
+                              </p>
+                              <p className="text-sm text-muted-foreground ">
+                                {result.brand}
+                              </p>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {result.description}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.category}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.subCategory}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.onOrder}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.distributer}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.location}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.cost}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.price}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {result.quantity}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Calendar">
             </TabsContent>
           </Tabs>
         </div>
@@ -785,15 +1036,17 @@ export default function Dashboard() {
                           <SelectGroup>
                             <SelectLabel>Status</SelectLabel>
                             <SelectItem value="Quote">Quote</SelectItem>
-                            <SelectItem value="Open">Open</SelectItem>
+                            <SelectItem value="Sales">Sales</SelectItem>
+                            <SelectItem value="Open">Open / Scheduled</SelectItem>
                             <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
+                            <SelectItem value="Waiter">Waiter</SelectItem>
                             <SelectItem value="In Works">In Works</SelectItem>
                             <SelectItem value="Work Completed">Work Completed</SelectItem>
                             <SelectItem value="Closed">Closed</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
+                      <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-muted/50 transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
                     </div>
                   </div>
                 )}
@@ -849,275 +1102,307 @@ export default function Dashboard() {
                 </DropdownMenu>
               </div>
             </CardHeader>
-            <CardContent className="p-6 text-sm h-auto max-h-[780px] overflow-y-auto">
-              <div className="grid gap-3">
-                <div className="font-semibold">Customer Information</div>
-                <dl className="grid gap-3">
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Customer</dt>
-                    <dd>{order.Clientfile.name}</dd>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Email</dt>
-                    <dd>
-                      <a href="mailto:">{order.Clientfile.email}</a>
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Phone</dt>
-                    <dd>
-                      <a href="tel:">{order.Clientfile.phone}</a>
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-              <div className="grid gap-3">
-                <div className="font-semibold">Customer Unit</div>
-                <dl className="grid gap-3">
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Unit</dt>
-                    <dd>
-                      <EditableText
-                        value={order.unit}
-                        fieldName="name"
-                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                        buttonClassName="text-center py-1 px-2 text-foreground"
-                        buttonLabel={`Edit quantity`}
-                        inputLabel={`Edit quantity`}
-                      >
-                        <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                        <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                        <input type="hidden" name="col" value='unit' />
-                      </EditableText>
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Color</dt>
-                    <dd>
-                      <EditableText
-                        value={order.color}
-                        fieldName="name"
-                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                        buttonClassName="text-center py-1 px-2 text-foreground"
-                        buttonLabel={`Edit quantity`}
-                        inputLabel={`Edit quantity`}
-                      >
-                        <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                        <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                        <input type="hidden" name="col" value='color' />
-                      </EditableText>
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Mileage</dt>
-                    <dd>
-                      <EditableText
-                        value={order.mileage}
-                        fieldName="name"
-                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                        buttonClassName="text-center py-1 px-2 text-foreground"
-                        buttonLabel={`Edit quantity`}
-                        inputLabel={`Edit quantity`}
-                      >
-                        <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                        <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                        <input type="hidden" name="col" value='mileage' />
-                      </EditableText>
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">vin</dt>
-                    <dd>
-                      <EditableText
-                        value={order.vin}
-                        fieldName="name"
-                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                        buttonClassName="text-center py-1 px-2 text-foreground"
-                        buttonLabel={`Edit quantity`}
-                        inputLabel={`Edit quantity`}
-                      >
-                        <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                        <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                        <input type="hidden" name="col" value='vin' />
-                      </EditableText>
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Motor</dt>
-                    <dd>
-                      <EditableText
-                        value={order.motor}
-                        fieldName="name"
-                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                        buttonClassName="text-center py-1 px-2 text-foreground"
-                        buttonLabel={`Edit quantity`}
-                        inputLabel={`Edit quantity`}
-                      >
-                        <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                        <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                        <input type="hidden" name="col" value='motor' />
-                      </EditableText>
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Tag</dt>
-                    <dd>
-                      <EditableText
-                        value={order.tag}
-                        fieldName="name"
-                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                        buttonClassName="text-center py-1 px-2 text-foreground"
-                        buttonLabel={`Edit quantity`}
-                        inputLabel={`Edit quantity`}
-                      >
-                        <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                        <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                        <input type="hidden" name="col" value='tag' />
-                      </EditableText>
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">location</dt>
-                    <dd>
-                      <EditableText
-                        value={order.location}
-                        fieldName="name"
-                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                        buttonClassName="text-center py-1 px-2 text-foreground"
-                        buttonLabel={`Edit quantity`}
-                        inputLabel={`Edit quantity`}
-                      >
-                        <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                        <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                        <input type="hidden" name="col" value='location' />
-                      </EditableText>
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-              <Separator className="my-4" />
-              <div className="grid gap-3">
+            <CardContent className="p-6 text-sm h-auto max-h-[850px] overflow-y-auto">
+              <Accordion type="single" collapsible className="w-full border-border mt-3">
+                <AccordionItem value="item-1" className='border-border'>
+                  <AccordionTrigger>Customer Information</AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid gap-3">
+                      <dl className="grid gap-3">
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">Customer</dt>
+                          <dd>{order.Clientfile.name}</dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">Email</dt>
+                          <dd>
+                            <a href="mailto:">{order.Clientfile.email}</a>
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-muted-foreground">Phone</dt>
+                          <dd>
+                            <a href="tel:">{order.Clientfile.phone}</a>
+                          </dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+              <Accordion type="single" collapsible className="w-full border-border mt-3">
+                <AccordionItem value="item-1" className='border-border'>
+                  <AccordionTrigger>Customer Unit</AccordionTrigger>
+                  <AccordionContent>
+                    <dl className="grid gap-3">
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">Unit</dt>
+                        <dd>
+                          <EditableText
+                            value={order.unit}
+                            fieldName="name"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit quantity`}
+                            inputLabel={`Edit quantity`}
+                          >
+                            <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                            <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                            <input type="hidden" name="col" value='unit' />
+                          </EditableText>
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">Color</dt>
+                        <dd>
+                          <EditableText
+                            value={order.color}
+                            fieldName="name"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit quantity`}
+                            inputLabel={`Edit quantity`}
+                          >
+                            <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                            <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                            <input type="hidden" name="col" value='color' />
+                          </EditableText>
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">Mileage</dt>
+                        <dd>
+                          <EditableText
+                            value={order.mileage}
+                            fieldName="name"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit quantity`}
+                            inputLabel={`Edit quantity`}
+                          >
+                            <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                            <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                            <input type="hidden" name="col" value='mileage' />
+                          </EditableText>
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">vin</dt>
+                        <dd>
+                          <EditableText
+                            value={order.vin}
+                            fieldName="name"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit quantity`}
+                            inputLabel={`Edit quantity`}
+                          >
+                            <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                            <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                            <input type="hidden" name="col" value='vin' />
+                          </EditableText>
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">Motor</dt>
+                        <dd>
+                          <EditableText
+                            value={order.motor}
+                            fieldName="name"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit quantity`}
+                            inputLabel={`Edit quantity`}
+                          >
+                            <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                            <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                            <input type="hidden" name="col" value='motor' />
+                          </EditableText>
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">Tag</dt>
+                        <dd>
+                          <EditableText
+                            value={order.tag}
+                            fieldName="name"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit quantity`}
+                            inputLabel={`Edit quantity`}
+                          >
+                            <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                            <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                            <input type="hidden" name="col" value='tag' />
+                          </EditableText>
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">location</dt>
+                        <dd>
+                          <EditableText
+                            value={order.location}
+                            fieldName="name"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit quantity`}
+                            inputLabel={`Edit quantity`}
+                          >
+                            <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                            <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                            <input type="hidden" name="col" value='location' />
+                          </EditableText>
+                        </dd>
+                      </div>
+                    </dl>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+              <Accordion type="single" collapsible className="w-full border-border mt-3">
+                <AccordionItem value="item-1" className='border-border'>
+                  <AccordionTrigger>Work Order Notes</AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid gap-3">
+                      <Form method='post'>
+                        <div className="relative mt-4">
+                          <TextArea className='w-full mt-4' name='note' defaultValue={order.notes} />
+                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
+                        </div>
+                        <input type='hidden' name='id' defaultValue={order.workOrderId} />
+                        <Button type='submit' name='intent' value='updateNote' className='mt-4 text-foreground' size='sm'>
+                          Submit
+                        </Button>
+                      </Form>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+
+              <div className="grid gap-3 mt-3">
                 <div className="font-semibold">Work Order Services</div>
                 <ul className="grid gap-3">
-                  {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => (
-                    <li key={index} className="flex items-center justify-between">
-                      <div>
-                        <ContextMenu>
-                          <ContextMenuTrigger>
-                            <div className='grid grid-cols-1'>
-                              <div className='flex items-center group '>
-                                <div className="font-medium">
-                                  {result.service.service}
-                                </div>
-                                <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                  <input type="hidden" name="id" value={result.id} />
-                                  <input type='hidden' name='total' value={total} />
-                                  <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                  <Button
-                                    size="icon"
-                                    variant="outline"
-                                    name="intent" value='deleteServiceItem'
-                                    className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                    type='submit'
-                                  >
-                                    <X className="h-4 w-4 text-foreground" />
-                                  </Button>
-                                </addProduct.Form>
-                              </div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                <div className='flex items-center'>
+                  {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => {
+                    const hours = result.hr || result.service.estHr || 0.00;
+                    return (
+                      <li key={index} className="flex items-center justify-between">
+                        <div>
+                          <ContextMenu>
+                            <ContextMenuTrigger>
+                              <div className='grid grid-cols-1'>
+                                <div className='flex items-center group '>
                                   <div className="font-medium">
-                                    <EditableText
-                                      value={result.hr}
-                                      fieldName="name"
-                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
-                                      buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                                      buttonLabel={`Edit name`}
-                                      inputLabel={`Edit name`}
-                                    >
-                                      <input type="hidden" name="intent" value='updateHr' />
-                                      <input type="hidden" name="id" value={result.id} />
-                                      <input type="hidden" name="colName" value='hr' />
-                                    </EditableText>
-
+                                    {result.service.service}
                                   </div>
-                                  <p>{" "}hrs{" "}{" "}@{" "}${result.service.price}</p>
+                                  <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                    <input type="hidden" name="id" value={result.id} />
+                                    <input type='hidden' name='total' value={total} />
+                                    <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                                    <Button
+                                      size="icon"
+                                      variant="outline"
+                                      name="intent" value='deleteServiceItem'
+                                      className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                      type='submit'
+                                    >
+                                      <X className="h-4 w-4 text-foreground" />
+                                    </Button>
+                                  </addProduct.Form>
                                 </div>
-                              </div>
-                              {result.status && (
-                                <div>
-                                  <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
-                                </div>
-                              )}
-                            </div>
-                          </ContextMenuTrigger>
-                          <ContextMenuContent className='border-border'>
-                            <ContextMenuSub>
-                              <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
-                              <ContextMenuSubContent className="w-48 border-border">
-                                <ContextMenuItem>{result.service.service}</ContextMenuItem>
-                                <ContextMenuItem>{result.service.description}</ContextMenuItem>
-                                <ContextMenuSeparator />
-                                <ContextMenuItem>
-                                  Est. Hours
-                                  <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
-                                </ContextMenuItem>
-                                <ContextMenuItem>
-                                  Price
-                                  <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
-                                </ContextMenuItem>
-                              </ContextMenuSubContent>
-                            </ContextMenuSub>
-                            <ContextMenuSeparator />
-                            <ContextMenuCheckboxItem
-                              checked={result.status === 'In Stock'}
-                              onSelect={() => {
-                                const formData = new FormData();
-                                formData.append("id", result.id);
-                                formData.append("status", 'In Stock');
-                                formData.append("intent", 'updateServiceOnOrders');
-                                submit(formData, { method: "post", });
-                              }}
-                            >In Stock</ContextMenuCheckboxItem>
-                            <ContextMenuCheckboxItem
-                              checked={result.status === 'On Order'}
-                              onSelect={() => {
-                                const formData = new FormData();
-                                formData.append("id", result.id);
-                                formData.append("status", 'On Order');
-                                formData.append("intent", 'updateServiceOnOrders');
-                                submit(formData, { method: "post", });
-                              }}
-                            >On Order</ContextMenuCheckboxItem>
-                            <ContextMenuCheckboxItem
-                              checked={result.status === 'Completed'}
-                              onSelect={() => {
-                                const formData = new FormData();
-                                formData.append("id", result.id);
-                                formData.append("status", 'Completed');
-                                formData.append("intent", 'updateServiceOnOrders');
-                                submit(formData, { method: "post", });
-                              }}
-                            >Completed</ContextMenuCheckboxItem>
-                            <ContextMenuCheckboxItem
-                              checked={result.status === 'Back Order'}
-                              onSelect={() => {
-                                const formData = new FormData();
-                                formData.append("id", result.id);
-                                formData.append("status", 'Back Order');
-                                formData.append("intent", 'updateServiceOnOrders');
-                                submit(formData, { method: "post", });
-                              }}
-                            >Back Order</ContextMenuCheckboxItem>
-                          </ContextMenuContent>
-                        </ContextMenu>
-                      </div>
-                      <span>
-                        x{" "}{" "}{result.quantity}
+                                <div className="hidden text-sm text-muted-foreground md:inline">
+                                  <div className='flex items-center'>
+                                    <div className="font-medium">
+                                      <EditableText
+                                        value={hours}
+                                        fieldName="name"
+                                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                        buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                        buttonLabel={`Edit name`}
+                                        inputLabel={`Edit name`}
+                                      >
+                                        <input type="hidden" name="intent" value='updateHr' />
+                                        <input type="hidden" name="id" value={result.id} />
+                                        <input type="hidden" name="colName" value='hr' />
+                                      </EditableText>
 
-                      </span>
-                    </li>
-                  ))}
+                                    </div>
+                                    <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                  </div>
+                                </div>
+                                {result.status && (
+                                  <div>
+                                    <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                  </div>
+                                )}
+                              </div>
+                            </ContextMenuTrigger>
+                            <ContextMenuContent className='border-border'>
+                              <ContextMenuSub>
+                                <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                                <ContextMenuSubContent className="w-48 border-border">
+                                  <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                  <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                  <ContextMenuSeparator />
+                                  <ContextMenuItem>
+                                    Est. Hours
+                                    <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                  </ContextMenuItem>
+                                  <ContextMenuItem>
+                                    Price
+                                    <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                  </ContextMenuItem>
+                                </ContextMenuSubContent>
+                              </ContextMenuSub>
+                              <ContextMenuSeparator />
+                              <ContextMenuCheckboxItem
+                                checked={result.status === 'In Stock'}
+                                onSelect={() => {
+                                  const formData = new FormData();
+                                  formData.append("id", result.id);
+                                  formData.append("status", 'In Stock');
+                                  formData.append("intent", 'updateServiceOnOrders');
+                                  submit(formData, { method: "post", });
+                                }}
+                              >In Stock</ContextMenuCheckboxItem>
+                              <ContextMenuCheckboxItem
+                                checked={result.status === 'On Order'}
+                                onSelect={() => {
+                                  const formData = new FormData();
+                                  formData.append("id", result.id);
+                                  formData.append("status", 'On Order');
+                                  formData.append("intent", 'updateServiceOnOrders');
+                                  submit(formData, { method: "post", });
+                                }}
+                              >On Order</ContextMenuCheckboxItem>
+                              <ContextMenuCheckboxItem
+                                checked={result.status === 'Completed'}
+                                onSelect={() => {
+                                  const formData = new FormData();
+                                  formData.append("id", result.id);
+                                  formData.append("status", 'Completed');
+                                  formData.append("intent", 'updateServiceOnOrders');
+                                  submit(formData, { method: "post", });
+                                }}
+                              >Completed</ContextMenuCheckboxItem>
+                              <ContextMenuCheckboxItem
+                                checked={result.status === 'Back Order'}
+                                onSelect={() => {
+                                  const formData = new FormData();
+                                  formData.append("id", result.id);
+                                  formData.append("status", 'Back Order');
+                                  formData.append("intent", 'updateServiceOnOrders');
+                                  submit(formData, { method: "post", });
+                                }}
+                              >Back Order</ContextMenuCheckboxItem>
+                            </ContextMenuContent>
+                          </ContextMenu>
+                        </div>
+                        <span>
+                          x{" "}{" "}{result.quantity}
+
+                        </span>
+                      </li>
+                    )
+                  })}
                 </ul>
                 <Separator className="my-4" />
                 <div className="font-semibold">Work Order Parts</div>
@@ -1252,7 +1537,7 @@ export default function Dashboard() {
                   </li>
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span>${partsSubTotal + serviceSubTotal}</span>
+                    <span>${totalPreTax}</span>
                   </li>
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Tax</span>
@@ -1457,7 +1742,7 @@ export async function loader({ request, params }: LoaderFunction) {
   if (!user) { redirect("/login"); }
   const id = params.workOrderId
   const order = await prisma.workOrder.findUnique({
-    where: { workOrderId: id },
+    where: { workOrderId: Number(id) },
     select: {
       workOrderId: true,
       unit: true,
@@ -1503,6 +1788,244 @@ export async function loader({ request, params }: LoaderFunction) {
           timeToContact: true,
           conversationId: true,
           billingAddress: true,
+          Finance: {
+            select: {
+              financeManager: true,
+              userEmail: true,
+              userName: true,
+              financeManagerName: true,
+              //: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              phone: true,
+              name: true,
+              address: true,
+              city: true,
+              postal: true,
+              province: true,
+              dl: true,
+              typeOfContact: true,
+              timeToContact: true,
+              dob: true,
+              //: true,
+              othTax: true,
+              optionsTotal: true,
+              lienPayout: true,
+              leadNote: true,
+              sendToFinanceNow: true,
+              dealNumber: true,
+              iRate: true,
+              months: true,
+              discount: true,
+              total: true,
+              onTax: true,
+              on60: true,
+              biweekly: true,
+              weekly: true,
+              weeklyOth: true,
+              biweekOth: true,
+              oth60: true,
+              weeklyqc: true,
+              biweeklyqc: true,
+              qc60: true,
+              deposit: true,
+              biweeklNatWOptions: true,
+              weeklylNatWOptions: true,
+              nat60WOptions: true,
+              weeklyOthWOptions: true,
+              biweekOthWOptions: true,
+              oth60WOptions: true,
+              biweeklNat: true,
+              weeklylNat: true,
+              nat60: true,
+              qcTax: true,
+              otherTax: true,
+              totalWithOptions: true,
+              otherTaxWithOptions: true,
+              desiredPayments: true,
+              admin: true,
+              commodity: true,
+              pdi: true,
+              discountPer: true,
+              userLoanProt: true,
+              userTireandRim: true,
+              userGap: true,
+              userExtWarr: true,
+              userServicespkg: true,
+              deliveryCharge: true,
+              vinE: true,
+              lifeDisability: true,
+              rustProofing: true,
+              userOther: true,
+              //: true,
+              referral: true,
+              visited: true,
+              bookedApt: true,
+              aptShowed: true,
+              aptNoShowed: true,
+              testDrive: true,
+              metService: true,
+              metManager: true,
+              metParts: true,
+              sold: true,
+              depositMade: true,
+              refund: true,
+              turnOver: true,
+              financeApp: true,
+              approved: true,
+              signed: true,
+              pickUpSet: true,
+              demoed: true,
+              delivered: true,
+              lastContact: true,
+              status: true,
+              customerState: true,
+              result: true,
+              timesContacted: true,
+              nextAppointment: true,
+              followUpDay: true,
+              deliveryDate: true,
+              deliveredDate: true,
+              notes: true,
+              visits: true,
+              progress: true,
+              metSalesperson: true,
+              metFinance: true,
+              financeApplication: true,
+              pickUpDate: true,
+              pickUpTime: true,
+              depositTakenDate: true,
+              docsSigned: true,
+              tradeRepairs: true,
+              seenTrade: true,
+              lastNote: true,
+              applicationDone: true,
+              licensingSent: true,
+              liceningDone: true,
+              refunded: true,
+              cancelled: true,
+              lost: true,
+              dLCopy: true,
+              insCopy: true,
+              testDrForm: true,
+              voidChq: true,
+              loanOther: true,
+              signBill: true,
+              ucda: true,
+              tradeInsp: true,
+              customerWS: true,
+              otherDocs: true,
+              urgentFinanceNote: true,
+              funded: true,
+              leadSource: true,
+              financeDeptProductsTotal: true,
+              bank: true,
+              loanNumber: true,
+              idVerified: true,
+              dealerCommission: true,
+              financeCommission: true,
+              salesCommission: true,
+              firstPayment: true,
+              loanMaturity: true,
+              quoted: true,
+              //: true,
+              InPerson: true,
+              Phone: true,
+              SMS: true,
+              Email: true,
+              Other: true,
+              //------: true,
+              //: true,
+              paintPrem: true,
+              licensing: true,
+              stockNum: true,
+              options: true,
+              accessories: true,
+              freight: true,
+              labour: true,
+              year: true,
+              brand: true,
+              mileage: true,
+              model: true,
+              model1: true,
+              color: true,
+              modelCode: true,
+              msrp: true,
+              trim: true,
+              vin: true,
+              bikeStatus: true,
+              invId: true,
+              //: true,
+              tradeValue: true,
+              tradeDesc: true,
+              tradeColor: true,
+              tradeYear: true,
+              tradeMake: true,
+              tradeVin: true,
+              tradeTrim: true,
+              tradeMileage: true,
+              tradeLocation: true,
+              lien: true,
+              //: true,
+              id: true,
+              activixId: true,
+              theRealActId: true,
+              createdAt: true,
+              updatedAt: true,
+              FinanceUnit: {
+                select: {
+                  paintPrem: true,
+                  licensing: true,
+                  stockNum: true,
+                  options: true,
+                  accessories: true,
+                  freight: true,
+                  labour: true,
+                  year: true,
+                  brand: true,
+                  mileage: true,
+                  model: true,
+                  model1: true,
+                  color: true,
+                  modelCode: true,
+                  msrp: true,
+                  trim: true,
+                  vin: true,
+                  bikeStatus: true,
+                  invId: true,
+                  location: true,
+                  id: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  financeId: true,
+                }
+              },
+            }
+          },
+          ServiceUnit: {
+            select: {
+              id: true,
+              createdAt: true,
+              updatedAt: true,
+              price: true,
+              brand: true,
+              model: true,
+              color: true,
+              accessories: true,
+              options: true,
+              year: true,
+              vin: true,
+              trim: true,
+              mileage: true,
+              location: true,
+              condition: true,
+              repairs: true,
+              stockNum: true,
+              licensing: true,
+              tradeEval: true,
+            }
+          },
         },
       },
       AccOrders: {
@@ -1555,57 +2078,6 @@ export async function loader({ request, params }: LoaderFunction) {
           },
         }
       },
-      FinanceUnit: {
-        select: {
-          paintPrem: true,
-          licensing: true,
-          stockNum: true,
-          options: true,
-          accessories: true,
-          freight: true,
-          labour: true,
-          year: true,
-          brand: true,
-          mileage: true,
-          model: true,
-          model1: true,
-          color: true,
-          modelCode: true,
-          msrp: true,
-          trim: true,
-          vin: true,
-          bikeStatus: true,
-          invId: true,
-          location: true,
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          financeId: true,
-        }
-      },
-      ServiceUnit: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          price: true,
-          brand: true,
-          model: true,
-          color: true,
-          accessories: true,
-          options: true,
-          year: true,
-          vin: true,
-          trim: true,
-          mileage: true,
-          location: true,
-          condition: true,
-          repairs: true,
-          stockNum: true,
-          licensing: true,
-          tradeEval: true,
-        }
-      },
       Payments: {
         select: {
           id: true,
@@ -1618,193 +2090,6 @@ export async function loader({ request, params }: LoaderFunction) {
           userEmail: true,
           accOrderId: true,
         },
-      },
-      Finance: {
-        select: {
-          financeManager: true,
-          userEmail: true,
-          userName: true,
-          financeManagerName: true,
-          //: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          phone: true,
-          name: true,
-          address: true,
-          city: true,
-          postal: true,
-          province: true,
-          dl: true,
-          typeOfContact: true,
-          timeToContact: true,
-          dob: true,
-          //: true,
-          othTax: true,
-          optionsTotal: true,
-          lienPayout: true,
-          leadNote: true,
-          sendToFinanceNow: true,
-          dealNumber: true,
-          iRate: true,
-          months: true,
-          discount: true,
-          total: true,
-          onTax: true,
-          on60: true,
-          biweekly: true,
-          weekly: true,
-          weeklyOth: true,
-          biweekOth: true,
-          oth60: true,
-          weeklyqc: true,
-          biweeklyqc: true,
-          qc60: true,
-          deposit: true,
-          biweeklNatWOptions: true,
-          weeklylNatWOptions: true,
-          nat60WOptions: true,
-          weeklyOthWOptions: true,
-          biweekOthWOptions: true,
-          oth60WOptions: true,
-          biweeklNat: true,
-          weeklylNat: true,
-          nat60: true,
-          qcTax: true,
-          otherTax: true,
-          totalWithOptions: true,
-          otherTaxWithOptions: true,
-          desiredPayments: true,
-          admin: true,
-          commodity: true,
-          pdi: true,
-          discountPer: true,
-          userLoanProt: true,
-          userTireandRim: true,
-          userGap: true,
-          userExtWarr: true,
-          userServicespkg: true,
-          deliveryCharge: true,
-          vinE: true,
-          lifeDisability: true,
-          rustProofing: true,
-          userOther: true,
-          //: true,
-          referral: true,
-          visited: true,
-          bookedApt: true,
-          aptShowed: true,
-          aptNoShowed: true,
-          testDrive: true,
-          metService: true,
-          metManager: true,
-          metParts: true,
-          sold: true,
-          depositMade: true,
-          refund: true,
-          turnOver: true,
-          financeApp: true,
-          approved: true,
-          signed: true,
-          pickUpSet: true,
-          demoed: true,
-          delivered: true,
-          lastContact: true,
-          status: true,
-          customerState: true,
-          result: true,
-          timesContacted: true,
-          nextAppointment: true,
-          followUpDay: true,
-          deliveryDate: true,
-          deliveredDate: true,
-          notes: true,
-          visits: true,
-          progress: true,
-          metSalesperson: true,
-          metFinance: true,
-          financeApplication: true,
-          pickUpDate: true,
-          pickUpTime: true,
-          depositTakenDate: true,
-          docsSigned: true,
-          tradeRepairs: true,
-          seenTrade: true,
-          lastNote: true,
-          applicationDone: true,
-          licensingSent: true,
-          liceningDone: true,
-          refunded: true,
-          cancelled: true,
-          lost: true,
-          dLCopy: true,
-          insCopy: true,
-          testDrForm: true,
-          voidChq: true,
-          loanOther: true,
-          signBill: true,
-          ucda: true,
-          tradeInsp: true,
-          customerWS: true,
-          otherDocs: true,
-          urgentFinanceNote: true,
-          funded: true,
-          leadSource: true,
-          financeDeptProductsTotal: true,
-          bank: true,
-          loanNumber: true,
-          idVerified: true,
-          dealerCommission: true,
-          financeCommission: true,
-          salesCommission: true,
-          firstPayment: true,
-          loanMaturity: true,
-          quoted: true,
-          //: true,
-          InPerson: true,
-          Phone: true,
-          SMS: true,
-          Email: true,
-          Other: true,
-          //------: true,
-          //: true,
-          paintPrem: true,
-          licensing: true,
-          stockNum: true,
-          options: true,
-          accessories: true,
-          freight: true,
-          labour: true,
-          year: true,
-          brand: true,
-          mileage: true,
-          model: true,
-          model1: true,
-          color: true,
-          modelCode: true,
-          msrp: true,
-          trim: true,
-          vin: true,
-          bikeStatus: true,
-          invId: true,
-          //: true,
-          tradeValue: true,
-          tradeDesc: true,
-          tradeColor: true,
-          tradeYear: true,
-          tradeMake: true,
-          tradeVin: true,
-          tradeTrim: true,
-          tradeMileage: true,
-          tradeLocation: true,
-          lien: true,
-          //: true,
-          id: true,
-          activixId: true,
-          theRealActId: true,
-          createdAt: true,
-          updatedAt: true,
-        }
       },
       ServicesOnWorkOrders: {
         select: {
@@ -1829,47 +2114,19 @@ export async function loader({ request, params }: LoaderFunction) {
           }
         }
       }
-
     },
   });
-
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
-    select: { userTax: true },
+    select: {
+      userTax: true,
+      userLabour: true,
+    },
   });
   const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
-
-  return json({ order, user, tax, dealerImage });
+  const services = await prisma.services.findMany({})
+  return json({ order, user, tax, dealerImage, services });
 }
-
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-const calculateTotalAccessoriesCost = (order) => {
-  if (!order || !order.AccOrders) {
-    return 0;
-  }
-
-  return order.AccOrders.reduce((totalAccCost, accOrder) => {
-    if (!accOrder.AccessoriesOnOrders) {
-      return totalAccCost;
-    }
-
-    const accOrderCost = accOrder.AccessoriesOnOrders.reduce((total, accessoryOnOrder) => {
-      return total + (accessoryOnOrder.quantity * accessoryOnOrder.accessory.price);
-    }, 0);
-
-    return totalAccCost + accOrderCost;
-  }, 0);
-};
-
-const calculateTotalAmountPaid = (order) => {
-  if (!order || !order.Payments) { return 0; }
-  return order.Payments.reduce((total, payment) => {
-    return total + payment.amountPaid;
-  }, 0);
-};
 
 
 export async function action({ request, params }: ActionFunction) {
@@ -1878,7 +2135,421 @@ export async function action({ request, params }: ActionFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email");
   const user = await GetUser(email)
+  const id = params.workOrderId
+  console.log(formPayload, 'formpayload')
+  if (intent === "createBooking") {
+    const order = await prisma.workOrder.findUnique({
+      where: { workOrderId: Number(id) },
+      select: {
+        workOrderId: true,
+        unit: true,
+        mileage: true,
+        vin: true,
+        tag: true,
+        motor: true,
+        budget: true,
+        totalLabour: true,
+        totalParts: true,
+        subTotal: true,
+        total: true,
+        writer: true,
+        userEmail: true,
+        tech: true,
+        notes: true,
+        customerSig: true,
+        status: true,
+        location: true,
+        quoted: true,
+        paid: true,
+        remaining: true,
+        FinanceUnitId: true,
+        financeId: true,
+        clientfileId: true,
+        createdAt: true,
+        updatedAt: true,
+        Clientfile: {
+          select: {
+            id: true,
+            financeId: true,
+            firstName: true,
+            lastName: true,
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
+            city: true,
+            postal: true,
+            province: true,
+            dl: true,
+            typeOfContact: true,
+            timeToContact: true,
+            conversationId: true,
+            billingAddress: true,
+            Finance: {
+              select: {
+                financeManager: true,
+                userEmail: true,
+                userName: true,
+                financeManagerName: true,
+                //: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                name: true,
+                address: true,
+                city: true,
+                postal: true,
+                province: true,
+                dl: true,
+                typeOfContact: true,
+                timeToContact: true,
+                dob: true,
+                //: true,
+                othTax: true,
+                optionsTotal: true,
+                lienPayout: true,
+                leadNote: true,
+                sendToFinanceNow: true,
+                dealNumber: true,
+                iRate: true,
+                months: true,
+                discount: true,
+                total: true,
+                onTax: true,
+                on60: true,
+                biweekly: true,
+                weekly: true,
+                weeklyOth: true,
+                biweekOth: true,
+                oth60: true,
+                weeklyqc: true,
+                biweeklyqc: true,
+                qc60: true,
+                deposit: true,
+                biweeklNatWOptions: true,
+                weeklylNatWOptions: true,
+                nat60WOptions: true,
+                weeklyOthWOptions: true,
+                biweekOthWOptions: true,
+                oth60WOptions: true,
+                biweeklNat: true,
+                weeklylNat: true,
+                nat60: true,
+                qcTax: true,
+                otherTax: true,
+                totalWithOptions: true,
+                otherTaxWithOptions: true,
+                desiredPayments: true,
+                admin: true,
+                commodity: true,
+                pdi: true,
+                discountPer: true,
+                userLoanProt: true,
+                userTireandRim: true,
+                userGap: true,
+                userExtWarr: true,
+                userServicespkg: true,
+                deliveryCharge: true,
+                vinE: true,
+                lifeDisability: true,
+                rustProofing: true,
+                userOther: true,
+                //: true,
+                referral: true,
+                visited: true,
+                bookedApt: true,
+                aptShowed: true,
+                aptNoShowed: true,
+                testDrive: true,
+                metService: true,
+                metManager: true,
+                metParts: true,
+                sold: true,
+                depositMade: true,
+                refund: true,
+                turnOver: true,
+                financeApp: true,
+                approved: true,
+                signed: true,
+                pickUpSet: true,
+                demoed: true,
+                delivered: true,
+                lastContact: true,
+                status: true,
+                customerState: true,
+                result: true,
+                timesContacted: true,
+                nextAppointment: true,
+                followUpDay: true,
+                deliveryDate: true,
+                deliveredDate: true,
+                notes: true,
+                visits: true,
+                progress: true,
+                metSalesperson: true,
+                metFinance: true,
+                financeApplication: true,
+                pickUpDate: true,
+                pickUpTime: true,
+                depositTakenDate: true,
+                docsSigned: true,
+                tradeRepairs: true,
+                seenTrade: true,
+                lastNote: true,
+                applicationDone: true,
+                licensingSent: true,
+                liceningDone: true,
+                refunded: true,
+                cancelled: true,
+                lost: true,
+                dLCopy: true,
+                insCopy: true,
+                testDrForm: true,
+                voidChq: true,
+                loanOther: true,
+                signBill: true,
+                ucda: true,
+                tradeInsp: true,
+                customerWS: true,
+                otherDocs: true,
+                urgentFinanceNote: true,
+                funded: true,
+                leadSource: true,
+                financeDeptProductsTotal: true,
+                bank: true,
+                loanNumber: true,
+                idVerified: true,
+                dealerCommission: true,
+                financeCommission: true,
+                salesCommission: true,
+                firstPayment: true,
+                loanMaturity: true,
+                quoted: true,
+                //: true,
+                InPerson: true,
+                Phone: true,
+                SMS: true,
+                Email: true,
+                Other: true,
+                //------: true,
+                //: true,
+                paintPrem: true,
+                licensing: true,
+                stockNum: true,
+                options: true,
+                accessories: true,
+                freight: true,
+                labour: true,
+                year: true,
+                brand: true,
+                mileage: true,
+                model: true,
+                model1: true,
+                color: true,
+                modelCode: true,
+                msrp: true,
+                trim: true,
+                vin: true,
+                bikeStatus: true,
+                invId: true,
+                //: true,
+                tradeValue: true,
+                tradeDesc: true,
+                tradeColor: true,
+                tradeYear: true,
+                tradeMake: true,
+                tradeVin: true,
+                tradeTrim: true,
+                tradeMileage: true,
+                tradeLocation: true,
+                lien: true,
+                //: true,
+                id: true,
+                activixId: true,
+                theRealActId: true,
+                createdAt: true,
+                updatedAt: true,
+                FinanceUnit: {
+                  select: {
+                    paintPrem: true,
+                    licensing: true,
+                    stockNum: true,
+                    options: true,
+                    accessories: true,
+                    freight: true,
+                    labour: true,
+                    year: true,
+                    brand: true,
+                    mileage: true,
+                    model: true,
+                    model1: true,
+                    color: true,
+                    modelCode: true,
+                    msrp: true,
+                    trim: true,
+                    vin: true,
+                    bikeStatus: true,
+                    invId: true,
+                    location: true,
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    financeId: true,
+                  }
+                },
+              }
+            },
+            ServiceUnit: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                price: true,
+                brand: true,
+                model: true,
+                color: true,
+                accessories: true,
+                options: true,
+                year: true,
+                vin: true,
+                trim: true,
+                mileage: true,
+                location: true,
+                condition: true,
+                repairs: true,
+                stockNum: true,
+                licensing: true,
+                tradeEval: true,
+              }
+            },
+          },
+        },
+        AccOrders: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            userEmail: true,
+            userName: true,
+            dept: true,
+            total: true,
+            discount: true,
+            discPer: true,
+            paid: true,
+            paidDate: true,
+            status: true,
+            workOrderId: true,
+            note: true,
+            financeId: true,
+            clientfileId: true,
+            AccessoriesOnOrders: {
+              select: {
+                id: true,
+                quantity: true,
+                accOrderId: true,
+                status: true,
+                orderNumber: true,
+                OrderInvId: true,
+                accessoryId: true,
+                accessory: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    partNumber: true,
+                    brand: true,
+                    name: true,
+                    price: true,
+                    cost: true,
+                    quantity: true,
+                    description: true,
+                    category: true,
+                    subCategory: true,
+                    onOrder: true,
+                    distributer: true,
+                    location: true,
+                  },
+                },
+              },
+            },
+          }
+        },
+        Payments: {
+          select: {
+            id: true,
+            createdAt: true,
+            paymentType: true,
+            amountPaid: true,
+            cardNum: true,
+            receiptId: true,
+            financeId: true,
+            userEmail: true,
+            accOrderId: true,
+          },
+        },
+        ServicesOnWorkOrders: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            quantity: true,
+            status: true,
+            workOrderId: true,
+            serviceId: true,
+            hr: true,
+            service: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                description: true,
+                estHr: true,
+                service: true,
+                price: true,
+              }
+            }
+          }
+        }
+      },
+    });
+    const start = new Date();
+    start.setHours(9, 0, 0, 0);
 
+    const totalHours = order?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+      const hours = serviceOnOrder.hr ?? serviceOnOrder.service.estHr ?? 0;
+      const quantity = serviceOnOrder.quantity ?? 1;
+      const entryHours = hours * quantity;
+      return total + entryHours;
+    }, 0);
+
+    console.log(`Total Hours: ${totalHours}`);
+
+    const end = new Date(start);
+    end.setHours(end.getHours() + totalHours);
+
+    await prisma.workOrderApts.create({
+      data: {
+        start: String(start),
+        end: String(end),
+        workOrderId: order?.workOrderId,
+        writer: order?.writer,
+        title: order?.Clientfile?.name,
+        unit: order?.unit,
+        mileage: order?.mileage,
+        vin: order?.vin,
+        tag: order?.tag,
+        motor: order?.motor,
+        color: order?.color,
+        location: order?.location,
+        techEmail: 'serviceDesk@email.com',
+        tech: 'Service Desk',
+        resourceId: 'Service Desk',
+      }
+    })
+
+    return redirect(`/dealer/service/workOrder/calendar/${id}`)
+  }
   if (intent === "scanOrder") {
     await prisma.customerSync.update({
       where: { userEmail: email },
@@ -1962,13 +2633,16 @@ export async function action({ request, params }: ActionFunction) {
   }
   if (intent === "addNewServiceUnit") {
     const update = await prisma.workOrder.update({
-      where: { workOrderId: formPayload.workOrderId },
+      where: { workOrderId: Number(formPayload.workOrderId) },
       data: {
         unit: (`${formPayload.year} ${formPayload.brand} ${formPayload.model}`),
         mileage: formPayload.mileage,
         vin: formPayload.vin,
         tag: formPayload.tag,
         motor: formPayload.motor,
+        location: formPayload.location,
+        color: formPayload.color,
+
       }
     });
     const create = await prisma.serviceUnit.create({
@@ -1981,11 +2655,105 @@ export async function action({ request, params }: ActionFunction) {
         mileage: formPayload.mileage,
         location: formPayload.location,
         tag: formPayload.tag,
+        clientfileId: formPayload.clientfileId,
       }
     });
 
+    return json({ update, create })
+  }
+  if (intent === "addNewServiceToWorkOrder") {
+    const service = await prisma.services.create({
+      data: {
+        description: formPayload.description,
+        service: formPayload.name,
+        estHr: parseFloat(formPayload.hr),
+      }
+    })
+    const serviceOnWorkOrder = await prisma.servicesOnWorkOrders.create({
+      data: {
+        quantity: Number(formPayload.quantity),
+        hr: parseFloat(formPayload.hr),
+        status: 'Quote',
+        serviceId: service.id,
+        workOrderId: Number(formPayload.workOrderId),
+      }
+    })
+
+    return json({ serviceOnWorkOrder })
+  }
+  if (intent === "addServiceToWorkOrder") {
+    const serviceOnWorkOrder = await prisma.servicesOnWorkOrders.create({
+      data: {
+        quantity: 1,
+        hr: parseFloat(formPayload.hr),
+        status: 'Quote',
+        serviceId: formPayload.serviceId,
+        workOrderId: Number(formPayload.workOrderId),
+      }
+    })
+
+    return json({ serviceOnWorkOrder })
+  }
+  if (intent === "addAccToWorkOrder") {
+    let addToWorkOrder
+    if (formPayload.accOrderId === null) {
+      console.log('accOrderId is null')
+      const accOrder = await prisma.accOrder.create({
+        data: {
+          userEmail: email,
+          userName: user.username,
+          dept: 'Service',
+          status: 'Quote',
+          workOrderId: formPayload.workOrderId,
+        }
+      })
+
+      addToWorkOrder = await prisma.accessoriesOnOrders.create({
+        data: {
+
+          accessoryId: formPayload.accessoryId,
+          accOrderId: accOrder.id,
+          quantity: 1,
+        }
+      })
+    } else {
+      console.log('accOrderId is NOT null')
+
+      addToWorkOrder = await prisma.accessoriesOnOrders.create({
+        data: {
+          accessoryId: formPayload.accessoryId,
+          accOrderId: formPayload.accOrderId,
+          quantity: 1,
+        }
+      })
+    }
+    console.log(addToWorkOrder, 'accOrderId')
+
+    return json({ addToWorkOrder })
+  }
+  if (intent === "updateStatus") {
+    const update = await prisma.workOrder.update({
+      where: { workOrderId: Number(formPayload.id) },
+
+      data: {
+        status: formPayload.status,
+        total: parseFloat(formPayload.total),
+        waiter: formPayload.status === 'Waiter' ? true : null
+      }
+    });
     return json({ update })
   }
+  if (intent === "updateNote") {
+    console.log(';hit update note')
+    const update = await prisma.workOrder.update({
+      where: { workOrderId: Number(formPayload.id) },
+      data: {
+        notes: formPayload.note,
+      }
+    });
+    return json({ update })
+  }
+
 }
 
 export const meta = () => {

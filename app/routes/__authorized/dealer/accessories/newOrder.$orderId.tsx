@@ -143,7 +143,7 @@ export async function loader({ request, params }: LoaderFunction) {
   if (!user) {
     redirect("/login");
   }
-  const id = params.orderId
+  const id = params.workOrderId
   const order = await prisma.accOrder.findUnique({
     where: { id: id },
     select: {

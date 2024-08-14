@@ -200,6 +200,29 @@ import { Wrench } from "lucide-react";
 import { Shirt } from "lucide-react";
 import PrintReceiptAcc from "../document/printReceiptAcc";
 import { Receipt } from "lucide-react";
+import WorkOrderSales from "~/components/leads/workOrderSales";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion"
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "~/components/ui/context-menu"
+import { EditableText } from "~/components/actions/shared";
 
 
 /**  const [formData, setFormData] = useState({
@@ -234,8 +257,9 @@ export const headers = ({ loaderHeaders, parentHeaders }) => {
 };
 
 export default function Dashboard() {
-  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, dealerImage } = useLoaderData();
-  //console.log(clientFile, ' in default')
+  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, services, dealerImage, tax, orders } = useLoaderData();
+  console.log(orders, tax, services, ' inside workordersales2222')
+
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
   const submit = useSubmit();
@@ -2798,10 +2822,98 @@ export default function Dashboard() {
       toReceiptAcc[`price${i}`] = '';
     }
   }
+  // service
 
+  console.log(orders, tax, services, ' inside workordersales')
+
+  let workOrder = useFetcher();
+  let ref = useRef();
+  let search = useFetcher();
+  let product = useFetcher();
+
+
+  let unitCard = [
+    { name: 'year', label: 'Year', },
+    { name: 'brand', label: 'Brand', },
+    { name: 'model', label: 'Model', },
+    { name: 'color', label: 'Color', },
+    { name: 'vin', label: 'VIN', },
+    { name: 'trim', label: 'Trim', },
+    { name: 'mileage', label: 'Mileage', },
+    { name: 'location', label: 'Location', },
+    { name: 'motor', label: 'Motor', },
+    { name: 'tag', label: 'Tag', },
+  ];
+
+  const [firstPageService, setFirstPageService] = useState(true);
+  const [secPageService, setSecPageService] = useState(false);
+  const [serviceOrder, setServiceOrder] = useState();
+  console.log(serviceOrder, 'serviceOrder')
+  function handleNextPage() {
+    if (firstPageService === true) {
+      setFirstPageService(false)
+      setSecPageService(true)
+    }
+    if (secPageService === true) {
+      setFirstPageService(true)
+      setSecPageService(false)
+    }
+  }
+  function handlePrevPage() {
+    if (firstPageService === true) {
+      setFirstPageService(false)
+      setSecPageService(true)
+    }
+    if (secPageService === true) {
+      setFirstPageService(true)
+      setSecPageService(false)
+    }
+  }
+  const [totalService, setTotalService] = useState(0.00);
+
+  const [serviceSubTotal, setServiceSubTotal] = useState(0.00);
+  const [partsSubTotal, setPartsSubTotal] = useState(0.00);
+  const [totalPreTax, setTotalPreTax] = useState(0.00);
+  useEffect(() => {
+    if (serviceOrder) {
+      const partsSub = serviceOrder?.AccOrders?.reduce((total, accOrder) => {
+        return total + accOrder?.AccessoriesOnOrders?.reduce((subTotal, accessoryOnOrder) => {
+          return subTotal + (accessoryOnOrder.accessory.price * accessoryOnOrder.quantity);
+        }, 0);
+      }, 0);
+      setPartsSubTotal(partsSub.toFixed(2))
+
+      const serviceSub = serviceOrder?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+        const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr || 0.00;
+
+        const subtotal = hours * tax.userLabour * serviceOnOrder.quantity;
+
+        return total + subtotal;
+      }, 0);
+
+      setServiceSubTotal(serviceSub.toFixed(2))
+
+      const totalPreTax = partsSub + serviceSub;
+      setTotalPreTax(totalPreTax.toFixed(2));
+
+      const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
+      const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
+      const calculatedTotal = discDollar && discDollar > 0.00 ? total1 : total2;
+
+      setTotalService(calculatedTotal);
+      const totalAmountPaid2 = serviceOrder.Payments.reduce((total, payment) => {
+        return total + payment.amountPaid;
+      }, 0);
+      if (totalAmountPaid2) {
+        setTotalAmountPaid(totalAmountPaid2)
+      }
+      console.log(partsSubTotal, serviceSubTotal, partsSubTotal + serviceSubTotal, 'totals')
+
+    }
+  }, [serviceOrder]);
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
+    <div className="flex min-h-screen w-full flex-col bg-background">
       <aside className="fixed inset-y-0 left-0 z-10  sm:w-[50px] sm:flex-col sm:border-r sm:bg-background sm:flex sm:border-border">
         <SidebarNav mergedFinanceList={mergedFinanceList} finance={finance} />
       </aside>
@@ -2810,7 +2922,7 @@ export default function Dashboard() {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-6">
-              <Card className="sm:col-span-2 bg-background text-foreground rounded-lg  flex flex-col h-full" x-chunk="dashboard-05-chunk-0"  >
+              <Card className="sm:col-span-2 text-foreground rounded-lg  flex flex-col h-full" x-chunk="dashboard-05-chunk-0"  >
                 <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
                   <div className="grid">
                     <CardTitle className="group flex items-center text-sm">
@@ -3004,7 +3116,6 @@ export default function Dashboard() {
                           <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
                         </div>
                         <div className="relative mt-4">
-
                           <Select name='typeOfContact' defaultValue={data.typeOfContact} >
                             <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
                               <SelectValue defaultValue={data.typeOfContact} />
@@ -3045,7 +3156,7 @@ export default function Dashboard() {
                   </Dialog>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2" className="bg-background text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
+              <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
                 <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                   <div className="grid">
                     <CardTitle className="group flex items-center text-sm">
@@ -3137,7 +3248,7 @@ export default function Dashboard() {
                   </Button>
                 </CardFooter>
               </Card>
-              <Card x-chunk="dashboard-05-chunk-2" className="bg-background text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
+              <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
                 <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                   <div className="grid">
                     <CardTitle className="group flex items-center text-sm">
@@ -3245,7 +3356,7 @@ export default function Dashboard() {
                       </div>
 
                     </CardHeader>
-                    <CardContent className="max-h-[500px] h-auto flex-grow !grow  p-6 text-sm bg-background overflow-y-auto">
+                    <CardContent className="max-h-[500px] h-auto flex-grow !grow  p-6 text-sm  overflow-y-auto">
 
                       {editUnits === false && (
                         <ul className="grid gap-3">
@@ -3391,7 +3502,7 @@ export default function Dashboard() {
                       </div>
 
                     </CardHeader>
-                    <CardContent className="flex-grow !grow  p-6 text-sm bg-background overflow-y-auto">
+                    <CardContent className="flex-grow !grow  p-6 text-sm  overflow-y-auto">
 
                       {editTradeUnits === false && (
                         <ul className="grid gap-3">
@@ -5342,7 +5453,994 @@ export default function Dashboard() {
                   </div>
                 </div>
               </TabsContent>
-              <TabsContent value="Service">Content soon to come!</TabsContent>
+              <TabsContent value="Service">
+                <main className="grid flex-1 items-start  lg:grid-cols-2 xl:grid-cols-2">
+                  {serviceOrder && (
+                    <Tabs defaultValue="week" className='mr-2'>
+                      <div className="flex items-center">
+                        <TabsList>
+                          <TabsTrigger value="week"> <File className="h-5 w-5" /></TabsTrigger>
+                          <TabsTrigger value="Parts"> <Wrench className="h-5 w-5" /></TabsTrigger>
+                        </TabsList>
+                      </div>
+                      <TabsContent value="week">
+                        <Card x-chunk="dashboard-05-chunk-3">
+                          <CardHeader className="px-7 bg-muted/50 text-lg">
+                            <CardTitle>Work Order</CardTitle>
+                            <CardDescription>
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className=" h-auto max-h-[700px] overflow-y-auto">
+                            <div className=' grid grid-cols-1'>
+                              <Accordion type="single" collapsible className="w-full border-border">
+                                <AccordionItem value="item-1" className='border-border'>
+                                  <AccordionTrigger>Unit</AccordionTrigger>
+                                  <AccordionContent>
+                                    <div className='grid grid-cols-1'>
+                                      <Table>
+                                        <TableHeader>
+                                          <TableRow className='border-border'>
+                                            <TableHead>
+                                              Unit
+                                            </TableHead>
+                                            <TableHead>
+                                              Color
+                                            </TableHead>
+                                            <TableHead className="hidden md:table-cell">
+                                              Mileage
+                                            </TableHead>
+                                            <TableHead className="hidden md:table-cell">
+                                              VIN
+                                            </TableHead>
+                                            <TableHead className="hidden md:table-cell">
+                                              Motor
+                                            </TableHead>
+                                            <TableHead className="hidden md:table-cell">
+                                              Dept
+                                            </TableHead>
+                                          </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                          {serviceOrder && serviceOrder.Clientfile.ServiceUnit && serviceOrder.Clientfile.ServiceUnit.map((result, index) => (
+                                            <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
+                                              const formData = new FormData();
+                                              formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
+                                              formData.append("mileage", result.mileage);
+                                              formData.append("vin", result.vin);
+                                              formData.append("tag", result.tag);
+                                              formData.append("motor", result.motor);
+                                              formData.append("color", result.color);
+                                              formData.append("workOrderId", serviceOrder.workOrderId);
+                                              formData.append("intent", 'addUnit');
+                                              submit(formData, { method: "post", });
+                                            }}>
+                                              <TableCell>
+                                                <p>{result.year} {result.brand} {result.model}</p>
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                {result.mileage}
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                {result.vin}
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                {result.tag}
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                {result.motor}
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                <p>Service Units</p>
+                                              </TableCell>
+                                            </TableRow>
+                                          ))}
+                                          {serviceOrder && serviceOrder.Clientfile.Finance && serviceOrder.Clientfile.Finance.map((result, index) => (
+                                            <TableRow key={index} className="hover:bg-accent border-border  rounded-[6px] cursor-pointer" onClick={() => {
+                                              const formData = new FormData();
+                                              formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
+                                              formData.append("mileage", result.mileage);
+                                              formData.append("vin", result.vin);
+                                              formData.append("tag", result.tag);
+                                              formData.append("motor", result.motor);
+                                              formData.append("color", result.color);
+                                              formData.append("workOrderId", order.workOrderId);
+                                              formData.append("intent", 'addUnit');
+                                              submit(formData, { method: "post", });
+                                            }}>
+                                              <TableCell>
+                                                <p>{result.year} {result.brand} {result.model}</p>
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                {result.mileage}
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                {result.vin}
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                {result.tag && (result.tag)}
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                {result.motor && (result.motor)}
+                                              </TableCell>
+                                              <TableCell className="hidden md:table-cell">
+                                                <p>Finance Units</p>
+                                              </TableCell>
+                                            </TableRow>
+                                          ))}
+                                        </TableBody>
+                                      </Table>
+                                      <Dialog>
+                                        <DialogTrigger>
+                                          <Button size='sm' className='text-foreground mt-4 w-[75px]' >
+                                            New Unit
+                                          </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className='border-border'>
+                                          <DialogHeader>
+                                            <DialogTitle>Add New Unit To Client File</DialogTitle>
+                                            <DialogDescription>
+                                            </DialogDescription>
+                                          </DialogHeader>
+                                          <>
+                                            <Form method='post' >
+                                              <input type='hidden' name='clientfileId' value={clientFile.id} />
+                                              {serviceOrder && (
+                                                <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+
+                                              )}
+                                              <div className='grid grid-cols-1'>
+                                                {unitCard.map((user, index) => (
+                                                  <div key={index} className="relative mt-4">
+                                                    <Input
+                                                      name={user.name}
+                                                      className={` bg-background text-foreground border border-border`}
+                                                    />
+                                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+                                                  </div>
+                                                ))}
+                                                <Button size='sm' className='text-foreground mt-4'
+                                                  type='submit'
+                                                  name='intent'
+                                                  value='addNewServiceUnit' >
+                                                  Submit
+                                                </Button>
+                                              </div>
+                                            </Form>
+                                          </>
+                                        </DialogContent>
+                                      </Dialog>
+                                    </div>
+                                  </AccordionContent>
+                                </AccordionItem>
+                              </Accordion>
+                              <p className='mt-4 mb-5'></p>
+                              <div className="grid gap-3">
+                                <div className="font-semibold">Work Order Services</div>
+                                <ul className="grid gap-3">
+                                  {serviceOrder && serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
+                                    const hours = result.hr || result.service.estHr || 0.00;
+                                    return (
+                                      <li key={index} className="flex items-center justify-between">
+                                        <div>
+                                          <ContextMenu>
+                                            <ContextMenuTrigger>
+                                              <div className='grid grid-cols-1'>
+                                                <div className='flex items-center group '>
+                                                  <div className="font-medium flex-col">
+                                                    <p>{result.service.service}</p>
+                                                    <p className='text-muted-foreground'>{result.service.description}</p>
+                                                  </div>
+                                                  <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                                    <input type="hidden" name="id" value={result.id} />
+                                                    <input type='hidden' name='total' value={total} />
+                                                    <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                                    <Button
+                                                      size="icon"
+                                                      variant="outline"
+                                                      name="intent" value='deleteServiceItem'
+                                                      className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                                      type='submit'
+                                                    >
+                                                      <X className="h-4 w-4 text-foreground" />
+                                                    </Button>
+                                                  </addProduct.Form>
+                                                </div>
+                                                <div className="hidden text-sm text-muted-foreground md:inline">
+                                                  <div className='flex items-center'>
+                                                    <div className="font-medium">
+                                                      <EditableText
+                                                        value={hours}
+                                                        fieldName="name"
+                                                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                                        buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                                        buttonLabel={`Edit name`}
+                                                        inputLabel={`Edit name`}
+                                                      >
+                                                        <input type="hidden" name="intent" value='updateHr' />
+                                                        <input type="hidden" name="id" value={result.id} />
+                                                        <input type="hidden" name="colName" value='hr' />
+                                                      </EditableText>
+
+                                                    </div>
+                                                    <p>/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                                  </div>
+                                                </div>
+                                                {result.status && (
+                                                  <div>
+                                                    <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                                  </div>
+                                                )}
+                                              </div>
+                                            </ContextMenuTrigger>
+                                            <ContextMenuContent className='border-border'>
+                                              <ContextMenuSub>
+                                                <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                                                <ContextMenuSubContent className="w-48 border-border">
+                                                  <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                                  <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                                  <ContextMenuSeparator />
+                                                  <ContextMenuItem>
+                                                    Est. Hours
+                                                    <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                                  </ContextMenuItem>
+                                                  <ContextMenuItem>
+                                                    Price
+                                                    <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                                  </ContextMenuItem>
+                                                </ContextMenuSubContent>
+                                              </ContextMenuSub>
+                                              <ContextMenuSeparator />
+                                              <ContextMenuCheckboxItem
+                                                checked={result.status === 'In Stock'}
+                                                onSelect={() => {
+                                                  const formData = new FormData();
+                                                  formData.append("id", result.id);
+                                                  formData.append("status", 'In Stock');
+                                                  formData.append("intent", 'updateServiceOnOrders');
+                                                  submit(formData, { method: "post", });
+                                                }}
+                                              >In Stock</ContextMenuCheckboxItem>
+                                              <ContextMenuCheckboxItem
+                                                checked={result.status === 'On Order'}
+                                                onSelect={() => {
+                                                  const formData = new FormData();
+                                                  formData.append("id", result.id);
+                                                  formData.append("status", 'On Order');
+                                                  formData.append("intent", 'updateServiceOnOrders');
+                                                  submit(formData, { method: "post", });
+                                                }}
+                                              >On Order</ContextMenuCheckboxItem>
+                                              <ContextMenuCheckboxItem
+                                                checked={result.status === 'Completed'}
+                                                onSelect={() => {
+                                                  const formData = new FormData();
+                                                  formData.append("id", result.id);
+                                                  formData.append("status", 'Completed');
+                                                  formData.append("intent", 'updateServiceOnOrders');
+                                                  submit(formData, { method: "post", });
+                                                }}
+                                              >Completed</ContextMenuCheckboxItem>
+                                              <ContextMenuCheckboxItem
+                                                checked={result.status === 'Back Order'}
+                                                onSelect={() => {
+                                                  const formData = new FormData();
+                                                  formData.append("id", result.id);
+                                                  formData.append("status", 'Back Order');
+                                                  formData.append("intent", 'updateServiceOnOrders');
+                                                  submit(formData, { method: "post", });
+                                                }}
+                                              >Back Order</ContextMenuCheckboxItem>
+                                            </ContextMenuContent>
+                                          </ContextMenu>
+                                        </div>
+                                        <span>
+                                          x{" "}{" "}{result.quantity}
+                                        </span>
+                                      </li>
+                                    )
+                                  })}
+                                </ul>
+                              </div>
+                              <Separator className="my-4" />
+                              <div className="font-semibold">Services</div>
+                              <div className='mx-4 flex-col'>
+                                <Accordion type="single" collapsible className="w-full border-border">
+                                  <AccordionItem value="item-1" className='border-border'>
+                                    <AccordionTrigger>Add New Service</AccordionTrigger>
+                                    <AccordionContent>
+                                      <fetcher.Form method='post'>
+                                        <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                        <div className='flex'>
+                                          <div className="flex-col" >
+                                            <div className="relative mt-4">
+                                              <Input name='name' className='w-[250px] mr-3' />
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
+                                            </div>
+                                            <div className="relative mt-4">
+                                              <TextArea name='description' className='w-[250px] mr-3' />
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
+                                            </div>
+
+                                            <div className="relative mt-4">
+                                              <Input name='hr' className='w-[100px] mr-3' />
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
+                                            </div>
+                                            <div className="relative mt-4">
+                                              <Input name='quantity' className='w-[100px] mr-3' defaultValue={1} />
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Quantity</label>
+                                            </div>
+
+                                            <Button
+                                              className='mt-4'
+                                              size='icon'
+                                              type='submit'
+                                              name='intent'
+                                              value='addNewServiceToWorkOrder'
+                                            ><Plus /></Button>
+                                          </div>
+                                        </div>
+                                      </fetcher.Form>
+                                    </AccordionContent>
+                                  </AccordionItem>
+                                </Accordion>
+
+                              </div>
+                              <div className='flex-col mt-4'>
+                                <div className='mx-4'>
+                                  <div className="font-semibold">Select Service</div>
+                                  <search.Form method="get" action='/dealer/service/search/services'>
+                                    <div className="relative ml-auto flex-1 md:grow-0 ">
+                                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                      <Input
+                                        ref={ref}
+                                        type="search"
+                                        name="q"
+                                        onChange={e => {
+                                          search.submit(e.currentTarget.form);
+                                        }}
+                                        autoFocus
+                                        placeholder="Search..."
+                                        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                                      />
+                                    </div>
+                                  </search.Form>
+                                  <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+                                    {search.data && search.data.map((result, index) => {
+                                      return (
+                                        <li key={index} className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]" onClick={() => {
+                                          const formData = new FormData();
+                                          formData.append("hr", result.estHr);
+                                          formData.append("workOrderId", serviceOrder.workOrderId);
+                                          formData.append("serviceId", result.id);
+                                          formData.append("intent", 'addServiceToWorkOrder');
+                                          submit(formData, { method: "post", });
+                                        }}>
+                                          <div className="font-medium flex-col">
+                                            <p className=' text-left'>{result.service}</p>
+                                            <p className='text-muted-foreground text-left'>{result.description}</p>
+                                            <p className='text-muted-foreground text-left'>{result.estHr}/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                          </div>
+                                        </li>
+                                      )
+                                    })}
+                                  </ul>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
+                      <TabsContent value="Parts">
+                        <Card x-chunk="dashboard-05-chunk-3 " className='mx-5 w-[95%] '>
+                          <CardHeader className="px-7">
+                            <CardTitle>
+                              <div className='flex justify-between items-center'>
+                                <p>Accessories</p>
+                              </div>
+                            </CardTitle>
+                            <CardDescription className='flex items-center'>
+                              <product.Form method="get" action='/dealer/accessories/products/search'>
+                                <div className="relative ml-auto flex-1 md:grow-0 ">
+                                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                  <Input
+                                    ref={ref}
+                                    type="search"
+                                    name="q"
+                                    onChange={e => {
+                                      //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                                      product.submit(e.currentTarget.form);
+                                    }}
+                                    autoFocus
+                                    placeholder="Search..."
+                                    className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                                  />
+                                </div>
+                              </product.Form>
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <Table>
+                              <TableHeader>
+                                <TableRow className='border-border'>
+                                  <TableHead>
+                                    Brand & Name
+                                  </TableHead>
+                                  <TableHead className="hidden sm:table-cell">
+                                    Description
+                                  </TableHead>
+                                  <TableHead className="hidden sm:table-cell">
+                                    Category
+                                  </TableHead>
+                                  <TableHead className="hidden sm:table-cell">
+                                    Sub Category
+                                  </TableHead>
+                                  <TableHead className="hidden sm:table-cell">
+                                    On Order
+                                  </TableHead>
+                                  <TableHead className="hidden sm:table-cell">
+                                    Distributer
+                                  </TableHead>
+                                  <TableHead className="hidden sm:table-cell">
+                                    Location
+                                  </TableHead>
+                                  <TableHead className="hidden md:table-cell">
+                                    Cost
+                                  </TableHead>
+                                  <TableHead className="hidden sm:table-cell">
+                                    Price
+                                  </TableHead>
+                                  <TableHead className="text-right">
+                                    Quantity
+                                  </TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
+                                {product.data &&
+                                  product.data.map((result, index) => (
+                                    <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
+                                      const formData = new FormData();
+                                      formData.append("accessoryId", result.id);
+                                      formData.append("workOrderId", serviceOrder.workOrderId);
+                                      formData.append("accOrderId", serviceOrder.AccOrders[0].id);
+                                      formData.append("intent", 'addAccToWorkOrder');
+                                      submit(formData, { method: "post", });
+                                    }}>
+                                      <TableCell className='flex-col'>
+                                        <p className="font-medium">
+                                          {result.name}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground ">
+                                          {result.brand}
+                                        </p>
+                                      </TableCell>
+                                      <TableCell className="hidden sm:table-cell">
+                                        {result.description}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.category}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.subCategory}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.onOrder}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.distributer}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.location}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.cost}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.price}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.quantity}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                              </TableBody>
+                            </Table>
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
+                      <TabsContent value="Calendar">
+                      </TabsContent>
+                    </Tabs>
+                  )}
+                  <div>
+                    <Card className="overflow-hidden mt-[35px] ml-2" x-chunk="dashboard-05-chunk-4"          >
+                      <CardHeader className="flex flex-row items-start bg-muted/50">
+                        <div className="grid gap-0.5">
+                          <CardTitle className="group flex items-center gap-2 text-lg">
+                            W / O #{serviceOrder && (serviceOrder.workOrderId)}
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                            >
+                              <Copy className="h-3 w-3" />
+                              <span className="sr-only">Copy Order ID</span>
+                            </Button>
+                          </CardTitle>
+                          {serviceOrder && serviceOrder.status && (
+                            <div>
+                              <div className="relative mt-4">
+                                <Select
+                                  name='status'
+                                  defaultValue={serviceOrder.status}
+                                  onValueChange={(value) => {
+                                    const formData = new FormData();
+                                    formData.append("id", order.workOrderId);
+                                    formData.append("total", total);
+                                    formData.append("intent", 'updateStatus');
+                                    formData.append("status", value);
+                                    console.log(formData, 'formData');
+                                    workOrder.submit(formData, { method: "post" });
+                                  }}>
+                                  <SelectTrigger className="w-[200px] " >
+                                    <SelectValue defaultValue={serviceOrder.status} />
+                                  </SelectTrigger>
+                                  <SelectContent className='border-border'>
+                                    <SelectGroup>
+                                      <SelectLabel>Status</SelectLabel>
+                                      <SelectItem value="Quote">Quote</SelectItem>
+                                      <SelectItem value="Sales">Sales</SelectItem>
+                                      <SelectItem value="Open">Open / Scheduled</SelectItem>
+                                      <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
+                                      <SelectItem value="Waiter">Waiter</SelectItem>
+                                      <SelectItem value="In Works">In Works</SelectItem>
+                                      <SelectItem value="Work Completed">Work Completed</SelectItem>
+                                      <SelectItem value="Closed">Closed</SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-muted/50 transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <div className="ml-auto flex items-center gap-1">
+                          {serviceOrder && (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button size="icon" variant="outline" className="h-8 w-8">
+                                  <MoreVertical className="h-3.5 w-3.5" />
+                                  <span className="sr-only">More</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent
+                                align="end"
+                                className="border border-border"
+                              >
+                                <DropdownMenuItem
+                                  onSelect={() => {
+                                    navigate(`/dealer/service/workOrder/${serviceOrder.workOrderId}`)
+                                  }}>
+                                  Go To Order
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onSelect={() => {
+                                    console.log(toReceipt)
+                                    PrintReceipt(toReceipt)
+                                  }}>
+                                  Reprint Receipt
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
+                                  Show Discount
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onSelect={() => {
+                                    setShowPrev(false)
+                                    setorder(null)
+                                  }}>
+                                  Back
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onSelect={() => {
+                                    const formData = new FormData();
+                                    formData.append("workOrderId", serviceOrder.workOrderId);
+                                    formData.append("intent", 'deleteOrder');
+                                    submit(formData, { method: "post", });
+                                  }}>
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          )}
+                        </div>
+                      </CardHeader>
+                      <CardContent className="p-6 text-sm h-auto max-h-[700px] overflow-y-auto">
+                        {secPageService && (
+                          <>
+
+                            <Accordion type="single" collapsible className="w-full border-border mt-3">
+                              <AccordionItem value="item-1" className='border-border'>
+                                <AccordionTrigger>Work Order Notes</AccordionTrigger>
+                                <AccordionContent>
+                                  <div className="grid gap-3">
+                                    <Form method='post'>
+                                      <div className="relative mt-4">
+                                        <TextArea className='w-full mt-4' name='note' defaultValue={serviceOrder.notes} />
+                                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
+                                      </div>
+                                      <input type='hidden' name='id' defaultValue={serviceOrder.workOrderId} />
+                                      <Button type='submit' name='intent' value='updateNote' className='mt-4 text-foreground' size='sm'>
+                                        Submit
+                                      </Button>
+                                    </Form>
+                                  </div>
+                                </AccordionContent>
+                              </AccordionItem>
+                            </Accordion>
+
+                            <div className="grid gap-3 mt-3">
+                              <div className="font-semibold">Work Order Services</div>
+                              <ul className="grid gap-3">
+                                {serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
+                                  const hours = result.hr || result.service.estHr || 0.00;
+                                  return (
+                                    <li key={index} className="flex items-center justify-between">
+                                      <div>
+                                        <ContextMenu>
+                                          <ContextMenuTrigger>
+                                            <div className='grid grid-cols-1'>
+                                              <div className='flex items-center group '>
+                                                <div className="font-medium">
+                                                  {result.service.service}
+                                                </div>
+                                                <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                                  <input type="hidden" name="id" value={result.id} />
+                                                  <input type='hidden' name='total' value={total} />
+                                                  <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                                  <Button
+                                                    size="icon"
+                                                    variant="outline"
+                                                    name="intent" value='deleteServiceItem'
+                                                    className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                                    type='submit'
+                                                  >
+                                                    <X className="h-4 w-4 text-foreground" />
+                                                  </Button>
+                                                </addProduct.Form>
+                                              </div>
+                                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                                <div className='flex items-center'>
+                                                  <div className="font-medium">
+                                                    <EditableText
+                                                      value={hours}
+                                                      fieldName="name"
+                                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                                      buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                                      buttonLabel={`Edit name`}
+                                                      inputLabel={`Edit name`}
+                                                    >
+                                                      <input type="hidden" name="intent" value='updateHr' />
+                                                      <input type="hidden" name="id" value={result.id} />
+                                                      <input type="hidden" name="colName" value='hr' />
+                                                    </EditableText>
+
+                                                  </div>
+                                                  <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                                </div>
+                                              </div>
+                                              {result.status && (
+                                                <div>
+                                                  <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                                </div>
+                                              )}
+                                            </div>
+                                          </ContextMenuTrigger>
+                                          <ContextMenuContent className='border-border'>
+                                            <ContextMenuSub>
+                                              <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                                              <ContextMenuSubContent className="w-48 border-border">
+                                                <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                                <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                                <ContextMenuSeparator />
+                                                <ContextMenuItem>
+                                                  Est. Hours
+                                                  <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                                </ContextMenuItem>
+                                                <ContextMenuItem>
+                                                  Price
+                                                  <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                                </ContextMenuItem>
+                                              </ContextMenuSubContent>
+                                            </ContextMenuSub>
+                                            <ContextMenuSeparator />
+                                            <ContextMenuCheckboxItem
+                                              checked={result.status === 'In Stock'}
+                                              onSelect={() => {
+                                                const formData = new FormData();
+                                                formData.append("id", result.id);
+                                                formData.append("status", 'In Stock');
+                                                formData.append("intent", 'updateServiceOnOrders');
+                                                submit(formData, { method: "post", });
+                                              }}
+                                            >In Stock</ContextMenuCheckboxItem>
+                                            <ContextMenuCheckboxItem
+                                              checked={result.status === 'On Order'}
+                                              onSelect={() => {
+                                                const formData = new FormData();
+                                                formData.append("id", result.id);
+                                                formData.append("status", 'On Order');
+                                                formData.append("intent", 'updateServiceOnOrders');
+                                                submit(formData, { method: "post", });
+                                              }}
+                                            >On Order</ContextMenuCheckboxItem>
+                                            <ContextMenuCheckboxItem
+                                              checked={result.status === 'Completed'}
+                                              onSelect={() => {
+                                                const formData = new FormData();
+                                                formData.append("id", result.id);
+                                                formData.append("status", 'Completed');
+                                                formData.append("intent", 'updateServiceOnOrders');
+                                                submit(formData, { method: "post", });
+                                              }}
+                                            >Completed</ContextMenuCheckboxItem>
+                                            <ContextMenuCheckboxItem
+                                              checked={result.status === 'Back Order'}
+                                              onSelect={() => {
+                                                const formData = new FormData();
+                                                formData.append("id", result.id);
+                                                formData.append("status", 'Back Order');
+                                                formData.append("intent", 'updateServiceOnOrders');
+                                                submit(formData, { method: "post", });
+                                              }}
+                                            >Back Order</ContextMenuCheckboxItem>
+                                          </ContextMenuContent>
+                                        </ContextMenu>
+                                      </div>
+                                      <span>
+                                        x{" "}{" "}{result.quantity}
+
+                                      </span>
+                                    </li>
+                                  )
+                                })}
+                              </ul>
+                              <Separator className="my-4" />
+                              <div className="font-semibold">Work Order Parts</div>
+                              <ul className="grid gap-3">
+                                {serviceOrder?.AccOrders?.length > 0 ? (
+                                  serviceOrder.AccOrders.map((accOrder, accOrderIndex) => (
+                                    <div key={accOrderIndex}>
+                                      {accOrder?.AccessoriesOnOrders?.length > 0 ? (
+                                        accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
+                                          <li key={accessoryIndex} className="flex items-center justify-between">
+                                            <div>
+                                              <ContextMenu>
+                                                <ContextMenuTrigger>
+                                                  <div className='grid grid-cols-1'>
+                                                    <div className='flex items-center group '>
+                                                      <div className="font-medium">
+
+                                                        {accessoryOnOrder.accessory.name}
+                                                      </div>
+                                                      <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                                        <input type="hidden" name="id" value={accessoryOnOrder.id} />
+                                                        <input type='hidden' name='total' value={accessoryOnOrder.accessory.price * accessoryOnOrder.quantity} />
+                                                        <input type='hidden' name='accOrderId' value={accOrder.id} />
+                                                        <Button
+                                                          size="icon"
+                                                          variant="outline"
+                                                          name="intent" value='deleteOrderItem'
+                                                          className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                                          type='submit'
+                                                        >
+                                                          <X className="h-4 w-4 text-foreground" />
+                                                        </Button>
+                                                      </addProduct.Form>
+                                                    </div>
+                                                    <div className="hidden text-sm text-muted-foreground md:inline">
+                                                      {accessoryOnOrder.accessory.brand}
+                                                    </div>
+                                                    <div>
+                                                      <Badge className='text-sm  px-2 py-1 '>{accessoryOnOrder.status}</Badge>
+                                                    </div>
+                                                  </div>
+                                                </ContextMenuTrigger>
+                                                <ContextMenuContent className='border-border'>
+                                                  <ContextMenuSub>
+                                                    <ContextMenuSubTrigger inset>Part Details</ContextMenuSubTrigger>
+                                                    <ContextMenuSubContent className="w-48 border-border">
+                                                      <ContextMenuItem>{accessoryOnOrder.accessory.partNumber}</ContextMenuItem>
+                                                      <ContextMenuItem>{accessoryOnOrder.accessory.brand} </ContextMenuItem>
+                                                      <ContextMenuItem>{accessoryOnOrder.accessory.name} </ContextMenuItem>
+                                                      <ContextMenuItem>{accessoryOnOrder.accessory.description} </ContextMenuItem>
+                                                      <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                                      <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                                      <ContextMenuSeparator />
+                                                      <ContextMenuItem>
+                                                        Cost
+                                                        <ContextMenuShortcut>${accessoryOnOrder.accessory.cost}</ContextMenuShortcut>
+                                                      </ContextMenuItem>
+                                                      <ContextMenuItem>
+                                                        Price
+                                                        <ContextMenuShortcut>${accessoryOnOrder.accessory.price}</ContextMenuShortcut>
+                                                      </ContextMenuItem>
+                                                      <ContextMenuItem>
+                                                        In Stock
+                                                        <ContextMenuShortcut>{accessoryOnOrder.accessory.quantity}</ContextMenuShortcut>
+                                                      </ContextMenuItem>
+                                                      <ContextMenuItem>
+                                                        On Order
+                                                        <ContextMenuShortcut>{accessoryOnOrder.accessory.onOrder}</ContextMenuShortcut>
+                                                      </ContextMenuItem>
+                                                      <ContextMenuItem>
+                                                        Location
+                                                        <ContextMenuShortcut>{accessoryOnOrder.accessory.location}</ContextMenuShortcut>
+                                                      </ContextMenuItem>
+                                                    </ContextMenuSubContent>
+                                                  </ContextMenuSub>
+                                                  <ContextMenuCheckboxItem
+                                                    checked={accessoryOnOrder.status === 'In Stock'}
+                                                    onSelect={() => {
+                                                      const formData = new FormData();
+                                                      formData.append("id", accessoryOnOrder.id);
+                                                      formData.append("status", 'In Stock');
+                                                      formData.append("intent", 'updateAccOnOrders');
+                                                      submit(formData, { method: "post", });
+                                                    }}
+                                                  >In Stock</ContextMenuCheckboxItem>
+                                                  <ContextMenuCheckboxItem
+                                                    checked={accessoryOnOrder.status === 'On Order'}
+                                                    onSelect={() => {
+                                                      const formData = new FormData();
+                                                      formData.append("id", accessoryOnOrder.id);
+                                                      formData.append("status", 'On Order');
+                                                      formData.append("intent", 'updateAccOnOrders');
+                                                      submit(formData, { method: "post", });
+                                                    }}
+                                                  >On Order</ContextMenuCheckboxItem>
+                                                  <ContextMenuCheckboxItem
+                                                    checked={accessoryOnOrder.status === 'Back Order'}
+                                                    onSelect={() => {
+                                                      const formData = new FormData();
+                                                      formData.append("id", accessoryOnOrder.id);
+                                                      formData.append("status", 'Back Order');
+                                                      formData.append("intent", 'updateAccOnOrders');
+                                                      submit(formData, { method: "post", });
+                                                    }}
+                                                  >Back Order</ContextMenuCheckboxItem>
+                                                </ContextMenuContent>
+                                              </ContextMenu>
+                                            </div>
+                                            <span>${accessoryOnOrder.accessory.price} x {accessoryOnOrder.quantity}</span>
+                                          </li>
+                                        ))
+                                      ) : (
+                                        <p>No Accessories On Orders available.</p>
+                                      )}
+                                    </div>
+                                  ))
+                                ) : (
+                                  <p>No Orders available.</p>
+                                )}
+                              </ul>
+
+
+                              <Separator className="my-2" />
+                              <ul className="grid gap-3">
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">Service Subtotal</span>
+                                  <span>${serviceSubTotal}</span>
+                                </li>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">Parts Subtotal</span>
+                                  <span>${partsSubTotal}</span>
+                                </li>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">Subtotal</span>
+                                  <span>${totalPreTax}</span>
+                                </li>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">Tax</span>
+                                  <span>{tax.userTax}%</span>
+                                </li>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">Total</span>
+                                  <span>${totalService}</span>
+                                </li>
+                              </ul>
+                            </div>
+                            <Separator className="my-4" />
+                            <div className='gap-3'>
+                              <div className="font-semibold">Staff</div>
+
+                              <ul className="grid gap-3">
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">
+                                    Technician
+                                  </span>
+                                  <span>{serviceOrder.tech}</span>
+                                </li>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">
+                                    Service Writer
+                                  </span>
+                                  <span>{serviceOrder.writer}</span>
+                                </li>
+                              </ul>
+                            </div>
+                          </>
+                        )}
+                        {firstPageService && (
+                          <>
+                            <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+                              {orders && orders.map((result, index) => {
+                                return (
+                                  <li
+                                    onClick={() => {
+                                      handleNextPage()
+                                      setServiceOrder(result)
+                                    }}
+                                    key={index}
+                                    className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]">
+                                    <div className='flex-col'>
+                                      <div className='flex justify-between items-center'>
+                                        <p className='font-medium text-left'>W / O #{result.workOrderId}</p>
+                                        <p className='text-muted-foreground font-medium text-right'>{result.status}</p>
+                                      </div>
+                                      <div className='flex justify-between items-center'>
+                                        <p className='text-muted-foreground text-left'>Writer: {result.writer}</p>
+                                        <p className='text-muted-foreground text-right'>Tech: {result.tech}</p>
+                                      </div>
+                                      <p className='text-muted-foreground text-left'>{new Date(result.createdAt).toLocaleDateString("en-US", options2)}</p>
+                                    </div>
+                                  </li>
+                                )
+                              })}
+                            </ul>
+                          </>
+                        )}
+                      </CardContent>
+                      <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
+                        <Button size='sm' variant='outline'>
+                          Create New Work Order
+                        </Button>
+                        <Pagination className="ml-auto mr-0 w-auto">
+                          <PaginationContent>
+                            <PaginationItem>
+                              <Button size="icon"
+                                variant="outline"
+                                className="h-6 w-6"
+                                onClick={() => {
+                                  handlePrevPage()
+                                }}>
+                                <ChevronLeft className="h-3.5 w-3.5" />
+                                <span className="sr-only">Previous Order</span>
+                              </Button>
+                            </PaginationItem>
+                            <PaginationItem>
+                              <Button size="icon"
+                                variant="outline"
+                                className="h-6 w-6"
+                                onClick={() => {
+                                  handleNextPage()
+                                }}>
+                                <ChevronRight className="h-3.5 w-3.5" />
+                                <span className="sr-only">Next Order</span>
+                              </Button>
+                            </PaginationItem>
+                          </PaginationContent>
+                        </Pagination>
+                      </CardFooter>
+                    </Card>
+                  </div>
+
+                </main >
+              </TabsContent>
               <TabsContent value="Accessories">
                 <div className='grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4'>
                   <Card x-chunk="dashboard-07-chunk-3" className="sm:col-span-2 m-4 ">
@@ -7270,19 +8368,16 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   const formPayload = Object.fromEntries(await request.formData());
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
-
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
   let formData = financeFormSchema.parse(formPayload)
   const intent = formData.intent
-
   const idSession = await getIds(request.headers.get("Cookie"));
   const userId = idSession.get('userId')
   const clientfileId = idSession.get('clientfileId')
   const financeId = idSession.get('financeId')
   const dashboardId = idSession.get('dashboardId')
 
-  // console.log('headeras', userId, clientfileId, financeId, dashboardId)
   if (intent === 'pushSubtotal') {
     const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
     const subTotal = parseFloat(finance.accessories + formPayload.subTotal).toFixed(2)
@@ -7322,7 +8417,6 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     });
     return json({ sendtoacc })
   }
-
   if (intent === "sendToParts") {
     const sendtoacc = await prisma.accHandoff.create({
       data: {
@@ -7608,7 +8702,6 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     return json({ updateApt });
   }
   // notes
-
   if (intent === 'updateFinanceNote') {
     const noteId = formData.id
     const noteData = {
@@ -8234,6 +9327,625 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     } */
     return json({ updateClient })
   }
+  // ----------------------service---------------------
+  if (intent === "createBooking") {
+    const order = await prisma.workOrder.findUnique({
+      where: { workOrderId: Number(id) },
+      select: {
+        workOrderId: true,
+        unit: true,
+        mileage: true,
+        vin: true,
+        tag: true,
+        motor: true,
+        budget: true,
+        totalLabour: true,
+        totalParts: true,
+        subTotal: true,
+        total: true,
+        writer: true,
+        userEmail: true,
+        tech: true,
+        notes: true,
+        customerSig: true,
+        status: true,
+        location: true,
+        quoted: true,
+        paid: true,
+        remaining: true,
+        FinanceUnitId: true,
+        financeId: true,
+        clientfileId: true,
+        createdAt: true,
+        updatedAt: true,
+        Clientfile: {
+          select: {
+            id: true,
+            financeId: true,
+            firstName: true,
+            lastName: true,
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
+            city: true,
+            postal: true,
+            province: true,
+            dl: true,
+            typeOfContact: true,
+            timeToContact: true,
+            conversationId: true,
+            billingAddress: true,
+            Finance: {
+              select: {
+                financeManager: true,
+                userEmail: true,
+                userName: true,
+                financeManagerName: true,
+                //: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                name: true,
+                address: true,
+                city: true,
+                postal: true,
+                province: true,
+                dl: true,
+                typeOfContact: true,
+                timeToContact: true,
+                dob: true,
+                //: true,
+                othTax: true,
+                optionsTotal: true,
+                lienPayout: true,
+                leadNote: true,
+                sendToFinanceNow: true,
+                dealNumber: true,
+                iRate: true,
+                months: true,
+                discount: true,
+                total: true,
+                onTax: true,
+                on60: true,
+                biweekly: true,
+                weekly: true,
+                weeklyOth: true,
+                biweekOth: true,
+                oth60: true,
+                weeklyqc: true,
+                biweeklyqc: true,
+                qc60: true,
+                deposit: true,
+                biweeklNatWOptions: true,
+                weeklylNatWOptions: true,
+                nat60WOptions: true,
+                weeklyOthWOptions: true,
+                biweekOthWOptions: true,
+                oth60WOptions: true,
+                biweeklNat: true,
+                weeklylNat: true,
+                nat60: true,
+                qcTax: true,
+                otherTax: true,
+                totalWithOptions: true,
+                otherTaxWithOptions: true,
+                desiredPayments: true,
+                admin: true,
+                commodity: true,
+                pdi: true,
+                discountPer: true,
+                userLoanProt: true,
+                userTireandRim: true,
+                userGap: true,
+                userExtWarr: true,
+                userServicespkg: true,
+                deliveryCharge: true,
+                vinE: true,
+                lifeDisability: true,
+                rustProofing: true,
+                userOther: true,
+                //: true,
+                referral: true,
+                visited: true,
+                bookedApt: true,
+                aptShowed: true,
+                aptNoShowed: true,
+                testDrive: true,
+                metService: true,
+                metManager: true,
+                metParts: true,
+                sold: true,
+                depositMade: true,
+                refund: true,
+                turnOver: true,
+                financeApp: true,
+                approved: true,
+                signed: true,
+                pickUpSet: true,
+                demoed: true,
+                delivered: true,
+                lastContact: true,
+                status: true,
+                customerState: true,
+                result: true,
+                timesContacted: true,
+                nextAppointment: true,
+                followUpDay: true,
+                deliveryDate: true,
+                deliveredDate: true,
+                notes: true,
+                visits: true,
+                progress: true,
+                metSalesperson: true,
+                metFinance: true,
+                financeApplication: true,
+                pickUpDate: true,
+                pickUpTime: true,
+                depositTakenDate: true,
+                docsSigned: true,
+                tradeRepairs: true,
+                seenTrade: true,
+                lastNote: true,
+                applicationDone: true,
+                licensingSent: true,
+                liceningDone: true,
+                refunded: true,
+                cancelled: true,
+                lost: true,
+                dLCopy: true,
+                insCopy: true,
+                testDrForm: true,
+                voidChq: true,
+                loanOther: true,
+                signBill: true,
+                ucda: true,
+                tradeInsp: true,
+                customerWS: true,
+                otherDocs: true,
+                urgentFinanceNote: true,
+                funded: true,
+                leadSource: true,
+                financeDeptProductsTotal: true,
+                bank: true,
+                loanNumber: true,
+                idVerified: true,
+                dealerCommission: true,
+                financeCommission: true,
+                salesCommission: true,
+                firstPayment: true,
+                loanMaturity: true,
+                quoted: true,
+                //: true,
+                InPerson: true,
+                Phone: true,
+                SMS: true,
+                Email: true,
+                Other: true,
+                //------: true,
+                //: true,
+                paintPrem: true,
+                licensing: true,
+                stockNum: true,
+                options: true,
+                accessories: true,
+                freight: true,
+                labour: true,
+                year: true,
+                brand: true,
+                mileage: true,
+                model: true,
+                model1: true,
+                color: true,
+                modelCode: true,
+                msrp: true,
+                trim: true,
+                vin: true,
+                bikeStatus: true,
+                invId: true,
+                //: true,
+                tradeValue: true,
+                tradeDesc: true,
+                tradeColor: true,
+                tradeYear: true,
+                tradeMake: true,
+                tradeVin: true,
+                tradeTrim: true,
+                tradeMileage: true,
+                tradeLocation: true,
+                lien: true,
+                //: true,
+                id: true,
+                activixId: true,
+                theRealActId: true,
+                createdAt: true,
+                updatedAt: true,
+                FinanceUnit: {
+                  select: {
+                    paintPrem: true,
+                    licensing: true,
+                    stockNum: true,
+                    options: true,
+                    accessories: true,
+                    freight: true,
+                    labour: true,
+                    year: true,
+                    brand: true,
+                    mileage: true,
+                    model: true,
+                    model1: true,
+                    color: true,
+                    modelCode: true,
+                    msrp: true,
+                    trim: true,
+                    vin: true,
+                    bikeStatus: true,
+                    invId: true,
+                    location: true,
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    financeId: true,
+                  }
+                },
+              }
+            },
+            ServiceUnit: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                price: true,
+                brand: true,
+                model: true,
+                color: true,
+                accessories: true,
+                options: true,
+                year: true,
+                vin: true,
+                trim: true,
+                mileage: true,
+                location: true,
+                condition: true,
+                repairs: true,
+                stockNum: true,
+                licensing: true,
+                tradeEval: true,
+              }
+            },
+          },
+        },
+        AccOrders: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            userEmail: true,
+            userName: true,
+            dept: true,
+            total: true,
+            discount: true,
+            discPer: true,
+            paid: true,
+            paidDate: true,
+            status: true,
+            workOrderId: true,
+            note: true,
+            financeId: true,
+            clientfileId: true,
+            AccessoriesOnOrders: {
+              select: {
+                id: true,
+                quantity: true,
+                accOrderId: true,
+                status: true,
+                orderNumber: true,
+                OrderInvId: true,
+                accessoryId: true,
+                accessory: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    partNumber: true,
+                    brand: true,
+                    name: true,
+                    price: true,
+                    cost: true,
+                    quantity: true,
+                    description: true,
+                    category: true,
+                    subCategory: true,
+                    onOrder: true,
+                    distributer: true,
+                    location: true,
+                  },
+                },
+              },
+            },
+          }
+        },
+        Payments: {
+          select: {
+            id: true,
+            createdAt: true,
+            paymentType: true,
+            amountPaid: true,
+            cardNum: true,
+            receiptId: true,
+            financeId: true,
+            userEmail: true,
+            accOrderId: true,
+          },
+        },
+        ServicesOnWorkOrders: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            quantity: true,
+            status: true,
+            workOrderId: true,
+            serviceId: true,
+            hr: true,
+            service: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                description: true,
+                estHr: true,
+                service: true,
+                price: true,
+              }
+            }
+          }
+        }
+      },
+    });
+    const start = new Date();
+    start.setHours(9, 0, 0, 0);
+
+    const totalHours = order?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+      const hours = serviceOnOrder.hr ?? serviceOnOrder.service.estHr ?? 0;
+      const quantity = serviceOnOrder.quantity ?? 1;
+      const entryHours = hours * quantity;
+      return total + entryHours;
+    }, 0);
+
+    console.log(`Total Hours: ${totalHours}`);
+
+    const end = new Date(start);
+    end.setHours(end.getHours() + totalHours);
+
+    await prisma.workOrderApts.create({
+      data: {
+        start: String(start),
+        end: String(end),
+        workOrderId: order?.workOrderId,
+        writer: order?.writer,
+        title: order?.Clientfile?.name,
+        unit: order?.unit,
+        mileage: order?.mileage,
+        vin: order?.vin,
+        tag: order?.tag,
+        motor: order?.motor,
+        color: order?.color,
+        location: order?.location,
+        techEmail: 'serviceDesk@email.com',
+        tech: 'Service Desk',
+        resourceId: 'Service Desk',
+      }
+    })
+
+    return redirect(`/dealer/service/workOrder/calendar/${id}`)
+  }
+  if (intent === "scanOrder") {
+    await prisma.customerSync.update({
+      where: { userEmail: email },
+      data: { orderId: formPayload.orderId }
+    });
+    return redirect('/dealer/service/customerSync')
+  }
+  if (intent === "updateHr") {
+    const update = await prisma.servicesOnWorkOrders.update({
+      where: { id: formPayload.id },
+      data: { hr: parseFloat(formPayload.name) }
+    });
+    return json({ update })
+  }
+  if (intent === "updateServiceOnOrders") {
+    const update = await prisma.servicesOnWorkOrders.update({
+      where: { id: formPayload.id },
+      data: { status: formPayload.status }
+    });
+    return json({ update })
+  }
+  if (intent === "deleteServiceItem") {
+    const update = await prisma.servicesOnWorkOrders.delete({
+      where: { id: formPayload.id },
+    });
+    return json({ update })
+  }
+  if (intent === 'deleteOrderItem') {
+    const payment = await prisma.accessoriesOnOrders.delete({ where: { id: formPayload.id } });
+    return payment;
+  }
+  if (intent === "updateAccOnOrders") {
+    const update = await prisma.accessoriesOnOrders.update({
+      where: { id: formPayload.id },
+      data: { status: formPayload.status }
+    });
+    return json({ update })
+  }
+  if (intent === 'createPayment') {
+    const payment = await prisma.payment.create({
+      data: {
+        workOrderId: formPayload.workOrderId,
+        paymentType: formPayload.paymentType,
+        amountPaid: parseFloat(formPayload.amountPaid),
+        cardNum: formPayload.cardNum,
+        receiptId: formPayload.receiptId,
+      },
+    });
+    if (formPayload.remaining === '0') {
+      await prisma.workOrder.update({
+        where: { workOrderId: formPayload.workOrderId },
+        data: {
+          total: parseFloat(formPayload.total),
+          paid: 'Yes',
+        },
+      });
+    } else {
+      await prisma.accOrder.update({
+        where: { id: formPayload.accOrderId },
+        data: {
+          total: parseFloat(formPayload.total),
+        },
+      });
+    }
+
+    return payment;
+  }
+  if (intent === "addUnit") {
+    const update = await prisma.workOrder.update({
+      where: { workOrderId: formPayload.workOrderId },
+      data: {
+        unit: formPayload.unit,
+        mileage: formPayload.mileage,
+        vin: formPayload.vin,
+        tag: formPayload.tag,
+        motor: formPayload.motor,
+        color: formPayload.color,
+      }
+    });
+    return json({ update })
+  }
+  if (intent === "addNewServiceUnit") {
+    const update = await prisma.workOrder.update({
+      where: { workOrderId: Number(formPayload.workOrderId) },
+      data: {
+        unit: (`${formPayload.year} ${formPayload.brand} ${formPayload.model}`),
+        mileage: formPayload.mileage,
+        vin: formPayload.vin,
+        tag: formPayload.tag,
+        motor: formPayload.motor,
+        location: formPayload.location,
+        color: formPayload.color,
+
+      }
+    });
+    const create = await prisma.serviceUnit.create({
+      data: {
+        brand: formPayload.brand,
+        model: formPayload.model,
+        color: formPayload.color,
+        year: formPayload.year,
+        vin: formPayload.vin,
+        mileage: formPayload.mileage,
+        location: formPayload.location,
+        tag: formPayload.tag,
+        clientfileId: formPayload.clientfileId,
+      }
+    });
+
+    return json({ update, create })
+  }
+  if (intent === "addNewServiceToWorkOrder") {
+    const service = await prisma.services.create({
+      data: {
+        description: formPayload.description,
+        service: formPayload.name,
+        estHr: parseFloat(formPayload.hr),
+      }
+    })
+    const serviceOnWorkOrder = await prisma.servicesOnWorkOrders.create({
+      data: {
+        quantity: Number(formPayload.quantity),
+        hr: parseFloat(formPayload.hr),
+        status: 'Quote',
+        serviceId: service.id,
+        workOrderId: Number(formPayload.workOrderId),
+      }
+    })
+
+    return json({ serviceOnWorkOrder })
+  }
+  if (intent === "addServiceToWorkOrder") {
+    const serviceOnWorkOrder = await prisma.servicesOnWorkOrders.create({
+      data: {
+        quantity: 1,
+        hr: parseFloat(formPayload.hr),
+        status: 'Quote',
+        serviceId: formPayload.serviceId,
+        workOrderId: Number(formPayload.workOrderId),
+      }
+    })
+
+    return json({ serviceOnWorkOrder })
+  }
+  if (intent === "addAccToWorkOrder") {
+    let addToWorkOrder
+    if (formPayload.accOrderId === null) {
+      console.log('accOrderId is null')
+      const accOrder = await prisma.accOrder.create({
+        data: {
+          userEmail: email,
+          userName: user.username,
+          dept: 'Service',
+          status: 'Quote',
+          workOrderId: formPayload.workOrderId,
+        }
+      })
+
+      addToWorkOrder = await prisma.accessoriesOnOrders.create({
+        data: {
+
+          accessoryId: formPayload.accessoryId,
+          accOrderId: accOrder.id,
+          quantity: 1,
+        }
+      })
+    } else {
+      console.log('accOrderId is NOT null')
+
+      addToWorkOrder = await prisma.accessoriesOnOrders.create({
+        data: {
+          accessoryId: formPayload.accessoryId,
+          accOrderId: formPayload.accOrderId,
+          quantity: 1,
+        }
+      })
+    }
+    console.log(addToWorkOrder, 'accOrderId')
+
+    return json({ addToWorkOrder })
+  }
+  if (intent === "updateStatus") {
+    const update = await prisma.workOrder.update({
+      where: { workOrderId: Number(formPayload.id) },
+
+      data: {
+        status: formPayload.status,
+        total: parseFloat(formPayload.total),
+        waiter: formPayload.status === 'Waiter' ? true : null
+      }
+    });
+    return json({ update })
+  }
+  if (intent === "updateNote") {
+    console.log(';hit update note')
+    const update = await prisma.workOrder.update({
+      where: { workOrderId: Number(formPayload.id) },
+      data: {
+        notes: formPayload.note,
+      }
+    });
+    return json({ update })
+  }
+  // ----------------------service---------------------
+
   else return null
 }
 
@@ -8260,7 +9972,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
 
   let aptFinance3 = await getAppointmentsForFinance(financeId)
   const clientFile = await getClientFileById(params.clientId)
-  console.log(clientFile, 'checking clientFile')
+  // console.log(clientFile, 'checking clientFile')
 
   let finance
   if (user?.activixActivated === 'yes') {
@@ -8286,475 +9998,14 @@ export async function loader({ params, request }: DataFunctionArgs) {
       console.log('Client file or Finance array not found or is not an array.');
     }
 
-    /**
-        finance = await prisma.finance.findUnique({
-          where: { id: financeId },
-          select: {
-            // employees
-            financeManager: true,
-            userEmail: true,
-            userName: true,
-            financeManagerName: true,
-
-            // client
-            email: true,
-            firstName: true,
-            lastName: true,
-            phone: true,
-            name: true,
-            address: true,
-            city: true,
-            postal: true,
-            province: true,
-            dl: true,
-            typeOfContact: true,
-            timeToContact: true,
-            dob: true,
-
-            // finance
-            othTax: true,
-            optionsTotal: true,
-            lienPayout: true,
-            leadNote: true,
-            sendToFinanceNow: true,
-            dealNumber: true,
-            iRate: true,
-            months: true,
-            discount: true,
-            total: true,
-            onTax: true,
-            on60: true,
-            biweekly: true,
-            weekly: true,
-            weeklyOth: true,
-            biweekOth: true,
-            oth60: true,
-            weeklyqc: true,
-            biweeklyqc: true,
-            qc60: true,
-            deposit: true,
-            biweeklNatWOptions: true,
-            weeklylNatWOptions: true,
-            nat60WOptions: true,
-            weeklyOthWOptions: true,
-            biweekOthWOptions: true,
-            oth60WOptions: true,
-            biweeklNat: true,
-            weeklylNat: true,
-            nat60: true,
-            qcTax: true,
-            otherTax: true,
-            totalWithOptions: true,
-            otherTaxWithOptions: true,
-            desiredPayments: true,
-            admin: true,
-            commodity: true,
-            pdi: true,
-            discountPer: true,
-            userLoanProt: true,
-            userTireandRim: true,
-            userGap: true,
-            userExtWarr: true,
-            userServicespkg: true,
-            deliveryCharge: true,
-            vinE: true,
-            lifeDisability: true,
-            rustProofing: true,
-            userOther: true,
-
-            // dates
-            referral: true,
-            visited: true,
-            bookedApt: true,
-            aptShowed: true,
-            aptNoShowed: true,
-            testDrive: true,
-            metService: true,
-            metManager: true,
-            metParts: true,
-            sold: true,
-            depositMade: true,
-            refund: true,
-            turnOver: true,
-            financeApp: true,
-            approved: true,
-            signed: true,
-            pickUpSet: true,
-            demoed: true,
-            delivered: true,
-            lastContact: true,
-            status: true,
-            customerState: true,
-            result: true,
-            timesContacted: true,
-            nextAppointment: true,
-            followUpDay: true,
-            deliveryDate: true,
-            deliveredDate: true,
-            notes: true,
-            visits: true,
-            progress: true,
-            metSalesperson: true,
-            metFinance: true,
-            financeApplication: true,
-            pickUpDate: true,
-            pickUpTime: true,
-            depositTakenDate: true,
-            docsSigned: true,
-            tradeRepairs: true,
-            seenTrade: true,
-            lastNote: true,
-            applicationDone: true,
-            licensingSent: true,
-            liceningDone: true,
-            refunded: true,
-            cancelled: true,
-            lost: true,
-            dLCopy: true,
-            insCopy: true,
-            testDrForm: true,
-            voidChq: true,
-            loanOther: true,
-            signBill: true,
-            ucda: true,
-            tradeInsp: true,
-            customerWS: true,
-            otherDocs: true,
-            urgentFinanceNote: true,
-            funded: true,
-            leadSource: true,
-            financeDeptProductsTotal: true,
-            bank: true,
-            loanNumber: true,
-            idVerified: true,
-            dealerCommission: true,
-            financeCommission: true,
-            salesCommission: true,
-            firstPayment: true,
-            loanMaturity: true,
-            quoted: true,
-
-            // calls
-            InPerson: true,
-            Phone: true,
-            SMS: true,
-            Email: true,
-            Other: true,
-
-            // wanted unit
-            paintPrem: true,
-            licensing: true,
-            stockNum: true,
-            options: true,
-            accessories: true,
-            freight: true,
-            labour: true,
-            year: true,
-            brand: true,
-            mileage: true,
-            model: true,
-            model1: true,
-            color: true,
-            modelCode: true,
-            msrp: true,
-            trim: true,
-            vin: true,
-            bikeStatus: true,
-            invId: true,
-
-            // trade
-            tradeValue: true,
-            tradeDesc: true,
-            tradeColor: true,
-            tradeYear: true,
-            tradeMake: true,
-            tradeVin: true,
-            tradeTrim: true,
-            tradeMileage: true,
-            tradeLocation: true,
-            lien: true,
-
-            /// bmwMotoOptions: {          select: {          }        },
-            financeStorage: {
-              select: {
-                id: true,
-                createdAt: true,
-                updatedAt: true,
-                url: true,
-                filePath: true,
-              }
-            },
-            clientApts: {
-              select: {
-                id: true,
-                financeId: true,
-                title: true,
-                start: true,
-                end: true,
-                contactMethod: true,
-                completed: true,
-                apptStatus: true,
-                apptType: true,
-                note: true,
-                unit: true,
-                brand: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                phone: true,
-                address: true,
-                userEmail: true,
-                userId: true,
-                description: true,
-                userName: true,
-                attachments: true,
-                direction: true,
-                resultOfcall: true,
-                resourceId: true,
-                activixId: true,
-                activixNoteId: true,
-                createdAt: true,
-                updatedAt: true,
-                isPublished: true,
-              }
-            },
-            //  finManOptions: { select: {  } },
-            //   uCDAForm: { select: {} },
-            // FinCanOptions: { select: {} },
-            //  Comm: { select: {} },
-            //  FinanceDeptProducts: { select: {} },
-            // FinanceTradeUnit: { select: {} },
-            FinanceUnit: {
-              select: {
-                paintPrem: true,
-                licensing: true,
-                stockNum: true,
-                options: true,
-                accessories: true,
-                freight: true,
-                labour: true,
-                year: true,
-                brand: true,
-                mileage: true,
-                model: true,
-                model1: true,
-                color: true,
-                modelCode: true,
-                msrp: true,
-                trim: true,
-                vin: true,
-                bikeStatus: true,
-                invId: true,
-                location: true,
-                id: true,
-                createdAt: true,
-                updatedAt: true,
-                WorkOrder: {
-                  select: {
-                    unit: true,
-                    mileage: true,
-                    vin: true,
-                    tag: true,
-                    motor: true,
-                    budget: true,
-                    totalLabour: true,
-                    totalParts: true,
-                    subTotal: true,
-                    total: true,
-                    writer: true,
-                    tech: true,
-                    notes: true,
-                    customerSig: true,
-                    status: true,
-                    location: true,
-                    quoted: true,
-                    id: true,
-                    createdAt: true,
-                    updatedAt: true,
-                    AccOrders: {
-                      select: {
-                        id: true,
-                        createdAt: true,
-                        updatedAt: true,
-                        userEmail: true,
-                        userName: true,
-                        attachedId: true,
-                        dept: true,
-                        total: true,
-                        discount: true,
-                        discPer: true,
-                        status: true,
-                        sendToAccessories: true,
-                        accessoriesCompleted: true,
-                        clientfileId: true,
-                        workOrderId: true,
-                        financeId: true,
-                        AccessoriesOnOrders: {
-                          select: {
-                            id: true,
-                            quantity: true,
-                            accOrderId: true,
-                            status: true,
-                            orderNumber: true,
-                            accessory: {
-                              select: {
-                                id: true,
-                                createdAt: true,
-                                updatedAt: true,
-                                accessoryNumber: true,
-                                brand: true,
-                                name: true,
-                                price: true,
-                                cost: true,
-                                quantity: true,
-                                description: true,
-                                category: true,
-                                subCategory: true,
-                                onOrder: true,
-                                distributer: true,
-                                location: true,
-                                note: true,
-                              },
-                            },
-                          },
-                        },
-                        Payments: {
-                          select: {
-                            id: true,
-                            createdAt: true,
-                            accOrderId: true,
-                            paymentType: true,
-                            amountPaid: true,
-                            cardNum: true,
-                            receiptId: true,
-                          },
-                        },
-                        AccHandoff: {
-                          select: {
-                            id: true,
-                            createdAt: true,
-                            updatedAt: true,
-                            status: true,
-                            handOffTime: true,
-                            completedTime: true,
-                            notes: true,
-                          },
-                        },
-                      },
-                    },
-                  }
-                },
-              }
-            },
-            AccOrders: {
-              select: {
-                id: true,
-                createdAt: true,
-                updatedAt: true,
-                userEmail: true,
-                userName: true,
-                attachedId: true,
-                dept: true,
-                total: true,
-                discount: true,
-                discPer: true,
-                status: true,
-                sendToAccessories: true,
-                accessoriesCompleted: true,
-                clientfileId: true,
-                workOrderId: true,
-                financeId: true,
-                AccessoriesOnOrders: {
-                  select: {
-                    id: true,
-                    quantity: true,
-                    accOrderId: true,
-                    status: true,
-                    orderNumber: true,
-                    accessory: {
-                      select: {
-                        id: true,
-                        createdAt: true,
-                        updatedAt: true,
-                        accessoryNumber: true,
-                        brand: true,
-                        name: true,
-                        price: true,
-                        cost: true,
-                        quantity: true,
-                        description: true,
-                        category: true,
-                        subCategory: true,
-                        onOrder: true,
-                        distributer: true,
-                        location: true,
-                        note: true,
-                      },
-                    },
-                  },
-                },
-                Payments: {
-                  select: {
-
-                    id: true,
-                    createdAt: true,
-                    accOrderId: true,
-                    paymentType: true,
-                    amountPaid: true,
-                    cardNum: true,
-                    receiptId: true,
-                  },
-                },
-                AccHandoff: {
-                  select: {
-
-                    id: true,
-                    createdAt: true,
-                    updatedAt: true,
-                    status: true,
-                    handOffTime: true,
-                    completedTime: true,
-                    notes: true,
-                  },
-                }
-              }
-            },
-
-            Clientfile: {
-              select: {
-                id: true,
-                createdAt: true,
-                updatedAt: true,
-                financeId: true,
-                userId: true,
-                firstName: true,
-                lastName: true,
-                name: true,
-                email: true,
-                phone: true,
-                address: true,
-                city: true,
-                postal: true,
-                province: true,
-                dl: true,
-                typeOfContact: true,
-                timeToContact: true,
-                conversationId: true,
-                billingAddress: true,
-              }
-            }
-          },
-        });*/
 
   }
-  //console.log(finance, 'checking connectinos')
   const SetClient66Cookie = await SetClient66(userId, clientId, financeId, request)
 
   const brand = finance?.brand
   const financeNotes = await getAllFinanceNotes(financeId)
   const docTemplates = await getDocsbyUserId(userId)
 
-  // console.log(finance, 'checking loaders')
   const Coms = await getComsOverview(email)
   let dealerFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
   if (!dealerFees) {
@@ -8819,6 +10070,393 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const financeManagers = await prisma.user.findMany({
     where: { positions: { some: { position: 'Finance Manager' } } }
   });
+  // ----------------------service -----------------------------
+  const orders = await prisma.workOrder.findMany({
+    where: { financeId: finance.id },
+    select: {
+      workOrderId: true,
+      unit: true,
+      mileage: true,
+      vin: true,
+      tag: true,
+      motor: true,
+      budget: true,
+      totalLabour: true,
+      totalParts: true,
+      subTotal: true,
+      total: true,
+      writer: true,
+      userEmail: true,
+      tech: true,
+      notes: true,
+      customerSig: true,
+      status: true,
+      location: true,
+      quoted: true,
+      paid: true,
+      remaining: true,
+      FinanceUnitId: true,
+      financeId: true,
+      clientfileId: true,
+      createdAt: true,
+      updatedAt: true,
+      Clientfile: {
+        select: {
+          id: true,
+          financeId: true,
+          firstName: true,
+          lastName: true,
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+          city: true,
+          postal: true,
+          province: true,
+          dl: true,
+          typeOfContact: true,
+          timeToContact: true,
+          conversationId: true,
+          billingAddress: true,
+          Finance: {
+            select: {
+              financeManager: true,
+              userEmail: true,
+              userName: true,
+              financeManagerName: true,
+              //: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              phone: true,
+              name: true,
+              address: true,
+              city: true,
+              postal: true,
+              province: true,
+              dl: true,
+              typeOfContact: true,
+              timeToContact: true,
+              dob: true,
+              //: true,
+              othTax: true,
+              optionsTotal: true,
+              lienPayout: true,
+              leadNote: true,
+              sendToFinanceNow: true,
+              dealNumber: true,
+              iRate: true,
+              months: true,
+              discount: true,
+              total: true,
+              onTax: true,
+              on60: true,
+              biweekly: true,
+              weekly: true,
+              weeklyOth: true,
+              biweekOth: true,
+              oth60: true,
+              weeklyqc: true,
+              biweeklyqc: true,
+              qc60: true,
+              deposit: true,
+              biweeklNatWOptions: true,
+              weeklylNatWOptions: true,
+              nat60WOptions: true,
+              weeklyOthWOptions: true,
+              biweekOthWOptions: true,
+              oth60WOptions: true,
+              biweeklNat: true,
+              weeklylNat: true,
+              nat60: true,
+              qcTax: true,
+              otherTax: true,
+              totalWithOptions: true,
+              otherTaxWithOptions: true,
+              desiredPayments: true,
+              admin: true,
+              commodity: true,
+              pdi: true,
+              discountPer: true,
+              userLoanProt: true,
+              userTireandRim: true,
+              userGap: true,
+              userExtWarr: true,
+              userServicespkg: true,
+              deliveryCharge: true,
+              vinE: true,
+              lifeDisability: true,
+              rustProofing: true,
+              userOther: true,
+              //: true,
+              referral: true,
+              visited: true,
+              bookedApt: true,
+              aptShowed: true,
+              aptNoShowed: true,
+              testDrive: true,
+              metService: true,
+              metManager: true,
+              metParts: true,
+              sold: true,
+              depositMade: true,
+              refund: true,
+              turnOver: true,
+              financeApp: true,
+              approved: true,
+              signed: true,
+              pickUpSet: true,
+              demoed: true,
+              delivered: true,
+              lastContact: true,
+              status: true,
+              customerState: true,
+              result: true,
+              timesContacted: true,
+              nextAppointment: true,
+              followUpDay: true,
+              deliveryDate: true,
+              deliveredDate: true,
+              notes: true,
+              visits: true,
+              progress: true,
+              metSalesperson: true,
+              metFinance: true,
+              financeApplication: true,
+              pickUpDate: true,
+              pickUpTime: true,
+              depositTakenDate: true,
+              docsSigned: true,
+              tradeRepairs: true,
+              seenTrade: true,
+              lastNote: true,
+              applicationDone: true,
+              licensingSent: true,
+              liceningDone: true,
+              refunded: true,
+              cancelled: true,
+              lost: true,
+              dLCopy: true,
+              insCopy: true,
+              testDrForm: true,
+              voidChq: true,
+              loanOther: true,
+              signBill: true,
+              ucda: true,
+              tradeInsp: true,
+              customerWS: true,
+              otherDocs: true,
+              urgentFinanceNote: true,
+              funded: true,
+              leadSource: true,
+              financeDeptProductsTotal: true,
+              bank: true,
+              loanNumber: true,
+              idVerified: true,
+              dealerCommission: true,
+              financeCommission: true,
+              salesCommission: true,
+              firstPayment: true,
+              loanMaturity: true,
+              quoted: true,
+              //: true,
+              InPerson: true,
+              Phone: true,
+              SMS: true,
+              Email: true,
+              Other: true,
+              //------: true,
+              //: true,
+              paintPrem: true,
+              licensing: true,
+              stockNum: true,
+              options: true,
+              accessories: true,
+              freight: true,
+              labour: true,
+              year: true,
+              brand: true,
+              mileage: true,
+              model: true,
+              model1: true,
+              color: true,
+              modelCode: true,
+              msrp: true,
+              trim: true,
+              vin: true,
+              bikeStatus: true,
+              invId: true,
+              //: true,
+              tradeValue: true,
+              tradeDesc: true,
+              tradeColor: true,
+              tradeYear: true,
+              tradeMake: true,
+              tradeVin: true,
+              tradeTrim: true,
+              tradeMileage: true,
+              tradeLocation: true,
+              lien: true,
+              //: true,
+              id: true,
+              activixId: true,
+              theRealActId: true,
+              createdAt: true,
+              updatedAt: true,
+              FinanceUnit: {
+                select: {
+                  paintPrem: true,
+                  licensing: true,
+                  stockNum: true,
+                  options: true,
+                  accessories: true,
+                  freight: true,
+                  labour: true,
+                  year: true,
+                  brand: true,
+                  mileage: true,
+                  model: true,
+                  model1: true,
+                  color: true,
+                  modelCode: true,
+                  msrp: true,
+                  trim: true,
+                  vin: true,
+                  bikeStatus: true,
+                  invId: true,
+                  location: true,
+                  id: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  financeId: true,
+                }
+              },
+            }
+          },
+          ServiceUnit: {
+            select: {
+              id: true,
+              createdAt: true,
+              updatedAt: true,
+              price: true,
+              brand: true,
+              model: true,
+              color: true,
+              accessories: true,
+              options: true,
+              year: true,
+              vin: true,
+              trim: true,
+              mileage: true,
+              location: true,
+              condition: true,
+              repairs: true,
+              stockNum: true,
+              licensing: true,
+              tradeEval: true,
+            }
+          },
+        },
+      },
+      AccOrders: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          userEmail: true,
+          userName: true,
+          dept: true,
+          total: true,
+          discount: true,
+          discPer: true,
+          paid: true,
+          paidDate: true,
+          status: true,
+          workOrderId: true,
+          note: true,
+          financeId: true,
+          clientfileId: true,
+          AccessoriesOnOrders: {
+            select: {
+              id: true,
+              quantity: true,
+              accOrderId: true,
+              status: true,
+              orderNumber: true,
+              OrderInvId: true,
+              accessoryId: true,
+              accessory: {
+                select: {
+                  id: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  partNumber: true,
+                  brand: true,
+                  name: true,
+                  price: true,
+                  cost: true,
+                  quantity: true,
+                  description: true,
+                  category: true,
+                  subCategory: true,
+                  onOrder: true,
+                  distributer: true,
+                  location: true,
+                },
+              },
+            },
+          },
+        }
+      },
+      Payments: {
+        select: {
+          id: true,
+          createdAt: true,
+          paymentType: true,
+          amountPaid: true,
+          cardNum: true,
+          receiptId: true,
+          financeId: true,
+          userEmail: true,
+          accOrderId: true,
+        },
+      },
+      ServicesOnWorkOrders: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          quantity: true,
+          status: true,
+          workOrderId: true,
+          serviceId: true,
+          hr: true,
+          service: {
+            select: {
+              id: true,
+              createdAt: true,
+              updatedAt: true,
+              description: true,
+              estHr: true,
+              service: true,
+              price: true,
+            }
+          }
+        }
+      }
+    },
+  });
+  const tax = await prisma.dealer.findUnique({
+    where: { id: 1 },
+    select: {
+      userTax: true,
+      userLabour: true,
+    },
+  });
+  const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
+  const services = await prisma.services.findMany({})
+  //
+  // ----------------------service -----------------------------
   let modelData = []
   let apptFinance2 = []
   let manOptions = []
@@ -8855,11 +10493,8 @@ export async function loader({ params, request }: DataFunctionArgs) {
     default:
     // code block
   }
-  const dealerImage = await prisma.dealerLogo.findUnique({
-    where: { id: 1 }
-  })
 
-  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage }));
+  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders }));
 }
 
 function SidebarNav({ mergedFinanceList, finance }) {

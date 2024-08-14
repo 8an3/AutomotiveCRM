@@ -1320,9 +1320,10 @@ model Clientfile {
   conversationId String?
   billingAddress Boolean?
 
-  AccOrder  AccOrder[]
-  Finance   Finance[]
-  WorkOrder WorkOrder[]
+  AccOrder    AccOrder[]
+  Finance     Finance[]
+  WorkOrder   WorkOrder[]
+  ServiceUnit ServiceUnit[]
 }
 
 // -----------------------------------------------------------------------------
@@ -1731,6 +1732,7 @@ model WorkOrder {
   motor         String?
   color         String?
   budget        String?
+  waiter        Boolean?
   totalLabour   Float?
   totalParts    Float?
   subTotal      Float?
@@ -1750,23 +1752,66 @@ model WorkOrder {
   ServiceUnitId String?
   financeId     String?
   clientfileId  String?
+  note          String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  FinanceUnit          FinanceUnit?           @relation(fields: [FinanceUnitId], references: [id], onDelete: Cascade)
-  ServiceUnit          ServiceUnit?           @relation(fields: [ServiceUnitId], references: [id], onDelete: Cascade)
-  AccOrders            AccOrder[]
-  Finance              Finance?               @relation(fields: [financeId], references: [id], onDelete: SetNull)
-  Clientfile           Clientfile?            @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
-  ServicesOnWorkOrders ServicesOnWorkOrders[]
-  Payments             Payment[]
-
-  Service Service[]
+  FinanceUnit           FinanceUnit?           @relation(fields: [FinanceUnitId], references: [id], onDelete: Cascade)
+  ServiceUnit           ServiceUnit[]
+  AccOrders             AccOrder[]
+  Finance               Finance[]
+  Clientfile            Clientfile?            @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
+  ServicesOnWorkOrders  ServicesOnWorkOrders[]
+  Payments              Payment[]
+  WorkOrderApts         WorkOrderApts?
+  Service               Service[]
+  WorkOrderClockEntries WorkOrderClockEntry[]
 
   @@index([clientfileId])
   @@index([FinanceUnitId])
   @@index([financeId])
   @@index([ServiceUnitId])
+}
+
+model WorkOrderClockEntry {
+  id          Int       @id @default(autoincrement())
+  start       DateTime
+  end         DateTime?
+  userEmail   String
+  username    String
+  workOrderId Int
+
+  WorkOrder WorkOrder @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([workOrderId])
+}
+
+model WorkOrderApts {
+  id          String   @id @default(cuid())
+  tech        String?
+  techEmail   String?
+  writer      String?
+  start       String?
+  end         String?
+  title       String?
+  workOrderId Int?     @unique
+  completed   Boolean?
+  resourceId  String?
+  unit        String?
+  mileage     String?
+  vin         String?
+  tag         String?
+  motor       String?
+  color       String?
+  location    String?
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  WorkOrder WorkOrder? @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade)
+
+  @@index([workOrderId])
 }
 
 model ServicesOnWorkOrders {
@@ -1782,7 +1827,6 @@ model ServicesOnWorkOrders {
   WorkOrder WorkOrder? @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade)
   service   Services   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
-  @@unique([serviceId])
   @@index([workOrderId])
 }
 
@@ -1803,26 +1847,30 @@ model ServiceUnit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  price       String?
-  brand       String?
-  model       String?
-  color       String?
-  accessories String?
-  options     String?
-  year        String?
-  vin         String?
-  trim        String?
-  mileage     String?
-  location    String?
-  condition   String?
-  repairs     String?
-  stockNum    String?
-  motor       String?
-  tag         String?
-  licensing   Boolean?
-  tradeEval   Boolean?
+  price        String?
+  brand        String?
+  model        String?
+  color        String?
+  accessories  String?
+  options      String?
+  year         String?
+  vin          String?
+  trim         String?
+  mileage      String?
+  location     String?
+  condition    String?
+  repairs      String?
+  stockNum     String?
+  motor        String?
+  tag          String?
+  licensing    Boolean?
+  tradeEval    Boolean?
+  clientfileId String?
 
   WorkOrders WorkOrder[]
+  Clientfile Clientfile? @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
+
+  @@index([clientfileId])
 }
 
 model Comm {

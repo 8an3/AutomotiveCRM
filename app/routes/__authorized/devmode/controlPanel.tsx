@@ -6,7 +6,7 @@ import { prisma } from "~/libs";
 import { toast } from "sonner"
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { Target } from 'lucide-react';
-import { todoRoadmap } from '../dealer/user/dashboard.roadmap';
+import { roadMapItems } from '../dealer/user/dashboard.roadmap';
 import { useState } from 'react';
 import { DealerOnboarding } from './emails/dealerOnboarding';
 import { Resend } from "resend";
@@ -415,29 +415,15 @@ export default function DashboardPage() {
   const organizedTasks = {};
   const [selectedDealer, setSelectedDealer] = useState()
 
-  todoRoadmap.forEach((item) => {
+  roadMapItems.forEach((item) => {
     if (!organizedTasks[item.type]) {
       organizedTasks[item.type] = [];
     }
     organizedTasks[item.type].push(item);
   });
 
-  const devRoadMap = [
-    { type: "Dev", desc: "cant do till we have access to a phone - SMS needs to be retested, need access to twilio account which needes 2fa that is tied to your phone" },
-    { type: "Dev", desc: "need a way for when a new employee uses the dashboard they acquire a new number from twilio" },
-
-    { type: "Dev", desc: "Docs" },
-    { type: "Dev", desc: "new hooks when upgrading platform" },
-    { type: "Dev", desc: "sales manager dash" },
-    { type: "Dev", desc: "Notification system needs to show email and sms notifications" },
-    { type: "Dev", desc: "some sort of email webhook whether we use swr or a microsoft api so create notifications of new emails" },
-
-    { type: "Dev", desc: "----------------------DONE----------------------" },
-
-  ];
-
   const devTasks = {};
-  devRoadMap.forEach((item) => {
+  roadMapItems.getDoneNow.forEach((item) => {
     if (!devTasks[item.type]) {
       devTasks[item.type] = [];
     }
