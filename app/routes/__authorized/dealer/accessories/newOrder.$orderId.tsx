@@ -248,7 +248,7 @@ export async function loader({ request, params }: LoaderFunction) {
     },
   });
   const salesPerson = await prisma.user.findUnique({
-    where: { email: order.userEmail }
+    where: { email: user.userEmail }
   })
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },

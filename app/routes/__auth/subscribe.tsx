@@ -56,9 +56,24 @@ export default function Subscribe() {
     const [sales, setSales] = useState(false);
     const [dealer, setDealer] = useState(false);
 
+    let salesCard = [
+        { description: "Experience the only CRM on the market designed to empower every salesperson, regardless of your current CRM provider. While we may not have every integration yet, if your current provider isn't on our list, sign up, and we'll prioritize integrating it promptly.", },
+        { description: "Say goodbye to countless hours wasted on repetitive tasks in your dealership without needing management's permission. Our CRM acts like a new 'skin' or interface, replacing your dashboard to make your job more efficient and help you outsell everyone else. Whether you want to achieve more or prefer spending time on other activities, our CRM adapts to your needs.", },
+        { description: "While the salesperson's version may lack some functionalities compared to the full dealership version, convincing management to change the entire CRM system might be as challenging as selling cars in Thailand without speaking the language. ", },
+        { description: "However, adopting our CRM will significantly elevate your sales game, surpassing the impact of the last five sales training sessions. Guaranteed to be the most significant change in your career, whether you're a newcomer, a sales superstar, or a seasoned salesperson who isn't tech-savvy. You'll undoubtedly see a remarkable increase—Just read the upcoming story about wasting time with mass emails. ", },
+
+    ];
+
+    let dealerCard = [
+        { description: "Why should you choose this crm? I'm just going to give it to you straight, it's better, period. I'm a sales person, have been my whole life. When I know every script, rebuttal and overcome a sales person can learn, how else can I improve and make more money? This was the biggest crux to fix and I'm sick and tired of crm's wasting my time, making me do more steps in the sales process that arent needed. Or not even addressing the the bigger ones. I've always pushed to be the best, and thats what you will get. If your sales staff don't see an improvment in effeciency in their day to day, which in turn increases their sales by allowing them to complete more of them, you get your money back. I'm that confident.", },
+        { description: "Already have a crm and dont want to upset the dynamic of your entire store? No problem, you can just have your sales team, or just your top sales people use it. If we are not integrated with your current crm, we can quickly connect our app to your crm and it would look like they were still using the original crm. That way, theres no disruption.", },
+        { description: "I've counted the minutes crm's waste, and its mind boggling. 9 out of 10 products on the market are a waste of time and money. And I'm talking about the biggest products on the market. Or maybe your just an average store that does average sales, then this is an even better product for you. It doesn't cost as much as the 'bigger' brand names, with more features out of the gate. I not only made the near perfect crm for sales people (since I'm always improving it), I took that same attitude to every position in the dealer. The owner shouldn't have to look at the same dash as the sales people and try to decipher a bunch of data to get information they need to make informed decisions on sales and such. No two positions in the dealer need the same data.", },
+        { description: "Lets be honest, the sales part of the crm is better then the parts or service depts. They complain even more, and they should. It shouldn't take 5 minutes to find the information to answer a simple question. Navigating 32 pages to see if something is in stock for a unit. So I tailor made every position/role's section of the app and they will be able to expect a lot better experience.", },
+        { description: "There are tools in my crm, that you cannot find in any other product on the market. With that said, it doesn't make sense to go with a competing product because you would be doing yourself a disservice. Your getting more for your money, lets be real a lot of crm companies charge an actual arm and a leg, at a cheaper rate. Ontop of that theres's no contract, you can walk at any time.", },
+    ]
     return (
         <>
-            <div className="centered-center flex bg-black px-4 py-12 sm:px-6 lg:px-8">
+            <div className="centered-center flex bg-background px-4 py-12 sm:px-6 lg:px-8">
                 <div className="h-full  w-full ">
                     <div className="md:flex">
                         <div className="mx-auto my-auto p-4">
@@ -76,114 +91,49 @@ export default function Subscribe() {
                                                 <SalespersonPrice />
                                             ) : (
                                                 <fieldset
-                                                    className="mx-auto grid h-[650px] w-[90%] cursor-pointer rounded-lg border border-white p-4 hover:border-primary lg:w-[90%]"
-                                                    onClick={() => setSales(true)}
+                                                    className="mx-auto grid w-[350px]  rounded-lg p-4 hover:border-primary  "
                                                 >
                                                     <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
                                                         Sales People
                                                     </legend>
-                                                    <p className="pt-[5px] text-center text-sm text-myColor-200">
-                                                        Experience the only CRM on the market designed to
-                                                        empower every salesperson, regardless of your
-                                                        current CRM provider. While we may not have every
-                                                        integration yet, if your current provider isn't on
-                                                        our list, sign up, and we'll prioritize integrating
-                                                        it promptly.
-                                                    </p>
-                                                    <br className="my-1" />
-                                                    <p className="text-center text-sm text-myColor-200">
-                                                        Say goodbye to countless hours wasted on repetitive
-                                                        tasks in your dealership without needing
-                                                        management's permission. Our CRM acts like a new
-                                                        "skin" or interface, replacing your dashboard to
-                                                        make your job more efficient and help you outsell
-                                                        everyone else. Whether you want to achieve more or
-                                                        prefer spending time on other activities, our CRM
-                                                        adapts to your needs.
-                                                    </p>
-                                                    <br className="my-1" />
-                                                    <p className="text-center text-sm text-myColor-200">
-                                                        While the salesperson's version may lack some
-                                                        functionalities compared to the full dealership
-                                                        version, convincing management to change the entire
-                                                        CRM system might be as challenging as selling cars
-                                                        in Thailand without speaking the language.
-                                                    </p>
-                                                    <br className="my-1" />
-                                                    <p className="text-center text-sm text-myColor-200">
-                                                        However, adopting our CRM will significantly elevate
-                                                        your sales game, surpassing the impact of the last
-                                                        five sales training sessions. Guaranteed to be the
-                                                        most significant change in your career, whether
-                                                        you're a newcomer, a sales superstar, or a seasoned
-                                                        salesperson who isn't tech-savvy. You'll undoubtedly
-                                                        see a remarkable increase—Just read the upcoming
-                                                        story about wasting time with mass emails.
-                                                    </p>
-                                                    <br className="my-1" />
-                                                    <div className="items-end">
-                                                        <div className="flex justify-center">
-                                                            <Button
-                                                                size="sm"
-                                                                className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
-                                                            >
-                                                                Continue
-                                                            </Button>
-                                                        </div>
-                                                    </div>
+                                                    <ul className="grid gap-3 text-sm mt-2">
+                                                        {salesCard.map((item, index) => (
+                                                            <li key={index} className="flex items-center justify-center">
+                                                                <p className='text-left'>{item.description}</p>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                    <Button
+                                                        onClick={() => setSales(true)}
+                                                        size="sm"
+                                                        className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
+                                                    >
+                                                        Continue
+                                                    </Button>
                                                 </fieldset>
                                             )}
                                             {dealer ? (
                                                 <DealerPrice />
                                             ) : (
-                                                <fieldset
-                                                    className="mx-auto grid h-[650px] w-[90%] cursor-pointer gap-6 rounded-lg border border-white p-4 hover:border-primary lg:h-full lg:w-[90%]"
-                                                    onClick={() => setDealer(true)}
-                                                >
-                                                    <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
+                                                <fieldset className="mx-auto grid  w-[350px] gap-6 rounded-lg   p-4  hover:border-primary lg:h-full  " >
+                                                    <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
                                                         Dealers
                                                     </legend>
-                                                    <p className="px-8 text-sm text-myColor-200">
-                                                        Increase your revenue and streamline training for
-                                                        new hires by using our CRM. It's not just easier for
-                                                        your employees but also provides an excellent way to
-                                                        present and upsell to every customer.
-                                                    </p>
-                                                    <br className="my-1" />
-                                                    <p className="px-8 text-sm text-myColor-200">
-                                                        Experience quicker sales with fewer customer
-                                                        questions. The easy-to-read information about the
-                                                        deal makes customers happier. Your sales team can
-                                                        effortlessly close deals without getting hung up on
-                                                        questions or uncertainty through the process.
-                                                    </p>
-                                                    <br className="my-1" />
-                                                    <p className="px-8 text-sm text-myColor-200">
-                                                        Eliminate paperwork for your salespeople. Our system
-                                                        handles all necessary paperwork, allowing your sales
-                                                        team to hit print, and the system takes care of the
-                                                        rest. Save time and boost profits across any
-                                                        dealership.
-                                                    </p>
-                                                    <br className="my-1" />
-                                                    <p className="px-8 text-sm text-myColor-200">
-                                                        Discover more benefits by exploring our system. Stay
-                                                        tuned for an in-depth video covering the entire
-                                                        system and addressing how the industry has done us
-                                                        wrong. If you're here, you're already moving in the
-                                                        right direction. To top it off, we have one
-                                                        advantage none of the CRM providers have.
-                                                    </p>
-                                                    <div className="items-end">
-                                                        <div className="flex justify-center">
-                                                            <Button
-                                                                size="sm"
-                                                                className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
-                                                            >
-                                                                Continue
-                                                            </Button>
-                                                        </div>
-                                                    </div>
+                                                    <ul className="grid gap-3 text-sm mt-2">
+                                                        {dealerCard.map((item, index) => (
+                                                            <li key={index} className=" ">
+                                                                <p className='text-left'>{item.description}</p>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={() => setDealer(true)}
+                                                        className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
+                                                    >
+                                                        Continue
+                                                    </Button>
+
                                                 </fieldset>
                                             )}
                                         </div>

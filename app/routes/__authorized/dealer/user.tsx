@@ -46,15 +46,14 @@ export default function Quote() {
   const devIsAllowed = getUserIsAllowed(user, ["DEV"]);
   const managerIsAllowed = getUserIsAllowed(user, ["MANAGER"]);
 
-
+  /**   {
+      title: "Docs",
+      to: "/dealer/docs/sales",
+    }, */
   const sidebarNavItems = [
     {
       title: "Settings",
       to: "/dealer/user/dashboard/settings",
-    },
-    {
-      title: "Docs",
-      to: "/dealer/docs/sales",
     },
     {
       title: "Roadmap",
@@ -85,7 +84,7 @@ export default function Quote() {
       to: "/dealer/user/dashboard/finance/board",
     },
     {
-      title: "Log out",
+      title: "Log Out",
       to: "/auth/logout",
     },
   ]

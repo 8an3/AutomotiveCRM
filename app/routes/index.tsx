@@ -311,7 +311,7 @@ export const dealerFeatures = [
 
   // here now
   { name: "QR code system to easily get the information you need at the tap of a button", description: "Each receipt, work order or anything to do with a client will include a qr code so you can quickly scan it, either with your computer to pull up their file to work on when a client walks through the door, or your phone so you can work on the file on the go without needing a computer or workorder to refer to, has a plethora of other uses but too many to lsit here. Also removes the need for printed work orders to chase or keep track of.", },
-  { name: "Client sync with mobile devices and desktop", description: "For example, your looking at a customers unit outside with them and you pull up their order on your phone to make notes on work needed, once all work has been gone over with the vehicle and the client, you walk back inside with your client and navigate to the orders page, with your clients file already pulled up and everything you noted outside, is already on their file. Or your in accessories, you have the customers order already up on your phone and as your helping your customer try things on and they agree to buy them, your already ringing up thier items they want to purchase with your phone. When their done shopping, you can confirm the order with them on your phone or go to your computer and have the order pulled up with all the customers items already on their order, all they have to do is pay.", },
+  { name: "Synced between your phone and desktop", description: "For example, your looking at a customers unit outside with them and you pull up their order on your phone to make notes on work needed, once all work has been gone over with the vehicle and the client, you walk back inside with your client and open the orders page, with your clients file already pulled up and everything you noted outside, is already on their file. Or your in accessories, you have the customers order already up on your phone and as your helping your customer try things on and they agree to buy them, your already ringing up their items they want to purchase with your phone. When their done shopping, you can confirm the order with them on your phone or go to your computer and have the order pulled up with all the customers items already on their order, all they have to do is pay.", },
   { name: "Demo Day Dashboard - Coming Soon! - Here now!", description: "Book your clients in for your next demo day. (Coming Soon)", },
   { name: "Full Parts CRM and Inventory Mgt - Coming Soon! - Here now!", description: "Parts CRM and inventory management (Coming Soon)", },
   { name: "Full Acc CRM and Inventory Mgt - Coming Soon! - Here now!", description: "Accessories CRM and inventory management (Coming Soon)", },
@@ -356,8 +356,8 @@ export function DealerPrice() {
         rel="noopener noreferrer"
         className="mt-2 lg:ml-2 lg:mt-0"
       >
-        <fieldset className="mx-auto grid h-[1550px] w-[90%] cursor-pointer rounded-lg border border-white p-4 hover:border-primary lg:w-[90%]">
-          <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
+        <fieldset className="mx-auto grid h-auto max-h-[600px] overflow-y-auto w-[400px] cursor-pointer rounded-lg border border-border p-4 hover:border-primary ">
+          <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
             Dealer
           </legend>
           <br className="my-1" />
@@ -416,8 +416,8 @@ export function SalespersonPrice() {
         rel="noopener noreferrer"
         className="lg:mr-2"
       >
-        <fieldset className="mx-auto grid h-[900px] w-[90%] cursor-pointer rounded-lg border border-white p-4 hover:border-primary lg:w-[90%]">
-          <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
+        <fieldset className="mx-auto grid h-auto max-h-[600px] overflow-y-auto w-[400px] cursor-pointer rounded-lg border border-border p-4 hover:border-primary ">
+          <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
             Sales People
           </legend>
           <div className="mx-auto flex w-[60%] justify-center">

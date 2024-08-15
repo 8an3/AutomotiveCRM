@@ -1,12 +1,12 @@
 
 
-import { Button } from "~/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter
 } from "~/components/ui/card"
 import {
   Tabs,
@@ -18,6 +18,48 @@ import { useState, useEffect } from "react"
 import { Separator } from "~/components"
 import { GiBullseye } from "react-icons/gi";
 import { Target } from 'lucide-react';
+import { Link, useLocation } from "@remix-run/react"
+import { cn } from "~/components/ui/utils"
+import { Button, buttonVariants } from "~/components/ui/button"
+
+interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
+  items: {
+    to: string
+    title: string
+  }[]
+}
+
+export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
+  const location = useLocation();
+  const pathname = location.pathname
+  console.log(pathname)
+  return (
+    <nav
+      className={cn(
+        "flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
+        className
+      )}
+      {...props}
+    >
+      {items.map((item) => (
+        <Button
+          key={item.to}
+          variant='ghost'
+          className={cn(
+            buttonVariants({ variant: "ghost" }),
+            pathname === item.to
+              ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
+              : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
+            "justify-start w-[90%] "
+          )} >
+          {item.title}
+        </Button>
+      ))
+      }
+    </nav >
+  )
+}
+
 
 export const metadata = {
   title: "Dashboard",
@@ -396,10 +438,10 @@ const automation = [
   { board: "dev", column: "AUTOMATION", item: "customer 2 months after pick up to make sure everything is still good" },
 ]
 const service = [
-  { board: "dev", column: "service", item: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
-  { board: "dev", column: "service", item: "service writer dash" },
-  { board: "dev", column: "service", item: "tech dash" },
-  { board: "dev", column: "service", item: "scan incoming crates and add them into inventory or something, maybe a inbox for the admin to convert them to inventory" },
+  { board: "dev", column: "SERVICE", item: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
+  { board: "dev", column: "SERVICE", item: "service writer dash" },
+  { board: "dev", column: "SERVICE", item: "tech dash" },
+  { board: "dev", column: "SERVICE", item: "scan incoming crates and add them into inventory or something, maybe a inbox for the admin to convert them to inventory" },
 ]
 const docs = [
   { board: "dev", column: "docs", item: "Videos for docs" },
@@ -446,8 +488,8 @@ const dash = [
   { board: "dev", column: "dash", item: "dynamic dashboard widgets" },
 ]
 const communications = [
-  { board: "dev", column: "communications", item: "email / sms campaigns" },
-  { board: "dev", column: "communications", item: "fb msgr integration" },
+  { board: "dev", column: "COMMUNICATIONS", item: "email / sms campaigns" },
+  { board: "dev", column: "COMMUNICATIONS", item: "fb msgr integration" },
 
 ]
 const paidfeature = [
@@ -486,6 +528,7 @@ export const roadMapItems = [
 ]
 
 
+//const todoRoadmap = roadMapItems
 /*  docs,
   owner,
   quote,
@@ -493,21 +536,220 @@ export const roadMapItems = [
   ideas,*/
 export default function DashboardPage() {
 
+  const columnsWithItems = [
+    { name: 'DONE NEEDS TESTING', items: doneneedstesting },
+    { name: 'WIP', items: WIP },
+    { name: 'GET IT DONE NOW', items: getDoneNow },
+    { name: 'COMPLETED', items: completed },
+    { name: 'SALES', items: sales },
+    { name: 'IDEAS', items: ideas },
+    { name: 'AUTOMATION', items: automation },
+    { name: 'SERVICE', items: service },
+    { name: 'DOCS', items: docs },
+    { name: 'OWNER', items: owner },
+    { name: 'QUOTE', items: quote },
+    { name: 'PARTS', items: parts },
+    { name: 'ACCESSORIES', items: accessories },
+    { name: 'MANAGER', items: manager },
+    { name: 'ADMIN', items: admin },
+    { name: 'DEALER ONBOARDING', items: dealerOnboarding },
+    { name: 'INFASTRUCTURE', items: infastructure },
+    { name: 'DASH', items: dash },
+    { name: 'COMMUNICATIONS', items: communications },
+    { name: 'PAID FEATURE', items: paidfeature },
+    { name: 'ISSUE', items: issue },
+    { name: 'BACKBURNER', items: BACKBURNER },
+
+  ];
+
+  const [name, setName] = useState('')
+  const [pickedRoadmap, setPickedRoadmap] = useState([])
+
+
+  return (
+    <>
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-auto">
+          <Card className="lg:col-span-1">
+            <CardHeader className='bg-muted/50'>
+              <CardTitle>Roadmap Menu</CardTitle>
+            </CardHeader>
+            <CardContent className="max-h-[500px] h-full overflow-y-auto">
+              <nav className={cn("flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",)}    >
+                {columnsWithItems.map((item) => (
+                  <Button
+                    key={item.name}
+                    variant='ghost'
+                    onClick={() => {
+                      setName(item.name)
+                      setPickedRoadmap(item.items)
+                    }}
+                    className={cn(
+                      buttonVariants({ variant: "ghost" }),
+                      item.name === name
+                        ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
+                        : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
+                      "justify-start w-[90%] "
+                    )} >
+                    {item.name}
+                  </Button>
+                ))
+                }
+              </nav >
+            </CardContent>
+            <CardFooter className='bg-muted/50'>
+              <div className="flex-col font-bold mt-3">
+                <p>
+                  Projects Completed: {completed.length}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Projects in progess: {WIP.length}
+                </p>
+              </div>
+            </CardFooter>
+          </Card>
+
+          <Card className="lg:col-span-2">
+            <CardHeader className='bg-muted/50'>
+              <CardTitle>Roadmap Items</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-grow !grow  max-h-[500px] h-full overflow-y-auto">
+              <ul className="grid gap-3 text-sm mt-2">
+                {pickedRoadmap.map((item, index) => (
+                  <li key={index} className="flex mt-2">
+                    <p className='text-foreground text-left'>{index}{")"} {item.item}</p>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter className='bg-muted/50 mt-auto flex-col justify-self-end '>
+              <div className='flex justify-between mt-3'>
+                <p>Projects to be completed: {roadMapItems.length}</p>
+                {name === 'GET IT DONE NOW' && (
+                  <p className="text-xs text-muted-foreground"> Items to complete:  {getDoneNow.length}</p>
+                )}
+                {name === 'BACKBURNER' && (
+                  <p className="text-xs text-muted-foreground">  Items to complete:  {BACKBURNER.length}</p>
+                )}
+                {name === 'ISSUES' && (
+                  <p className="text-xs text-muted-foreground"> Current issues:  {issue.length}</p>
+                )}
+                {name === 'DONE NEEDS TESTING' && (
+                  <p className="text-xs text-muted-foreground">  Needs testing: {doneneedstesting.length}</p>
+                )}
+                {name === 'SERVICE' && (
+                  <p className="text-xs text-muted-foreground"> Service: {service.length} </p>
+                )}
+                {name === 'COMMUNICATIONS' && (
+                  <p className="text-xs text-muted-foreground"> Communications: {communications.length}</p>
+                )}
+                {name === 'DASH' && (
+                  <p className="text-xs text-muted-foreground"> Dash: {dash.length}</p>
+                )}
+                {name === 'INFASTRUCTURE' && (
+                  <p className="text-xs text-muted-foreground">  Infastructure: {infastructure.length}</p>
+                )}
+                {name === 'ADMIN' && (
+                  <p className="text-xs text-muted-foreground"> Admin: {admin.length}</p>
+                )}
+                {name === 'ACCESSORIES' && (
+                  <p className="text-xs text-muted-foreground">Accessories: {accessories.length}</p>
+                )}
+                {name === 'PAID FEATURE' && (
+                  <p className="text-xs text-muted-foreground">AI - paid features: {paidfeature.length}</p>
+                )}
+                {name === 'PARTS' && (
+                  <p className="text-xs text-muted-foreground"> Parts: {parts.length}</p>
+                )}
+                {name === 'QUOTE' && (
+                  <p className="text-xs text-muted-foreground"> Quote: {quote.length}</p>
+                )}
+                {name === 'SALES' && (
+                  <p className="text-xs text-muted-foreground">  Sales: {sales.length}</p>
+                )}
+                {name === 'DEALER ONBOARDING' && (
+                  <p className="text-xs text-muted-foreground"> Dealer on-boarding: {dealerOnboarding.length}</p>
+                )}
+              </div>
+            </CardFooter>
+          </Card>
+        </div>
+      </div >
+    </>
+  )
+}
+
+/**
+
+  useEffect(() => {
+    const issuesCount = issues();
+    const needsTestCount = needsTesting();
+    const wipCount = wip();
+    const numberOfItems = completed.length;
+    const numberOfItemstodo = completed.length;
+   /** setgetDone(getDoneNows)
+    setBACKBURN(BACKBURNERs)
+    setDoneCount(numberOfItems)
+    settobedoneCount(numberOfItemstodo)
+    setissuesCount(issuesCount);
+    setNeedsTestCount(needsTestCount);
+    setwipCount(wipCount);
+    setdealeronboarding(Dealeronboarding)
+    setdealer(Dealer)
+    // setsales(Sales)
+    setservice(Service)
+    setquote(Quote)
+    setparts(Parts)
+    setaccessories(Accessories)
+    setadmin(Admin)
+    setinfastructure(Infastructure)
+    setdash(Dash)
+    setcommunications(Communications)
+    setpaidfeatureai(Paidfeatureai)
+ *//**
+const organizedTasks = {};
+roadMapItems.forEach((item) => {
+if (!organizedTasks[item.column]) {
+organizedTasks[item.column] = [];
+}
+organizedTasks[item.column].push(item);
+});
+
+const organizedTasksDone = {};
+completed.forEach((item) => {
+if (!organizedTasksDone[item.column]) {
+organizedTasksDone[item.column] = [];
+}
+organizedTasksDone[item.column].push(item);
+});
+}, []); // Empty dependenc
+*/
+/**
   const [doneCount, setDoneCount] = useState()
   const [tobedoneCount, settobedoneCount] = useState()
   const [issuesCount, setissuesCount] = useState()
   const [needsTestCount, setNeedsTestCount] = useState()
   const [wipCount, setwipCount] = useState()
-
+  const [getDone, setgetDone] = useState()
+  const [BACKBURN, setBACKBURN] = useState()
+  const [dealeronboarding, setdealeronboarding] = useState()
+  const [dealer, setdealer] = useState()
+  const [sales, setsales] = useState()
+  const [service, setservice] = useState()
+  const [quote, setquote] = useState()
+  const [parts, setparts] = useState()
+  const [admin, setadmin] = useState()
+  const [accessories, setaccessories] = useState()
+  const [infastructure, setinfastructure] = useState()
+  const [dash, setdash] = useState()
+  const [communications, setcommunications] = useState()
+  const [paidfeatureai, setpaidfeatureai] = useState()
   function issues() {
     const completedOrNeedsTestingItems = issue.filter(item => {
       return item.column && item.column.includes('ISSUE'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [getDone, setgetDone] = useState()
-
-  const [BACKBURN, setBACKBURN] = useState()
   function getDoneNows() {
     const completedOrNeedsTestingItems = getDoneNow.filter(item => {
       return item.column && item.column.includes('ISSUE'); // Check if item.column exists before calling includes
@@ -520,351 +762,90 @@ export default function DashboardPage() {
     });
     return completedOrNeedsTestingItems.length;
   }
-
   function needsTesting() {
     const completedOrNeedsTestingItems = doneneedstesting.filter(item => {
       return item.column && item.column.includes('DONE NEEDS TESTING'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-
   function wip() {
     const completedOrNeedsTestingItems = WIP.filter(item => {
       return item.column && item.column.includes('WIP'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-
-
   function Automation() {
     const completedOrNeedsTestingItems = automation.filter(item => {
       return item.column && item.column.includes('AUTOMATION'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [dealeronboarding, setdealeronboarding] = useState()
-
   function Dealeronboarding() {
     const completedOrNeedsTestingItems = dealerOnboarding.filter(item => {
       return item.column && item.column.includes('DEALER ONBOARDING'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [dealer, setdealer] = useState()
-
   function Dealer() {
     const completedOrNeedsTestingItems = todoRoadmap.filter(item => {
       return item.column && item.column.includes('DEALER'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [sales, setsales] = useState()
-
-  function Sales() {
-    const completedOrNeedsTestingItems = sales.filter(item => {
-      return item.column && item.column.includes('SALES'); // Check if item.column exists before calling includes
-    });
-    return completedOrNeedsTestingItems.length;
-  }
-  const [service, setservice] = useState()
-
   function Service() {
     const completedOrNeedsTestingItems = service.filter(item => {
       return item.column && item.column.includes('SERVICE'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [quote, setquote] = useState()
-
   function Quote() {
     const completedOrNeedsTestingItems = doneneedstesting.filter(item => {
       return item.column && item.column.includes('QUOTE'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [parts, setparts] = useState()
-
   function Parts() {
     const completedOrNeedsTestingItems = parts.filter(item => {
       return item.column && item.column.includes('PARTS'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [accessories, setaccessories] = useState()
-
   function Accessories() {
     const completedOrNeedsTestingItems = accessories.filter(item => {
       return item.column && item.column.includes('ACCESSORIES'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [admin, setadmin] = useState()
-
   function Admin() {
     const completedOrNeedsTestingItems = admin.filter(item => {
       return item.column && item.column.includes('ADMIN'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [infastructure, setinfastructure] = useState()
-
   function Infastructure() {
     const completedOrNeedsTestingItems = infastructure.filter(item => {
       return item.column && item.column.includes('INFASTRUCTURE'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [dash, setdash] = useState()
   function Dash() {
     const completedOrNeedsTestingItems = dash.filter(item => {
       return item.column && item.column.includes('DASH'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [communications, setcommunications] = useState()
   function Communications() {
     const completedOrNeedsTestingItems = communications.filter(item => {
       return item.column && item.column.includes('COMMUNICATIONS'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
-  const [paidfeatureai, setpaidfeatureai] = useState()
   function Paidfeatureai() {
     const completedOrNeedsTestingItems = paidfeature.filter(item => {
       return item.column && item.column.includes('PAID FEATURE - ai'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
-  }
-
-  useEffect(() => {
-    const issuesCount = issues();
-    const needsTestCount = needsTesting();
-    const wipCount = wip();
-    const numberOfItems = completed.length;
-    const numberOfItemstodo = completed.length;
-    setgetDone(getDoneNows)
-    setBACKBURN(BACKBURNERs)
-    setDoneCount(numberOfItems)
-    settobedoneCount(numberOfItemstodo)
-    setissuesCount(issuesCount);
-    setNeedsTestCount(needsTestCount);
-    setwipCount(wipCount);
-    setdealeronboarding(Dealeronboarding)
-    setdealer(Dealer)
-    setsales(Sales)
-    setservice(Service)
-    setquote(Quote)
-    setparts(Parts)
-    setaccessories(Accessories)
-    setadmin(Admin)
-    setinfastructure(Infastructure)
-    setdash(Dash)
-    setcommunications(Communications)
-    setpaidfeatureai(Paidfeatureai)
-
-  }, []); // Empty dependenc
-
-  const organizedTasks = {};
-  roadMapItems.forEach((item) => {
-    if (!organizedTasks[item.column]) {
-      organizedTasks[item.column] = [];
-    }
-    organizedTasks[item.column].push(item);
-  });
-
-  const organizedTasksDone = {};
-  completed.forEach((item) => {
-    if (!organizedTasksDone[item.column]) {
-      organizedTasksDone[item.column] = [];
-    }
-    organizedTasksDone[item.column].push(item);
-  });
-  return (
-    <>
-
-      <div className="hidden flex-col md:flex">
-
-        <div className="flex-1 space-y-4 p-8 pt-6">
-          <div className="flex items-center justify-between space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground">Roadmap</h2>
-
-          </div>
-          <Tabs defaultValue="overview" className="space-y-4 text-foreground">
-            <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics" disabled>
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value="reports" disabled>
-                Reports
-              </TabsTrigger>
-              <TabsTrigger value="notifications" disabled>
-                Notifications
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="overview" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium flex">
-                      <p className='mr-3'>
-                        Total Completed
-                      </p>
-                      <img
-                        loading="lazy"
-                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
-                        className=" w-4 ml-2 "
-                        alt="Logo"
-                      />
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{doneCount}</div>
-                    <p className="text-xs text-muted-foreground">
-                      Current projects in progess: {wipCount}
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium flex">
-                      Current plans/ideas that need completion!
-                      <Target color="#ff0000" className='text-2xl ml-2  ' />
-                    </CardTitle>
-
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{tobedoneCount}</div>
-                    <p className="text-xs text-muted-foreground">
-                      Current issues:  {issuesCount}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Needs testing: {needsTestCount}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <p className="text-xs text-muted-foreground">
-                      What we have planned out
-                    </p>
-                  </CardHeader>
-                  <CardContent className='grid grid-cols-2 justify-between mx-2 '>
-                    <p className="text-xs text-muted-foreground">
-                      Service: {service}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Communications: {communications}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Dash: {dash}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Infastructure: {infastructure}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Admin: {admin}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Accessories: {accessories}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      AI - paid features: {paidfeatureai}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Parts: {parts}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Quote: {quote}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Dealer: {dealer}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Sales: {sales}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Dealeronboarding: {dealeronboarding}
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-xs text-muted-foreground">
-                      If you think of something that we can improve on let us know! Were always looking for feedback.
-                    </p>
-
-                  </CardContent>
-                </Card>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
-                  <CardHeader>
-                    <CardTitle>To do</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pl-2">
-                    <div className=' h-auto max-h-[40vh] overflow-y-scroll'>
-                      {Object.entries(organizedTasks).map(([column, tasks]) => (
-                        <div key={column}>
-                          <h4 className='mt-3 ml-3 text-picton-blue-50'>{column}</h4>
-                          <Separator />
-                          {tasks.map((task, index) => (
-                            <div key={index} className="ml-3 p-3 flex items-center  mt-3 shadow-md  bg-muted/40 target:text-primary hover:text-primary text-foreground active:bg-primary  text-md uppercase  rounded  hover:shadow-md outline-none  ease-linear transition-all duration-150 rounded-lg">
-                              <p color="my-3 text-foreground ">
-                                {task.item}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="col-span-3">
-                  <CardHeader>
-                    <CardTitle>Completed</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className=' h-auto max-h-[40vh] overflow-y-scroll'>
-                      {Object.entries(organizedTasksDone).map(([type, tasks]) => (
-                        <div key={type}>
-                          <h4 className='mt-3 ml-3 text-picton-blue-50'>{type}</h4>
-                          <Separator />
-                          {tasks.map((task, index) => (
-                            <div key={index} className="ml-3 mr-3 p-3 flex items-center  mt-3 shadow-md   bg-muted/40 target:text-primary hover:text-primary text-foreground active:bg-primary  uppercase text-sm  rounded  hover:shadow-md outline-none  ease-linear transition-all duration-150 rounded-lg">
-                              <img
-                                loading="lazy"
-                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/a988022497f5e1f4da2fb8abae215748e34227097d0680432329fa00986efb7c?apiKey=fdb7b9e08a6a45868cbaa43480e243cd&"
-                                className=" w-4 "
-                                alt="Logo"
-                              />
-                              <p color="my-3 py-3 ml-3">
-                                {task.item}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div >
-    </>
-  )
-}
-
-
-
+  } */
 function Roadmap() {
 
 

@@ -1950,8 +1950,15 @@ export async function Board() {
     { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
 
     { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
+    { board: "dev", column: "ISSUE", item: "FIX ADMIN AND MANAGER SECTIONS" },
+    { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
 
 
+  ]
+  const issue = [
+    { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
+    { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
+    { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]
   const BACKBURNER = [
     { board: "dev", column: "BACKBURNER", item: "set up more parts pages - started - Manitou done - switch started" },
@@ -1959,12 +1966,7 @@ export async function Board() {
     { board: "dev", column: "BACKBURNER", item: "have it populate api keys so managers can hand them out" },
     { board: "dev", column: "BACKBURNER", item: "cross platform ad manager, post it once here and push it to different providors" },
   ]
-  const issue = [
-    { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
-    { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
-    { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
-    { board: "dev", column: "ISSUE", item: "FIX ADMIN AND MANAGER SECTIONS" },
-  ]
+
   const doneneedstesting = [
     { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
