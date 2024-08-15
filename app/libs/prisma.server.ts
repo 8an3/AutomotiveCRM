@@ -1,5 +1,6 @@
 /* eslint-disable no-var */
-import { PrismaClient } from "@prisma/client";
+
+/** import { PrismaClient } from "@prisma/client";
 const { DATABASE_URL } = require('../configs/database'); // Adjust the path as needed
 
 let prisma: PrismaClient;
@@ -32,8 +33,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export { prisma };
-
-/** eslint-disable no-var
+ */
 import { PrismaClient } from "@prisma/client";
 
 let prisma: PrismaClient;
@@ -61,4 +61,4 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export { prisma };
- */
+

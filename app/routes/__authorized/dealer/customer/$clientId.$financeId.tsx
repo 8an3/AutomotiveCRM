@@ -10027,7 +10027,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: email } });
   // const UploadedDocs = await prisma.uploadDocs.findMany({ where: { financeId: finance?.id } });
   const userList = await prisma.user.findMany()
-  const parts = await prisma.part.findMany()
+  /// const parts = await prisma.part.findMany()
   let clientUnit
   if (clientFile.Finance.FinanceUnit) {
     clientUnit = await prisma.inventoryMotorcycle.findFirst({ where: { stockNumber: clientFile.Finance.FinanceUnit.stockNum } })
@@ -10497,7 +10497,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
     // code block
   }
 
-  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders }));
+  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders }));
 }
 
 function SidebarNav({ mergedFinanceList, finance }) {
