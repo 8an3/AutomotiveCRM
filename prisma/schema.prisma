@@ -1,5 +1,5 @@
 // References:
-// https://pris.ly/d/prisma-schema
+////// https://pris.ly/d/prisma-schema
 // https://github.com/remix-run/indie-stack/blob/main/prisma/schema.prisma
 // https://github.com/planetscale/beam/blob/main/prisma/schema.prisma
 // You can visualize the schema with https://prismaliser.app
@@ -1127,43 +1127,43 @@ model DemoDay {
   notified  String?
 }
 
-model Part {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+//model Part {
+//  id        String   @id @default(cuid())
+//  createdAt DateTime @default(now())
+//  updatedAt DateTime @updatedAt
+//
+//  partNumber  Int     @default(autoincrement())
+//  brand       String?
+//  name        String?
+//  price       Int?
+//  cost        Int?
+//  quantity    Int?
+//  description String?
+//  category    String?
+//  subCategory String?
+//  onOrder     Int?
+//  distributer String?
+//
+//  @@index([partNumber])
+//}
 
-  partNumber  Int     @default(autoincrement())
-  brand       String?
-  name        String?
-  price       Int?
-  cost        Int?
-  quantity    Int?
-  description String?
-  category    String?
-  subCategory String?
-  onOrder     Int?
-  distributer String?
+//model PartsOrder {
+// orderNumber Int @id @default(autoincrement())
+//
+//  createdAt DateTime @default(now())
+//  updatedAt DateTime @updatedAt
+//
+//userId       String?
+//  clientfileId String?
+//  partNumber   String?
+//}
 
-  @@index([partNumber])
-}
-
-model PartsOrder {
-  orderNumber Int @id @default(autoincrement())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId       String?
-  clientfileId String?
-  partNumber   String?
-}
-
-model PartsOrderDetail {
-  id          Int     @id @default(autoincrement())
-  orderNumber Int
-  partNumber  String?
-  quantity    Int?
-}
+//model PartsOrderDetail {
+//id          Int     @id @default(autoincrement())
+// orderNumber Int
+//  partNumber  String?
+//  quantity    Int?
+//}
 
 model AccOrder {
   id           String   @id @default(cuid())
@@ -1250,6 +1250,7 @@ model AccHandoff {
   sendToCompleted String?  @default("false")
   completedTime   String?
   notes           String?
+  handOffDept     String?
 
   AccOrderId String
   AccOrder   AccOrder @relation(fields: [AccOrderId], references: [id], onDelete: Cascade)

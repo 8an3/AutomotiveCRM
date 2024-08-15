@@ -143,7 +143,7 @@ export async function loader({ request, params }: LoaderFunction) {
   if (!user) {
     redirect("/login");
   }
-  const id = params.workOrderId
+  const id = params.orderId
   const order = await prisma.accOrder.findUnique({
     where: { id: id },
     select: {
@@ -1090,147 +1090,271 @@ export default function Purchase() {
                 </CardContent>
               </Card>
             </div>
-            <Card
-              x-chunk="dashboard-05-chunk-3"
-              onClick={() => setChangeSize(false)}
-              className={cn('h-[475px] max-h-[475px]')}>
-              <CardHeader className="px-7">
-                <CardTitle className='flex items-center'>
-                  <p className='mr-5'>
-                    Search Parts
-                  </p>
-                </CardTitle>
-                <CardDescription>
-                  <search.Form method="get" action='/dealer/accessories/products/search' className='mx-auto w-[100%]'>
-                    <div className="relative ml-auto flex-1 md:grow-0 ">
-                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        ref={ref}
-                        type="search"
-                        name="q"
-                        autoFocus
-                        onChange={e => {
-                          //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
-                          search.submit(e.currentTarget.form);
-                        }}
-                        placeholder="Search..."
-                        className="w-[250px] rounded-lg bg-background pl-8 max-w-[250px]"
-                      />
-                    </div>
-                  </search.Form>
-                </CardDescription>
-              </CardHeader>
-              <CardContent className={cn('h-auto overflow-y-auto ', changeSize === true ? "max-h-[115px]" : "max-h-[400px]", "")}             >
-                <Table>
-                  <TableHeader>
-                    <TableRow className='border-border'>
-                      <TableHead>
-                        Brand & Name
-                      </TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        Description
-                      </TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        Category
-                      </TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        Sub Category
-                      </TableHead>
-                      <TableHead className="hidden sm:table-cell">
-                        On Order
-                      </TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        Distributer
-                      </TableHead>
-                      <TableHead className="">
-                        Location
-                      </TableHead>
+            <Tabs defaultValue="account">
+              <TabsList>
+                <TabsTrigger value="account">Search for Parts</TabsTrigger>
+                <TabsTrigger value="password">Accessory Order</TabsTrigger>
+              </TabsList>
+              <TabsContent value="account">
+                <Card
+                  x-chunk="dashboard-05-chunk-3"
+                  onClick={() => setChangeSize(false)}
+                  className={cn('h-[475px] max-h-[475px]')}>
+                  <CardHeader className="px-7">
+                    <CardTitle className='flex items-center'>
+                      <p className='mr-5'>
+                        Search Parts
+                      </p>
+                    </CardTitle>
+                    <CardDescription>
+                      <search.Form method="get" action='/dealer/accessories/products/search' className='mx-auto w-[100%]'>
+                        <div className="relative ml-auto flex-1 md:grow-0 ">
+                          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            ref={ref}
+                            type="search"
+                            name="q"
+                            autoFocus
+                            onChange={e => {
+                              //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                              search.submit(e.currentTarget.form);
+                            }}
+                            placeholder="Search..."
+                            className="w-[250px] rounded-lg bg-background pl-8 max-w-[250px]"
+                          />
+                        </div>
+                      </search.Form>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className={cn('h-auto overflow-y-auto ', changeSize === true ? "max-h-[115px]" : "max-h-[400px]", "")}             >
+                    <Table>
+                      <TableHeader>
+                        <TableRow className='border-border'>
+                          <TableHead>
+                            Brand & Name
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Description
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Category
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Sub Category
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            On Order
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Distributer
+                          </TableHead>
+                          <TableHead className="">
+                            Location
+                          </TableHead>
 
-                      {hidden &&
-                        <TableHead className="hidden md:table-cell">
-                          Cost
-                        </TableHead>}
-                      <TableHead className="">
-                        Price
-                      </TableHead>
-                      <TableHead className="">
-                        In Stock Quantity
-                      </TableHead>
-                      <TableHead className="">
-                        Add To Order
-                      </TableHead>
-
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {search.data &&
-                      search.data.map((result, index) => (
-                        <TableRow key={index} className="hover:bg-accent border-border">
-                          <TableCell>
-                            <div>
-                              {result.name}
-                            </div>
-                            <div className='text-muted-foreground'>
-                              {result.brand}
-                            </div>
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {result.description}
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {result.category}
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {result.subCategory}
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell">
-                            {result.onOrder}
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {result.distributer}
-                          </TableCell>
-                          <TableCell className="">
-                            {result.location}
-                          </TableCell>
                           {hidden &&
-                            <TableCell className="hidden md:table-cell">
-                              {result.cost}
-                            </TableCell>}
-                          <TableCell className="">
-                            {result.price}
-                          </TableCell>
-                          <TableCell className="">
-                            {result.quantity}
-                          </TableCell>
-                          <TableCell>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <fetcher.Form method='post' preventScrollReset >
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="bg-primary"
-                                    name='intent'
-                                    value='updateOrder'
+                            <TableHead className="hidden md:table-cell">
+                              Cost
+                            </TableHead>}
+                          <TableHead className="">
+                            Price
+                          </TableHead>
+                          <TableHead className="">
+                            In Stock Quantity
+                          </TableHead>
+                          <TableHead className="">
+                            Add To Order
+                          </TableHead>
 
-                                  >
-                                    <Plus className="h-5 w-5" />
-                                  </Button>
-                                  <input type='hidden' name='accId' value={result.id} />
-                                  <input type='hidden' name='orderId' value={order.id} />
-                                </fetcher.Form>
-                              </TooltipTrigger>
-                              <TooltipContent side="right">
-                                Add To Order
-                              </TooltipContent>
-                            </Tooltip>
-                          </TableCell>
                         </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                      </TableHeader>
+                      <TableBody>
+                        {search.data &&
+                          search.data.map((result, index) => (
+                            <TableRow key={index} className="hover:bg-accent border-border">
+                              <TableCell>
+                                <div>
+                                  {result.name}
+                                </div>
+                                <div className='text-muted-foreground'>
+                                  {result.brand}
+                                </div>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.description}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.category}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.subCategory}
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                                {result.onOrder}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.distributer}
+                              </TableCell>
+                              <TableCell className="">
+                                {result.location}
+                              </TableCell>
+                              {hidden &&
+                                <TableCell className="hidden md:table-cell">
+                                  {result.cost}
+                                </TableCell>}
+                              <TableCell className="">
+                                {result.price}
+                              </TableCell>
+                              <TableCell className="">
+                                {result.quantity}
+                              </TableCell>
+                              <TableCell>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <fetcher.Form method='post' preventScrollReset >
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="bg-primary"
+                                        name='intent'
+                                        value='updateOrder'
+
+                                      >
+                                        <Plus className="h-5 w-5" />
+                                      </Button>
+                                      <input type='hidden' name='accId' value={result.id} />
+                                      <input type='hidden' name='orderId' value={order.id} />
+                                    </fetcher.Form>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="right">
+                                    Add To Order
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="password">
+                <Card
+                  x-chunk="dashboard-05-chunk-3"
+                  className={cn('h-[475px] max-h-[475px]')}>
+                  <CardHeader className="px-7">
+                    <CardTitle className='flex items-center'>
+                      <p className='mr-5'>
+                        Parts On Accessory Order
+                      </p>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className={cn('h-auto overflow-y-auto ', changeSize === true ? "max-h-[115px]" : "max-h-[400px]", "")}             >
+                    <div className="grid gap-3">
+                      <div className="font-semibold">Order Details</div>
+                      <ul className="grid gap-3 max-h-[400px] h-auto overflow-y-auto">
+                        {order.AccessoriesOnOrders && order.AccessoriesOnOrders.map((result, index) => (
+                          <li
+                            className="flex items-center justify-between"
+                            key={index}
+                          >
+                            <div>
+                              <ContextMenu>
+                                <ContextMenuTrigger>
+                                  <div className='grid grid-cols-1'>
+                                    <div className='flex items-center group '>
+                                      <div className="font-medium">
+                                        {result.accessory.name}
+                                      </div>
+                                      <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                        <input type="hidden" name="id" value={result.id} />
+                                        <input type='hidden' name='total' value={total} />
+                                        <input type='hidden' name='accOrderId' value={order.id} />
+                                        <Button
+                                          size="icon"
+                                          variant="outline"
+                                          name="intent" value='deleteOrderItem'
+                                          className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                          type='submit'
+                                        >
+                                          <X className="h-4 w-4 text-foreground" />
+                                        </Button>
+                                      </addProduct.Form>
+                                    </div>
+                                    <p className="hidden text-sm text-muted-foreground md:inline">
+                                      {result.accessory.brand}
+                                    </p>
+                                    <p className="hidden text-sm text-muted-foreground md:inline">
+                                      Category: {result.accessory.category}
+                                    </p>
+                                    <p className="hidden text-sm text-muted-foreground md:inline">
+                                      Desc: {result.accessory.description}
+                                    </p>
+                                    <p className="hidden text-sm text-muted-foreground md:inline">
+                                      {result.accessory.location} with {result.accessory.quantity} in stock.
+                                    </p>
+                                    <p className="hidden text-sm text-muted-foreground md:inline">
+                                      Part #: {result.accessory.partNumber}
+                                    </p>
+                                    <div>
+                                      <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                    </div>
+                                  </div>
+                                </ContextMenuTrigger>
+                                <ContextMenuContent className='border-border'>
+                                  <ContextMenuCheckboxItem
+                                    checked={result.status === 'In Stock'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("accOnOrderId", result.id);
+                                      formData.append("status", 'In Stock');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >In Stock</ContextMenuCheckboxItem>
+                                  <ContextMenuCheckboxItem
+                                    checked={result.status === 'On Order'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("accOnOrderId", result.id);
+                                      formData.append("status", 'On Order');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >On Order</ContextMenuCheckboxItem>
+                                  <ContextMenuCheckboxItem
+                                    checked={result.status === 'Back Order'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("accOnOrderId", result.id);
+                                      formData.append("status", 'Back Order');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >Back Order</ContextMenuCheckboxItem>
+                                  <ContextMenuCheckboxItem
+                                    checked={result.status === 'Fulfilled'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("accOnOrderId", result.id);
+                                      formData.append("status", 'Fulfilled');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >Fulfilled</ContextMenuCheckboxItem>
+                                </ContextMenuContent>
+                              </ContextMenu>
+                            </div>
+                            <span>${result.accessory.price}{" "}{" "}x{" "}{" "}{result.quantity}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+
           </div>
         </div>
         <div className='flex flex-col'>
@@ -1303,7 +1427,6 @@ export default function Purchase() {
                             <div className='grid grid-cols-1'>
                               <div className='flex items-center group '>
                                 <div className="font-medium">
-                                  {result.accessory.brand}{" "}
                                   {result.accessory.name}
                                 </div>
                                 <addProduct.Form method="post" ref={formRef} className='mr-auto'>
@@ -1322,10 +1445,14 @@ export default function Purchase() {
                                 </addProduct.Form>
                               </div>
                               <div className="hidden text-sm text-muted-foreground md:inline">
+                                {result.accessory.brand}
+                              </div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
                                 {result.accessory.category}{" "}{result.accessory.description}
                               </div>
-
-                              <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                              <div>
+                                <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                              </div>
                             </div>
                           </ContextMenuTrigger>
                           <ContextMenuContent className='border-border'>
@@ -1359,6 +1486,16 @@ export default function Purchase() {
                                 submit(formData, { method: "post", });
                               }}
                             >Back Order</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'Fulfilled'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("accOnOrderId", result.id);
+                                formData.append("status", 'Fulfilled');
+                                formData.append("intent", 'updateAccOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >Fulfilled</ContextMenuCheckboxItem>
                           </ContextMenuContent>
                         </ContextMenu>
                       </div>
@@ -1649,7 +1786,6 @@ export default function Purchase() {
                   </ul>
                 </div>
               </div>
-
             </CardContent>
             <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
               <div className="text-xs text-muted-foreground flex items-center justify-between">
@@ -1658,13 +1794,10 @@ export default function Purchase() {
                     {salesPerson.name}
                   </Badge>
                 </div>
-
                 <Button
                   variant='outline'
                   className='bg-background text-foreground border-border border ml-3'
                   onClick={() => {
-
-                    ///  setData(order)
                     console.log(toReceipt)
                     PrintReceipt(toReceipt)
                   }}>

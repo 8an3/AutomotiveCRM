@@ -25,13 +25,6 @@ export const metadata = {
 }
 
 const completed = [
-  { type: "Dev", desc: "cant do till we have access to a phone - SMS needs to be retested, need access to twilio account which needes 2fa that is tied to your phone" },
-  { type: "Dev", desc: "need a way for when a new employee uses the dashboard they acquire a new number from twilio" },
-  { type: "Dev", desc: "Docs" },
-  { type: "Dev", desc: "new hooks when upgrading platform" },
-  { type: "Dev", desc: "sales manager dash" },
-  { type: "Dev", desc: "Notification system needs to show email and sms notifications" },
-  { type: "Dev", desc: "some sort of email webhook whether we use swr or a microsoft api so create notifications of new emails" },
   { board: "dev", column: "WIP", item: "manager Dashboard" },
   { board: "dev", column: "WIP", item: "admin dash" },
   { board: "dev", column: "done needs testing", item: "need to test all functions due to database changes" },
@@ -337,10 +330,6 @@ const completed = [
   { board: "dev", column: "TASK", item: "hidden discount inputs - one for $ amount, another for %" },
   { board: "dev", column: "TASK", item: "second print button so it prints the spec sheet of the model the customer is looking at, so you can give it to the customer without having to dig through the ones you already downloaded or go through 16 web pages on Can-Am's website to get to it - completed Kidoo, Can-Am - partial, Manitou, Switch, Sea-Doo" },
   { board: "dev", column: "TASK", item: "query website by stock number to see if it's in stock - not feasible across so many dealers" },
-  { name: "dash - Use twilio conversations so that way you can also talk to Facebook from the messenger with one click" },
-  { name: "user - Give the ability for p ople to upload there own work sheets, contracts and such" },
-  { name: "dash - Have the dash just be able to send twxts and call have the messenger somewhere else  	" },
-  { name: "dash - Icrosoft outlook has an API for email, can make your own mail page in app Along with calendar and Todo check other services from microsoft" },
 
 ]
 const getDoneNow = [
@@ -496,6 +485,12 @@ export const roadMapItems = [
   ...parts,
 ]
 
+
+/*  docs,
+  owner,
+  quote,
+  manager,
+  ideas,*/
 export default function DashboardPage() {
 
   const [doneCount, setDoneCount] = useState()
@@ -505,27 +500,44 @@ export default function DashboardPage() {
   const [wipCount, setwipCount] = useState()
 
   function issues() {
-    const completedOrNeedsTestingItems = roadMapItems.DoneRoadMap.filter(item => {
+    const completedOrNeedsTestingItems = issue.filter(item => {
       return item.column && item.column.includes('ISSUE'); // Check if item.column exists before calling includes
+    });
+    return completedOrNeedsTestingItems.length;
+  }
+  const [getDone, setgetDone] = useState()
+
+  const [BACKBURN, setBACKBURN] = useState()
+  function getDoneNows() {
+    const completedOrNeedsTestingItems = getDoneNow.filter(item => {
+      return item.column && item.column.includes('ISSUE'); // Check if item.column exists before calling includes
+    });
+    return completedOrNeedsTestingItems.length;
+  }
+  function BACKBURNERs() {
+    const completedOrNeedsTestingItems = BACKBURNER.filter(item => {
+      return item.column && item.column.includes('BACKBURNER'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
 
   function needsTesting() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = doneneedstesting.filter(item => {
       return item.column && item.column.includes('DONE NEEDS TESTING'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
 
   function wip() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = WIP.filter(item => {
       return item.column && item.column.includes('WIP'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
+
+
   function Automation() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = automation.filter(item => {
       return item.column && item.column.includes('AUTOMATION'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
@@ -533,7 +545,7 @@ export default function DashboardPage() {
   const [dealeronboarding, setdealeronboarding] = useState()
 
   function Dealeronboarding() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = dealerOnboarding.filter(item => {
       return item.column && item.column.includes('DEALER ONBOARDING'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
@@ -541,7 +553,7 @@ export default function DashboardPage() {
   const [dealer, setdealer] = useState()
 
   function Dealer() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = todoRoadmap.filter(item => {
       return item.column && item.column.includes('DEALER'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
@@ -549,7 +561,7 @@ export default function DashboardPage() {
   const [sales, setsales] = useState()
 
   function Sales() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = sales.filter(item => {
       return item.column && item.column.includes('SALES'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
@@ -557,7 +569,7 @@ export default function DashboardPage() {
   const [service, setservice] = useState()
 
   function Service() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = service.filter(item => {
       return item.column && item.column.includes('SERVICE'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
@@ -565,7 +577,7 @@ export default function DashboardPage() {
   const [quote, setquote] = useState()
 
   function Quote() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = doneneedstesting.filter(item => {
       return item.column && item.column.includes('QUOTE'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
@@ -573,7 +585,7 @@ export default function DashboardPage() {
   const [parts, setparts] = useState()
 
   function Parts() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = parts.filter(item => {
       return item.column && item.column.includes('PARTS'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
@@ -581,7 +593,7 @@ export default function DashboardPage() {
   const [accessories, setaccessories] = useState()
 
   function Accessories() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = accessories.filter(item => {
       return item.column && item.column.includes('ACCESSORIES'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
@@ -589,7 +601,7 @@ export default function DashboardPage() {
   const [admin, setadmin] = useState()
 
   function Admin() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = admin.filter(item => {
       return item.column && item.column.includes('ADMIN'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
@@ -597,43 +609,41 @@ export default function DashboardPage() {
   const [infastructure, setinfastructure] = useState()
 
   function Infastructure() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = infastructure.filter(item => {
       return item.column && item.column.includes('INFASTRUCTURE'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
   const [dash, setdash] = useState()
-
   function Dash() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = dash.filter(item => {
       return item.column && item.column.includes('DASH'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
   const [communications, setcommunications] = useState()
-
   function Communications() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = communications.filter(item => {
       return item.column && item.column.includes('COMMUNICATIONS'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
   const [paidfeatureai, setpaidfeatureai] = useState()
   function Paidfeatureai() {
-    const completedOrNeedsTestingItems = roadMapItems.todoRoadmap.filter(item => {
+    const completedOrNeedsTestingItems = paidfeature.filter(item => {
       return item.column && item.column.includes('PAID FEATURE - ai'); // Check if item.column exists before calling includes
     });
     return completedOrNeedsTestingItems.length;
   }
 
-  // Assuming you are using React state to store these counts
   useEffect(() => {
-    // Calculate counts and update state once on component mount
     const issuesCount = issues();
     const needsTestCount = needsTesting();
     const wipCount = wip();
-    const numberOfItems = roadMapItems.DoneRoadMap.length;
-    const numberOfItemstodo = roadMapItems.todoRoadmap.length;
+    const numberOfItems = completed.length;
+    const numberOfItemstodo = completed.length;
+    setgetDone(getDoneNows)
+    setBACKBURN(BACKBURNERs)
     setDoneCount(numberOfItems)
     settobedoneCount(numberOfItemstodo)
     setissuesCount(issuesCount);
@@ -860,7 +870,7 @@ function Roadmap() {
 
 
   const organizedTasks = {};
-  todoRoadmap.forEach((item) => {
+  roadMapItems.forEach((item) => {
     if (!organizedTasks[item.column]) {
       organizedTasks[item.column] = [];
     }
@@ -868,7 +878,7 @@ function Roadmap() {
   });
 
   const organizedTasksDone = {};
-  DoneRoadMap.forEach((item) => {
+  completed.forEach((item) => {
     if (!organizedTasksDone[item.column]) {
       organizedTasksDone[item.column] = [];
     }

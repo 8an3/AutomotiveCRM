@@ -734,7 +734,7 @@ export default function Purchase() {
             </Card>
           </div>
           {/**lists all customers orders  */}
-          <Tabs defaultValue="week">
+          <Tabs defaultValue="Parts Orders">
             <div className="flex items-center">
               <TabsList>
                 <TabsTrigger value="Parts Orders">Parts</TabsTrigger>
@@ -2058,8 +2058,8 @@ function PACTable({ tableData, setValue, showPrevOrderById, options2, navigate, 
           <TableHead className="hidden md:table-cell">Date</TableHead>
           <TableHead className="text-right">Amount</TableHead>
           <TableHead className="hidden sm:table-cell text-center">Paid</TableHead>
-          <TableHead className="hidden sm:table-cell text-center">Sent From Sales</TableHead>
-          <TableHead className="hidden sm:table-cell text-center">Completed for Sales</TableHead>
+          <TableHead className="hidden sm:table-cell text-center">Sent From</TableHead>
+          <TableHead className="hidden sm:table-cell text-center">Completed </TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -2086,7 +2086,7 @@ function PACTable({ tableData, setValue, showPrevOrderById, options2, navigate, 
               <TableCell className="text-right">
                 {result.paid ? (<Check className='mx-auto' />) : (<X className='mx-auto' />)}</TableCell>
               <TableCell className="text-right">
-                {result.AccHandoff.sendTo !== null ? (<Check className='mx-auto' />) : (<X className='mx-auto' />)}
+                {result.AccHandoff.dept !== null ? (result.AccHandoff.dept) : ('')}
               </TableCell>
               <TableCell className="text-right">
                 {result.AccHandoff.sendToCompleted === 'true' ? (<Check className='mx-auto' />) : (<X className='mx-auto' />)}

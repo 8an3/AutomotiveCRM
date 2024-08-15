@@ -147,6 +147,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog"
+import { Wrench } from "lucide-react";
 
 
 export default function Dashboard() {
@@ -1405,11 +1406,36 @@ export default function Dashboard() {
                   })}
                 </ul>
                 <Separator className="my-4" />
-                <div className="font-semibold">Work Order Parts</div>
+
                 <ul className="grid gap-3">
                   {order?.AccOrders?.length > 0 ? (
                     order.AccOrders.map((accOrder, accOrderIndex) => (
                       <div key={accOrderIndex}>
+                        <div className="font-semibold flex justify-between items-center">
+                          <p>Work Order Parts</p>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className={`bg-primary`}
+                                onClick={() => {
+                                  const formData = new FormData();
+                                  formData.append("AccOrderId", accOrder.id);
+                                  formData.append("dept", 'Service');
+                                  formData.append("handOffTime", new Date().toLocaleDateString("en-US", options2));
+                                  formData.append("intent", 'sendToParts');
+                                  submit(formData, { method: "post", });
+                                }}
+                              >
+                                <Wrench className="h-5 w-5" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom">
+                              Send To Parts
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
                         {accOrder?.AccessoriesOnOrders?.length > 0 ? (
                           accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
                             <li key={accessoryIndex} className="flex items-center justify-between">
@@ -2753,7 +2779,18 @@ export async function action({ request, params }: ActionFunction) {
     });
     return json({ update })
   }
-
+  if (intent === "sendToParts") {
+    const sendtoacc = await prisma.accHandoff.create({
+      data: {
+        sendTo: 'Parts',
+        handOffTime: formPayload.handOffTime,
+        sendToCompleted: 'false',
+        AccOrderId: formPayload.AccOrderId,
+        handOffDept: 'Service',
+      }
+    });
+    return json({ sendtoacc })
+  }
 }
 
 export const meta = () => {

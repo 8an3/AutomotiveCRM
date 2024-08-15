@@ -503,7 +503,7 @@ export default function Dashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className=' grid grid-cols-1'>
+                  <div className=' grid grid-cols-1 mt-3'>
                     <ul className="grid gap-3 text-xl">
                       {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => {
                         const hours = result.hr || result.service.estHr || 0.00;
@@ -614,7 +614,7 @@ export default function Dashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className='flex justify-between  items-center'>
+                  <div className='flex justify-between  items-center mt-3'>
                     <Button
                       className='text-foreground'
                       disabled={hasIncompleteEntry}

@@ -8424,6 +8424,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         handOffTime: formPayload.handOffTime,
         sendToCompleted: 'false',
         AccOrderId: formPayload.AccOrderId,
+        handOffDept: 'Sales'
       }
     });
     return json({ sendtoacc })
@@ -8435,6 +8436,8 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         handOffTime: formPayload.handOffTime,
         sendToCompleted: 'false',
         AccOrderId: formPayload.AccOrderId,
+        handOffDept: 'Sales'
+
       }
     });
     return json({ sendtoacc })

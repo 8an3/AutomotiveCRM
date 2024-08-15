@@ -117,20 +117,7 @@ export default function Dashboard() {
                 <span className="sr-only">Technician</span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">Technician</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="/dealer/service/workOrder"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/service/workOrder" ? 'bg-primary text-foreground ' : ''}`}
-              >
-                <Package className="h-5 w-5" />
-                <span className="sr-only">Work Order</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Work Order</TooltipContent>
+            <TooltipContent side="right">Technician Dashboard</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
