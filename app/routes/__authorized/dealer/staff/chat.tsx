@@ -259,7 +259,7 @@ export default function StaffChat({ content }) {
       x-chunk="dashboard-05-chunk-4"
     >
 
-      <CardContent className=" bg-background p-6 text-sm rounded-t-[8px]">
+      <CardContent className=" p-6 text-sm rounded-t-[8px]">
         <div className="flex justify-between items-center gap-0.5 mb-5">
           <p>Staff Chat {personAdded}</p>
           <Button
@@ -363,7 +363,7 @@ export default function StaffChat({ content }) {
         </div>
 
       </CardContent>
-      <CardFooter className=" bg-muted-background ">
+      <CardFooter className=" bg-muted/50 ">
 
         <fetcher.Form className="flex flex-row items-center w-full px-6 py-3">
           <Input type="hidden" defaultValue={user.email} name="userEmail" />

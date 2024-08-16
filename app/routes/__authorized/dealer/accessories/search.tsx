@@ -83,6 +83,7 @@ export async function action({ request, params }: LoaderFunction) {
         dept: 'Accessories',
         status: 'Quote',
         total: 0.00,
+        sellingDept: user.dept,
         clientfileId: formPayload.clientfileId,
       }
     })

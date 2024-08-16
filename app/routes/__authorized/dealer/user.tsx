@@ -60,10 +60,6 @@ export default function Quote() {
       to: "/dealer/user/dashboard/roadmap",
     },
     {
-      title: "Sales Tracker",
-      to: "/dealer/user/dashboard/salestracker",
-    },
-    {
       title: "Board",
       to: "/dealer/user/dashboard/board",
     },

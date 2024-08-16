@@ -838,7 +838,6 @@ export default function Dashboard() {
                             <SelectItem value="Waiter">Waiter</SelectItem>
                             <SelectItem value="In Works">In Works</SelectItem>
                             <SelectItem value="Work Completed">Work Completed</SelectItem>
-                            <SelectItem value="Closed">Closed</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>

@@ -2758,17 +2758,25 @@ export async function action({ request, params }: ActionFunction) {
     return json({ addToWorkOrder })
   }
   if (intent === "updateStatus") {
+    const currentWorkOrder = await prisma.workOrder.findUnique({
+      where: { workOrderId: Number(formPayload.id) },
+      select: { closedAt: true },
+    });
+
     const update = await prisma.workOrder.update({
       where: { workOrderId: Number(formPayload.id) },
 
       data: {
         status: formPayload.status,
         total: parseFloat(formPayload.total),
-        waiter: formPayload.status === 'Waiter' ? true : null
-      }
+        waiter: formPayload.status === 'Waiter' ? true : null,
+        closedAt: currentWorkOrder.closedAt ? currentWorkOrder.closedAt : formPayload.status === 'Closed' ? new Date() : null,
+      },
     });
-    return json({ update })
+
+    return json({ update });
   }
+
   if (intent === "updateNote") {
     console.log(';hit update note')
     const update = await prisma.workOrder.update({

@@ -104,6 +104,7 @@ export async function action({ request, params }: LoaderFunction) {
         userEmail: email,
         status: 'Quote',
         total: 0.00,
+
         clientfileId: formPayload.clientfileId,
       }
     })

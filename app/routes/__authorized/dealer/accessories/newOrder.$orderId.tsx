@@ -248,7 +248,7 @@ export async function loader({ request, params }: LoaderFunction) {
     },
   });
   const salesPerson = await prisma.user.findUnique({
-    where: { email: user.userEmail }
+    where: { email: user.email }
   })
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
@@ -273,10 +273,18 @@ export async function action({ request, params }: LoaderFunction) {
   //  <input type='hidden' name='total' value={total} />
   // <input type='hidden' name='accOrderId' value={order.id} />
   if (formPayload.remaining === 0) {
+    const currentAccOrder = await prisma.accOrder.findUnique({
+      where: { id: formPayload.accOrderId },
+      select: { paidDate: true },
+    });
+
     await prisma.accOrder.update({
       where: { id: formPayload.accOrderId },
-      data: { paid: true, paidDate: String(new Date()) }
-    })
+      data: {
+        paid: true,
+        paidDate: currentAccOrder.paidDate ? currentAccOrder.paidDate : String(new Date()),
+      },
+    });
   }
   if (intent === 'updateAccOnOrders') {
     const update = await prisma.accessoriesOnOrders.update({
@@ -716,7 +724,7 @@ export default function Purchase() {
     }
   }, [remaining]);
 
-
+  const orderStatus = order.status ? order.status : user.dept
   return (
     <div>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -860,7 +868,7 @@ export default function Purchase() {
                       <div className="relative mt-4">
                         <Select
                           name='status'
-                          defaultValue={order.status}
+                          defaultValue={orderStatus}
                           onValueChange={(value) => {
                             const formData = new FormData();
                             formData.append("orderId", order.id);
@@ -872,7 +880,7 @@ export default function Purchase() {
                             payment.submit(formData, { method: "post" });
                           }}>
                           <SelectTrigger className="w-[200px] " >
-                            <SelectValue defaultValue={order.status} />
+                            <SelectValue defaultValue={orderStatus} />
                           </SelectTrigger>
                           <SelectContent className='border-border'>
                             <SelectGroup>

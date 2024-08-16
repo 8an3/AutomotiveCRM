@@ -1957,6 +1957,7 @@ export async function Board() {
   ]
   const issue = [
     { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
+    { board: "dev", column: "ISSUE", item: "accessories/parts differiantiati between parts and acc by sellingDept on dashboard" },
     { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
     { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]

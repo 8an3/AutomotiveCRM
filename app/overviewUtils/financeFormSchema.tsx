@@ -7,7 +7,7 @@ const financeFormSchema = z.object({
   Phone: zfd.numeric(z.number().optional()),
   InPerson: zfd.numeric(z.number().optional()),
   SMS: zfd.numeric(z.number().optional()),
-  orderId: zfd.numeric(z.number().optional()),
+  orderId: zfd.text(z.string().optional()),
   Email: zfd.numeric(z.number().optional()),
   paymentType: zfd.text(z.string().optional()),
   cardNum: zfd.text(z.string().optional()),
@@ -18,7 +18,7 @@ const financeFormSchema = z.object({
   attachedId: zfd.text(z.string().optional()),
   // handOffTime
   accessoryNumber: zfd.numeric(z.number().optional()),
-  //amountPaid:zfd.float(z.string().optional()),
+  // amountPaid:zfd.float(z.string().optional()),
   Other: zfd.text(z.string().optional()),
   tradeColor: zfd.text(z.string().optional()),
   lockId: zfd.text(z.string().optional()),
