@@ -36,9 +36,6 @@ import { Outlet, Link, useLoaderData, useFetcher, Form, useSubmit, useLocation, 
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { GetUser } from "~/utils/loader.server";
 import { getSession } from "~/sessions/auth-session.server";
-import { prisma } from "~/libs";
-import financeFormSchema from "~/overviewUtils/financeFormSchema";
-import Purchase from '~/components/accessories/currentOrder';
 import { Button } from "~/components";
 
 

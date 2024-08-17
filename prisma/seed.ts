@@ -563,11 +563,19 @@ export async function seedUsers() {
       financeId: finance.id,
       dept: 'Sales',
       status: 'Quote',
-
-
       total: fith.price + forth.price + third.price + second.price + first.price,
-      paid: false,
-
+      paid: true,
+      paidDate: String(new Date())
+    }
+  });
+  await prisma.payment.create({
+    data: {
+      paymentType: 'Credit Card',
+      cardType: 'Visa',
+      amountPaid: 2918.76,
+      financeId: finance.id,
+      userEmail: 'skylerzanth@outlook.com',
+      accOrderId: order.id,
     }
   });
   // creating acc orders
@@ -614,10 +622,18 @@ export async function seedUsers() {
       clientfileId: clientfile.id,
       dept: 'Sales',
       status: 'Quote',
-
-
       total: fith.price + seventh.price + seventh.price,
-      paid: false,
+      paid: true,
+      paidDate: String(new Date())
+    }
+  });
+  await prisma.payment.create({
+    data: {
+      paymentType: 'Credit Card',
+      cardType: 'Mastercard',
+      amountPaid: parseFloat((fith.price + seventh.price + seventh.price) * 1.13),
+      userEmail: 'skylerzanth@outlook.com',
+      accOrderId: order2.id,
 
     }
   });
@@ -649,11 +665,18 @@ export async function seedUsers() {
       clientfileId: clientfile.id,
       dept: 'Sales',
       status: 'Quote',
-
-
       total: first.price,
-      paid: false,
-
+      paid: true,
+      paidDate: String(new Date())
+    }
+  });
+  await prisma.payment.create({
+    data: {
+      paymentType: 'Credit Card',
+      cardType: 'AMEX',
+      amountPaid: parseFloat(first.price * 1.13),
+      userEmail: 'skylerzanth@outlook.com',
+      accOrderId: order3.id,
     }
   });
   await prisma.accessoriesOnOrders.create({
@@ -670,11 +693,17 @@ export async function seedUsers() {
       clientfileId: clientfile.id,
       dept: 'Sales',
       status: 'Quote',
-
-
       total: first.price,
-      paid: false,
-
+      paid: true,
+      paidDate: String(new Date())
+    }
+  });
+  await prisma.payment.create({
+    data: {
+      paymentType: 'Cash',
+      amountPaid: parseFloat(first.price * 1.13),
+      userEmail: 'skylerzanth@outlook.com',
+      accOrderId: order4.id,
     }
   });
   await prisma.accessoriesOnOrders.create({
@@ -691,11 +720,17 @@ export async function seedUsers() {
       clientfileId: clientfile.id,
       dept: 'Sales',
       status: 'Quote',
-
-
       total: first.price,
-      paid: false,
-
+      paid: true,
+      paidDate: String(new Date())
+    }
+  });
+  await prisma.payment.create({
+    data: {
+      paymentType: 'Cheque',
+      amountPaid: parseFloat(first.price * 1.13),
+      userEmail: 'skylerzanth@outlook.com',
+      accOrderId: order5.id,
     }
   });
   await prisma.accessoriesOnOrders.create({
@@ -712,11 +747,17 @@ export async function seedUsers() {
       clientfileId: clientfile.id,
       dept: 'Sales',
       status: 'Quote',
-
-
       total: first.price,
-      paid: false,
-
+      paid: true,
+      paidDate: String(new Date())
+    }
+  });
+  await prisma.payment.create({
+    data: {
+      paymentType: 'Debit',
+      amountPaid: parseFloat(first.price * 1.13),
+      userEmail: 'skylerzanth@outlook.com',
+      accOrderId: order6.id,
     }
   });
   await prisma.accessoriesOnOrders.create({
@@ -733,11 +774,17 @@ export async function seedUsers() {
       clientfileId: clientfile.id,
       dept: 'Sales',
       status: 'Quote',
-
-
       total: first.price,
-      paid: false,
-
+      paid: true,
+      paidDate: String(new Date())
+    }
+  });
+  await prisma.payment.create({
+    data: {
+      paymentType: 'Online Transaction',
+      amountPaid: parseFloat(first.price * 1.13),
+      userEmail: 'skylerzanth@outlook.com',
+      accOrderId: order7.id,
     }
   });
   await prisma.accessoriesOnOrders.create({
@@ -754,11 +801,17 @@ export async function seedUsers() {
       clientfileId: clientfile.id,
       dept: 'Sales',
       status: 'Quote',
-
-
       total: first.price,
-      paid: false,
-
+      paid: true,
+      paidDate: String(new Date())
+    }
+  });
+  await prisma.payment.create({
+    data: {
+      paymentType: 'E-Transfer',
+      amountPaid: parseFloat(first.price * 1.13),
+      userEmail: 'skylerzanth@outlook.com',
+      accOrderId: order8.id,
     }
   });
   await prisma.accessoriesOnOrders.create({
@@ -1631,6 +1684,8 @@ export async function Board() {
 
   // roadmap, control panel and board in dev mode
   const completed = [
+    { board: "dev", column: "GET DONE NOW", item: "end of day reports, choose date so you can print any day" },
+
     { board: "dev", column: "WIP", item: "manager Dashboard" },
     { board: "dev", column: "WIP", item: "admin dash" },
     { board: "dev", column: "done needs testing", item: "need to test all functions due to database changes" },
@@ -1941,10 +1996,6 @@ export async function Board() {
   const getDoneNow = [
     { board: "dev", column: "GET DONE NOW", item: "need to swap out for financeUnit/tradeunit from just finance in schema" },
 
-    { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
-
-    { board: "dev", column: "GET DONE NOW", item: "end of day reports, choose date so you can print any day" },
-
     { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database- this produces a problem of linking the database data to the end points on the persons template you either have to input each manually or have a legend where they click the data point they want and it copies the actual database value and they paste it into the value on the template" },
 
     { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
@@ -1952,12 +2003,11 @@ export async function Board() {
     { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
     { board: "dev", column: "ISSUE", item: "FIX ADMIN AND MANAGER SECTIONS" },
     { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
-
-
   ]
   const issue = [
     { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
     { board: "dev", column: "ISSUE", item: "accessories/parts differiantiati between parts and acc by sellingDept on dashboard" },
+    { board: "dev", column: "ISSUE", item: "end of day report, sales people arent printing out" },
     { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
     { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]
@@ -1969,6 +2019,8 @@ export async function Board() {
   ]
 
   const doneneedstesting = [
+    { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
+
     { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "mass sms - wip" },

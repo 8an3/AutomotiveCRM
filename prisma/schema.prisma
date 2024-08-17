@@ -1263,6 +1263,7 @@ model Payment {
   id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
   paymentType String?
+  cardType    String?
   amountPaid  Float?
   cardNum     String?
   receiptId   String?

@@ -23,6 +23,40 @@ export async function loader({ request, params }: LoaderFunction) {
   if (dept === 'Accessories') {
     getIt = await prisma.accOrder.findMany({
       where: { paid: true, sellingDept: 'Accessories' },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        userEmail: true,
+        userName: true,
+        dept: true,
+        sellingDept: true,
+        total: true,
+        discount: true,
+        discPer: true,
+        paid: true,
+        paidDate: true,
+        status: true,
+        workOrderId: true,
+        note: true,
+        financeId: true,
+        clientfileId: true,
+        Payments: {
+          select: {
+            id: true,
+            createdAt: true,
+            paymentType: true,
+            cardType: true,
+            amountPaid: true,
+            cardNum: true,
+            receiptId: true,
+            financeId: true,
+            userEmail: true,
+            accOrderId: true,
+            workOrderId: true,
+          }
+        }
+      }
     });
     result = getIt.filter((accOrder) => {
       const closedDate = new Date(accOrder.paidDate);

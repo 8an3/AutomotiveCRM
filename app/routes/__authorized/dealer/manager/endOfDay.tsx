@@ -1,40 +1,4 @@
 import React, { useEffect, useState, useRef, forwardRef, } from "react";
-import {
-  Banknote,
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  CreditCard,
-  File,
-  Home,
-  LineChart,
-  ListFilter,
-  MoreVertical,
-  Package,
-  Package2,
-  PanelLeft,
-  Search,
-  Plus,
-  Settings,
-  ShoppingCart,
-  Truck,
-  User,
-  Users2,
-  Percent,
-  PanelTop,
-  Scan,
-  X,
-  Users2Icon,
-} from "lucide-react";
-import { Badge } from "~/components/ui/badge";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -44,51 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { Input } from "~/components/ui/input";
-import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 import { Outlet, Link, useLoaderData, useFetcher, useNavigate, useSubmit, Form } from "@remix-run/react";
 import { ActionFunction, json, LinksFunction, LoaderFunction, redirect } from "@remix-run/node";
-import { GetUser } from "~/utils/loader.server";
-import { getSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
-import { Printer } from "lucide-react";
-import { DollarSign } from "lucide-react";
-import { toast } from "sonner";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
-import { cn } from "~/utils";
-import { BanknoteIcon } from "lucide-react";
-import { ArrowDownUp } from "lucide-react";
-import { ClientOnly } from "remix-utils";
-import PrintLabels from "../document/printLabels";
-import useSWR from 'swr'
-import ScanSound from '~/images/scan.mp4'
-import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
-import QRCode from 'react-qr-code';
 import {
   Select,
   SelectContent,
@@ -98,59 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select"
-import { Check } from "lucide-react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination"
-import axios from "axios";
-import { FileCheck } from "lucide-react";
 import PrintReceipt from "../document/printReceiptAcc";
-import { Users } from "lucide-react";
-import { Activity } from "lucide-react";
-import { ArrowUpRight } from "lucide-react";
-import { Avatar } from "~/components";
-import {
-  ContextMenu,
-  ContextMenuCheckboxItem,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
-  ContextMenuSeparator,
-
-  ContextMenuShortcut,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
-  ContextMenuTrigger,
-} from "~/components/ui/context-menu"
-import { EditableText } from "~/components/actions/shared";
-import { flushSync } from "react-dom";
-import { TextArea } from "~/components";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "~/components/ui/accordion"
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
+import PrintEndofDay from "~/routes/__authorized/dealer/document/printEndOfDay";
 
 export async function loader({ request, params }: LoaderFunction) {
   const fees = await prisma.dealer.findUnique({ where: { id: 1 } })
@@ -180,7 +55,27 @@ export default function EndOfDay() {
   const [data, setData] = useState()
   const taxMultiplier = 1 + (fees.userTax / 100)
 
+  const [cashTotal, setCashTotal] = useState(0.00);
+  const [debitTotal, setDebitTotal] = useState(0.00);
+  const [creditTotal, setCreditTotal] = useState(0.00);
+  const [chequeTotal, setChequeTotal] = useState(0.00);
+  const [onlineTotal, setOnlineTotal] = useState(0.00);
+  const [eTransferTotal, setETransferTotal] = useState(0.00);
+  const [visaTotal, setVisaTotal] = useState(0.00);
+  const [mastercardTotal, setMastercardTotal] = useState(0.00);
+  const [amexTotal, setAmexTotal] = useState(0.00);
 
+  let newCashTotal = 0;
+  let newDebitTotal = 0;
+  let newCreditTotal = 0;
+  let newChequeTotal = 0;
+  let newOnlineTotal = 0;
+  let newETransferTotal = 0;
+  let newVisaTotal = 0;
+  let newMastercardTotal = 0;
+  let newAmexTotal = 0;
+  let toReceipt
+  let salesData = [];
 
   async function FetchReport() {
     try {
@@ -204,13 +99,11 @@ export default function EndOfDay() {
   };
 
   function Calculate(data) {
-
     let totalSum = 0;
     let totalWithTax = 0;
     let difference = 0;
     let displayArray = [];
-
-
+    let paymentTotals
 
     if (dept === 'Accessories') {
       totalSum = data.reduce((sum, item) => sum + (item.total || 0), 0);
@@ -231,13 +124,104 @@ export default function EndOfDay() {
         sales: summary.sales,
         totalSales: summary.totalSales.toFixed(2),
       }));
+      console.log(displayArray, 'disaplyeareray')
+
+      salesData = Object.entries(salesSummary).map(([userName, summary], index) => ({
+        [`sales${index + 1}`]: userName,
+        [`salesTotal${index + 1}`]: summary.totalSales.toFixed(2),
+      }));
+
+
+
+
+      data.forEach((accOrder) => {
+        if (!accOrder.Payments || !Array.isArray(accOrder.Payments)) {
+          console.error('Payments array is missing or not an array in accOrder:', accOrder);
+          return;
+        }
+
+        accOrder.Payments.forEach((payment) => {
+          const { paymentType, cardType, amountPaid = 0.00 } = payment;
+
+          console.log('Processing payment:', paymentType, cardType, amountPaid); // Log payment details
+
+          switch (paymentType) {
+            case 'Cash':
+              newCashTotal += amountPaid;
+              break;
+            case 'Debit':
+              newDebitTotal += amountPaid;
+              break;
+            case 'Credit Card':
+              newCreditTotal += amountPaid;
+              console.log('Processing Credit Card payment with cardType:', cardType); // Log card type
+
+              if (cardType === 'Visa') {
+                newVisaTotal += amountPaid;
+              } else if (cardType === 'Mastercard') {
+                newMastercardTotal += amountPaid;
+              } else if (cardType === 'AMEX') {
+                newAmexTotal += amountPaid;
+              } else {
+                console.warn('Unexpected card type:', cardType);
+              }
+              break;
+            case 'Cheque':
+              newChequeTotal += amountPaid;
+              break;
+            case 'Online Transaction':
+              newOnlineTotal += amountPaid;
+              break;
+            case 'E-Transfer':
+              newETransferTotal += amountPaid;
+              break;
+            default:
+              console.warn('Unexpected payment type:', paymentType);
+              break;
+          }
+        });
+      });
+
     }
+
+
 
     setSubTotal(totalSum.toFixed(2));
     setTotal(totalWithTax.toFixed(2));
     setTax(difference.toFixed(2));
     setSalesPeople(displayArray);
+    setCashTotal(newCashTotal.toFixed(2));
+    setDebitTotal(newDebitTotal.toFixed(2));
+    setCreditTotal(newCreditTotal.toFixed(2));
+    setChequeTotal(newChequeTotal.toFixed(2));
+    setOnlineTotal(newOnlineTotal.toFixed(2));
+    setETransferTotal(newETransferTotal.toFixed(2));
+    setVisaTotal(newVisaTotal.toFixed(2));
+    setMastercardTotal(newMastercardTotal.toFixed(2));
+    setAmexTotal(newAmexTotal.toFixed(2));
+
+    toReceipt = {
+      "dateNow": dateNow,
+      "dept": dept,
+      "subTotal": subTotal,
+      "tax": tax,
+      "total": total,
+      "cashTotal": cashTotal,
+      "debitTotal": debitTotal,
+      "creditTotal": creditTotal,
+      "chequeTotal": chequeTotal,
+      "onlineTotal": onlineTotal,
+      "eTransferTotal": eTransferTotal,
+      "visaTotal": visaTotal,
+      "mastercardTotal": mastercardTotal,
+      "amexTotal": amexTotal,
+      ...salesData
+    };
+
   }
+
+
+
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 w-6xl mx-auto'>
@@ -361,8 +345,9 @@ export default function EndOfDay() {
             <Separator className="mb-4" />
             <ul>
               {salesPeople.map((item, index) => (
-                <li key={index}>
-                  {item.userName}: {item.sales} sales, Total: ${item.totalSales}
+                <li className="flex items-center justify-between" key={index}>
+                  <p className='text-muted-foreground  '> {item.userName}</p>
+                  <p>{item.sales} sales, Total: ${item.totalSales}</p>
                 </li>
               ))}
             </ul>
@@ -372,23 +357,27 @@ export default function EndOfDay() {
             <ul className="grid gap-3">
               <li className="flex items-center justify-between">
                 <p className='text-muted-foreground'>Cash</p>
-                <p>$0.00</p>
+                <p>${cashTotal}</p>
               </li>
               <li className="flex items-center justify-between">
                 <p className='text-muted-foreground'>Debit</p>
-                <p>$0.00</p>
+                <p>${debitTotal}</p>
               </li>
               <li className="flex items-center justify-between">
                 <p className='text-muted-foreground  '>Credit Card</p>
-                <p>$0.00</p>
+                <p>${creditTotal}</p>
               </li>
               <li className="flex items-center justify-between">
-                <p className='text-muted-foreground  '>Debit Card</p>
-                <p>$0.00</p>
+                <p className='text-muted-foreground  '>Cheque</p>
+                <p>${chequeTotal}</p>
               </li>
               <li className="flex items-center justify-between">
                 <p className='text-muted-foreground  '>Online Transaction</p>
-                <p>$0.00</p>
+                <p>${onlineTotal}</p>
+              </li>
+              <li className="flex items-center justify-between">
+                <p className='text-muted-foreground  '>E-Transfer</p>
+                <p>${eTransferTotal}</p>
               </li>
             </ul>
 
@@ -397,21 +386,24 @@ export default function EndOfDay() {
             <ul className="grid gap-3">
               <li className="flex items-center justify-between">
                 <p className='text-muted-foreground'>Visa</p>
-                <p>$0.00</p>
+                <p>${visaTotal}</p>
               </li>
               <li className="flex items-center justify-between">
                 <p className='text-muted-foreground'>Mastercard</p>
-                <p>$0.00</p>
+                <p>${mastercardTotal}</p>
               </li>
               <li className="flex items-center justify-between">
                 <p className='text-muted-foreground'>AMEX</p>
-                <p>$0.00</p>
+                <p>${amexTotal}</p>
               </li>
             </ul>
           </CardContent>
           <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
 
-            <Button size='sm' className='text-foreground'>Print</Button>
+            <Button size='sm' className='text-foreground' onClick={() => {
+              console.log(toReceipt)
+              PrintEndofDay(toReceipt)
+            }}>Print</Button>
           </CardFooter>
         </Card>
       </div>

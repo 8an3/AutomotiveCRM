@@ -2618,7 +2618,8 @@ export async function action({ request, params }: ActionFunction) {
     const payment = await prisma.payment.create({
       data: {
         workOrderId: formPayload.workOrderId,
-        paymentType: formPayload.paymentType,
+        paymentType: formPayload.paymentType === 'Visa' || formPayload.paymentType === 'Mastercard' || formPayload.paymentType === 'AMEX' ? 'Credit Card' : formPayload.paymentType,
+        cardType: formPayload.paymentType === 'Visa' || formPayload.paymentType === 'Mastercard' || formPayload.paymentType === 'AMEX' ? formPayload.paymentType : '',
         amountPaid: parseFloat(formPayload.amountPaid),
         cardNum: formPayload.cardNum,
         receiptId: formPayload.receiptId,
