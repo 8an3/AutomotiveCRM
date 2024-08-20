@@ -663,7 +663,7 @@ export function Charts({ userChartData }) {
               </BarChart>
             </ChartContainer>
           </CardContent>
-          <CardFooter className="flex flex-row border-t p-4">
+          <CardFooter className="flex flex-row border-t p-4 border-border">
             <div className="flex w-full items-center gap-2">
               <div className="grid flex-1 auto-rows-min gap-0.5">
                 <div className="text-xs text-muted-foreground">Booked</div>

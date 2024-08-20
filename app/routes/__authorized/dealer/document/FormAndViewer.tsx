@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Template, checkTemplate } from "@pdfme/common";
 import { Form, Viewer } from "@pdfme/ui";
 import {
@@ -10,6 +10,24 @@ import {
   getPlugins,
   isJsonString,
 } from "~/components/document/helper";
+import { generate } from "@pdfme/generator";
+import { ClientOnly } from "remix-utils";
+export default function App() {
+
+  return (
+    <>
+      <div className="h-screen justify-center bg-background">
+        <ClientOnly fallback={<p>Fallback component ...</p>}>
+          {() => (
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <PrintButton />
+            </React.Suspense>
+          )}
+        </ClientOnly>
+      </div>
+    </>
+  );
+}
 
 const headerHeight = 65;
 
@@ -30,7 +48,7 @@ const initTemplate = () => {
   return template;
 };
 
-function App() {
+function PrintButton() {
   const uiRef = useRef<HTMLDivElement | null>(null);
   const ui = useRef<Form | Viewer | null>(null);
 
@@ -144,4 +162,3 @@ function App() {
   );
 }
 
-export default App;

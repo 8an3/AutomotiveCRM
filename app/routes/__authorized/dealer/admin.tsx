@@ -138,9 +138,9 @@ export default function Dashboard() {
             Users
           </NavLink>
           <NavLink
-            to="/dealer/admin/customers/client"
+            to="/dealer/admin/customers/all"
             className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname.startsWith("/dealer/admin/customers/client") ? ' text-foreground ' : 'text-muted-foreground'}`}
+              ${pathname.startsWith("/dealer/admin/customers/all") ? ' text-foreground ' : 'text-muted-foreground'}`}
           >
             Customers
           </NavLink>

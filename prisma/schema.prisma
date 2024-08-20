@@ -1,15 +1,9 @@
-// References:
-////// https://pris.ly/d/prisma-schema
-// https://github.com/remix-run/indie-stack/blob/main/prisma/schema.prisma
-// https://github.com/planetscale/beam/blob/main/prisma/schema.prisma
-// You can visualize the schema with https://prismaliser.app
 datasource db {
   provider     = "postgresql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
-// https://www.prisma.io/docs/concepts/components/preview-features/client-preview-features
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch", "fullTextIndex", "metrics", "views"]
@@ -23,67 +17,85 @@ generator docs {
 // -------------------------------User-----------------------------------------
 // -----------------------------------------------------------------------------
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  name      String
-  username  String  @unique
-  email     String  @unique(map: "User.email_unique")
-  profileId String  @unique
-  phone     String? @unique
-  roleId    String
-
-  // appearance
-  //newLook String?
-
+  id                    String                @id @default(cuid())
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  // main
+  name                  String
+  username              String                @unique
+  email                 String                @unique(map: "User.email_unique")
+  profileId             String                @unique
+  phone                 String?               @unique
+  roleId                String
   // stripe
   subscriptionId        String?
-  returning             Boolean? @default(false)
+  returning             Boolean?              @default(false)
   lastSubscriptionCheck String?
-  customerId            String?  @unique
+  customerId            String?               @unique
   plan                  String?
-
   // dealer
-  omvicNumber String?
-  dealer      String?
-  dept        String?
-  order       Int?
-
+  omvicNumber           String?
+  dealer                String?
+  dept                  String?
+  order                 Int?
   // activix
-  activixActivated String?
-  activixEmail     String?
-  activisUserId    String?
-  activixId        String?
-  dealerAccountId  String?
-
+  activixActivated      String?
+  activixEmail          String?
+  activisUserId         String?
+  activixId             String?
+  dealerAccountId       String?
   // microsoft
-  microId          String?
+  microId               String?
   // name             String?
-  givenName        String?
-  familyName       String?
-  identityProvider String?
-
-  UserRole             UserRole[]
-  profile              UserProfile           @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  images               Image[]               @relation("Images")
-  NotificationsUser    NotificationsUser[]
-  notes                Note[]                @relation("UserNotes")
-  timeEntries          TimeEntry[]
-  workorders           Workorder[]
-  positions            Position[]
-  userGoals            UserGoals[]
-  thirtyDayGoals       ThirtyDayGoal[]
-  columnStateSales     ColumnStateSales?
-  ColumnStateInventory ColumnStateInventory?
-  customerSync         CustomerSync?
-  userRoleId           String?
+  givenName             String?
+  familyName            String?
+  identityProvider      String?
+  // needed
+  timeEntries           TimeEntry[]
+  workorders            Workorder[]
+  positions             Position[]
+  userGoals             UserGoals[]
+  thirtyDayGoals        ThirtyDayGoal[]
+  columnStateSales      ColumnStateSales?
+  ColumnStateInventory  ColumnStateInventory?
+  ColumnStateClient     ColumnStateClient?
+  customerSync          CustomerSync?
+  userRoleId            String?
+  role                  UserRole              @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
+  NotificationsUser     NotificationsUser[]
+  // not needed
+  profile               UserProfile           @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  images                Image[]               @relation("Images")
+  notes                 Note[]                @relation("UserNotes")
 
   @@index([profileId])
   @@index([roleId])
 }
 
+model UserRole {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sequence    Int    @unique // 1 | 2 | 3 | ...
+  symbol      String @unique // "ADMIN" | "MANAGER" | "EDITOR"
+  name        String @unique // "Administrator" | "Manager" | "Editor"
+  description String @db.Text // "User can manage everything"
+
+  users User[] @relation("UserRole")
+}
+
 model ColumnStateInventory {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  state     Json
+
+  user      User   @relation(fields: [userEmail], references: [email])
+  userEmail String @unique
+}
+
+model ColumnStateClient {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -328,20 +340,6 @@ model UserPassword {
   //user   User   @relation("UserPassword", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@index([userId])
-}
-
-model UserRole {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  sequence    Int    @unique // 1 | 2 | 3 | ...
-  symbol      String @unique // "ADMIN" | "MANAGER" | "EDITOR"
-  name        String @unique // "Administrator" | "Manager" | "Editor"
-  description String @db.Text // "User can manage everything"
-
-  User   User[]
-  userId String?
 }
 
 model UserProfile {
@@ -1205,13 +1203,13 @@ model AccOrder {
   financeId    String?
   clientfileId String
 
-  Clientfile          Clientfile            @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
   AccessoriesOnOrders AccessoriesOnOrders[]
   Payments            Payment[]
 
   WorkOrder  WorkOrder?   @relation(fields: [workOrderId], references: [workOrderId])
   Finance    Finance?     @relation(fields: [financeId], references: [id], onDelete: SetNull)
   AccHandoff AccHandoff[]
+  Clientfile Clientfile   @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
 
   @@index([clientfileId])
   @@index([workOrderId])
@@ -1353,13 +1351,6 @@ model Clientfile {
 // -----------------------------------------------------------------------------
 // service
 // -----------------------------------------------------------------------------
-model Service {
-  id                   String     @id @default(cuid())
-  createdAt            DateTime   @default(now())
-  updatedAt            DateTime   @updatedAt
-  WorkOrder            WorkOrder? @relation(fields: [workOrderWorkOrderId], references: [workOrderId])
-  workOrderWorkOrderId Int?
-}
 
 model Session {
   id           String    @id @default(uuid())
@@ -1580,13 +1571,10 @@ model Finance {
   theRealActId             String?
   createdAt                DateTime @default(now())
   updatedAt                DateTime @updatedAt
+  clientfileId             String?
 
-  finManOptions       FinManOptions[]       @relation("finance")
-  bmwMotoOptions      BmwMotoOptions[]      @relation("finance")
   financeStorage      FinanceStorage[]      @relation("finance")
   clientApts          ClientApts[]          @relation("finance")
-  uCDAForm            UCDAForm[]            @relation("finance")
-  FinCanOptions       FinCanOptions[]       @relation("finance")
   Comm                Comm[]
   FinanceDeptProducts FinanceDeptProducts[]
   FinanceUnit         FinanceUnit[]
@@ -1596,8 +1584,12 @@ model Finance {
   Payments            Payment[]
   FinanceNote         FinanceNote[]
 
-  clientfileId String?
-  Clientfile   Clientfile? @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
+  Clientfile Clientfile? @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
+
+  finManOptions  FinManOptions[]  @relation("finance")
+  bmwMotoOptions BmwMotoOptions[] @relation("finance")
+  uCDAForm       UCDAForm[]       @relation("finance")
+  FinCanOptions  FinCanOptions[]  @relation("finance")
 
   @@index([clientfileId])
 }
@@ -1661,12 +1653,10 @@ model FinanceUnit {
 }
 
 model FinanceTradeUnit {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  financeId String
-  Finance   Finance  @relation(fields: [financeId], references: [id], onDelete: Cascade)
-
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  financeId   String
   price       String?
   brand       String?
   model       String?
@@ -1683,6 +1673,8 @@ model FinanceTradeUnit {
   stockNum    String?
   licensing   Boolean?
   tradeEval   Boolean?
+
+  Finance Finance @relation(fields: [financeId], references: [id], onDelete: Cascade)
 
   @@index([financeId])
 }
@@ -1791,7 +1783,6 @@ model WorkOrder {
   ServicesOnWorkOrders  ServicesOnWorkOrders[]
   Payments              Payment[]
   WorkOrderApts         WorkOrderApts?
-  Service               Service[]
   WorkOrderClockEntries WorkOrderClockEntry[]
 
   @@index([clientfileId])
@@ -1870,10 +1861,9 @@ model Services {
 }
 
 model ServiceUnit {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   price        String?
   brand        String?
   model        String?
@@ -1925,8 +1915,8 @@ model FinanceDeptProducts {
   packageName  String
   packagePrice Int
 
-  finance   Finance? @relation(fields: [financeId], references: [id])
   financeId String?
+  finance   Finance? @relation(fields: [financeId], references: [id])
 
   @@index([financeId])
 }

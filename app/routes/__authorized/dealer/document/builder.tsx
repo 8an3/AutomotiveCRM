@@ -32,11 +32,28 @@ import {
   SelectContent, SelectLabel, SelectGroup,
   SelectValue, Select, SelectTrigger, SelectItem,
 } from "~/components";
+import { generate } from "@pdfme/generator";
+import { ClientOnly } from "remix-utils";
+export default function DesignerApp() {
 
+  return (
+    <>
+      <div className="h-screen justify-center bg-background">
+        <ClientOnly fallback={<p>Fallback component ...</p>}>
+          {() => (
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <PrintButton />
+            </React.Suspense>
+          )}
+        </ClientOnly>
+      </div>
+    </>
+  );
+}
 const headerHeight = 65;
 
 
-export default function DesignerApp() {
+export function PrintButton() {
   const designerRef = useRef<HTMLDivElement | null>(null);
   const designer = useRef<Designer | null>(null);
   const [templates, setTemplates] = useState<Template[]>([]);

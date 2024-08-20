@@ -4588,9 +4588,14 @@ export async function seedUsers() {
   // ---- customer
   console.log(chalk.yellow("Seeding first customer ..."));
 
-  const user = await prisma.user.findFirst({
-    where: { role: { symbol: "ADMIN" } },
+  const adminRole = await prisma.userRole.findUnique({
+    where: {
+      symbol: 'ADMIN',
+    },
   });
+
+
+
   // creating technician
   console.log(chalk.yellow("creating technician..."));
   const technician = await prisma.user.create({
@@ -4602,6 +4607,7 @@ export async function seedUsers() {
       dept: 'Technician',
       dealer: "Freedom H-D",
       role: { connect: { id: technicianRole?.id } },
+
       customerSync: {
         create: {
           orderId: null
@@ -4624,6 +4630,7 @@ export async function seedUsers() {
       dept: 'Technician',
       dealer: "Freedom H-D",
       role: { connect: { id: technicianRole?.id } },
+
       customerSync: {
         create: {
           orderId: null
@@ -4642,13 +4649,13 @@ export async function seedUsers() {
   const admin = await prisma.user.create({
     data: {
       email: REMIX_ADMIN_EMAIL,
-      //    password: { create: { hash: hashedPassword } },
       name: "Skyler Zanth",
       username: "Skyler",
       phone: "+16138980992",
       dealer: "Freedom H-D",
       dept: 'Finance',
-      role: { connect: { id: adminUserRole.id } },
+      role: { connect: { id: adminUserRole?.id } },
+
       customerSync: { create: { orderId: null } },
       ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
       columnStateSales: { create: { state: { "contactTimesByType": false, "unitPicker": false, "id": false, "email": false, "phone": false, "postal": false, "address": false, "city": false, "province": false, "financeId": false, "userEmail": false, "pickUpTime": false, "timeToContact": false, "deliveredDate": false, "msrp": false, "freight": false, "pdi": false, "admin": false, "commodity": false, "accessories": false, "labour": false, "painPrem": false, "licensing": false, "trailer": false, "depositMade": false, "months": false, "iRate": false, "on60": false, "biweekly": false, "weekly": false, "qc60": false, "biweeklyqc": false, "weeklyqc": false, "nat60": false, "biweeklNat": false, "weeklylNat": false, "oth60": false, "biweekOth": false, "weeklyOth": false, "nat60WOptions": false, "desiredPayments": false, "biweeklNatWOptions": false, "weeklylNatWOptions": false, "oth60WOptions": false, "biweekOthWOptions": false, "visited": false, "aptShowed": false, "bookedApt": false, "aptNoShowed": false, "testDrive": false, "metParts": false, "sold": false, "refund": false, "turnOver": false, "financeApp": false, "approved": false, "signed": false, "pickUpSet": false, "demoed": false, "tradeMake": false, "tradeYear": false, "tradeTrim": false, "tradeColor": false, "tradeVin": false, "delivered": false, "result": false, "referral": false, "metService": false, "metManager": false, "timesContacted": false, "visits": false, "financeApplication": false, "progress": false, "metFinance": false, "metSalesperson": false, "seenTrade": false, "docsSigned": false, "tradeRepairs": false, "tradeValue": false, "modelCode": false, "color": false, "model1": false, "stockNum": false, "otherTaxWithOptions": false, "totalWithOptions": false, "otherTax": false, "qcTax": false, "deposit": false, "rustProofing": false, "lifeDisability": false, "userServicespkg": false, "userExtWarr": false, "userGap": false, "userTireandRim": false, "userLoanProt": false, "deliveryCharge": false, "onTax": false, "total": false, "typeOfContact": false, "contactMethod": false, "note": false, } } },
@@ -5962,6 +5969,7 @@ export async function seedUsers() {
       dept: 'Sales',
       dealer: "Freedom H-D",
       role: { connect: { id: devUserRole?.id } },
+
       profile: {
         create: {
           headline: "I am Dev",
@@ -6015,6 +6023,7 @@ export async function seedUsers() {
       phone: "+16138980997",
       dealer: "Freedom H-D",
       role: { connect: { id: salesRole?.id } },
+
       profile: {
         create: {
           headline: "I am Dev",
@@ -6099,7 +6108,7 @@ export async function seedUsers() {
     }
   })
   console.log(chalk.green("finance2 user seeded!"));
-  return ({ admin, dev, autoAdmin, finance2, sales2, user, finance, clientfile, createInPerson, createPhone, createSMS, createEmail, })
+  return ({ admin, dev, autoAdmin, finance2, sales2, finance, clientfile, createInPerson, createPhone, createSMS, createEmail, })
 }
 export async function SeedLockFinanceTerminals() {
   console.log(chalk.yellow("Seeding lock finance terminals ..."));
@@ -6529,6 +6538,7 @@ export async function Board() {
   const issue = [
     { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
     { board: "dev", column: "ISSUE", item: "end of day report, sales people arent printing out" },
+    { board: "dev", column: "ISSUE", item: "need storage dash for service / winter storage long term" },
     { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
     { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]

@@ -18,6 +18,23 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { Button, Input, } from "~/components";
 import { generate } from "@pdfme/generator";
+import { ClientOnly } from "remix-utils";
+export default function PrintReceipt(data) {
+
+  return (
+    <>
+      <div className="h-screen justify-center bg-background">
+        <ClientOnly fallback={<p>Fallback component ...</p>}>
+          {() => (
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <PrintButton inputs={data} />
+            </React.Suspense>
+          )}
+        </ClientOnly>
+      </div>
+    </>
+  );
+}
 
 const headerHeight = 65;
 
@@ -48,7 +65,8 @@ export const getPlugins = () => {
     GS1DataMatrix: barcodes.gs1datamatrix,
   };
 };
-export default function PrintLabels({ inputs }) {
+
+export function PrintButton({ inputs }) {
   const designerRef = useRef<HTMLDivElement | null>(null);
   const designer = useRef<Designer | null>(null);
   const [templates, setTemplates] = useState<Template[]>([]);

@@ -868,6 +868,10 @@ export default function NewFile() {
                 <div className='mx-auto mt-10'>
                   <Charts userChartData={userChartData} />
                 </div>
+                <div className='mx-auto mt-10'>
+                  <InteractiveChart />
+                </div>
+
               </div>
             </TabsContent>
             <TabsContent value="Statistics">

@@ -1,7 +1,27 @@
 import { text, image, barcodes } from "@pdfme/schemas";
 import { generate } from "@pdfme/generator";
 
-export default function PrintEndofDay(toReceipt) {
+import { ClientOnly } from "remix-utils";
+import React from "react";
+export default function PrintEndofDay(data) {
+
+  return (
+    <>
+      <div className="h-screen justify-center bg-background">
+        <ClientOnly fallback={<p>Fallback component ...</p>}>
+          {() => (
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <PrintButton toReceipt={data} />
+            </React.Suspense>
+          )}
+        </ClientOnly>
+      </div>
+    </>
+  );
+}
+
+
+export function PrintButton({ toReceipt }) {
   console.log(toReceipt, "firstsdf");
 
   async function RunIt() {

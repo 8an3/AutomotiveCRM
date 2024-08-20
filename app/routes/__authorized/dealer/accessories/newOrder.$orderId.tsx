@@ -1803,15 +1803,23 @@ export default function Purchase() {
                     {salesPerson.name}
                   </Badge>
                 </div>
-                <Button
-                  variant='outline'
-                  className='bg-background text-foreground border-border border ml-3'
-                  onClick={() => {
-                    console.log(toReceipt)
-                    PrintReceipt(toReceipt)
-                  }}>
-                  Print Receipt
-                </Button>
+
+                <ClientOnly fallback={<p>Fallback component ...</p>}>
+                  {() => (
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                      <Button
+                        variant='outline'
+                        className='bg-background text-foreground border-border border ml-3'
+                        onClick={() => {
+                          console.log(toReceipt)
+                          PrintReceipt(toReceipt)
+                        }}>
+                        Print Receipt
+                      </Button>
+                    </React.Suspense>
+                  )}
+                </ClientOnly>
+
               </div>
             </CardFooter>
           </Card>

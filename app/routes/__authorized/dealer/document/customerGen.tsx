@@ -46,9 +46,27 @@ import {
     Truck,
     Users2,
 } from "lucide-react"
+import { generate } from "@pdfme/generator";
+import { ClientOnly } from "remix-utils";
+export default function CustomerGen() {
+
+    return (
+        <>
+            <div className="h-screen justify-center bg-background">
+                <ClientOnly fallback={<p>Fallback component ...</p>}>
+                    {() => (
+                        <React.Suspense fallback={<div>Loading...</div>}>
+                            <PrintButton />
+                        </React.Suspense>
+                    )}
+                </ClientOnly>
+            </div>
+        </>
+    );
+}
 interface Template { fileName: string; }
 
-export default function CustomerGen() {
+export function PrintButton() {
     const [templateList, setTemplateList] = useState<Template[]>([]); // Ensure Template is the correct type
     const [userId, setUserId] = useState<string>('');
 
