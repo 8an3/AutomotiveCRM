@@ -8,24 +8,20 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       <div className="mx-auto grid w-full max-w-6xl gap-2">
         <h1 className="text-3xl font-semibold">Reports</h1>
       </div>
-      <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
+      <div className="mx-auto grid w-full max-w-8xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
         <nav className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0"        >
           <NavLink to="endOfDay"
             className={`flex items-center gap-2 text-lg font-semibold md:text-base
-            ${pathname === ("/dealer/admin/reports/sales") ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}
+            ${pathname === ("/dealer/admin/reports/endOfDay") ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}
           >
             End of Day
           </NavLink>
-          <NavLink to="addUser"
+          <NavLink to="commissions"
             className={`flex items-center gap-2 text-lg font-semibold md:text-base
-            ${pathname === ("/dealer/admin/reports/sales") ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}>
-            Add User
+            ${pathname === ("/dealer/admin/reports/commissions") ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}>
+            Commissions
           </NavLink>
-          <NavLink to="userRoles"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-            ${pathname === ("/dealer/admin/reports/sales") ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}>
-            User Roles
-          </NavLink>
+
         </nav>
         <Outlet />
       </div>

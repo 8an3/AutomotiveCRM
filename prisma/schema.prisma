@@ -35,7 +35,7 @@ model User {
   roleId    String
 
   // appearance
-  newLook String?
+  //newLook String?
 
   // stripe
   subscriptionId        String?
@@ -64,21 +64,33 @@ model User {
   familyName       String?
   identityProvider String?
 
-  role              UserRole            @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
-  profile           UserProfile         @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  images            Image[]             @relation("Images")
-  NotificationsUser NotificationsUser[]
-  notes             Note[]              @relation("UserNotes")
-  timeEntries       TimeEntry[]
-  workorders        Workorder[]
-  positions         Position[]
-  userGoals         UserGoals[]
-  thirtyDayGoals    ThirtyDayGoal[]
-  columnStateSales  ColumnStateSales[]
-  customerSync      CustomerSync?
+  UserRole             UserRole[]
+  profile              UserProfile           @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  images               Image[]               @relation("Images")
+  NotificationsUser    NotificationsUser[]
+  notes                Note[]                @relation("UserNotes")
+  timeEntries          TimeEntry[]
+  workorders           Workorder[]
+  positions            Position[]
+  userGoals            UserGoals[]
+  thirtyDayGoals       ThirtyDayGoal[]
+  columnStateSales     ColumnStateSales?
+  ColumnStateInventory ColumnStateInventory?
+  customerSync         CustomerSync?
+  userRoleId           String?
 
   @@index([profileId])
   @@index([roleId])
+}
+
+model ColumnStateInventory {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  state     Json
+
+  user      User   @relation(fields: [userEmail], references: [email])
+  userEmail String @unique
 }
 
 model CustomerSync {
@@ -221,6 +233,14 @@ model Dealer {
   vercel               String?
   github               String?
 
+  // commissions
+  perSale          Float?
+  percentage       Float?
+  accPerSale       Float?
+  accPercentage    Float?
+  writerPerSale    Float?
+  writerPercentage Float?
+
   sentWelcomeEmail String?
   // store hours
   //  day   String?   @unique
@@ -320,7 +340,8 @@ model UserRole {
   name        String @unique // "Administrator" | "Manager" | "Editor"
   description String @db.Text // "User can manage everything"
 
-  users User[] @relation("UserRole")
+  User   User[]
+  userId String?
 }
 
 model UserProfile {
@@ -1685,20 +1706,20 @@ model InventoryMotorcycle {
   price              String? //
   exteriorColor      String? ///
   mileage            String? //
-  consignment        Boolean? //
-  onOrder            Boolean? ///
+  consignment        Boolean? @default(false) //
+  onOrder            Boolean? @default(false)
   expectedOn         String? //
   status             String? //
   orderStatus        String? //
   hdcFONumber        String? //
   hdmcFONumber       String? //
   vin                String? //
-  age                Int? //
+  age                Int?     @default(1) //
   floorPlanDueDate   String? //
   location           String? //
-  stocked            Boolean? //
+  stocked            Boolean? @default(false) //
   stockedDate        String? //
-  isNew              Boolean? //
+  isNew              Boolean? @default(true) //
   actualCost         String? //
   mfgSerialNumber    String? //
   engineNumber       String? //
@@ -1723,7 +1744,7 @@ model InventoryMotorcycle {
   insuranceAgent     String? //
   insuranceStartDate String? //
   insuranceEndDate   String? //
-  sold               String? //
+  sold               Boolean? @default(false) //
   financeId          String?
 }
 

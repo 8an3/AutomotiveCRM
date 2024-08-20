@@ -9222,7 +9222,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         licensing: formData.licensing,
         stockNum: formData.stockNum,
         options: formData.options,
-        accessories: parseFloat(formData.accessories).toFixed(2),
+        //   accessories: parseFloat(formData.accessories).toFixed(2),
         labour: formData.labour,
         year: formData.year,
         brand: formData.brand,

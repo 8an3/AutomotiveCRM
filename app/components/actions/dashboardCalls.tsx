@@ -282,6 +282,13 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   if (!user) { redirect('/login') }
   const userId = user?.id;
   const intent = formPayload.intent;
+  if (intent === 'columnState') {
+    const update = await prisma.columnStateInventory.update({
+      where: { id: user.ColumnStateInventory.id },
+      data: { state: JSON.parse(formPayload.state) }
+    })
+    return json({ update })
+  }
   if (intent === 'goToClientfile') {
     await prisma.customerSync.update({
       where: { userEmail: email },

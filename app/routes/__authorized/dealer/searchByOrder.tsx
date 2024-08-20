@@ -248,7 +248,7 @@ export default function SearchByOrderFunction() {
                   e.preventDefault();
                   setShow(true);
                 }}
-                className=" fixed right-[75px] top-[25px]"
+                className=" fixed right-[75px] top-[15px]  z-50 "
               >
                 <Scan className="text-foreground" />
               </Button>

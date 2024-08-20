@@ -6,6 +6,9 @@ export const loader = async () => {
   const custData = await prisma.clientfile.findMany();
 
   const headers = [
+    "id",
+    "createdAt",
+    "updatedAt",
     "financeId",
     "userId",
     "firstName",
@@ -20,10 +23,14 @@ export const loader = async () => {
     "dl",
     "typeOfContact",
     "timeToContact",
-    "conversationId"
+    "conversationId",
+    "billingAddress",
   ];
 
   const rows = custData.map(entry => [
+    entry.id,
+    entry.createdAt,
+    entry.updatedAt,
     entry.financeId,
     entry.userId,
     entry.firstName,
@@ -38,7 +45,8 @@ export const loader = async () => {
     entry.dl,
     entry.typeOfContact,
     entry.timeToContact,
-    entry.conversationId
+    entry.conversationId,
+    entry.billingAddress,
   ].map(value => (value === null ? '' : value)).join(','));
 
   const csvContent = [headers.join(','), ...rows].join('\n');

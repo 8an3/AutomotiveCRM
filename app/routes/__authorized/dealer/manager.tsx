@@ -1,4 +1,44 @@
-
+import { isRouteErrorResponse, Outlet, Link, useLoaderData, useFetcher, Form, useSubmit, useLocation, useNavigate, useRouteError, NavLink } from "@remix-run/react";
+import {
+  buttonVariants,
+  Debug,
+  Icon,
+  Logo,
+  PageAdminHeader,
+  RemixNavLink,
+  SearchForm,
+  Button,
+  Input
+} from "~/components";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
+import { configAdmin, configSite } from "~/configs";
+import { requireUserSession, getUserIsAllowed } from "~/helpers";
+import { RootDocumentBoundary } from "~/root";
+import { cn, createSitemap } from "~/utils";
+import { redirect, json } from "@remix-run/node";
+import { prisma } from "~/libs";
+import Sidebar, { adminSidebarNav } from "~/components/shared/sidebar";
+import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
+import { HeaderUserMenu } from "~/components/shared/userNav";
+import { getSession, commitSession, destroySession } from '~/sessions/auth-session.server'
+import { Separator } from "~/components/ui/separator"
+import { SidebarNav } from "~/components/ui/sidebar-nav"
+import { model } from "~/models";
+import { GetUser } from "~/utils/loader.server";
+import base from "~/styles/base.css";
+import tailwind from "~/styles/tailwind.css";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip"
 import {
   ChevronLeft,
   ChevronRight,
@@ -30,34 +70,40 @@ import {
   DollarSign,
   Cog,
   Calendar,
-  Clipboard
+  Clipboard,
+  Settings2,
+  Menu
 } from "lucide-react"
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/ui/tooltip"
-import { Outlet, Link, useLoaderData, useFetcher, Form, useSubmit, useLocation, useNavigate } from "@remix-run/react";
-import { json, LoaderFunction, redirect } from "@remix-run/node";
-import { GetUser } from "~/utils/loader.server";
-import { getSession } from "~/sessions/auth-session.server";
-import { prisma } from "~/libs";
-import financeFormSchema from "~/overviewUtils/financeFormSchema";
-import Purchase from '~/components/accessories/currentOrder';
-import { Button } from "~/components";
-import { CalendarClock } from "lucide-react";
-import { Download } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet"
+import { FaCircleUser } from "react-icons/fa6";
 
 
-export async function loader({ request, params }: LoaderFunction) {
-  const session2 = await getSession(request.headers.get("Cookie"));
-  const email = session2.get("email");
-  const user = await GetUser(email);
-  if (!user) {
-    redirect("/login");
+export const handle = createSitemap();
+
+export const loader = async ({ request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  let user = await GetUser(email)
+  if (!user) { return json({ status: 302, redirect: '/login' }); };
+  const symbol = user.positions[0].position
+  console.log(symbol, 'useradmin')
+
+  if (symbol !== 'Administrator' && symbol !== 'Manager' && symbol !== 'Editor') {
+    return redirect(`/`);
+  } else {
+    return json({ user, });
   }
-  return json({ user });
+}
+
+export async function action({ request }: ActionArgs) {
+  const { userIsAllowed } = await requireUserSession(request, [
+    "Administrator",
+    "Manager",
+    "Editor",
+  ]);
+  if (!userIsAllowed) {
+    return redirect(`/`);
+  }
 }
 
 export default function Dashboard() {
@@ -66,145 +112,134 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const pathname = location.pathname
   const orderId = user?.customerSync.orderId
+  /**
+   * /dealer/admin/acc
+   * /dealer/admin/parts
+   * /dealer/admin/sales
+   * /dealer/admin/Service
+   */
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-[50px] flex-col border-r  border-border bg-background sm:flex">
-        <nav className="flex flex-col items-center gap-4 px-2 sm:py-4 mt-[45px]">
+    <div className="flex min-h-screen w-full flex-col overflow-hidden ">
+      <header className="sticky top-0 flex h-[35px] items-center gap-4 border-b border-border  bg-background px-4 md:px-6">
+        <nav className="hidden ml-[35px] flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+          <NavLink
+            to="/dealer/manager/depts/sales"
+            className={`flex items-center gap-2 text-lg font-semibold md:text-base
+    ${pathname.startsWith("/dealer/manager/depts/sales") ? ' text-foreground ' : 'text-muted-foreground'}`}
+          >
+            Dashboard
+            <span className="sr-only">Dashboard</span>
+          </NavLink>
+          <NavLink
+            to="/dealer/manager/reports/endOfDay"
+            className={`flex items-center gap-2 text-lg font-semibold md:text-base
+              ${pathname.startsWith("/dealer/manager/users/endOfDay") ? ' text-foreground ' : 'text-muted-foreground'}`}
+          >
+            Reports
+          </NavLink>
+          <NavLink
+            to="/dealer/manager/inventory/units"
+            className={`flex items-center gap-2 text-lg font-semibold md:text-base
+              ${pathname.startsWith("/dealer/manager/inventory/units") ? ' text-foreground ' : 'text-muted-foreground'}`}
+          >
+            Inventory
+          </NavLink>
+          <NavLink
+            to="/dealer/manager/scheduling/storeHours"
+            className={`flex items-center gap-2 text-lg font-semibold md:text-base
+              ${pathname.startsWith("/dealer/manager/scheduling/storeHours") ? ' text-foreground ' : 'text-muted-foreground'}`}
+          >
+            Scheduling
+          </NavLink>
+          <NavLink
+            to="/dealer/manager/csi"
+            className={`flex items-center gap-2 text-lg font-semibold md:text-base
+              ${pathname.startsWith("/dealer/manager/csi") ? ' text-foreground ' : 'text-muted-foreground'}`}
+          >
+            CSI
+          </NavLink>
+          <NavLink
+            to="/dealer/manager/importExport"
+            className={`flex items-center gap-2 text-lg font-semibold md:text-base
+              ${pathname.startsWith("/dealer/manager/importExport") ? ' text-foreground ' : 'text-muted-foreground'}`}
+          >
+            Import / Export
+          </NavLink>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size='icon'
-                onClick={() => navigate("/dealer/manager/acc")}
-                className={`flex h-9 w-9 items-center justify-center rounded-lg  bg-transparent  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/manager/acc" ? 'bg-primary text-foreground ' : ''}`}
-              >
-                <Shirt className="h-5 w-5" />
-                <span className="sr-only">Accessories</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='text-foreground'>Accessories</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size='icon'
-
-                onClick={() => navigate("/dealer/manager/parts")}
-                className={`flex h-9 w-9 items-center justify-center rounded-lg  bg-transparent  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/manager/parts" ? 'bg-primary text-foreground ' : ''}`}
-              >
-                <WrenchIcon className="h-5 w-5" />
-                <span className="sr-only">Parts</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='text-foreground'>Parts</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="/dealer/manager/sales"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/manager/sales" ? 'bg-primary text-foreground ' : ''}`}
-              >
-                <DollarSign className="h-5 w-5" />
-                <span className="sr-only">Sales</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='text-foreground'>Sales</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="/dealer/manager/Service"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                ${pathname === "/dealer/manager/Service" ? 'bg-primary text-foreground ' : ''}`}
-              >
-                <Cog className="h-5 w-5" />
-                <span className="sr-only">Service</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='text-foreground'>Service</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="/dealer/manager/CSI"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/manager/CSI" ? 'bg-primary text-foreground  ' : ''}`}
-              >
-                <Clipboard className="h-5 w-5" />
-                <span className="sr-only">CSI</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='text-foreground'>CSI</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="/dealer/manager/salesSched"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/manager/salesSched" ? 'bg-primary text-foreground  ' : ''}`}
-              >
-                <Calendar className="h-5 w-5" />
-                <span className="sr-only">Sales Sched</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='text-foreground'>Sales Sched</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="/dealer/manager/storeHours"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/manager/storeHours" ? 'bg-primary text-foreground  ' : ''}`}
-              >
-                <CalendarClock className="h-5 w-5" />
-                <span className="sr-only">Store Hours</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='text-foreground'>Store Hours</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="/dealer/manager/importExport"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/manager/importExport" ? 'bg-primary text-foreground  ' : ''}`}
-              >
-                <Download className="h-5 w-5" />
-                <span className="sr-only">Import Export</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='text-foreground'>Import Export</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="/dealer/manager/endOfDay"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg    text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                  ${pathname === "/dealer/manager/endOfDay" ? 'bg-primary text-foreground  ' : ''}`}
-              >
-                <Download className="h-5 w-5" />
-                <span className="sr-only">End of Day Reports</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className='text-foreground'>End of Day Reports</TooltipContent>
-          </Tooltip>
         </nav>
-      </aside>
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <div className='mt-[30px]'>
-          <Outlet />
-        </div>
-      </div>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="shrink-0 md:hidden ml-auto"
+            >
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <nav className="grid gap-6 text-lg font-medium">
+              <Link
+                to="#"
+                className="flex items-center gap-2 text-lg font-semibold"
+              >
+                <Package2 className="h-6 w-6" />
+                <span className="sr-only">Acme Inc</span>
+              </Link>
+              <Link
+                to="#"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="#"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Orders
+              </Link>
+              <Link
+                to="#"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Products
+              </Link>
+              <Link
+                to="#"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Customers
+              </Link>
+              <Link to="#" className="hover:text-foreground">
+                Settings
+              </Link>
+            </nav>
+          </SheetContent>
+        </Sheet>
+
+      </header>
+      <Outlet />
     </div>
+
   )
 }
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/favicons/wrench.svg' },
 ]
+
+export const meta = () => {
+  return [
+    { title: 'Manager - Dealer Sales Assistant' },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: 'Automotive Sales, dealership sales, automotive CRM',
+    },
+  ];
+};

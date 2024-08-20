@@ -407,7 +407,7 @@ export default function DnDResource() {
               <div className='flex w-auto '>
                 <div className='h-screen w-[310px] border-r border-border'>
                   <div className=' mt-5 flex-col mx-auto justify-center'>
-                    <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
+                    <div className="mx-auto w-[280px] rounded-md border-border bg-background px-3 text-foreground " >
                       <div className='  my-3 flex justify-center   '>
                         <CalendarIcon className="mr-2 size-8 " />
                         {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}

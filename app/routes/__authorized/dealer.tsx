@@ -2148,23 +2148,31 @@ export const financeNavSidebarNav = [
 export const adminSidebarNav = [
   {
     title: "Overview",
-    to: "/dealer/admin/overview",
+    to: "/dealer/admin/settings/general",
   },
   {
     title: "Users",
-    to: "/dealer/admin/users",
+    to: "/dealer/admin/users/overview",
   },
   {
-    title: "Search Leads",
-    to: "/dealer/admin/leads",
+    title: "Customers",
+    to: "/dealer/admin/customers/client",
   },
   {
-    title: "Go To Site",
-    to: "/",
+    title: "Depts",
+    to: "/dealer/admin/depts/sales",
   },
   {
-    title: "Search on Admin",
-    to: "/dealer/admin/search",
+    title: "Reports",
+    to: "/dealer/admin/reports/endOfDay",
+  },
+  {
+    title: "Inventory",
+    to: "/dealer/admin/inventory/units",
+  },
+  {
+    title: "Import / Export",
+    to: "/dealer/admin/importexport/units",
   },
 ]
 export const devSidebarNav = [
@@ -2199,41 +2207,31 @@ export const devSidebarNav = [
 ]
 export const managerSidebarNav = [
   {
-    title: "Sales",
-    to: "/dealer/manager/sales",
+    title: "Depts",
+    to: "/dealer/manager/depts/sales",
   },
   {
-    title: "Service",
-    to: "/dealer/manager/service",
+    title: "Reports",
+    to: "/dealer/manager/reports/endOfDay",
   },
   {
-    title: "Accessories",
-    to: "/dealer/manager/acc",
+    title: "Inventory",
+    to: "/dealer/manager/inventory/units",
   },
   {
-    title: "Parts",
-    to: "/dealer/manager/parts",
+    title: "Scheduling",
+    to: "/dealer/manager/scheduling/hours",
   },
-  {
-    title: "Store Hours",
-    to: "/dealer/manager/storeHours",
-  },
-  {
-    title: "Sales Schedule",
-    to: "/dealer/manager/salesSched",
-  },
+
   {
     title: "CSI",
     to: "/dealer/manager/csi",
   },
   {
     title: "Import / Export",
-    to: "/dealer/manager/importExport",
+    to: "/dealer/manager/importexport/units",
   },
-  {
-    title: "End of Day Reports",
-    to: "/dealer/manager/endOfDay",
-  },
+
 ]
 
 /**     <DropdownMenuSub>

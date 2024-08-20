@@ -136,7 +136,7 @@ export default function SearchFunction() {
               <Button
                 variant="ghost"
                 size="icon"
-                className=" fixed right-[25px] top-[25px]"
+                className=" fixed right-[25px] top-[15px]  z-50 "
                 onClick={(e) => {
                   e.preventDefault();
                   setShow(true);

@@ -138,9 +138,9 @@ export default function Dashboard() {
             Users
           </NavLink>
           <NavLink
-            to="/dealer/admin/customers/sales"
+            to="/dealer/admin/customers/client"
             className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname.startsWith("/dealer/admin/customers/sales") ? ' text-foreground ' : 'text-muted-foreground'}`}
+              ${pathname.startsWith("/dealer/admin/customers/client") ? ' text-foreground ' : 'text-muted-foreground'}`}
           >
             Customers
           </NavLink>
@@ -157,6 +157,20 @@ export default function Dashboard() {
               ${pathname.startsWith("/dealer/admin/reports/endOfDay") ? ' text-foreground ' : 'text-muted-foreground'}`}
           >
             Reports
+          </NavLink>
+          <NavLink
+            to="/dealer/admin/inventory/units"
+            className={`flex items-center gap-2 text-lg font-semibold md:text-base
+              ${pathname.startsWith("/dealer/admin/inventory/units") ? ' text-foreground ' : 'text-muted-foreground'}`}
+          >
+            Inventory
+          </NavLink>
+          <NavLink
+            to="/dealer/admin/importexport/units"
+            className={`flex items-center gap-2 text-lg font-semibold md:text-base
+              ${pathname.startsWith("/dealer/admin/importexport/units") ? ' text-foreground ' : 'text-muted-foreground'}`}
+          >
+            Import/Export
           </NavLink>
         </nav>
         <Sheet>
@@ -220,3 +234,18 @@ export default function Dashboard() {
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/favicons/wrench.svg' },
 ]
+
+export const meta = () => {
+  return [
+    { title: 'Admin - Dealer Sales Assistant' },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: 'Automotive Sales, dealership sales, automotive CRM',
+    },
+  ];
+};

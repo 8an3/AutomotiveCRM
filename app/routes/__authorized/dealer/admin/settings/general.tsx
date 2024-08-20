@@ -213,10 +213,6 @@ export default function SettingsGenerral() {
   const [isFile, setIsfile] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const handleFileChange2 = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setIsfile(true)
-  };
 
 
 

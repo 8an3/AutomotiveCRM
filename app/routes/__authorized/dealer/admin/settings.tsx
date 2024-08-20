@@ -75,11 +75,7 @@ export default function SettingsLayout() {
           >
             Dealer Fees
           </NavLink>
-          <NavLink to="Statistics" className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname === "/dealer/admin/settings/users" ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}
-          >
-            Statistics
-          </NavLink>
+
         </nav>
         <Outlet />
       </div>

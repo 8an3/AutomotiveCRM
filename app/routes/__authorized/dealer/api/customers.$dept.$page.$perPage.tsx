@@ -16,7 +16,7 @@ export async function loader({ request, params }: LoaderFunction) {
     getData = await Client(page, perPage, skip, take,)
   }
   if (dept === 'accessories') {
-    getData = await ServiceDept(page, perPage, skip, take,)
+    getData = await AccessoriesDept(page, perPage, skip, take,)
   }
   if (dept === 'parts') {
     getData = await ServiceDept(page, perPage, skip, take)
@@ -113,6 +113,70 @@ async function Client(page, perPage, skip, take) {
     });
 
     const total = await prisma.clientfile.count({});
+
+    return json({
+      total,
+      page,
+      perPage,
+      totalPages: Math.ceil(total / perPage),
+      finance,
+    });
+  } catch (error) {
+    console.error("Error loading orders:", error);
+    return json({ error: 'Error loading orders' }, { status: 500 });
+  }
+}
+async function AccessoriesDept(page, perPage, skip, take) {
+  try {
+    const finance = await prisma.accOrder.findMany({
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        userEmail: true,
+        userName: true,
+        dept: true,
+        sellingDept: true,
+        total: true,
+        discount: true,
+        discPer: true,
+        paid: true,
+        paidDate: true,
+        status: true,
+        workOrderId: true,
+        note: true,
+        financeId: true,
+        clientfileId: true,
+        Clientfile: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            financeId: true,
+            userId: true,
+            firstName: true,
+            lastName: true,
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
+            city: true,
+            postal: true,
+            province: true,
+            dl: true,
+            typeOfContact: true,
+            timeToContact: true,
+            conversationId: true,
+            billingAddress: true,
+          }
+        }
+      },
+
+      skip,
+      take
+    });
+
+    const total = await prisma.accOrder.count({});
 
     return json({
       total,

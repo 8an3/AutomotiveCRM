@@ -8,32 +8,46 @@ export const loader = async () => {
 
   // Define the CSV headers
   const headers = [
+    "id",
+    "createdAt",
+    "updatedAt",
     "partNumber",
     "brand",
     "name",
     "price",
     "cost",
     "quantity",
+    "minQuantity",
     "description",
     "category",
     "subCategory",
     "onOrder",
-    "distributer"
+    "distributer",
+    "location",
+    "note",
+    "workOrderSuggestion",
   ];
 
   // Map the data to CSV rows
   const rows = data.map(entry => [
+    entry.id,
+    entry.createdAt,
+    entry.updatedAt,
     entry.partNumber,
     entry.brand,
     entry.name,
     entry.price,
     entry.cost,
     entry.quantity,
+    entry.minQuantity,
     entry.description,
     entry.category,
     entry.subCategory,
     entry.onOrder,
-    entry.distributer
+    entry.distributer,
+    entry.location,
+    entry.note,
+    entry.workOrderSuggestion,
   ].map(value => (value === null ? '' : value)).join(','));
 
   // Combine headers and rows into a single CSV string

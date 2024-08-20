@@ -25,7 +25,6 @@ export async function GetUser(email) {
       activisUserId: true,
       activixEmail: true,
       activixActivated: true,
-      newLook: true,
       activixId: true,
       dealerAccountId: true,
       microId: true,
@@ -35,7 +34,9 @@ export async function GetUser(email) {
       plan: true,
       positions: { select: { position: true } },
       role: { select: { symbol: true, name: true } },
-      customerSync: { select: { orderId: true, updatedAt: true } }
+      customerSync: { select: { orderId: true, updatedAt: true } },
+      ColumnStateInventory: { select: { id: true, state: true } },
+      columnStateSales: { select: { id: true, state: true } }
     },
   });
 

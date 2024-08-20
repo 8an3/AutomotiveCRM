@@ -138,54 +138,14 @@ export async function action({ request }: ActionArgs) {
     return forbidden({ message: "Not allowed" });
   }
 
-  // const formPayload = await request.formData();
   const formPayload = Object.fromEntries(await request.formData())
 
   const formData = financeFormSchema.parse(formPayload);
   const dealer = await prisma.dealer.findUnique({ where: { id: 1 } })
-  //const submission = parse(formData, {});
 
   if (formData.intent === "delete-all-users") {
     const deleteAll = await model.adminUser.mutation.deleteAll();
     return json(deleteAll);
-  }
-
-  if (formData.intent === "addUser") {
-    const defaultUserRole = await prisma.userRole.findFirst({
-      where: { symbol: formData.userRole },
-    });
-    const userAdd = await prisma.user.create({
-      data: {
-        name: formData.name,
-        username: formData.username,
-        email: formData.email,
-        phone: formData.phone,
-        position: formData.position,
-        roleId: formData.roleId,
-        omvicNumber: formData.omvicNumber,
-        dealer: formData.dealer,
-        dept: formData.dept,
-        activixActivated: formData.activixActivated,
-        activixEmail: formData.activixEmail,
-        activisUserId: formData.activisUserId,
-        activixId: formData.activixId,
-        dealerAccountId: formData.dealerAccountId,
-        role: { connect: { id: defaultUserRole.id } },
-        profile: {
-          create: {
-            headline: "I am new here",
-            bio: "This is my profile bio.",
-          },
-        },
-      }
-    })
-    const email = await resend.emails.send({
-      from: user?.email,
-      to: [`${userAdd.email}`],
-      subject: `Welcome to the ${dealer?.dealerName} team, ${userAdd.name}.`,
-      react: <EmployEmail dealer={dealer} userAdd={userAdd} />
-    });
-    return json({ userAdd, email });
   }
 
   if (formData.intent === "delete-all-user-roles") {
@@ -217,17 +177,16 @@ export async function action({ request }: ActionArgs) {
       }
       const onboardingEmail = await resend.emails.send({
         from: "Sales <sales@resend.dev>",
-        reply_to: user?.email,
+        reply_to: dealer?.dealerEmailAdmin,
         to: [`${formData?.email}`],
         subject: 'Onboarding Email',
         react: <EmployEmail dealer={formData.dealer} userAdd={userAdd} />
       });
       return onboardingEmail
-      break;
     default:
       break;
   }
-  return redirect(`.`);
+  return redirect(`/`);
 }
 
 

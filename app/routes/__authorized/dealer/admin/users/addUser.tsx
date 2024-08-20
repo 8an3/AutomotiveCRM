@@ -124,6 +124,9 @@ export async function action({ request }: ActionArgs) {
     const defaultUserRole = await prisma.userRole.findFirst({
       where: { symbol: formData.userRole },
     });
+    const secondUserRole = await prisma.userRole.findFirst({
+      where: { symbol: formPayload.newUserRole },
+    });
     const userAdd = await prisma.user.create({
       data: {
         name: formData.name,
@@ -135,68 +138,24 @@ export async function action({ request }: ActionArgs) {
         omvicNumber: formData.omvicNumber,
         dealer: formData.dealer,
         dept: formData.dept,
-        activixActivated: formData.activixActivated,
+        activixActivated: formData.activixEmail ? 'yes' : null,
         activixEmail: formData.activixEmail,
         activisUserId: formData.activisUserId,
         activixId: formData.activixId,
         dealerAccountId: formData.dealerAccountId,
-        role: { connect: { id: defaultUserRole.id } },
-        profile: {
-          create: {
-            headline: "I am new here",
-            bio: "This is my profile bio.",
-          },
+        role: {
+          connect: [{ id: defaultUserRole.id }, { id: secondUserRole.id ? secondUserRole.id : '' }]
         },
+        customerSync: { create: { orderId: null } },
+        profile: { create: { headline: "I am new here", bio: "This is my profile bio." } },
+        ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
+        columnStateSales: { create: { state: { "contactTimesByType": false, "unitPicker": false, "id": false, "email": false, "phone": false, "postal": false, "address": false, "city": false, "province": false, "financeId": false, "userEmail": false, "pickUpTime": false, "timeToContact": false, "deliveredDate": false, "msrp": false, "freight": false, "pdi": false, "admin": false, "commodity": false, "accessories": false, "labour": false, "painPrem": false, "licensing": false, "trailer": false, "depositMade": false, "months": false, "iRate": false, "on60": false, "biweekly": false, "weekly": false, "qc60": false, "biweeklyqc": false, "weeklyqc": false, "nat60": false, "biweeklNat": false, "weeklylNat": false, "oth60": false, "biweekOth": false, "weeklyOth": false, "nat60WOptions": false, "desiredPayments": false, "biweeklNatWOptions": false, "weeklylNatWOptions": false, "oth60WOptions": false, "biweekOthWOptions": false, "visited": false, "aptShowed": false, "bookedApt": false, "aptNoShowed": false, "testDrive": false, "metParts": false, "sold": false, "refund": false, "turnOver": false, "financeApp": false, "approved": false, "signed": false, "pickUpSet": false, "demoed": false, "tradeMake": false, "tradeYear": false, "tradeTrim": false, "tradeColor": false, "tradeVin": false, "delivered": false, "result": false, "referral": false, "metService": false, "metManager": false, "timesContacted": false, "visits": false, "financeApplication": false, "progress": false, "metFinance": false, "metSalesperson": false, "seenTrade": false, "docsSigned": false, "tradeRepairs": false, "tradeValue": false, "modelCode": false, "color": false, "model1": false, "stockNum": false, "otherTaxWithOptions": false, "totalWithOptions": false, "otherTax": false, "qcTax": false, "deposit": false, "rustProofing": false, "lifeDisability": false, "userServicespkg": false, "userExtWarr": false, "userGap": false, "userTireandRim": false, "userLoanProt": false, "deliveryCharge": false, "onTax": false, "total": false, "typeOfContact": false, "contactMethod": false, "note": false, } } },
       }
     })
-    const email = await resend.emails.send({
-      from: user?.email,
-      to: [`${userAdd.email}`],
-      subject: `Welcome to the ${dealer?.dealerName} team, ${userAdd.name}.`,
-      react: <EmployEmail dealer={dealer} userAdd={userAdd} />
-    });
     return json({ userAdd, email });
   }
 
-  if (formData.intent === "delete-all-user-roles") {
-    const deleteAll = await model.userRole.mutation.deleteAll();
-    return json(deleteAll);
-  }
-  if (formData.intent === "addUserRole") {
-    const adduserrole = await prisma.userRole.create({
-      data: {
-        name: formData.name,
-        description: formData.description,
-        symbol: formData.name.toUpperCase(),
-      }
-    });
-    console.log(adduserrole)
-    return json(adduserrole);
-  }
-  if (formData.intent === "update-user") {
-    await model.adminUser.mutation.update({
-      user: formData.value,
-      roleSymbol: formData.value.roleSymbol,
-    });
-    return redirect(`..`);
-  }
-  switch (formData.intent) {
-    case 'sendOnboardingEmail':
-      const userAdd = {
-        name: formData.name,
-      }
-      const onboardingEmail = await resend.emails.send({
-        from: "Sales <sales@resend.dev>",
-        reply_to: user?.email,
-        to: [`${formData?.email}`],
-        subject: 'Onboarding Email',
-        react: <EmployEmail dealer={formData.dealer} userAdd={userAdd} />
-      });
-      return onboardingEmail
-      break;
-    default:
-      break;
-  }
+
   return redirect(`.`);
 }
 
@@ -224,11 +183,24 @@ export default function SettingsGenerral() {
     { name: 'email', defaultValue: email, label: 'Email' },
     { name: 'phone', defaultValue: phone, label: 'Phone' },
     { name: 'dealer', defaultValue: dealer, label: 'Dealer' },
-    { name: 'dept', defaultValue: dept, label: 'Dept' },
-    { name: 'activixEmail', defaultValue: activixEmail, label: 'Activix Email' },
     { name: 'omvicNumber', defaultValue: omvicNumber, label: 'Omvic Number' },
     { name: 'position', defaultValue: position, label: 'Position' },
   ]
+  const depts = [
+    { name: 'Service', valu: 'Service' },
+    { name: 'Sales', value: 'Sales' },
+    { name: 'Accessories', value: 'Accessories' },
+    { name: 'Parts', value: 'Parts' },
+    { name: 'Receiving', value: 'Receiving' },
+    { name: 'Administration', value: 'Administration' },
+    { name: 'IT', value: 'IT' },
+  ]
+
+  const [selectedRole, setSelectedRole] = useState(null);
+
+  const handleRoleChange = (value) => {
+    setSelectedRole(value);
+  };
 
   return (
     <div className="grid gap-6">
@@ -253,7 +225,27 @@ export default function SettingsGenerral() {
                 </div>
               ))}
               <div className="relative mt-3">
-                <Select name='userRole' defaultValue={role} >
+                <Select name='dept' defaultValue={role} >
+                  <SelectTrigger className="w-full  bg-background text-foreground border border-border">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className='bg-background text-foreground border-border'>
+                    <SelectGroup>
+                      <SelectLabel>Positions</SelectLabel>
+                      {depts.map((role) => (
+                        <SelectItem key={role.id} value={role.value} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                          {role.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Deptartment</label>
+              </div>
+              <div className="relative mt-3">
+                <Select name='userRole'
+                  onValueChange={handleRoleChange}
+                  defaultValue={role} >
                   <SelectTrigger className="w-full  bg-background text-foreground border border-border">
                     <SelectValue />
                   </SelectTrigger>
@@ -270,6 +262,35 @@ export default function SettingsGenerral() {
                 </Select>
                 <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Role</label>
               </div>
+              {selectedRole && (
+                <div className="mt-3">
+                  <Select
+                    name='newUserRole'
+                    defaultValue=""
+                  >
+                    <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                      <SelectValue placeholder="Select another role" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background text-foreground border-border">
+                      <SelectGroup>
+                        <SelectLabel>Additional Positions</SelectLabel>
+                        {userRole.map((role) => (
+                          <SelectItem
+                            key={role.id}
+                            value={role.name}
+                            className="cursor-pointer bg-background capitalize text-foreground hover:text-primary hover:underline"
+                          >
+                            {role.symbol}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <label className="text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all">
+                    New Role
+                  </label>
+                </div>
+              )}
             </div>
           </CardContent>
           <CardFooter className="border-t border-border px-6 py-4">

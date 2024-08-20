@@ -95,7 +95,6 @@ import {
 } from "@tanstack/match-sorter-utils";
 
 declare module "@tanstack/react-table" {
-  //add fuzzy filter to the filterFns
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
   }
@@ -105,41 +104,35 @@ declare module "@tanstack/react-table" {
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
-
-  // Store the itemRank info
   addMeta({
     itemRank,
   });
-
-  // Return if the item should be filtered in/out
   return itemRank.passed;
 };
 
 const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
   let dir = 0;
-
-  // Only sort by rank if the column has ranking information
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
       rowA.columnFiltersMeta[columnId]?.itemRank!,
       rowB.columnFiltersMeta[columnId]?.itemRank!
     );
   }
-
-  // Provide an alphanumeric fallback for when the item ranks are equal
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
 
-export function DataTable({ columns, data, user, smsDetails, columnState }) {
-  const state = columnState.state;
-  const jsonString = state.replace(/'/g, '"');
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>();
+export function DataTable({ columns, data, user, smsDetails }) {
+  const savedVisibility = user.ColumnStateInventory.state
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(savedVisibility);
 
   useEffect(() => {
-    setColumnVisibility(JSON.parse(jsonString))
-  }, []);
+    fetcher.submit(
+      { state: JSON.stringify(columnVisibility), intent: 'columnState' },
+      { method: "post" }
+    );
+  }, [columnVisibility]);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
@@ -151,6 +144,8 @@ export function DataTable({ columns, data, user, smsDetails, columnState }) {
     data,
     columns,
     filterFns: { fuzzy: fuzzyFilter },
+    initialState: { columnVisibility },
+
     state: {
       sorting,
       columnFilters,
@@ -163,6 +158,7 @@ export function DataTable({ columns, data, user, smsDetails, columnState }) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     enableRowSelection: true,

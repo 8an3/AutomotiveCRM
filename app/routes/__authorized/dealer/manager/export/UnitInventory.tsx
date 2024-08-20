@@ -60,7 +60,7 @@ export const loader = async () => {
     "insuranceAgent",
     "insuranceStartDate",
     "insuranceEndDate",
-    "sold"
+    "sold",
   ];
 
   // Map the data to CSV rows
@@ -117,7 +117,8 @@ export const loader = async () => {
     entry.insuranceAgent,
     entry.insuranceStartDate,
     entry.insuranceEndDate,
-    entry.sold
+    entry.sold,
+
   ].map(value => (value === null ? '' : value)).join(','));
 
   // Combine headers and rows into a single CSV string
