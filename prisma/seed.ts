@@ -4664,6 +4664,96 @@ export async function seedUsers() {
   });
   // creating client
   console.log(chalk.yellow("creating client..."));
+  await prisma.clientfile.create({
+    data: {
+      email: 'INTERNAL@email.com',
+      firstName: 'INTERNAL',
+      lastName: '',
+      phone: '6131111111',
+      name: 'INTERNAL',
+      address: '1111 st',
+      city: 'Otawa',
+      postal: 'k0k0k0',
+      province: 'ON',
+      dl: 'K0K0K0K0K0K0K0K0',
+      typeOfContact: 'SMS',
+      timeToContact: '11:00pm',
+      billingAddress: true,
+      userId: process.env.REMIX_ADMIN_EMAIL
+    }
+  })
+  await prisma.clientfile.create({
+    data: {
+      email: 'SALES@email.com',
+      firstName: 'SALES',
+      lastName: '',
+      phone: '6132222222',
+      name: 'SALES',
+      address: '1111 st',
+      city: 'Otawa',
+      postal: 'k0k0k0',
+      province: 'ON',
+      dl: 'K0K0K0K0K0K0K0K0',
+      typeOfContact: 'SMS',
+      timeToContact: '11:00pm',
+      billingAddress: true,
+      userId: process.env.REMIX_ADMIN_EMAIL
+    }
+  })
+  await prisma.clientfile.create({
+    data: {
+      email: 'SERVICE@email.com',
+      firstName: 'SERVICE',
+      lastName: '',
+      phone: '6133333333',
+      name: 'SERVICE',
+      address: '1111 st',
+      city: 'Otawa',
+      postal: 'k0k0k0',
+      province: 'ON',
+      dl: 'K0K0K0K0K0K0K0K0',
+      typeOfContact: 'SMS',
+      timeToContact: '11:00pm',
+      billingAddress: true,
+      userId: process.env.REMIX_ADMIN_EMAIL
+    }
+  })
+  await prisma.clientfile.create({
+    data: {
+      email: 'PARTS@email.com',
+      firstName: 'PARTS',
+      lastName: '',
+      phone: '6134444444',
+      name: 'PARTS',
+      address: '1111 st',
+      city: 'Otawa',
+      postal: 'k0k0k0',
+      province: 'ON',
+      dl: 'K0K0K0K0K0K0K0K0',
+      typeOfContact: 'SMS',
+      timeToContact: '11:00pm',
+      billingAddress: true,
+      userId: process.env.REMIX_ADMIN_EMAIL
+    }
+  })
+  await prisma.clientfile.create({
+    data: {
+      email: 'ACCESSORIES@email.com',
+      firstName: 'ACCESSORIES',
+      lastName: '',
+      phone: '6135555555',
+      name: 'ACCESSORIES',
+      address: '1111 st',
+      city: 'Otawa',
+      postal: 'k0k0k0',
+      province: 'ON',
+      dl: 'K0K0K0K0K0K0K0K0',
+      typeOfContact: 'SMS',
+      timeToContact: '11:00pm',
+      billingAddress: true,
+      userId: process.env.REMIX_ADMIN_EMAIL
+    }
+  })
   const clientfile = await prisma.clientfile.create({
     data: {
       email: 'skylerzanth@gmail.com',
@@ -6215,6 +6305,7 @@ export async function Board() {
   const completed = [
     { board: "dev", column: "GET DONE NOW", item: "end of day reports, choose date so you can print any day" },
     { board: "dev", column: "ISSUE", item: "accessories/parts differiantiati between parts and acc by sellingDept on dashboard" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "invite user section where it send an email with links to the crm and" },
 
     { board: "dev", column: "WIP", item: "manager Dashboard" },
     { board: "dev", column: "WIP", item: "admin dash" },
@@ -6524,7 +6615,7 @@ export async function Board() {
 
   ]
   const getDoneNow = [
-    { board: "dev", column: "GET DONE NOW", item: "need to swap out for financeUnit/tradeunit from just finance in schema" },
+    { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
     { board: "dev", column: "GET DONE NOW", item: "put swr places it needs to be, part, unit, workorder, like the way you did on sales dashbaord" },
 
     { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database- this produces a problem of linking the database data to the end points on the persons template you either have to input each manually or have a legend where they click the data point they want and it copies the actual database value and they paste it into the value on the template" },
@@ -6538,7 +6629,7 @@ export async function Board() {
   const issue = [
     { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
     { board: "dev", column: "ISSUE", item: "end of day report, sales people arent printing out" },
-    { board: "dev", column: "ISSUE", item: "need storage dash for service / winter storage long term" },
+    { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
     { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
     { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]
@@ -6557,7 +6648,6 @@ export async function Board() {
     { board: "dev", column: "DONE NEEDS TESTING", item: "mass sms - wip" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "email" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
-    { board: "dev", column: "DONE NEEDS TESTING", item: "invite user section where it send an email with links to the crm and" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
   ]
   const WIP = [

@@ -76,10 +76,12 @@ import {
 } from "@remix-run/react";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import {
+  BanknoteIcon,
   ChevronLeft,
   ChevronRight,
   Copy,
   CreditCard,
+  DollarSign,
   File,
   Home,
   LineChart,
@@ -88,18 +90,20 @@ import {
   Package,
   Package2,
   PanelLeft,
+  PanelTop,
   Search,
   Settings,
   ShoppingCart,
   Truck,
   Users2,
+  X,
 } from "lucide-react";
 import { format } from "date-fns"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
 import { cn } from "~/components/ui/utils";
 
 import { CalendarIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -109,26 +113,49 @@ import {
 import { FaCheck } from "react-icons/fa";
 
 import { buttonVariants } from "~/components/ui/button"
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "~/components/ui/context-menu"
+import { toast } from "sonner";
+import { PaperPlaneIcon } from "@radix-ui/react-icons";
+import { ClientOnly } from "remix-utils";
+import PrintReceipt from "~/routes/__authorized/dealer/document/printReceiptAcc";
+import { Percent } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 
 
 
-export default function ClientDialog({ data, user }) {
+export default function ClientDialog({ data, user, deFees, salesPerson }) {
+  const { AccOrder, Finance, WorkOrder, Comm, } = data;
+  const [paymentType, setPaymentType] = useState('');
+  const [discount, setDiscount] = useState(false)
+  const [discDollar, setDiscDollar] = useState(0.00)
+  const [discPer, setDiscPer] = useState(0.00)
+  const [copiedText, setCopiedText] = useState('');
+  const [input, setInput] = useState("");
+  const inputLength = input.trim().length
+  const ref = useRef();
+  const submit = useSubmit()
+  const fetcher = useFetcher();
+  let inputRef = useRef<HTMLInputElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+  const timerRef = useRef(0);
+  const formRef = useRef();
   let sortedEvents = [];
-  let customerCard = [
-    { name: "firstName", value: data.firstName, label: "firstName", },
-    { name: "lastName", value: data.lastName, label: "lastName", },
-    { name: "name", value: data.name, label: "name", },
-    { name: "email", value: data.email, label: "email", },
-    { name: "phone", value: data.phone, label: "phone", },
-    { name: "address", value: data.address, label: "address", },
-    { name: "city", value: data.city, label: "city", },
-    { name: "postal", value: data.postal, label: "postal", },
-    { name: "province", value: data.province, label: "province", },
-    { name: "dl", value: data.dl, label: "dl", },
-    { name: "typeOfContact", value: data.typeOfContact, label: "typeOfContact", },
-    { name: "timeToContact", value: data.timeToContact, label: "timeToContact", },
-    { name: "billingAddress", value: data.billingAddress, label: "billingAddress", },
-  ];
+
+
 
   let workorderCard = [
     { name: "workOrderId", value: data.WorkOrder.workOrderId, label: "workOrderId", },
@@ -177,7 +204,6 @@ export default function ClientDialog({ data, user }) {
     { name: "note", value: data.note, label: "note", },
   ];
 
-  const fetcher = useFetcher();
 
   const options2 = {
     weekday: "short",
@@ -190,184 +216,6 @@ export default function ClientDialog({ data, user }) {
   };
 
 
-
-  let financesCard = [
-    { name: "financeManager", value: data.Finance.financeManager, label: "financeManager", },
-    { name: "userEmail", value: data.Finance.userEmail, label: "userEmail", },
-    { name: "userName", value: data.Finance.userName, label: "userName", },
-    { name: "financeManagerName", value: data.Finance.financeManagerName, label: "financeManagerName", },
-    { name: "email", value: data.Finance.email, label: "email", },
-    { name: "firstName", value: data.Finance.firstName, label: "firstName", },
-    { name: "lastName", value: data.Finance.lastName, label: "lastName", },
-    { name: "phone", value: data.Finance.phone, label: "phone", },
-    { name: "name", value: data.Finance.name, label: "name", },
-    { name: "address", value: data.Finance.address, label: "address", },
-    { name: "city", value: data.Finance.city, label: "city", },
-    { name: "postal", value: data.Finance.postal, label: "postal", },
-    { name: "province", value: data.Finance.province, label: "province", },
-    { name: "dl", value: data.Finance.dl, label: "dl", },
-    { name: "typeOfContact", value: data.Finance.typeOfContact, label: "typeOfContact", },
-    { name: "timeToContact", value: data.Finance.timeToContact, label: "timeToContact", },
-    { name: "dob", value: data.Finance.dob, label: "dob", },
-    { name: "othTax", value: data.Finance.othTax, label: "othTax", },
-    { name: "optionsTotal", value: data.Finance.optionsTotal, label: "optionsTotal", },
-    { name: "lienPayout", value: data.Finance.lienPayout, label: "lienPayout", },
-    { name: "leadNote", value: data.Finance.leadNote, label: "leadNote", },
-    { name: "sendToFinanceNow", value: data.Finance.sendToFinanceNow, label: "sendToFinanceNow", },
-    { name: "dealNumber", value: data.Finance.dealNumber, label: "dealNumber", },
-    { name: "iRate", value: data.Finance.iRate, label: "iRate", },
-    { name: "months", value: data.Finance.months, label: "months", },
-    { name: "discount", value: data.Finance.discount, label: "discount", },
-    { name: "total", value: data.Finance.total, label: "total", },
-    { name: "onTax", value: data.Finance.onTax, label: "onTax", },
-    { name: "on60", value: data.Finance.on60, label: "on60", },
-    { name: "biweekly", value: data.Finance.biweekly, label: "biweekly", },
-    { name: "weekly", value: data.Finance.weekly, label: "weekly", },
-    { name: "weeklyOth", value: data.Finance.weeklyOth, label: "weeklyOth", },
-    { name: "biweekOth", value: data.Finance.biweekOth, label: "biweekOth", },
-    { name: "oth60", value: data.Finance.oth60, label: "oth60", },
-    { name: "weeklyqc", value: data.Finance.weeklyqc, label: "weeklyqc", },
-    { name: "biweeklyqc", value: data.Finance.biweeklyqc, label: "biweeklyqc", },
-    { name: "qc60", value: data.Finance.qc60, label: "qc60", },
-    { name: "deposit", value: data.Finance.deposit, label: "deposit", },
-    { name: "biweeklNatWOptions", value: data.Finance.biweeklNatWOptions, label: "biweeklNatWOptions", },
-    { name: "weeklylNatWOptions", value: data.Finance.weeklylNatWOptions, label: "weeklylNatWOptions", },
-    { name: "nat60WOptions", value: data.Finance.nat60WOptions, label: "nat60WOptions", },
-    { name: "weeklyOthWOptions", value: data.Finance.weeklyOthWOptions, label: "weeklyOthWOptions", },
-    { name: "biweekOthWOptions", value: data.Finance.biweekOthWOptions, label: "biweekOthWOptions", },
-    { name: "oth60WOptions", value: data.Finance.oth60WOptions, label: "oth60WOptions", },
-    { name: "biweeklNat", value: data.Finance.biweeklNat, label: "biweeklNat", },
-    { name: "weeklylNat", value: data.Finance.weeklylNat, label: "weeklylNat", },
-    { name: "nat60", value: data.Finance.nat60, label: "nat60", },
-    { name: "qcTax", value: data.Finance.qcTax, label: "qcTax", },
-    { name: "otherTax", value: data.Finance.otherTax, label: "otherTax", },
-    { name: "totalWithOptions", value: data.Finance.totalWithOptions, label: "totalWithOptions", },
-    { name: "otherTaxWithOptions", value: data.Finance.otherTaxWithOptions, label: "otherTaxWithOptions", },
-    { name: "desiredPayments", value: data.Finance.desiredPayments, label: "desiredPayments", },
-    { name: "admin", value: data.Finance.admin, label: "admin", },
-    { name: "commodity", value: data.Finance.commodity, label: "commodity", },
-    { name: "pdi", value: data.Finance.pdi, label: "pdi", },
-    { name: "discountPer", value: data.Finance.discountPer, label: "discountPer", },
-    { name: "userLoanProt", value: data.Finance.userLoanProt, label: "userLoanProt", },
-    { name: "userTireandRim", value: data.Finance.userTireandRim, label: "userTireandRim", },
-    { name: "userGap", value: data.Finance.userGap, label: "userGap", },
-    { name: "userExtWarr", value: data.Finance.userExtWarr, label: "userExtWarr", },
-    { name: "userServicespkg", value: data.Finance.userServicespkg, label: "userServicespkg", },
-    { name: "deliveryCharge", value: data.Finance.deliveryCharge, label: "deliveryCharge", },
-    { name: "vinE", value: data.Finance.vinE, label: "vinE", },
-    { name: "lifeDisability", value: data.Finance.lifeDisability, label: "lifeDisability", },
-    { name: "rustProofing", value: data.Finance.rustProofing, label: "rustProofing", },
-    { name: "userOther", value: data.Finance.userOther, label: "userOther", },
-    { name: "referral", value: data.Finance.referral, label: "referral", },
-    { name: "visited", value: data.Finance.visited, label: "visited", },
-    { name: "bookedApt", value: data.Finance.bookedApt, label: "bookedApt", },
-    { name: "aptShowed", value: data.Finance.aptShowed, label: "aptShowed", },
-    { name: "aptNoShowed", value: data.Finance.aptNoShowed, label: "aptNoShowed", },
-    { name: "testDrive", value: data.Finance.testDrive, label: "testDrive", },
-    { name: "metService", value: data.Finance.metService, label: "metService", },
-    { name: "metManager", value: data.Finance.metManager, label: "metManager", },
-    { name: "metParts", value: data.Finance.metParts, label: "metParts", },
-    { name: "sold", value: data.Finance.sold, label: "sold", },
-    { name: "depositMade", value: data.Finance.depositMade, label: "depositMade", },
-    { name: "refund", value: data.Finance.refund, label: "refund", },
-    { name: "turnOver", value: data.Finance.turnOver, label: "turnOver", },
-    { name: "financeApp", value: data.Finance.financeApp, label: "financeApp", },
-    { name: "approved", value: data.Finance.approved, label: "approved", },
-    { name: "signed", value: data.Finance.signed, label: "signed", },
-    { name: "pickUpSet", value: data.Finance.pickUpSet, label: "pickUpSet", },
-    { name: "demoed", value: data.Finance.demoed, label: "demoed", },
-    { name: "lastContact", value: data.Finance.lastContact, label: "lastContact", },
-    { name: "status", value: data.Finance.status, label: "status", },
-    { name: "customerState", value: data.Finance.customerState, label: "customerState", },
-    { name: "result", value: data.Finance.result, label: "result", },
-    { name: "timesContacted", value: data.Finance.timesContacted, label: "timesContacted", },
-    { name: "nextAppointment", value: data.Finance.nextAppointment, label: "nextAppointment", },
-    { name: "followUpDay", value: data.Finance.followUpDay, label: "followUpDay", },
-    { name: "deliveryDate", value: data.Finance.deliveryDate, label: "deliveryDate", },
-    { name: "delivered", value: data.Finance.delivered, label: "delivered", },
-    { name: "deliveredDate", value: data.Finance.deliveredDate, label: "deliveredDate", },
-    { name: "notes", value: data.Finance.notes, label: "notes", },
-    { name: "visits", value: data.Finance.visits, label: "visits", },
-    { name: "progress", value: data.Finance.progress, label: "progress", },
-    { name: "metSalesperson", value: data.Finance.metSalesperson, label: "metSalesperson", },
-    { name: "metFinance", value: data.Finance.metFinance, label: "metFinance", },
-    { name: "financeApplication", value: data.Finance.financeApplication, label: "financeApplication", },
-    { name: "pickUpDate", value: data.Finance.pickUpDate, label: "pickUpDate", },
-    { name: "pickUpTime", value: data.Finance.pickUpTime, label: "pickUpTime", },
-    { name: "depositTakenDate", value: data.Finance.depositTakenDate, label: "depositTakenDate", },
-    { name: "docsSigned", value: data.Finance.docsSigned, label: "docsSigned", },
-    { name: "tradeRepairs", value: data.Finance.tradeRepairs, label: "tradeRepairs", },
-    { name: "seenTrade", value: data.Finance.seenTrade, label: "seenTrade", },
-    { name: "lastNote", value: data.Finance.lastNote, label: "lastNote", },
-    { name: "applicationDone", value: data.Finance.applicationDone, label: "applicationDone", },
-    { name: "licensingSent", value: data.Finance.licensingSent, label: "licensingSent", },
-    { name: "liceningDone", value: data.Finance.liceningDone, label: "liceningDone", },
-    { name: "refunded", value: data.Finance.refunded, label: "refunded", },
-    { name: "cancelled", value: data.Finance.cancelled, label: "cancelled", },
-    { name: "lost", value: data.Finance.lost, label: "lost", },
-    { name: "dLCopy", value: data.Finance.dLCopy, label: "dLCopy", },
-    { name: "insCopy", value: data.Finance.insCopy, label: "insCopy", },
-    { name: "testDrForm", value: data.Finance.testDrForm, label: "testDrForm", },
-    { name: "voidChq", value: data.Finance.voidChq, label: "voidChq", },
-    { name: "loanOther", value: data.Finance.loanOther, label: "loanOther", },
-    { name: "signBill", value: data.Finance.signBill, label: "signBill", },
-    { name: "ucda", value: data.Finance.ucda, label: "ucda", },
-    { name: "tradeInsp", value: data.Finance.tradeInsp, label: "tradeInsp", },
-    { name: "customerWS", value: data.Finance.customerWS, label: "customerWS", },
-    { name: "otherDocs", value: data.Finance.otherDocs, label: "otherDocs", },
-    { name: "urgentFinanceNote", value: data.Finance.urgentFinanceNote, label: "urgentFinanceNote", },
-    { name: "funded", value: data.Finance.funded, label: "funded", },
-    { name: "leadSource", value: data.Finance.leadSource, label: "leadSource", },
-    { name: "financeDeptProductsTotal", value: data.Finance.financeDeptProductsTotal, label: "financeDeptProductsTotal", },
-    { name: "bank", value: data.Finance.bank, label: "bank", },
-    { name: "loanNumber", value: data.Finance.loanNumber, label: "loanNumber", },
-    { name: "idVerified", value: data.Finance.idVerified, label: "idVerified", },
-    { name: "dealerCommission", value: data.Finance.dealerCommission, label: "dealerCommission", },
-    { name: "financeCommission", value: data.Finance.financeCommission, label: "financeCommission", },
-    { name: "salesCommission", value: data.Finance.salesCommission, label: "salesCommission", },
-    { name: "firstPayment", value: data.Finance.firstPayment, label: "firstPayment", },
-    { name: "loanMaturity", value: data.Finance.loanMaturity, label: "loanMaturity", },
-    { name: "quoted", value: data.Finance.quoted, label: "quoted", },
-    { name: "InPerson", value: data.Finance.InPerson, label: "InPerson", },
-    { name: "Phone", value: data.Finance.Phone, label: "Phone", },
-    { name: "SMS", value: data.Finance.SMS, label: "SMS", },
-    { name: "Email", value: data.Finance.Email, label: "Email", },
-    { name: "Other", value: data.Finance.Other, label: "Other", },
-    { name: "paintPrem", value: data.Finance.paintPrem, label: "paintPrem", },
-    { name: "licensing", value: data.Finance.licensing, label: "licensing", },
-    { name: "stockNum", value: data.Finance.stockNum, label: "stockNum", },
-    { name: "options", value: data.Finance.options, label: "options", },
-    { name: "accessories", value: data.Finance.accessories, label: "accessories", },
-    { name: "freight", value: data.Finance.freight, label: "freight", },
-    { name: "labour", value: data.Finance.labour, label: "labour", },
-    { name: "year", value: data.Finance.year, label: "year", },
-    { name: "brand", value: data.Finance.brand, label: "brand", },
-    { name: "mileage", value: data.Finance.mileage, label: "mileage", },
-    { name: "model", value: data.Finance.model, label: "model", },
-    { name: "model1", value: data.Finance.model1, label: "model1", },
-    { name: "color", value: data.Finance.color, label: "color", },
-    { name: "modelCode", value: data.Finance.modelCode, label: "modelCode", },
-    { name: "msrp", value: data.Finance.msrp, label: "msrp", },
-    { name: "trim", value: data.Finance.trim, label: "trim", },
-    { name: "vin", value: data.Finance.vin, label: "vin", },
-    { name: "bikeStatus", value: data.Finance.bikeStatus, label: "bikeStatus", },
-    { name: "invId", value: data.Finance.invId, label: "invId", },
-    { name: "motor", value: data.Finance.motor, label: "motor", },
-    { name: "tag", value: data.Finance.tag, label: "tag", },
-    { name: "tradeValue", value: data.Finance.tradeValue, label: "tradeValue", },
-    { name: "tradeDesc", value: data.Finance.tradeDesc, label: "tradeDesc", },
-    { name: "tradeColor", value: data.Finance.tradeColor, label: "tradeColor", },
-    { name: "tradeYear", value: data.Finance.tradeYear, label: "tradeYear", },
-    { name: "tradeMake", value: data.Finance.tradeMake, label: "tradeMake", },
-    { name: "tradeVin", value: data.Finance.tradeVin, label: "tradeVin", },
-    { name: "tradeTrim", value: data.Finance.tradeTrim, label: "tradeTrim", },
-    { name: "tradeMileage", value: data.Finance.tradeMileage, label: "tradeMileage", },
-    { name: "tradeLocation", value: data.Finance.tradeLocation, label: "tradeLocation", },
-    { name: "lien", value: data.Finance.lien, label: "lien", },
-  ];
-
-  const timerRef = useRef(0);
-
   const copyText = (text) => {
     navigator.clipboard.writeText(text)
       .then(() => {
@@ -378,25 +226,380 @@ export default function ClientDialog({ data, user }) {
         console.error('Failed to copy text: ', error);
       });
   };
-  const [copiedText, setCopiedText] = useState('');
   useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, [])
-  console.log(data, 'data finance')
-  const fixedData = [
-    data
-  ]
 
-  const { AccOrder, Finance, WorkOrder } = data;
+  // useEffect(() => {
+  // console.log('useEffect triggered');
+  // console.log('order.discount:', order.discount);
+  //if (order.discount) {
+  //  console.log('Setting discount:', order.discount);
+  //  setDiscDollar(order.discount);
+  // } else {
+  //    console.log('Discount is 0 or less');
+  // }
+  //}, [order.discount]);
+
+  // useEffect(() => {
+
+  //if (order.discPer > 0.00) {
+  //   setDiscPer(order.discPer)
+  // }
+  //}, []);
+
+  const taxMultiplier = Number(deFees.userTax);
+  const taxRate = 1 + taxMultiplier / 100;
+
+  const totalAccessoriesCost = data.AccOrder.reduce((total, order) => {
+    return total + (order.quantity * order.price);
+  }, 0);
+
+  const totalAmountPaid = data.Finance.reduce((total, finance) => {
+    return total + finance.amountPaid;
+  }, 0);
+
+  const total2 = ((totalAccessoriesCost - parseFloat(discDollar)) * taxRate).toFixed(2);
+  const total1 = (((totalAccessoriesCost * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
+
+  const total = discPer === 0 ? total2 : total1;
+
+  const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
+  useEffect(() => {
+    if (remaining === 0) {
+      toast.success('Order is paid in full!', {
+        duration: Infinity
+      })
+    }
+  }, [remaining]);
+
+  const toReceipt = {}
+  /**
+   *
+  const [changeSize, setChangeSize] = useState(false)
+
+  const client = data.id
+
+   const { AccessoriesOnOrders } = order;
+    const maxAccessories = 19;
+
+    const toReceipt = {
+      qrCode: order.id,
+      subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
+      tax: `${tax.userTax}%`,
+      total: `$${total}`,
+      remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
+      firstName: client.firstName,
+      lastName: client.lastName,
+      phone: client.phone,
+      email: client.email,
+      address: client.address,
+      date: new Date(order.createdAt).toLocaleDateString("en-US", options2),
+      cardNum: '',
+      paymentType: '',
+      image: dealerImage.dealerLogo
+    };
+
+      AccessoriesOnOrders.forEach((result, index) => {
+    if (index < maxAccessories) {
+      toReceipt[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
+      toReceipt[`qt${index + 1}`] = String(result.quantity);
+      toReceipt[`price${index + 1}`] = String(result.accessory.price);
+    }
+  });
+
+  for (let i = AccessoriesOnOrders.length + 1; i <= maxAccessories; i++) {
+    toReceipt[`desc${i}`] = '';
+    toReceipt[`qt${i}`] = '';
+    toReceipt[`price${i}`] = '';
+  }
+
+
+
+  */
+
+  const managerSidebarNav = [
+    {
+      title: "Sales Deals",
+      section: [
+        { title: "Deal Info", value: "sales-dealInfo", },
+        { title: "Appointments", value: "sales-appts", },
+        { title: "Communications", value: "sales-comms", },
+        { title: "Customer Units", value: "sales-custUnits", },
+        { title: "Trade Units", value: "sales-trades", },
+        { title: "Accessory Orders", value: "sales-accOrders", },
+        { title: "Work Orders", value: "sales-workOrders", },
+        { title: "Payments", value: "sales-payments", },
+        { title: "Notes", value: "sales-notes", },
+        { title: "Finance Products", value: "sales-finProds", },
+        { title: "Sales Storage", value: "sales-storage", },
+      ],
+    },
+    {
+      title: "Work Orders",
+      section: [
+        { title: "Sales Units", value: "wo-salesUnits", },
+        { title: "Service Units", value: "wo-servUnits", },
+        { title: "PAC Orders", value: "wo-pacOrders", },
+        {
+          title: "Services on Orders",
+          section: [
+            { title: 'Service', value: "servOnOrder-payments", },
+          ],
+        },
+        { title: "Payments", value: "wo-payments", },
+        { title: "Work Order Appointments", value: "wo-appts", },
+        { title: "Work Order Clock Entries", value: "wo-clockEntries", },
+      ],
+    },
+    {
+      title: "PAC Orders",
+      section: [
+        { title: "Payments", value: "pac-payments", },
+        {
+          title: "Accessories on Orders",
+          section: [
+            { title: 'Accessory', value: "accOnOrders-acc", },
+            { title: 'Order Inventory', value: "accOnOrders-orderInv", }
+          ]
+        },
+        { title: "AccHandoff", value: "pac-accHandoff", },
+      ],
+    },
+
+
+  ]
+  function generateSidebarItems(financeData) {
+    return financeData.map((finance) => ({
+      title: `${finance.year} ${finance.brand} ${finance.model}`, // Dynamic title
+      section: [
+        { title: "Unit", value: `sales-dealInfo-${finance.id}` },
+        { title: "Deal Info", value: `sales-dealInfo-${finance.id}` },
+        { title: "Appointments", value: `sales-appts-${finance.id}` },
+        { title: "Communications", value: `sales-comms-${finance.id}` },
+        { title: "Customer Units", value: `sales-custUnits-${finance.id}` },
+        { title: "Trade Units", value: `sales-trades-${finance.id}` },
+        { title: "Accessory Orders", value: `sales-accOrders-${finance.id}` },
+        { title: "Work Orders", value: `sales-workOrders-${finance.id}` },
+        { title: "Payments", value: `sales-payments-${finance.id}` },
+        { title: "Notes", value: `sales-notes-${finance.id}` },
+        { title: "Finance Products", value: `sales-finProds-${finance.id}` },
+        { title: "Document Storage", value: `sales-storage-${finance.id}` },
+      ],
+    }));
+  }
+
+  const staticSidebarItems = [
+    { title: "Client Info", value: "client" },
+    {
+      title: "Work Orders",
+      section: [
+        { title: "Work Orders", value: "wo-wo" },
+        { title: "Sales Units", value: "wo-salesUnits" },
+        { title: "Service Units", value: "wo-servUnits" },
+        { title: "PAC Orders", value: "wo-pacOrders" },
+        { title: "Payments", value: "wo-payments" },
+        { title: "Work Order Appointments", value: "wo-appts" },
+        { title: "Work Order Clock Entries", value: "wo-clockEntries" },
+        {
+          title: "Services on Orders",
+          section: [
+            { title: 'Services on Orders', value: "servOnOrder-SOO" },
+            { title: 'Service', value: "servOnOrder-payments" },
+          ],
+        },
+      ],
+    },
+    {
+      title: "PAC Orders",
+      section: [
+        { title: "PAC Orders", value: "pac-PAC" },
+        { title: "AccHandoff", value: "pac-accHandoff" },
+        { title: "Payments", value: "pac-payments" },
+        {
+          title: "Accessories on Orders",
+          section: [
+            { title: 'Accessories on Orders', value: "accOnOrders-AOO" },
+            { title: 'Accessory', value: "accOnOrders-acc" },
+            { title: 'Order Inventory', value: "accOnOrders-orderInv" },
+          ],
+        },
+      ],
+    },
+  ];
+
+  const [selectedContent, setSelectedContent] = useState<string | null>(null);
+  const [finance, setFinance] = useState<any>(99);
+  const [selectedFinanceArray, setSelectedFinanceArray] = useState<any>(null);
+
+  const handleSelect = (value: string) => {
+    setSelectedContent(value);
+  };
+
+  const handleFinanceChange = (data: any) => {
+    setSelectedFinanceArray(data);
+  };
+  function SidebarNav({
+    className,
+    items,
+    onSelect,
+    onFinanceChange,
+    ...props
+  }: SidebarNavProps) {
+    const [selectedParent, setSelectedParent] = useState<string | null>(null);
+    const [selectedValue, setSelectedValue] = useState<string | null>(null);
+    const [openSections, setOpenSections] = useState<Set<string>>(new Set());
+
+    const handleParentClick = (title: string) => {
+      const newOpenSections = new Set(openSections);
+      if (newOpenSections.has(title)) {
+        newOpenSections.delete(title);
+      } else {
+        newOpenSections.add(title);
+      }
+      setOpenSections(newOpenSections);
+    };
+
+    const handleItemClick = (value: string, data?: any) => {
+      setSelectedValue(value);
+      onSelect(value);
+
+      if (data) {
+        setFinance(data); // Update finance data
+        onFinanceChange(data); // Notify parent or other components
+      }
+    };
+
+    const renderItems = (items: SidebarNavItem[], isSubSection = false) => {
+      return items.map((item) => (
+        <div key={item.title}>
+          {item.section ? (
+            <div>
+              <Button
+                variant="ghost"
+                className={cn(
+                  "justify-start w-[90%]",
+                  openSections.has(item.title)
+                    ? "bg-[#232324] hover:bg-muted/50 w-[90%]"
+                    : "hover:bg-muted/50 text-[#a1a1aa] w-[90%]"
+                )}
+                onClick={() => handleParentClick(item.title)}
+              >
+                {item.title}
+              </Button>
+              {openSections.has(item.title) && (
+                <div className="ml-4">
+                  {renderItems(item.section, true)}
+                </div>
+              )}
+            </div>
+          ) : (
+            <Button
+              variant="ghost"
+              key={item.value}
+              className={cn(
+                "justify-start w-[90%]",
+                selectedValue === item.value
+                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]"
+                  : "hover:bg-muted/50 text-[#a1a1aa] w-[90%]",
+                isSubSection ? "ml-4" : ""
+              )}
+              onClick={() => item.value && handleItemClick(item.value, item.data)}
+            >
+              {item.title}
+            </Button>
+          )}
+        </div>
+      ));
+    };
+
+    return (
+      <nav
+        className={cn(
+          "flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
+          className
+        )}
+        {...props}
+      >
+        {renderItems(items)}
+      </nav>
+    );
+  }
+
+  const sidebarItems = [
+    ...staticSidebarItems,
+    ...generateSidebarItems(data.Finance),
+  ];
+
+  const renderContent = (selectedContent, finance) => {
+    if (!finance) {
+      return <ClientInfo data={data} fetcher={fetcher} />
+
+    }
+    console.log(finance, 'in render')
+    switch (selectedContent) {
+      // client
+      case 'client':
+        return <ClientInfo data={data} fetcher={fetcher} />
+
+      // sales
+
+      case `sales-appts-${finance.id}`:
+        return <SalesAppts finance={finance} user={user} submit={submit} />;
+
+      case `sales-comms-${finance.id}`:
+        return <Communications finance={finance} />;
+
+      case `sales-accOrders-${finance.id}`:
+        return <SalesAccOrder finance={finance} deFees={deFees} salesPerson={salesPerson} />;
+
+      case `sales-storage-${finance.id}`:
+        return <SalesStorage finance={finance} copyText={copyText} copiedText={copiedText} />;
+
+      case `sales-dealInfo-${finance.id}`:
+        return <DealInfo finance={finance} />;
+
+      case `sales-custUnits-${finance.id}`:
+        return <CustomerBikes finance={finance} fetcher={fetcher} />;
+
+      case `sales-trades-${finance.id}`:
+        return <FinanceTradeUnit finance={finance} fetcher={fetcher} />;
+
+      case `sales-payments-${finance.id}`:
+        return <PaymentsFinance finance={finance} fetcher={fetcher} user={user} formRef={formRef} setInput={setInput} inputLength={inputLength} />;
+
+      case `sales-notes-${finance.id}`:
+        return <FinanceNotes finance={finance} fetcher={fetcher} input={input} user={user} formRef={formRef} setInput={setInput} inputLength={inputLength} />;
+
+      case `sales-finProds-${finance.id}`:
+        return null;
+
+
+      // work order
+      case `wo-wo`:
+        return <WorkOrders finance={finance} copyText={copyText} copiedText={copiedText} />;
+
+
+      // PAC order
+      case `pac-PAC`:
+        return <AccOrders finance={finance} copyText={copyText} copiedText={copiedText} />;
+      default:
+        return <div>Select an item from the sidebar.</div>;
+    }
+  };
+
+  const [unit, setUnit] = useState();
+  const clientData = {
+
+  }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Unit File</Button>
+        <Button variant="outline">Client File</Button>
       </DialogTrigger>
       <DialogContent className="w-auto max-w-[95%] border border-border md:max-w-[90%] h-auto max-h-[700px] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Unit File</DialogTitle>
         </DialogHeader>
         <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
           <div className="grid items-start gap-4 md:gap-8 lg:col-span-1">
@@ -407,7 +610,7 @@ export default function ClientDialog({ data, user }) {
               <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                 <div className="grid gap-0.5">
                   <CardTitle className="group flex items-center gap-2 text-lg">
-                    Timeline
+                    Menu
                     <Button
                       size="icon"
                       variant="outline"
@@ -424,574 +627,21 @@ export default function ClientDialog({ data, user }) {
                 </div>
               </CardHeader>
               <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
-                <div className="grid h-auto max-h-[65vh] gap-3">
-                  <div className="rightbox">
-                    <div className="rb-container">
-                      <ul className="rb">
-                        {sortedEvents.reverse().map((event, index) => (
-                          <li
-                            key={index}
-                            className="rb-item grid-grid-cols-1 bg-muted-background rounded-lg px-3 py-2 "
-                          >
-                            <div className="timestamp flex justify-between text-primary">
-                              <p>{event.date}</p>
-                              <p className="text-right">{event.type}</p>
-                            </div>
-                            <div className="timestamp flex justify-between">
-                              <div className="item-title">{event.title}</div>
-                              {event.type === "Communication" ? (
-                                <>
-                                  <p className="item-title text-right">
-                                    {event.direction}
-                                  </p>
-                                </>
-                              ) : null}
-                            </div>
-                            <p>{event.userName}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+                <SidebarNav
+                  items={sidebarItems}
+                  onSelect={handleSelect}
+                  onFinanceChange={handleFinanceChange}
+                />
               </CardContent>
               <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
                 <div className="text-xs text-muted-foreground">
-                  Updated <time dateTime="2023-11-23">November 23, 2023</time>
+
                 </div>
               </CardFooter>
             </Card>
           </div>
           <div className="grid gap-4 md:gap-8 lg:col-span-2 ">
-            <Tabs defaultValue="Client" className="w-full">
-              <TabsList>
-                <TabsTrigger value="Client">Client</TabsTrigger>
-                <TabsTrigger value="Finances">Finances</TabsTrigger>
-                <TabsTrigger value="Work Orders">Work Orders</TabsTrigger>
-                <TabsTrigger value="PAC Orders">PAC Orders</TabsTrigger>
-              </TabsList>
-              <TabsContent value="Client">
-                <div className="grid items-start gap-4 md:gap-8 lg:col-span-1">
-                  <Card
-                    className="overflow-hidden rounded-lg text-foreground"
-                    x-chunk="dashboard-05-chunk-4"
-                  >
-                    <Form method='post'>
-
-                      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                        <div className="grid gap-0.5">
-                          <CardTitle className="group flex items-center gap-2 text-lg">
-                            Timeline
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                            >
-                              <Copy className="h-3 w-3" />
-                              <span className="sr-only">
-                                Snap shot on customer interactions, whether they
-                                are buying something or a sales person following
-                                up to make a sale.
-                              </span>
-                            </Button>
-                          </CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
-                        <div className="grid h-auto  max-h-[65vh] grid-cols-2 gap-3 mt-5">
-
-
-                          {customerCard.map((user, index) => (
-                            <div key={index} className="relative mt-5">
-                              <Input
-                                name={user.name}
-                                defaultValue={user.value}
-                                className={` border border-border bg-background text-foreground`}
-                              />
-                              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                                {user.label}
-                              </label>
-                            </div>
-                          ))}
-                          <div className="relative mt-5  ">
-                            <Select
-                              onValueChange={(value) => {
-                                const formData = new FormData();
-                                formData.append("id", data.id);
-                                formData.append("typeOfContact", value);
-                                formData.append("intent", 'typeOfContact');
-                                console.log(formData, 'formData');
-                                fetcher.submit(formData, { method: "post" });
-                              }}
-                              defaultValue={data.typeOfContact}
-                              name='typeOfContact'>
-                              <SelectTrigger className="w-full focus:border-primary">
-                                <SelectValue placeholder='Type Of Contact' />
-                              </SelectTrigger>
-                              <SelectContent className=' bg-background text-foreground border border-border' >
-                                <SelectGroup>
-                                  <SelectLabel>Contact Method</SelectLabel>
-                                  <SelectItem value="Phone">Phone</SelectItem>
-                                  <SelectItem value="InPerson">In-Person</SelectItem>
-                                  <SelectItem value="SMS">SMS</SelectItem>
-                                  <SelectItem value="Email">Email</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                              Type Of Contact
-                            </label>
-                          </div>
-                          <div className="relative mt-5  ">
-                            <Select
-                              onValueChange={(value) => {
-                                const formData = new FormData();
-                                formData.append("id", data.id);
-                                formData.append("timeToContact", value);
-                                formData.append("intent", 'timeToContact');
-                                console.log(formData, 'formData');
-                                fetcher.submit(formData, { method: "post" });
-                              }}
-                              defaultValue={data.timeToContact}
-                              name='timeToContact'>
-                              <SelectTrigger className="w-full focus:border-primary">
-                                <SelectValue placeholder='Time To Contact' />
-                              </SelectTrigger>
-                              <SelectContent className=' bg-background text-foreground border border-border' >
-                                <SelectGroup>
-                                  <SelectLabel>Best Time To Contact</SelectLabel>
-                                  <SelectItem value="Morning">Morning</SelectItem>
-                                  <SelectItem value="Afternoon">Afternoon</SelectItem>
-                                  <SelectItem value="Evening">Evening</SelectItem>
-                                  <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                              Time To Contact
-                            </label>
-                          </div>
-                          <input type='hidden' name='id' value={data.id} />
-
-                        </div>
-
-                      </CardContent>
-                      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
-                        <div>
-                          <Button type='submit' name='intent' value='updateClient' size='sm' >Save</Button>
-                        </div>
-                      </CardFooter>
-
-                    </Form>
-
-                  </Card>
-                </div>
-              </TabsContent>
-              <TabsContent value="Finances">
-                {Finance && Finance.length > 0 && (
-                  <Accordion type="single" collapsible key={index}>
-                    <AccordionItem value={`item-${finance.id}`}>
-                      <AccordionTrigger>{finance.year} {finance.brand} {finance.model}</AccordionTrigger>
-                      <AccordionContent className='border-border'>
-                        {Finance.map((finance) => (
-                          <div key={finance.id} className="mb-2 p-2 border rounded">
-                            <p><strong>ID:</strong> {finance.id}</p>
-                            <p><strong>Amount:</strong> {finance.amount}</p>
-                            <p><strong>Description:</strong> {finance.description}</p>
-                            <p><strong>Delivered Date:</strong> {finance.deliveredDate}</p>
-                          </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-
-                )}
-                {data.Finance && data.Finance.map((finance, index) => (
-
-                  <Accordion type="single" collapsible key={index}>
-                    <AccordionItem value={`item-${finance.id}`}>
-                      <AccordionTrigger>{finance.year} {finance.brand} {finance.model}</AccordionTrigger>
-                      <AccordionContent className='border-border'>
-                        <Card x-chunk="dashboard-04-chunk-1" >
-                          <CardHeader>
-                            <CardTitle>Sales Files</CardTitle>
-                            <CardDescription>
-                              To review and edit anything that has to do with the sales floor.
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <div className='flex-col'>
-                              <Accordion type="single" collapsible className="w-full">
-                                <AccordionItem className='border-border' value="item-1">
-                                  <AccordionTrigger >Deal Information</AccordionTrigger>
-                                  <AccordionContent>
-                                    <div className='grid grid-cols-2 gap-4'>
-                                      {financesCard.map((user, index) => (
-                                        <div key={index} className="relative mt-5">
-                                          <Input
-                                            name={user.name}
-                                            defaultValue={user.value}
-                                            className={` border border-border bg-background text-foreground`}
-                                          />
-                                          <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                                            {user.label}
-                                          </label>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem className='border-border' value="item-2">
-                                  <AccordionTrigger>Sales Storage</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-                                    <Card x-chunk="dashboard-04-chunk-1" key={finance.id}>
-                                      <CardHeader>
-                                        <CardTitle>Storage items associated with the sales file.</CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-                                        {finance.financeStorage && finance.financeStorage.map(storage => (
-                                          <div key={storage.id} className='flex  group'>
-                                            <div className='flex-col' >
-                                              <p> {storage.url}</p>
-                                              <p className='text-mmuted-foreground'> {storage.filePath}</p>
-                                            </div>
-                                            <Button
-                                              size="icon"
-                                              variant="outline"
-                                              onClick={() => copyText(storage.url)}
-                                              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                                            >
-                                              <Copy className="h-3 w-3" />
-                                              <span className="sr-only">Copy</span>
-                                            </Button>
-                                            {copiedText === storage.url && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                                          </div>
-                                        ))}
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem className='border-border' value="item-3">
-                                  <AccordionTrigger>Appointments</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-
-                                    <Card x-chunk="dashboard-04-chunk-1" >
-                                      <CardHeader>
-                                        <CardTitle>Breakdown of any appointments associated with the sales deal.</CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-                                        <div className="grid gap-3 max-h-[20vh] h-auto">
-                                          <div className="space-y-4 mt-5">
-
-                                            {finance.clientApts && finance.clientApts.map((message, index) => {
-                                              const options = {
-                                                weekday: 'short',
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric',
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                                second: '2-digit',
-                                              };
-                                              const isValidDate = message.start && message.start !== '1969-12-31 19:00';
-                                              const date = new Date(message.start);
-                                              const formattedDateAppt = isValidDate ? date.toLocaleDateString('en-US', options) : 'TBD';
-                                              return (
-                                                <div
-                                                  key={index}
-                                                  className={cn("flex w-[95%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-[#262626] mx-auto")} >
-                                                  <div className='grid grid-cols-1'>
-                                                    <div className='flex justify-between '>
-                                                      {message.completed === 'yes' ? (
-                                                        <Badge className="text-xs bg-[#1e9b3d]" variant="secondary">
-                                                          Completed!
-                                                        </Badge>
-                                                      ) : (
-                                                        <Badge className="text-xs bg-primary" variant="secondary">
-                                                          Incomplete
-                                                        </Badge>
-                                                      )}
-                                                      <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                          <Button size="icon" variant="outline" className="h-8 w-8 bg-transparent">
-                                                            <MoreVertical className="h-3.5 w-3.5" />
-                                                            <span className="sr-only">Menu</span>
-                                                          </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end" className=' bg-blackground  text-foreground border border-border'>
-                                                          <Form method='post'>
-                                                            <DropdownMenuItem
-                                                              onSelect={() => {
-                                                                const formData = new FormData();
-                                                                formData.append("aptId", message.message);
-                                                                formData.append("userEmail", user.email);
-                                                                formData.append("userName", user.name);
-                                                                formData.append("intent", 'deleteApt');
-                                                                submit(formData, { method: "post" });
-                                                              }}>
-                                                              Delete
-                                                            </DropdownMenuItem>
-                                                            <input type='hidden' name='financeId' defaultValue={finance.id} />
-                                                          </Form>
-                                                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                          <DropdownMenuSeparator />
-                                                          <DropdownMenuItem>Trash</DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                      </DropdownMenu>
-
-                                                    </div>
-                                                    <div className='flex justify-between mt-1'>
-                                                      <p className='text-muted-foreground'>{formattedDateAppt}</p>
-                                                      <p>{message.contactMethod}</p>
-                                                    </div>
-                                                    <p className='mt-1'> {message.title}</p>
-                                                  </div>
-                                                </div>
-                                              )
-                                            })}
-                                          </div>
-                                        </div>
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-4">
-                                  <AccordionTrigger>Communications</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-                                    <Card x-chunk="dashboard-04-chunk-1" key={finance.id}>
-                                      <CardHeader>
-                                        <CardTitle>
-                                          Storage items associated with the sales file.
-                                        </CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-5">
-                                  <AccordionTrigger>Finance Products</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-                                    <Card x-chunk="dashboard-04-chunk-1" key={finance.id}>
-                                      <CardHeader>
-                                        <CardTitle>
-                                          Storage items associated with the sales file.
-                                        </CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-6">
-                                  <AccordionTrigger>Unit</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-                                    <Card x-chunk="dashboard-04-chunk-1" key={finance.id}>
-                                      <CardHeader>
-                                        <CardTitle>
-                                          Storage items associated with the sales file.
-                                        </CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-7">
-                                  <AccordionTrigger>Trade</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-                                    <Card x-chunk="dashboard-04-chunk-1" key={finance.id}>
-                                      <CardHeader>
-                                        <CardTitle>
-                                          Storage items associated with the sales file.
-                                        </CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-8">
-                                  <AccordionTrigger>Accessory Orders</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-                                    <Card x-chunk="dashboard-04-chunk-1" key={finance.id}>
-                                      <CardHeader>
-                                        <CardTitle>
-                                          Storage items associated with the sales file.
-                                        </CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-9">
-                                  <AccordionTrigger>Work Orders</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-                                    <Card x-chunk="dashboard-04-chunk-1" key={finance.id}>
-                                      <CardHeader>
-                                        <CardTitle>
-                                          Storage items associated with the sales file.
-                                        </CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-10">
-                                  <AccordionTrigger>Payments</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-                                    <Card x-chunk="dashboard-04-chunk-1" key={finance.id}>
-                                      <CardHeader>
-                                        <CardTitle>
-                                          Storage items associated with the sales file.
-                                        </CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="item-11">
-                                  <AccordionTrigger>Notes</AccordionTrigger>
-                                  <AccordionContent className='border-border'>
-                                    <Card x-chunk="dashboard-04-chunk-1" key={finance.id}>
-                                      <CardHeader>
-                                        <CardTitle>
-                                          Storage items associated with the sales file.
-                                        </CardTitle>
-                                      </CardHeader>
-                                      <CardContent>
-
-                                      </CardContent>
-                                      <CardFooter className="border-t border-border px-6 py-4">
-                                        <Button
-                                          type='submit'
-                                          name='intent'
-                                          value='updateDealerInfo'>
-                                          Save
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  </AccordionContent>
-                                </AccordionItem>
-
-                              </Accordion>
-                            </div>
-                          </CardContent>
-                          <CardFooter className="border-t border-border px-6 py-4">
-                            <Button
-                              type='submit'
-                              name='intent'
-                              value='updateDealerInfo'>
-                              Save
-                            </Button>
-                          </CardFooter>
-                        </Card>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-
-                ))}
-              </TabsContent>
-              <TabsContent value="Work Orders">
-
-              </TabsContent>
-              <TabsContent value="PAC Orders">
-
-              </TabsContent>
-            </Tabs>
+            {renderContent(selectedContent, selectedFinanceArray)}
           </div>
         </div>
       </DialogContent>
@@ -999,41 +649,1970 @@ export default function ClientDialog({ data, user }) {
   );
 }
 
+interface SidebarNavProps {
+  className?: string;
+  items: SidebarNavItem[];
+  onSelect: (value: string) => void;
+  onFinanceChange: (data: any) => void; // Function to update finance data
+}
+interface SidebarNavItem {
+  title: string;
+  value?: string;
+  section?: SidebarNavItem[];
+}
+function ClientInfo({ data, fetcher }) {
+  let customerCard = [
+    { name: "firstName", value: data.firstName, label: "firstName", },
+    { name: "lastName", value: data.lastName, label: "lastName", },
+    { name: "name", value: data.name, label: "name", },
+    { name: "email", value: data.email, label: "email", },
+    { name: "phone", value: data.phone, label: "phone", },
+    { name: "address", value: data.address, label: "address", },
+    { name: "city", value: data.city, label: "city", },
+    { name: "postal", value: data.postal, label: "postal", },
+    { name: "province", value: data.province, label: "province", },
+    { name: "dl", value: data.dl, label: "dl", },
+    { name: "typeOfContact", value: data.typeOfContact, label: "typeOfContact", },
+    { name: "timeToContact", value: data.timeToContact, label: "timeToContact", },
+    { name: "billingAddress", value: data.billingAddress, label: "billingAddress", },
+  ];
+  return (
+    <Card
+      className="overflow-hidden rounded-lg text-foreground"
+      x-chunk="dashboard-05-chunk-4"
+    >
+      <Form method='post'>
 
-interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
-  items: {
-    to: string
-    title: string
-  }[]
+        <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+          <div className="grid gap-0.5">
+            <CardTitle className="group flex items-center gap-2 text-lg">
+              Client Info
+              <Button
+                size="icon"
+                variant="outline"
+                className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+              >
+                <Copy className="h-3 w-3" />
+                <span className="sr-only">
+
+                </span>
+              </Button>
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+          <div className="grid h-auto  max-h-[65vh] grid-cols-2 gap-3 mt-5">
+
+
+            {customerCard.map((user, index) => (
+              <div key={index} className="relative mt-5">
+                <Input
+                  name={user.name}
+                  defaultValue={user.value}
+                  className={` border border-border bg-background text-foreground`}
+                />
+                <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                  {user.label}
+                </label>
+              </div>
+            ))}
+            <div className="relative mt-5  ">
+              <Select
+                onValueChange={(value) => {
+                  const formData = new FormData();
+                  formData.append("id", data.id);
+                  formData.append("typeOfContact", value);
+                  formData.append("intent", 'typeOfContact');
+                  console.log(formData, 'formData');
+                  fetcher.submit(formData, { method: "post" });
+                }}
+                defaultValue={data.typeOfContact}
+                name='typeOfContact'>
+                <SelectTrigger className="w-full focus:border-primary">
+                  <SelectValue placeholder='Type Of Contact' />
+                </SelectTrigger>
+                <SelectContent className=' bg-background text-foreground border border-border' >
+                  <SelectGroup>
+                    <SelectLabel>Contact Method</SelectLabel>
+                    <SelectItem value="Phone">Phone</SelectItem>
+                    <SelectItem value="InPerson">In-Person</SelectItem>
+                    <SelectItem value="SMS">SMS</SelectItem>
+                    <SelectItem value="Email">Email</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                Type Of Contact
+              </label>
+            </div>
+            <div className="relative mt-5  ">
+              <Select
+                onValueChange={(value) => {
+                  const formData = new FormData();
+                  formData.append("id", data.id);
+                  formData.append("timeToContact", value);
+                  formData.append("intent", 'timeToContact');
+                  console.log(formData, 'formData');
+                  fetcher.submit(formData, { method: "post" });
+                }}
+                defaultValue={data.timeToContact}
+                name='timeToContact'>
+                <SelectTrigger className="w-full focus:border-primary">
+                  <SelectValue placeholder='Time To Contact' />
+                </SelectTrigger>
+                <SelectContent className=' bg-background text-foreground border border-border' >
+                  <SelectGroup>
+                    <SelectLabel>Best Time To Contact</SelectLabel>
+                    <SelectItem value="Morning">Morning</SelectItem>
+                    <SelectItem value="Afternoon">Afternoon</SelectItem>
+                    <SelectItem value="Evening">Evening</SelectItem>
+                    <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                Time To Contact
+              </label>
+            </div>
+            <input type='hidden' name='id' value={data.id} />
+
+          </div>
+
+        </CardContent>
+        <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+          <div>
+            <Button type='submit' name='intent' value='updateClient' size='sm' >Save</Button>
+          </div>
+        </CardFooter>
+
+      </Form>
+
+    </Card>
+  )
+}
+function DealInfo({ finance }) {
+  let financesCard = [
+    { name: "financeManager", value: finance.financeManager, label: "financeManager", },
+    { name: "userEmail", value: finance.userEmail, label: "userEmail", },
+    { name: "userName", value: finance.userName, label: "userName", },
+    { name: "financeManagerName", value: finance.financeManagerName, label: "financeManagerName", },
+    { name: "email", value: finance.email, label: "email", },
+    { name: "firstName", value: finance.firstName, label: "firstName", },
+    { name: "lastName", value: finance.lastName, label: "lastName", },
+    { name: "phone", value: finance.phone, label: "phone", },
+    { name: "name", value: finance.name, label: "name", },
+    { name: "address", value: finance.address, label: "address", },
+    { name: "city", value: finance.city, label: "city", },
+    { name: "postal", value: finance.postal, label: "postal", },
+    { name: "province", value: finance.province, label: "province", },
+    { name: "dl", value: finance.dl, label: "dl", },
+    { name: "typeOfContact", value: finance.typeOfContact, label: "typeOfContact", },
+    { name: "timeToContact", value: finance.timeToContact, label: "timeToContact", },
+    { name: "dob", value: finance.dob, label: "dob", },
+    { name: "othTax", value: finance.othTax, label: "othTax", },
+    { name: "optionsTotal", value: finance.optionsTotal, label: "optionsTotal", },
+    { name: "lienPayout", value: finance.lienPayout, label: "lienPayout", },
+    { name: "leadNote", value: finance.leadNote, label: "leadNote", },
+    { name: "sendToFinanceNow", value: finance.sendToFinanceNow, label: "sendToFinanceNow", },
+    { name: "dealNumber", value: finance.dealNumber, label: "dealNumber", },
+    { name: "iRate", value: finance.iRate, label: "iRate", },
+    { name: "months", value: finance.months, label: "months", },
+    { name: "discount", value: finance.discount, label: "discount", },
+    { name: "total", value: finance.total, label: "total", },
+    { name: "onTax", value: finance.onTax, label: "onTax", },
+    { name: "on60", value: finance.on60, label: "on60", },
+    { name: "biweekly", value: finance.biweekly, label: "biweekly", },
+    { name: "weekly", value: finance.weekly, label: "weekly", },
+    { name: "weeklyOth", value: finance.weeklyOth, label: "weeklyOth", },
+    { name: "biweekOth", value: finance.biweekOth, label: "biweekOth", },
+    { name: "oth60", value: finance.oth60, label: "oth60", },
+    { name: "weeklyqc", value: finance.weeklyqc, label: "weeklyqc", },
+    { name: "biweeklyqc", value: finance.biweeklyqc, label: "biweeklyqc", },
+    { name: "qc60", value: finance.qc60, label: "qc60", },
+    { name: "deposit", value: finance.deposit, label: "deposit", },
+    { name: "biweeklNatWOptions", value: finance.biweeklNatWOptions, label: "biweeklNatWOptions", },
+    { name: "weeklylNatWOptions", value: finance.weeklylNatWOptions, label: "weeklylNatWOptions", },
+    { name: "nat60WOptions", value: finance.nat60WOptions, label: "nat60WOptions", },
+    { name: "weeklyOthWOptions", value: finance.weeklyOthWOptions, label: "weeklyOthWOptions", },
+    { name: "biweekOthWOptions", value: finance.biweekOthWOptions, label: "biweekOthWOptions", },
+    { name: "oth60WOptions", value: finance.oth60WOptions, label: "oth60WOptions", },
+    { name: "biweeklNat", value: finance.biweeklNat, label: "biweeklNat", },
+    { name: "weeklylNat", value: finance.weeklylNat, label: "weeklylNat", },
+    { name: "nat60", value: finance.nat60, label: "nat60", },
+    { name: "qcTax", value: finance.qcTax, label: "qcTax", },
+    { name: "otherTax", value: finance.otherTax, label: "otherTax", },
+    { name: "totalWithOptions", value: finance.totalWithOptions, label: "totalWithOptions", },
+    { name: "otherTaxWithOptions", value: finance.otherTaxWithOptions, label: "otherTaxWithOptions", },
+    { name: "desiredPayments", value: finance.desiredPayments, label: "desiredPayments", },
+    { name: "admin", value: finance.admin, label: "admin", },
+    { name: "commodity", value: finance.commodity, label: "commodity", },
+    { name: "pdi", value: finance.pdi, label: "pdi", },
+    { name: "discountPer", value: finance.discountPer, label: "discountPer", },
+    { name: "userLoanProt", value: finance.userLoanProt, label: "userLoanProt", },
+    { name: "userTireandRim", value: finance.userTireandRim, label: "userTireandRim", },
+    { name: "userGap", value: finance.userGap, label: "userGap", },
+    { name: "userExtWarr", value: finance.userExtWarr, label: "userExtWarr", },
+    { name: "userServicespkg", value: finance.userServicespkg, label: "userServicespkg", },
+    { name: "deliveryCharge", value: finance.deliveryCharge, label: "deliveryCharge", },
+    { name: "vinE", value: finance.vinE, label: "vinE", },
+    { name: "lifeDisability", value: finance.lifeDisability, label: "lifeDisability", },
+    { name: "rustProofing", value: finance.rustProofing, label: "rustProofing", },
+    { name: "userOther", value: finance.userOther, label: "userOther", },
+    { name: "referral", value: finance.referral, label: "referral", },
+    { name: "visited", value: finance.visited, label: "visited", },
+    { name: "bookedApt", value: finance.bookedApt, label: "bookedApt", },
+    { name: "aptShowed", value: finance.aptShowed, label: "aptShowed", },
+    { name: "aptNoShowed", value: finance.aptNoShowed, label: "aptNoShowed", },
+    { name: "testDrive", value: finance.testDrive, label: "testDrive", },
+    { name: "metService", value: finance.metService, label: "metService", },
+    { name: "metManager", value: finance.metManager, label: "metManager", },
+    { name: "metParts", value: finance.metParts, label: "metParts", },
+    { name: "sold", value: finance.sold, label: "sold", },
+    { name: "depositMade", value: finance.depositMade, label: "depositMade", },
+    { name: "refund", value: finance.refund, label: "refund", },
+    { name: "turnOver", value: finance.turnOver, label: "turnOver", },
+    { name: "financeApp", value: finance.financeApp, label: "financeApp", },
+    { name: "approved", value: finance.approved, label: "approved", },
+    { name: "signed", value: finance.signed, label: "signed", },
+    { name: "pickUpSet", value: finance.pickUpSet, label: "pickUpSet", },
+    { name: "demoed", value: finance.demoed, label: "demoed", },
+    { name: "lastContact", value: finance.lastContact, label: "lastContact", },
+    { name: "status", value: finance.status, label: "status", },
+    { name: "customerState", value: finance.customerState, label: "customerState", },
+    { name: "result", value: finance.result, label: "result", },
+    { name: "timesContacted", value: finance.timesContacted, label: "timesContacted", },
+    { name: "nextAppointment", value: finance.nextAppointment, label: "nextAppointment", },
+    { name: "followUpDay", value: finance.followUpDay, label: "followUpDay", },
+    { name: "deliveryDate", value: finance.deliveryDate, label: "deliveryDate", },
+    { name: "delivered", value: finance.delivered, label: "delivered", },
+    { name: "deliveredDate", value: finance.deliveredDate, label: "deliveredDate", },
+    { name: "notes", value: finance.notes, label: "notes", },
+    { name: "visits", value: finance.visits, label: "visits", },
+    { name: "progress", value: finance.progress, label: "progress", },
+    { name: "metSalesperson", value: finance.metSalesperson, label: "metSalesperson", },
+    { name: "metFinance", value: finance.metFinance, label: "metFinance", },
+    { name: "financeApplication", value: finance.financeApplication, label: "financeApplication", },
+    { name: "pickUpDate", value: finance.pickUpDate, label: "pickUpDate", },
+    { name: "pickUpTime", value: finance.pickUpTime, label: "pickUpTime", },
+    { name: "depositTakenDate", value: finance.depositTakenDate, label: "depositTakenDate", },
+    { name: "docsSigned", value: finance.docsSigned, label: "docsSigned", },
+    { name: "tradeRepairs", value: finance.tradeRepairs, label: "tradeRepairs", },
+    { name: "seenTrade", value: finance.seenTrade, label: "seenTrade", },
+    { name: "lastNote", value: finance.lastNote, label: "lastNote", },
+    { name: "applicationDone", value: finance.applicationDone, label: "applicationDone", },
+    { name: "licensingSent", value: finance.licensingSent, label: "licensingSent", },
+    { name: "liceningDone", value: finance.liceningDone, label: "liceningDone", },
+    { name: "refunded", value: finance.refunded, label: "refunded", },
+    { name: "cancelled", value: finance.cancelled, label: "cancelled", },
+    { name: "lost", value: finance.lost, label: "lost", },
+    { name: "dLCopy", value: finance.dLCopy, label: "dLCopy", },
+    { name: "insCopy", value: finance.insCopy, label: "insCopy", },
+    { name: "testDrForm", value: finance.testDrForm, label: "testDrForm", },
+    { name: "voidChq", value: finance.voidChq, label: "voidChq", },
+    { name: "loanOther", value: finance.loanOther, label: "loanOther", },
+    { name: "signBill", value: finance.signBill, label: "signBill", },
+    { name: "ucda", value: finance.ucda, label: "ucda", },
+    { name: "tradeInsp", value: finance.tradeInsp, label: "tradeInsp", },
+    { name: "customerWS", value: finance.customerWS, label: "customerWS", },
+    { name: "otherDocs", value: finance.otherDocs, label: "otherDocs", },
+    { name: "urgentFinanceNote", value: finance.urgentFinanceNote, label: "urgentFinanceNote", },
+    { name: "funded", value: finance.funded, label: "funded", },
+    { name: "leadSource", value: finance.leadSource, label: "leadSource", },
+    { name: "financeDeptProductsTotal", value: finance.financeDeptProductsTotal, label: "financeDeptProductsTotal", },
+    { name: "bank", value: finance.bank, label: "bank", },
+    { name: "loanNumber", value: finance.loanNumber, label: "loanNumber", },
+    { name: "idVerified", value: finance.idVerified, label: "idVerified", },
+    { name: "dealerCommission", value: finance.dealerCommission, label: "dealerCommission", },
+    { name: "financeCommission", value: finance.financeCommission, label: "financeCommission", },
+    { name: "salesCommission", value: finance.salesCommission, label: "salesCommission", },
+    { name: "firstPayment", value: finance.firstPayment, label: "firstPayment", },
+    { name: "loanMaturity", value: finance.loanMaturity, label: "loanMaturity", },
+    { name: "quoted", value: finance.quoted, label: "quoted", },
+    { name: "InPerson", value: finance.InPerson, label: "InPerson", },
+
+    { name: "paintPrem", value: finance.paintPrem, label: "paintPrem", },
+    { name: "licensing", value: finance.licensing, label: "licensing", },
+    { name: "stockNum", value: finance.stockNum, label: "stockNum", },
+    { name: "options", value: finance.options, label: "options", },
+    { name: "accessories", value: finance.accessories, label: "accessories", },
+    { name: "freight", value: finance.freight, label: "freight", },
+    { name: "labour", value: finance.labour, label: "labour", },
+    { name: "year", value: finance.year, label: "year", },
+    { name: "brand", value: finance.brand, label: "brand", },
+    { name: "mileage", value: finance.mileage, label: "mileage", },
+    { name: "model", value: finance.model, label: "model", },
+    { name: "model1", value: finance.model1, label: "model1", },
+    { name: "color", value: finance.color, label: "color", },
+    { name: "modelCode", value: finance.modelCode, label: "modelCode", },
+    { name: "msrp", value: finance.msrp, label: "msrp", },
+    { name: "trim", value: finance.trim, label: "trim", },
+    { name: "vin", value: finance.vin, label: "vin", },
+    { name: "bikeStatus", value: finance.bikeStatus, label: "bikeStatus", },
+    { name: "invId", value: finance.invId, label: "invId", },
+    { name: "motor", value: finance.motor, label: "motor", },
+    { name: "tag", value: finance.tag, label: "tag", },
+    { name: "tradeValue", value: finance.tradeValue, label: "tradeValue", },
+    { name: "tradeDesc", value: finance.tradeDesc, label: "tradeDesc", },
+    { name: "tradeColor", value: finance.tradeColor, label: "tradeColor", },
+    { name: "tradeYear", value: finance.tradeYear, label: "tradeYear", },
+    { name: "tradeMake", value: finance.tradeMake, label: "tradeMake", },
+    { name: "tradeVin", value: finance.tradeVin, label: "tradeVin", },
+    { name: "tradeTrim", value: finance.tradeTrim, label: "tradeTrim", },
+    { name: "tradeMileage", value: finance.tradeMileage, label: "tradeMileage", },
+    { name: "tradeLocation", value: finance.tradeLocation, label: "tradeLocation", },
+    { name: "lien", value: finance.lien, label: "lien", },
+    { name: "Phone", value: finance.Phone, label: "Phone", },
+    { name: "Email", value: finance.Email, label: "Email", },
+    { name: "Other", value: finance.Other, label: "Other", },
+    {/* name: "SMS", value: finance.SMS, label: "SMS", */ }
+
+  ];
+  return (
+    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <CardTitle className="group flex items-center gap-2 text-lg">
+          Client Info
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+
+        <div className='grid grid-cols-2 gap-4'>
+          {financesCard.map((user, index) => (
+            <div key={index} className="relative mt-5">
+              <Input
+                name={user.name}
+                defaultValue={user.value}
+                className={` border border-border bg-background text-foreground`}
+              />
+              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                {user.label}
+              </label>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+        <div>
+        </div>
+      </CardFooter>
+    </Card>
+
+  )
+}
+function SalesStorage({ finance, copyText, copiedText }) {
+  return (
+    <div>
+      <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
+        <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+          <CardTitle className="group flex items-center gap-2 text-lg">
+            Client Info
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+          {finance.financeStorage && finance.financeStorage.map(storage => (
+            <div key={storage.id} className='flex  group'>
+              <div className='flex-col' >
+                <p> {storage.url}</p>
+                <p className='text-mmuted-foreground'> {storage.filePath}</p>
+              </div>
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => copyText(storage.url)}
+                className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+              >
+                <Copy className="h-3 w-3" />
+                <span className="sr-only">Copy</span>
+              </Button>
+              {copiedText === storage.url && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+            </div>
+          ))
+          }
+
+
+        </CardContent>
+        <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+          <div>
+          </div>
+        </CardFooter>
+      </Card>
+
+    </div>
+
+  )
+}
+function SalesAppts({ finance, user, submit }) {
+  return (
+    <Card x-chunk="dashboard-04-chunk-1" >
+      <CardHeader>
+        <CardTitle>Breakdown of any appointments associated with the sales deal.</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-3 max-h-[20vh] h-auto">
+          <div className="space-y-4 mt-5">
+
+            {finance.clientApts && finance.clientApts.map((message, index) => {
+              const options = {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+              };
+              const isValidDate = message.start && message.start !== '1969-12-31 19:00';
+              const date = new Date(message.start);
+              const formattedDateAppt = isValidDate ? date.toLocaleDateString('en-US', options) : 'TBD';
+              return (
+                <div
+                  key={index}
+                  className={cn("flex w-[95%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-[#262626] mx-auto")} >
+                  <div className='grid grid-cols-1'>
+                    <div className='flex justify-between '>
+                      {message.completed === 'yes' ? (
+                        <Badge className="text-xs bg-[#1e9b3d]" variant="secondary">
+                          Completed!
+                        </Badge>
+                      ) : (
+                        <Badge className="text-xs bg-primary" variant="secondary">
+                          Incomplete
+                        </Badge>
+                      )}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="icon" variant="outline" className="h-8 w-8 bg-transparent">
+                            <MoreVertical className="h-3.5 w-3.5" />
+                            <span className="sr-only">Menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className=' bg-blackground  text-foreground border border-border'>
+                          <Form method='post'>
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("aptId", message.message);
+                                formData.append("userEmail", user.email);
+                                formData.append("userName", user.name);
+                                formData.append("intent", 'deleteApt');
+                                submit(formData, { method: "post" });
+                              }}>
+                              Delete
+                            </DropdownMenuItem>
+                            <input type='hidden' name='financeId' defaultValue={finance.id} />
+                          </Form>
+                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>Trash</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                    </div>
+                    <div className='flex justify-between mt-1'>
+                      <p className='text-muted-foreground'>{formattedDateAppt}</p>
+                      <p>{message.contactMethod}</p>
+                    </div>
+                    <p className='mt-1'> {message.title}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="border-t border-border px-6 py-4">
+        <Button
+          type='submit'
+          name='intent'
+          value='updateDealerInfo'>
+          Save
+        </Button>
+      </CardFooter>
+    </Card>
+  )
+}
+function Communications({ finance }) {
+  return (
+    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <CardTitle className="group flex items-center gap-2 text-lg">
+          Communications
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+        <Card x-chunk="dashboard-04-chunk-1" >
+          <CardHeader>
+            <CardTitle>
+              Storage items associated with the sales file.
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3 max-h-[40vh] h-auto">
+              <div className="space-y-4 mt-5">
+
+                {finance.Comm & finance.Comm.map((message, index) => (
+                  <div
+                    key={index}
+                    className={cn(
+                      "flex  max-w-[75%]   w-[65%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                      message.direction === 'Outgoing'
+                        ? "ml-auto bg-primary text-foreground"
+                        : "bg-[#262626]"
+                    )}
+                  >
+                    <div className='grid grid-cols-1'>
+                      <div className='flex justify-between'>
+                        <p>{message.direction}</p>
+                        <p className='text-right'>{message.type}</p>
+                      </div>
+                      <div className='flex justify-between'>
+                        <p>{message.result}</p>
+                        {message.userEmail === 'Outgoing' && (
+                          <p className='text-[#8c8c8c] text-right'>
+                            {message.userName}
+                          </p>
+                        )}
+                      </div>
+                      <p className='text-[#8c8c8c]'>
+                        {message.createdAt}
+                      </p>
+                      <p>{message.subject}</p>
+                      <p>{message.body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          </CardContent>
+          <CardFooter className="border-t border-border px-6 py-4">
+            <Button
+              type='submit'
+              name='intent'
+              value='updateDealerInfo'>
+              Save
+            </Button>
+          </CardFooter>
+        </Card>
+
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+        <div>
+        </div>
+      </CardFooter>
+    </Card>
+  )
+}
+function SalesAccOrder({ finance, deFees, salesPerson }) {
+  const addProduct = useFetcher();
+  const submit = useSubmit()
+  const formRef = useRef();
+  const [discount, setDiscount] = useState(false)
+  const fetcher = useFetcher();
+  let inputRef = useRef<HTMLInputElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+  const [discDollar, setDiscDollar] = useState(0.00)
+  const [discPer, setDiscPer] = useState(0.00)
+  const [paymentType, setPaymentType] = useState('');
+  const [input, setInput] = useState("");
+  const inputLength = input.trim().length
+  const payment = useFetcher();
+
+
+
+  const options2 = {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+
+
+  const taxMultiplier = Number(deFees.userTax);
+  const taxRate = 1 + taxMultiplier / 100;
+
+  const totalAccessoriesCost = data.AccOrder.reduce((total, order) => {
+    return total + (order.quantity * order.price);
+  }, 0);
+
+  const totalAmountPaid = data.Finance.reduce((total, finance) => {
+    return total + finance.amountPaid;
+  }, 0);
+
+  const total2 = ((totalAccessoriesCost - parseFloat(discDollar)) * taxRate).toFixed(2);
+  const total1 = (((totalAccessoriesCost * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
+
+  const total = discPer === 0 ? total2 : total1;
+
+
+  const toReceipt = {}
+  /**
+   *
+  const [changeSize, setChangeSize] = useState(false)
+
+  const client = data.id
+
+   const { AccessoriesOnOrders } = order;
+    const maxAccessories = 19;
+
+    const toReceipt = {
+      qrCode: order.id,
+      subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
+      tax: `${tax.userTax}%`,
+      total: `$${total}`,
+      remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
+      firstName: client.firstName,
+      lastName: client.lastName,
+      phone: client.phone,
+      email: client.email,
+      address: client.address,
+      date: new Date(order.createdAt).toLocaleDateString("en-US", options2),
+      cardNum: '',
+      paymentType: '',
+      image: dealerImage.dealerLogo
+    };
+
+      AccessoriesOnOrders.forEach((result, index) => {
+    if (index < maxAccessories) {
+      toReceipt[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
+      toReceipt[`qt${index + 1}`] = String(result.quantity);
+      toReceipt[`price${index + 1}`] = String(result.accessory.price);
+    }
+  });
+
+  for (let i = AccessoriesOnOrders.length + 1; i <= maxAccessories; i++) {
+    toReceipt[`desc${i}`] = '';
+    toReceipt[`qt${i}`] = '';
+    toReceipt[`price${i}`] = '';
+  }
+
+
+
+  */
+  const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
+  useEffect(() => {
+    if (remaining === 0) {
+      toast.success('Order is paid in full!', {
+        duration: Infinity
+      })
+    }
+  }, [remaining]);
+
+  return (
+    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <CardTitle className="group flex items-center gap-2 text-lg">
+          PAC Orders on Contract
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+
+        {/* AccOrder Data */}
+        {finance.AccOrders && finance.AccOrders.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold">Accessory Orders</h3>
+            {finance.AccOrders.map((order) => (
+              <div className='flex flex-col'>
+                <Card key={order.id} className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
+                  <CardHeader className="flex flex-row items-start bg-muted/50">
+                    <div className="grid gap-0.5">
+                      <CardTitle className="group flex items-center gap-2 text-lg">
+                        Current Order: {order.id}
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Copy Order ID</span>
+                        </Button>
+                      </CardTitle>
+                      <CardDescription>
+                        Date:{" "}
+                        {new Date(order.createdAt).toLocaleDateString(
+                          "en-US",
+                          options2
+                        )}
+                      </CardDescription>
+                    </div>
+                    <div className="ml-auto flex items-center gap-1">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="icon" variant="outline" className="h-8 w-8">
+                            <MoreVertical className="h-3.5 w-3.5" />
+                            <span className="sr-only">More</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          className="border border-border"
+                        >
+                          <DropdownMenuItem onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
+                          <DropdownMenuItem>Discount</DropdownMenuItem>
+                          <DropdownMenuItem
+                            onSelect={() => {
+                              const formData = new FormData();
+                              formData.append("financeId", order.financeId);
+                              formData.append("subTotal", totalAccessoriesCost);
+                              formData.append("intent", 'pushSubtotal');
+                              submit(formData, { method: "post", });
+                            }}
+                          >Push Sub Total to Finance</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onSelect={() => {
+
+                            }}>Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-6 text-sm max-h-[780px] h-[780px] overflow-y-auto">
+                    <div className="grid gap-3">
+                      <div className="font-semibold">Order Details</div>
+                      <ul className="grid gap-3 max-h-[400px] h-auto overflow-y-auto">
+                        {order.AccessoriesOnOrders && order.AccessoriesOnOrders.map((result, index) => (
+                          <li
+                            className="flex items-center justify-between"
+                            key={index}
+                          >
+                            <div>
+                              <ContextMenu>
+                                <ContextMenuTrigger>
+                                  <div className='grid grid-cols-1'>
+                                    <div className='flex items-center group '>
+                                      <div className="font-medium">
+                                        {result.accessory.name}
+                                      </div>
+                                      <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                        <input type="hidden" name="id" value={result.id} />
+                                        <input type='hidden' name='total' value={total} />
+                                        <input type='hidden' name='accOrderId' value={order.id} />
+                                        <Button
+                                          size="icon"
+                                          variant="outline"
+                                          name="intent" value='deleteOrderItem'
+                                          className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                          type='submit'
+                                        >
+                                          <X className="h-4 w-4 text-foreground" />
+                                        </Button>
+                                      </addProduct.Form>
+                                    </div>
+                                    <div className="hidden text-sm text-muted-foreground md:inline">
+                                      {result.accessory.brand}
+                                    </div>
+                                    <div className="hidden text-sm text-muted-foreground md:inline">
+                                      {result.accessory.category}{" "}{result.accessory.description}
+                                    </div>
+                                    <div>
+                                      <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                    </div>
+                                  </div>
+                                </ContextMenuTrigger>
+                                <ContextMenuContent className='border-border'>
+                                  <ContextMenuCheckboxItem
+                                    checked={result.status === 'In Stock'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("accOnOrderId", result.id);
+                                      formData.append("status", 'In Stock');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >In Stock</ContextMenuCheckboxItem>
+                                  <ContextMenuCheckboxItem
+                                    checked={result.status === 'On Order'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("accOnOrderId", result.id);
+                                      formData.append("status", 'On Order');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >On Order</ContextMenuCheckboxItem>
+                                  <ContextMenuCheckboxItem
+                                    checked={result.status === 'Back Order'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("accOnOrderId", result.id);
+                                      formData.append("status", 'Back Order');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >Back Order</ContextMenuCheckboxItem>
+                                  <ContextMenuCheckboxItem
+                                    checked={result.status === 'Fulfilled'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("accOnOrderId", result.id);
+                                      formData.append("status", 'Fulfilled');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >Fulfilled</ContextMenuCheckboxItem>
+                                </ContextMenuContent>
+                              </ContextMenu>
+                            </div>
+                            <span>${result.accessory.price}{" "}{" "}x{" "}{" "}{result.quantity}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className='mt-auto'>
+                      <Separator className="my-2 mt-auto" />
+                      <ul className="grid gap-3">
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Subtotal</span>
+                          <span>${totalAccessoriesCost.toFixed(2)}</span>
+                        </li>
+                        {order.discount && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Discount</span>
+                            <span>${order.discount}</span>
+                          </li>
+                        )}
+                        {order.discPer && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Discount</span>
+                            <span>{order.discPer}%</span>
+                          </li>
+                        )}
+                        {discount && (
+                          <>
+                            <li className="flex items-center justify-between">
+                              <span className="text-muted-foreground">Discount $</span>
+                              <fetcher.Form
+                                method="post"
+                                onSubmit={() => {
+                                  buttonRef.current?.focus();
+                                }}
+                                preventScrollReset
+                              >
+                                <input
+                                  name='accOrderId'
+                                  defaultValue={order.id}
+                                  type='hidden'
+                                />
+                                <input
+                                  name='intent'
+                                  defaultValue='updateDiscount'
+                                  type='hidden'
+                                />
+                                <input
+                                  name='total'
+                                  defaultValue={totalAccessoriesCost}
+                                  type='hidden'
+                                />
+                                <div className="relative ml-auto flex-1 md:grow-0 ">
+                                  <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-foreground" />
+                                  <Input
+                                    ref={inputRef}
+                                    name='discDollar'
+                                    className='text-right pr-10 w-[100px]'
+                                    defaultValue={discDollar}
+                                    onChange={(event) => setDiscDollar(event.target.value)}
+                                    onKeyDown={(event) => {
+                                      if (event.key === "Escape") {
+                                        buttonRef.current?.focus();
+                                      }
+                                    }}
+                                    onBlur={(event) => {
+                                      if (
+                                        inputRef.current?.value !== discDollar &&
+                                        inputRef.current?.value.trim() !== ""
+                                      ) {
+                                        fetcher.submit(event.currentTarget);
+                                      }
+                                    }}
+                                  />
+                                  <Button
+                                    type="submit"
+                                    size="icon"
+
+                                    disabled={!discDollar}
+                                    className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
+                                    <PaperPlaneIcon className="h-4 w-4" />
+                                    <span className="sr-only">Cash</span>
+                                  </Button>
+                                </div>
+                              </fetcher.Form>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-muted-foreground">Discount %</span>
+                              <fetcher.Form
+                                method="post"
+                                onSubmit={() => {
+                                  buttonRef.current?.focus();
+                                }}
+                                preventScrollReset
+                              >
+                                <input
+                                  name='accOrderId'
+                                  defaultValue={order.id}
+                                  type='hidden'
+                                />
+                                <input
+                                  name='intent'
+                                  defaultValue='updateDiscPerc'
+                                  type='hidden'
+                                />
+                                <input
+                                  name='total'
+                                  defaultValue={totalAccessoriesCost}
+                                  type='hidden'
+                                />
+                                <div className="relative ml-auto flex-1 md:grow-0 ">
+                                  <Input
+                                    ref={inputRef}
+                                    name='discPer'
+                                    className='text-right pr-[43px] w-[100px]'
+                                    value={discPer}
+                                    onChange={(event) => setDiscPer(event.target.value)}
+                                    onKeyDown={(event) => {
+                                      if (event.key === "Escape") {
+                                        buttonRef.current?.focus();
+                                      }
+                                    }}
+                                    onBlur={(event) => {
+                                      if (
+                                        inputRef.current?.value !== discPer &&
+                                        inputRef.current?.value.trim() !== ""
+                                      ) {
+                                        fetcher.submit(event.currentTarget);
+                                      }
+                                    }}
+                                  />
+                                  <Percent className="absolute right-10 top-[8px] h-4 w-4 text-foreground" />
+                                  <Button
+                                    type="submit"
+                                    size="icon"
+
+                                    disabled={!discPer}
+                                    className='bg-primary mr-2 absolute right-1.5 top-[8px] h-4 w-4 text-foreground '>
+                                    <PaperPlaneIcon className="h-4 w-4" />
+                                    <span className="sr-only">Cash</span>
+                                  </Button>
+                                </div>
+                              </fetcher.Form>
+
+                            </li>
+                          </>
+                        )}
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Tax</span>
+                          <span>{deFees.userTax}%</span>
+                        </li>
+                        <li className="flex items-center justify-between font-semibold">
+                          <span className="text-muted-foreground">Total</span>
+                          <span>${total}</span>
+                        </li>
+                      </ul>
+                      <Separator className="my-4" />
+                      <div className="grid gap-3">
+                        <div className="font-semibold">Payment</div>
+                        <dl className="grid gap-3">
+
+                          <div className="flex flex-col" >
+                            <div className='flex items-center justify-center text-foreground'>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
+                                onClick={() => setPaymentType('Visa')}
+                              >
+                                <CreditCard className="h-4 w-4 text-foreground" />
+                                <p className="">Visa</p>
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
+                                onClick={() => setPaymentType('Mastercard')}
+                              >
+                                <CreditCard className="h-4 w-4 text-foreground" />
+                                <p className="">Mastercard</p>
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setPaymentType('Debit')}
+                                className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
+                              >
+                                <CreditCard className="h-4 w-4 text-foreground" />
+                                <p className="">Debit</p>
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setPaymentType('Cheque')}
+                                className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
+                              >
+                                <CreditCard className="h-4 w-4 text-foreground" />
+                                <p className="">Cheque</p>
+                              </Button>
+                            </div>
+                            <div className='flex items-center justify-center text-foreground mt-2'>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
+                                onClick={() => setPaymentType('Cash')}
+                              >
+                                <BanknoteIcon className="h-4 w-4 text-foreground" />
+                                <p className="">Cash</p>
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
+                                onClick={() => setPaymentType('Online Transaction')}
+                              >
+                                <PanelTop className="h-4 w-4 text-foreground" />
+                                <p className="">Online Transaction</p>
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
+                                onClick={() => setPaymentType('E-Transfer')}
+                              >
+                                <PanelTop className="h-4 w-4 text-foreground" />
+                                <p className="">E-Transfer</p>
+                              </Button>
+                            </div>
+                          </div>
+                        </dl>
+                      </div>
+                      <div className="grid gap-3">
+                        <ul className="grid gap-3">
+                          {order.Payments && order.Payments.map((result, index) => (
+                            <li className="flex items-center justify-between" key={index}                    >
+                              <span className="text-muted-foreground">{result.paymentType}</span>
+                              <span>${result.amountPaid}</span>
+                            </li>
+                          ))}
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Balance</span>
+                            <span>${remaining}</span>
+
+                          </li>
+                          {remaining === 0 && (
+                            <li className="flex items-center justify-between">
+                              <span className="text-muted-foreground"></span>
+                              <Badge className='bg-[#30A46C]'>PAID</Badge>
+                            </li>
+                          )}
+                          {paymentType !== '' && (
+                            <>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
+                                <payment.Form method="post" ref={formRef} >
+                                  <input type='hidden' name='accOrderId' value={order.id} />
+                                  <input type='hidden' name='paymentType' value={paymentType} />
+                                  <input type='hidden' name='remaining' value={remaining} />
+                                  <input type='hidden' name='intent' value='createPayment' />
+                                  <input type='hidden' name='total' value={total} />
+                                  <div className="relative ml-auto flex-1 md:grow-0 ">
+                                    <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                      name='amountPaid'
+                                      className='text-right pr-9'
+                                      value={input}
+                                      onChange={(event) => setInput(event.target.value)}
+                                    />
+                                    <Button
+                                      type="submit"
+                                      size="icon"
+                                      onClick={() => {
+                                        toast.success(`Payment rendered!`)
+                                      }}
+                                      disabled={inputLength === 0}
+                                      className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                                      <PaperPlaneIcon className="h-4 w-4" />
+                                      <span className="sr-only">Cash</span>
+                                    </Button>
+                                  </div>
+                                </payment.Form>
+                              </li>
+                            </>
+                          )}
+
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
+                    <div className="text-xs text-muted-foreground flex items-center justify-between">
+                      <div>
+                        <Badge size='sm' className='text-foreground text-center mx-auto w-auto'>
+                          {salesPerson.name}
+                        </Badge>
+                      </div>
+
+                      <ClientOnly fallback={<p>Fallback component ...</p>}>
+                        {() => (
+                          <React.Suspense fallback={<div>Loading...</div>}>
+                            <Button
+                              variant='outline'
+                              className='bg-background text-foreground border-border border ml-3'
+                              onClick={() => {
+                                console.log(toReceipt)
+                                PrintReceipt(toReceipt)
+                              }}>
+                              Print Receipt
+                            </Button>
+                          </React.Suspense>
+                        )}
+                      </ClientOnly>
+
+                    </div>
+                  </CardFooter>
+                </Card>
+              </div >
+            ))}
+          </div>
+        )}
+
+
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+        <div>
+        </div>
+      </CardFooter>
+    </Card>
+  )
+}
+function WorkOrders({ finance }) {
+  return (
+    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <CardTitle className="group flex items-center gap-2 text-lg">
+          Client Info
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+        {WorkOrder && WorkOrder.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold">Work Orders</h3>
+            <ul>
+              {WorkOrder.map((workOrder) => (
+                <li key={workOrder.id} className="mb-2 p-2 border rounded">
+                  <p><strong>ID:</strong> {workOrder.id}</p>
+                  <p><strong>Title:</strong> {workOrder.title}</p>
+                  <p><strong>Status:</strong> {workOrder.status}</p>
+                  {/* Add other WorkOrder fields as needed */}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+        <div>
+        </div>
+      </CardFooter>
+    </Card>
+  )
+}
+function AccOrders({ finance }) {
+  return (
+    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <CardTitle className="group flex items-center gap-2 text-lg">
+          Client Info
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+        {/* AccOrder Data */}
+        {AccOrder && AccOrder.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold">Accessory Orders</h3>
+            <ul>
+              {AccOrder.map((order) => (
+                <li key={order.id} className="mb-2 p-2 border rounded">
+                  <p><strong>ID:</strong> {order.id}</p>
+                  <p><strong>Description:</strong> {order.description}</p>
+                  {/* Add other AccOrder fields as needed */}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+        <div>
+        </div>
+      </CardFooter>
+    </Card>
+  )
 }
 
-
-export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
-  const location = useLocation();
-  const pathname = location.pathname
-  console.log(pathname)
+function CustomerBikes({ finance, fetcher }) {
+  let customerCard = [
+    { name: "paintPrem", value: data.paintPrem, label: "billingAddress", },
+    { name: "licensing", value: data.licensing, label: "billingAddress", },
+    { name: "stockNum", value: data.stockNum, label: "billingAddress", },
+    { name: "options", value: data.options, label: "billingAddress", },
+    { name: "accessories", value: data.accessories, label: "billingAddress", },
+    { name: "freight", value: data.freight, label: "billingAddress", },
+    { name: "labour", value: data.labour, label: "billingAddress", },
+    { name: "year", value: data.year, label: "billingAddress", },
+    { name: "brand", value: data.brand, label: "billingAddress", },
+    { name: "mileage", value: data.mileage, label: "billingAddress", },
+    { name: "model", value: data.model, label: "billingAddress", },
+    { name: "model1", value: data.model1, label: "billingAddress", },
+    { name: "color", value: data.color, label: "billingAddress", },
+    { name: "modelCode", value: data.modelCode, label: "billingAddress", },
+    { name: "msrp", value: data.msrp, label: "billingAddress", },
+    { name: "trim", value: data.trim, label: "billingAddress", },
+    { name: "vin", value: data.vin, label: "billingAddress", },
+    { name: "bikeStatus", value: data.bikeStatus, label: "billingAddress", },
+    { name: "invId", value: data.invId, label: "billingAddress", },
+    { name: "location", value: data.location, label: "billingAddress", },
+    { name: "id", value: data.id, label: "billingAddress", },
+    { name: "createdAt", value: data.createdAt, label: "billingAddress", },
+    { name: "updatedAt", value: data.updatedAt, label: "billingAddress", },
+    { name: "financeId", value: data.financeId, label: "billingAddress", },
+  ];
   return (
-    <nav
-      className={cn(
-        "flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
-        className
-      )}
-      {...props}
+    <Card
+      className="overflow-hidden rounded-lg text-foreground"
+      x-chunk="dashboard-05-chunk-4"
     >
-      {items.map((item) => (
+      <Form method='post'>
 
-        <Button
-          className={cn(
-            buttonVariants({ variant: "ghost" }),
-            pathname === item.to
-              ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
-              : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
-            "justify-start w-[90%] "
-          )} >
-          {item.title}
-        </Button>
-      ))
-      }
-    </nav >
+        <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+          <div className="grid gap-0.5">
+            <CardTitle className="group flex items-center gap-2 text-lg">
+              Client Bikes Bought From Dealer
+              <Button
+                size="icon"
+                variant="outline"
+                className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+              >
+                <Copy className="h-3 w-3" />
+                <span className="sr-only">
+
+                </span>
+              </Button>
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+          <div className="grid h-auto  max-h-[65vh] grid-cols-2 gap-3 mt-5">
+
+
+            {customerCard.map((user, index) => (
+              <div key={index} className="relative mt-5">
+                <Input
+                  name={user.name}
+                  defaultValue={user.value}
+                  className={` border border-border bg-background text-foreground`}
+                />
+                <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                  {user.label}
+                </label>
+              </div>
+            ))}
+            <div className="relative mt-5  ">
+              <Select
+                onValueChange={(value) => {
+                  const formData = new FormData();
+                  formData.append("id", data.id);
+                  formData.append("typeOfContact", value);
+                  formData.append("intent", 'typeOfContact');
+                  console.log(formData, 'formData');
+                  fetcher.submit(formData, { method: "post" });
+                }}
+                defaultValue={data.typeOfContact}
+                name='typeOfContact'>
+                <SelectTrigger className="w-full focus:border-primary">
+                  <SelectValue placeholder='Type Of Contact' />
+                </SelectTrigger>
+                <SelectContent className=' bg-background text-foreground border border-border' >
+                  <SelectGroup>
+                    <SelectLabel>Contact Method</SelectLabel>
+                    <SelectItem value="Phone">Phone</SelectItem>
+                    <SelectItem value="InPerson">In-Person</SelectItem>
+                    <SelectItem value="SMS">SMS</SelectItem>
+                    <SelectItem value="Email">Email</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                Type Of Contact
+              </label>
+            </div>
+            <div className="relative mt-5  ">
+              <Select
+                onValueChange={(value) => {
+                  const formData = new FormData();
+                  formData.append("id", data.id);
+                  formData.append("timeToContact", value);
+                  formData.append("intent", 'timeToContact');
+                  console.log(formData, 'formData');
+                  fetcher.submit(formData, { method: "post" });
+                }}
+                defaultValue={data.timeToContact}
+                name='timeToContact'>
+                <SelectTrigger className="w-full focus:border-primary">
+                  <SelectValue placeholder='Time To Contact' />
+                </SelectTrigger>
+                <SelectContent className=' bg-background text-foreground border border-border' >
+                  <SelectGroup>
+                    <SelectLabel>Best Time To Contact</SelectLabel>
+                    <SelectItem value="Morning">Morning</SelectItem>
+                    <SelectItem value="Afternoon">Afternoon</SelectItem>
+                    <SelectItem value="Evening">Evening</SelectItem>
+                    <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                Time To Contact
+              </label>
+            </div>
+            <input type='hidden' name='id' value={data.id} />
+
+          </div>
+
+        </CardContent>
+        <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+          <div>
+            <Button type='submit' name='intent' value='updateClient' size='sm' >Save</Button>
+          </div>
+        </CardFooter>
+
+      </Form>
+
+    </Card>
+  )
+}
+function ServiceUnit({ finance, fetcher }) {
+  let customerCard = [
+
+    { name: "id", value: data.id, label: "billingAddress", },
+    { name: "createdAt", value: data.createdAt, label: "billingAddress", },
+    { name: "updatedAt", value: data.updatedAt, label: "billingAddress", },
+    { name: "price", value: data.price, label: "billingAddress", },
+    { name: "brand", value: data.brand, label: "billingAddress", },
+    { name: "model", value: data.model, label: "billingAddress", },
+    { name: "color", value: data.color, label: "billingAddress", },
+    { name: "accessories", value: data.accessories, label: "billingAddress", },
+    { name: "options", value: data.options, label: "billingAddress", },
+    { name: "year", value: data.year, label: "billingAddress", },
+    { name: "vin", value: data.vin, label: "billingAddress", },
+    { name: "trim", value: data.trim, label: "billingAddress", },
+    { name: "mileage", value: data.mileage, label: "billingAddress", },
+    { name: "location", value: data.location, label: "billingAddress", },
+    { name: "condition", value: data.condition, label: "billingAddress", },
+    { name: "repairs", value: data.repairs, label: "billingAddress", },
+    { name: "stockNum", value: data.stockNum, label: "billingAddress", },
+    { name: "motor", value: data.motor, label: "billingAddress", },
+    { name: "tag", value: data.tag, label: "billingAddress", },
+    { name: "licensing", value: data.licensing, label: "billingAddress", },
+    { name: "tradeEval", value: data.tradeEval, label: "billingAddress", },
+    { name: "clientfileId", value: data.clientfileId, label: "billingAddress", },
+  ];
+  return (
+    <Card
+      className="overflow-hidden rounded-lg text-foreground"
+      x-chunk="dashboard-05-chunk-4"
+    >
+      <Form method='post'>
+
+        <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+          <div className="grid gap-0.5">
+            <CardTitle className="group flex items-center gap-2 text-lg">
+              Client Bikes Bought Else Where
+
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+          <div className="grid h-auto  max-h-[65vh] grid-cols-2 gap-3 mt-5">
+
+
+            {customerCard.map((user, index) => (
+              <div key={index} className="relative mt-5">
+                <Input
+                  name={user.name}
+                  defaultValue={user.value}
+                  className={` border border-border bg-background text-foreground`}
+                />
+                <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                  {user.label}
+                </label>
+              </div>
+            ))}
+            <div className="relative mt-5  ">
+              <Select
+                onValueChange={(value) => {
+                  const formData = new FormData();
+                  formData.append("id", data.id);
+                  formData.append("typeOfContact", value);
+                  formData.append("intent", 'typeOfContact');
+                  console.log(formData, 'formData');
+                  fetcher.submit(formData, { method: "post" });
+                }}
+                defaultValue={data.typeOfContact}
+                name='typeOfContact'>
+                <SelectTrigger className="w-full focus:border-primary">
+                  <SelectValue placeholder='Type Of Contact' />
+                </SelectTrigger>
+                <SelectContent className=' bg-background text-foreground border border-border' >
+                  <SelectGroup>
+                    <SelectLabel>Contact Method</SelectLabel>
+                    <SelectItem value="Phone">Phone</SelectItem>
+                    <SelectItem value="InPerson">In-Person</SelectItem>
+                    <SelectItem value="SMS">SMS</SelectItem>
+                    <SelectItem value="Email">Email</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                Type Of Contact
+              </label>
+            </div>
+            <div className="relative mt-5  ">
+              <Select
+                onValueChange={(value) => {
+                  const formData = new FormData();
+                  formData.append("id", data.id);
+                  formData.append("timeToContact", value);
+                  formData.append("intent", 'timeToContact');
+                  console.log(formData, 'formData');
+                  fetcher.submit(formData, { method: "post" });
+                }}
+                defaultValue={data.timeToContact}
+                name='timeToContact'>
+                <SelectTrigger className="w-full focus:border-primary">
+                  <SelectValue placeholder='Time To Contact' />
+                </SelectTrigger>
+                <SelectContent className=' bg-background text-foreground border border-border' >
+                  <SelectGroup>
+                    <SelectLabel>Best Time To Contact</SelectLabel>
+                    <SelectItem value="Morning">Morning</SelectItem>
+                    <SelectItem value="Afternoon">Afternoon</SelectItem>
+                    <SelectItem value="Evening">Evening</SelectItem>
+                    <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                Time To Contact
+              </label>
+            </div>
+            <input type='hidden' name='id' value={data.id} />
+
+          </div>
+
+        </CardContent>
+        <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+          <div>
+            <Button type='submit' name='intent' value='updateClient' size='sm' >Save</Button>
+          </div>
+        </CardFooter>
+
+      </Form>
+
+    </Card>
+  )
+}
+function FinanceTradeUnit({ finance, fetcher }) {
+  let customerCard = [
+
+    { name: "id", value: data.id, label: "billingAddress", },
+    { name: "createdAt", value: data.createdAt, label: "billingAddress", },
+    { name: "updatedAt", value: data.updatedAt, label: "billingAddress", },
+    { name: "financeId", value: data.financeId, label: "billingAddress", },
+    { name: "price", value: data.price, label: "billingAddress", },
+    { name: "brand", value: data.brand, label: "billingAddress", },
+    { name: "model", value: data.model, label: "billingAddress", },
+    { name: "color", value: data.color, label: "billingAddress", },
+    { name: "accessories", value: data.accessories, label: "billingAddress", },
+    { name: "options", value: data.options, label: "billingAddress", },
+    { name: "year", value: data.year, label: "billingAddress", },
+    { name: "vin", value: data.vin, label: "billingAddress", },
+    { name: "trim", value: data.trim, label: "billingAddress", },
+    { name: "mileage", value: data.mileage, label: "billingAddress", },
+    { name: "location", value: data.location, label: "billingAddress", },
+    { name: "condition", value: data.condition, label: "billingAddress", },
+    { name: "repairs", value: data.repairs, label: "billingAddress", },
+    { name: "stockNum", value: data.stockNum, label: "billingAddress", },
+    { name: "licensing", value: data.licensing, label: "billingAddress", },
+    { name: "tradeEval", value: data.tradeEval, label: "billingAddress", },
+  ];
+  return (
+    <Card
+      className="overflow-hidden rounded-lg text-foreground"
+      x-chunk="dashboard-05-chunk-4"
+    >
+      <Form method='post'>
+
+        <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+          <div className="grid gap-0.5">
+            <CardTitle className="group flex items-center gap-2 text-lg">
+              Client Bikes Bought Else Where
+
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+          <div className="grid h-auto  max-h-[65vh] grid-cols-2 gap-3 mt-5">
+
+
+            {customerCard.map((user, index) => (
+              <div key={index} className="relative mt-5">
+                <Input
+                  name={user.name}
+                  defaultValue={user.value}
+                  className={` border border-border bg-background text-foreground`}
+                />
+                <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                  {user.label}
+                </label>
+              </div>
+            ))}
+            <div className="relative mt-5  ">
+              <Select
+                onValueChange={(value) => {
+                  const formData = new FormData();
+                  formData.append("id", data.id);
+                  formData.append("typeOfContact", value);
+                  formData.append("intent", 'typeOfContact');
+                  console.log(formData, 'formData');
+                  fetcher.submit(formData, { method: "post" });
+                }}
+                defaultValue={data.typeOfContact}
+                name='typeOfContact'>
+                <SelectTrigger className="w-full focus:border-primary">
+                  <SelectValue placeholder='Type Of Contact' />
+                </SelectTrigger>
+                <SelectContent className=' bg-background text-foreground border border-border' >
+                  <SelectGroup>
+                    <SelectLabel>Contact Method</SelectLabel>
+                    <SelectItem value="Phone">Phone</SelectItem>
+                    <SelectItem value="InPerson">In-Person</SelectItem>
+                    <SelectItem value="SMS">SMS</SelectItem>
+                    <SelectItem value="Email">Email</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                Type Of Contact
+              </label>
+            </div>
+            <div className="relative mt-5  ">
+              <Select
+                onValueChange={(value) => {
+                  const formData = new FormData();
+                  formData.append("id", data.id);
+                  formData.append("timeToContact", value);
+                  formData.append("intent", 'timeToContact');
+                  console.log(formData, 'formData');
+                  fetcher.submit(formData, { method: "post" });
+                }}
+                defaultValue={data.timeToContact}
+                name='timeToContact'>
+                <SelectTrigger className="w-full focus:border-primary">
+                  <SelectValue placeholder='Time To Contact' />
+                </SelectTrigger>
+                <SelectContent className=' bg-background text-foreground border border-border' >
+                  <SelectGroup>
+                    <SelectLabel>Best Time To Contact</SelectLabel>
+                    <SelectItem value="Morning">Morning</SelectItem>
+                    <SelectItem value="Afternoon">Afternoon</SelectItem>
+                    <SelectItem value="Evening">Evening</SelectItem>
+                    <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                Time To Contact
+              </label>
+            </div>
+            <input type='hidden' name='id' value={data.id} />
+
+          </div>
+
+        </CardContent>
+        <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+          <div>
+            <Button type='submit' name='intent' value='updateClient' size='sm' >Save</Button>
+          </div>
+        </CardFooter>
+
+      </Form>
+
+    </Card>
+  )
+}
+function PaymentsFinance({ finance, fetcher, data }) {
+  let customerCard = [
+
+    { name: "id", value: data.id, label: "billingAddress", },
+    { name: "createdAt", value: data.createdAt, label: "billingAddress", },
+    { name: "updatedAt", value: data.updatedAt, label: "billingAddress", },
+    { name: "financeId", value: data.financeId, label: "billingAddress", },
+    { name: "price", value: data.price, label: "billingAddress", },
+    { name: "brand", value: data.brand, label: "billingAddress", },
+    { name: "model", value: data.model, label: "billingAddress", },
+    { name: "color", value: data.color, label: "billingAddress", },
+    { name: "accessories", value: data.accessories, label: "billingAddress", },
+    { name: "options", value: data.options, label: "billingAddress", },
+    { name: "year", value: data.year, label: "billingAddress", },
+    { name: "vin", value: data.vin, label: "billingAddress", },
+    { name: "trim", value: data.trim, label: "billingAddress", },
+    { name: "mileage", value: data.mileage, label: "billingAddress", },
+    { name: "location", value: data.location, label: "billingAddress", },
+    { name: "condition", value: data.condition, label: "billingAddress", },
+    { name: "repairs", value: data.repairs, label: "billingAddress", },
+    { name: "stockNum", value: data.stockNum, label: "billingAddress", },
+    { name: "licensing", value: data.licensing, label: "billingAddress", },
+    { name: "tradeEval", value: data.tradeEval, label: "billingAddress", },
+  ];
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <div className="grid gap-0.5">
+          <CardTitle className="group flex items-center gap-2 text-lg">
+            Deposits
+          </CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
+        <div>
+          <ul className="grid gap-3">
+            <li className="flex items-center justify-between">
+              <span className="text-muted-foreground">Subtotal</span>
+              <span>${financeSubTotal}</span>
+            </li>
+            {finance.discount !== 0 && (
+              <li className="flex items-center justify-between">
+                <span className="text-muted-foreground">Discount</span>
+                <span>{finance.discount}</span>
+              </li>
+            )}
+            {finance.discount !== 0 && (
+              <li className="flex items-center justify-between">
+                <span className="text-muted-foreground">Discount</span>
+                <span>{finance.discount}</span>
+              </li>
+            )}
+            <li className="flex items-center justify-between">
+              <span className="text-muted-foreground">Tax</span>
+              <span>{deFees.userTax}%</span>
+            </li>
+            <li className="flex items-center justify-between font-semibold">
+              <span className="text-muted-foreground">Total</span>
+              <span>${financeTotal}</span>
+            </li>
+          </ul>
+        </div>
+        <Separator className="my-4" />
+        <div className="grid gap-3">
+          <div className="font-semibold">Payment</div>
+          <dl className="grid gap-3">
+
+            <div className="flex flex-col" >
+              <div className='flex items-center justify-center text-foreground'>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
+                  onClick={() => setPaymentType('Visa')}
+                >
+                  <CreditCard className="h-4 w-4 text-foreground" />
+                  <p className="">Visa</p>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
+                  onClick={() => setPaymentType('Mastercard')}
+                >
+                  <CreditCard className="h-4 w-4 text-foreground" />
+                  <p className="">Mastercard</p>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPaymentType('Debit')}
+                  className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
+                >
+                  <CreditCard className="h-4 w-4 text-foreground" />
+                  <p className="">Debit</p>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPaymentType('Cheque')}
+                  className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
+                >
+                  <CreditCard className="h-4 w-4 text-foreground" />
+                  <p className="">Cheque</p>
+                </Button>
+              </div>
+              <div className='flex items-center justify-center text-foreground mt-2'>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
+                  onClick={() => setPaymentType('Cash')}
+                >
+                  <BanknoteIcon className="h-4 w-4 text-foreground" />
+                  <p className="">Cash</p>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
+                  onClick={() => setPaymentType('Online Transaction')}
+                >
+                  <PanelTop className="h-4 w-4 text-foreground" />
+                  <p className="">Online Transaction</p>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
+                  onClick={() => setPaymentType('E-Transfer')}
+                >
+                  <PanelTop className="h-4 w-4 text-foreground" />
+                  <p className="">E-Transfer</p>
+                </Button>
+              </div>
+            </div>
+          </dl>
+        </div>
+        <div className="grid gap-3">
+          <ul className="grid gap-3 mt-3">
+            {finance.Payments && finance.Payments.map((result, index) => (
+              <li className="flex items-center justify-between" key={index}                    >
+                <span className="text-muted-foreground">{result.paymentType}</span>
+                <span>${result.amountPaid}</span>
+              </li>
+            ))}
+            <li className="flex items-center justify-between">
+              <span className="text-muted-foreground">Balance </span>
+              <span>${Number(financeTotal).toFixed(2) - Number(totalAmountPaidFinance).toFixed(2)}</span>
+
+            </li>
+            {parseFloat(total) - parseFloat(totalAmountPaid) === 0 && (
+              <input type='hidden' name='status' value='Fulfilled' />
+            )}
+
+
+          </ul>
+          {paymentType !== '' && (
+            <div className='mx-auto'>
+              <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2 mt-3 mx-auto" >
+                <input type='hidden' name='financeId' defaultValue={finance.id} />
+                <input type='hidden' name='userEmail' defaultValue={user.email} />
+                <input type='hidden' name='paymentType' value={paymentType} />
+                <div className="relative mt-4">
+                  <Input
+                    name='cardNum'
+                    className=''
+
+                  />
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Card #</label>
+                </div>
+
+
+                <div className="relative mt-4">
+                  <Input
+                    name='receiptId'
+                    className=' '
+                  />
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Receipt Number</label>
+                </div>
+
+
+                <div className="relative ml-auto flex-1 md:grow-0 mt-4 ">
+                  <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    name='amountPaid'
+                    className='text-right pr-9 w-[150px] '
+                    value={input}
+                    onChange={(event) => setInput(event.target.value)}
+                  />
+
+                  <Button
+                    value="createFinancePayment"
+                    type="submit"
+                    name="intent"
+                    size="icon"
+                    onClick={() => {
+                      toast.success(`Payment rendered!`)
+                    }}
+                    disabled={inputLength === 0}
+                    className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                    <PaperPlaneIcon className="h-4 w-4" />
+                    <span className="sr-only">Cash</span>
+                  </Button>
+                </div>
+              </fetcher.Form>
+            </div>
+          )}
+        </div>
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+        <p className='text-muted-foreground'> {finance.updatedAt}</p>
+      </CardFooter>
+    </Card>
+  )
+}
+function FinanceNotes({ finance, fetcher, input, user, formRef, setInput, inputLength }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <div className="grid gap-0.5">
+          <CardTitle className="group flex items-center gap-2 text-lg">
+            Notes
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+            >
+              <Copy className="h-3 w-3" />
+              <span className="sr-only">To leave yourself or your colleagues notes regarding the customer.</span>
+            </Button>
+          </CardTitle>
+        </div>
+        <div className="ml-auto flex items-center gap-1">
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="ml-auto rounded-full"
+                  onClick={() => setOpen(true)}
+                >
+                  <PlusIcon className="h-4 w-4" />
+                  <span className="sr-only">CC Employee</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </CardHeader>
+      <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
+        <div className="grid gap-3 ">
+          <Card className=" flex flex-col-reverse  max-h-[50vh] h-auto overflow-y-auto">
+            <CardContent>
+              <div className="space-y-4 mt-5">
+
+                {financeNotes.slice().reverse().map((message, index) => (
+                  <div
+                    key={index}
+                    className={cn(
+                      "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                      message.userEmail === user.email
+                        ? "ml-auto bg-primary text-foreground"
+                        : "bg-[#262626]"
+                    )}
+                  >
+                    <div className='grid grid-cols-1'>
+                      {message.userEmail !== user.email && (
+                        <p className='text-[#8c8c8c]'>
+                          {message.userName}
+                        </p>
+                      )}
+                      {message.body}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+
+          </Card>
+
+        </div>
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+
+        <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
+          <input type='hidden' name='financeId' defaultValue={finance.id} />
+          <input type='hidden' name='userEmail' defaultValue={user.email} />
+          <input type='hidden' name='clientfileId' defaultValue={finance.clientfileId} />
+          <input type='hidden' name='userName' defaultValue={user.name} />
+          <Input
+            id="message"
+            placeholder="Type your message..."
+            className="flex-1  bg-muted/50  border-border"
+            autoComplete="off"
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            name="body"
+          />
+          <Button
+            value="saveFinanceNote"
+            type="submit"
+            name="intent"
+            size="icon"
+            onClick={() => {
+              toast.success(`Note saved`)
+            }}
+            disabled={inputLength === 0}
+            className='bg-primary '>
+            <PaperPlaneIcon className="h-4 w-4" />
+            <span className="sr-only">Send</span>
+          </Button>
+
+        </fetcher.Form>
+      </CardFooter>
+    </Card>
+  )
+}
+function FinanceProducts({ finance }) {
+  return (
+    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <CardTitle className="group flex items-center gap-2 text-lg">
+          Client Info
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+
+
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+        <div>
+        </div>
+      </CardFooter>
+    </Card>
+  )
+}
+
+function Blank({ finance }) {
+  return (
+    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <CardTitle className="group flex items-center gap-2 text-lg">
+          Client Info
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+
+
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+        <div>
+        </div>
+      </CardFooter>
+    </Card>
   )
 }

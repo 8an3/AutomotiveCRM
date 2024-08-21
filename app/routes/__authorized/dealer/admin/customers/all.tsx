@@ -110,7 +110,7 @@ import { prisma } from '~/libs';
 
 
 export default function MainDashbaord() {
-  const { user, clients } = useLoaderData();
+  const { user, clients, deFees, salesPerson } = useLoaderData();
   const [data, setPaymentData,] = useState(clients);
   /**
     useEffect(() => {
@@ -172,7 +172,7 @@ export default function MainDashbaord() {
       cell: ({ row, column: { id } }) => {
         const data = row.original
         return (
-          <ClientDialog data={data} user={user} />
+          <ClientDialog data={data} user={user} deFees={deFees} salesPerson={salesPerson} />
         )
       },
     },
@@ -1314,7 +1314,6 @@ export async function loader({ request, params }: LoaderFunction) {
           },
         },
       },
-
       WorkOrder: {
         select: {
           workOrderId: true,
@@ -1536,8 +1535,6 @@ export async function loader({ request, params }: LoaderFunction) {
       },
       Finance: {
         select: {
-          // Finance fields
-          id: true,
           financeManager: true,
           userEmail: true,
           userName: true,
@@ -1674,15 +1671,42 @@ export async function loader({ request, params }: LoaderFunction) {
           firstPayment: true,
           loanMaturity: true,
           quoted: true,
-
-          // Calls
           InPerson: true,
           Phone: true,
           SMS: true,
           Email: true,
           Other: true,
-
-          // Relations
+          paintPrem: true,
+          licensing: true,
+          stockNum: true,
+          options: true,
+          accessories: true,
+          freight: true,
+          labour: true,
+          year: true,
+          brand: true,
+          mileage: true,
+          model: true,
+          model1: true,
+          color: true,
+          modelCode: true,
+          msrp: true,
+          trim: true,
+          vin: true,
+          bikeStatus: true,
+          invId: true,
+          motor: true,
+          tag: true,
+          tradeValue: true,
+          tradeDesc: true,
+          tradeColor: true,
+          tradeYear: true,
+          tradeMake: true,
+          tradeVin: true,
+          tradeTrim: true,
+          tradeMileage: true,
+          tradeLocation: true,
+          lien: true,
           financeStorage: {
             select: {
               id: true,
@@ -2142,10 +2166,13 @@ export async function loader({ request, params }: LoaderFunction) {
           },
         }
       },
-
     }
   });
-  return json({ user, clients })
+  const deFees = await prisma.dealer.findUnique({ where: { id: 1 } })
+  const salesPerson = await prisma.user.findUnique({
+    where: { email: user.email }
+  })
+  return json({ user, clients, deFees, salesPerson })
 }
 
 export let action = dashboardAction

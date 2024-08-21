@@ -339,8 +339,6 @@ export async function loader({ request, params }: LoaderFunction) {
       },
       Finance: {
         select: {
-          // Finance fields
-          id: true,
           financeManager: true,
           userEmail: true,
           userName: true,
@@ -477,14 +475,42 @@ export async function loader({ request, params }: LoaderFunction) {
           firstPayment: true,
           loanMaturity: true,
           quoted: true,
-
-          // Calls
           InPerson: true,
           Phone: true,
           SMS: true,
           Email: true,
           Other: true,
-
+          paintPrem: true,
+          licensing: true,
+          stockNum: true,
+          options: true,
+          accessories: true,
+          freight: true,
+          labour: true,
+          year: true,
+          brand: true,
+          mileage: true,
+          model: true,
+          model1: true,
+          color: true,
+          modelCode: true,
+          msrp: true,
+          trim: true,
+          vin: true,
+          bikeStatus: true,
+          invId: true,
+          motor: true,
+          tag: true,
+          tradeValue: true,
+          tradeDesc: true,
+          tradeColor: true,
+          tradeYear: true,
+          tradeMake: true,
+          tradeVin: true,
+          tradeTrim: true,
+          tradeMileage: true,
+          tradeLocation: true,
+          lien: true,
           // Relations
           financeStorage: {
             select: {

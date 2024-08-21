@@ -104,7 +104,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select"
-import PrintReceipt from "../document/printReceiptAcc";
 import QRCode from 'react-qr-code';
 import { Label, TextArea } from '~/components';
 import {
@@ -128,6 +127,8 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "~/components/ui/context-menu"
+import { ClientOnly } from "remix-utils";
+import PrintReceipt from "../document/printReceiptAcc";
 
 
 export function playScanSound() {
@@ -491,6 +492,8 @@ export default function Purchase() {
   let search = useFetcher();
   let fetcher = useFetcher();
   const submit = useSubmit()
+
+
 
   const taxMultiplier = Number(tax.userTax);
   const taxRate = 1 + taxMultiplier / 100;

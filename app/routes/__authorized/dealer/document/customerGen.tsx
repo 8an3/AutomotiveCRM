@@ -46,7 +46,6 @@ import {
     Truck,
     Users2,
 } from "lucide-react"
-import { generate } from "@pdfme/generator";
 import { ClientOnly } from "remix-utils";
 export default function CustomerGen() {
 
