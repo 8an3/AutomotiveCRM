@@ -437,55 +437,48 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     },
   ];
 
+
   const [selectedContent, setSelectedContent] = useState<string | null>(null);
-  const [finance, setFinance] = useState<any>(null);
+  const [selectedFinance, setSelectedFinance] = useState<any>(null);
 
-  const handleSelect = (value: string) => {
-    setSelectedContent(value);
+  const handleContentChange = (content: string, finance?: any) => {
+    setSelectedContent(content);
+    setSelectedFinance(finance || null);
   };
 
-  const handleFinanceChange = (data: any) => {
-    setFinance(data);
-  };
+  const sidebarItems = [
+    ...staticSidebarItems,
+    ...generateSidebarItems(data.Finance),
+  ];
 
 
 
-  function SidebarNav({
-    className,
-    items,
-    onSelect,
-    onFinanceChange,
-    ...props
-  }: SidebarNavProps) {
-    const [selectedParent, setSelectedParent] = useState<string | null>(null);
+
+
+
+  function SidebarNav({ className, items, onFinanceChange, ...props }: SidebarNavProps) {
+    const [selectedContent, setSelectedContent] = useState<string | null>(null);
     const [openSections, setOpenSections] = useState<Set<string>>(new Set());
 
     const handleParentClick = (title: string) => {
       const newOpenSections = new Set(openSections);
-
-      // Close other sections
-      newOpenSections.clear();
-
-      // Toggle the clicked section
-      if (selectedParent === title) {
-        setSelectedParent(null);
+      if (newOpenSections.has(title)) {
+        newOpenSections.delete(title);
       } else {
         newOpenSections.add(title);
-        setSelectedParent(title);
       }
-
       setOpenSections(newOpenSections);
     };
 
     const handleItemClick = (value: string, data?: any) => {
-      onSelect(value);
+      setSelectedContent(value);
       if (data) {
-        onFinanceChange(data.finance);
+        onFinanceChange(value, data.finance); // Notify parent of the selected item
       }
     };
-
-    const renderItems = (items: SidebarNavItem[], isSubSection = false) => {
-      return items.map((item) => (
+    console.log(selectedContent, openSections, 'selectedContent,openSections')
+    const renderItems = (items: any[], isSubSection = false) => {
+      return items.map((item: any) => (
         <div key={item.title}>
           {item.section ? (
             <div>
@@ -513,7 +506,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
               key={item.value}
               className={cn(
                 "justify-start w-[90%]",
-                selectedParent && selectedParent === item.value
+                selectedContent === item.value
                   ? "bg-[#232324] hover:bg-muted/50 w-[90%]"
                   : "hover:bg-muted/50 text-[#a1a1aa] w-[90%]",
                 isSubSection ? "ml-4" : ""
@@ -540,12 +533,6 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     );
   }
 
-
-
-  const sidebarItems = [
-    ...staticSidebarItems,
-    ...generateSidebarItems(data.Finance),
-  ];
 
   const renderContent = (selectedContent, finance) => {
     console.log('Selected Content:', selectedContent);
@@ -616,7 +603,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
       <DialogTrigger asChild>
         <Button variant="outline">Client File</Button>
       </DialogTrigger>
-      <DialogContent className="w-auto max-w-[95%] border border-border md:max-w-[90%] h-auto max-h-[700px] overflow-y-auto">
+      <DialogContent className="w-auto max-w-[95%] border border-border md:max-w-[90%] h-[700px] max-h-[700px] overflow-y-auto">
         <DialogHeader>
         </DialogHeader>
         <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -647,8 +634,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
               <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
                 <SidebarNav
                   items={sidebarItems}
-                  onSelect={handleSelect}
-                  onFinanceChange={handleFinanceChange}
+                  onFinanceChange={handleContentChange}
                 />
               </CardContent>
               <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
@@ -659,7 +645,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
             </Card>
           </div>
           <div className="grid gap-4 md:gap-8 lg:col-span-2 ">
-            {renderContent(selectedContent, finance)}
+            {renderContent(selectedContent, selectedFinance)}
           </div>
         </div>
       </DialogContent>
