@@ -460,7 +460,7 @@ export default function ClientCard({ data }) {
                                 formData.append("clientfileId", data.clientfileId);
                                 formData.append("financeId", data.id);
                                 formData.append("intent", 'goToClientfile');
-                                fetcher.submit(formData, { method: "post" });
+                                submit(formData, { method: "post" });
 
                             }}
                         >

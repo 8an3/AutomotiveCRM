@@ -429,9 +429,14 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
   const leadLength = lead.length;
 
   const [swrURL, setSwrURL] = useState(`http://localhost:3000/dealer/notifications/notifications/${user.email}`)
-  if (host !== 'localhost:3000') {
-    setSwrURL(`https://www.dealersalesassistant.ca/dealer/notifications/notifications/${user.email}`)
-  }
+
+
+  useEffect(() => {
+    if (host !== 'localhost:3000') {
+      setSwrURL(`https://www.dealersalesassistant.ca/dealer/notifications/notifications/${user.email}`)
+    }
+  }, [host]);
+
 
   const dataFetcher = (url) => fetch(url).then(res => res.json());
   const { data, error, isLoading } = useSWR(swrURL, dataFetcher, { refreshInterval: 180000 });

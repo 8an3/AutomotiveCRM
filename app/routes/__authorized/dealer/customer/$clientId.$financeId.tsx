@@ -200,7 +200,7 @@ import { Wrench } from "lucide-react";
 import { Shirt } from "lucide-react";
 import PrintReceiptAcc from "../document/printReceiptAcc.client";
 import { Receipt } from "lucide-react";
-import WorkOrderSales from "~/components/leads/workOrderSales";
+import WorkOrderSales from "~/components/leads/workOrderSale.client";
 import {
   Accordion,
   AccordionContent,

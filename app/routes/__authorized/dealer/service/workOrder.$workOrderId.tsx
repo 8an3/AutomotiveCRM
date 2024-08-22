@@ -818,7 +818,7 @@ export default function Dashboard() {
                                 formData.append("workOrderId", order.workOrderId);
                                 formData.append("serviceId", result.id);
                                 formData.append("intent", 'addServiceToWorkOrder');
-                                submit(formData, { method: "post", });
+                                fetcher.submit(formData, { method: "post", });
                               }}>
                                 <div className="font-medium flex-col">
                                   <p className=' text-left'>{result.service}</p>

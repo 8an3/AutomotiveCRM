@@ -145,8 +145,21 @@ import {
 } from "~/components/ui/table"
 import { EditableText } from "~/components/actions/shared";
 import { Plus } from "lucide-react";
-
-
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+} from "~/components/ui/pagination"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer"
 export default function ClientDialog({ data, user, deFees, salesPerson }) {
   const { AccOrder, Finance, WorkOrder, } = data;
   const [paymentType, setPaymentType] = useState('');
@@ -164,6 +177,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
   const timerRef = useRef(0);
   const formRef = useRef();
   let sortedEvents = [];
+  const navigate = useNavigate()
 
 
 
@@ -381,19 +395,19 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
   ]
   function generateSidebarItems(financeData) {
     return financeData.map((finance) => ({
-      title: `${finance.year} ${finance.brand} ${finance.model}`, // Dynamic title
+      title: `${finance.year} ${finance.brand} ${finance.model}`,
       section: [
         { title: "Deal Info", value: `sales-dealInfo-${finance.id}`, data: { finance } },
         { title: "Appointments", value: `sales-appts-${finance.id}`, data: { finance } },
         { title: "Communications", value: `sales-comms-${finance.id}`, data: { finance } },
-        { title: "Customer Units", value: `sales-custUnits-${finance.id}`, data: { finance } },
-        { title: "Trade Units", value: `sales-trades-${finance.id}`, data: { finance } },
+        //   { title: "Customer Units", value: `sales-custUnits-${finance.id}`, data: { finance } },
+        //   { title: "Trade Units", value: `sales-trades-${finance.id}`, data: { finance } },
         { title: "Accessory Orders", value: `sales-accOrders-${finance.id}`, data: { finance } },
         { title: "Work Orders", value: `sales-workOrders-${finance.id}`, data: { finance } },
         { title: "Payments", value: `sales-payments-${finance.id}`, data: { finance } },
         { title: "Notes", value: `sales-notes-${finance.id}`, data: { finance } },
-        { title: "Finance Products", value: `sales-finProds-${finance.id}`, data: { finance } },
-        { title: "Document Storage", value: `sales-storage-${finance.id}`, data: { finance } },
+        //   { title: "Finance Products", value: `sales-finProds-${finance.id}`, data: { finance } },
+        //   { title: "Document Storage", value: `sales-storage-${finance.id}`, data: { finance } },
       ],
     }));
   }
@@ -403,8 +417,8 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     {
       title: "Work Orders",
       section: [
-        { title: "Work Orders", value: "wo-wo", data: { WorkOrder } },
-        { title: "Sales Units", value: "wo-salesUnits", data: { WorkOrder } },
+        { title: "Work Orders", value: "wo-workOrders", data: { WorkOrder } },
+        // { title: "Sales Units", value: "wo-salesUnits", data: { WorkOrder } },
         { title: "Service Units", value: "wo-servUnits", data: { WorkOrder } },
         { title: "PAC Orders", value: "wo-pacOrders", data: { WorkOrder } },
         { title: "Payments", value: "wo-payments", data: { WorkOrder } },
@@ -446,205 +460,251 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     setSelectedFinance(finance || null);
   };
 
-  const sidebarItems = [
-    ...staticSidebarItems,
-    ...generateSidebarItems(data.Finance),
-  ];
+
+  console.log(selectedContent, selectedFinance, 'new sidebar')
+
+  function SidebarItems({ className, finance, items, ...props }: SidebarNavProps) {
+    return (
+      <nav className={cn("flex space-x-2 flex-col lg:space-x-0 lg:space-y-1", className)} {...props} >
+        {items.map((item) => (
+          <Button
+            key={item.value}
+            onClick={() => {
+              setSelectedContent(item.value)
+              setSelectedFinance(finance || null);
+            }}
+            variant='ghost'
+            className={cn(
+              'justify-start text-left',
+              buttonVariants({ variant: 'ghost' }),
+              selectedContent === item.value
+                ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
+                : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
+              "justify-start w-[90%]"
+            )} >
+            {item.title}
+          </Button>
+        ))}
+      </nav>
+    )
+  }
 
 
+  function SidebarNav({ className, onFinanceChange, ...props }) {
+    const pac = [
+      { title: "PAC Orders", value: "pac-PAC", data: { AccOrder } },
+      { title: "AccHandoff", value: "pac-accHandoff", data: { AccOrder } },
+      { title: "Payments", value: "pac-payments", data: { AccOrder } },
+    ]
+    const accOnOrders = [
+      { title: 'Accessories on Orders', value: "accOnOrders-AOO", data: { AccOrder } },
+      { title: 'Accessory', value: "accOnOrders-acc", data: { AccOrder } },
+      { title: 'Order Inventory', value: "accOnOrders-orderInv", data: { AccOrder } },
+    ]
+    const workOrder = [
+      { title: "Work Orders", value: "wo-workOrders", data: { data } },
+      // { title: "Sales Units", value: "wo-salesUnits", data: { WorkOrder } },
+      { title: "Service Units", value: "wo-servUnits", data: { data } },
+      { title: "PAC Orders", value: "wo-pacOrders", data: { data } },
+      { title: "Payments", value: "wo-payments", data: { data } },
+      { title: "Work Order Appointments", value: "wo-appts", data: { data } },
+      { title: "Work Order Clock Entries", value: "wo-clockEntries", data: { data } },
+    ]
+    const serviceOnOrders = [
+      { title: 'Services on Orders', value: "servOnOrder-SOO", data: { data } },
+      { title: 'Service', value: "servOnOrder-payments", data: { data } },
+    ]
+    const client = [
+      { title: "Client Info", value: "client", data: { data } },
+    ]
 
 
-
-
-  function SidebarNav({ className, items, onFinanceChange, ...props }: SidebarNavProps) {
-    const [selectedContent, setSelectedContent] = useState<string | null>(null);
-    const [openSections, setOpenSections] = useState<Set<string>>(new Set());
-
-    const handleParentClick = (title: string) => {
-      const newOpenSections = new Set(openSections);
-      if (newOpenSections.has(title)) {
-        newOpenSections.delete(title);
-      } else {
-        newOpenSections.add(title);
-      }
-      setOpenSections(newOpenSections);
-    };
-
-    const handleItemClick = (value: string, data?: any) => {
-      setSelectedContent(value);
-      if (data) {
-        onFinanceChange(value, data.finance); // Notify parent of the selected item
-      }
-    };
-    console.log(selectedContent, openSections, 'selectedContent,openSections')
-    const renderItems = (items: any[], isSubSection = false) => {
-      return items.map((item: any) => (
-        <div key={item.title}>
-          {item.section ? (
-            <div>
-              <Button
-                variant="ghost"
-                className={cn(
-                  "justify-start w-[90%]",
-                  openSections.has(item.title)
-                    ? "bg-[#232324] hover:bg-muted/50 w-[90%]"
-                    : "hover:bg-muted/50 text-[#a1a1aa] w-[90%]"
-                )}
-                onClick={() => handleParentClick(item.title)}
-              >
-                {item.title}
-              </Button>
-              {openSections.has(item.title) && (
-                <div className="ml-4">
-                  {renderItems(item.section, true)}
-                </div>
-              )}
-            </div>
-          ) : (
-            <Button
-              variant="ghost"
-              key={item.value}
-              className={cn(
-                "justify-start w-[90%]",
-                selectedContent === item.value
-                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]"
-                  : "hover:bg-muted/50 text-[#a1a1aa] w-[90%]",
-                isSubSection ? "ml-4" : ""
-              )}
-              onClick={() => item.value && handleItemClick(item.value, item.data)}
-            >
-              {item.title}
-            </Button>
-          )}
-        </div>
-      ));
-    };
 
     return (
-      <nav
-        className={cn(
-          "flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
-          className
-        )}
-        {...props}
-      >
-        {renderItems(items)}
-      </nav>
+      <Drawer direction='top'
+        snapPoints={[0.5, 0.75, 1]}>
+        <DrawerTrigger >
+          <Button className='mr-auto' variant="outline">Menu</Button>
+        </DrawerTrigger>
+        <DrawerContent className='border-border'>
+          <div className="mx-auto w-full max-w-7xl">
+            <DrawerHeader>
+              <DrawerTitle>Client Data</DrawerTitle>
+              <DrawerDescription>Control all data for any client.</DrawerDescription>
+            </DrawerHeader>
+            <div className='grid grid-cols-6'>
+              <div>
+                <p>Client</p>
+                <Separator className="mb-4 border-border w-[90%]" />
+                <SidebarItems items={client} />
+                <Button
+                  variant='ghost'
+                  onClick={() => {
+                    navigate(`/dealer/customer/${data.id}/${data.Finance[0].id}`)
+                  }}
+                  className={cn(
+                    'justify-start text-left',
+                    buttonVariants({ variant: 'ghost' }),
+
+                    "justify-start   hover:bg-muted/50 text-[#a1a1aa]  w-[90%]   "
+                  )} >
+                  Client File
+                </Button>
+              </div>
+              <div>
+                <p>PAC Orders</p>
+                <Separator className="mb-4 border-border w-[90%]" />
+                <SidebarItems items={pac} finance={data} />
+                <p className='mt-4'>Accessories on Orders</p>
+                <Separator className="mb-4 border-border w-[90%]" />
+                <SidebarItems items={accOnOrders} finance={data} />
+              </div>
+              <div>
+                <p>Work Orders</p>
+                <Separator className="mb-4 border-border w-[90%]" />
+                <SidebarItems items={workOrder} finance={data} />
+                <p className='mt-4'>Services on Orders</p>
+                <Separator className="mb-4 border-border w-[90%]" />
+                <SidebarItems items={serviceOnOrders} finance={data} />
+              </div>
+              {data.Finance.map((finance) => {
+                const items = [
+                  { title: "Deal Info", value: `sales-dealInfo-${finance.id}`, data: { finance } },
+                  { title: "Appointments", value: `sales-appts-${finance.id}`, data: { finance } },
+                  { title: "Communications", value: `sales-comms-${finance.id}`, data: { finance } },
+                  //   { title: "Customer Units", value: `sales-custUnits-${finance.id}`, data: { finance } },
+                  //   { title: "Trade Units", value: `sales-trades-${finance.id}`, data: { finance } },
+                  { title: "Accessory Orders", value: `sales-accOrders-${finance.id}`, data: { finance } },
+                  { title: "Work Orders", value: `sales-workOrders-${finance.id}`, data: { finance } },
+                  { title: "Payments", value: `sales-payments-${finance.id}`, data: { finance } },
+                  { title: "Notes", value: `sales-notes-${finance.id}`, data: { finance } },
+                  //   { title: "Finance Products", value: `sales-finProds-${finance.id}`, data: { finance } },
+                  //   { title: "Document Storage", value: `sales-storage-${finance.id}`, data: { finance } },
+                ]
+
+                return (
+                  <div>
+                    <p> {finance.year} {finance.brand} {finance.model}</p>
+                    <Separator className="mb-4 border-border w-[90%]" />
+                    <SidebarItems items={items} finance={finance} />
+                  </div>
+                )
+              })}
+
+            </div>
+            <DrawerFooter>
+
+            </DrawerFooter>
+          </div>
+        </DrawerContent>
+      </Drawer>
     );
   }
 
+  /**  <Button
+            variant="ghost"
+            className={`justify-start w-[90%]  `}
+            onClick={() => {
+              navigate(`/dealer/customer/${data.id}/${data.Finance[0].id}`)
+            }}
+          >
+            Client File
+          </Button> */
 
   const renderContent = (selectedContent, finance) => {
     console.log('Selected Content:', selectedContent);
     console.log('Finance:', finance);
-    if (!finance) {
-      return <ClientInfo data={data} fetcher={fetcher} />
-
-    }
-    console.log(finance, 'in render')
+    if (!finance) { return <ClientInfo data={data} fetcher={fetcher} /> }
     switch (selectedContent) {
       // client
       case 'client':
         return <ClientInfo data={data} fetcher={fetcher} />
 
-      // sales
+      // work order
+      case `wo-workOrders`:
+        return <WorkOrders finance={finance} copyText={copyText} copiedText={copiedText} deFees={deFees} />;
+      case `wo-salesUnits`:
+        return null;
+      case `wo-servUnits`:
+        return null;
+      case `wo-pacOrders`:
+        return null;
+      case `wo-payments`:
+        return null;
+      case `wo-appts`:
+        return null;
+      case `wo-clockEntries`:
+        return null;
+      //-----
+      case `servOnOrder-SOO`:
+        return null;
+      case `servOnOrder-payments`:
+        return null;
 
+      // sales
       case `sales-appts-${finance.id}`:
         return <SalesAppts finance={finance} user={user} submit={submit} />;
+      case `sales-workOrders-${finance.id}`:
+        return <WorkOrders finance={finance} copyText={copyText} copiedText={copiedText} deFees={deFees} />;
 
       case `sales-comms-${finance.id}`:
         return <Communications finance={finance} />;
-
       case `sales-accOrders-${finance.id}`:
         return <SalesAccOrder finance={finance} deFees={deFees} salesPerson={salesPerson} />;
-
       case `sales-storage-${finance.id}`:
         return <SalesStorage finance={finance} copyText={copyText} copiedText={copiedText} />;
-
       case `sales-dealInfo-${finance.id}`:
         return <DealInfo finance={finance} />;
-
       case `sales-custUnits-${finance.id}`:
         return <CustomerBikes finance={finance} fetcher={fetcher} />;
-
       case `sales-trades-${finance.id}`:
         return <FinanceTradeUnit finance={finance} fetcher={fetcher} />;
-
       case `sales-payments-${finance.id}`:
-        return <PaymentsFinance finance={finance} fetcher={fetcher} user={user} formRef={formRef} setInput={setInput} inputLength={inputLength} />;
-
+        return <PaymentsFinance finance={finance} fetcher={fetcher} user={user} setInput={setInput} inputLength={inputLength} />;
       case `sales-notes-${finance.id}`:
         return <FinanceNotes finance={finance} fetcher={fetcher} input={input} user={user} formRef={formRef} setInput={setInput} inputLength={inputLength} />;
-
       case `sales-finProds-${finance.id}`:
         return null;
 
 
-      // work order
-      case `wo-wo`:
-        return <WorkOrders finance={finance} copyText={copyText} copiedText={copiedText} />;
 
 
       // PAC order
       case `pac-PAC`:
         return <AccOrders finance={finance} copyText={copyText} copiedText={copiedText} />;
+      case `pac-accHandoff`:
+        return null;
+      case `pac-payments`:
+        return null;
+      case `accOnOrders-AOO`:
+        return null;
+      // ---
+      case `accOnOrders-acc`:
+        return null;
+      case `accOnOrders-orderInv`:
+        return null;
+
+
       default:
         return <div>Select an item from the sidebar.</div>;
     }
   };
 
-  const [unit, setUnit] = useState();
-  const clientData = {
 
-  }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline">Client File</Button>
       </DialogTrigger>
-      <DialogContent className="w-auto max-w-[95%] border border-border md:max-w-[90%] h-[700px] max-h-[700px] overflow-y-auto">
+      <DialogContent className="w-auto max-w-[95%] border border-border md:max-w-[60%] h-full min-h-[700px] max-h-[700px]">
         <DialogHeader>
-        </DialogHeader>
-        <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-          <div className="grid items-start gap-4 md:gap-8 lg:col-span-1">
-            <Card
-              className="overflow-hidden rounded-lg text-foreground"
-              x-chunk="dashboard-05-chunk-4"
-            >
-              <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                <div className="grid gap-0.5">
-                  <CardTitle className="group flex items-center gap-2 text-lg">
-                    Menu
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                    >
-                      <Copy className="h-3 w-3" />
-                      <span className="sr-only">
-                        Snap shot on customer interactions, whether they are
-                        buying something or a sales person following up to make
-                        a sale.
-                      </span>
-                    </Button>
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
-                <SidebarNav
-                  items={sidebarItems}
-                  onFinanceChange={handleContentChange}
-                />
-              </CardContent>
-              <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
-                <div className="text-xs text-muted-foreground">
-
-                </div>
-              </CardFooter>
-            </Card>
+          <div className='mr-auto'>
+            <SidebarNav onFinanceChange={handleContentChange} />
           </div>
-          <div className="grid gap-4 md:gap-8 lg:col-span-2 ">
+        </DialogHeader>
+        <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+          <div className="grid gap-4 md:gap-8">
             {renderContent(selectedContent, selectedFinance)}
           </div>
         </div>
@@ -978,7 +1038,7 @@ function DealInfo({ finance }) {
           Deal Info
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+      <CardContent className="flex-grow !grow max-h-[575px] h-full  overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
 
         <div className='grid grid-cols-2 gap-4'>
           {financesCard.map((user, index) => (
@@ -1012,7 +1072,7 @@ function SalesStorage({ finance, copyText, copiedText }) {
             Document Storage
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+        <CardContent className="flex-grow !grow max-h-[600px] h-full  overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
           {finance.financeStorage && finance.financeStorage.map(storage => (
             <div key={storage.id} className='flex  group'>
               <div className='flex-col' >
@@ -1047,11 +1107,11 @@ function SalesStorage({ finance, copyText, copiedText }) {
 }
 function SalesAppts({ finance, user, submit }) {
   return (
-    <Card x-chunk="dashboard-04-chunk-1" >
-      <CardHeader>
+    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"            >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
         <CardTitle>Sales Appointments</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-grow !grow overflow-y-auto max-h-[600px] h-full  overflow-x-clip bg-background p-6 text-sm">
         <div className="grid gap-3 max-h-[20vh] h-auto">
           <div className="space-y-4 mt-5">
 
@@ -1124,13 +1184,8 @@ function SalesAppts({ finance, user, submit }) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="border-t border-border px-6 py-4">
-        <Button
-          type='submit'
-          name='intent'
-          value='updateDealerInfo'>
-          Save
-        </Button>
+      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+
       </CardFooter>
     </Card>
   )
@@ -1143,7 +1198,7 @@ function Communications({ finance }) {
           Communications
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip max-h-[600px] h-full bg-background p-6 text-sm">
         <div className="grid gap-3 max-h-[40vh] h-auto">
           <div className="space-y-4 mt-5">
 
@@ -1153,7 +1208,7 @@ function Communications({ finance }) {
                 className={cn(
                   "flex  max-w-[75%]   w-[65%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
                   message.direction === 'Outgoing'
-                    ? "ml-auto bg-primary text-foreground"
+                    ? "ml-auto   bg-muted/50 text-foreground"
                     : "bg-[#262626]"
                 )}
               >
@@ -1190,6 +1245,7 @@ function Communications({ finance }) {
   )
 }
 function SalesAccOrder({ finance, deFees, salesPerson }) {
+  console.log(finance, 'insalesaccaorder')
   const addProduct = useFetcher();
   const submit = useSubmit()
   const formRef = useRef();
@@ -1204,8 +1260,6 @@ function SalesAccOrder({ finance, deFees, salesPerson }) {
   const inputLength = input.trim().length
   const payment = useFetcher();
 
-
-
   const options2 = {
     weekday: "short",
     year: "numeric",
@@ -1219,73 +1273,104 @@ function SalesAccOrder({ finance, deFees, salesPerson }) {
 
   const taxMultiplier = Number(deFees.userTax);
   const taxRate = 1 + taxMultiplier / 100;
+  let totalAccessoriesCost = 0.00
+  let totalAmountPaid = 0.00
+  let total = 0.00
+  let remaining = 0.00
+  let toReceipt = {}
 
-  const totalAccessoriesCost = data.AccOrder.reduce((total, order) => {
-    return total + (order.quantity * order.price);
-  }, 0);
+  const [accOrder, setAccOrder] = useState()
+  const [firstPageAcc, setFirstPageAcc] = useState(true)
+  const [secPageAcc, setSecPageAcc] = useState(false)
 
-  const totalAmountPaid = data.Finance.reduce((total, finance) => {
-    return total + finance.amountPaid;
-  }, 0);
-
-  const total2 = ((totalAccessoriesCost - parseFloat(discDollar)) * taxRate).toFixed(2);
-  const total1 = (((totalAccessoriesCost * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
-
-  const total = discPer === 0 ? total2 : total1;
-
-
-  const toReceipt = {}
-  /**
-   *
-  const [changeSize, setChangeSize] = useState(false)
-
-  const client = data.id
-
-   const { AccessoriesOnOrders } = order;
-    const maxAccessories = 19;
-
-    const toReceipt = {
-      qrCode: order.id,
-      subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
-      tax: `${tax.userTax}%`,
-      total: `$${total}`,
-      remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
-      firstName: client.firstName,
-      lastName: client.lastName,
-      phone: client.phone,
-      email: client.email,
-      address: client.address,
-      date: new Date(order.createdAt).toLocaleDateString("en-US", options2),
-      cardNum: '',
-      paymentType: '',
-      image: dealerImage.dealerLogo
-    };
-
-      AccessoriesOnOrders.forEach((result, index) => {
-    if (index < maxAccessories) {
-      toReceipt[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
-      toReceipt[`qt${index + 1}`] = String(result.quantity);
-      toReceipt[`price${index + 1}`] = String(result.accessory.price);
-    }
-  });
-
-  for (let i = AccessoriesOnOrders.length + 1; i <= maxAccessories; i++) {
-    toReceipt[`desc${i}`] = '';
-    toReceipt[`qt${i}`] = '';
-    toReceipt[`price${i}`] = '';
-  }
-
-
-
-  */
-  const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
   useEffect(() => {
-    if (remaining === 0) {
-      toast.success('Order is paid in full!', {
-        duration: Infinity
-      })
+    console.log('use effect going offf1234124123211231')
+    if (accOrder) {
+
+      totalAccessoriesCost = accOrder.AccessoriesOnOrders.reduce((total, order) => {
+        return total + (order.quantity * order.accessory.price);
+      }, 0);
+
+      totalAmountPaid = accOrder.Payments.reduce((total, finance) => {
+        return total + finance.amountPaid;
+      }, 0);
+
+      const total2 = ((totalAccessoriesCost - parseFloat(discDollar)) * taxRate).toFixed(2);
+      const total1 = (((totalAccessoriesCost * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
+
+      total = discPer === 0 ? total2 : total1;
+
+
+      /**
+       *
+      const [changeSize, setChangeSize] = useState(false)
+
+      const client = data.id
+
+       const { AccessoriesOnOrders } = order;
+        const maxAccessories = 19;
+
+        const toReceipt = {
+          qrCode: order.id,
+          subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
+          tax: `${tax.userTax}%`,
+          total: `$${total}`,
+          remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
+          firstName: client.firstName,
+          lastName: client.lastName,
+          phone: client.phone,
+          email: client.email,
+          address: client.address,
+          date: new Date(order.createdAt).toLocaleDateString("en-US", options2),
+          cardNum: '',
+          paymentType: '',
+          image: dealerImage.dealerLogo
+        };
+
+          AccessoriesOnOrders.forEach((result, index) => {
+        if (index < maxAccessories) {
+          toReceipt[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
+          toReceipt[`qt${index + 1}`] = String(result.quantity);
+          toReceipt[`price${index + 1}`] = String(result.accessory.price);
+        }
+      });
+
+      for (let i = AccessoriesOnOrders.length + 1; i <= maxAccessories; i++) {
+        toReceipt[`desc${i}`] = '';
+        toReceipt[`qt${i}`] = '';
+        toReceipt[`price${i}`] = '';
+      }
+
+
+
+      */
+      remaining = parseFloat(total) - parseFloat(totalAmountPaid)
+
+
     }
-  }, [remaining]);
+  }, [accOrder]);
+
+
+  function handleNextPage() {
+    if (firstPageAcc === true) {
+      setFirstPageAcc(false)
+      setSecPageAcc(true)
+    }
+    if (secPageAcc === true) {
+      setFirstPageAcc(true)
+      setSecPageAcc(false)
+    }
+  }
+  function handlePrevPage() {
+    if (firstPageAcc === true) {
+      setFirstPageAcc(false)
+      setSecPageAcc(true)
+    }
+    if (secPageAcc === true) {
+      setFirstPageAcc(true)
+      setSecPageAcc(false)
+    }
+  }
 
   return (
     <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
@@ -1294,1539 +1379,498 @@ function SalesAccOrder({ finance, deFees, salesPerson }) {
           PAC Orders on Contract
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip max-h-[600px] bg-background p-6 text-sm">
 
-        {/* AccOrder Data */}
-        {finance.AccOrders && finance.AccOrders.length > 0 && (
-          <div className="mb-4">
-            <h3 className="text-xl font-semibold">Accessory Orders</h3>
-            {finance.AccOrders.map((order) => (
-              <div className='flex flex-col'>
-                <Card key={order.id} className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
-                  <CardHeader className="flex flex-row items-start bg-muted/50">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Current Order: {order.id}
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy Order ID</span>
-                        </Button>
-                      </CardTitle>
-                      <CardDescription>
-                        Date:{" "}
-                        {new Date(order.createdAt).toLocaleDateString(
-                          "en-US",
-                          options2
-                        )}
-                      </CardDescription>
-                    </div>
-                    <div className="ml-auto flex items-center gap-1">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="outline" className="h-8 w-8">
-                            <MoreVertical className="h-3.5 w-3.5" />
-                            <span className="sr-only">More</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align="end"
-                          className="border border-border"
-                        >
-                          <DropdownMenuItem onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
-                          <DropdownMenuItem>Discount</DropdownMenuItem>
-                          <DropdownMenuItem
-                            onSelect={() => {
-                              const formData = new FormData();
-                              formData.append("financeId", order.financeId);
-                              formData.append("subTotal", totalAccessoriesCost);
-                              formData.append("intent", 'pushSubtotal');
-                              submit(formData, { method: "post", });
-                            }}
-                          >Push Sub Total to Finance</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onSelect={() => {
-
-                            }}>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-6 text-sm max-h-[780px] h-[780px] overflow-y-auto">
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Order Details</div>
-                      <ul className="grid gap-3 max-h-[400px] h-auto overflow-y-auto">
-                        {order.AccessoriesOnOrders && order.AccessoriesOnOrders.map((result, index) => (
-                          <li
-                            className="flex items-center justify-between"
-                            key={index}
-                          >
-                            <div>
-                              <ContextMenu>
-                                <ContextMenuTrigger>
-                                  <div className='grid grid-cols-1'>
-                                    <div className='flex items-center group '>
-                                      <div className="font-medium">
-                                        {result.accessory.name}
-                                      </div>
-                                      <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                        <input type="hidden" name="id" value={result.id} />
-                                        <input type='hidden' name='total' value={total} />
-                                        <input type='hidden' name='accOrderId' value={order.id} />
-                                        <Button
-                                          size="icon"
-                                          variant="outline"
-                                          name="intent" value='deleteOrderItem'
-                                          className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                          type='submit'
-                                        >
-                                          <X className="h-4 w-4 text-foreground" />
-                                        </Button>
-                                      </addProduct.Form>
-                                    </div>
-                                    <div className="hidden text-sm text-muted-foreground md:inline">
-                                      {result.accessory.brand}
-                                    </div>
-                                    <div className="hidden text-sm text-muted-foreground md:inline">
-                                      {result.accessory.category}{" "}{result.accessory.description}
-                                    </div>
-                                    <div>
-                                      <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
-                                    </div>
-                                  </div>
-                                </ContextMenuTrigger>
-                                <ContextMenuContent className='border-border'>
-                                  <ContextMenuCheckboxItem
-                                    checked={result.status === 'In Stock'}
-                                    onSelect={() => {
-                                      const formData = new FormData();
-                                      formData.append("accOnOrderId", result.id);
-                                      formData.append("status", 'In Stock');
-                                      formData.append("intent", 'updateAccOnOrders');
-                                      submit(formData, { method: "post", });
-                                    }}
-                                  >In Stock</ContextMenuCheckboxItem>
-                                  <ContextMenuCheckboxItem
-                                    checked={result.status === 'On Order'}
-                                    onSelect={() => {
-                                      const formData = new FormData();
-                                      formData.append("accOnOrderId", result.id);
-                                      formData.append("status", 'On Order');
-                                      formData.append("intent", 'updateAccOnOrders');
-                                      submit(formData, { method: "post", });
-                                    }}
-                                  >On Order</ContextMenuCheckboxItem>
-                                  <ContextMenuCheckboxItem
-                                    checked={result.status === 'Back Order'}
-                                    onSelect={() => {
-                                      const formData = new FormData();
-                                      formData.append("accOnOrderId", result.id);
-                                      formData.append("status", 'Back Order');
-                                      formData.append("intent", 'updateAccOnOrders');
-                                      submit(formData, { method: "post", });
-                                    }}
-                                  >Back Order</ContextMenuCheckboxItem>
-                                  <ContextMenuCheckboxItem
-                                    checked={result.status === 'Fulfilled'}
-                                    onSelect={() => {
-                                      const formData = new FormData();
-                                      formData.append("accOnOrderId", result.id);
-                                      formData.append("status", 'Fulfilled');
-                                      formData.append("intent", 'updateAccOnOrders');
-                                      submit(formData, { method: "post", });
-                                    }}
-                                  >Fulfilled</ContextMenuCheckboxItem>
-                                </ContextMenuContent>
-                              </ContextMenu>
-                            </div>
-                            <span>${result.accessory.price}{" "}{" "}x{" "}{" "}{result.quantity}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className='mt-auto'>
-                      <Separator className="my-2 mt-auto" />
-                      <ul className="grid gap-3">
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Subtotal</span>
-                          <span>${totalAccessoriesCost.toFixed(2)}</span>
-                        </li>
-                        {order.discount && (
-                          <li className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Discount</span>
-                            <span>${order.discount}</span>
-                          </li>
-                        )}
-                        {order.discPer && (
-                          <li className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Discount</span>
-                            <span>{order.discPer}%</span>
-                          </li>
-                        )}
-                        {discount && (
-                          <>
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Discount $</span>
-                              <fetcher.Form
-                                method="post"
-                                onSubmit={() => {
-                                  buttonRef.current?.focus();
-                                }}
-                                preventScrollReset
-                              >
-                                <input
-                                  name='accOrderId'
-                                  defaultValue={order.id}
-                                  type='hidden'
-                                />
-                                <input
-                                  name='intent'
-                                  defaultValue='updateDiscount'
-                                  type='hidden'
-                                />
-                                <input
-                                  name='total'
-                                  defaultValue={totalAccessoriesCost}
-                                  type='hidden'
-                                />
-                                <div className="relative ml-auto flex-1 md:grow-0 ">
-                                  <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-foreground" />
-                                  <Input
-                                    ref={inputRef}
-                                    name='discDollar'
-                                    className='text-right pr-10 w-[100px]'
-                                    defaultValue={discDollar}
-                                    onChange={(event) => setDiscDollar(event.target.value)}
-                                    onKeyDown={(event) => {
-                                      if (event.key === "Escape") {
-                                        buttonRef.current?.focus();
-                                      }
-                                    }}
-                                    onBlur={(event) => {
-                                      if (
-                                        inputRef.current?.value !== discDollar &&
-                                        inputRef.current?.value.trim() !== ""
-                                      ) {
-                                        fetcher.submit(event.currentTarget);
-                                      }
-                                    }}
-                                  />
-                                  <Button
-                                    type="submit"
-                                    size="icon"
-
-                                    disabled={!discDollar}
-                                    className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
-                                    <PaperPlaneIcon className="h-4 w-4" />
-                                    <span className="sr-only">Cash</span>
-                                  </Button>
-                                </div>
-                              </fetcher.Form>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Discount %</span>
-                              <fetcher.Form
-                                method="post"
-                                onSubmit={() => {
-                                  buttonRef.current?.focus();
-                                }}
-                                preventScrollReset
-                              >
-                                <input
-                                  name='accOrderId'
-                                  defaultValue={order.id}
-                                  type='hidden'
-                                />
-                                <input
-                                  name='intent'
-                                  defaultValue='updateDiscPerc'
-                                  type='hidden'
-                                />
-                                <input
-                                  name='total'
-                                  defaultValue={totalAccessoriesCost}
-                                  type='hidden'
-                                />
-                                <div className="relative ml-auto flex-1 md:grow-0 ">
-                                  <Input
-                                    ref={inputRef}
-                                    name='discPer'
-                                    className='text-right pr-[43px] w-[100px]'
-                                    value={discPer}
-                                    onChange={(event) => setDiscPer(event.target.value)}
-                                    onKeyDown={(event) => {
-                                      if (event.key === "Escape") {
-                                        buttonRef.current?.focus();
-                                      }
-                                    }}
-                                    onBlur={(event) => {
-                                      if (
-                                        inputRef.current?.value !== discPer &&
-                                        inputRef.current?.value.trim() !== ""
-                                      ) {
-                                        fetcher.submit(event.currentTarget);
-                                      }
-                                    }}
-                                  />
-                                  <Percent className="absolute right-10 top-[8px] h-4 w-4 text-foreground" />
-                                  <Button
-                                    type="submit"
-                                    size="icon"
-
-                                    disabled={!discPer}
-                                    className='bg-primary mr-2 absolute right-1.5 top-[8px] h-4 w-4 text-foreground '>
-                                    <PaperPlaneIcon className="h-4 w-4" />
-                                    <span className="sr-only">Cash</span>
-                                  </Button>
-                                </div>
-                              </fetcher.Form>
-
-                            </li>
-                          </>
-                        )}
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Tax</span>
-                          <span>{deFees.userTax}%</span>
-                        </li>
-                        <li className="flex items-center justify-between font-semibold">
-                          <span className="text-muted-foreground">Total</span>
-                          <span>${total}</span>
-                        </li>
-                      </ul>
-                      <Separator className="my-4" />
-                      <div className="grid gap-3">
-                        <div className="font-semibold">Payment</div>
-                        <dl className="grid gap-3">
-
-                          <div className="flex flex-col" >
-                            <div className='flex items-center justify-center text-foreground'>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
-                                onClick={() => setPaymentType('Visa')}
-                              >
-                                <CreditCard className="h-4 w-4 text-foreground" />
-                                <p className="">Visa</p>
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
-                                onClick={() => setPaymentType('Mastercard')}
-                              >
-                                <CreditCard className="h-4 w-4 text-foreground" />
-                                <p className="">Mastercard</p>
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setPaymentType('Debit')}
-                                className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
-                              >
-                                <CreditCard className="h-4 w-4 text-foreground" />
-                                <p className="">Debit</p>
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setPaymentType('Cheque')}
-                                className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
-                              >
-                                <CreditCard className="h-4 w-4 text-foreground" />
-                                <p className="">Cheque</p>
-                              </Button>
-                            </div>
-                            <div className='flex items-center justify-center text-foreground mt-2'>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
-                                onClick={() => setPaymentType('Cash')}
-                              >
-                                <BanknoteIcon className="h-4 w-4 text-foreground" />
-                                <p className="">Cash</p>
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
-                                onClick={() => setPaymentType('Online Transaction')}
-                              >
-                                <PanelTop className="h-4 w-4 text-foreground" />
-                                <p className="">Online Transaction</p>
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
-                                onClick={() => setPaymentType('E-Transfer')}
-                              >
-                                <PanelTop className="h-4 w-4 text-foreground" />
-                                <p className="">E-Transfer</p>
-                              </Button>
-                            </div>
-                          </div>
-                        </dl>
+        {firstPageAcc && (
+          <>
+            <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+              {finance.AccOrders && finance.AccOrders.map((order, index) => {
+                return (
+                  <li
+                    onClick={() => {
+                      handleNextPage()
+                      setAccOrder(order)
+                    }}
+                    key={index}
+                    className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]">
+                    <div className='flex-col'>
+                      <div className='flex justify-between items-center'>
+                        <p className='font-medium text-left'>Status: {order.status}</p>
+                        <p className='text-muted-foreground font-medium text-right'>{order.userName}</p>
                       </div>
-                      <div className="grid gap-3">
-                        <ul className="grid gap-3">
-                          {order.Payments && order.Payments.map((result, index) => (
-                            <li className="flex items-center justify-between" key={index}                    >
-                              <span className="text-muted-foreground">{result.paymentType}</span>
-                              <span>${result.amountPaid}</span>
-                            </li>
-                          ))}
-                          <li className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Balance</span>
-                            <span>${remaining}</span>
-
-                          </li>
-                          {remaining === 0 && (
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground"></span>
-                              <Badge className='bg-[#30A46C]'>PAID</Badge>
-                            </li>
-                          )}
-                          {paymentType !== '' && (
-                            <>
-                              <li className="flex items-center justify-between">
-                                <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
-                                <payment.Form method="post" ref={formRef} >
-                                  <input type='hidden' name='accOrderId' value={order.id} />
-                                  <input type='hidden' name='paymentType' value={paymentType} />
-                                  <input type='hidden' name='remaining' value={remaining} />
-                                  <input type='hidden' name='intent' value='createPayment' />
-                                  <input type='hidden' name='total' value={total} />
-                                  <div className="relative ml-auto flex-1 md:grow-0 ">
-                                    <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                    <Input
-                                      name='amountPaid'
-                                      className='text-right pr-9'
-                                      value={input}
-                                      onChange={(event) => setInput(event.target.value)}
-                                    />
-                                    <Button
-                                      type="submit"
-                                      size="icon"
-                                      onClick={() => {
-                                        toast.success(`Payment rendered!`)
-                                      }}
-                                      disabled={inputLength === 0}
-                                      className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-                                      <PaperPlaneIcon className="h-4 w-4" />
-                                      <span className="sr-only">Cash</span>
-                                    </Button>
-                                  </div>
-                                </payment.Form>
-                              </li>
-                            </>
-                          )}
-
-                        </ul>
+                      <div className='flex justify-between items-center'>
+                        <p className='text-muted-foreground text-left'>Total: {order.total}</p>
+                        <p className='text-muted-foreground text-right'>Dept: {order.dept}</p>
                       </div>
+                      <p className='text-muted-foreground text-left'>{new Date(order.createdAt).toLocaleDateString("en-US", options2)}</p>
                     </div>
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
-                    <div className="text-xs text-muted-foreground flex items-center justify-between">
+                  </li>
+                )
+              })}
+            </ul>
+          </>
+        )}
+
+        {secPageAcc && (
+          <>
+            <div className='flex flex-col'>
+
+              <div className='flex justify-between'>
+                <div className='flex-col'>
+                  <p> Current Order: {accOrder.id}</p>
+                  <p className='text-muted-foreground'>   Date:{" "}
+                    {new Date(accOrder.createdAt).toLocaleDateString(
+                      "en-US",
+                      options2
+                    )}</p>
+                </div>
+                <div className="ml-auto flex items-center gap-1">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="icon" variant="outline" className="h-8 w-8">
+                        <MoreVertical className="h-3.5 w-3.5" />
+                        <span className="sr-only">More</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="border border-border"
+                    >
+                      <DropdownMenuItem onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
+                      <DropdownMenuItem>Discount</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onSelect={() => {
+                          const formData = new FormData();
+                          formData.append("financeId", accOrder.financeId);
+                          formData.append("subTotal", totalAccessoriesCost);
+                          formData.append("intent", 'pushSubtotal');
+                          submit(formData, { method: "post", });
+                        }}
+                      >Push Sub Total to Finance</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onSelect={() => {
+
+                        }}>Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+              <div className="grid gap-3">
+                <div className="font-semibold">Order Details</div>
+                <ul className="grid gap-3 max-h-[400px] h-auto overflow-y-auto">
+                  {accOrder.AccessoriesOnOrders && accOrder.AccessoriesOnOrders.map((result, index) => (
+                    <li
+                      className="flex items-center justify-between"
+                      key={index}
+                    >
                       <div>
-                        <Badge size='sm' className='text-foreground text-center mx-auto w-auto'>
-                          {salesPerson.name}
-                        </Badge>
+                        <ContextMenu>
+                          <ContextMenuTrigger>
+                            <div className='grid grid-cols-1'>
+                              <div className='flex items-center group '>
+                                <div className="font-medium">
+                                  {result.accessory.name}
+                                </div>
+                                <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                  <input type="hidden" name="id" value={result.id} />
+                                  <input type='hidden' name='total' value={total} />
+                                  <input type='hidden' name='accOrderId' value={accOrder.id} />
+                                  <Button
+                                    size="icon"
+                                    variant="outline"
+                                    name="intent" value='deleteOrderItem'
+                                    className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                    type='submit'
+                                  >
+                                    <X className="h-4 w-4 text-foreground" />
+                                  </Button>
+                                </addProduct.Form>
+                              </div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                {result.accessory.brand}
+                              </div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                {result.accessory.category}{" "}{result.accessory.description}
+                              </div>
+                              <div>
+                                <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                              </div>
+                            </div>
+                          </ContextMenuTrigger>
+                          <ContextMenuContent className='border-border'>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'In Stock'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("accOnOrderId", result.id);
+                                formData.append("status", 'In Stock');
+                                formData.append("intent", 'updateAccOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >In Stock</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'On Order'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("accOnOrderId", result.id);
+                                formData.append("status", 'On Order');
+                                formData.append("intent", 'updateAccOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >On Order</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'Back Order'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("accOnOrderId", result.id);
+                                formData.append("status", 'Back Order');
+                                formData.append("intent", 'updateAccOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >Back Order</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'Fulfilled'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("accOnOrderId", result.id);
+                                formData.append("status", 'Fulfilled');
+                                formData.append("intent", 'updateAccOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >Fulfilled</ContextMenuCheckboxItem>
+                          </ContextMenuContent>
+                        </ContextMenu>
                       </div>
-
-                      <ClientOnly fallback={<p>Fallback component ...</p>}>
-                        {() => (
-                          <React.Suspense fallback={<div>Loading...</div>}>
+                      <span>${result.accessory.price}{" "}{" "}x{" "}{" "}{result.quantity}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className='mt-auto'>
+                <Separator className="my-2 mt-auto" />
+                <ul className="grid gap-3">
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>${totalAccessoriesCost.toFixed(2)}</span>
+                  </li>
+                  {accOrder.discount && (
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Discount</span>
+                      <span>${accOrder.discount}</span>
+                    </li>
+                  )}
+                  {accOrder.discPer && (
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Discount</span>
+                      <span>{accOrder.discPer}%</span>
+                    </li>
+                  )}
+                  {discount && (
+                    <>
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Discount $</span>
+                        <fetcher.Form
+                          method="post"
+                          onSubmit={() => {
+                            buttonRef.current?.focus();
+                          }}
+                          preventScrollReset
+                        >
+                          <input
+                            name='accOrderId'
+                            defaultValue={accOrder.id}
+                            type='hidden'
+                          />
+                          <input
+                            name='intent'
+                            defaultValue='updateDiscount'
+                            type='hidden'
+                          />
+                          <input
+                            name='total'
+                            defaultValue={totalAccessoriesCost}
+                            type='hidden'
+                          />
+                          <div className="relative ml-auto flex-1 md:grow-0 ">
+                            <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-foreground" />
+                            <Input
+                              ref={inputRef}
+                              name='discDollar'
+                              className='text-right pr-10 w-[100px]'
+                              defaultValue={discDollar}
+                              onChange={(event) => setDiscDollar(event.target.value)}
+                              onKeyDown={(event) => {
+                                if (event.key === "Escape") {
+                                  buttonRef.current?.focus();
+                                }
+                              }}
+                              onBlur={(event) => {
+                                if (
+                                  inputRef.current?.value !== discDollar &&
+                                  inputRef.current?.value.trim() !== ""
+                                ) {
+                                  fetcher.submit(event.currentTarget);
+                                }
+                              }}
+                            />
                             <Button
-                              variant='outline'
-                              className='bg-background text-foreground border-border border ml-3'
-                              onClick={() => {
-                                console.log(toReceipt)
-                                PrintReceipt(toReceipt)
-                              }}>
-                              Print Receipt
-                            </Button>
-                          </React.Suspense>
-                        )}
-                      </ClientOnly>
+                              type="submit"
+                              size="icon"
 
+                              disabled={!discDollar}
+                              className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
+                              <PaperPlaneIcon className="h-4 w-4" />
+                              <span className="sr-only">Cash</span>
+                            </Button>
+                          </div>
+                        </fetcher.Form>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Discount %</span>
+                        <fetcher.Form
+                          method="post"
+                          onSubmit={() => {
+                            buttonRef.current?.focus();
+                          }}
+                          preventScrollReset
+                        >
+                          <input
+                            name='accOrderId'
+                            defaultValue={accOrder.id}
+                            type='hidden'
+                          />
+                          <input
+                            name='intent'
+                            defaultValue='updateDiscPerc'
+                            type='hidden'
+                          />
+                          <input
+                            name='total'
+                            defaultValue={totalAccessoriesCost}
+                            type='hidden'
+                          />
+                          <div className="relative ml-auto flex-1 md:grow-0 ">
+                            <Input
+                              ref={inputRef}
+                              name='discPer'
+                              className='text-right pr-[43px] w-[100px]'
+                              value={discPer}
+                              onChange={(event) => setDiscPer(event.target.value)}
+                              onKeyDown={(event) => {
+                                if (event.key === "Escape") {
+                                  buttonRef.current?.focus();
+                                }
+                              }}
+                              onBlur={(event) => {
+                                if (
+                                  inputRef.current?.value !== discPer &&
+                                  inputRef.current?.value.trim() !== ""
+                                ) {
+                                  fetcher.submit(event.currentTarget);
+                                }
+                              }}
+                            />
+                            <Percent className="absolute right-10 top-[8px] h-4 w-4 text-foreground" />
+                            <Button
+                              type="submit"
+                              size="icon"
+
+                              disabled={!discPer}
+                              className='bg-primary mr-2 absolute right-1.5 top-[8px] h-4 w-4 text-foreground '>
+                              <PaperPlaneIcon className="h-4 w-4" />
+                              <span className="sr-only">Cash</span>
+                            </Button>
+                          </div>
+                        </fetcher.Form>
+
+                      </li>
+                    </>
+                  )}
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Tax</span>
+                    <span>{deFees.userTax}%</span>
+                  </li>
+                  <li className="flex items-center justify-between font-semibold">
+                    <span className="text-muted-foreground">Total</span>
+                    <span>${total}</span>
+                  </li>
+                </ul>
+                <Separator className="my-4" />
+                <div className="grid gap-3">
+                  <div className="font-semibold">Payment</div>
+                  <dl className="grid gap-3">
+
+                    <div className="flex flex-col" >
+                      <div className='flex items-center justify-center text-foreground'>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('Visa')}
+                        >
+                          <CreditCard className="h-4 w-4 text-foreground" />
+                          <p className="">Visa</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('Mastercard')}
+                        >
+                          <CreditCard className="h-4 w-4 text-foreground" />
+                          <p className="">Mastercard</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setPaymentType('Debit')}
+                          className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
+                        >
+                          <CreditCard className="h-4 w-4 text-foreground" />
+                          <p className="">Debit</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setPaymentType('Cheque')}
+                          className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
+                        >
+                          <CreditCard className="h-4 w-4 text-foreground" />
+                          <p className="">Cheque</p>
+                        </Button>
+                      </div>
+                      <div className='flex items-center justify-center text-foreground mt-2'>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('Cash')}
+                        >
+                          <BanknoteIcon className="h-4 w-4 text-foreground" />
+                          <p className="">Cash</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('Online Transaction')}
+                        >
+                          <PanelTop className="h-4 w-4 text-foreground" />
+                          <p className="">Online Transaction</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('E-Transfer')}
+                        >
+                          <PanelTop className="h-4 w-4 text-foreground" />
+                          <p className="">E-Transfer</p>
+                        </Button>
+                      </div>
                     </div>
-                  </CardFooter>
-                </Card>
-              </div >
-            ))}
-          </div>
+                  </dl>
+                </div>
+                <div className="grid gap-3">
+                  <ul className="grid gap-3">
+                    {accOrder.Payments && accOrder.Payments.map((result, index) => (
+                      <li className="flex items-center justify-between" key={index}                    >
+                        <span className="text-muted-foreground">{result.paymentType}</span>
+                        <span>${result.amountPaid}</span>
+                      </li>
+                    ))}
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Balance</span>
+                      <span>${remaining}</span>
+
+                    </li>
+                    {remaining === 0 && (
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground"></span>
+                        <Badge className='bg-[#30A46C]'>PAID</Badge>
+                      </li>
+                    )}
+                    {paymentType !== '' && (
+                      <>
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
+                          <payment.Form method="post" ref={formRef} >
+                            <input type='hidden' name='accOrderId' value={accOrder.id} />
+                            <input type='hidden' name='paymentType' value={paymentType} />
+                            <input type='hidden' name='remaining' value={remaining} />
+                            <input type='hidden' name='intent' value='createPayment' />
+                            <input type='hidden' name='total' value={total} />
+                            <div className="relative ml-auto flex-1 md:grow-0 ">
+                              <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                name='amountPaid'
+                                className='text-right pr-9'
+                                value={input}
+                                onChange={(event) => setInput(event.target.value)}
+                              />
+                              <Button
+                                type="submit"
+                                size="icon"
+                                onClick={() => {
+                                  toast.success(`Payment rendered!`)
+                                }}
+                                disabled={inputLength === 0}
+                                className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                                <PaperPlaneIcon className="h-4 w-4" />
+                                <span className="sr-only">Cash</span>
+                              </Button>
+                            </div>
+                          </payment.Form>
+                        </li>
+                      </>
+                    )}
+
+                  </ul>
+                </div>
+              </div>
+
+
+
+            </div >
+          </>
         )}
 
 
+
+
       </CardContent>
-      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
-        <div>
-        </div>
-      </CardFooter>
-    </Card>
-  )
-}
-function WorkOrders({ finance, deFees }) {
-  const submit = useSubmit()
-
-  let fetcher = useFetcher();
-  let addProduct = useFetcher();
-  let workOrder = useFetcher();
-  let ref = useRef();
-  let formRef = useRef();
-  let search = useFetcher();
-  let product = useFetcher();
-
-  const [serviceOrder, setServiceOrder] = useState();
-  const [firstPageService, setFirstPageService] = useState(true);
-  const [secPageService, setSecPageService] = useState(false);
-  function handleNextPage() {
-    if (firstPageService === true) {
-      setFirstPageService(false)
-      setSecPageService(true)
-    }
-    if (secPageService === true) {
-      setFirstPageService(true)
-      setSecPageService(false)
-    }
-  }
-  function handlePrevPage() {
-    if (firstPageService === true) {
-      setFirstPageService(false)
-      setSecPageService(true)
-    }
-    if (secPageService === true) {
-      setFirstPageService(true)
-      setSecPageService(false)
-    }
-  }
-  const [totalService, setTotalService] = useState(0.00);
-
-  const [serviceSubTotal, setServiceSubTotal] = useState(0.00);
-  const [partsSubTotal, setPartsSubTotal] = useState(0.00);
-  const [totalPreTax, setTotalPreTax] = useState(0.00);
-  useEffect(() => {
-    if (serviceOrder) {
-      const partsSub = serviceOrder?.AccOrders?.reduce((total, accOrder) => {
-        return total + accOrder?.AccessoriesOnOrders?.reduce((subTotal, accessoryOnOrder) => {
-          return subTotal + (accessoryOnOrder.accessory.price * accessoryOnOrder.quantity);
-        }, 0);
-      }, 0);
-      setPartsSubTotal(partsSub.toFixed(2))
-
-      const serviceSub = serviceOrder?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
-        const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr || 0.00;
-
-        const subtotal = hours * tax.userLabour * serviceOnOrder.quantity;
-
-        return total + subtotal;
-      }, 0);
-
-      setServiceSubTotal(serviceSub.toFixed(2))
-
-      const totalPreTax = partsSub + serviceSub;
-      setTotalPreTax(totalPreTax.toFixed(2));
-
-      const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
-      const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
-      const calculatedTotal = discDollar && discDollar > 0.00 ? total1 : total2;
-
-      setTotalService(calculatedTotal);
-      const totalAmountPaid2 = serviceOrder.Payments.reduce((total, payment) => {
-        return total + payment.amountPaid;
-      }, 0);
-      if (totalAmountPaid2) {
-        setTotalAmountPaid(totalAmountPaid2)
-      }
-      console.log(partsSubTotal, serviceSubTotal, partsSubTotal + serviceSubTotal, 'totals')
-
-    }
-  }, [serviceOrder]);
-
-  let unitCard = [
-    { name: 'year', label: 'Year', },
-    { name: 'brand', label: 'Brand', },
-    { name: 'model', label: 'Model', },
-    { name: 'color', label: 'Color', },
-    { name: 'vin', label: 'VIN', },
-    { name: 'trim', label: 'Trim', },
-    { name: 'mileage', label: 'Mileage', },
-    { name: 'location', label: 'Location', },
-    { name: 'motor', label: 'Motor', },
-    { name: 'tag', label: 'Tag', },
-  ];
-  const navigate = useNavigate()
-  return (
-    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
-      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-        <CardTitle className="group flex items-center gap-2 text-lg">
-          Work Orders
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
-        <main className="grid flex-1 items-start  lg:grid-cols-2 xl:grid-cols-2">
-          {serviceOrder && (
-            <Tabs defaultValue="week" className='mr-2'>
-              <div className="flex items-center">
-                <TabsList>
-                  <TabsTrigger value="week"> <File className="h-5 w-5" /></TabsTrigger>
-                  <TabsTrigger value="Parts"> <Wrench className="h-5 w-5" /></TabsTrigger>
-                </TabsList>
-              </div>
-              <TabsContent value="week">
-                <Card x-chunk="dashboard-05-chunk-3">
-                  <CardHeader className="px-7 bg-muted/50 text-lg">
-                    <CardTitle>Work Order</CardTitle>
-                    <CardDescription>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className=" h-auto max-h-[700px] overflow-y-auto">
-                    <div className=' grid grid-cols-1'>
-                      <Accordion type="single" collapsible className="w-full border-border">
-                        <AccordionItem value="item-1" className='border-border'>
-                          <AccordionTrigger>Unit</AccordionTrigger>
-                          <AccordionContent>
-                            <div className='grid grid-cols-1'>
-                              <Table>
-                                <TableHeader>
-                                  <TableRow className='border-border'>
-                                    <TableHead>
-                                      Unit
-                                    </TableHead>
-                                    <TableHead>
-                                      Color
-                                    </TableHead>
-                                    <TableHead className="hidden md:table-cell">
-                                      Mileage
-                                    </TableHead>
-                                    <TableHead className="hidden md:table-cell">
-                                      VIN
-                                    </TableHead>
-                                    <TableHead className="hidden md:table-cell">
-                                      Motor
-                                    </TableHead>
-                                    <TableHead className="hidden md:table-cell">
-                                      Dept
-                                    </TableHead>
-                                  </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                  {serviceOrder && serviceOrder.Clientfile.ServiceUnit && serviceOrder.Clientfile.ServiceUnit.map((result, index) => (
-                                    <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
-                                      const formData = new FormData();
-                                      formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
-                                      formData.append("mileage", result.mileage);
-                                      formData.append("vin", result.vin);
-                                      formData.append("tag", result.tag);
-                                      formData.append("motor", result.motor);
-                                      formData.append("color", result.color);
-                                      formData.append("workOrderId", serviceOrder.workOrderId);
-                                      formData.append("intent", 'addUnit');
-                                      submit(formData, { method: "post", });
-                                    }}>
-                                      <TableCell>
-                                        <p>{result.year} {result.brand} {result.model}</p>
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.mileage}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.vin}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.tag}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.motor}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        <p>Service Units</p>
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                                  {serviceOrder && serviceOrder.Clientfile.Finance && serviceOrder.Clientfile.Finance.map((result, index) => (
-                                    <TableRow key={index} className="hover:bg-accent border-border  rounded-[6px] cursor-pointer" onClick={() => {
-                                      const formData = new FormData();
-                                      formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
-                                      formData.append("mileage", result.mileage);
-                                      formData.append("vin", result.vin);
-                                      formData.append("tag", result.tag);
-                                      formData.append("motor", result.motor);
-                                      formData.append("color", result.color);
-                                      formData.append("workOrderId", WorkOrder.workOrderId);
-                                      formData.append("intent", 'addUnit');
-                                      submit(formData, { method: "post", });
-                                    }}>
-                                      <TableCell>
-                                        <p>{result.year} {result.brand} {result.model}</p>
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.mileage}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.vin}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.tag && (result.tag)}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.motor && (result.motor)}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        <p>Finance Units</p>
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              </Table>
-                              <Dialog>
-                                <DialogTrigger>
-                                  <Button size='sm' className='text-foreground mt-4 w-[75px]' >
-                                    New Unit
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent className='border-border'>
-                                  <DialogHeader>
-                                    <DialogTitle>Add New Unit To Client File</DialogTitle>
-                                    <DialogDescription>
-                                    </DialogDescription>
-                                  </DialogHeader>
-                                  <>
-                                    <Form method='post' >
-                                      <input type='hidden' name='clientfileId' value={finance.id} />
-                                      {serviceOrder && (
-                                        <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
-
-                                      )}
-                                      <div className='grid grid-cols-1'>
-                                        {unitCard.map((user, index) => (
-                                          <div key={index} className="relative mt-4">
-                                            <Input
-                                              name={user.name}
-                                              className={` bg-background text-foreground border border-border`}
-                                            />
-                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
-                                          </div>
-                                        ))}
-                                        <Button size='sm' className='text-foreground mt-4'
-                                          type='submit'
-                                          name='intent'
-                                          value='addNewServiceUnit' >
-                                          Submit
-                                        </Button>
-                                      </div>
-                                    </Form>
-                                  </>
-                                </DialogContent>
-                              </Dialog>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                      <p className='mt-4 mb-5'></p>
-                      <div className="grid gap-3">
-                        <div className="font-semibold">Work Order Services</div>
-                        <ul className="grid gap-3">
-                          {serviceOrder && serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
-                            const hours = result.hr || result.service.estHr || 0.00;
-                            return (
-                              <li key={index} className="flex items-center justify-between">
-                                <div>
-                                  <ContextMenu>
-                                    <ContextMenuTrigger>
-                                      <div className='grid grid-cols-1'>
-                                        <div className='flex items-center group '>
-                                          <div className="font-medium flex-col">
-                                            <p>{result.service.service}</p>
-                                            <p className='text-muted-foreground'>{result.service.description}</p>
-                                          </div>
-                                          <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                            <input type="hidden" name="id" value={result.id} />
-                                            <input type='hidden' name='total' value={totalService} />
-                                            <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
-                                            <Button
-                                              size="icon"
-                                              variant="outline"
-                                              name="intent" value='deleteServiceItem'
-                                              className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                              type='submit'
-                                            >
-                                              <X className="h-4 w-4 text-foreground" />
-                                            </Button>
-                                          </addProduct.Form>
-                                        </div>
-                                        <div className="hidden text-sm text-muted-foreground md:inline">
-                                          <div className='flex items-center'>
-                                            <div className="font-medium">
-                                              <EditableText
-                                                value={hours}
-                                                fieldName="name"
-                                                inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
-                                                buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                                                buttonLabel={`Edit name`}
-                                                inputLabel={`Edit name`}
-                                              >
-                                                <input type="hidden" name="intent" value='updateHr' />
-                                                <input type="hidden" name="id" value={result.id} />
-                                                <input type="hidden" name="colName" value='hr' />
-                                              </EditableText>
-
-                                            </div>
-                                            <p>/hrs{" "}{" "}@{" "}${deFees.userLabour}</p>
-                                          </div>
-                                        </div>
-                                        {result.status && (
-                                          <div>
-                                            <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </ContextMenuTrigger>
-                                    <ContextMenuContent className='border-border'>
-                                      <ContextMenuSub>
-                                        <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
-                                        <ContextMenuSubContent className="w-48 border-border">
-                                          <ContextMenuItem>{result.service.service}</ContextMenuItem>
-                                          <ContextMenuItem>{result.service.description}</ContextMenuItem>
-                                          <ContextMenuSeparator />
-                                          <ContextMenuItem>
-                                            Est. Hours
-                                            <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
-                                          </ContextMenuItem>
-                                          <ContextMenuItem>
-                                            Price
-                                            <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
-                                          </ContextMenuItem>
-                                        </ContextMenuSubContent>
-                                      </ContextMenuSub>
-                                      <ContextMenuSeparator />
-                                      <ContextMenuCheckboxItem
-                                        checked={result.status === 'In Stock'}
-                                        onSelect={() => {
-                                          const formData = new FormData();
-                                          formData.append("id", result.id);
-                                          formData.append("status", 'In Stock');
-                                          formData.append("intent", 'updateServiceOnOrders');
-                                          submit(formData, { method: "post", });
-                                        }}
-                                      >In Stock</ContextMenuCheckboxItem>
-                                      <ContextMenuCheckboxItem
-                                        checked={result.status === 'On Order'}
-                                        onSelect={() => {
-                                          const formData = new FormData();
-                                          formData.append("id", result.id);
-                                          formData.append("status", 'On Order');
-                                          formData.append("intent", 'updateServiceOnOrders');
-                                          submit(formData, { method: "post", });
-                                        }}
-                                      >On Order</ContextMenuCheckboxItem>
-                                      <ContextMenuCheckboxItem
-                                        checked={result.status === 'Completed'}
-                                        onSelect={() => {
-                                          const formData = new FormData();
-                                          formData.append("id", result.id);
-                                          formData.append("status", 'Completed');
-                                          formData.append("intent", 'updateServiceOnOrders');
-                                          submit(formData, { method: "post", });
-                                        }}
-                                      >Completed</ContextMenuCheckboxItem>
-                                      <ContextMenuCheckboxItem
-                                        checked={result.status === 'Back Order'}
-                                        onSelect={() => {
-                                          const formData = new FormData();
-                                          formData.append("id", result.id);
-                                          formData.append("status", 'Back Order');
-                                          formData.append("intent", 'updateServiceOnOrders');
-                                          submit(formData, { method: "post", });
-                                        }}
-                                      >Back Order</ContextMenuCheckboxItem>
-                                    </ContextMenuContent>
-                                  </ContextMenu>
-                                </div>
-                                <span>
-                                  x{" "}{" "}{result.quantity}
-                                </span>
-                              </li>
-                            )
-                          })}
-                        </ul>
-                      </div>
-                      <Separator className="my-4" />
-                      <div className="font-semibold">Services</div>
-                      <div className='mx-4 flex-col'>
-                        <Accordion type="single" collapsible className="w-full border-border">
-                          <AccordionItem value="item-1" className='border-border'>
-                            <AccordionTrigger>Add New Service</AccordionTrigger>
-                            <AccordionContent>
-                              <fetcher.Form method='post'>
-                                <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
-                                <div className='flex'>
-                                  <div className="flex-col" >
-                                    <div className="relative mt-4">
-                                      <Input name='name' className='w-[250px] mr-3' />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
-                                    </div>
-                                    <div className="relative mt-4">
-                                      <TextArea name='description' className='w-[250px] mr-3' />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
-                                    </div>
-
-                                    <div className="relative mt-4">
-                                      <Input name='hr' className='w-[100px] mr-3' />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
-                                    </div>
-                                    <div className="relative mt-4">
-                                      <Input name='quantity' className='w-[100px] mr-3' defaultValue={1} />
-                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Quantity</label>
-                                    </div>
-
-                                    <Button
-                                      className='mt-4'
-                                      size='icon'
-                                      type='submit'
-                                      name='intent'
-                                      value='addNewServiceToWorkOrder'
-                                    >
-                                      <Plus />
-                                    </Button>
-                                  </div>
-                                </div>
-                              </fetcher.Form>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
-
-                      </div>
-                      <div className='flex-col mt-4'>
-                        <div className='mx-4'>
-                          <div className="font-semibold">Select Service</div>
-                          <search.Form method="get" action='/dealer/service/search/services'>
-                            <div className="relative ml-auto flex-1 md:grow-0 ">
-                              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                ref={ref}
-                                type="search"
-                                name="q"
-                                onChange={e => {
-                                  search.submit(e.currentTarget.form);
-                                }}
-                                autoFocus
-                                placeholder="Search..."
-                                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-                              />
-                            </div>
-                          </search.Form>
-                          <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
-                            {search.data && search.data.map((result, index) => {
-                              return (
-                                <li key={index} className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]" onClick={() => {
-                                  const formData = new FormData();
-                                  formData.append("hr", result.estHr);
-                                  formData.append("workOrderId", serviceOrder.workOrderId);
-                                  formData.append("serviceId", result.id);
-                                  formData.append("intent", 'addServiceToWorkOrder');
-                                  submit(formData, { method: "post", });
-                                }}>
-                                  <div className="font-medium flex-col">
-                                    <p className=' text-left'>{result.service}</p>
-                                    <p className='text-muted-foreground text-left'>{result.description}</p>
-                                    <p className='text-muted-foreground text-left'>{result.estHr}/hrs{" "}{" "}@{" "}${deFees.userLabour}</p>
-                                  </div>
-                                </li>
-                              )
-                            })}
-                          </ul>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value="Parts">
-                <Card x-chunk="dashboard-05-chunk-3 " className='mx-5 w-[95%] '>
-                  <CardHeader className="px-7">
-                    <CardTitle>
-                      <div className='flex justify-between items-center'>
-                        <p>Accessories</p>
-                      </div>
-                    </CardTitle>
-                    <CardDescription className='flex items-center'>
-                      <product.Form method="get" action='/dealer/accessories/products/search'>
-                        <div className="relative ml-auto flex-1 md:grow-0 ">
-                          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            ref={ref}
-                            type="search"
-                            name="q"
-                            onChange={e => {
-                              //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
-                              product.submit(e.currentTarget.form);
-                            }}
-                            autoFocus
-                            placeholder="Search..."
-                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-                          />
-                        </div>
-                      </product.Form>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow className='border-border'>
-                          <TableHead>
-                            Brand & Name
-                          </TableHead>
-                          <TableHead className="hidden sm:table-cell">
-                            Description
-                          </TableHead>
-                          <TableHead className="hidden sm:table-cell">
-                            Category
-                          </TableHead>
-                          <TableHead className="hidden sm:table-cell">
-                            Sub Category
-                          </TableHead>
-                          <TableHead className="hidden sm:table-cell">
-                            On Order
-                          </TableHead>
-                          <TableHead className="hidden sm:table-cell">
-                            Distributer
-                          </TableHead>
-                          <TableHead className="hidden sm:table-cell">
-                            Location
-                          </TableHead>
-                          <TableHead className="hidden md:table-cell">
-                            Cost
-                          </TableHead>
-                          <TableHead className="hidden sm:table-cell">
-                            Price
-                          </TableHead>
-                          <TableHead className="text-right">
-                            Quantity
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
-                        {product.data &&
-                          product.data.map((result, index) => (
-                            <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
-                              const formData = new FormData();
-                              formData.append("accessoryId", result.id);
-                              formData.append("workOrderId", serviceOrder.workOrderId);
-                              formData.append("accOrderId", serviceOrder.AccOrders[0].id);
-                              formData.append("intent", 'addAccToWorkOrder');
-                              submit(formData, { method: "post", });
-                            }}>
-                              <TableCell className='flex-col'>
-                                <p className="font-medium">
-                                  {result.name}
-                                </p>
-                                <p className="text-sm text-muted-foreground ">
-                                  {result.brand}
-                                </p>
-                              </TableCell>
-                              <TableCell className="hidden sm:table-cell">
-                                {result.description}
-                              </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                {result.category}
-                              </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                {result.subCategory}
-                              </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                {result.onOrder}
-                              </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                {result.distributer}
-                              </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                {result.location}
-                              </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                {result.cost}
-                              </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                {result.price}
-                              </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                {result.quantity}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value="Calendar">
-              </TabsContent>
-            </Tabs>
-          )}
-          <div>
-            <Card className="overflow-hidden mt-[35px] ml-2" x-chunk="dashboard-05-chunk-4"          >
-              <CardHeader className="flex flex-row items-start bg-muted/50">
-                <div className="grid gap-0.5">
-                  <CardTitle className="group flex items-center gap-2 text-lg">
-                    W / O #{serviceOrder && (serviceOrder.workOrderId)}
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                    >
-                      <Copy className="h-3 w-3" />
-                      <span className="sr-only">Copy Order ID</span>
-                    </Button>
-                  </CardTitle>
-                  {serviceOrder && serviceOrder.status && (
-                    <div>
-                      <div className="relative mt-4">
-                        <Select
-                          name='status'
-                          defaultValue={serviceOrder.status}
-                          onValueChange={(value) => {
-                            const formData = new FormData();
-                            formData.append("id", order.workOrderId);
-                            formData.append("total", totalService);
-                            formData.append("intent", 'updateStatus');
-                            formData.append("status", value);
-                            console.log(formData, 'formData');
-                            workOrder.submit(formData, { method: "post" });
-                          }}>
-                          <SelectTrigger className="w-[200px] " >
-                            <SelectValue defaultValue={serviceOrder.status} />
-                          </SelectTrigger>
-                          <SelectContent className='border-border'>
-                            <SelectGroup>
-                              <SelectLabel>Status</SelectLabel>
-                              <SelectItem value="Quote">Quote</SelectItem>
-                              <SelectItem value="Sales">Sales</SelectItem>
-                              <SelectItem value="Open">Open / Scheduled</SelectItem>
-                              <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
-                              <SelectItem value="Waiter">Waiter</SelectItem>
-                              <SelectItem value="In Works">In Works</SelectItem>
-                              <SelectItem value="Work Completed">Work Completed</SelectItem>
-                              <SelectItem value="Closed">Closed</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-muted/50 transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
-                      </div>
-                    </div>
-                  )}
+      <CardFooter className="flex items-center border-t border-border   bg-muted/50  px-6 py-3">
+        {secPageAcc && (
+          <>
+            <div className="text-xs text-muted-foreground flex items-center justify-between">
+              <div classname='flex items-center'>
+                <div>
+                  <Badge size='sm' className='text-foreground text-center mx-auto w-auto'>
+                    {salesPerson.name}
+                  </Badge>
                 </div>
-                <div className="ml-auto flex items-center gap-1">
-                  {serviceOrder && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="outline" className="h-8 w-8">
-                          <MoreVertical className="h-3.5 w-3.5" />
-                          <span className="sr-only">More</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        align="end"
-                        className="border border-border"
-                      >
-                        <DropdownMenuItem
-                          onSelect={() => {
-                            navigate(`/dealer/service/workOrder/${serviceOrder.workOrderId}`)
-                          }}>
-                          Go To Order
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onSelect={() => {
+                <div>
+                  <ClientOnly fallback={<p>Fallback component ...</p>}>
+                    {() => (
+                      <React.Suspense fallback={<div>Loading...</div>}>
+                        <Button
+                          size='sm'
+                          variant='outline'
+                          className='bg-background text-foreground border-border border ml-3'
+                          onClick={() => {
                             console.log(toReceipt)
                             PrintReceipt(toReceipt)
                           }}>
-                          Reprint Receipt
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
-                          Show Discount
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onSelect={() => {
-                            setShowPrev(false)
-                            setorder(null)
-                          }}>
-                          Back
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onSelect={() => {
-                            const formData = new FormData();
-                            formData.append("workOrderId", serviceOrder.workOrderId);
-                            formData.append("intent", 'deleteOrder');
-                            submit(formData, { method: "post", });
-                          }}>
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                          Print Receipt
+                        </Button>
+                      </React.Suspense>
+                    )}
+                  </ClientOnly>
                 </div>
-              </CardHeader>
-              <CardContent className="p-6 text-sm h-auto max-h-[700px] overflow-y-auto">
-                {secPageService && (
-                  <>
+              </div>
 
-                    <Accordion type="single" collapsible className="w-full border-border mt-3">
-                      <AccordionItem value="item-1" className='border-border'>
-                        <AccordionTrigger>Work Order Notes</AccordionTrigger>
-                        <AccordionContent>
-                          <div className="grid gap-3">
-                            <Form method='post'>
-                              <div className="relative mt-4">
-                                <TextArea className='w-full mt-4' name='note' defaultValue={serviceOrder.notes} />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
-                              </div>
-                              <input type='hidden' name='id' defaultValue={serviceOrder.workOrderId} />
-                              <Button type='submit' name='intent' value='updateNote' className='mt-4 text-foreground' size='sm'>
-                                Submit
-                              </Button>
-                            </Form>
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-
-                    <div className="grid gap-3 mt-3">
-                      <div className="font-semibold">Work Order Services</div>
-                      <ul className="grid gap-3">
-                        {serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
-                          const hours = result.hr || result.service.estHr || 0.00;
-                          return (
-                            <li key={index} className="flex items-center justify-between">
-                              <div>
-                                <ContextMenu>
-                                  <ContextMenuTrigger>
-                                    <div className='grid grid-cols-1'>
-                                      <div className='flex items-center group '>
-                                        <div className="font-medium">
-                                          {result.service.service}
-                                        </div>
-                                        <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                          <input type="hidden" name="id" value={result.id} />
-                                          <input type='hidden' name='total' value={total} />
-                                          <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
-                                          <Button
-                                            size="icon"
-                                            variant="outline"
-                                            name="intent" value='deleteServiceItem'
-                                            className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                            type='submit'
-                                          >
-                                            <X className="h-4 w-4 text-foreground" />
-                                          </Button>
-                                        </addProduct.Form>
-                                      </div>
-                                      <div className="hidden text-sm text-muted-foreground md:inline">
-                                        <div className='flex items-center'>
-                                          <div className="font-medium">
-                                            <EditableText
-                                              value={hours}
-                                              fieldName="name"
-                                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
-                                              buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                                              buttonLabel={`Edit name`}
-                                              inputLabel={`Edit name`}
-                                            >
-                                              <input type="hidden" name="intent" value='updateHr' />
-                                              <input type="hidden" name="id" value={result.id} />
-                                              <input type="hidden" name="colName" value='hr' />
-                                            </EditableText>
-
-                                          </div>
-                                          <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
-                                        </div>
-                                      </div>
-                                      {result.status && (
-                                        <div>
-                                          <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </ContextMenuTrigger>
-                                  <ContextMenuContent className='border-border'>
-                                    <ContextMenuSub>
-                                      <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
-                                      <ContextMenuSubContent className="w-48 border-border">
-                                        <ContextMenuItem>{result.service.service}</ContextMenuItem>
-                                        <ContextMenuItem>{result.service.description}</ContextMenuItem>
-                                        <ContextMenuSeparator />
-                                        <ContextMenuItem>
-                                          Est. Hours
-                                          <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
-                                        </ContextMenuItem>
-                                        <ContextMenuItem>
-                                          Price
-                                          <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
-                                        </ContextMenuItem>
-                                      </ContextMenuSubContent>
-                                    </ContextMenuSub>
-                                    <ContextMenuSeparator />
-                                    <ContextMenuCheckboxItem
-                                      checked={result.status === 'In Stock'}
-                                      onSelect={() => {
-                                        const formData = new FormData();
-                                        formData.append("id", result.id);
-                                        formData.append("status", 'In Stock');
-                                        formData.append("intent", 'updateServiceOnOrders');
-                                        submit(formData, { method: "post", });
-                                      }}
-                                    >In Stock</ContextMenuCheckboxItem>
-                                    <ContextMenuCheckboxItem
-                                      checked={result.status === 'On Order'}
-                                      onSelect={() => {
-                                        const formData = new FormData();
-                                        formData.append("id", result.id);
-                                        formData.append("status", 'On Order');
-                                        formData.append("intent", 'updateServiceOnOrders');
-                                        submit(formData, { method: "post", });
-                                      }}
-                                    >On Order</ContextMenuCheckboxItem>
-                                    <ContextMenuCheckboxItem
-                                      checked={result.status === 'Completed'}
-                                      onSelect={() => {
-                                        const formData = new FormData();
-                                        formData.append("id", result.id);
-                                        formData.append("status", 'Completed');
-                                        formData.append("intent", 'updateServiceOnOrders');
-                                        submit(formData, { method: "post", });
-                                      }}
-                                    >Completed</ContextMenuCheckboxItem>
-                                    <ContextMenuCheckboxItem
-                                      checked={result.status === 'Back Order'}
-                                      onSelect={() => {
-                                        const formData = new FormData();
-                                        formData.append("id", result.id);
-                                        formData.append("status", 'Back Order');
-                                        formData.append("intent", 'updateServiceOnOrders');
-                                        submit(formData, { method: "post", });
-                                      }}
-                                    >Back Order</ContextMenuCheckboxItem>
-                                  </ContextMenuContent>
-                                </ContextMenu>
-                              </div>
-                              <span>
-                                x{" "}{" "}{result.quantity}
-
-                              </span>
-                            </li>
-                          )
-                        })}
-                      </ul>
-                      <Separator className="my-4" />
-                      <div className="font-semibold">Work Order Parts</div>
-                      <ul className="grid gap-3">
-                        {serviceOrder?.AccOrders?.length > 0 ? (
-                          serviceOrder.AccOrders.map((accOrder, accOrderIndex) => (
-                            <div key={accOrderIndex}>
-                              {accOrder?.AccessoriesOnOrders?.length > 0 ? (
-                                accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
-                                  <li key={accessoryIndex} className="flex items-center justify-between">
-                                    <div>
-                                      <ContextMenu>
-                                        <ContextMenuTrigger>
-                                          <div className='grid grid-cols-1'>
-                                            <div className='flex items-center group '>
-                                              <div className="font-medium">
-
-                                                {accessoryOnOrder.accessory.name}
-                                              </div>
-                                              <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                                <input type="hidden" name="id" value={accessoryOnOrder.id} />
-                                                <input type='hidden' name='total' value={accessoryOnOrder.accessory.price * accessoryOnOrder.quantity} />
-                                                <input type='hidden' name='accOrderId' value={accOrder.id} />
-                                                <Button
-                                                  size="icon"
-                                                  variant="outline"
-                                                  name="intent" value='deleteOrderItem'
-                                                  className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                                  type='submit'
-                                                >
-                                                  <X className="h-4 w-4 text-foreground" />
-                                                </Button>
-                                              </addProduct.Form>
-                                            </div>
-                                            <div className="hidden text-sm text-muted-foreground md:inline">
-                                              {accessoryOnOrder.accessory.brand}
-                                            </div>
-                                            <div>
-                                              <Badge className='text-sm  px-2 py-1 '>{accessoryOnOrder.status}</Badge>
-                                            </div>
-                                          </div>
-                                        </ContextMenuTrigger>
-                                        <ContextMenuContent className='border-border'>
-                                          <ContextMenuSub>
-                                            <ContextMenuSubTrigger inset>Part Details</ContextMenuSubTrigger>
-                                            <ContextMenuSubContent className="w-48 border-border">
-                                              <ContextMenuItem>{accessoryOnOrder.accessory.partNumber}</ContextMenuItem>
-                                              <ContextMenuItem>{accessoryOnOrder.accessory.brand} </ContextMenuItem>
-                                              <ContextMenuItem>{accessoryOnOrder.accessory.name} </ContextMenuItem>
-                                              <ContextMenuItem>{accessoryOnOrder.accessory.description} </ContextMenuItem>
-                                              <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
-                                              <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
-                                              <ContextMenuSeparator />
-                                              <ContextMenuItem>
-                                                Cost
-                                                <ContextMenuShortcut>${accessoryOnOrder.accessory.cost}</ContextMenuShortcut>
-                                              </ContextMenuItem>
-                                              <ContextMenuItem>
-                                                Price
-                                                <ContextMenuShortcut>${accessoryOnOrder.accessory.price}</ContextMenuShortcut>
-                                              </ContextMenuItem>
-                                              <ContextMenuItem>
-                                                In Stock
-                                                <ContextMenuShortcut>{accessoryOnOrder.accessory.quantity}</ContextMenuShortcut>
-                                              </ContextMenuItem>
-                                              <ContextMenuItem>
-                                                On Order
-                                                <ContextMenuShortcut>{accessoryOnOrder.accessory.onOrder}</ContextMenuShortcut>
-                                              </ContextMenuItem>
-                                              <ContextMenuItem>
-                                                Location
-                                                <ContextMenuShortcut>{accessoryOnOrder.accessory.location}</ContextMenuShortcut>
-                                              </ContextMenuItem>
-                                            </ContextMenuSubContent>
-                                          </ContextMenuSub>
-                                          <ContextMenuCheckboxItem
-                                            checked={accessoryOnOrder.status === 'In Stock'}
-                                            onSelect={() => {
-                                              const formData = new FormData();
-                                              formData.append("id", accessoryOnOrder.id);
-                                              formData.append("status", 'In Stock');
-                                              formData.append("intent", 'updateAccOnOrders');
-                                              submit(formData, { method: "post", });
-                                            }}
-                                          >In Stock</ContextMenuCheckboxItem>
-                                          <ContextMenuCheckboxItem
-                                            checked={accessoryOnOrder.status === 'On Order'}
-                                            onSelect={() => {
-                                              const formData = new FormData();
-                                              formData.append("id", accessoryOnOrder.id);
-                                              formData.append("status", 'On Order');
-                                              formData.append("intent", 'updateAccOnOrders');
-                                              submit(formData, { method: "post", });
-                                            }}
-                                          >On Order</ContextMenuCheckboxItem>
-                                          <ContextMenuCheckboxItem
-                                            checked={accessoryOnOrder.status === 'Back Order'}
-                                            onSelect={() => {
-                                              const formData = new FormData();
-                                              formData.append("id", accessoryOnOrder.id);
-                                              formData.append("status", 'Back Order');
-                                              formData.append("intent", 'updateAccOnOrders');
-                                              submit(formData, { method: "post", });
-                                            }}
-                                          >Back Order</ContextMenuCheckboxItem>
-                                        </ContextMenuContent>
-                                      </ContextMenu>
-                                    </div>
-                                    <span>${accessoryOnOrder.accessory.price} x {accessoryOnOrder.quantity}</span>
-                                  </li>
-                                ))
-                              ) : (
-                                <p>No Accessories On Orders available.</p>
-                              )}
-                            </div>
-                          ))
-                        ) : (
-                          <p>No Orders available.</p>
-                        )}
-                      </ul>
-
-
-                      <Separator className="my-2" />
-                      <ul className="grid gap-3">
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Service Subtotal</span>
-                          <span>${serviceSubTotal}</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Parts Subtotal</span>
-                          <span>${partsSubTotal}</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Subtotal</span>
-                          <span>${totalPreTax}</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Tax</span>
-                          <span>{tax.userTax}%</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Total</span>
-                          <span>${totalService}</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className='gap-3'>
-                      <div className="font-semibold">Staff</div>
-
-                      <ul className="grid gap-3">
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Technician
-                          </span>
-                          <span>{serviceOrder.tech}</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Service Writer
-                          </span>
-                          <span>{serviceOrder.writer}</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </>
-                )}
-                {firstPageService && (
-                  <>
-                    <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
-                      {orders && orders.map((result, index) => {
-                        return (
-                          <li
-                            onClick={() => {
-                              handleNextPage()
-                              setServiceOrder(result)
-                            }}
-                            key={index}
-                            className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]">
-                            <div className='flex-col'>
-                              <div className='flex justify-between items-center'>
-                                <p className='font-medium text-left'>W / O #{result.workOrderId}</p>
-                                <p className='text-muted-foreground font-medium text-right'>{result.status}</p>
-                              </div>
-                              <div className='flex justify-between items-center'>
-                                <p className='text-muted-foreground text-left'>Writer: {result.writer}</p>
-                                <p className='text-muted-foreground text-right'>Tech: {result.tech}</p>
-                              </div>
-                              <p className='text-muted-foreground text-left'>{new Date(result.createdAt).toLocaleDateString("en-US", options2)}</p>
-                            </div>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </>
-                )}
-              </CardContent>
-              <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
-                <Button size='sm' variant='outline'>
-                  Create New Work Order
-                </Button>
+              <div>
                 <Pagination className="ml-auto mr-0 w-auto">
                   <PaginationContent>
                     <PaginationItem>
@@ -2853,53 +1897,17 @@ function WorkOrders({ finance, deFees }) {
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>
-              </CardFooter>
-            </Card>
-          </div>
+              </div>
 
-        </main >
-
-      </CardContent>
-      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
-        <div>
-        </div>
-      </CardFooter>
-    </Card>
-  )
-}
-function AccOrders({ finance }) {
-  return (
-    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
-      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-        <CardTitle className="group flex items-center gap-2 text-lg">
-          PAC Orders
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
-        {/* AccOrder Data */}
-        {AccOrder && AccOrder.length > 0 && (
-          <div className="mb-4">
-            <h3 className="text-xl font-semibold">Accessory Orders</h3>
-            <ul>
-              {AccOrder.map((order) => (
-                <li key={order.id} className="mb-2 p-2 border rounded">
-                  <p><strong>ID:</strong> {order.id}</p>
-                  <p><strong>Description:</strong> {order.description}</p>
-                  {/* Add other AccOrder fields as needed */}
-                </li>
-              ))}
-            </ul>
-          </div>
+            </div>
+          </>
         )}
 
-      </CardContent>
-      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
-        <div>
-        </div>
       </CardFooter>
-    </Card>
+    </Card >
   )
 }
+
 
 function CustomerBikes({ finance, fetcher }) {
   let customerCard = [
@@ -3176,26 +2184,26 @@ function ServiceUnit({ finance, fetcher }) {
 function FinanceTradeUnit({ finance, fetcher }) {
   let customerCard = [
 
-    { name: "id", value: data.id, label: "billingAddress", },
-    { name: "createdAt", value: data.createdAt, label: "billingAddress", },
-    { name: "updatedAt", value: data.updatedAt, label: "billingAddress", },
-    { name: "financeId", value: data.financeId, label: "billingAddress", },
-    { name: "price", value: data.price, label: "billingAddress", },
-    { name: "brand", value: data.brand, label: "billingAddress", },
-    { name: "model", value: data.model, label: "billingAddress", },
-    { name: "color", value: data.color, label: "billingAddress", },
-    { name: "accessories", value: data.accessories, label: "billingAddress", },
-    { name: "options", value: data.options, label: "billingAddress", },
-    { name: "year", value: data.year, label: "billingAddress", },
-    { name: "vin", value: data.vin, label: "billingAddress", },
-    { name: "trim", value: data.trim, label: "billingAddress", },
-    { name: "mileage", value: data.mileage, label: "billingAddress", },
-    { name: "location", value: data.location, label: "billingAddress", },
-    { name: "condition", value: data.condition, label: "billingAddress", },
-    { name: "repairs", value: data.repairs, label: "billingAddress", },
-    { name: "stockNum", value: data.stockNum, label: "billingAddress", },
-    { name: "licensing", value: data.licensing, label: "billingAddress", },
-    { name: "tradeEval", value: data.tradeEval, label: "billingAddress", },
+    { name: "id", value: finance.id, label: "billingAddress", },
+    { name: "createdAt", value: finance.createdAt, label: "billingAddress", },
+    { name: "updatedAt", value: finance.updatedAt, label: "billingAddress", },
+    { name: "financeId", value: finance.financeId, label: "billingAddress", },
+    { name: "price", value: finance.price, label: "billingAddress", },
+    { name: "brand", value: finance.brand, label: "billingAddress", },
+    { name: "model", value: finance.model, label: "billingAddress", },
+    { name: "color", value: finance.color, label: "billingAddress", },
+    { name: "accessories", value: finance.accessories, label: "billingAddress", },
+    { name: "options", value: finance.options, label: "billingAddress", },
+    { name: "year", value: finance.year, label: "billingAddress", },
+    { name: "vin", value: finance.vin, label: "billingAddress", },
+    { name: "trim", value: finance.trim, label: "billingAddress", },
+    { name: "mileage", value: finance.mileage, label: "billingAddress", },
+    { name: "location", value: finance.location, label: "billingAddress", },
+    { name: "condition", value: finance.condition, label: "billingAddress", },
+    { name: "repairs", value: finance.repairs, label: "billingAddress", },
+    { name: "stockNum", value: finance.stockNum, label: "billingAddress", },
+    { name: "licensing", value: finance.licensing, label: "billingAddress", },
+    { name: "tradeEval", value: finance.tradeEval, label: "billingAddress", },
   ];
   return (
     <Card
@@ -3598,6 +2606,981 @@ function Blank({ finance }) {
       </CardHeader>
       <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
 
+
+      </CardContent>
+      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+        <div>
+        </div>
+      </CardFooter>
+    </Card>
+  )
+}
+
+
+
+function WorkOrders({ finance, deFees }) {
+  const submit = useSubmit()
+  let fetcher = useFetcher();
+  let addProduct = useFetcher();
+  let workOrder = useFetcher();
+  let ref = useRef();
+  let formRef = useRef();
+  let search = useFetcher();
+  let product = useFetcher();
+
+  const [discount, setDiscount] = useState(false)
+  const [serviceOrder, setServiceOrder] = useState();
+  const [firstPageService, setFirstPageService] = useState(true);
+  const [secPageService, setSecPageService] = useState(false);
+  const [totalService, setTotalService] = useState(0.00);
+  const [serviceSubTotal, setServiceSubTotal] = useState(0.00);
+  const [partsSubTotal, setPartsSubTotal] = useState(0.00);
+  const [totalPreTax, setTotalPreTax] = useState(0.00);
+  const [totalAmountPaid, setTotalAmountPaid] = useState(0.00);
+  const [discDollar, setDiscDollar] = useState(0.00)
+  const [discPer, setDiscPer] = useState(0.00)
+
+  const taxMultiplier = Number(deFees.userTax);
+  const taxRate = 1 + taxMultiplier / 100;
+  let totalAccessoriesCost = 0.00
+  let total = 0.00
+  let remaining = 0.00
+  let toReceipt = {}
+
+  function handleNextPage() {
+    if (firstPageService === true) {
+      setFirstPageService(false)
+      setSecPageService(true)
+    }
+    if (secPageService === true) {
+      setFirstPageService(true)
+      setSecPageService(false)
+    }
+  }
+  function handlePrevPage() {
+    if (firstPageService === true) {
+      setFirstPageService(false)
+      setSecPageService(true)
+    }
+    if (secPageService === true) {
+      setFirstPageService(true)
+      setSecPageService(false)
+    }
+  }
+
+  const options2 = {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+
+
+
+
+  useEffect(() => {
+    if (serviceOrder) {
+      // Calculate Parts Subtotal
+      const partsSub = serviceOrder?.AccOrders?.reduce((total, accOrder) => {
+        return total + accOrder?.AccessoriesOnOrders?.reduce((subTotal, accessoryOnOrder) => {
+          return subTotal + ((accessoryOnOrder?.accessory?.price || 0) * (accessoryOnOrder?.quantity || 0));
+        }, 0);
+      }, 0) || 0;
+
+      setPartsSubTotal(partsSub.toFixed(2));
+
+      // Calculate Service Subtotal
+      const serviceSub = serviceOrder?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+        const hours = serviceOnOrder?.hr || serviceOnOrder?.service?.estHr || 0;
+        const subtotal = hours * (deFees?.userLabour || 0) * (serviceOnOrder?.quantity || 1);
+        return total + subtotal;
+      }, 0) || 0;
+
+      setServiceSubTotal(serviceSub.toFixed(2));
+
+      // Calculate Total Pre-Tax
+      const totalPreTax = partsSub + serviceSub;
+      setTotalPreTax(totalPreTax.toFixed(2));
+
+      // Calculate Final Total
+      const discountDollar = parseFloat(discDollar) || 0;
+      const discountPercent = parseFloat(discPer) || 0;
+
+      const totalWithoutDiscount = totalPreTax;
+      const totalWithDollarDiscount = (totalWithoutDiscount - discountDollar) * (taxRate || 1);
+      const totalWithPercentDiscount = (totalWithoutDiscount * (100 - discountPercent) / 100) * (taxRate || 1);
+
+      const calculatedTotal = discountDollar > 0 ? totalWithDollarDiscount : totalWithPercentDiscount;
+      setTotalService(calculatedTotal.toFixed(2));
+
+      // Calculate Total Amount Paid
+      const totalAmountPaid2 = serviceOrder?.Payments?.reduce((total, payment) => {
+        return total + (payment?.amountPaid || 0);
+      }, 0) || 0;
+
+      setTotalAmountPaid(totalAmountPaid2.toFixed(2));
+
+      // Logging for Debugging
+      console.log(partsSub, serviceSub, totalPreTax, calculatedTotal, 'Totals');
+    }
+  }, [serviceOrder, deFees, discDollar, discPer, taxRate]);
+
+
+  let unitCard = [
+    { name: 'year', label: 'Year', },
+    { name: 'brand', label: 'Brand', },
+    { name: 'model', label: 'Model', },
+    { name: 'color', label: 'Color', },
+    { name: 'vin', label: 'VIN', },
+    { name: 'trim', label: 'Trim', },
+    { name: 'mileage', label: 'Mileage', },
+    { name: 'location', label: 'Location', },
+    { name: 'motor', label: 'Motor', },
+    { name: 'tag', label: 'Tag', },
+  ];
+  const navigate = useNavigate()
+  return (
+    <div>
+      <main className="grid flex-1 items-start  ">
+        <Tabs defaultValue="week" className='mr-2'>
+          <div className="flex items-center">
+            <TabsList>
+              <TabsTrigger value="week"> <File className="h-5 w-5" /></TabsTrigger>
+              <TabsTrigger value="Parts"> <Wrench className="h-5 w-5" /></TabsTrigger>
+            </TabsList>
+          </div>
+          <TabsContent value="week">
+            <Card x-chunk="dashboard-05-chunk-3">
+              <CardHeader className="px-7 bg-muted/50 text-lg">
+                <CardTitle>
+                  <div className='flex items-center justify-between'>
+                    {serviceOrder ? (<div> W / O #{serviceOrder && (serviceOrder.workOrderId)} </div>) : (<p>Work Order</p>)}
+
+                    <div className="ml-auto flex items-center gap-1">
+                      {serviceOrder && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button size="icon" variant="outline" className="h-8 w-8">
+                              <MoreVertical className="h-3.5 w-3.5" />
+                              <span className="sr-only">More</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align="end"
+                            className="border border-border"
+                          >
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                navigate(`/dealer/service/workOrder/${serviceOrder.workOrderId}`)
+                              }}>
+                              Go To Order
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                console.log(toReceipt)
+                                PrintReceipt(toReceipt)
+                              }}>
+                              Reprint Receipt
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
+                              Show Discount
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                handleNextPage()
+                              }}>
+                              Back
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("workOrderId", serviceOrder.workOrderId);
+                                formData.append("intent", 'deleteOrder');
+                                submit(formData, { method: "post", });
+                              }}>
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </div>
+                  </div>
+                </CardTitle>
+                <CardDescription>
+                </CardDescription>
+              </CardHeader>
+              <CardContent className=" h-[500px] max-h-[500px] overflow-y-auto">
+                <div className=' grid grid-cols-1'>
+                  {firstPageService && (
+                    <>
+                      <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+                        {finance.WorkOrder && finance.WorkOrder.map((result, index) => {
+                          return (
+                            <li
+                              onClick={() => {
+                                handleNextPage()
+                                setServiceOrder(result)
+                              }}
+                              key={index}
+                              className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]">
+                              <div className='flex-col'>
+                                <div className='flex justify-between items-center'>
+                                  <p className='font-medium text-left'>W / O #{result.workOrderId}</p>
+                                  <p className='text-muted-foreground font-medium text-right'>{result.status}</p>
+                                </div>
+                                <div className='flex justify-between items-center'>
+                                  <p className='text-muted-foreground text-left'>Writer: {result.writer}</p>
+                                  <p className='text-muted-foreground text-right'>Tech: {result.tech}</p>
+                                </div>
+                                <p className='text-muted-foreground text-left'>{new Date(result.createdAt).toLocaleDateString("en-US", options2)}</p>
+                              </div>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    </>
+                  )}
+                  {secPageService && (
+                    <>
+                      <Accordion type="single" collapsible className="w-full border-border">
+                        <AccordionItem value="item-1" className='border-border'>
+                          <AccordionTrigger>Unit</AccordionTrigger>
+                          <AccordionContent>
+                            <div className='grid grid-cols-1'>
+                              <Table>
+                                <TableHeader>
+                                  <TableRow className='border-border'>
+                                    <TableHead>
+                                      Unit
+                                    </TableHead>
+                                    <TableHead>
+                                      Color
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                      Mileage
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                      VIN
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                      Motor
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                      Dept
+                                    </TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {serviceOrder && serviceOrder.ServiceUnit && serviceOrder.ServiceUnit.map((result, index) => (
+                                    <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
+                                      const formData = new FormData();
+                                      formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
+                                      formData.append("mileage", result.mileage);
+                                      formData.append("vin", result.vin);
+                                      formData.append("tag", result.tag);
+                                      formData.append("motor", result.motor);
+                                      formData.append("color", result.color);
+                                      formData.append("workOrderId", serviceOrder.workOrderId);
+                                      formData.append("intent", 'addUnit');
+                                      submit(formData, { method: "post", });
+                                    }}>
+                                      <TableCell>
+                                        <p>{result.year} {result.brand} {result.model}</p>
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.mileage}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.vin}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.tag}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.motor}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        <p>Service Units</p>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                  {serviceOrder && serviceOrder.Finance && serviceOrder.Finance.map((result, index) => (
+                                    <TableRow key={index} className="hover:bg-accent border-border  rounded-[6px] cursor-pointer" onClick={() => {
+                                      const formData = new FormData();
+                                      formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
+                                      formData.append("mileage", result.mileage);
+                                      formData.append("vin", result.vin);
+                                      formData.append("tag", result.tag);
+                                      formData.append("motor", result.motor);
+                                      formData.append("color", result.color);
+                                      formData.append("workOrderId", serviceOrder.workOrderId);
+                                      formData.append("intent", 'addUnit');
+                                      submit(formData, { method: "post", });
+                                    }}>
+                                      <TableCell>
+                                        <p>{result.year} {result.brand} {result.model}</p>
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.mileage}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.vin}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.tag && (result.tag)}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.motor && (result.motor)}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        <p>Finance Units</p>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                              <Dialog>
+                                <DialogTrigger>
+                                  <Button size='sm' className='text-foreground mt-4 w-[75px]' >
+                                    New Unit
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className='border-border'>
+                                  <DialogHeader>
+                                    <DialogTitle>Add New Unit To Client File</DialogTitle>
+                                    <DialogDescription>
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <>
+                                    <Form method='post' >
+                                      <input type='hidden' name='clientfileId' value={finance.id} />
+                                      {serviceOrder && (
+                                        <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+
+                                      )}
+                                      <div className='grid grid-cols-1'>
+                                        {unitCard.map((user, index) => (
+                                          <div key={index} className="relative mt-4">
+                                            <Input
+                                              name={user.name}
+                                              className={` bg-background text-foreground border border-border`}
+                                            />
+                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+                                          </div>
+                                        ))}
+                                        <Button size='sm' className='text-foreground mt-4'
+                                          type='submit'
+                                          name='intent'
+                                          value='addNewServiceUnit' >
+                                          Submit
+                                        </Button>
+                                      </div>
+                                    </Form>
+                                  </>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                      <p className='mt-4 mb-5'></p>
+                      <Accordion type="single" collapsible className="w-full border-border mt-3">
+                        <AccordionItem value="item-1" className='border-border'>
+                          <AccordionTrigger>Work Order Notes</AccordionTrigger>
+                          <AccordionContent>
+                            <div className="grid gap-3">
+                              <Form method='post'>
+                                <div className="relative mt-4">
+                                  <TextArea className='w-full mt-4' name='note' defaultValue={serviceOrder.notes} />
+                                  <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
+                                </div>
+                                <input type='hidden' name='id' defaultValue={serviceOrder.workOrderId} />
+                                <Button type='submit' name='intent' value='updateNote' className='mt-4 text-foreground' size='sm'>
+                                  Submit
+                                </Button>
+                              </Form>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+
+                      <div className="grid gap-3 mt-3">
+                        <div className="font-semibold">Work Order Services</div>
+                        <ul className="grid gap-3">
+                          {serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
+                            const hours = result.hr || result.service.estHr || 0.00;
+                            return (
+                              <li key={index} className="flex items-center justify-between">
+                                <div>
+                                  <ContextMenu>
+                                    <ContextMenuTrigger>
+                                      <div className='grid grid-cols-1'>
+                                        <div className='flex items-center group '>
+                                          <div className="font-medium">
+                                            {result.service.service}
+                                          </div>
+                                          <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                            <input type="hidden" name="id" value={result.id} />
+                                            <input type='hidden' name='total' value={total} />
+                                            <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                            <Button
+                                              size="icon"
+                                              variant="outline"
+                                              name="intent" value='deleteServiceItem'
+                                              className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                              type='submit'
+                                            >
+                                              <X className="h-4 w-4 text-foreground" />
+                                            </Button>
+                                          </addProduct.Form>
+                                        </div>
+                                        <div className="hidden text-sm text-muted-foreground md:inline">
+                                          <div className='flex items-center'>
+                                            <div className="font-medium">
+                                              <EditableText
+                                                value={hours}
+                                                fieldName="name"
+                                                inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                                buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                                buttonLabel={`Edit name`}
+                                                inputLabel={`Edit name`}
+                                              >
+                                                <input type="hidden" name="intent" value='updateHr' />
+                                                <input type="hidden" name="id" value={result.id} />
+                                                <input type="hidden" name="colName" value='hr' />
+                                              </EditableText>
+
+                                            </div>
+                                            <p>{" "}hrs{" "}{" "}@{" "}${deFees.userLabour}</p>
+                                          </div>
+                                        </div>
+                                        {result.status && (
+                                          <div>
+                                            <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </ContextMenuTrigger>
+                                    <ContextMenuContent className='border-border'>
+                                      <ContextMenuSub>
+                                        <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                                        <ContextMenuSubContent className="w-48 border-border">
+                                          <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                          <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                          <ContextMenuSeparator />
+                                          <ContextMenuItem>
+                                            Est. Hours
+                                            <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                          </ContextMenuItem>
+                                          <ContextMenuItem>
+                                            Price
+                                            <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                          </ContextMenuItem>
+                                        </ContextMenuSubContent>
+                                      </ContextMenuSub>
+                                      <ContextMenuSeparator />
+                                      <ContextMenuCheckboxItem
+                                        checked={result.status === 'In Stock'}
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("id", result.id);
+                                          formData.append("status", 'In Stock');
+                                          formData.append("intent", 'updateServiceOnOrders');
+                                          submit(formData, { method: "post", });
+                                        }}
+                                      >In Stock</ContextMenuCheckboxItem>
+                                      <ContextMenuCheckboxItem
+                                        checked={result.status === 'On Order'}
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("id", result.id);
+                                          formData.append("status", 'On Order');
+                                          formData.append("intent", 'updateServiceOnOrders');
+                                          submit(formData, { method: "post", });
+                                        }}
+                                      >On Order</ContextMenuCheckboxItem>
+                                      <ContextMenuCheckboxItem
+                                        checked={result.status === 'Completed'}
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("id", result.id);
+                                          formData.append("status", 'Completed');
+                                          formData.append("intent", 'updateServiceOnOrders');
+                                          submit(formData, { method: "post", });
+                                        }}
+                                      >Completed</ContextMenuCheckboxItem>
+                                      <ContextMenuCheckboxItem
+                                        checked={result.status === 'Back Order'}
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("id", result.id);
+                                          formData.append("status", 'Back Order');
+                                          formData.append("intent", 'updateServiceOnOrders');
+                                          submit(formData, { method: "post", });
+                                        }}
+                                      >Back Order</ContextMenuCheckboxItem>
+                                    </ContextMenuContent>
+                                  </ContextMenu>
+                                </div>
+                                <span>
+                                  x{" "}{" "}{result.quantity}
+
+                                </span>
+                              </li>
+                            )
+                          })}
+                        </ul>
+                        <Separator className="my-4" />
+                        <div className="font-semibold">Work Order Parts</div>
+                        <ul className="grid gap-3">
+                          {serviceOrder?.AccOrder?.length > 0 ? (
+                            serviceOrder.AccOrder.map((accOrder, accOrderIndex) => (
+                              <div key={accOrderIndex}>
+                                {accOrder?.AccessoriesOnOrders?.length > 0 ? (
+                                  accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
+                                    <li key={accessoryIndex} className="flex items-center justify-between">
+                                      <div>
+                                        <ContextMenu>
+                                          <ContextMenuTrigger>
+                                            <div className='grid grid-cols-1'>
+                                              <div className='flex items-center group '>
+                                                <div className="font-medium">
+
+                                                  {accessoryOnOrder.accessory.name}
+                                                </div>
+                                                <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                                  <input type="hidden" name="id" value={accessoryOnOrder.id} />
+                                                  <input type='hidden' name='total' value={accessoryOnOrder.accessory.price * accessoryOnOrder.quantity} />
+                                                  <input type='hidden' name='accOrderId' value={accOrder.id} />
+                                                  <Button
+                                                    size="icon"
+                                                    variant="outline"
+                                                    name="intent" value='deleteOrderItem'
+                                                    className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                                    type='submit'
+                                                  >
+                                                    <X className="h-4 w-4 text-foreground" />
+                                                  </Button>
+                                                </addProduct.Form>
+                                              </div>
+                                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                                {accessoryOnOrder.accessory.brand}
+                                              </div>
+                                              <div>
+                                                <Badge className='text-sm  px-2 py-1 '>{accessoryOnOrder.status}</Badge>
+                                              </div>
+                                            </div>
+                                          </ContextMenuTrigger>
+                                          <ContextMenuContent className='border-border'>
+                                            <ContextMenuSub>
+                                              <ContextMenuSubTrigger inset>Part Details</ContextMenuSubTrigger>
+                                              <ContextMenuSubContent className="w-48 border-border">
+                                                <ContextMenuItem>{accessoryOnOrder.accessory.partNumber}</ContextMenuItem>
+                                                <ContextMenuItem>{accessoryOnOrder.accessory.brand} </ContextMenuItem>
+                                                <ContextMenuItem>{accessoryOnOrder.accessory.name} </ContextMenuItem>
+                                                <ContextMenuItem>{accessoryOnOrder.accessory.description} </ContextMenuItem>
+                                                <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                                <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                                <ContextMenuSeparator />
+                                                <ContextMenuItem>
+                                                  Cost
+                                                  <ContextMenuShortcut>${accessoryOnOrder.accessory.cost}</ContextMenuShortcut>
+                                                </ContextMenuItem>
+                                                <ContextMenuItem>
+                                                  Price
+                                                  <ContextMenuShortcut>${accessoryOnOrder.accessory.price}</ContextMenuShortcut>
+                                                </ContextMenuItem>
+                                                <ContextMenuItem>
+                                                  In Stock
+                                                  <ContextMenuShortcut>{accessoryOnOrder.accessory.quantity}</ContextMenuShortcut>
+                                                </ContextMenuItem>
+                                                <ContextMenuItem>
+                                                  On Order
+                                                  <ContextMenuShortcut>{accessoryOnOrder.accessory.onOrder}</ContextMenuShortcut>
+                                                </ContextMenuItem>
+                                                <ContextMenuItem>
+                                                  Location
+                                                  <ContextMenuShortcut>{accessoryOnOrder.accessory.location}</ContextMenuShortcut>
+                                                </ContextMenuItem>
+                                              </ContextMenuSubContent>
+                                            </ContextMenuSub>
+                                            <ContextMenuCheckboxItem
+                                              checked={accessoryOnOrder.status === 'In Stock'}
+                                              onSelect={() => {
+                                                const formData = new FormData();
+                                                formData.append("id", accessoryOnOrder.id);
+                                                formData.append("status", 'In Stock');
+                                                formData.append("intent", 'updateAccOnOrders');
+                                                submit(formData, { method: "post", });
+                                              }}
+                                            >In Stock</ContextMenuCheckboxItem>
+                                            <ContextMenuCheckboxItem
+                                              checked={accessoryOnOrder.status === 'On Order'}
+                                              onSelect={() => {
+                                                const formData = new FormData();
+                                                formData.append("id", accessoryOnOrder.id);
+                                                formData.append("status", 'On Order');
+                                                formData.append("intent", 'updateAccOnOrders');
+                                                submit(formData, { method: "post", });
+                                              }}
+                                            >On Order</ContextMenuCheckboxItem>
+                                            <ContextMenuCheckboxItem
+                                              checked={accessoryOnOrder.status === 'Back Order'}
+                                              onSelect={() => {
+                                                const formData = new FormData();
+                                                formData.append("id", accessoryOnOrder.id);
+                                                formData.append("status", 'Back Order');
+                                                formData.append("intent", 'updateAccOnOrders');
+                                                submit(formData, { method: "post", });
+                                              }}
+                                            >Back Order</ContextMenuCheckboxItem>
+                                          </ContextMenuContent>
+                                        </ContextMenu>
+                                      </div>
+                                      <span>${accessoryOnOrder.accessory.price} x {accessoryOnOrder.quantity}</span>
+                                    </li>
+                                  ))
+                                ) : (
+                                  <p>No Accessories On Orders available.</p>
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <p>No Orders available.</p>
+                          )}
+                        </ul>
+
+                        <Separator className="my-4" />
+                        <div className="font-semibold">Services</div>
+                        <div className='mx-4 flex-col'>
+                          <Accordion type="single" collapsible className="w-full border-border">
+                            <AccordionItem value="item-1" className='border-border'>
+                              <AccordionTrigger>Add New Service</AccordionTrigger>
+                              <AccordionContent>
+                                <fetcher.Form method='post'>
+                                  <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                  <div className='flex'>
+                                    <div className="flex-col" >
+                                      <div className="relative mt-4">
+                                        <Input name='name' className='w-[250px] mr-3' />
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
+                                      </div>
+                                      <div className="relative mt-4">
+                                        <TextArea name='description' className='w-[250px] mr-3' />
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
+                                      </div>
+
+                                      <div className="relative mt-4">
+                                        <Input name='hr' className='w-[100px] mr-3' />
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
+                                      </div>
+                                      <div className="relative mt-4">
+                                        <Input name='quantity' className='w-[100px] mr-3' defaultValue={1} />
+                                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Quantity</label>
+                                      </div>
+
+                                      <Button
+                                        className='mt-4'
+                                        size='icon'
+                                        type='submit'
+                                        name='intent'
+                                        value='addNewServiceToWorkOrder'
+                                      >
+                                        <Plus />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </fetcher.Form>
+                              </AccordionContent>
+                            </AccordionItem>
+                          </Accordion>
+                        </div>
+                        <div className='flex-col mt-4'>
+                          <div className='mx-4'>
+                            <div className="font-semibold">Select Service</div>
+                            <search.Form method="get" action='/dealer/service/search/services'>
+                              <div className="relative ml-auto flex-1 md:grow-0 ">
+                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                  ref={ref}
+                                  type="search"
+                                  name="q"
+                                  onChange={e => {
+                                    search.submit(e.currentTarget.form);
+                                  }}
+                                  autoFocus
+                                  placeholder="Search..."
+                                  className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                                />
+                              </div>
+                            </search.Form>
+                            <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+                              {search.data && search.data.map((result, index) => {
+                                return (
+                                  <li key={index} className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]" onClick={() => {
+                                    const formData = new FormData();
+                                    formData.append("hr", result.estHr);
+                                    formData.append("workOrderId", serviceOrder.workOrderId);
+                                    formData.append("serviceId", result.id);
+                                    formData.append("intent", 'addServiceToWorkOrder');
+                                    submit(formData, { method: "post", });
+                                  }}>
+                                    <div className="font-medium flex-col">
+                                      <p className=' text-left'>{result.service}</p>
+                                      <p className='text-muted-foreground text-left'>{result.description}</p>
+                                      <p className='text-muted-foreground text-left'>{result.estHr}/hrs{" "}{" "}@{" "}${deFees.userLabour}</p>
+                                    </div>
+                                  </li>
+                                )
+                              })}
+                            </ul>
+
+                          </div>
+                        </div>
+                        <Separator className="my-2" />
+                        <ul className="grid gap-3">
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Service Subtotal</span>
+                            <span>${serviceSubTotal}</span>
+                          </li>
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Parts Subtotal</span>
+                            <span>${partsSubTotal}</span>
+                          </li>
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Subtotal</span>
+                            <span>${totalPreTax}</span>
+                          </li>
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Tax</span>
+                            <span>{deFees.userTax}%</span>
+                          </li>
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Total</span>
+                            <span>${totalService}</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <Separator className="my-4" />
+                      <div className='gap-3'>
+                        <div className="font-semibold">Staff</div>
+
+                        <ul className="grid gap-3">
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">
+                              Technician
+                            </span>
+                            <span>{serviceOrder.tech}</span>
+                          </li>
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">
+                              Service Writer
+                            </span>
+                            <span>{serviceOrder.writer}</span>
+                          </li>
+                        </ul>
+                      </div>
+
+
+                    </>
+
+                  )}
+                </div>
+              </CardContent>
+              <CardFooter className='flex items-center justify-between'>
+                <Button size='sm' variant='outline'>
+                  Create New Work Order
+                </Button>
+                <Pagination className="ml-auto mr-0 w-auto">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <Button size="icon"
+                        variant="outline"
+                        className="h-6 w-6"
+                        onClick={() => {
+                          handlePrevPage()
+                        }}>
+                        <ChevronLeft className="h-3.5 w-3.5" />
+                        <span className="sr-only">Previous Order</span>
+                      </Button>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <Button size="icon"
+                        variant="outline"
+                        className="h-6 w-6"
+                        onClick={() => {
+                          handleNextPage()
+                        }}>
+                        <ChevronRight className="h-3.5 w-3.5" />
+                        <span className="sr-only">Next Order</span>
+                      </Button>
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="Parts">
+            {serviceOrder && (
+              <>
+
+                <Card x-chunk="dashboard-05-chunk-3 " className='mx-5 w-[95%] '>
+                  <CardHeader className="px-7">
+                    <CardTitle>
+                      <div className='flex justify-between items-center'>
+                        <p>Accessories</p>
+                      </div>
+                    </CardTitle>
+                    <CardDescription className='flex items-center'>
+                      <product.Form method="get" action='/dealer/accessories/products/search'>
+                        <div className="relative ml-auto flex-1 md:grow-0 ">
+                          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            ref={ref}
+                            type="search"
+                            name="q"
+                            onChange={e => {
+                              //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                              product.submit(e.currentTarget.form);
+                            }}
+                            autoFocus
+                            placeholder="Search..."
+                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                          />
+                        </div>
+                      </product.Form>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow className='border-border'>
+                          <TableHead>
+                            Brand & Name
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Description
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Category
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Sub Category
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            On Order
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Distributer
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Location
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Cost
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Price
+                          </TableHead>
+                          <TableHead className="text-right">
+                            Quantity
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
+                        {product.data &&
+                          product.data.map((result, index) => (
+                            <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
+                              const formData = new FormData();
+                              formData.append("accessoryId", result.id);
+                              formData.append("workOrderId", serviceOrder.workOrderId);
+                              formData.append("accOrderId", serviceOrder.AccOrders[0].id);
+                              formData.append("intent", 'addAccToWorkOrder');
+                              submit(formData, { method: "post", });
+                            }}>
+                              <TableCell className='flex-col'>
+                                <p className="font-medium">
+                                  {result.name}
+                                </p>
+                                <p className="text-sm text-muted-foreground ">
+                                  {result.brand}
+                                </p>
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                                {result.description}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.category}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.subCategory}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.onOrder}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.distributer}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.location}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.cost}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.price}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.quantity}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+          </TabsContent>
+          <TabsContent value="Calendar">
+          </TabsContent>
+        </Tabs>
+        <div>
+        </div>
+      </main >
+    </div>
+  )
+}
+function AccOrders({ finance }) {
+  return (
+    <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <CardTitle className="group flex items-center gap-2 text-lg">
+          PAC Orders
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
+        {/* AccOrder Data */}
+        {AccOrder && AccOrder.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold">Accessory Orders</h3>
+            <ul>
+              {AccOrder.map((order) => (
+                <li key={order.id} className="mb-2 p-2 border rounded">
+                  <p><strong>ID:</strong> {order.id}</p>
+                  <p><strong>Description:</strong> {order.description}</p>
+                  {/* Add other AccOrder fields as needed */}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
       </CardContent>
       <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">

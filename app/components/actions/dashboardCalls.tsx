@@ -290,6 +290,8 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     return json({ update })
   }
   if (intent === 'goToClientfile') {
+
+    console.log(formData, 'formData in dashboardcalls')
     await prisma.customerSync.update({
       where: { userEmail: email },
       data: { clientfileId: formData.clientfileId, financeId: formData.financeId }

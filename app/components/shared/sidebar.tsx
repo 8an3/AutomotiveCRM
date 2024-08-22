@@ -296,7 +296,7 @@ export default function Sidebar(user, email) {
                     </AccordionItem>
                   ) : (null)}
                   {user && user?.email === 'skylerzanth@outlook.com' ? (
-                    <AccordionItem value="item-3">
+                    <AccordionItem value="item-3" className='border-border'>
                       <AccordionTrigger>
                         Dev Menu
                       </AccordionTrigger>
