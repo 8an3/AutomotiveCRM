@@ -40,18 +40,17 @@ module.exports = {
   server: process.env.NODE_ENV === "development" ? undefined : "./server.ts",
   serverBuildPath: "api/index.js",
   appDirectory: "app",
-  assetsBuildDirectory: "public/build",
+  assetsBuildDirectory: "./public/build",
   publicPath: "/build/",
   serverModuleFormat: "cjs",
   serverDependenciesToBundle: [
     "axios",
     "@azure/msal-react",
-    // "Path2D",
+    "Path2D",
     "chalk"
   ],
   tailwind: true,
   routes(defineRoutes) {
-    // uses the v1 convention, works in v1.15+ and v2
     return createRoutesFromFolders(defineRoutes);
   },
   future: {
@@ -62,13 +61,56 @@ module.exports = {
     v2_normalizeFormMethod: true,
     v2_routeConvention: true,
   },
+
 };
 exports.appDirectory = "./app";
-
-/**
- *  routes(defineRoutes) {
-   return defineRoutes((route) => {
-     route("/", "_index.tsx", { index: true });
-   });
- },
- */
+/** browserNodeBuiltinsPolyfill: {
+    modules: {
+      _stream_duplex: true,
+      _stream_passthrough: true,
+      _stream_readable: true,
+      _stream_transform: true,
+      _stream_writable: true,
+      assert: true,
+      "assert/strict": true,
+      buffer: true,
+      console: true,
+      constants: true,
+      crypto: "empty",
+      diagnostics_channel: true,
+      domain: true,
+      events: true,
+      fs: "empty",
+      "fs/promises": "empty",
+      http: true,
+      https: true,
+      module: true,
+      os: true,
+      path: true,
+      "path/posix": true,
+      "path/win32": true,
+      perf_hooks: true,
+      process: true,
+      punycode: true,
+      querystring: true,
+      stream: true,
+      "stream/promises": true,
+      "stream/web": true,
+      string_decoder: true,
+      sys: true,
+      timers: true,
+      "timers/promises": true,
+      tty: true,
+      url: true,
+      util: true,
+      "util/types": true,
+      vm: true,
+      wasi: true,
+      worker_threads: true,
+      zlib: true,
+      Path2D: true,
+    },
+    globals: {
+      Buffer: true,
+    },
+  }, */
