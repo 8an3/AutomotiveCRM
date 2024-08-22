@@ -128,7 +128,7 @@ import {
   ContextMenuTrigger,
 } from "~/components/ui/context-menu"
 import { ClientOnly } from "remix-utils";
-import PrintReceipt from "../document/printReceiptAcc";
+import PrintReceipt from "../document/printReceiptAcc.client";
 
 
 export function playScanSound() {

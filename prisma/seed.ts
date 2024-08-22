@@ -6615,7 +6615,10 @@ export async function Board() {
 
   ]
   const getDoneNow = [
+    { board: "dev", column: "GET DONE NOW", item: "notes in client file fix" },
+    { board: "dev", column: "GET DONE NOW", item: "in clientfile under service tab create back button to see the list of workorders again" },
     { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
+    { board: "dev", column: "GET DONE NOW", item: "put in a room for admin for people to leave notes for the admin team" },
     { board: "dev", column: "GET DONE NOW", item: "put swr places it needs to be, part, unit, workorder, like the way you did on sales dashbaord" },
 
     { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database- this produces a problem of linking the database data to the end points on the persons template you either have to input each manually or have a legend where they click the data point they want and it copies the actual database value and they paste it into the value on the template" },

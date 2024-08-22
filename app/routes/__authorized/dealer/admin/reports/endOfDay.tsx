@@ -25,7 +25,7 @@ import PrintReceipt from "../document/printReceiptAcc";
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
-import PrintEndofDay from "~/routes/__authorized/dealer/document/printEndOfDay";
+import PrintEndofDay from "~/routes/__authorized/dealer/document/printEndOfDay.client";
 
 export async function loader({ request, params }: LoaderFunction) {
   const fees = await prisma.dealer.findUnique({ where: { id: 1 } })

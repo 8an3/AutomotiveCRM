@@ -4,7 +4,7 @@ export default function SettingsLayout() {
   const location = useLocation();
   const pathname = location.pathname
   return (
-    <main className="min-h-screen min-w-screen max-h-screen max-w-screen gap-4 bg-muted/40 p-4 ">
+    <main className="min-h-screen min-w-screen max-h-screen max-w-screen gap-4 bg-background p-4 ">
       <Outlet />
     </main>
   )

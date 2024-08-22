@@ -135,13 +135,7 @@ function App() {
             }}
           >
             <Outlet />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `window.ENV = ${JSON.stringify(
-                  data.ENV
-                )}`,
-              }}
-            />
+
             {configDev.isDevelopment &&
               configDev.features.debugScreens && (
                 <TailwindIndicator />

@@ -6,7 +6,7 @@ import PrintContract from "~/components/formToPrint/printContact"
 import React, { useEffect, useRef, useState } from "react";
 import { RemixNavLink, Input, Separator, Button, TextArea, Label, } from "~/components";
 import { useLoaderData } from "@remix-run/react";
-import CustomerGen from "~/routes/__authorized/dealer/document/customerGen";
+import CustomerGen from "~/routes/__authorized/dealer/document/customerGen.client";
 
 export default function PrintAndDocs() {
   const { user, finance, merged, filename, financeId } = useLoaderData();

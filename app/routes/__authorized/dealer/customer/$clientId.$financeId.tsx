@@ -153,7 +153,7 @@ import canamIndex from '~/logos/canamIndex.png'
 import manitouIndex from '~/logos/manitouIndex.png'
 import Harley from '~/components/dashboardCustId/hdIcon.png'
 import second from '~/styles/second.css'
-import CustomerGen from "../document/customerGen";
+import CustomerGen from "../document/customerGen.client";
 import {
   Drawer,
   DrawerClose,
@@ -191,14 +191,14 @@ import {
 } from "~/components/ui/hover-card"
 import useSWR from "swr";
 import { ClientOnly } from "remix-utils";
-import PrintReceipt from "../document/printReceiptSales";
+import PrintReceipt from "../document/printReceiptSales.client";
 import EmailPreview, { TemplatePreviewThree, TemplatePreviewTwo, TemplatePreview } from "~/emails/preview";
 import { Printer } from "lucide-react";
 import { BanknoteIcon } from "lucide-react";
 import { DollarSign } from "lucide-react";
 import { Wrench } from "lucide-react";
 import { Shirt } from "lucide-react";
-import PrintReceiptAcc from "../document/printReceiptAcc";
+import PrintReceiptAcc from "../document/printReceiptAcc.client";
 import { Receipt } from "lucide-react";
 import WorkOrderSales from "~/components/leads/workOrderSales";
 import {

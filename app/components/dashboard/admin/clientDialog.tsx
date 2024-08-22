@@ -131,14 +131,24 @@ import {
 import { toast } from "sonner";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { ClientOnly } from "remix-utils";
-import PrintReceipt from "~/routes/__authorized/dealer/document/printReceiptAcc";
+import PrintReceipt from "~/routes/__authorized/dealer/document/printReceiptAcc.client";
 import { Percent } from "lucide-react";
 import { PlusIcon } from "lucide-react";
-
+import { Wrench } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table"
+import { EditableText } from "~/components/actions/shared";
+import { Plus } from "lucide-react";
 
 
 export default function ClientDialog({ data, user, deFees, salesPerson }) {
-  const { AccOrder, Finance, WorkOrder, Comm, } = data;
+  const { AccOrder, Finance, WorkOrder, } = data;
   const [paymentType, setPaymentType] = useState('');
   const [discount, setDiscount] = useState(false)
   const [discDollar, setDiscDollar] = useState(0.00)
@@ -373,39 +383,38 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     return financeData.map((finance) => ({
       title: `${finance.year} ${finance.brand} ${finance.model}`, // Dynamic title
       section: [
-        { title: "Unit", value: `sales-dealInfo-${finance.id}` },
-        { title: "Deal Info", value: `sales-dealInfo-${finance.id}` },
-        { title: "Appointments", value: `sales-appts-${finance.id}` },
-        { title: "Communications", value: `sales-comms-${finance.id}` },
-        { title: "Customer Units", value: `sales-custUnits-${finance.id}` },
-        { title: "Trade Units", value: `sales-trades-${finance.id}` },
-        { title: "Accessory Orders", value: `sales-accOrders-${finance.id}` },
-        { title: "Work Orders", value: `sales-workOrders-${finance.id}` },
-        { title: "Payments", value: `sales-payments-${finance.id}` },
-        { title: "Notes", value: `sales-notes-${finance.id}` },
-        { title: "Finance Products", value: `sales-finProds-${finance.id}` },
-        { title: "Document Storage", value: `sales-storage-${finance.id}` },
+        { title: "Deal Info", value: `sales-dealInfo-${finance.id}`, data: { finance } },
+        { title: "Appointments", value: `sales-appts-${finance.id}`, data: { finance } },
+        { title: "Communications", value: `sales-comms-${finance.id}`, data: { finance } },
+        { title: "Customer Units", value: `sales-custUnits-${finance.id}`, data: { finance } },
+        { title: "Trade Units", value: `sales-trades-${finance.id}`, data: { finance } },
+        { title: "Accessory Orders", value: `sales-accOrders-${finance.id}`, data: { finance } },
+        { title: "Work Orders", value: `sales-workOrders-${finance.id}`, data: { finance } },
+        { title: "Payments", value: `sales-payments-${finance.id}`, data: { finance } },
+        { title: "Notes", value: `sales-notes-${finance.id}`, data: { finance } },
+        { title: "Finance Products", value: `sales-finProds-${finance.id}`, data: { finance } },
+        { title: "Document Storage", value: `sales-storage-${finance.id}`, data: { finance } },
       ],
     }));
   }
 
   const staticSidebarItems = [
-    { title: "Client Info", value: "client" },
+    { title: "Client Info", value: "client", data: { data } },
     {
       title: "Work Orders",
       section: [
-        { title: "Work Orders", value: "wo-wo" },
-        { title: "Sales Units", value: "wo-salesUnits" },
-        { title: "Service Units", value: "wo-servUnits" },
-        { title: "PAC Orders", value: "wo-pacOrders" },
-        { title: "Payments", value: "wo-payments" },
-        { title: "Work Order Appointments", value: "wo-appts" },
-        { title: "Work Order Clock Entries", value: "wo-clockEntries" },
+        { title: "Work Orders", value: "wo-wo", data: { WorkOrder } },
+        { title: "Sales Units", value: "wo-salesUnits", data: { WorkOrder } },
+        { title: "Service Units", value: "wo-servUnits", data: { WorkOrder } },
+        { title: "PAC Orders", value: "wo-pacOrders", data: { WorkOrder } },
+        { title: "Payments", value: "wo-payments", data: { WorkOrder } },
+        { title: "Work Order Appointments", value: "wo-appts", data: { WorkOrder } },
+        { title: "Work Order Clock Entries", value: "wo-clockEntries", data: { WorkOrder } },
         {
           title: "Services on Orders",
           section: [
-            { title: 'Services on Orders', value: "servOnOrder-SOO" },
-            { title: 'Service', value: "servOnOrder-payments" },
+            { title: 'Services on Orders', value: "servOnOrder-SOO", data: { WorkOrder } },
+            { title: 'Service', value: "servOnOrder-payments", data: { WorkOrder } },
           ],
         },
       ],
@@ -413,15 +422,15 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     {
       title: "PAC Orders",
       section: [
-        { title: "PAC Orders", value: "pac-PAC" },
-        { title: "AccHandoff", value: "pac-accHandoff" },
-        { title: "Payments", value: "pac-payments" },
+        { title: "PAC Orders", value: "pac-PAC", data: { AccOrder } },
+        { title: "AccHandoff", value: "pac-accHandoff", data: { AccOrder } },
+        { title: "Payments", value: "pac-payments", data: { AccOrder } },
         {
           title: "Accessories on Orders",
           section: [
-            { title: 'Accessories on Orders', value: "accOnOrders-AOO" },
-            { title: 'Accessory', value: "accOnOrders-acc" },
-            { title: 'Order Inventory', value: "accOnOrders-orderInv" },
+            { title: 'Accessories on Orders', value: "accOnOrders-AOO", data: { AccOrder } },
+            { title: 'Accessory', value: "accOnOrders-acc", data: { AccOrder } },
+            { title: 'Order Inventory', value: "accOnOrders-orderInv", data: { AccOrder } },
           ],
         },
       ],
@@ -429,16 +438,23 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
   ];
 
   const [selectedContent, setSelectedContent] = useState<string | null>(null);
-  const [finance, setFinance] = useState<any>(99);
-  const [selectedFinanceArray, setSelectedFinanceArray] = useState<any>(null);
+  const [finance, setFinance] = useState<any>(null);
 
   const handleSelect = (value: string) => {
     setSelectedContent(value);
   };
 
   const handleFinanceChange = (data: any) => {
-    setSelectedFinanceArray(data);
+    setFinance(data);
   };
+
+
+
+
+
+
+
+
   function SidebarNav({
     className,
     items,
@@ -447,26 +463,29 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     ...props
   }: SidebarNavProps) {
     const [selectedParent, setSelectedParent] = useState<string | null>(null);
-    const [selectedValue, setSelectedValue] = useState<string | null>(null);
     const [openSections, setOpenSections] = useState<Set<string>>(new Set());
 
     const handleParentClick = (title: string) => {
       const newOpenSections = new Set(openSections);
-      if (newOpenSections.has(title)) {
-        newOpenSections.delete(title);
+
+      // Close other sections
+      newOpenSections.clear();
+
+      // Toggle the clicked section
+      if (selectedParent === title) {
+        setSelectedParent(null);
       } else {
         newOpenSections.add(title);
+        setSelectedParent(title);
       }
+
       setOpenSections(newOpenSections);
     };
 
     const handleItemClick = (value: string, data?: any) => {
-      setSelectedValue(value);
       onSelect(value);
-
       if (data) {
-        setFinance(data); // Update finance data
-        onFinanceChange(data); // Notify parent or other components
+        onFinanceChange(data.finance);
       }
     };
 
@@ -499,7 +518,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
               key={item.value}
               className={cn(
                 "justify-start w-[90%]",
-                selectedValue === item.value
+                selectedParent && selectedParent === item.value
                   ? "bg-[#232324] hover:bg-muted/50 w-[90%]"
                   : "hover:bg-muted/50 text-[#a1a1aa] w-[90%]",
                 isSubSection ? "ml-4" : ""
@@ -526,12 +545,17 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     );
   }
 
+
+
+
   const sidebarItems = [
     ...staticSidebarItems,
     ...generateSidebarItems(data.Finance),
   ];
 
   const renderContent = (selectedContent, finance) => {
+    console.log('Selected Content:', selectedContent);
+    console.log('Finance:', finance);
     if (!finance) {
       return <ClientInfo data={data} fetcher={fetcher} />
 
@@ -641,7 +665,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
             </Card>
           </div>
           <div className="grid gap-4 md:gap-8 lg:col-span-2 ">
-            {renderContent(selectedContent, selectedFinanceArray)}
+            {renderContent(selectedContent, finance)}
           </div>
         </div>
       </DialogContent>
@@ -971,7 +995,7 @@ function DealInfo({ finance }) {
     <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
       <CardHeader className="flex flex-row items-start  bg-muted/50 ">
         <CardTitle className="group flex items-center gap-2 text-lg">
-          Client Info
+          Deal Info
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
@@ -1005,7 +1029,7 @@ function SalesStorage({ finance, copyText, copiedText }) {
       <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
         <CardHeader className="flex flex-row items-start  bg-muted/50 ">
           <CardTitle className="group flex items-center gap-2 text-lg">
-            Client Info
+            Document Storage
           </CardTitle>
         </CardHeader>
         <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
@@ -1045,7 +1069,7 @@ function SalesAppts({ finance, user, submit }) {
   return (
     <Card x-chunk="dashboard-04-chunk-1" >
       <CardHeader>
-        <CardTitle>Breakdown of any appointments associated with the sales deal.</CardTitle>
+        <CardTitle>Sales Appointments</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid gap-3 max-h-[20vh] h-auto">
@@ -1140,61 +1164,43 @@ function Communications({ finance }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
-        <Card x-chunk="dashboard-04-chunk-1" >
-          <CardHeader>
-            <CardTitle>
-              Storage items associated with the sales file.
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 max-h-[40vh] h-auto">
-              <div className="space-y-4 mt-5">
+        <div className="grid gap-3 max-h-[40vh] h-auto">
+          <div className="space-y-4 mt-5">
 
-                {finance.Comm & finance.Comm.map((message, index) => (
-                  <div
-                    key={index}
-                    className={cn(
-                      "flex  max-w-[75%]   w-[65%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                      message.direction === 'Outgoing'
-                        ? "ml-auto bg-primary text-foreground"
-                        : "bg-[#262626]"
-                    )}
-                  >
-                    <div className='grid grid-cols-1'>
-                      <div className='flex justify-between'>
-                        <p>{message.direction}</p>
-                        <p className='text-right'>{message.type}</p>
-                      </div>
-                      <div className='flex justify-between'>
-                        <p>{message.result}</p>
-                        {message.userEmail === 'Outgoing' && (
-                          <p className='text-[#8c8c8c] text-right'>
-                            {message.userName}
-                          </p>
-                        )}
-                      </div>
-                      <p className='text-[#8c8c8c]'>
-                        {message.createdAt}
-                      </p>
-                      <p>{message.subject}</p>
-                      <p>{message.body}</p>
-                    </div>
+            {finance.Comm && finance.Comm.map((message, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "flex  max-w-[75%]   w-[65%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                  message.direction === 'Outgoing'
+                    ? "ml-auto bg-primary text-foreground"
+                    : "bg-[#262626]"
+                )}
+              >
+                <div className='grid grid-cols-1'>
+                  <div className='flex justify-between'>
+                    <p>{message.direction}</p>
+                    <p className='text-right'>{message.type}</p>
                   </div>
-                ))}
+                  <div className='flex justify-between'>
+                    <p>{message.result}</p>
+                    {message.userEmail === 'Outgoing' && (
+                      <p className='text-[#8c8c8c] text-right'>
+                        {message.userName}
+                      </p>
+                    )}
+                  </div>
+                  <p className='text-[#8c8c8c]'>
+                    {message.createdAt}
+                  </p>
+                  <p>{message.subject}</p>
+                  <p>{message.body}</p>
+                </div>
               </div>
+            ))}
+          </div>
 
-            </div>
-          </CardContent>
-          <CardFooter className="border-t border-border px-6 py-4">
-            <Button
-              type='submit'
-              name='intent'
-              value='updateDealerInfo'>
-              Save
-            </Button>
-          </CardFooter>
-        </Card>
-
+        </div>
       </CardContent>
       <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
         <div>
@@ -1786,30 +1792,1092 @@ function SalesAccOrder({ finance, deFees, salesPerson }) {
     </Card>
   )
 }
-function WorkOrders({ finance }) {
+function WorkOrders({ finance, deFees }) {
+  const submit = useSubmit()
+
+  let fetcher = useFetcher();
+  let addProduct = useFetcher();
+  let workOrder = useFetcher();
+  let ref = useRef();
+  let formRef = useRef();
+  let search = useFetcher();
+  let product = useFetcher();
+
+  const [serviceOrder, setServiceOrder] = useState();
+  const [firstPageService, setFirstPageService] = useState(true);
+  const [secPageService, setSecPageService] = useState(false);
+  function handleNextPage() {
+    if (firstPageService === true) {
+      setFirstPageService(false)
+      setSecPageService(true)
+    }
+    if (secPageService === true) {
+      setFirstPageService(true)
+      setSecPageService(false)
+    }
+  }
+  function handlePrevPage() {
+    if (firstPageService === true) {
+      setFirstPageService(false)
+      setSecPageService(true)
+    }
+    if (secPageService === true) {
+      setFirstPageService(true)
+      setSecPageService(false)
+    }
+  }
+  const [totalService, setTotalService] = useState(0.00);
+
+  const [serviceSubTotal, setServiceSubTotal] = useState(0.00);
+  const [partsSubTotal, setPartsSubTotal] = useState(0.00);
+  const [totalPreTax, setTotalPreTax] = useState(0.00);
+  useEffect(() => {
+    if (serviceOrder) {
+      const partsSub = serviceOrder?.AccOrders?.reduce((total, accOrder) => {
+        return total + accOrder?.AccessoriesOnOrders?.reduce((subTotal, accessoryOnOrder) => {
+          return subTotal + (accessoryOnOrder.accessory.price * accessoryOnOrder.quantity);
+        }, 0);
+      }, 0);
+      setPartsSubTotal(partsSub.toFixed(2))
+
+      const serviceSub = serviceOrder?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+        const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr || 0.00;
+
+        const subtotal = hours * tax.userLabour * serviceOnOrder.quantity;
+
+        return total + subtotal;
+      }, 0);
+
+      setServiceSubTotal(serviceSub.toFixed(2))
+
+      const totalPreTax = partsSub + serviceSub;
+      setTotalPreTax(totalPreTax.toFixed(2));
+
+      const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
+      const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
+      const calculatedTotal = discDollar && discDollar > 0.00 ? total1 : total2;
+
+      setTotalService(calculatedTotal);
+      const totalAmountPaid2 = serviceOrder.Payments.reduce((total, payment) => {
+        return total + payment.amountPaid;
+      }, 0);
+      if (totalAmountPaid2) {
+        setTotalAmountPaid(totalAmountPaid2)
+      }
+      console.log(partsSubTotal, serviceSubTotal, partsSubTotal + serviceSubTotal, 'totals')
+
+    }
+  }, [serviceOrder]);
+
+  let unitCard = [
+    { name: 'year', label: 'Year', },
+    { name: 'brand', label: 'Brand', },
+    { name: 'model', label: 'Model', },
+    { name: 'color', label: 'Color', },
+    { name: 'vin', label: 'VIN', },
+    { name: 'trim', label: 'Trim', },
+    { name: 'mileage', label: 'Mileage', },
+    { name: 'location', label: 'Location', },
+    { name: 'motor', label: 'Motor', },
+    { name: 'tag', label: 'Tag', },
+  ];
+  const navigate = useNavigate()
   return (
     <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
       <CardHeader className="flex flex-row items-start  bg-muted/50 ">
         <CardTitle className="group flex items-center gap-2 text-lg">
-          Client Info
+          Work Orders
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
-        {WorkOrder && WorkOrder.length > 0 && (
-          <div className="mb-4">
-            <h3 className="text-xl font-semibold">Work Orders</h3>
-            <ul>
-              {WorkOrder.map((workOrder) => (
-                <li key={workOrder.id} className="mb-2 p-2 border rounded">
-                  <p><strong>ID:</strong> {workOrder.id}</p>
-                  <p><strong>Title:</strong> {workOrder.title}</p>
-                  <p><strong>Status:</strong> {workOrder.status}</p>
-                  {/* Add other WorkOrder fields as needed */}
-                </li>
-              ))}
-            </ul>
+        <main className="grid flex-1 items-start  lg:grid-cols-2 xl:grid-cols-2">
+          {serviceOrder && (
+            <Tabs defaultValue="week" className='mr-2'>
+              <div className="flex items-center">
+                <TabsList>
+                  <TabsTrigger value="week"> <File className="h-5 w-5" /></TabsTrigger>
+                  <TabsTrigger value="Parts"> <Wrench className="h-5 w-5" /></TabsTrigger>
+                </TabsList>
+              </div>
+              <TabsContent value="week">
+                <Card x-chunk="dashboard-05-chunk-3">
+                  <CardHeader className="px-7 bg-muted/50 text-lg">
+                    <CardTitle>Work Order</CardTitle>
+                    <CardDescription>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className=" h-auto max-h-[700px] overflow-y-auto">
+                    <div className=' grid grid-cols-1'>
+                      <Accordion type="single" collapsible className="w-full border-border">
+                        <AccordionItem value="item-1" className='border-border'>
+                          <AccordionTrigger>Unit</AccordionTrigger>
+                          <AccordionContent>
+                            <div className='grid grid-cols-1'>
+                              <Table>
+                                <TableHeader>
+                                  <TableRow className='border-border'>
+                                    <TableHead>
+                                      Unit
+                                    </TableHead>
+                                    <TableHead>
+                                      Color
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                      Mileage
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                      VIN
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                      Motor
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                      Dept
+                                    </TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {serviceOrder && serviceOrder.Clientfile.ServiceUnit && serviceOrder.Clientfile.ServiceUnit.map((result, index) => (
+                                    <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
+                                      const formData = new FormData();
+                                      formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
+                                      formData.append("mileage", result.mileage);
+                                      formData.append("vin", result.vin);
+                                      formData.append("tag", result.tag);
+                                      formData.append("motor", result.motor);
+                                      formData.append("color", result.color);
+                                      formData.append("workOrderId", serviceOrder.workOrderId);
+                                      formData.append("intent", 'addUnit');
+                                      submit(formData, { method: "post", });
+                                    }}>
+                                      <TableCell>
+                                        <p>{result.year} {result.brand} {result.model}</p>
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.mileage}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.vin}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.tag}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.motor}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        <p>Service Units</p>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                  {serviceOrder && serviceOrder.Clientfile.Finance && serviceOrder.Clientfile.Finance.map((result, index) => (
+                                    <TableRow key={index} className="hover:bg-accent border-border  rounded-[6px] cursor-pointer" onClick={() => {
+                                      const formData = new FormData();
+                                      formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
+                                      formData.append("mileage", result.mileage);
+                                      formData.append("vin", result.vin);
+                                      formData.append("tag", result.tag);
+                                      formData.append("motor", result.motor);
+                                      formData.append("color", result.color);
+                                      formData.append("workOrderId", WorkOrder.workOrderId);
+                                      formData.append("intent", 'addUnit');
+                                      submit(formData, { method: "post", });
+                                    }}>
+                                      <TableCell>
+                                        <p>{result.year} {result.brand} {result.model}</p>
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.mileage}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.vin}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.tag && (result.tag)}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        {result.motor && (result.motor)}
+                                      </TableCell>
+                                      <TableCell className="hidden md:table-cell">
+                                        <p>Finance Units</p>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                              <Dialog>
+                                <DialogTrigger>
+                                  <Button size='sm' className='text-foreground mt-4 w-[75px]' >
+                                    New Unit
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className='border-border'>
+                                  <DialogHeader>
+                                    <DialogTitle>Add New Unit To Client File</DialogTitle>
+                                    <DialogDescription>
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <>
+                                    <Form method='post' >
+                                      <input type='hidden' name='clientfileId' value={finance.id} />
+                                      {serviceOrder && (
+                                        <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+
+                                      )}
+                                      <div className='grid grid-cols-1'>
+                                        {unitCard.map((user, index) => (
+                                          <div key={index} className="relative mt-4">
+                                            <Input
+                                              name={user.name}
+                                              className={` bg-background text-foreground border border-border`}
+                                            />
+                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+                                          </div>
+                                        ))}
+                                        <Button size='sm' className='text-foreground mt-4'
+                                          type='submit'
+                                          name='intent'
+                                          value='addNewServiceUnit' >
+                                          Submit
+                                        </Button>
+                                      </div>
+                                    </Form>
+                                  </>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                      <p className='mt-4 mb-5'></p>
+                      <div className="grid gap-3">
+                        <div className="font-semibold">Work Order Services</div>
+                        <ul className="grid gap-3">
+                          {serviceOrder && serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
+                            const hours = result.hr || result.service.estHr || 0.00;
+                            return (
+                              <li key={index} className="flex items-center justify-between">
+                                <div>
+                                  <ContextMenu>
+                                    <ContextMenuTrigger>
+                                      <div className='grid grid-cols-1'>
+                                        <div className='flex items-center group '>
+                                          <div className="font-medium flex-col">
+                                            <p>{result.service.service}</p>
+                                            <p className='text-muted-foreground'>{result.service.description}</p>
+                                          </div>
+                                          <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                            <input type="hidden" name="id" value={result.id} />
+                                            <input type='hidden' name='total' value={totalService} />
+                                            <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                            <Button
+                                              size="icon"
+                                              variant="outline"
+                                              name="intent" value='deleteServiceItem'
+                                              className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                              type='submit'
+                                            >
+                                              <X className="h-4 w-4 text-foreground" />
+                                            </Button>
+                                          </addProduct.Form>
+                                        </div>
+                                        <div className="hidden text-sm text-muted-foreground md:inline">
+                                          <div className='flex items-center'>
+                                            <div className="font-medium">
+                                              <EditableText
+                                                value={hours}
+                                                fieldName="name"
+                                                inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                                buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                                buttonLabel={`Edit name`}
+                                                inputLabel={`Edit name`}
+                                              >
+                                                <input type="hidden" name="intent" value='updateHr' />
+                                                <input type="hidden" name="id" value={result.id} />
+                                                <input type="hidden" name="colName" value='hr' />
+                                              </EditableText>
+
+                                            </div>
+                                            <p>/hrs{" "}{" "}@{" "}${deFees.userLabour}</p>
+                                          </div>
+                                        </div>
+                                        {result.status && (
+                                          <div>
+                                            <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </ContextMenuTrigger>
+                                    <ContextMenuContent className='border-border'>
+                                      <ContextMenuSub>
+                                        <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                                        <ContextMenuSubContent className="w-48 border-border">
+                                          <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                          <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                          <ContextMenuSeparator />
+                                          <ContextMenuItem>
+                                            Est. Hours
+                                            <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                          </ContextMenuItem>
+                                          <ContextMenuItem>
+                                            Price
+                                            <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                          </ContextMenuItem>
+                                        </ContextMenuSubContent>
+                                      </ContextMenuSub>
+                                      <ContextMenuSeparator />
+                                      <ContextMenuCheckboxItem
+                                        checked={result.status === 'In Stock'}
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("id", result.id);
+                                          formData.append("status", 'In Stock');
+                                          formData.append("intent", 'updateServiceOnOrders');
+                                          submit(formData, { method: "post", });
+                                        }}
+                                      >In Stock</ContextMenuCheckboxItem>
+                                      <ContextMenuCheckboxItem
+                                        checked={result.status === 'On Order'}
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("id", result.id);
+                                          formData.append("status", 'On Order');
+                                          formData.append("intent", 'updateServiceOnOrders');
+                                          submit(formData, { method: "post", });
+                                        }}
+                                      >On Order</ContextMenuCheckboxItem>
+                                      <ContextMenuCheckboxItem
+                                        checked={result.status === 'Completed'}
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("id", result.id);
+                                          formData.append("status", 'Completed');
+                                          formData.append("intent", 'updateServiceOnOrders');
+                                          submit(formData, { method: "post", });
+                                        }}
+                                      >Completed</ContextMenuCheckboxItem>
+                                      <ContextMenuCheckboxItem
+                                        checked={result.status === 'Back Order'}
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("id", result.id);
+                                          formData.append("status", 'Back Order');
+                                          formData.append("intent", 'updateServiceOnOrders');
+                                          submit(formData, { method: "post", });
+                                        }}
+                                      >Back Order</ContextMenuCheckboxItem>
+                                    </ContextMenuContent>
+                                  </ContextMenu>
+                                </div>
+                                <span>
+                                  x{" "}{" "}{result.quantity}
+                                </span>
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </div>
+                      <Separator className="my-4" />
+                      <div className="font-semibold">Services</div>
+                      <div className='mx-4 flex-col'>
+                        <Accordion type="single" collapsible className="w-full border-border">
+                          <AccordionItem value="item-1" className='border-border'>
+                            <AccordionTrigger>Add New Service</AccordionTrigger>
+                            <AccordionContent>
+                              <fetcher.Form method='post'>
+                                <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                <div className='flex'>
+                                  <div className="flex-col" >
+                                    <div className="relative mt-4">
+                                      <Input name='name' className='w-[250px] mr-3' />
+                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
+                                    </div>
+                                    <div className="relative mt-4">
+                                      <TextArea name='description' className='w-[250px] mr-3' />
+                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
+                                    </div>
+
+                                    <div className="relative mt-4">
+                                      <Input name='hr' className='w-[100px] mr-3' />
+                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
+                                    </div>
+                                    <div className="relative mt-4">
+                                      <Input name='quantity' className='w-[100px] mr-3' defaultValue={1} />
+                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Quantity</label>
+                                    </div>
+
+                                    <Button
+                                      className='mt-4'
+                                      size='icon'
+                                      type='submit'
+                                      name='intent'
+                                      value='addNewServiceToWorkOrder'
+                                    >
+                                      <Plus />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </fetcher.Form>
+                            </AccordionContent>
+                          </AccordionItem>
+                        </Accordion>
+
+                      </div>
+                      <div className='flex-col mt-4'>
+                        <div className='mx-4'>
+                          <div className="font-semibold">Select Service</div>
+                          <search.Form method="get" action='/dealer/service/search/services'>
+                            <div className="relative ml-auto flex-1 md:grow-0 ">
+                              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                ref={ref}
+                                type="search"
+                                name="q"
+                                onChange={e => {
+                                  search.submit(e.currentTarget.form);
+                                }}
+                                autoFocus
+                                placeholder="Search..."
+                                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                              />
+                            </div>
+                          </search.Form>
+                          <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+                            {search.data && search.data.map((result, index) => {
+                              return (
+                                <li key={index} className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]" onClick={() => {
+                                  const formData = new FormData();
+                                  formData.append("hr", result.estHr);
+                                  formData.append("workOrderId", serviceOrder.workOrderId);
+                                  formData.append("serviceId", result.id);
+                                  formData.append("intent", 'addServiceToWorkOrder');
+                                  submit(formData, { method: "post", });
+                                }}>
+                                  <div className="font-medium flex-col">
+                                    <p className=' text-left'>{result.service}</p>
+                                    <p className='text-muted-foreground text-left'>{result.description}</p>
+                                    <p className='text-muted-foreground text-left'>{result.estHr}/hrs{" "}{" "}@{" "}${deFees.userLabour}</p>
+                                  </div>
+                                </li>
+                              )
+                            })}
+                          </ul>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="Parts">
+                <Card x-chunk="dashboard-05-chunk-3 " className='mx-5 w-[95%] '>
+                  <CardHeader className="px-7">
+                    <CardTitle>
+                      <div className='flex justify-between items-center'>
+                        <p>Accessories</p>
+                      </div>
+                    </CardTitle>
+                    <CardDescription className='flex items-center'>
+                      <product.Form method="get" action='/dealer/accessories/products/search'>
+                        <div className="relative ml-auto flex-1 md:grow-0 ">
+                          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            ref={ref}
+                            type="search"
+                            name="q"
+                            onChange={e => {
+                              //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                              product.submit(e.currentTarget.form);
+                            }}
+                            autoFocus
+                            placeholder="Search..."
+                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                          />
+                        </div>
+                      </product.Form>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow className='border-border'>
+                          <TableHead>
+                            Brand & Name
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Description
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Category
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Sub Category
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            On Order
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Distributer
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Location
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Cost
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Price
+                          </TableHead>
+                          <TableHead className="text-right">
+                            Quantity
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
+                        {product.data &&
+                          product.data.map((result, index) => (
+                            <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
+                              const formData = new FormData();
+                              formData.append("accessoryId", result.id);
+                              formData.append("workOrderId", serviceOrder.workOrderId);
+                              formData.append("accOrderId", serviceOrder.AccOrders[0].id);
+                              formData.append("intent", 'addAccToWorkOrder');
+                              submit(formData, { method: "post", });
+                            }}>
+                              <TableCell className='flex-col'>
+                                <p className="font-medium">
+                                  {result.name}
+                                </p>
+                                <p className="text-sm text-muted-foreground ">
+                                  {result.brand}
+                                </p>
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                                {result.description}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.category}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.subCategory}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.onOrder}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.distributer}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.location}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.cost}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.price}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {result.quantity}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="Calendar">
+              </TabsContent>
+            </Tabs>
+          )}
+          <div>
+            <Card className="overflow-hidden mt-[35px] ml-2" x-chunk="dashboard-05-chunk-4"          >
+              <CardHeader className="flex flex-row items-start bg-muted/50">
+                <div className="grid gap-0.5">
+                  <CardTitle className="group flex items-center gap-2 text-lg">
+                    W / O #{serviceOrder && (serviceOrder.workOrderId)}
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      <Copy className="h-3 w-3" />
+                      <span className="sr-only">Copy Order ID</span>
+                    </Button>
+                  </CardTitle>
+                  {serviceOrder && serviceOrder.status && (
+                    <div>
+                      <div className="relative mt-4">
+                        <Select
+                          name='status'
+                          defaultValue={serviceOrder.status}
+                          onValueChange={(value) => {
+                            const formData = new FormData();
+                            formData.append("id", order.workOrderId);
+                            formData.append("total", totalService);
+                            formData.append("intent", 'updateStatus');
+                            formData.append("status", value);
+                            console.log(formData, 'formData');
+                            workOrder.submit(formData, { method: "post" });
+                          }}>
+                          <SelectTrigger className="w-[200px] " >
+                            <SelectValue defaultValue={serviceOrder.status} />
+                          </SelectTrigger>
+                          <SelectContent className='border-border'>
+                            <SelectGroup>
+                              <SelectLabel>Status</SelectLabel>
+                              <SelectItem value="Quote">Quote</SelectItem>
+                              <SelectItem value="Sales">Sales</SelectItem>
+                              <SelectItem value="Open">Open / Scheduled</SelectItem>
+                              <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
+                              <SelectItem value="Waiter">Waiter</SelectItem>
+                              <SelectItem value="In Works">In Works</SelectItem>
+                              <SelectItem value="Work Completed">Work Completed</SelectItem>
+                              <SelectItem value="Closed">Closed</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-muted/50 transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="ml-auto flex items-center gap-1">
+                  {serviceOrder && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="icon" variant="outline" className="h-8 w-8">
+                          <MoreVertical className="h-3.5 w-3.5" />
+                          <span className="sr-only">More</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="border border-border"
+                      >
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            navigate(`/dealer/service/workOrder/${serviceOrder.workOrderId}`)
+                          }}>
+                          Go To Order
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            console.log(toReceipt)
+                            PrintReceipt(toReceipt)
+                          }}>
+                          Reprint Receipt
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
+                          Show Discount
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            setShowPrev(false)
+                            setorder(null)
+                          }}>
+                          Back
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            const formData = new FormData();
+                            formData.append("workOrderId", serviceOrder.workOrderId);
+                            formData.append("intent", 'deleteOrder');
+                            submit(formData, { method: "post", });
+                          }}>
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 text-sm h-auto max-h-[700px] overflow-y-auto">
+                {secPageService && (
+                  <>
+
+                    <Accordion type="single" collapsible className="w-full border-border mt-3">
+                      <AccordionItem value="item-1" className='border-border'>
+                        <AccordionTrigger>Work Order Notes</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="grid gap-3">
+                            <Form method='post'>
+                              <div className="relative mt-4">
+                                <TextArea className='w-full mt-4' name='note' defaultValue={serviceOrder.notes} />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
+                              </div>
+                              <input type='hidden' name='id' defaultValue={serviceOrder.workOrderId} />
+                              <Button type='submit' name='intent' value='updateNote' className='mt-4 text-foreground' size='sm'>
+                                Submit
+                              </Button>
+                            </Form>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+
+                    <div className="grid gap-3 mt-3">
+                      <div className="font-semibold">Work Order Services</div>
+                      <ul className="grid gap-3">
+                        {serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
+                          const hours = result.hr || result.service.estHr || 0.00;
+                          return (
+                            <li key={index} className="flex items-center justify-between">
+                              <div>
+                                <ContextMenu>
+                                  <ContextMenuTrigger>
+                                    <div className='grid grid-cols-1'>
+                                      <div className='flex items-center group '>
+                                        <div className="font-medium">
+                                          {result.service.service}
+                                        </div>
+                                        <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                          <input type="hidden" name="id" value={result.id} />
+                                          <input type='hidden' name='total' value={total} />
+                                          <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                          <Button
+                                            size="icon"
+                                            variant="outline"
+                                            name="intent" value='deleteServiceItem'
+                                            className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                            type='submit'
+                                          >
+                                            <X className="h-4 w-4 text-foreground" />
+                                          </Button>
+                                        </addProduct.Form>
+                                      </div>
+                                      <div className="hidden text-sm text-muted-foreground md:inline">
+                                        <div className='flex items-center'>
+                                          <div className="font-medium">
+                                            <EditableText
+                                              value={hours}
+                                              fieldName="name"
+                                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                              buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                              buttonLabel={`Edit name`}
+                                              inputLabel={`Edit name`}
+                                            >
+                                              <input type="hidden" name="intent" value='updateHr' />
+                                              <input type="hidden" name="id" value={result.id} />
+                                              <input type="hidden" name="colName" value='hr' />
+                                            </EditableText>
+
+                                          </div>
+                                          <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                        </div>
+                                      </div>
+                                      {result.status && (
+                                        <div>
+                                          <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </ContextMenuTrigger>
+                                  <ContextMenuContent className='border-border'>
+                                    <ContextMenuSub>
+                                      <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                                      <ContextMenuSubContent className="w-48 border-border">
+                                        <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                        <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                        <ContextMenuSeparator />
+                                        <ContextMenuItem>
+                                          Est. Hours
+                                          <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                        </ContextMenuItem>
+                                        <ContextMenuItem>
+                                          Price
+                                          <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                        </ContextMenuItem>
+                                      </ContextMenuSubContent>
+                                    </ContextMenuSub>
+                                    <ContextMenuSeparator />
+                                    <ContextMenuCheckboxItem
+                                      checked={result.status === 'In Stock'}
+                                      onSelect={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", result.id);
+                                        formData.append("status", 'In Stock');
+                                        formData.append("intent", 'updateServiceOnOrders');
+                                        submit(formData, { method: "post", });
+                                      }}
+                                    >In Stock</ContextMenuCheckboxItem>
+                                    <ContextMenuCheckboxItem
+                                      checked={result.status === 'On Order'}
+                                      onSelect={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", result.id);
+                                        formData.append("status", 'On Order');
+                                        formData.append("intent", 'updateServiceOnOrders');
+                                        submit(formData, { method: "post", });
+                                      }}
+                                    >On Order</ContextMenuCheckboxItem>
+                                    <ContextMenuCheckboxItem
+                                      checked={result.status === 'Completed'}
+                                      onSelect={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", result.id);
+                                        formData.append("status", 'Completed');
+                                        formData.append("intent", 'updateServiceOnOrders');
+                                        submit(formData, { method: "post", });
+                                      }}
+                                    >Completed</ContextMenuCheckboxItem>
+                                    <ContextMenuCheckboxItem
+                                      checked={result.status === 'Back Order'}
+                                      onSelect={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", result.id);
+                                        formData.append("status", 'Back Order');
+                                        formData.append("intent", 'updateServiceOnOrders');
+                                        submit(formData, { method: "post", });
+                                      }}
+                                    >Back Order</ContextMenuCheckboxItem>
+                                  </ContextMenuContent>
+                                </ContextMenu>
+                              </div>
+                              <span>
+                                x{" "}{" "}{result.quantity}
+
+                              </span>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                      <Separator className="my-4" />
+                      <div className="font-semibold">Work Order Parts</div>
+                      <ul className="grid gap-3">
+                        {serviceOrder?.AccOrders?.length > 0 ? (
+                          serviceOrder.AccOrders.map((accOrder, accOrderIndex) => (
+                            <div key={accOrderIndex}>
+                              {accOrder?.AccessoriesOnOrders?.length > 0 ? (
+                                accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
+                                  <li key={accessoryIndex} className="flex items-center justify-between">
+                                    <div>
+                                      <ContextMenu>
+                                        <ContextMenuTrigger>
+                                          <div className='grid grid-cols-1'>
+                                            <div className='flex items-center group '>
+                                              <div className="font-medium">
+
+                                                {accessoryOnOrder.accessory.name}
+                                              </div>
+                                              <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                                <input type="hidden" name="id" value={accessoryOnOrder.id} />
+                                                <input type='hidden' name='total' value={accessoryOnOrder.accessory.price * accessoryOnOrder.quantity} />
+                                                <input type='hidden' name='accOrderId' value={accOrder.id} />
+                                                <Button
+                                                  size="icon"
+                                                  variant="outline"
+                                                  name="intent" value='deleteOrderItem'
+                                                  className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                                  type='submit'
+                                                >
+                                                  <X className="h-4 w-4 text-foreground" />
+                                                </Button>
+                                              </addProduct.Form>
+                                            </div>
+                                            <div className="hidden text-sm text-muted-foreground md:inline">
+                                              {accessoryOnOrder.accessory.brand}
+                                            </div>
+                                            <div>
+                                              <Badge className='text-sm  px-2 py-1 '>{accessoryOnOrder.status}</Badge>
+                                            </div>
+                                          </div>
+                                        </ContextMenuTrigger>
+                                        <ContextMenuContent className='border-border'>
+                                          <ContextMenuSub>
+                                            <ContextMenuSubTrigger inset>Part Details</ContextMenuSubTrigger>
+                                            <ContextMenuSubContent className="w-48 border-border">
+                                              <ContextMenuItem>{accessoryOnOrder.accessory.partNumber}</ContextMenuItem>
+                                              <ContextMenuItem>{accessoryOnOrder.accessory.brand} </ContextMenuItem>
+                                              <ContextMenuItem>{accessoryOnOrder.accessory.name} </ContextMenuItem>
+                                              <ContextMenuItem>{accessoryOnOrder.accessory.description} </ContextMenuItem>
+                                              <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                              <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                              <ContextMenuSeparator />
+                                              <ContextMenuItem>
+                                                Cost
+                                                <ContextMenuShortcut>${accessoryOnOrder.accessory.cost}</ContextMenuShortcut>
+                                              </ContextMenuItem>
+                                              <ContextMenuItem>
+                                                Price
+                                                <ContextMenuShortcut>${accessoryOnOrder.accessory.price}</ContextMenuShortcut>
+                                              </ContextMenuItem>
+                                              <ContextMenuItem>
+                                                In Stock
+                                                <ContextMenuShortcut>{accessoryOnOrder.accessory.quantity}</ContextMenuShortcut>
+                                              </ContextMenuItem>
+                                              <ContextMenuItem>
+                                                On Order
+                                                <ContextMenuShortcut>{accessoryOnOrder.accessory.onOrder}</ContextMenuShortcut>
+                                              </ContextMenuItem>
+                                              <ContextMenuItem>
+                                                Location
+                                                <ContextMenuShortcut>{accessoryOnOrder.accessory.location}</ContextMenuShortcut>
+                                              </ContextMenuItem>
+                                            </ContextMenuSubContent>
+                                          </ContextMenuSub>
+                                          <ContextMenuCheckboxItem
+                                            checked={accessoryOnOrder.status === 'In Stock'}
+                                            onSelect={() => {
+                                              const formData = new FormData();
+                                              formData.append("id", accessoryOnOrder.id);
+                                              formData.append("status", 'In Stock');
+                                              formData.append("intent", 'updateAccOnOrders');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >In Stock</ContextMenuCheckboxItem>
+                                          <ContextMenuCheckboxItem
+                                            checked={accessoryOnOrder.status === 'On Order'}
+                                            onSelect={() => {
+                                              const formData = new FormData();
+                                              formData.append("id", accessoryOnOrder.id);
+                                              formData.append("status", 'On Order');
+                                              formData.append("intent", 'updateAccOnOrders');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >On Order</ContextMenuCheckboxItem>
+                                          <ContextMenuCheckboxItem
+                                            checked={accessoryOnOrder.status === 'Back Order'}
+                                            onSelect={() => {
+                                              const formData = new FormData();
+                                              formData.append("id", accessoryOnOrder.id);
+                                              formData.append("status", 'Back Order');
+                                              formData.append("intent", 'updateAccOnOrders');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >Back Order</ContextMenuCheckboxItem>
+                                        </ContextMenuContent>
+                                      </ContextMenu>
+                                    </div>
+                                    <span>${accessoryOnOrder.accessory.price} x {accessoryOnOrder.quantity}</span>
+                                  </li>
+                                ))
+                              ) : (
+                                <p>No Accessories On Orders available.</p>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <p>No Orders available.</p>
+                        )}
+                      </ul>
+
+
+                      <Separator className="my-2" />
+                      <ul className="grid gap-3">
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Service Subtotal</span>
+                          <span>${serviceSubTotal}</span>
+                        </li>
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Parts Subtotal</span>
+                          <span>${partsSubTotal}</span>
+                        </li>
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Subtotal</span>
+                          <span>${totalPreTax}</span>
+                        </li>
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Tax</span>
+                          <span>{tax.userTax}%</span>
+                        </li>
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Total</span>
+                          <span>${totalService}</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <Separator className="my-4" />
+                    <div className='gap-3'>
+                      <div className="font-semibold">Staff</div>
+
+                      <ul className="grid gap-3">
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">
+                            Technician
+                          </span>
+                          <span>{serviceOrder.tech}</span>
+                        </li>
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">
+                            Service Writer
+                          </span>
+                          <span>{serviceOrder.writer}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </>
+                )}
+                {firstPageService && (
+                  <>
+                    <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+                      {orders && orders.map((result, index) => {
+                        return (
+                          <li
+                            onClick={() => {
+                              handleNextPage()
+                              setServiceOrder(result)
+                            }}
+                            key={index}
+                            className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]">
+                            <div className='flex-col'>
+                              <div className='flex justify-between items-center'>
+                                <p className='font-medium text-left'>W / O #{result.workOrderId}</p>
+                                <p className='text-muted-foreground font-medium text-right'>{result.status}</p>
+                              </div>
+                              <div className='flex justify-between items-center'>
+                                <p className='text-muted-foreground text-left'>Writer: {result.writer}</p>
+                                <p className='text-muted-foreground text-right'>Tech: {result.tech}</p>
+                              </div>
+                              <p className='text-muted-foreground text-left'>{new Date(result.createdAt).toLocaleDateString("en-US", options2)}</p>
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </>
+                )}
+              </CardContent>
+              <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
+                <Button size='sm' variant='outline'>
+                  Create New Work Order
+                </Button>
+                <Pagination className="ml-auto mr-0 w-auto">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <Button size="icon"
+                        variant="outline"
+                        className="h-6 w-6"
+                        onClick={() => {
+                          handlePrevPage()
+                        }}>
+                        <ChevronLeft className="h-3.5 w-3.5" />
+                        <span className="sr-only">Previous Order</span>
+                      </Button>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <Button size="icon"
+                        variant="outline"
+                        className="h-6 w-6"
+                        onClick={() => {
+                          handleNextPage()
+                        }}>
+                        <ChevronRight className="h-3.5 w-3.5" />
+                        <span className="sr-only">Next Order</span>
+                      </Button>
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </CardFooter>
+            </Card>
           </div>
-        )}
+
+        </main >
 
       </CardContent>
       <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
@@ -1824,7 +2892,7 @@ function AccOrders({ finance }) {
     <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
       <CardHeader className="flex flex-row items-start  bg-muted/50 ">
         <CardTitle className="group flex items-center gap-2 text-lg">
-          Client Info
+          PAC Orders
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
@@ -1855,30 +2923,30 @@ function AccOrders({ finance }) {
 
 function CustomerBikes({ finance, fetcher }) {
   let customerCard = [
-    { name: "paintPrem", value: data.paintPrem, label: "billingAddress", },
-    { name: "licensing", value: data.licensing, label: "billingAddress", },
-    { name: "stockNum", value: data.stockNum, label: "billingAddress", },
-    { name: "options", value: data.options, label: "billingAddress", },
-    { name: "accessories", value: data.accessories, label: "billingAddress", },
-    { name: "freight", value: data.freight, label: "billingAddress", },
-    { name: "labour", value: data.labour, label: "billingAddress", },
-    { name: "year", value: data.year, label: "billingAddress", },
-    { name: "brand", value: data.brand, label: "billingAddress", },
-    { name: "mileage", value: data.mileage, label: "billingAddress", },
-    { name: "model", value: data.model, label: "billingAddress", },
-    { name: "model1", value: data.model1, label: "billingAddress", },
-    { name: "color", value: data.color, label: "billingAddress", },
-    { name: "modelCode", value: data.modelCode, label: "billingAddress", },
-    { name: "msrp", value: data.msrp, label: "billingAddress", },
-    { name: "trim", value: data.trim, label: "billingAddress", },
-    { name: "vin", value: data.vin, label: "billingAddress", },
-    { name: "bikeStatus", value: data.bikeStatus, label: "billingAddress", },
-    { name: "invId", value: data.invId, label: "billingAddress", },
-    { name: "location", value: data.location, label: "billingAddress", },
-    { name: "id", value: data.id, label: "billingAddress", },
-    { name: "createdAt", value: data.createdAt, label: "billingAddress", },
-    { name: "updatedAt", value: data.updatedAt, label: "billingAddress", },
-    { name: "financeId", value: data.financeId, label: "billingAddress", },
+    { name: "paintPrem", value: finance.paintPrem, label: "billingAddress", },
+    { name: "licensing", value: finance.licensing, label: "billingAddress", },
+    { name: "stockNum", value: finance.stockNum, label: "billingAddress", },
+    { name: "options", value: finance.options, label: "billingAddress", },
+    { name: "accessories", value: finance.accessories, label: "billingAddress", },
+    { name: "freight", value: finance.freight, label: "billingAddress", },
+    { name: "labour", value: finance.labour, label: "billingAddress", },
+    { name: "year", value: finance.year, label: "billingAddress", },
+    { name: "brand", value: finance.brand, label: "billingAddress", },
+    { name: "mileage", value: finance.mileage, label: "billingAddress", },
+    { name: "model", value: finance.model, label: "billingAddress", },
+    { name: "model1", value: finance.model1, label: "billingAddress", },
+    { name: "color", value: finance.color, label: "billingAddress", },
+    { name: "modelCode", value: finance.modelCode, label: "billingAddress", },
+    { name: "msrp", value: finance.msrp, label: "billingAddress", },
+    { name: "trim", value: finance.trim, label: "billingAddress", },
+    { name: "vin", value: finance.vin, label: "billingAddress", },
+    { name: "bikeStatus", value: finance.bikeStatus, label: "billingAddress", },
+    { name: "invId", value: finance.invId, label: "billingAddress", },
+    { name: "location", value: finance.location, label: "billingAddress", },
+    { name: "id", value: finance.id, label: "billingAddress", },
+    { name: "createdAt", value: finance.createdAt, label: "billingAddress", },
+    { name: "updatedAt", value: finance.updatedAt, label: "billingAddress", },
+    { name: "financeId", value: finance.financeId, label: "billingAddress", },
   ];
   return (
     <Card
@@ -1997,28 +3065,28 @@ function CustomerBikes({ finance, fetcher }) {
 function ServiceUnit({ finance, fetcher }) {
   let customerCard = [
 
-    { name: "id", value: data.id, label: "billingAddress", },
-    { name: "createdAt", value: data.createdAt, label: "billingAddress", },
-    { name: "updatedAt", value: data.updatedAt, label: "billingAddress", },
-    { name: "price", value: data.price, label: "billingAddress", },
-    { name: "brand", value: data.brand, label: "billingAddress", },
-    { name: "model", value: data.model, label: "billingAddress", },
-    { name: "color", value: data.color, label: "billingAddress", },
-    { name: "accessories", value: data.accessories, label: "billingAddress", },
-    { name: "options", value: data.options, label: "billingAddress", },
-    { name: "year", value: data.year, label: "billingAddress", },
-    { name: "vin", value: data.vin, label: "billingAddress", },
-    { name: "trim", value: data.trim, label: "billingAddress", },
-    { name: "mileage", value: data.mileage, label: "billingAddress", },
-    { name: "location", value: data.location, label: "billingAddress", },
-    { name: "condition", value: data.condition, label: "billingAddress", },
-    { name: "repairs", value: data.repairs, label: "billingAddress", },
-    { name: "stockNum", value: data.stockNum, label: "billingAddress", },
-    { name: "motor", value: data.motor, label: "billingAddress", },
-    { name: "tag", value: data.tag, label: "billingAddress", },
-    { name: "licensing", value: data.licensing, label: "billingAddress", },
-    { name: "tradeEval", value: data.tradeEval, label: "billingAddress", },
-    { name: "clientfileId", value: data.clientfileId, label: "billingAddress", },
+    { name: "id", value: finance.id, label: "billingAddress", },
+    { name: "createdAt", value: finance.createdAt, label: "billingAddress", },
+    { name: "updatedAt", value: finance.updatedAt, label: "billingAddress", },
+    { name: "price", value: finance.price, label: "billingAddress", },
+    { name: "brand", value: finance.brand, label: "billingAddress", },
+    { name: "model", value: finance.model, label: "billingAddress", },
+    { name: "color", value: finance.color, label: "billingAddress", },
+    { name: "accessories", value: finance.accessories, label: "billingAddress", },
+    { name: "options", value: finance.options, label: "billingAddress", },
+    { name: "year", value: finance.year, label: "billingAddress", },
+    { name: "vin", value: finance.vin, label: "billingAddress", },
+    { name: "trim", value: finance.trim, label: "billingAddress", },
+    { name: "mileage", value: finance.mileage, label: "billingAddress", },
+    { name: "location", value: finance.location, label: "billingAddress", },
+    { name: "condition", value: finance.condition, label: "billingAddress", },
+    { name: "repairs", value: finance.repairs, label: "billingAddress", },
+    { name: "stockNum", value: finance.stockNum, label: "billingAddress", },
+    { name: "motor", value: finance.motor, label: "billingAddress", },
+    { name: "tag", value: finance.tag, label: "billingAddress", },
+    { name: "licensing", value: finance.licensing, label: "billingAddress", },
+    { name: "tradeEval", value: finance.tradeEval, label: "billingAddress", },
+    { name: "clientfileId", value: finance.clientfileId, label: "billingAddress", },
   ];
   return (
     <Card
@@ -2055,13 +3123,13 @@ function ServiceUnit({ finance, fetcher }) {
               <Select
                 onValueChange={(value) => {
                   const formData = new FormData();
-                  formData.append("id", data.id);
+                  formfinance.append("id", finance.id);
                   formData.append("typeOfContact", value);
                   formData.append("intent", 'typeOfContact');
                   console.log(formData, 'formData');
                   fetcher.submit(formData, { method: "post" });
                 }}
-                defaultValue={data.typeOfContact}
+                defaultValue={finance.typeOfContact}
                 name='typeOfContact'>
                 <SelectTrigger className="w-full focus:border-primary">
                   <SelectValue placeholder='Type Of Contact' />
@@ -2084,13 +3152,13 @@ function ServiceUnit({ finance, fetcher }) {
               <Select
                 onValueChange={(value) => {
                   const formData = new FormData();
-                  formData.append("id", data.id);
+                  formData.append("id", finance.id);
                   formData.append("timeToContact", value);
                   formData.append("intent", 'timeToContact');
                   console.log(formData, 'formData');
                   fetcher.submit(formData, { method: "post" });
                 }}
-                defaultValue={data.timeToContact}
+                defaultValue={finance.timeToContact}
                 name='timeToContact'>
                 <SelectTrigger className="w-full focus:border-primary">
                   <SelectValue placeholder='Time To Contact' />
@@ -2159,7 +3227,7 @@ function FinanceTradeUnit({ finance, fetcher }) {
         <CardHeader className="flex flex-row items-start  bg-muted/50 ">
           <div className="grid gap-0.5">
             <CardTitle className="group flex items-center gap-2 text-lg">
-              Client Bikes Bought Else Where
+              Trade Unit
 
             </CardTitle>
           </div>
@@ -2184,13 +3252,13 @@ function FinanceTradeUnit({ finance, fetcher }) {
               <Select
                 onValueChange={(value) => {
                   const formData = new FormData();
-                  formData.append("id", data.id);
+                  formData.append("id", finance.id);
                   formData.append("typeOfContact", value);
                   formData.append("intent", 'typeOfContact');
                   console.log(formData, 'formData');
                   fetcher.submit(formData, { method: "post" });
                 }}
-                defaultValue={data.typeOfContact}
+                defaultValue={finance.typeOfContact}
                 name='typeOfContact'>
                 <SelectTrigger className="w-full focus:border-primary">
                   <SelectValue placeholder='Type Of Contact' />
@@ -2213,13 +3281,13 @@ function FinanceTradeUnit({ finance, fetcher }) {
               <Select
                 onValueChange={(value) => {
                   const formData = new FormData();
-                  formData.append("id", data.id);
+                  formData.append("id", finance.id);
                   formData.append("timeToContact", value);
                   formData.append("intent", 'timeToContact');
                   console.log(formData, 'formData');
                   fetcher.submit(formData, { method: "post" });
                 }}
-                defaultValue={data.timeToContact}
+                defaultValue={finance.timeToContact}
                 name='timeToContact'>
                 <SelectTrigger className="w-full focus:border-primary">
                   <SelectValue placeholder='Time To Contact' />
@@ -2238,7 +3306,7 @@ function FinanceTradeUnit({ finance, fetcher }) {
                 Time To Contact
               </label>
             </div>
-            <input type='hidden' name='id' value={data.id} />
+            <input type='hidden' name='id' value={finance.id} />
 
           </div>
 
@@ -2254,71 +3322,24 @@ function FinanceTradeUnit({ finance, fetcher }) {
     </Card>
   )
 }
-function PaymentsFinance({ finance, fetcher, data }) {
-  let customerCard = [
+function PaymentsFinance({ finance, fetcher, user }) {
 
-    { name: "id", value: data.id, label: "billingAddress", },
-    { name: "createdAt", value: data.createdAt, label: "billingAddress", },
-    { name: "updatedAt", value: data.updatedAt, label: "billingAddress", },
-    { name: "financeId", value: data.financeId, label: "billingAddress", },
-    { name: "price", value: data.price, label: "billingAddress", },
-    { name: "brand", value: data.brand, label: "billingAddress", },
-    { name: "model", value: data.model, label: "billingAddress", },
-    { name: "color", value: data.color, label: "billingAddress", },
-    { name: "accessories", value: data.accessories, label: "billingAddress", },
-    { name: "options", value: data.options, label: "billingAddress", },
-    { name: "year", value: data.year, label: "billingAddress", },
-    { name: "vin", value: data.vin, label: "billingAddress", },
-    { name: "trim", value: data.trim, label: "billingAddress", },
-    { name: "mileage", value: data.mileage, label: "billingAddress", },
-    { name: "location", value: data.location, label: "billingAddress", },
-    { name: "condition", value: data.condition, label: "billingAddress", },
-    { name: "repairs", value: data.repairs, label: "billingAddress", },
-    { name: "stockNum", value: data.stockNum, label: "billingAddress", },
-    { name: "licensing", value: data.licensing, label: "billingAddress", },
-    { name: "tradeEval", value: data.tradeEval, label: "billingAddress", },
-  ];
   const [open, setOpen] = useState(false)
-
+  const [paymentType, setPaymentType] = useState('');
+  const formRef = useRef();
+  const [input, setInput] = useState("");
+  const inputLength = input.trim().length
   return (
     <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
       <CardHeader className="flex flex-row items-start  bg-muted/50 ">
         <div className="grid gap-0.5">
           <CardTitle className="group flex items-center gap-2 text-lg">
-            Deposits
+            Payments
           </CardTitle>
         </div>
       </CardHeader>
       <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
-        <div>
-          <ul className="grid gap-3">
-            <li className="flex items-center justify-between">
-              <span className="text-muted-foreground">Subtotal</span>
-              <span>${financeSubTotal}</span>
-            </li>
-            {finance.discount !== 0 && (
-              <li className="flex items-center justify-between">
-                <span className="text-muted-foreground">Discount</span>
-                <span>{finance.discount}</span>
-              </li>
-            )}
-            {finance.discount !== 0 && (
-              <li className="flex items-center justify-between">
-                <span className="text-muted-foreground">Discount</span>
-                <span>{finance.discount}</span>
-              </li>
-            )}
-            <li className="flex items-center justify-between">
-              <span className="text-muted-foreground">Tax</span>
-              <span>{deFees.userTax}%</span>
-            </li>
-            <li className="flex items-center justify-between font-semibold">
-              <span className="text-muted-foreground">Total</span>
-              <span>${financeTotal}</span>
-            </li>
-          </ul>
-        </div>
-        <Separator className="my-4" />
+
         <div className="grid gap-3">
           <div className="font-semibold">Payment</div>
           <dl className="grid gap-3">
@@ -2402,16 +3423,6 @@ function PaymentsFinance({ finance, fetcher, data }) {
                 <span>${result.amountPaid}</span>
               </li>
             ))}
-            <li className="flex items-center justify-between">
-              <span className="text-muted-foreground">Balance </span>
-              <span>${Number(financeTotal).toFixed(2) - Number(totalAmountPaidFinance).toFixed(2)}</span>
-
-            </li>
-            {parseFloat(total) - parseFloat(totalAmountPaid) === 0 && (
-              <input type='hidden' name='status' value='Fulfilled' />
-            )}
-
-
           </ul>
           {paymentType !== '' && (
             <div className='mx-auto'>
@@ -2515,7 +3526,7 @@ function FinanceNotes({ finance, fetcher, input, user, formRef, setInput, inputL
             <CardContent>
               <div className="space-y-4 mt-5">
 
-                {financeNotes.slice().reverse().map((message, index) => (
+                {finance.FinanceNote.slice().reverse().map((message, index) => (
                   <div
                     key={index}
                     className={cn(
@@ -2578,6 +3589,7 @@ function FinanceNotes({ finance, fetcher, input, user, formRef, setInput, inputL
   )
 }
 function FinanceProducts({ finance }) {
+  // finance.FinanceDeptProducts
   return (
     <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
       <CardHeader className="flex flex-row items-start  bg-muted/50 ">
@@ -2596,7 +3608,6 @@ function FinanceProducts({ finance }) {
     </Card>
   )
 }
-
 function Blank({ finance }) {
   return (
     <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >

@@ -108,7 +108,6 @@ export async function loader({ request, params }: LoaderArgs) {
       activisUserId: true,
       activixEmail: true,
       activixActivated: true,
-      newLook: true,
       activixId: true,
       dealerAccountId: true,
       microId: true,

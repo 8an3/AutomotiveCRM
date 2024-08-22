@@ -152,7 +152,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
-import PrintReceipt from "../document/printReceiptSales";
+import PrintReceipt from "../document/printReceiptSales.client";
 import { ClientOnly } from "remix-utils";
 
 export let action = overviewAction;

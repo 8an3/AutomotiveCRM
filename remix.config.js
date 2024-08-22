@@ -46,7 +46,7 @@ module.exports = {
   serverDependenciesToBundle: [
     "axios",
     "@azure/msal-react",
-    "Path2D",
+    // "Path2D",
     "chalk"
   ],
   tailwind: true,

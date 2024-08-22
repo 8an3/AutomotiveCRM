@@ -20,7 +20,8 @@ export default function PrintReceipt(data) {
   );
 }
 
-export function PrintButton(toReceipt) {
+export function PrintButton(data) {
+  const toReceipt = data
   console.log(toReceipt, "firstsdf");
   async function RunIt() {
     const data = toReceipt;

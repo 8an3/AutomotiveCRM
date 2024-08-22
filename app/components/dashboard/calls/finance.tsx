@@ -107,7 +107,7 @@ import { FaSave } from "react-icons/fa";
 import UnitPicker from "~/components/dashboard/unitPicker/unitPicker";
 import { cors } from "remix-utils";
 import { TextFunction } from "~/components/dashboard/calls/logText";
-import CustomerGen from "~/routes/__authorized/dealer/document/customerGen";
+import CustomerGen from "~/routes/__authorized/dealer/document/customerGen.client";
 import { EditableText, EditableTextManual } from "~/components/dev/board/components";
 
 export function FinanceDialog({ data, user, deFees, products, emailTemplatesDropdown }) {
