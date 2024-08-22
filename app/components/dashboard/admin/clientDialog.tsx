@@ -450,11 +450,6 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
 
 
 
-
-
-
-
-
   function SidebarNav({
     className,
     items,
@@ -463,18 +458,28 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     ...props
   }: SidebarNavProps) {
     const [selectedParent, setSelectedParent] = useState<string | null>(null);
-    const [selectedValue, setSelectedValue] = useState<string | null>(null);
+    const [openSections, setOpenSections] = useState<Set<string>>(new Set());
 
     const handleParentClick = (title: string) => {
-      // If the clicked parent is already open, close it
-      // Otherwise, open the clicked parent and close others
-      setSelectedParent((prev) => (prev === title ? null : title));
+      const newOpenSections = new Set(openSections);
+
+      // Close other sections
+      newOpenSections.clear();
+
+      // Toggle the clicked section
+      if (selectedParent === title) {
+        setSelectedParent(null);
+      } else {
+        newOpenSections.add(title);
+        setSelectedParent(title);
+      }
+
+      setOpenSections(newOpenSections);
     };
 
     const handleItemClick = (value: string, data?: any) => {
-      setSelectedValue(value);
+      onSelect(value);
       if (data) {
-        onSelect(value);
         onFinanceChange(data.finance);
       }
     };
@@ -488,7 +493,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
                 variant="ghost"
                 className={cn(
                   "justify-start w-[90%]",
-                  selectedParent === item.title
+                  openSections.has(item.title)
                     ? "bg-[#232324] hover:bg-muted/50 w-[90%]"
                     : "hover:bg-muted/50 text-[#a1a1aa] w-[90%]"
                 )}
@@ -496,7 +501,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
               >
                 {item.title}
               </Button>
-              {selectedParent === item.title && (
+              {openSections.has(item.title) && (
                 <div className="ml-4">
                   {renderItems(item.section, true)}
                 </div>
@@ -508,7 +513,7 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
               key={item.value}
               className={cn(
                 "justify-start w-[90%]",
-                selectedValue === item.value
+                selectedParent && selectedParent === item.value
                   ? "bg-[#232324] hover:bg-muted/50 w-[90%]"
                   : "hover:bg-muted/50 text-[#a1a1aa] w-[90%]",
                 isSubSection ? "ml-4" : ""

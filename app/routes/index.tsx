@@ -38,6 +38,7 @@ import { cn } from "~/components/ui/utils"
 import { Button, buttonVariants } from "~/components"
 import { LinksFunction } from '@remix-run/server-runtime';
 import { FaCheck } from "react-icons/fa";
+import { dealerCard } from './__auth/subscribe';
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
